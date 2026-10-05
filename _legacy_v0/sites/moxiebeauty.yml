@@ -1,0 +1,23 @@
+# Moxie Beauty: confirmed Shopify on 3 Oct 2026 (cdn.shopify.com assets, /cdn/shop/ paths,
+# "Powered by Shopify" footer). Selectors below are UNVERIFIED guesses, edit after first run.
+base_url: https://moxiebeauty.in
+platform: shopify
+checkout_provider: gokwik    # unverified; v0 never clicks into checkout
+
+seed:
+  collection: /collections/all
+
+selectors:
+  nav_links: ["header nav a", "nav a"]
+  pdp_title: ["h1"]
+  pdp_price: ["[class*='price']", "[data-price]", ".price"]
+  add_to_cart: ["button[name='add']", "button:has-text('Add to cart')", "button:has-text('Add to Cart')", "button:has-text('ADD TO CART')"]
+  cart_item: ["[class*='cart-item']", "[class*='cart__item']"]
+  checkout_button: ["button[name='checkout']", "button:has-text('Checkout')", "a[href*='checkout']", "button:has-text('CHECKOUT')"]
+  product_card_link: ["a[href*='/products/']"]
+
+access:
+  user_agent: "BugRadar/0.1 (+bugradar.in)"
+  delay_seconds: 2.0
+  locale: en-IN
+  timezone: Asia/Kolkata

@@ -1,0 +1,264 @@
+"""Discovery: from a bare URL to a SiteMap. This is the 'only ask for the URL' layer.
+
+Order matters and every step degrades gracefully, recording what it could not do in
+sitemap.notes (shown in the report) instead of guessing:
+
+  1. robots.txt                      -> what Radar may fetch
+  2. homepage (real browser)         -> status, title, platform detection
+  3. navigation links                -> header/nav anchors, same origin
+  4. collections                     -> /collections.json, else nav links under /collections/
+  5. products                        -> /products.json, else /products/ links + /products/<h>.js
+  6. search                          -> search form on the page, else Shopify default /search
+"""
+from __future__ import annotations
+
+import re
+
+from datetime import datetime, timezone
+from urllib.parse import urljoin, urlparse
+
+from radar.core.browser import Session, RobotsBlocked
+from radar.core.config import Settings, site_id_from_url
+from radar.core.models import SiteMap, Product, Collection
+from radar.core.robots import Robots
+from radar.discovery.detect import detect_platform, detect_checkout_app, detect_access
+from radar.discovery.shopify_data import products_from_json, product_from_js, price_ok
+
+NAV_JS = r"""() => {
+  // what a shopper sees first: visible menu links before hidden mega-menu links; product links are
+  // left to the product suite (mega menus can hold hundreds of them)
+  const sel = 'header a[href], nav a[href], [role=navigation] a[href]';
+  const seen = new Set(); const out = [];
+  for (const a of document.querySelectorAll(sel)) {
+    const href = a.href;
+    // textContent, not innerText: drawer/mega-menu links are hidden until opened
+    const text = (a.textContent || a.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
+    if (!href || seen.has(href) || !text || href.startsWith('javascript:')) continue;
+    const u = new URL(href);
+    if (/\/(cart|account|search|checkout)(\/|$|\?)|#/.test(u.pathname + u.hash) || /\/products\//.test(u.pathname)) continue;
+    const r = a.getBoundingClientRect();
+    seen.add(href); out.push({text: text.slice(0, 60), url: href, visible: r.width > 0 && r.height > 0});
+  }
+  return out.sort((x, y) => (y.visible ? 1 : 0) - (x.visible ? 1 : 0)).map(({text, url}) => ({text, url}));
+}"""
+
+LINKS_JS = """(pattern) => [...new Set([...document.querySelectorAll('a[href]')]
+  .map(a => a.href).filter(h => h.includes(pattern)))]"""
+
+
+def _same_origin(url: str, base: str) -> bool:
+    a, b = urlparse(url), urlparse(base)
+    strip = lambda h: (h or "").lower().removeprefix("www.")
+    return strip(a.hostname) == strip(b.hostname)
+
+
+def same_site(a: str, b: str) -> bool:
+    """True when b is the same store as a (www / subdomain of the same registrable host). Pure."""
+    strip = lambda u: (urlparse(u).hostname or "").lower().removeprefix("www.")
+    ha, hb = strip(a), strip(b)
+    return ha == hb or hb.endswith("." + ha) or ha.endswith("." + hb)
+
+
+NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift|sampler|tester|\bsample\b|dummy|test[-_ ]product",
+                           re.I)
+
+
+def token_priced(products: list, floor_share: float = 0.10, max_price: float = 50.0) -> list:
+    """Products priced like a freebie SKU next to the store's real prices: at most 10% of the median
+    priced product AND at most 50 (currency units). plumgoodness.com lists a Rs 1 'Skincare Duo'
+    in /products.json whose page says 'The product is currently unavailable'. Pure, unit-tested."""
+    def num(p):
+        try:
+            return float(str(p.price).replace(",", ""))
+        except (TypeError, ValueError):
+            return 0.0
+    priced = sorted(num(p) for p in products if num(p) > 0)
+    if len(priced) < 3:
+        return []
+    median = priced[len(priced) // 2]
+    return [p for p in products if 0 < num(p) <= min(max_price, floor_share * median)]
+
+
+def _handle(url: str, kind: str) -> str | None:
+    path = urlparse(url).path.rstrip("/")
+    marker = f"/{kind}/"
+    if marker not in path:
+        return None
+    h = path.split(marker, 1)[1].split("/")[0]
+    return h or None
+
+
+def load_robots(sess: Session, base: str, s: Settings) -> Robots:
+    try:
+        r = sess.page.context.request.get(base + "/robots.txt", timeout=10000)
+        txt = r.text() if r.status == 200 else None
+    except Exception:  # noqa: BLE001
+        txt = None
+    return Robots(txt, s.user_agent)
+
+
+def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
+    sm = SiteMap(site_id=site_id_from_url(base_url), base_url=base_url,
+                 discovered_at=datetime.now(timezone.utc).isoformat(timespec="seconds"))
+
+    # 1. robots
+    sess.robots = load_robots(sess, base_url, s)
+    sm.robots_loaded = sess.robots.loaded
+    if not sm.robots_loaded:
+        sm.notes.append("robots.txt not readable; treated as allow-all (crawler convention)")
+
+    # 2. homepage + platform
+    try:
+        resp, _ = sess.goto(base_url + "/")
+    except RobotsBlocked:
+        sm.access = "robots_blocked"
+        sm.notes.append("robots.txt disallows the whole site for Radar's User-Agent; Radar respects it "
+                        "(the store can allow 'BugRadar' in robots.txt)")
+        return sm
+    except Exception as e:  # noqa: BLE001  DNS, TLS, timeout
+        sm.access = "unreachable"
+        msg = str(e).splitlines()[0][:150]
+        hint = " (domain does not resolve: check the store URL)" if "NAME_NOT_RESOLVED" in msg else ""
+        sm.notes.append(f"homepage unreachable: {msg}{hint}")
+        return sm
+    if not same_site(base_url, sess.page.url):
+        sm.access = "offsite"
+        sm.home_title = sess.evaluate("() => document.title") or ""
+        sm.notes.append(f"{urlparse(base_url).hostname} sends visitors to a different site "
+                        f"({urlparse(sess.page.url).hostname}, '{sm.home_title[:60]}'): the store URL is probably wrong "
+                        "or the domain is parked/for sale")
+        return sm
+    html = sess.evaluate("() => document.documentElement.outerHTML") or ""
+    sm.home_title = sess.evaluate("() => document.title") or ""
+    sm.access = detect_access(resp.status if resp else None, sm.home_title, html, urlparse(sess.page.url).path)
+    det = detect_platform(html)
+    sm.platform, sm.platform_evidence = det["platform"], det["evidence"]
+    if sm.access == "password":
+        sm.notes.append("store is password-protected (Shopify storefront password); nothing can be tested")
+        return sm
+    if sm.access == "bot_blocked":
+        sm.notes.append("bot protection challenge shown to Radar's identified browser; Radar does not evade it "
+                        "(the store can allowlist the BugRadar User-Agent)")
+        return sm
+    if resp is None or resp.status >= 400:
+        code = resp.status if resp else None
+        # Not "not Shopify": the store did not serve its homepage to Radar (plumgoodness.com, bench 5: HTTP 423
+        # "This store is unavailable" to Radar while the store was live for other visitors).
+        sm.access = "refused" if code in (401, 403, 423, 429) else "unreachable"
+        sm.notes.append(f"homepage returned HTTP {code or 'none'} ('{sm.home_title[:60]}') to Radar; nothing tested. "
+                        + ("The store refused or rate-limited Radar's browser; a later run may differ."
+                           if sm.access == "refused" else "The store's server did not serve its homepage."))
+        return sm
+    base_url = sm.base_url = f"{urlparse(sess.page.url).scheme}://{urlparse(sess.page.url).netloc}"
+    th = sess.evaluate("() => { const t = window.Shopify && window.Shopify.theme; return t ? "
+                       "{schema: t.schema_name || null, name: t.name || null} : null }")
+    if th:
+        sm.theme = th.get("schema") or th.get("name")
+        if th.get("schema") and th.get("name") and th["name"] != th["schema"]:
+            sm.theme = f"{th['schema']} (store copy: {th['name'][:40]})"
+    sm.checkout_app = detect_checkout_app(html) if sm.platform == "shopify" else ""
+    if sm.platform != "shopify":
+        sm.notes.append("platform is not Shopify; v1 builds tests for Shopify only")
+        return sm
+
+    # 3. navigation
+    nav = [n for n in sess.evaluate(NAV_JS) if _same_origin(n["url"], base_url)]
+    sm.nav = nav[:25]
+    if not sm.nav:
+        sm.notes.append("no header/nav links found")
+
+    # 4. collections
+    try:
+        data = sess.get_json(f"{base_url}/collections.json?limit=50")
+        for c in data.get("collections", []):
+            if c.get("handle") and c["handle"] != "frontpage" and (c.get("products_count") or 0) > 0:
+                sm.collections.append(Collection(c["handle"], c.get("title", c["handle"]),
+                                                 f"{base_url}/collections/{c['handle']}",
+                                                 c.get("products_count")))
+    except (RobotsBlocked, AssertionError, ValueError) as e:
+        sm.notes.append(f"/collections.json unavailable ({str(e)[:80]}); using nav links")
+    if not sm.collections:
+        for n in sm.nav:
+            h = _handle(n["url"], "collections")
+            if h and h not in {c.handle for c in sm.collections}:
+                sm.collections.append(Collection(h, n["text"], f"{base_url}/collections/{h}"))
+    # Prefer what shoppers actually see (nav-linked), then the biggest collections; skip tiny ones.
+    nav_handles = {_handle(n["url"], "collections") for n in sm.nav}
+    big = [c for c in sm.collections if c.product_count is None or c.product_count >= 2] or sm.collections
+    sm.collections = sorted(big, key=lambda c: (c.handle not in nav_handles, -(c.product_count or 0)))
+    if not sm.collections:
+        sm.collections.append(Collection("all", "All products", f"{base_url}/collections/all"))
+        sm.notes.append("no collections discovered; falling back to /collections/all")
+
+    # 5. products
+    try:
+        prods = products_from_json(sess.get_json(f"{base_url}/products.json?limit=50"), base_url, limit=20)
+        sm.products = [Product(**p) for p in prods]
+    except (RobotsBlocked, AssertionError, ValueError) as e:
+        sm.notes.append(f"/products.json unavailable ({str(e)[:80]}); scraping product links")
+    if not sm.products:
+        handles = []
+        for url in [base_url + "/"] + [c.url for c in sm.collections[:2]]:
+            try:
+                if sess.page.url.rstrip("/") != url.rstrip("/"):
+                    sess.goto(url)
+                for link in sess.evaluate(LINKS_JS, "/products/"):
+                    h = _handle(link, "products")
+                    if h and h not in handles and _same_origin(link, base_url):
+                        handles.append(h)
+            except (RobotsBlocked, Exception):  # noqa: BLE001
+                continue
+            if len(handles) >= 8:
+                break
+        for h in handles[:8]:
+            try:
+                p = product_from_js(sess.get_json(f"{base_url}/products/{h}.js"), base_url)
+                if p:
+                    sm.products.append(Product(**p))
+            except (RobotsBlocked, AssertionError, ValueError):
+                continue
+        sm.products.sort(key=lambda p: not p.available)
+    special = [p for p in sm.products if price_ok(p.price) and NOT_FOR_TESTS.search(f"{p.handle} {p.title}")]
+    if special:
+        sm.products = [p for p in sm.products if p not in special]
+        sm.notes.append(f"{len(special)} gift-app clone / gift card / sample product(s) skipped "
+                        f"(e.g. {special[0].handle})")
+    token = token_priced(sm.products)
+    if token:
+        sm.products = [p for p in sm.products if p not in token]
+        sm.notes.append(f"{len(token)} product(s) priced like a free gift next to the store's other prices "
+                        f"(e.g. {token[0].handle} at {token[0].price}) are not used for tests")
+    # Prefer products a shopper can reach: the ones listed in the collections Radar browses.
+    listed: set[str] = set()
+    for c in sm.collections[:2]:
+        try:
+            listed |= {x.get("handle") for x in sess.get_json(f"{c.url}/products.json?limit=50").get("products", [])}
+        except (RobotsBlocked, AssertionError, ValueError, Exception):  # noqa: BLE001
+            continue
+    if listed and sm.products:
+        unlisted = [p for p in sm.products if p.handle not in listed]
+        sm.products.sort(key=lambda p: (p.handle not in listed, not p.available))
+        if unlisted and len(unlisted) < len(sm.products):
+            sm.notes.append(f"{len(unlisted)} product(s) not listed in the browsed collections are tested last "
+                            f"(e.g. {unlisted[0].handle})")
+    free = [p for p in sm.products if not price_ok(p.price)]
+    if free:
+        sm.notes.append(f"{len(free)} product(s) priced 0 (free samples/gifts, e.g. {free[0].handle}) "
+                        "are not used for product or cart tests")
+    if not sm.products:
+        sm.notes.append("no products discovered; product and cart suites will be skipped")
+    elif not any(p.available for p in sm.products):
+        sm.notes.append("every sampled product is sold out; cart suite will be skipped")
+
+    # 6. search
+    try:
+        if sess.page.url.rstrip("/") != base_url:
+            sess.goto(base_url + "/")
+        action = sess.evaluate(
+            "() => { const f = document.querySelector(\"form[action*='search']\"); return f ? f.getAttribute('action') : null }")
+        sm.search_path = urlparse(urljoin(base_url, action)).path if action else "/search"
+        if not action:
+            sm.notes.append("no search form found on homepage; assuming Shopify default /search")
+    except Exception:  # noqa: BLE001
+        sm.search_path = "/search"
+    return sm
