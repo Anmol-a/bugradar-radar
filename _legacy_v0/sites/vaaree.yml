@@ -1,0 +1,25 @@
+# Site config for Vaaree. One file per site; journey steps are shared code,
+# only these hints change per site. Selectors are tried in order, first visible wins.
+base_url: https://www.vaaree.com
+platform: shopify
+checkout_provider: native   # native | gokwik | shopflo (v0 never clicks into checkout)
+
+seed:
+  collection: /collections/all      # TODO confirm a real collection handle on first run
+  search_term: vase
+
+selectors:
+  nav_links: ["header nav a", "nav a"]
+  product_card_link: ["a[href*='/products/']"]
+  pdp_title: ["h1"]
+  pdp_price: ["[class*='price']", "[data-price]", ".price"]
+  pdp_image: ["main img", "[class*='product'] img"]
+  add_to_cart: ["button[name='add']", "button:has-text('Add to cart')", "button:has-text('Add to Cart')"]
+  cart_item: ["[class*='cart-item']", "[class*='cart__item']", "a[href*='/products/']"]
+  checkout_button: ["button[name='checkout']", "a[href*='checkout']", "button:has-text('Checkout')"]
+
+access:
+  user_agent: "BugRadar/0.1 (+bugradar.in)"
+  delay_seconds: 2.0     # pause between page navigations
+  locale: en-IN
+  timezone: Asia/Kolkata
