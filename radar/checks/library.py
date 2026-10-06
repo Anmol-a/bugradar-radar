@@ -729,12 +729,32 @@ def _load_product(ctx: Ctx, url: str) -> str:
     if not has_product and NOT_FOUND_RX.search(head):
         ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
                    f"shows {head.strip()[:60]!r} (in the store's catalog but the page does not exist)", False)
-    elif not has_product:
-        why = _hidden_product_page(ctx, url)
+    elif not _own_buy_holder(ctx, ctx.sess.page.url):
+        # No buy control for THIS product's variants. Other products' forms (cart drawer, upsells) or a Product
+        # ld+json do not make it a product page: plumgoodness.com, bench 7 ("currently unavailable" page with
+        # a drawer form + product data) slipped past the old "any form or ld+json" test.
+        # judged on the product actually shown: a JS redirect to ANOTHER product is the url_stable warning's job
+        why = _hidden_product_page(ctx, ctx.sess.page.url)
         if why:
             ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
                        f"{why} (in the store's catalog but hidden from shoppers)", False)
     return out
+
+
+OWN_HOLDER_JS = r"""(ids) => { const s = new Set(ids.map(String));
+  return [...document.querySelectorAll('input[name="id"], select[name="id"], [data-variant-id], [data-product-id]')]
+    .some(e => s.has(String(e.value || e.getAttribute('data-variant-id') || ''))); }"""
+
+
+def _own_buy_holder(ctx: Ctx, url: str) -> bool:
+    """Does the page carry one of THIS product's variant ids anywhere a buy control would (form input, select,
+    data-variant-id)? Unknown product data -> True (do not guess a hidden product)."""
+    try:
+        p = ctx.sess.get_json(f"{_base(url)}/products/{_handle(url)}.js") or {}
+        ids = [int(v["id"]) for v in p.get("variants", [])]
+    except Exception:  # noqa: BLE001
+        return True
+    return True if not ids else bool(ctx.sess.evaluate(OWN_HOLDER_JS, ids))
 
 
 UNAVAILABLE_RX = re.compile(r"(product|item) is (currently )?(unavailable|not available)|currently unavailable", re.I)

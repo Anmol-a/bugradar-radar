@@ -3,7 +3,7 @@
 Rule for this file: it says what works, what is proven, what is not, and what hurts. No bluff.
 It is updated with every change.
 
-Last updated: 6 Oct 2026 · Framework v0.11. **R1 exit rule met** on bench 6 (v0.10): 29 healthy / 3 degraded / 0 down, 0 Radar false failures, 0 flaky; the 3 failures are real store findings (4k). v0.11 (browser identity: Chrome name + BugRadar, `--headed` bench) not yet benched.
+Last updated: 6 Oct 2026 · Framework v0.12. Bench 7 (v0.11, new User-Agent): 28 healthy / 5 degraded / 0 down; plum reachable again; 2 Radar issues (plum hidden-product rule gap, brand word searched on thehouseofrare) fixed in v0.12 (4l). R1 exit rule was met on bench 6; v0.12 needs one clean bench to re-confirm.
 
 ---
 
@@ -419,6 +419,29 @@ Open question carried forward: plum's 423 twice. v0.11 sends a normal Chrome nam
 plum lets that in, its block is a filter on non-browser User-Agents (allowed: Radar still identifies
 itself). If it still refuses, it is a deliberate block: stays BLOCKED, never evaded.
 
+## 4l. Seventh bench (36 stores, 6 Oct 10:12 IST, v0.11): new User-Agent; 2 Radar issues found
+
+`data/bench/20261006T044220Z/` on the Mac. First bench with the v0.11 User-Agent (header "User-Agent:
+Chrome + BugRadar", bench.json `browser.ua_style = browser`). **33 testable: 28 healthy, 5 degraded,
+0 down, 0 flaky.**
+
+**plum answered normally**, after HTTP 423 to `BugRadar/0.1` alone in benches 5 and 6: its block
+was a filter on non-browser User-Agent names. Radar still identifies itself in every request.
+
+| Store | Result | Cause (proof) | Whose | v0.12 |
+|---|---|---|---|---|
+| supplysix PDP | FAIL | desktop shows no price | Store | — |
+| soulflower, foxtale health | FAIL | soft 404 | Store | — |
+| plumgoodness PDP | FAIL "no product name" | catalog copy page "currently unavailable" (as bench 4). v0.9's hidden-product rule only ran when the page had NO cart/add form and NO Product ld+json; the trace shows Radar's own check returned true (other products' form and/or ld+json present) while no form held THIS product's variant. The v0.9 mock had neither, so it passed | **Radar** (rule gap) | hidden-product rule runs whenever no buy control holds one of THIS product's variant ids (`OWN_HOLDER_JS`: name=id inputs/selects, data-variant-id); still needs the product name absent from the page. Mock `unavailable_product` now carries ld+json + another product's drawer form; v0.11 fails it with the bench message |
+| thehouseofrare search | FAIL "0 of 16 mention 'rare'" | Radar searched **'rare', the brand**: brand words came from the domain label as one token (`thehouseofrare`) and from the title only before " - " (brand is after it). Screenshot: search works (Gift Cards, trainers for "RARE") | **Radar** (test word) | brand words = domain label + its compound parts, EVERY title segment, and Shopify `vendor` names (new `Product.vendor`). Unit test: v0.11 picks 'rare', v0.12 picks 'kore' |
+
+**Radar false failures in bench 7: 2** (one exposed only because plum became testable). The R1 exit
+rule (met on bench 6) needs one more clean bench on v0.12.
+
+Lesson for diagnosis: Playwright snapshots hold no `<script>` elements, so a DOM replay cannot show
+JSON-LD; bench 4's plum replay concluded "no product data" from that blind spot. Trust the recorded
+results of Radar's own calls for data questions (`tools/trace_replay.py` docstring).
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -543,7 +566,7 @@ USD in every run summary. An LLM error never crashes a run.
 | Area | Status (5 Oct) |
 |---|---|
 | Whole pipeline on a Shopify-like store | **Proven** in real Chromium against the mock store (30 modes) |
-| Real Shopify stores | **Bench 6 (v0.10, 32 testable): 29 healthy, 3 degraded, 0 down, 0 flaky; 0 Radar false failures (R1 exit rule met).** The 3 failures are real store findings (supplysix desktop price, 2 soft 404s), triaged correctly. **v0.11 (User-Agent) not yet benched.** |
+| Real Shopify stores | **Bench 7 (v0.11, 33 testable): 28 healthy, 5 degraded, 0 down, 0 flaky.** 3 failures are real store findings; 2 were Radar's (plum rule gap, brand word searched), fixed in v0.12 (4l). Bench 6 (v0.10) had 0 Radar false failures. **v0.12 not yet benched.** |
 | Bench-2 bugs reproduced | **Proven**: v0.6 code fails the new mock modes with the same messages as on the real stores; v0.7 passes |
 | Add-to-cart identity (product opened = product added) | **Proven** on mock (`wrong_variant`) and on moxiebeauty.in (correct product, free gift warned) |
 | Heuristic healing | **Proven** (renamed "Add to Bag" button healed to a stable selector, reused from cache) |
@@ -626,6 +649,10 @@ USD in every run summary. An LLM error never crashes a run.
 (China) is acceptable for client stores. Until then the default stays gpt-5-mini.
 
 ## Change log
+- 6 Oct 2026, v0.12: bench 7 (4l). Hidden-product rule keyed on THIS product's variant id, not "any form or
+  ld+json" (plum). Brand words: domain label + compound parts, every homepage-title segment, Shopify vendor
+  names (new `Product.vendor`) (thehouseofrare searched 'rare'). trace_replay documents the no-script blind
+  spot. 106 tests (60 unit, 46 end-to-end).
 - 6 Oct 2026, docs only: bench 6 on v0.10 (4k): 0 Radar false failures, 0 flaky. **R1 exit rule met.**
 - 6 Oct 2026, v0.11: browser identity. User-Agent = normal Chrome (or emulated device) name + `BugRadar/0.1
   (+bugradar.in)` by default; `--plain-ua` keeps BugRadar only. robots.txt matched on the BugRadar token

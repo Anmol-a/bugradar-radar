@@ -2,7 +2,10 @@
 
 Lists the recorded calls with their results, rebuilds a frame snapshot as HTML, serves the recorded
 resources, and runs JS (e.g. Radar's own FORM_STATE_JS) against it in Chromium. Page scripts are NOT
-replayed: you see the DOM exactly as it was at that call. Needs Playwright (sandbox; not the Mac shell).
+replayed: you see the DOM exactly as it was at that call.
+LIMIT: Playwright snapshots contain no <script> elements at all, so JSON-LD product data is invisible in a
+replay. For what the page's data said, read the RESULTS of Radar's own calls (the `after` event of each
+call). bench 4's plum diagnosis missed a Product ld+json this way; bench 7 caught it (ARCHITECTURE.md 4l). Needs Playwright (sandbox; not the Mac shell).
 
     from tools.trace_replay import Trace, run_js
     t = Trace("data/sites/<store>/runs/<run>/<case>.a1_trace.zip")
