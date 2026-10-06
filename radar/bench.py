@@ -79,9 +79,19 @@ def _secs(run: dict) -> int:
 def _one(args) -> dict:
     """Runs in a worker process: one store, quiet."""
     url, cart, settings = args
+    from radar.core.network import NO_NETWORK_NOTE, online
     from radar.runner.executor import scan
     s = replace(settings, allow_cart_flow=cart)
     t0 = time.time()
+    if not online(s.net_probe_urls):      # Radar offline: do not even start (bench 8, 6 Oct)
+        try:
+            sid = site_id_from_url(url)
+        except ValueError:
+            sid = url
+        return {"site_id": sid, "url": url, "verdict": "no_network", "platform": None, "theme": None,
+                "checkout": None, "access": "no_network", "suites": {}, "failures": [], "warnings": 0, "healed": 0,
+                "radar_suspect": 0, "notes": [NO_NETWORK_NOTE.format(where=" when this store's turn came")],
+                "report": None, "secs": 0, "cart": cart, "input": url}
     try:
         run, run_dir = scan(url, s, "desktop")
         d = json.loads((run_dir / "run.json").read_text())
@@ -126,6 +136,10 @@ def run_bench(entries: list[tuple[str, bool]], settings: Settings, workers: int 
     (out / "bench.json").write_text(json.dumps(payload, indent=2, default=str))
     from radar.reporting.bench_html import write_bench_html
     write_bench_html(payload, out / "bench.html")
+    lost = payload["totals"].get("no_network", 0)
+    if lost:
+        progress(f"WARNING: Radar had no internet connection for {lost} of {len(rows)} stores. Those rows say "
+                 "nothing about the stores; run the bench again on a stable connection.")
     return out
 
 
@@ -133,7 +147,7 @@ def totals(rows: list[dict]) -> dict:
     t = {"stores": len(rows)}
     for r in rows:
         t[r["verdict"]] = t.get(r["verdict"], 0) + 1
-    t["tested"] = sum(1 for r in rows if r["verdict"] in ("healthy", "degraded", "down"))
+    t["tested"] = sum(1 for r in rows if r["verdict"] in ("healthy", "degraded", "down"))   # no_network never counts
     return t
 
 

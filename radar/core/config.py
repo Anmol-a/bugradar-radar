@@ -12,6 +12,8 @@ from urllib.parse import urlparse
 
 import yaml
 
+from radar.core.network import DEFAULT_PROBES
+
 ROOT = Path(__file__).resolve().parents[2]
 
 
@@ -70,6 +72,9 @@ class Settings:
     retention_pass_days: int = 7
     retention_fail_days: int = 90
     selectors: dict = field(default_factory=dict)   # per-site selector hints (optional)
+    # Radar's own connectivity check (radar/core/network.py): hosts asked before Radar blames a store for a
+    # network-looking failure. Empty = check off. Env RADAR_NET_PROBES=url1,url2 ('' to switch off).
+    net_probe_urls: tuple = DEFAULT_PROBES
 
     def for_site(self, site_id: str) -> "Settings":
         f = self.sites_dir / f"{site_id}.yml"
@@ -89,6 +94,7 @@ _ENV = {
     "RADAR_LLM_BASE_URL": ("llm_base_url", str),
     "RADAR_MAX_PRODUCTS": ("max_products", int),
     "RADAR_ALLOW_CART": ("allow_cart_flow", lambda v: v.lower() not in ("0", "false", "no")),
+    "RADAR_NET_PROBES": ("net_probe_urls", lambda v: tuple(u.strip() for u in v.split(",") if u.strip())),
 }
 
 
@@ -97,6 +103,8 @@ def _apply(s: Settings, raw: dict) -> Settings:
     for k in ("data_dir", "sites_dir"):
         if k in known:
             known[k] = Path(known[k])
+    if "net_probe_urls" in known:
+        known["net_probe_urls"] = tuple(known["net_probe_urls"] or ())
     if "selectors" in known:
         known["selectors"] = {**s.selectors, **(known["selectors"] or {})}
     return replace(s, **known)
@@ -125,6 +133,6 @@ def load_settings(path: Path | None = None) -> Settings:
     if cfg.exists():
         s = _apply(s, yaml.safe_load(cfg.read_text()) or {})
     for env, (attr, cast) in _ENV.items():
-        if os.environ.get(env):
+        if os.environ.get(env) or (env == "RADAR_NET_PROBES" and env in os.environ):   # '' switches probes off
             s = replace(s, **{attr: cast(os.environ[env])})
     return s

@@ -16,6 +16,7 @@ pytestmark = pytest.mark.e2e
 
 
 def _settings(tmp_path, **kw):
+    kw.setdefault("net_probe_urls", ())      # connectivity check off unless a test exercises it
     return replace(Settings(), data_dir=tmp_path, sites_dir=tmp_path / "sites", delay_seconds=0,
                    llm_provider="none", **kw)
 
@@ -586,3 +587,100 @@ def test_every_request_says_bugradar_with_a_normal_chrome_name(tmp_path):
     Handler.SEEN_UA.clear()
     _product_only("healthy", tmp_path / "plain", max_products=1, ua_style="plain")
     assert {u for u in Handler.SEEN_UA if u} == {"BugRadar/0.1 (+bugradar.in)"}, Handler.SEEN_UA
+
+
+# ---------- bench 8 (6 Oct): Radar's OWN network dropped mid-bench ----------
+DEAD = ("http://127.0.0.1:9/",)          # nothing listens: the probe fails = Radar offline
+
+
+def _scan_net_drop(tmp_path, probes):
+    """The store answers the journey, then goes silent (connection refused), like every store did when the Mac's
+    Wi-Fi dropped at 14:51 IST in bench 8."""
+    from radar.core.network import reset_cache
+    reset_cache()
+    srv, url = serve("healthy")
+    n = {"a": 0}
+
+    def hook(evt, d):
+        if evt == "attempt":
+            n["a"] += 1
+            if n["a"] == 1:
+                srv.shutdown()
+                srv.server_close()
+    try:
+        return scan(url, _settings(tmp_path, net_probe_urls=probes), progress=hook)
+    finally:
+        try:
+            srv.shutdown()
+        except Exception:  # noqa: BLE001
+            pass
+
+
+def test_radar_losing_its_own_network_never_blames_the_store(tmp_path):
+    """v0.12 called the store DOWN with 10 confirmed failures (reproduced on the v0.12 copy before the fix)."""
+    from radar.core.storage import Storage
+    run, d = _scan_net_drop(tmp_path, DEAD)
+    assert run.verdict == "no_network", (run.verdict, [(c.case_id, c.verdict) for c in run.cases])
+    assert not any(c.verdict == "confirmed_fail" for c in run.cases)
+    assert _case(run, "journey.").verdict == "pass"                     # what ran before the drop still counts
+    assert run.cases[-1].verdict == "no_network"                         # the run stopped at the first lost test
+    assert any("Radar lost its OWN internet connection" in n and "tests not run" in n for n in run.notes), run.notes
+    assert Storage(tmp_path).incidents(run.site_id) == []               # no incident opened against the store
+    assert json.loads((d / "run.json").read_text())["verdict"] == "no_network"
+
+
+def test_store_dying_while_radar_is_online_is_still_down(tmp_path):
+    """The other half of the rule: if Radar IS online, a store that stops answering is a real outage."""
+    probe, purl = serve("healthy")
+    try:
+        run, _ = _scan_net_drop(tmp_path, (purl + "/",))
+    finally:
+        probe.shutdown()
+    assert run.verdict == "down", run.verdict
+    assert any(c.verdict == "confirmed_fail" for c in run.cases)
+
+
+def test_homepage_unreachable_says_radar_offline_or_store_unreachable(tmp_path):
+    from radar.core.network import reset_cache
+    reset_cache()
+    dead_store = "http://127.0.0.1:9"
+    run, _ = scan(dead_store, _settings(tmp_path / "off", net_probe_urls=DEAD))
+    assert run.verdict == "no_network", (run.verdict, run.notes)
+    assert not any("robots.txt not readable" in n for n in run.notes)
+    probe, purl = serve("healthy")
+    try:
+        run2, _ = scan(dead_store, _settings(tmp_path / "on", net_probe_urls=(purl + "/",)))
+    finally:
+        probe.shutdown()
+    # Radar online, store silent: robots.txt has no answer -> RFC 9309 'do not crawl' -> BLOCKED with the reason
+    assert run2.verdict == "blocked", (run2.verdict, run2.notes)
+    assert any("RFC 9309" in n for n in run2.notes), run2.notes
+
+
+def test_robots_txt_server_error_means_do_not_crawl(tmp_path):
+    """RFC 9309: robots.txt 5xx / no answer = complete disallow. v0.12 treated it as allow-all."""
+    run, _ = _scan("robots_500", tmp_path)
+    assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", run.verdict
+    assert run.cases == []
+    assert any("HTTP 500" in n and "RFC 9309" in n for n in run.notes), run.notes
+
+
+def test_missing_robots_txt_allows_everything(tmp_path):
+    run, _ = _scan("robots_404", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
+    assert any("no robots.txt" in n for n in run.notes), run.notes
+
+
+def test_bench_does_not_start_stores_while_radar_is_offline(tmp_path):
+    from radar.bench import run_bench
+    a, url_a = serve("healthy")
+    said = []
+    try:
+        out = run_bench([(url_a, True)], _settings(tmp_path, net_probe_urls=DEAD), workers=1, progress=said.append)
+    finally:
+        a.shutdown()
+    data = json.loads((out / "bench.json").read_text())
+    assert data["rows"][0]["verdict"] == "no_network" and data["totals"]["tested"] == 0
+    assert data["totals"]["no_network"] == 1
+    assert any("no internet connection" in s for s in said), said
+    assert "Radar offline" in (out / "bench.html").read_text()

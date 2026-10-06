@@ -11,8 +11,8 @@ python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env               # then paste your OPENAI_API_KEY into .env (never into chat or git)
-python3 -m pytest -q                 # 106 tests, about 16 minutes (includes real-browser runs)
-python3 -m pytest -q -m "not e2e"    # 57 fast unit tests only
+python3 -m pytest -q                 # 116 tests, about 17 minutes (includes real-browser runs)
+python3 -m pytest -q -m "not e2e"    # 64 fast unit tests only
 ```
 
 ## Use
@@ -28,9 +28,10 @@ python3 -m radar open moxiebeauty.in                   # site history page
 ```
 Results: `data/sites/<site_id>/` (see ARCHITECTURE.md, section 7).
 
-Status (6 Oct, v0.12): bench 6 (v0.10) had 0 Radar false failures; bench 7 (v0.11, normal Chrome name +
-BugRadar) reached plum again and found 2 Radar issues, fixed in v0.12 (ARCHITECTURE.md 4l). The real store
-findings: supplysix desktop price, soulflower + foxtale soft 404. v0.12 is not benched yet.
+Status (6 Oct, v0.13): bench 6 (v0.10) had 0 Radar false failures; bench 7 found 2 Radar issues, fixed in
+v0.12. Bench 8 was cut short by the Mac losing its internet; v0.13 makes Radar check its OWN connection before
+blaming a store (verdict NO_NETWORK) and follow RFC 9309 for unreadable robots.txt (ARCHITECTURE.md 4m).
+The real store findings: supplysix desktop price, soulflower + foxtale soft 404. Next: bench 9 on v0.13.
 
 ## Bench: many Shopify stores, one table
 ```bash
@@ -43,6 +44,10 @@ By default Radar's User-Agent is the normal Chrome name followed by `BugRadar/0.
 always identified, never disguised (no stealth; ARCHITECTURE.md, limits 4).
 `stores/bench.txt`: one URL per line; add `cart` after a URL to run add-to-cart there (only on
 Shopify's demo stores or stores that agreed). Output: `data/bench/<time>/bench.html`.
+
+If the computer running Radar loses its internet, stores are marked **no_network** (Radar's side, nothing
+reported against them) and the bench prints a warning: run it again. Radar checks its own connection with
+3 always-on hosts; change them with `RADAR_NET_PROBES=url1,url2` in `.env` (empty value = check off).
 
 ## LLM (healing + failure triage)
 Put the key in `.env` (template: `.env.example`). Default: OpenAI `gpt-5-mini` (15/15 on llm-check, 5 Oct; gpt-4o-mini scored 14/15).
@@ -58,7 +63,7 @@ Without a key: heuristic healing only, no triage, and the run says so.
 python3 -m tests.mockstore.server renamed_button 8765  # terminal 1
 python3 -m radar scan http://127.0.0.1:8765 --open     # terminal 2: watch it heal
 ```
-Modes (30, described at the top of `tests/mockstore/server.py`), e.g. `healthy`, `renamed_button`,
+Modes (37, described at the top of `tests/mockstore/server.py`), e.g. `healthy`, `renamed_button`,
 `wrong_variant`, `free_gift`, `hostile`, `title_layouts`, `card_layouts`, `hover_menu`,
 `brand_landing`, `rerender_grid`, `icon_popup`, `quick_named_main`, `sticky_price`,
 `hidden_product`, `notfound_product`, `no_buy_form`, `search_misses`.

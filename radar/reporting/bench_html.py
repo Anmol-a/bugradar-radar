@@ -17,7 +17,7 @@ const CELL = {pass:['✓','s-pass'], flaky:['~','s-flaky'], confirmed_fail:['✕
 $('#when').textContent = 'bench ' + D.stamp + ' · ' + D.rows.length + ' stores';
 const T = D.totals;
 [[T.tested||0,'Tested'],[T.healthy||0,'Healthy'],[T.degraded||0,'Degraded'],[T.down||0,'Down'],
- [(T.unsupported||0)+(T.blocked||0),'Not testable'],[T.unreachable||0,'Wrong / dead URL'],[T.error||0,'Radar crashed']].forEach(([n,l]) =>
+ [(T.unsupported||0)+(T.blocked||0),'Not testable'],[T.unreachable||0,'Wrong / dead URL'],[T.no_network||0,'Radar offline'],[T.error||0,'Radar crashed']].forEach(([n,l]) =>
   $('#tiles').append(h('div',{class:'tile'}, h('div',{class:'n'},n), h('div',{class:'l'},l))));
 const tb = $('#rows');
 function render(filter){
@@ -39,7 +39,7 @@ function render(filter){
     tb.append(tr, det);
   });
 }
-const F=[['all','All'],['fail','With failures'],['healthy','Healthy'],['degraded','Degraded'],['down','Down'],['blocked','Blocked'],['unsupported','Unsupported'],['unreachable','Wrong URL'],['error','Crashed']];
+const F=[['all','All'],['fail','With failures'],['healthy','Healthy'],['degraded','Degraded'],['down','Down'],['blocked','Blocked'],['unsupported','Unsupported'],['unreachable','Wrong URL'],['no_network','Radar offline'],['error','Crashed']];
 F.forEach(([k,l]) => $('#chips').append(h('button',{class:'chip'+(k==='all'?' on':''), onclick:e=>{
   document.querySelectorAll('#chips .chip').forEach(c=>c.classList.remove('on')); e.target.classList.add('on'); render(k);}}, l)));
 render('all');

@@ -13,6 +13,7 @@ sitemap.notes (shown in the report) instead of guessing:
 from __future__ import annotations
 
 import re
+import time
 
 from datetime import datetime, timezone
 from urllib.parse import urljoin, urlparse
@@ -20,6 +21,7 @@ from urllib.parse import urljoin, urlparse
 from radar.core.browser import Session, RobotsBlocked
 from radar.core.config import Settings, site_id_from_url
 from radar.core.models import SiteMap, Product, Collection
+from radar.core.network import NO_NETWORK_NOTE, online
 from radar.core.robots import Robots
 from radar.discovery.detect import detect_platform, detect_checkout_app, detect_access
 from radar.discovery.shopify_data import products_from_json, product_from_js, price_ok
@@ -89,12 +91,24 @@ def _handle(url: str, kind: str) -> str | None:
 
 
 def load_robots(sess: Session, base: str, s: Settings) -> Robots:
-    try:
-        r = sess.page.context.request.get(base + "/robots.txt", timeout=10000)
-        txt = r.text() if r.status == 200 else None
-    except Exception:  # noqa: BLE001
-        txt = None
-    return Robots(txt, s.user_agent)
+    """RFC 9309: 200 = rules; 4xx = unavailable (allow all); 5xx or no answer = unreachable (disallow all).
+    One retry before calling it unreachable (a single slow answer must not block a whole run)."""
+    status = None
+    for i in range(2):
+        try:
+            r = sess.page.context.request.get(base + "/robots.txt", timeout=10000)
+            status = r.status
+            if r.status == 200:
+                return Robots(r.text(), s.user_agent)
+            if 400 <= r.status < 500:
+                return Robots(None, s.user_agent)
+        except Exception:  # noqa: BLE001  DNS, TLS, timeout, reset
+            status = None
+        if i == 0:
+            time.sleep(2)
+    rb = Robots(None, s.user_agent, unreachable=True)
+    rb.status = status
+    return rb
 
 
 def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
@@ -104,8 +118,19 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
     # 1. robots
     sess.robots = load_robots(sess, base_url, s)
     sm.robots_loaded = sess.robots.loaded
+    if sess.robots.unreachable:
+        if not online(s.net_probe_urls):
+            sm.access = "no_network"
+            sm.notes.append(NO_NETWORK_NOTE.format(where=" before the store could be checked"))
+            return sm
+        code = getattr(sess.robots, "status", None)
+        sm.access = "robots_unreachable"
+        sm.notes.append(f"robots.txt could not be fetched ({f'HTTP {code}' if code else 'no answer'}, tried twice); "
+                        "under the robots.txt standard (RFC 9309) that means 'do not crawl', so nothing was tested "
+                        "this run. Usually a temporary server problem on the store's side.")
+        return sm
     if not sm.robots_loaded:
-        sm.notes.append("robots.txt not readable; treated as allow-all (crawler convention)")
+        sm.notes.append("store has no robots.txt (HTTP 4xx); everything allowed (RFC 9309)")
 
     # 2. homepage + platform
     try:
@@ -116,8 +141,12 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
                         "(the store can allow 'BugRadar' in robots.txt)")
         return sm
     except Exception as e:  # noqa: BLE001  DNS, TLS, timeout
-        sm.access = "unreachable"
         msg = str(e).splitlines()[0][:150]
+        if not online(s.net_probe_urls):
+            sm.access = "no_network"
+            sm.notes.append(NO_NETWORK_NOTE.format(where=f" (homepage: {msg})"))
+            return sm
+        sm.access = "unreachable"
         hint = " (domain does not resolve: check the store URL)" if "NAME_NOT_RESOLVED" in msg else ""
         sm.notes.append(f"homepage unreachable: {msg}{hint}")
         return sm

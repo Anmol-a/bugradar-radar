@@ -19,7 +19,7 @@ h1{font-size:26px;margin:2px 0 0;font-weight:650;letter-spacing:-.01em}
 font-family:var(--mono);font-size:13px;letter-spacing:.08em;border:1px solid currentColor}
 .pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}
 .v-healthy,.s-pass{color:var(--green)}.v-degraded,.s-flaky,.s-warn{color:var(--amber)}
-.v-down,.v-error,.v-unreachable,.s-confirmed_fail,.s-fail{color:var(--red)}.v-unsupported,.v-blocked,.s-blocked,.s-skip,.s-skipped,.s-info{color:var(--grey)}
+.v-down,.v-error,.v-unreachable,.s-confirmed_fail,.s-fail{color:var(--red)}.v-unsupported,.v-blocked,.v-no_network,.s-no_network,.s-blocked,.s-skip,.s-skipped,.s-info{color:var(--grey)}
 .grid{display:grid;grid-template-columns:400px 1fr;gap:18px}
 @media(max-width:920px){.grid{grid-template-columns:1fr}}
 .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
@@ -234,7 +234,7 @@ function caseCard(c){
 
 function suites(){
   const root = $('#suites');
-  if (!R.cases.length) { root.append(h('div',{class:'empty'}, R.verdict==='unsupported' ? 'No tests generated: this site is not a platform Radar v1 supports.' : 'No tests ran.')); return; }
+  if (!R.cases.length) { root.append(h('div',{class:'empty'}, R.verdict==='unsupported' ? 'No tests generated: this site is not a platform Radar v1 supports.' : R.verdict==='no_network' ? 'Radar had no internet connection; nothing is reported against this store. Run again.' : 'No tests ran.')); return; }
   const order = SUITES.filter(s => R.cases.some(c => c.suite===s));
   for (const s of order) {
     const cs = R.cases.filter(c => c.suite===s); const ok = cs.filter(c => c.verdict==='pass').length;

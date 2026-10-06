@@ -3,7 +3,7 @@
 Rule for this file: it says what works, what is proven, what is not, and what hurts. No bluff.
 It is updated with every change.
 
-Last updated: 6 Oct 2026 · Framework v0.12. Bench 7 (v0.11, new User-Agent): 28 healthy / 5 degraded / 0 down; plum reachable again; 2 Radar issues (plum hidden-product rule gap, brand word searched on thehouseofrare) fixed in v0.12 (4l). R1 exit rule was met on bench 6; v0.12 needs one clean bench to re-confirm.
+Last updated: 6 Oct 2026 · Framework v0.13. Bench 8 (v0.12, 6 Oct 14:48 IST) was cut short by the Mac losing its internet connection: 6 stores healthy, then 3 called DOWN and 27 'unreachable' by Radar for an outage that was Radar's own (4m). v0.13: Radar checks its own connection before blaming a store (NO_NETWORK verdict) and follows RFC 9309 when robots.txt cannot be fetched. v0.12's two fixes still need a clean bench (bench 9).
 
 ---
 
@@ -442,6 +442,26 @@ Lesson for diagnosis: Playwright snapshots hold no `<script>` elements, so a DOM
 JSON-LD; bench 4's plum replay concluded "no product data" from that blind spot. Trust the recorded
 results of Radar's own calls for data questions (`tools/trace_replay.py` docstring).
 
+## 4m. Eighth bench (36 stores, 6 Oct 14:48 IST, v0.12): Radar's own network dropped; 2 Radar rules fixed (v0.13)
+
+| Time (IST) | What the bench shows | Proven by |
+|---|---|---|
+| 14:48–14:50 | 6 Shopify theme demos healthy (Dawn, Sense, Craft, Refresh, Studio, Taste) | bench.json |
+| ~14:51 | every page load: `net::ERR_INTERNET_DISCONNECTED` (Chromium's own "this computer is offline") | every failure message from 14:51 on |
+| 14:51–14:52 | crave (journey passed first), origin, colorblock: **DOWN**; 27 stores: "unreachable", 0–1 s each | bench.json |
+
+Nothing in bench 8 says anything about v0.12 or the stores. Two Radar rules were wrong:
+
+| # | Radar rule in v0.12 | Why wrong | v0.13 |
+|---|---|---|---|
+| 1 | Any failure confirmed 2-of-3 = store failure; homepage error = UNREACHABLE | When Radar itself is offline, every store looks dead. On a schedule this alerts merchants for our outage | Before a failure is confirmed, before a homepage is called unreachable and before robots.txt is called unreachable, Radar checks its own connection (`radar/core/network.py`: 3 always-on hosts, any HTTP answer or TLS error = online, positive answer cached 30 s). Offline = **NO_NETWORK**: the run stops, passes before the drop are kept, no failure, no incident opened OR closed, no alert. The bench does not start stores while offline and prints a warning. Setting `net_probe_urls` / env `RADAR_NET_PROBES` (empty = off) |
+| 2 | robots.txt unreadable = allow everything | RFC 9309: 4xx = no file, allow all; **5xx or no answer = complete disallow** | 200 = rules; 4xx = allow (note "store has no robots.txt"); 5xx / no answer, tried twice 2 s apart = access `robots_unreachable` → BLOCKED with the reason (if Radar is online) |
+| 3 | Runs that tested nothing still closed open incidents | nothing tested ≠ fixed | incidents resolve only when cases ran and the run is not NO_NETWORK |
+
+Proof on the v0.12 copy before the fix: the net-drop scenario (store answers the journey, then goes silent, probe dead) gave **DOWN with 10 confirmed failures**; mock `robots_500` gave **healthy, 10 tests run**. Both pass the new rules in v0.13. New tests: 6 end-to-end (Radar offline mid-run → NO_NETWORK; store dies while Radar online → still DOWN; dead homepage offline vs online; robots 500 → BLOCKED; robots 404 → healthy; bench offline → no store started) and 4 unit tests (robots unreachable, probe rules, env setting).
+
+Checked against earlier benches: no real store in benches 6–7 had an unfetchable robots.txt (plum's was 423 = 4xx = allow, then its homepage 423 = BLOCKED as before), so rule 2 changes no earlier result.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -694,6 +714,10 @@ state. 4. Report section "Store profile". Exit: bench shows a profile for every 
 Each new check template gets a mock mode that fails on the old code, as for every rule so far.
 
 ## Change log
+- 6 Oct 2026, v0.13: bench 8 (4m). Radar checks its own internet connection before blaming a store: NO_NETWORK verdict
+  (run stops, no failure/incident/alert; bench skips stores while offline). robots.txt per RFC 9309 (5xx / no answer =
+  do not crawl, BLOCKED with reason; 4xx = allow). Incidents close only when tests actually ran. New mock modes
+  `robots_500`, `robots_404`; net-drop scenario via the progress hook. 116 tests (64 unit, 52 end-to-end).
 - 6 Oct 2026, docs only: section 12 store profile + learning loop decided (LLM proposes, code proves; replaces separate app-script fingerprinting step).
 - 6 Oct 2026, v0.12: bench 7 (4l). Hidden-product rule keyed on THIS product's variant id, not "any form or
   ld+json" (plum). Brand words: domain label + compound parts, every homepage-title segment, Shopify vendor
