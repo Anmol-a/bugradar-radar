@@ -631,7 +631,8 @@ USD in every run summary. An LLM error never crashes a run.
 1. **Engine (now):** DONE in v0.7: bench-2 fixes, store list, step screenshots, LLM triage.
    NEXT: Anmol runs `radar llm-check` and the bench on the Mac; fix whatever is left until zero
    Radar false failures; then desktop + mobile by default; checkout levels 1–2 behind a per-store
-   opt-in; app-script fingerprinting; brand strings in one setting.
+   opt-in; **store profile + learning loop (section 12, decided 6 Oct; absorbs app-script
+   fingerprinting)**; brand strings in one setting.
 2. **Dashboard:** real web dashboard on the existing data (stores, run history, incident
    timeline, step-by-step screenshot gallery, a panel per module), built to embed in Shopify
    admin later.
@@ -648,7 +649,52 @@ USD in every run summary. An LLM error never crashes a run.
 `RADAR_LLM_API_KEY`, `RADAR_LLM_MODEL=glm-4.6v`). Switch only if it scores 15/15 and the data-location question
 (China) is acceptable for client stores. Until then the default stays gpt-5-mini.
 
+## 12. Store profile + learning loop (decided 6 Oct 2026, not built yet)
+
+**Why.** Anmol (6 Oct): the LLM should understand the whole store on the first run (pages,
+features, which assertions apply), store that in the DB and get smarter run after run, so Radar
+is more robust, matches Revenue Shield and goes beyond it. Claude's build call below.
+
+**The one rule that does not change:** the LLM proposes and explains; code assertions decide
+pass/fail. An LLM-written assertion never reaches a store's report until code has proven it.
+
+### 12a. Profile build (first scan, and again when the store changes)
+| Step | Who | What |
+|---|---|---|
+| 1 Crawl | Code | Every page TYPE: home, collection, product, cart, search, policies, blog, contact, custom pages; templates; storefront app scripts; checkout app (most of this exists: `sitemap.json`, detection) |
+| 2 Understand | LLM, once per page type | One screenshot + page text per type → feature list from a FIXED vocabulary: pincode checker, COD check, subscribe & save, bundle builder, coupon box, offer banner, reviews, size chart, WhatsApp, quantity breaks, free-gift bar, sticky ATC, mobile-only elements |
+| 3 Propose | LLM | For each feature, picks check TEMPLATES from the library and fills parameters (locator hints, expected kind of result). No free-form code, no exact-value expectations (prices, stock) |
+| 4 Prove | Code | Each proposed check runs 3 times on the live store. 3/3 pass = **active**; otherwise **needs review** (shown, never alerting). Safety vetoes apply as today (never subscribe/accept/age/pay; pincode only with a public test pincode, e.g. 400060) |
+| 5 Save | Code → DB | `store_profile` (page map, features, versions), `profile_checks` (template, params, state, evidence), existing `locator_cache` |
+| 6 Every run | Code only | Generated suites + active profile checks. No LLM unless a check fails (triage, as today) |
+| 7 Change | Code | Diff each run: new/removed app scripts, new page types, template changes, feature element gone. A diff = profile re-build for the changed part only; the diff itself is reported ("new app script: X") |
+
+### 12b. Learning loop (knowledge, not retraining)
+| Store | Holds | Effect |
+|---|---|---|
+| Per-store memory | page map, working locators, quirks (e.g. supplysix trial page price mobile-only) | second run faster and exact; known quirks not re-alerted |
+| Cross-store patterns | locator/feature patterns seen on 3+ stores (theme, checkout app, app widgets) | promoted to code hints after a test + mock; new stores start smart |
+| Labelled cases | every triaged failure + Anmol's verdict (right/wrong) | grows `llm-check` from 21 to hundreds; any model/prompt switch is measured first |
+| Fine-tuning | only with 1,000+ labelled cases | optional, not v1 |
+
+### 12c. Beyond Revenue Shield (what this unlocks)
+| Wedge | Revenue Shield (public pages, checked 5 Oct) | Radar with profile |
+|---|---|---|
+| Store-specific feature checks (pincode, COD, bundles, coupons, free-gift bar) | generic purchase flow | yes, auto-proposed and proven |
+| India checkouts (GoKwik/Shopflo/Fastrr) up to OTP | not mentioned | checkout levels 1–2 |
+| Catalog integrity (hidden/blank products, soft 404s, desktop-only/mobile-only price) | not mentioned | already partly built |
+| Change report ("what changed on your store since yesterday") | app-script fingerprinting | scripts + page types + features |
+| Plain-English triage per failure | not mentioned | built (LLM, 21/21) |
+
+### 12d. Build order and exit
+1. Profile schema + crawl of all page types + diff (code only). 2. LLM feature list + check
+proposal (fixed vocabulary, `llm-check` cases for it). 3. Prove-3-times gate + needs-review
+state. 4. Report section "Store profile". Exit: bench shows a profile for every Shopify store,
+0 active profile checks failing falsely, LLM cost per profile build logged.
+Each new check template gets a mock mode that fails on the old code, as for every rule so far.
+
 ## Change log
+- 6 Oct 2026, docs only: section 12 store profile + learning loop decided (LLM proposes, code proves; replaces separate app-script fingerprinting step).
 - 6 Oct 2026, v0.12: bench 7 (4l). Hidden-product rule keyed on THIS product's variant id, not "any form or
   ld+json" (plum). Brand words: domain label + compound parts, every homepage-title segment, Shopify vendor
   names (new `Product.vendor`) (thehouseofrare searched 'rare'). trace_replay documents the no-script blind
