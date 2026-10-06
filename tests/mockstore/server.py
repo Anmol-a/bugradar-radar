@@ -80,6 +80,10 @@ Modes (to prove Radar catches and heals what it should):
   shift_after_scroll  collection cards are tall blocks; ~10 ms after the first scroll the page re-lays out and
                    every card moves down by one card (boat-lifestyle.com, bench 5: header change after scroll; a click
                    30 ms after the pick opened the NEXT product) -> journey waits for the layout, re-aims, PASSES
+  robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
+  robots_404       /robots.txt answers HTTP 404 (no file) -> everything allowed, store tested normally
+  (Radar's own network dropping mid-run is not a mode: tests shut the store down from the progress hook and point
+   the connectivity probe at a dead port (Radar offline) or at a live server (Radar online, store died).)
   no_title         product pages show no product name at all (snitch.co.in after its move)
                    -> product tests FAIL at shows_title_price_image with "none"
 
@@ -341,6 +345,10 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
                                         '<p>Opening soon</p><form action="/password" method="post">'
                                         '<input type="hidden" name="form_type" value="storefront_password">'
                                         '<input type="password" name="password"><button>Enter</button></form>'))
+        if path == "/robots.txt" and self.mode == "robots_500":
+            return self._send(500, "Internal Server Error", "text/plain")
+        if path == "/robots.txt" and self.mode == "robots_404":
+            return self._send(404, "Not Found", "text/plain")
         if path == "/robots.txt":
             extra = "Disallow: /search\n" if self.mode == "hostile" else ""
             return self._send(200, "User-agent: *\nDisallow: /checkout\nDisallow: /cart\nDisallow: /account\n" + extra,

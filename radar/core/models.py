@@ -38,7 +38,7 @@ class SiteMap:
     platform_evidence: list[str] = field(default_factory=list)
     theme: str | None = None          # Shopify theme (schema name, e.g. Dawn), from window.Shopify.theme
     checkout_app: str = ""            # Shopify checkout | GoKwik | Shopflo | Shiprocket Fastrr | Razorpay Magic ...
-    access: str = "open"              # open | password | bot_blocked | robots_blocked | refused | unreachable | offsite
+    access: str = "open"              # open | password | bot_blocked | robots_blocked | robots_unreachable | refused | unreachable | offsite | no_network
     robots_loaded: bool = False
     home_title: str = ""
     nav: list[dict] = field(default_factory=list)            # [{text, url}]
@@ -111,7 +111,7 @@ class CaseResult:
     title: str
     check: str
     severity: str
-    verdict: str = "pending"   # pass | flaky | confirmed_fail | blocked | skipped
+    verdict: str = "pending"   # pass | flaky | confirmed_fail | blocked | skipped | no_network (Radar offline, not the store)
     attempts: list[AttemptResult] = field(default_factory=list)
     incident_signature: str | None = None
     triage: dict | None = None      # LLM review of a confirmed failure: {verdict, category, reason, evidence}
@@ -126,7 +126,7 @@ class RunResult:
     device: str
     started_at: str
     finished_at: str = ""
-    verdict: str = "pending"   # healthy | degraded | down | unsupported | blocked | error
+    verdict: str = "pending"   # healthy | degraded | down | unsupported | blocked | unreachable | no_network | error
     platform: str = "unknown"
     cases: list[CaseResult] = field(default_factory=list)
     healing_events: list[dict] = field(default_factory=list)

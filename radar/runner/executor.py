@@ -8,7 +8,9 @@
          fail then pass           -> flaky            (reported, no incident)
          2 of 3 attempts fail     -> confirmed_fail   (incident opened / updated)
          robots.txt disallows     -> blocked          (no retry, not a site bug)
-    -> run verdict: down (critical confirmed_fail) | degraded | healthy | unsupported
+         Radar itself offline     -> no_network       (checked before any failure is confirmed; the run stops,
+                                                       nothing is reported against the store; bench 8, 6 Oct)
+    -> run verdict: down (critical confirmed_fail) | degraded | healthy | unsupported | no_network
     -> SQLite rows + run.json + report.html + site index.html
 """
 from __future__ import annotations
@@ -23,6 +25,7 @@ from radar.checks.library import REGISTRY, Ctx, Steps, StepFailed
 from radar.core.browser import Browser
 from radar.core.config import Settings, normalize_url, site_id_from_url
 from radar.core.models import AttemptResult, CaseResult, RunResult, SiteMap, StepResult, TestCase
+from radar.core.network import NO_NETWORK_NOTE, online
 from radar.core.storage import Storage
 from radar.discovery.discover import discover
 from radar.generate.builder import build_suites
@@ -64,7 +67,7 @@ def _attempt(browser: Browser, case: TestCase, run_dir, robots, healer: Healer, 
 
 
 def _run_case(browser: Browser, case: TestCase, run_dir, robots, healer: Healer, retries: int,
-              progress: Progress) -> CaseResult:
+              progress: Progress, probes: tuple = ()) -> CaseResult:
     cr = CaseResult(case.id, case.suite, case.title, case.check, case.severity)
     confirm_attempts: list[Attempt] = []
     last_fail = None
@@ -81,6 +84,11 @@ def _run_case(browser: Browser, case: TestCase, run_dir, robots, healer: Healer,
         if not should_retry(confirm_attempts) or len(cr.attempts) > retries:
             break
     cr.verdict = confirm_verdict(confirm_attempts)
+    if cr.verdict == "confirmed_fail" and not online(probes):
+        # Radar's own connection is gone: this failure says nothing about the store (bench 8, 6 Oct)
+        cr.verdict = "no_network"
+        cr.attempts[-1].note = "Radar was offline when this failure would have been confirmed"
+        return cr
     if cr.verdict == "confirmed_fail" and last_fail and healer.llm.enabled:
         _triage_and_recheck(browser, case, cr, last_fail, run_dir, robots, healer, progress)
     if cr.verdict == "confirmed_fail":
@@ -151,7 +159,9 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
         storage.upsert_site(site_id, sm.base_url, sm.platform)
         progress("discovered", {"sitemap": sm})
 
-        if sm.access in ("password", "bot_blocked", "robots_blocked", "refused"):
+        if sm.access == "no_network":
+            run.verdict = "no_network"
+        elif sm.access in ("password", "bot_blocked", "robots_blocked", "robots_unreachable", "refused"):
             run.verdict = "blocked"
         elif sm.access in ("unreachable", "offsite"):
             run.verdict = "unreachable"
@@ -166,18 +176,32 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
                  "cases": [c.__dict__ for c in x.cases]} for x in suites])
             progress("suites", {"suites": suites})
             healer = Healer(site_id, run_id, storage, llm, s.selectors)
+            lost = None
+            total = sum(len(x.cases) for x in suites)
             for suite in suites:
                 for case in suite.cases:
-                    run.cases.append(_run_case(browser, case, run_dir, robots, healer, s.retries, progress))
+                    cr = _run_case(browser, case, run_dir, robots, healer, s.retries, progress, s.net_probe_urls)
+                    run.cases.append(cr)
+                    if cr.verdict == "no_network":
+                        lost = cr
+                        break
+                if lost:
+                    break
             run.healing_events = healer.events
-            run.verdict = run_verdict(run.cases)
+            if lost:
+                run.verdict = "no_network"
+                run.notes.append(NO_NETWORK_NOTE.format(
+                    where=f" during '{lost.title}' ({total - len(run.cases)} of {total} tests not run)"))
+            else:
+                run.verdict = run_verdict(run.cases)
 
     run.finished_at = _now()
     run.llm_usage = llm.usage()
     d = run.to_dict()
     (run_dir / "run.json").write_text(json.dumps(d, indent=2, default=str))
     storage.save_run(d, run_dir)
-    storage.resolve_missing_incidents(site_id, {c.incident_signature for c in run.cases if c.incident_signature})
+    if run.cases and run.verdict != "no_network":   # nothing tested = nothing proven fixed: incidents stay open
+        storage.resolve_missing_incidents(site_id, {c.incident_signature for c in run.cases if c.incident_signature})
     storage.prune(site_id, s.retention_pass_days, s.retention_fail_days)
 
     from radar.reporting.html import write_run_report, write_site_index
