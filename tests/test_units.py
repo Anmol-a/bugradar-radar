@@ -325,6 +325,20 @@ def test_search_term_never_the_brand():
     assert _search_term("", "", set()) == ""
 
 
+def test_brand_words_include_domain_parts_title_after_dash_and_vendors():
+    """thehouseofrare.com (bench 7): 'rare' was searched; the brand sits inside the domain label and after
+    the dash in the title, and Shopify's vendor field names the brands (Rare Rabbit)."""
+    from radar.generate.builder import _brand_words
+    from radar.core.models import SiteMap, Product
+    sm = SiteMap(site_id="thehouseofrare.com", base_url="https://thehouseofrare.com",
+                 home_title="Premium Clothing Brand in India - The House of Rare",
+                 products=[Product("rare-rabbit-mens-kore-sweatshirt", "Rare Rabbit Men's Kore Sweatshirt", "u",
+                                   vendor="Rare Rabbit")])
+    b = _brand_words(sm)
+    assert {"rare", "rabbit", "house", "thehouseofrare"} <= b
+    assert _search_term("rare-rabbit-mens-kore-sweatshirt", "Rare Rabbit Men's Kore Sweatshirt", b) == "kore"
+
+
 def test_title_match_tolerant_but_not_blind():
     assert title_match("Skincare Duo (face wash 50 ml + sunscreen 30 g)", "Skincare Duo (Face Wash 50ml + Sunscreen 30g)", "")[0]
     assert title_match("Ceramic Flower Vase", "Vase", "")[0]                     # shorter display name

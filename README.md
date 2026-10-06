@@ -11,7 +11,7 @@ python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env               # then paste your OPENAI_API_KEY into .env (never into chat or git)
-python3 -m pytest -q                 # 105 tests, about 16 minutes (includes real-browser runs)
+python3 -m pytest -q                 # 106 tests, about 16 minutes (includes real-browser runs)
 python3 -m pytest -q -m "not e2e"    # 57 fast unit tests only
 ```
 
@@ -28,9 +28,9 @@ python3 -m radar open moxiebeauty.in                   # site history page
 ```
 Results: `data/sites/<site_id>/` (see ARCHITECTURE.md, section 7).
 
-Status (6 Oct, v0.11): bench 6 (v0.10) gave 29 healthy, 3 degraded, 0 down on 32 Shopify stores,
-with 0 Radar false failures and 0 flaky: the engine's exit rule is met (ARCHITECTURE.md 4k). The 3
-failures are real store findings. v0.11 (normal Chrome name + BugRadar User-Agent) is not benched yet.
+Status (6 Oct, v0.12): bench 6 (v0.10) had 0 Radar false failures; bench 7 (v0.11, normal Chrome name +
+BugRadar) reached plum again and found 2 Radar issues, fixed in v0.12 (ARCHITECTURE.md 4l). The real store
+findings: supplysix desktop price, soulflower + foxtale soft 404. v0.12 is not benched yet.
 
 ## Bench: many Shopify stores, one table
 ```bash

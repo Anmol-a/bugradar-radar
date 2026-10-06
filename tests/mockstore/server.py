@@ -68,7 +68,8 @@ Modes (to prove Radar catches and heals what it should):
   upsell_forms_first  same, but hidden cart-upsell 'shopify-product-form's with an EMPTY id come first (bummer.in,
                    bench 4) -> reads the OWN form, PASSES
   unavailable_product  the vase's page answers 200 with "The product is currently unavailable", body class
-                   hidden_product, no buy form, no product data (plumgoodness.com, bench 4) -> WARNS + next product
+                   hidden_product, no buy form for the vase, but Product ld+json and a hidden drawer form for ANOTHER
+                   product (plumgoodness.com, benches 4 and 7) -> WARNS + next product
   home_at_product_url  the vase's URL renders the homepage (product cards, no vase name, no form, no data) like a
                    headless storefront hiding a product (foxtale.in, bench 4) -> WARNS + next product
   price_desktop_hidden the vase's only on-page price is in a sticky bar the theme hides on desktop (class
@@ -399,9 +400,16 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             if self.mode == "notfound_product" and h == "ceramic-vase":
                 return self._send(200, page("404 Page Not Found | Mock Store", "<h1>Page Not Found</h1><p>Sorry.</p>"))
             if self.mode == "unavailable_product" and h == "ceramic-vase":
+                # like plumgoodness.com (bench 7): Product ld+json in the head and a hidden cart-drawer form for ANOTHER
+                # product, so "any form or ld+json" looked like a product page
+                ld = json.dumps({"@context": "https://schema.org", "@type": "Product", "name": p["title"],
+                                 "offers": {"@type": "Offer", "price": p["price"], "priceCurrency": "INR"}})
                 return self._send(200, page(f"{p['title']} | Mock Store",
                                             "<h2>The product is currently unavailable, please get back later.</h2>"
-                                            "<a href='/collections/all'>Shop all</a><h3>Clay vase</h3><p>Hand-thrown in Khurja.</p>")
+                                            "<a href='/collections/all'>Shop all</a><h3>Clay vase</h3><p>Hand-thrown in Khurja.</p>"
+                                            '<div class="drawer" style="display:none"><form action="/cart/add" method="post">'
+                                            '<input type="hidden" name="id" value="301"><button type="submit">Add</button></form></div>',
+                                            f'<script type="application/ld+json">{ld}</script>')
                                   .replace("<body>", '<body class="no-focus-outline hidden_product">', 1), set_cart=new)
             if self.mode == "home_at_product_url" and h == "ceramic-vase":
                 return self._send(200, page("Mock Store", "<h2>Bestsellers</h2>" + "".join(

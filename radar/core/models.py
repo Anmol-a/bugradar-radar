@@ -19,6 +19,7 @@ class Product:
     price: str | None = None
     available: bool = True
     variants: int = 1
+    vendor: str = ""                  # Shopify 'vendor' (usually the brand: never used as a search word)
 
 
 @dataclass

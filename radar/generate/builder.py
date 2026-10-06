@@ -32,16 +32,26 @@ GENERIC = {"with", "pack", "size", "combo", "free", "mens", "women", "womens", "
 def _search_term(handle: str, title: str, brand_words: set[str]) -> str:
     """A word a shopper would search for: from the product handle/title, never the brand name or
     a generic word, letters only, 4+ chars. Pure, unit-tested."""
+    def brand(w: str) -> bool:
+        # a brand word, or part of a run-together brand like the domain label 'thehouseofrare' ('rare', 'house'):
+        # thehouseofrare.com, bench 7 searched 'rare' and every product matched by brand, none by name
+        return w in brand_words or any(len(b) >= len(w) + 3 and w in b for b in brand_words)
     for source in (handle.replace("-", " "), title):
         for w in re.findall(r"[A-Za-z]{4,}", source or ""):
-            if w.lower() not in brand_words and w.lower() not in GENERIC:
+            if not brand(w.lower()) and w.lower() not in GENERIC:
                 return w.lower()
     return ""
 
 
 def _brand_words(sm: SiteMap) -> set[str]:
-    words = set(re.findall(r"[a-z]{3,}", sm.site_id.split(".")[0].replace("-", " ")))
-    words |= {w.lower() for w in re.findall(r"[A-Za-z]{3,}", (sm.home_title or "").split("|")[0].split(" - ")[0])}
+    """Store-name words: the domain label (whole and hyphen-split) and EVERY part of the homepage title
+    ('Premium Clothing Brand in India - The House of Rare': the brand is after the dash)."""
+    label = sm.site_id.split(".")[0]
+    words = {label.replace("-", "")} | set(re.findall(r"[a-z]{3,}", label.replace("-", " ")))
+    words |= {w.lower() for w in re.findall(r"[A-Za-z]{3,}", sm.home_title or "")}
+    for p in sm.products:                    # Shopify 'vendor' = the brand(s): 'Rare Rabbit', 'Rareism', 'Thor'
+        v = getattr(p, "vendor", "") or ""
+        words |= {w.lower() for w in re.findall(r"[A-Za-z]{3,}", v)} | ({re.sub(r"[^a-z]", "", v.lower())} if v else set())
     return words
 
 

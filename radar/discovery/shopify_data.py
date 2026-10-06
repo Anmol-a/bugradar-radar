@@ -100,7 +100,7 @@ def products_from_json(products_json: dict, base_url: str, limit: int = 10) -> l
             "handle": p["handle"], "title": p.get("title", ""),
             "url": f"{base_url}/products/{p['handle']}",
             "variant_id": v.get("id"), "price": v.get("price"),
-            "available": bool(avail), "variants": len(variants),
+            "available": bool(avail), "variants": len(variants), "vendor": p.get("vendor") or "",
         })
     out.sort(key=lambda d: not d["available"])
     return out[:limit]
