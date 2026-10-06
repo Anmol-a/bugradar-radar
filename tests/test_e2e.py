@@ -684,3 +684,17 @@ def test_bench_does_not_start_stores_while_radar_is_offline(tmp_path):
     assert data["totals"]["no_network"] == 1
     assert any("no internet connection" in s for s in said), said
     assert "Radar offline" in (out / "bench.html").read_text()
+
+
+def test_popup_inside_shadow_dom_is_closed_by_its_x_and_the_journey_passes_first_try(tmp_path):
+    """soulflower.in (bench 9): the YourLio promo popup renders inside #chat-widget's shadow root and appears after the
+    collection page loads; v0.13 could not see it, the click on the product card was intercepted -> FLAKY journey."""
+    srv, url = serve("shadow_popup")
+    try:
+        run = scan(url, _settings(tmp_path), only_suites=["journey"])[0]
+    finally:
+        srv.shutdown()
+    j = _case(run, "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, [(a.n, a.error) for a in j.attempts]
+    closed = [c for s in j.attempts[0].steps for c in s.checks if c["what"] == "popup popup closed"]
+    assert closed and closed[0]["actual"].startswith("clicked 'close' on:") and "bomb size" in closed[0]["actual"], closed

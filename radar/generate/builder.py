@@ -26,7 +26,23 @@ def _slug(s: str) -> str:
 
 
 GENERIC = {"with", "pack", "size", "combo", "free", "mens", "women", "womens", "unisex", "kids", "new", "the",
-           "and", "for", "set", "pcs", "piece", "pieces", "travel", "mini", "gift", "copy", "plain", "regular"}
+           "and", "for", "set", "pcs", "piece", "pieces", "travel", "mini", "gift", "copy", "plain", "regular",
+           # promo / bundle words: stores often keep these items out of search on purpose (plumgoodness.com
+           # 'Mystery Merch', bench 9: the store's search app showed 12 other products for 'mystery')
+           "mystery", "merch", "bundle", "bundles", "sampler", "trial", "surprise", "offer", "offers", "freebie",
+           "hamper", "limited", "edition", "exclusive", "special", "value", "saver", "deal", "deals", "full", "half"}
+
+
+def _stems(w: str) -> set[str]:
+    """'plums' -> {'plums', 'plum'}; 'berries' -> {'berries', 'berry'}; 'glasses' -> {'glasses', 'glass'}."""
+    out = {w}
+    if w.endswith("ies") and len(w) > 4:
+        out.add(w[:-3] + "y")
+    if w.endswith("es") and len(w) > 4:
+        out.add(w[:-2])
+    if w.endswith("s") and len(w) > 3:
+        out.add(w[:-1])
+    return out
 
 
 def _search_term(handle: str, title: str, brand_words: set[str]) -> str:
@@ -35,7 +51,8 @@ def _search_term(handle: str, title: str, brand_words: set[str]) -> str:
     def brand(w: str) -> bool:
         # a brand word, or part of a run-together brand like the domain label 'thehouseofrare' ('rare', 'house'):
         # thehouseofrare.com, bench 7 searched 'rare' and every product matched by brand, none by name
-        return w in brand_words or any(len(b) >= len(w) + 3 and w in b for b in brand_words)
+        # plural of a brand word too: plumgoodness.com, bench 9 searched 'plums' and got all 246 products by brand
+        return any(s in brand_words or any(len(b) >= len(s) + 3 and s in b for b in brand_words) for s in _stems(w))
     for source in (handle.replace("-", " "), title):
         for w in re.findall(r"[A-Za-z]{4,}", source or ""):
             if not brand(w.lower()) and w.lower() not in GENERIC:
@@ -114,7 +131,7 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
         t = _search_term(p.handle, p.title, _brand_words(sm))
         if t and t not in terms:
             terms.append(t)
-        if len(terms) == 2:
+        if len(terms) == 3:          # up to 3 words: the search FAILS only if all of them find nothing relevant
             break
     if terms and sm.search_path:
         q = lambda t: f"{base}{sm.search_path}?q={t}&type=product"

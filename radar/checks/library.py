@@ -832,18 +832,19 @@ def search_results(ctx: Ctx, url: str, alt_urls: list[str] | tuple = ()):
     alt_urls: searches for words from OTHER products, tried only if the first word finds nothing
     relevant (the first word can come from a product the store hides: foxtale.in 'purify', bench 3).
     The miss is kept as a warning."""
-    tries = [url, *list(alt_urls)[:1]]
+    tries = [url, *list(alt_urls)[:2]]     # 3 words: one odd product must not fail the store's search
     for i, u in enumerate(tries):
         last = i == len(tries) - 1
-        if _search_once(ctx, u, "returns_relevant_products" if i == 0 else "returns_relevant_products_other_word",
-                        soft=not last) is not None:
+        if _search_once(ctx, u, ("returns_relevant_products", "returns_relevant_products_other_word",
+                                 "returns_relevant_products_third_word")[i], soft=not last) is not None:
             return
 
 
 def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
     term = (re.search(r"[?&]q=([^&]+)", url) or [None, ""])[1].lower()
     home = _base(url) + "/"
-    ctx.steps.run("open_homepage" if step == "returns_relevant_products" else "open_homepage_again", lambda: _load(ctx, home))
+    ctx.steps.run({"returns_relevant_products": "open_homepage", "returns_relevant_products_other_word": "open_homepage_again"}
+                  .get(step, "open_homepage_third"), lambda: _load(ctx, home))
 
     def search():
         page = ctx.sess.page

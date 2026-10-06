@@ -3,7 +3,7 @@
 Rule for this file: it says what works, what is proven, what is not, and what hurts. No bluff.
 It is updated with every change.
 
-Last updated: 6 Oct 2026 · Framework v0.13. Bench 8 (v0.12, 6 Oct 14:48 IST) was cut short by the Mac losing its internet connection: 6 stores healthy, then 3 called DOWN and 27 'unreachable' by Radar for an outage that was Radar's own (4m). v0.13: Radar checks its own connection before blaming a store (NO_NETWORK verdict) and follows RFC 9309 when robots.txt cannot be fetched. v0.12's two fixes still need a clean bench (bench 9).
+Last updated: 6 Oct 2026 · Framework v0.14. Bench 9 (v0.13, 6 Oct 15:31 IST): 29 healthy / 4 degraded / 0 down, 0 Radar-offline; v0.12's plum product and thehouseofrare search fixes held. 2 Radar issues (plum search words, soulflower popup in shadow DOM) fixed in v0.14 (4n); 3 store findings unchanged. R1 exit needs one clean bench (bench 10).
 
 ---
 
@@ -462,6 +462,19 @@ Proof on the v0.12 copy before the fix: the net-drop scenario (store answers the
 
 Checked against earlier benches: no real store in benches 6–7 had an unfetchable robots.txt (plum's was 423 = 4xx = allow, then its homepage 423 = BLOCKED as before), so rule 2 changes no earlier result.
 
+## 4n. Ninth bench (36 stores, 6 Oct 15:31 IST, v0.13): 2 Radar issues, fixed in v0.14
+
+Totals: 29 healthy / 4 degraded / 0 down / 1 blocked (vaaree, robots.txt) / 2 unsupported (snitch, thewholetruthfoods: not Shopify). 0 no_network rows. v0.12 fixes held: plumgoodness product PASS (hidden-product rule), thehouseofrare search PASS (brand words).
+
+| Store | Result | Root cause (proven) | Owner | v0.14 |
+|---|---|---|---|---|
+| plumgoodness.com | search FAIL ('mystery', then 'plums') | Words came from 'Mystery Merch' (promo item; the store's search app showed 12 other products) and 'Set of 5 Plums' ('plums' = brand 'Plum' + s, matched all 246 products by brand; 0 of 24 shown mention 'plums'). sitemap.json + recorded results + LLM triage (radar problem) | Radar (test words) | brand words match plurals/stems; promo/bundle words (mystery, merch, bundle, sampler, trial, surprise, offer, hamper, limited, ...) never used; up to **3** words, the search fails only if all 3 find nothing relevant |
+| soulflower.in | journey FLAKY (click_into_product) | 'Powered by YourLio AI' promo popup ('NEW LAUNCH: BOMB SIZE ROSEMARY HAIR SPRAY', × + 'TRY IT NOW') rendered inside **#chat-widget's open shadow root**, full-page overlay. Failure screenshot shows it; trace replay of the failing call: v0.13 popup finder → nothing, v0.14 → popup + 'close' | Radar (popup finder) | popup finder searches every open shadow root too; closes by the ×, never the promo button (vetoes unchanged) |
+| supplysix.com | product FAIL | ₹199 trial page: price only in hidden mobile sticky bar | Store | — |
+| soulflower.in, foxtale.in | health FAIL | soft 404 (made-up URL → 200 home) | Store (SEO note) | — |
+
+Proof on v0.13 before the fix: mock `shadow_popup` → journey confirmed_fail ("3 links: 3 covered by div"); the two new search-term unit tests fail. v0.14: all pass. Note: whether plum's search should find 'Mystery Merch' is not judged (stores often keep promo items out of search on purpose).
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -714,6 +727,9 @@ state. 4. Report section "Store profile". Exit: bench shows a profile for every 
 Each new check template gets a mock mode that fails on the old code, as for every rule so far.
 
 ## Change log
+- 6 Oct 2026, v0.14: bench 9 (4n). Search words: brand plurals/stems excluded, promo/bundle words never used, up to 3
+  words (fail only if all 3 miss). Popup finder looks inside open shadow roots (YourLio on soulflower). New mock mode
+  `shadow_popup`. 119 tests (66 unit, 53 end-to-end).
 - 6 Oct 2026, v0.13: bench 8 (4m). Radar checks its own internet connection before blaming a store: NO_NETWORK verdict
   (run stops, no failure/incident/alert; bench skips stores while offline). robots.txt per RFC 9309 (5xx / no answer =
   do not crawl, BLOCKED with reason; 4xx = allow). Incidents close only when tests actually ran. New mock modes

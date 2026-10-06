@@ -458,3 +458,27 @@ def test_user_agent_always_carries_radars_name():
     assert "Pixel 7" in m and "Chrome/141.0.0.0 Mobile" in m and m.endswith(me)
     r = Robots("User-agent: BugRadar\nDisallow: /\n\nUser-agent: *\nAllow: /\n", me)
     assert not r.allowed("https://x.in/")            # the store's rule for BugRadar still applies
+
+
+def test_search_term_skips_brand_plurals_and_promo_words():
+    """plumgoodness.com, bench 9: 'plums' (brand 'Plum' + s) matched all 246 products by brand; 'mystery' came from
+    a promo item the store's search app leaves out. Neither is a word a shopper's search can be judged by."""
+    brand = {"plum", "goodness", "plumgoodness", "bodylovin"}
+    assert _search_term("set-of-5-plums-2", "Set of 5 Plums", brand) == ""
+    assert _search_term("mystery-merch", "Mystery Merch", brand) == ""
+    assert _search_term("mystery-box-2-full-size", "Mystery Box (2 full-size)", brand) == ""
+    assert _search_term("green-tea-face-wash", "Green Tea Face Wash", brand) == "green"
+    assert _search_term("plumeria-body-mist", "Plumeria Body Mist", brand) == "plumeria"   # a real word, not the brand
+    from radar.generate.builder import _stems
+    assert "berry" in _stems("berries") and "plum" in _stems("plums") and _stems("aloe") == {"aloe"}
+
+
+def test_search_suite_carries_up_to_three_words():
+    from radar.core.models import Product
+    sm = _sm()
+    sm.products = [Product(h, t, f"https://x.in/products/{h}", i + 1, "499.00", True)
+                   for i, (h, t) in enumerate([("aloe-gel", "Aloe Gel"), ("neem-soap", "Neem Soap"),
+                                               ("rice-toner", "Rice Toner"), ("kale-chips", "Kale Chips")])]
+    suites = build_suites(sm, Settings())
+    case = next(c for s in suites if s.id == "search" for c in s.cases)
+    assert len(case.params["alt_urls"]) == 2, case.params

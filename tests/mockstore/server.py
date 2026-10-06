@@ -80,6 +80,9 @@ Modes (to prove Radar catches and heals what it should):
   shift_after_scroll  collection cards are tall blocks; ~10 ms after the first scroll the page re-lays out and
                    every card moves down by one card (boat-lifestyle.com, bench 5: header change after scroll; a click
                    30 ms after the pick opened the NEXT product) -> journey waits for the layout, re-aims, PASSES
+  shadow_popup     the same YourLio-style promo popup, but rendered INSIDE a shadow root (#chat-widget), appearing
+                   300 ms after collection pages load (soulflower.in, bench 9: the popup sat over the product card and
+                   v0.13's finder could not see into shadow DOM) -> popup closed by its x, journey PASSES first try
   robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
   robots_404       /robots.txt answers HTTP 404 (no file) -> everything allowed, store tested normally
   (Radar's own network dropping mid-run is not a mode: tests shut the store down from the progress hook and point
@@ -286,6 +289,21 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
   d.querySelector('.try').onclick = () => { window.TRIED = true; };
   d.querySelector('.absolute').onclick = () => { document.cookie = 'lio=1;path=/'; d.remove(); };
   document.body.appendChild(d); }, 300);
+</script></body>""")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "shadow_popup" and "/collections/" in self.path:
+            body = body.replace("</body>", """<div class="shopify-block shopify-app-block"><div id="chat-widget" style="position:relative;display:block;z-index:2147483646"></div></div>
+<script>
+if (!document.cookie.includes('lio=1')) setTimeout(() => {
+  const root = document.getElementById('chat-widget').attachShadow({mode: 'open'});
+  root.innerHTML = '<div class="fixed inset-0 z-50 flex justify-center" style="position:fixed;inset:0;z-index:50;display:flex;'
+    + 'align-items:center;justify-content:center;background:rgba(0,0,0,.5)"><div class="w-full relative bg-white shadow-2xl" '
+    + 'style="position:relative;background:#fff;width:640px;height:360px">'
+    + '<button type="button" class="absolute top-2 right-2 z-20 w-6 h-6 rounded-full" style="position:absolute;top:8px;right:8px;width:24px;height:24px">'
+    + '<svg viewBox="0 0 24 24" width="24" height="24" class="lucide lucide-x"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg></button>'
+    + '<h2>NEW LAUNCH: BOMB SIZE ROSEMARY HAIR SPRAY</h2><button type="button" class="try" style="padding:12px">TRY IT NOW</button></div></div>';
+  root.querySelector('.try').onclick = () => { location.href = '/pages/tried-it'; };
+  root.querySelector('.absolute').onclick = () => { document.cookie = 'lio=1;path=/'; root.innerHTML = ''; };
+}, 300);
 </script></body>""")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "sticky_price" and "/products/" in self.path:
             body = re.sub(r'<div class="price">(₹[^<]*)</div>', r'<div style="height:2200px"></div><div class="sticky-atc" '
