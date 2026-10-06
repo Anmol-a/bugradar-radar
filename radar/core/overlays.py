@@ -11,7 +11,14 @@ Every dismissal is recorded and shown in the report.
 from __future__ import annotations
 
 FIND_JS = r"""() => {
-  document.querySelectorAll('[data-radar-target="dismiss"]').forEach(e => e.removeAttribute('data-radar-target'));
+  // Search the page AND every open shadow root: app popups increasingly render inside a web component's
+  // shadow DOM (soulflower.in's YourLio popup inside #chat-widget, bench 9; document.querySelectorAll
+  // cannot see into it, so the popup blocked the product click).
+  const hosts = []; const findHosts = r => r.querySelectorAll('*').forEach(e => { if (e.shadowRoot) { hosts.push(e.shadowRoot); findHosts(e.shadowRoot); } });
+  findHosts(document);
+  const all = sel => { const out = [...document.querySelectorAll(sel)]; hosts.forEach(h => out.push(...h.querySelectorAll(sel))); return out; };
+  const within = (root, sel) => { const out = [...root.querySelectorAll(sel)]; root.querySelectorAll('*').forEach(e => { if (e.shadowRoot) out.push(...e.shadowRoot.querySelectorAll(sel)); }); return out; };
+  all('[data-radar-target="dismiss"]').forEach(e => e.removeAttribute('data-radar-target'));
   const vw = innerWidth, vh = innerHeight;
   const shown = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
@@ -23,14 +30,14 @@ FIND_JS = r"""() => {
     '[class*="klaviyo" i], [class*="newsletter" i], [class*="cookie" i], [id*="cookie" i], [class*="consent" i], ' +
     '[id*="consent" i], [class*="privy" i], [class*="omnisend" i], [class*="geolocation" i], [class*="country-selector" i], ' +
     '[class*="age-verif" i], [class*="ageverif" i], [class*="agegate" i], [class*="age-gate" i], [id*="age" i][class*="gate" i]';
-  const named = [...document.querySelectorAll(sel)].filter(e => shown(e) && !isCart(e) && !e.closest('header, nav'))
+  const named = all(sel).filter(e => shown(e) && !isCart(e) && !e.closest('header, nav'))
     .filter(e => { const r = e.getBoundingClientRect();
       return e.getAttribute('aria-modal') === 'true' || e.tagName === 'DIALOG' ||
              (fixedish(e) && r.width * r.height >= 0.08 * vw * vh); });
   // Popups with no telling names (utility classes like "fixed inset-0 z-50", soulflower.in's YourLio
   // popup, bench 3): any FIXED layer covering half the screen that takes clicks and holds a small box
   // with a button in it. Cart drawers, the site header and click-through layers are excluded.
-  const generic = [...document.querySelectorAll('body *')].filter(e => {
+  const generic = [...document.querySelectorAll('body *'), ...hosts.flatMap(h => [...h.querySelectorAll('*')])].filter(e => {
     const s = getComputedStyle(e); if (s.position !== 'fixed' || !shown(e) || s.pointerEvents === 'none') return false;
     const r = e.getBoundingClientRect(); if (r.width * r.height < 0.5 * vw * vh || (parseInt(s.zIndex) || 0) < 1) return false;
     if (isCart(e) || e.closest('header, nav, [id*="header" i]')) return false;
@@ -46,7 +53,7 @@ FIND_JS = r"""() => {
       return {kind: 'age_gate', text: t.slice(0, 80)};
     const kind = /cookie|consent|gdpr|tracking technologies/.test(t) ? 'cookie' :
                  /country|region|currency|ship to|location/.test(t) ? 'location' : 'popup';
-    const clickables = [...root.querySelectorAll('button, a, [role="button"], [aria-label], .close, [class*="close" i]')].filter(shown);
+    const clickables = within(root, 'button, a, [role="button"], [aria-label], .close, [class*="close" i]').filter(shown);
     const pick = (re, attr) => clickables.find(c => re.test(attr ? ((c.getAttribute('aria-label') || '') + ' ' + (c.className || '')) : text(c)));
     let btn = null;
     if (kind === 'cookie') btn = pick(/^(decline|reject|deny|reject all|decline all|only necessary|necessary only|use necessary cookies only)$/i);
