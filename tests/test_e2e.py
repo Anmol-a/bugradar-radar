@@ -756,3 +756,110 @@ def test_div_buy_control_named_for_this_product_is_found_and_adds_the_right_prod
     st = _steps(_case(run, "product.pdp."))
     assert "pdp-addtobag-btn" in st["buy_button_ready"].detail and "data-product-handle" in st["buy_button_ready"].detail, \
         st["buy_button_ready"].detail
+
+
+# ---------- desktop + mobile in every run (7 Oct) ----------
+def _both(mode, tmp_path, **kw):
+    from radar.runner.executor import scan_devices
+    srv, url = serve(mode)
+    try:
+        return scan_devices(url, _settings(tmp_path, **kw))
+    finally:
+        srv.shutdown()
+
+
+def test_every_scan_tests_desktop_and_mobile_and_mobile_is_a_real_phone(tmp_path):
+    results = _both("healthy", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert [r.device for r, _ in results] == ["desktop", "mobile"]
+    assert all(r.verdict == "healthy" for r, _ in results), [(r.device, r.verdict) for r, _ in results]
+    assert len({d for _, d in results}) == 2 and all((d / "report.html").exists() for _, d in results)
+    assert [json.loads((d / "run.json").read_text())["device"] for _, d in results] == ["desktop", "mobile"]
+    # the mobile run really was a phone: touch, small viewport, mobile User-Agent with Radar's name still in it
+    from radar.core.browser import Browser
+    with Browser(_settings(tmp_path), "mobile") as b:
+        ctx = b.new_context()
+        page = ctx.new_page()
+        w, touch = page.evaluate("[screen.width, 'ontouchstart' in window || navigator.maxTouchPoints > 0]")
+        assert w == 412 and touch                  # (innerWidth on a blank page is 980: no viewport meta tag yet)
+        assert "Mobile" in page.evaluate("navigator.userAgent") and "BugRadar/0.1" in page.evaluate("navigator.userAgent")
+        ctx.close()
+
+
+def test_price_shown_only_on_phones_fails_on_desktop_and_passes_on_mobile(tmp_path):
+    """supplysix.com (bench 4): the trial page's only price sits in a bar the theme shows on phones only."""
+    results = _both("price_desktop_hidden", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1,
+                    max_nav_links=2)
+    by = {r.device: r for r, _ in results}
+    assert [r.device for r, _ in results] == ["desktop", "mobile"]            # a failing desktop does not stop mobile
+    assert _case(by["desktop"], "product.pdp.ceramic").verdict == "confirmed_fail"
+    assert _case(by["mobile"], "product.pdp.ceramic").verdict == "pass", _case(by["mobile"], "product.pdp.ceramic").attempts[-1].error
+    # and the incident is the desktop one only: a passing mobile run does not close it
+    from radar.core.storage import Storage
+    inc = Storage(tmp_path).incidents("127.0.0.1_" + results[0][0].base_url.rsplit(":", 1)[1])
+    assert inc and {i["device"] for i in inc} == {"desktop"} and all(i["status"] == "open" for i in inc)
+
+
+def test_mobile_is_not_asked_when_desktop_could_not_test_the_store(tmp_path):
+    from radar.runner.executor import scan_devices
+    events = []
+    srv, url = serve("password")
+    try:
+        results = scan_devices(url, _settings(tmp_path), progress=lambda e, d: events.append((e, d)))
+    finally:
+        srv.shutdown()
+    assert [r.device for r, _ in results] == ["desktop"] and results[0][0].verdict == "blocked"
+    skipped = [d for e, d in events if e == "device_skipped"]
+    assert skipped and skipped[0]["device"] == "mobile" and "not asked again" in skipped[0]["why"]
+
+
+def test_console_errors_failed_requests_and_load_times_are_captured_but_never_fail_a_test(tmp_path):
+    run, d = _scan("noisy_console", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]   # noise is evidence only
+    health = _case(run, "health.").attempts[-1]
+    texts = [c["text"] for c in health.console]
+    assert any("chat widget failed" in t for t in texts) and any(c["type"] == "warning" for c in health.console)
+    assert any("127.0.0.1:1/never-answers" in r for r in health.failed_requests)
+    assert health.loads and all(l["load"] is not None and l["url"].startswith("/") for l in health.loads)
+    j = _case(run, "journey.").attempts[-1]
+    assert len(j.loads) >= 3, j.loads                    # home, collection, product (and cart): every page the shopper landed on
+    assert len({l["url"] for l in j.loads}) == len(j.loads)           # one entry per page document
+    p = run.perf
+    assert p["pages"] >= 3 and p["console_errors"] >= 1 and p["console_warnings"] >= 1 and p["failed_requests"] >= 1
+    saved = json.loads((d / "run.json").read_text())
+    assert saved["perf"]["pages"] == p["pages"] and saved["cases"][0]["attempts"][-1]["loads"]
+    html = (d / "report.html").read_text()
+    assert "Page timing" in html and "evidencePanel" in html
+
+
+def test_radars_own_not_found_probe_is_never_shown_as_store_console_noise(tmp_path):
+    run, _ = _scan("healthy", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    nf = _case(run, "health.not_found").attempts[-1]
+    assert nf.ok and not any("bugradar-check" in e["url"] or "bugradar-check" in e["text"] for e in nf.console)
+    assert run.perf["pages"] >= 3 and run.perf["median_load_secs"] is not None
+
+
+def test_bench_runs_both_devices_per_store_and_one_row_says_where_it_fails(tmp_path):
+    from radar.bench import run_bench
+    a, url_a = serve("healthy")
+    b, url_b = serve("price_desktop_hidden")
+    c, url_c = serve("password")
+    try:
+        out = run_bench([(url_a, False), (url_b, False), (url_c, False)],
+                        _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=2), workers=3,
+                        progress=lambda *_: None)
+    finally:
+        for s in (a, b, c):
+            s.shutdown()
+    data = json.loads((out / "bench.json").read_text())
+    rows = {r["input"]: r for r in data["rows"]}
+    assert data["devices"] == ["desktop", "mobile"]
+    ra, rb, rc = rows[url_a], rows[url_b], rows[url_c]
+    assert ra["verdict"] == "healthy" and set(ra["devices"]) == {"desktop", "mobile"}
+    assert ra["devices"]["mobile"]["report_rel"].endswith("report.html") and ra["devices"]["mobile"]["perf"]["pages"] >= 3
+    assert rb["devices"]["desktop"]["verdict"] == "down" and rb["devices"]["mobile"]["verdict"] in ("healthy", "degraded")
+    assert rb["verdict"] == "down" and "product.pdp.ceramic-vase" in rb["device_only"]["desktop"] and rb["device_only"]["mobile"] == []
+    assert {f["device"] for f in rb["failures"]} == {"desktop"}
+    assert rc["verdict"] == "blocked" and list(rc["devices"]) == ["desktop"]        # password store: mobile not asked
+    assert data["totals"]["down"] == 1 and data["totals"]["healthy"] == 1
+    html = (out / "bench.html").read_text()
+    assert "Mobile" in html and "suites_by_device" in html

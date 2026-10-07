@@ -11,14 +11,14 @@ python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env               # then paste your OPENAI_API_KEY into .env (never into chat or git)
-python3 -m pytest -q                 # 124 tests, about 18 minutes (includes real-browser runs)
-python3 -m pytest -q -m "not e2e"    # 66 fast unit tests only
+python3 -m pytest -q                 # 137 tests, about 25 minutes (includes real-browser runs)
+python3 -m pytest -q -m "not e2e"    # 73 fast unit tests only
 ```
 
 ## Use
 ```bash
-python3 -m radar scan moxiebeauty.in --open            # desktop, opens the report
-python3 -m radar scan moxiebeauty.in --device both     # desktop + mobile
+python3 -m radar scan moxiebeauty.in --open            # desktop AND mobile (default since v0.18), opens the reports
+python3 -m radar scan moxiebeauty.in --device desktop  # one screen size only (or --device mobile)
 python3 -m radar scan moxiebeauty.in --headed          # watch the browser (slowed to 400 ms per action)
 python3 -m radar scan moxiebeauty.in --headed --slowmo 1000   # slower still
 python3 -m radar scan palmonas.com --no-cart           # skip add-to-cart (prospects)
@@ -28,7 +28,7 @@ python3 -m radar open moxiebeauty.in                   # site history page
 ```
 Results: `data/sites/<site_id>/` (see ARCHITECTURE.md, section 7).
 
-Status (7 Oct, v0.17): first honest score on 30 never-seen stores (v0.16, run once): 21 of 23 testable
+Status (7 Oct, v0.18: every run tests desktop and mobile; console + page-load evidence in reports; ARCHITECTURE.md 4r). Held-out score (v0.16→v0.17): first honest score on 30 never-seen stores (v0.16, run once): 21 of 23 testable
 stores judged right; 2 false-failure stores (nicobar, true-elements: buy control) = 2/30, target ≤ 1/30 missed;
 fixed in v0.17 (ARCHITECTURE.md 4q). 5 of 30 stores are custom/headless, not covered by v1. Store findings:
 supplysix desktop price, thefunclab dead image link, foxtale hidden product, libas products with no images,
@@ -36,7 +36,8 @@ soulflower + foxtale soft 404.
 
 ## Bench: many Shopify stores, one table
 ```bash
-python3 -m radar bench stores/bench.txt --quick --open      # 33 stores, 3 at a time
+python3 -m radar bench stores/bench.txt --quick --open      # every store on desktop AND mobile, 3 at a time
+python3 -m radar bench stores/bench.txt --device desktop    # desktop only (the old behaviour, half the time)
 python3 -m radar bench stores/bench.txt --workers 4         # full depth
 python3 -m radar bench stores/bench.txt --headed --open     # visible Chrome windows (one per worker)
 python3 -m radar bench stores/bench.txt --plain-ua          # User-Agent "BugRadar/0.1 (+bugradar.in)" only
@@ -64,7 +65,7 @@ Without a key: heuristic healing only, no triage, and the run says so.
 python3 -m tests.mockstore.server renamed_button 8765  # terminal 1
 python3 -m radar scan http://127.0.0.1:8765 --open     # terminal 2: watch it heal
 ```
-Modes (45, described at the top of `tests/mockstore/server.py`), e.g. `healthy`, `renamed_button`,
+Modes (46, described at the top of `tests/mockstore/server.py`), e.g. `healthy`, `renamed_button`,
 `wrong_variant`, `free_gift`, `hostile`, `title_layouts`, `card_layouts`, `hover_menu`,
 `brand_landing`, `rerender_grid`, `icon_popup`, `quick_named_main`, `sticky_price`,
 `hidden_product`, `notfound_product`, `no_buy_form`, `search_misses`.

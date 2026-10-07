@@ -102,6 +102,10 @@ class AttemptResult:
     trace: str | None = None
     secs: float = 0.0
     note: str | None = None         # e.g. "re-check with LLM help after triage"
+    # Evidence shown in the report, never judged (a shopper-facing failure is decided by the test's own assertions):
+    console: list[dict] = field(default_factory=list)          # {type, text, url}: console errors / warnings
+    failed_requests: list[str] = field(default_factory=list)   # requests that got no answer, "GET https://..."
+    loads: list[dict] = field(default_factory=list)            # {url, ttfb, dcl, load, lcp} seconds, one per page
 
 
 @dataclass
@@ -133,6 +137,7 @@ class RunResult:
     llm_usage: dict = field(default_factory=dict)
     sitemap_summary: dict = field(default_factory=dict)
     notes: list[str] = field(default_factory=list)
+    perf: dict = field(default_factory=dict)       # page-load + console summary of the run (executor.perf_summary)
 
     def counts(self) -> dict:
         c = {"pass": 0, "flaky": 0, "confirmed_fail": 0, "blocked": 0, "skipped": 0}

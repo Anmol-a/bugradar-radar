@@ -25,6 +25,32 @@ from radar.core.config import Settings
 from radar.core.robots import Robots
 
 DEVICES = {"desktop": None, "mobile": "Pixel 7"}
+DEFAULT_DEVICES = ("desktop", "mobile")      # every run tests both (product decision, 7 Oct: Revenue Shield parity)
+MAX_CONSOLE, MAX_LOADS = 40, 25
+RADAR_PROBE_URLS = ("bugradar-check-does-not-exist",)    # Radar's own deliberate soft-404 request: not store noise
+
+# Navigation timing of the current document (cheap, run on every step) and its largest contentful paint (run once
+# per document, 250 ms cap, best effort).
+_TIMING_JS = """() => {
+  const n = performance.getEntriesByType('navigation')[0];
+  if (!n) return null;
+  return {origin: performance.timeOrigin, start: n.startTime, ttfb: n.responseStart,
+          dcl: n.domContentLoadedEventEnd, load: n.loadEventEnd};
+}"""
+_LCP_JS = """() => new Promise(res => {
+  try {
+    const po = new PerformanceObserver(l => { const e = l.getEntries(); res(e.length ? e[e.length - 1].startTime : null); po.disconnect(); });
+    po.observe({type: 'largest-contentful-paint', buffered: true});
+    setTimeout(() => { po.disconnect(); res(null); }, 250);
+  } catch (e) { res(null); }
+})"""
+
+
+def _short_url(url: str) -> str:
+    """Path + query without the host, for the timing table ('/products/x?variant=1')."""
+    from urllib.parse import urlparse
+    p = urlparse(url or "")
+    return ((p.path or "/") + (f"?{p.query}" if p.query else ""))[:100]
 
 
 _OS = {"Darwin": "Macintosh; Intel Mac OS X 10_15_7", "Windows": "Windows NT 10.0; Win64; x64"}
@@ -124,12 +150,57 @@ class Session:
         self.fail_url = self.fail_text = None
         self._shots = 0
         self._last_shot: tuple[str, str] | None = None     # (md5 of bytes, file) to skip identical pictures
-        self.console_errors: list[str] = []
+        self.console_errors: list[str] = []      # uncaught JS errors only: what the 'no_js_errors' check judges
         self.failed_requests: list[str] = []
+        # Evidence for the report (never judged, 7 Oct): everything the page logged as error/warning, and how long
+        # each page took. Every store has third-party console noise, so none of this can fail a test.
+        self.console: list[dict] = []            # {type: error|warning|pageerror, text, url}, de-duplicated, capped
+        self.loads: list[dict] = []              # {url, ttfb, dcl, load, lcp} in seconds, one per page document
+        self._console_seen: set[str] = set()
+        self._load_seen: set[tuple] = set()
         self._last_nav = 0.0
         self.last_load_secs = 0.0
-        page.on("pageerror", lambda e: self.console_errors.append(str(e)[:200]))
+        page.on("pageerror", lambda e: (self.console_errors.append(str(e)[:200]),
+                                        self._log("pageerror", str(e), page.url)))
+        page.on("console", lambda m: self._log(m.type, m.text, (m.location or {}).get("url") or page.url)
+                if m.type in ("error", "warning") else None)
         page.on("requestfailed", lambda r: self.failed_requests.append(f"{r.method} {r.url[:150]}"))
+
+    def _log(self, kind: str, text: str, url: str):
+        """One console entry for the report. Never raises (called from a browser event)."""
+        try:
+            text = " ".join((text or "").split())[:220]
+            if any(p in (url or "") for p in RADAR_PROBE_URLS):
+                return
+            key = f"{kind}|{text[:120]}"
+            if text and key not in self._console_seen and len(self.console) < MAX_CONSOLE:
+                self._console_seen.add(key)
+                self.console.append({"type": kind, "text": text, "url": (url or "")[:140]})
+        except Exception:  # noqa: BLE001
+            pass
+
+    def record_load(self):
+        """Timing of the page document the shopper is on now (navigation timing + largest contentful paint),
+        once per document. Evidence only: a failure here is swallowed, never a test failure."""
+        if len(self.loads) >= MAX_LOADS:
+            return
+        try:
+            t = self.page.evaluate(_TIMING_JS)
+        except Exception:  # noqa: BLE001  page closed / mid-navigation: no timing, no problem
+            return
+        if not t or not t.get("load"):
+            return
+        key = (t["origin"], round(t["start"]))
+        if key in self._load_seen:
+            return
+        self._load_seen.add(key)
+        try:
+            lcp = self.page.evaluate(_LCP_JS)
+        except Exception:  # noqa: BLE001
+            lcp = None
+        sec = lambda ms: None if ms is None else round(ms / 1000, 2)
+        self.loads.append({"url": _short_url(self.page.url), "ttfb": sec(t["ttfb"]), "dcl": sec(t["dcl"]),
+                           "load": sec(t["load"]), "lcp": sec(lcp)})
 
     def allowed(self, url: str) -> bool:
         if not self.s.respect_robots or self.robots is None:
@@ -156,6 +227,7 @@ class Session:
         resp = self.page.goto(url, wait_until="domcontentloaded", timeout=self.s.nav_timeout_ms)
         self.last_load_secs = round(time.time() - t0, 2)
         self.settle()
+        self.record_load()
         return resp, self.last_load_secs
 
     def settle(self, rounds: int = 3):
@@ -174,6 +246,7 @@ class Session:
 
     def step_shot(self, step: str) -> str | None:
         """Compressed viewport JPEG after a step (~60-120 KB). Returns the file name or None."""
+        self.record_load()                       # journeys move by clicking: time every page the shopper lands on
         if not self.evidence_dir:
             return None
         try:

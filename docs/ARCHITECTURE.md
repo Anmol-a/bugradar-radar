@@ -3,7 +3,7 @@
 Rule for this file: it says what works, what is proven, what is not, and what hurts. No bluff.
 It is updated with every change.
 
-Last updated: 7 Oct 2026 · Framework v0.17. **First honest score (held-out run, 30 never-seen stores, v0.16, run once): 23 Shopify stores tested; 21 judged correctly, 2 stores with Radar false failures (nicobar, true-elements: buy control not recognised) = 2/30, target was ≤ 1/30, MISSED.** Both are one pattern, fixed in v0.17 (4q). 5 of 30 stores are not Shopify themes (custom/headless) and are not covered by Radar v1 at all.
+Last updated: 7 Oct 2026 · Framework v0.18 (**desktop + mobile in every run**, section 4r). **First honest score (held-out run, 30 never-seen stores, v0.16, run once): 23 Shopify stores tested; 21 judged correctly, 2 stores with Radar false failures (nicobar, true-elements: buy control not recognised) = 2/30, target was ≤ 1/30, MISSED.** Both are one pattern, fixed in v0.17 (4q). 5 of 30 stores are not Shopify themes (custom/headless) and are not covered by Radar v1 at all.
 
 ---
 
@@ -524,6 +524,43 @@ Root cause (one pattern, 2 stores), verified live in Anmol's Chrome:
 
 v0.17: (1) no visible buy button → scroll like a shopper (up to 4 × 60% of the screen) and look again (sticky bars); (2) only when the page has NO Shopify form/input for this product: take the page's own "Add to bag/cart / Buy now" control when an attribute on it or its parents names THIS product (handle / product id / variant id), or it sits with the product title and no link to another product is closer; other products' cards, header, nav, footer, drawers excluded. The cart check still proves what was added. Mocks `sticky_buy_only`, `div_buy_control`; the renamed-button mock (lone button with `data-vid`) is now found by rule (2) instead of heuristic healing (test updated; healing is still proven by the obscure-button/LLM tests).
 
+## 4r. Desktop + mobile in every run, plus console / load-time evidence (v0.18, 7 Oct 2026)
+
+Product decision (Anmol, 7 Oct): *"we build everything Revenue Shield does"*, and Revenue Shield tests desktop and mobile on
+every check. From v0.18 so does Radar, with nothing to switch on.
+
+| Where | What changed |
+|---|---|
+| `python3 -m radar scan <url>` | `--device both` is the default: desktop first, then mobile (Pixel 7: 412 px, touch, mobile User-Agent that still ends in BugRadar). `--device desktop` or `mobile` for one. One report per device. |
+| `python3 -m radar bench <list>` | Each store runs on both devices (one worker, one after the other, so a store is never hit by two browsers at once). `--device` as above. ONE row per store: `verdict` and `suites` = worst of the devices, `devices` = each device's verdict / report / timings, every failure carries its `device`, `device_only` = test cases that fail (confirmed) on one device only (the supplysix kind). Bench page shows Desktop and Mobile columns and desktop+mobile marks per suite. |
+| `scan_devices()` (runner/executor.py) | **Mobile is not asked when desktop could not test the store** (blocked, robots, refused, unreachable, offline, not Shopify): same answer, and a store that refused Radar is not asked again. A failing desktop (`down`) does not stop mobile. |
+| Incidents | Signature gets `|mobile` for mobile (desktop keeps the old key, so open incidents carry over). A run resolves only incidents of ITS device: a passing mobile run never closes a desktop incident, and the other way round. Reports show a Device column. |
+| Remembered selectors (locator cache) | Kept per device (`site@mobile`): a desktop-only control cached for mobile would fail, be dropped, re-found and overwrite the other device's entry on every run. |
+| Mock `price_desktop_hidden` | The theme now shows the sticky price bar on phone-sized screens, so the supplysix pattern is: **desktop FAIL, mobile PASS** (test `test_price_shown_only_on_phones_fails_on_desktop_and_passes_on_mobile`). |
+
+**Evidence captured per attempt (report, "Page timing & console" panel; `run.json` fields `console`, `failed_requests`, `loads`; run summary `perf`):**
+| Evidence | How | Rules |
+|---|---|---|
+| Browser console errors and warnings | `page.on("console")` (error, warning) + uncaught page errors | De-duplicated, max 40 per attempt. Radar's own deliberate soft-404 probe is never listed. |
+| Requests that got no answer | `page.on("requestfailed")` | max 25 per attempt |
+| Page load time per page the shopper lands on | navigation timing (server reply, DOM ready, fully loaded) + largest contentful paint (best effort, 250 ms cap), read after goto and after every journey step | One entry per page document, max 25. Loads above 3 s are highlighted. |
+| Run summary `perf` | pages, median load, slowest page, console errors / warnings, failed requests | Bench row `devices.<device>.perf` |
+
+**Evidence only: none of it can fail a test or change a verdict.** Every store logs third-party console errors; judging them
+would create exactly the false alarms the anti-loop rules forbid. The existing soft `no_js_errors` and `load_time` checks
+are unchanged. Alerts on load-time *changes* (Revenue Shield's "load-time tracking") need history across scheduled runs: that
+comes with the scheduler and dashboard.
+
+**Not yet known (honest):** how Radar behaves on real stores on a phone. Before the change, 31 of the 46 mock modes were run on both devices in the
+sandbox (healthy, hostile, card/title layouts, hover menu, popups and overlays, variant and sticky-bar modes, free gift, wrong variant, upsell/drawer
+forms, noisy console and more): **the same verdict on both devices in all 31** (25 healthy; 6 that are broken on purpose fail on both: wrong_variant,
+no_buy_form, home_at_product_url, hidden_product with only 2 products, unknown_overlay without an LLM, and price_desktop_hidden whose mock had no phone
+price: fixed, see above). Real themes have hamburger menus, mobile-only popups and app-install banners the mock does not. **The first real mobile
+bench is the next honest data point.** Per the anti-loop rules: read it, fix only patterns seen on 2+ stores, document the rest.
+
+Cost: a bench is now about twice as long and sends about twice the requests to each testable store (mobile skipped where desktop
+was blocked).
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -625,8 +662,9 @@ USD in every run summary. An LLM error never crashes a run.
   data/sites/xyz.in/runs/<run_id>/report.html  interactive report
   data/sites/xyz.in/runs/<run_id>/*.png|*.zip  failure screenshots + Playwright traces
   ```
-- **Incidents** are deduplicated by signature `site|test case|failed step`: one outage is one
-  incident with an occurrence count, auto-resolved when the test passes again.
+- **Incidents** are deduplicated by signature `site|test case|failed step` (`...|mobile` appended for mobile, v0.18): one
+  outage is one incident with an occurrence count, auto-resolved when the test passes again ON THE SAME DEVICE.
+- **Locator cache** key is `site_id` for desktop and `site_id@mobile` for mobile.
 - **Retention:** screenshots/traces removed after 7 days for passing runs, 90 days for runs
   with failures. `run.json` and DB rows are kept.
 
@@ -639,7 +677,11 @@ USD in every run summary. An LLM error never crashes a run.
   search, each test with attempt tabs, step timeline with durations, errors, healing details,
   failure screenshot (click to zoom) and the Playwright trace with the replay command,
   self-healing log, run history bars, incidents. Light and dark, works at phone width.
-- Per site: run timeline, all runs, incidents.
+- Per attempt (v0.18): a collapsed "Page timing & console" panel: load times per page, console errors/warnings, requests
+  that got no answer (evidence only). Header shows the screen size (DESKTOP / MOBILE); the history bars show runs of the same size.
+- Per site: run timeline, all runs (with device), incidents (with device).
+- Bench page (v0.18): Desktop and Mobile verdict columns, desktop+mobile mark per suite, "fails only on desktop/mobile" and
+  per-device report links, page-load summary in the row detail.
 - Self-contained HTML (no server, no CDN). The embedded JSON is the same shape the dashboard
   will read.
 
@@ -776,6 +818,10 @@ state. 4. Report section "Store profile". Exit: bench shows a profile for every 
 Each new check template gets a mock mode that fails on the old code, as for every rule so far.
 
 ## Change log
+- 7 Oct 2026, v0.18: product layer step 1 (4r). Desktop + mobile is the default for `scan` and `bench`; mobile skipped when desktop could
+  not test the store; incidents and remembered selectors per device; bench row per store with per-device verdicts and `device_only`;
+  console errors, failed requests and page-load times captured and shown in reports (evidence only). Mock `price_desktop_hidden`
+  now passes on mobile; mock `noisy_console`. 137 tests (73 unit, 64 end-to-end).
 - 7 Oct 2026, v0.17: held-out run (4q), first honest score 2/30 false-failure stores (missed ≤ 1/30). Buy control: scroll
   to reveal sticky bars; the page's own control that names this product when there is no Shopify form. Mock modes
   `sticky_buy_only`, `div_buy_control`. 124 tests (66 unit, 58 end-to-end).

@@ -112,17 +112,23 @@ class Storage:
             self.db.execute("INSERT INTO incidents VALUES (?,?,?,?,?,?,?,?)",
                             (sig, site_id, case_id, _now(), _now(), 1, "open", err))
 
-    def resolve_missing_incidents(self, site_id: str, still_failing: set[str]):
-        """Any open incident for this site that did not fail this run is marked resolved."""
+    def resolve_missing_incidents(self, site_id: str, still_failing: set[str], device: str = "desktop"):
+        """Any open incident of this site AND this device that did not fail this run is marked resolved.
+        A mobile run never closes a desktop incident, nor the other way round (7 Oct)."""
+        from radar.runner.confirm import signature_device
         rows = self.db.execute("SELECT signature FROM incidents WHERE site_id=? AND status='open'", (site_id,))
         for (sig,) in rows.fetchall():
-            if sig not in still_failing:
+            if signature_device(sig) == device and sig not in still_failing:
                 self.db.execute("UPDATE incidents SET status='resolved' WHERE signature=?", (sig,))
         self.db.commit()
 
     def incidents(self, site_id: str) -> list[dict]:
-        return [dict(r) for r in self.db.execute(
+        from radar.runner.confirm import signature_device
+        rows = [dict(r) for r in self.db.execute(
             "SELECT * FROM incidents WHERE site_id=? ORDER BY last_seen DESC", (site_id,))]
+        for r in rows:
+            r["device"] = signature_device(r["signature"])
+        return rows
 
     def history(self, site_id: str, limit: int = 30) -> list[dict]:
         return [dict(r) for r in self.db.execute(

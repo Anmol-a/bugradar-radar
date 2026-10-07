@@ -84,6 +84,13 @@ border-radius:10px;padding:7px 12px;font-size:13px}
 .checks .ok{color:var(--green);font-weight:700;width:18px}.checks .no{color:var(--red);font-weight:700;width:18px}
 .checks .exp{color:var(--muted)}.checks .bad{color:var(--red)}
 @media(max-width:700px){.checks,.checks .r,.checks .r>div{display:block}.checks .h{display:none}}
+.ev{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.ev>summary{cursor:pointer;padding:8px 12px;font:12px var(--mono);color:var(--muted)}
+.ev .evb{padding:4px 12px 12px;display:flex;flex-direction:column;gap:10px}
+.ev h4{margin:0 0 4px;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ev table{font:12px var(--mono)}.ev td.slow{color:var(--amber);font-weight:700}
+.ev ul{margin:0;padding-left:18px;font:12px var(--mono);word-break:break-word}.ev li.error,.ev li.pageerror{color:var(--red)}.ev li.warning{color:var(--amber)}
+.ev .note{font:11.5px var(--mono);color:var(--muted)}
 .evidence{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;align-items:flex-start}
 .evidence img{max-width:min(420px,100%);border:1px solid var(--line);border-radius:10px;cursor:zoom-in}
 .evidence .how{font-size:12px;color:var(--muted);max-width:420px}
@@ -118,6 +125,7 @@ function header(){
   $('#site').textContent = R.site_id;
   $('#base').href = R.base_url; $('#base').textContent = R.base_url;
   const p = $('#verdict'); p.textContent = R.verdict.toUpperCase(); p.className = 'pill v-'+R.verdict;
+  const dv = $('#device'); dv.textContent = R.device.toUpperCase();
   $('#when').textContent = `${new Date(R.started_at).toLocaleString()} · ${R.device} · ${dur(R.started_at,R.finished_at)} · run ${R.run_id}`;
   document.title = `Radar · ${R.site_id} · ${R.verdict}`;
 }
@@ -164,11 +172,15 @@ function radar(){
 function discovery(){
   const s = R.sitemap_summary || {};
   const kv = $('#disc');
-  const rows = [['Platform', s.platform + (s.evidence && s.evidence.length ? ` (${s.evidence.join(', ')})` : '')],
+  const pf = R.perf || {};
+  const rows = [['Screen size', R.device === 'mobile' ? 'mobile (Pixel 7, touch)' : 'desktop (1366×850)'],
+    ['Platform', s.platform + (s.evidence && s.evidence.length ? ` (${s.evidence.join(', ')})` : '')],
     ['Homepage', s.home_title || '-'], ['Theme', s.theme || 'unknown'], ['Checkout', s.checkout_app || '-'],
     ['Access', s.access || 'open'], ['Nav links', s.nav], ['Collections', s.collections],
     ['Products sampled', s.products!==undefined ? `${s.products} (${s.in_stock} in stock)` : '-'],
     ['Search', s.search_path || '-'], ['robots.txt', s.robots_loaded ? 'read and respected' : 'not readable'],
+    ['Page load', pf.pages ? `${pf.pages} pages, median ${pf.median_load_secs}s` + (pf.slowest ? `, slowest ${pf.slowest.url} ${pf.slowest.load_secs}s` : '') : '-'],
+    ['Console', pf.pages!==undefined || pf.console_errors!==undefined ? `${pf.console_errors} errors, ${pf.console_warnings} warnings, ${pf.failed_requests} failed requests (evidence only)` : '-'],
     ['LLM healing', R.llm_usage.provider + (R.llm_usage.model ? ` · ${R.llm_usage.model} · ${R.llm_usage.calls} call(s), ${R.llm_usage.input_tokens+R.llm_usage.output_tokens} tokens` : '')]];
   for (const [k,v] of rows) kv.append(h('dt',{},k), h('dd',{},v ?? '-'));
   const ul = $('#notes'); (R.notes||[]).forEach(n => ul.append(h('li',{},n)));
@@ -188,6 +200,27 @@ function stepRow(s, maxT){
     h('div',{class:'sb s-'+st}, h('div',{class:'bar',style:`width:${Math.max(2,Math.round(60*(s.secs||0)/maxT))}px`}), h('span',{class:'t'}, (s.secs||0)+'s')));
 }
 
+const SLOW = 3;   // seconds: a page load above this is highlighted (information only, never a verdict)
+function evidencePanel(a){
+  const con = a.console||[], bad = a.failed_requests||[], loads = a.loads||[];
+  if (!con.length && !bad.length && !loads.length) return null;
+  const errs = con.filter(c => c.type==='error' || c.type==='pageerror').length, warns = con.filter(c => c.type==='warning').length;
+  const body = h('div',{class:'evb'});
+  if (loads.length) body.append(h('div',{}, h('h4',{}, 'Page load times'),
+    h('table',{}, h('thead',{}, h('tr',{}, h('th',{},'Page'), h('th',{},'Server reply'), h('th',{},'DOM ready'), h('th',{},'Fully loaded'), h('th',{},'Main content shown'))),
+      h('tbody',{}, loads.map(l => h('tr',{}, h('td',{}, l.url), h('td',{}, l.ttfb==null?'–':l.ttfb+'s'), h('td',{}, l.dcl==null?'–':l.dcl+'s'),
+        h('td',{class:l.load>SLOW?'slow':''}, l.load==null?'–':l.load+'s'), h('td',{class:l.lcp>SLOW?'slow':''}, l.lcp==null?'–':l.lcp+'s')))))));
+  if (con.length) body.append(h('div',{}, h('h4',{}, 'Browser console (errors and warnings)'),
+    h('ul',{}, con.map(c => h('li',{class:c.type}, `[${c.type}] ${c.text}`, c.url ? h('span',{class:'note'}, '  · '+c.url) : '')))));
+  if (bad.length) body.append(h('div',{}, h('h4',{}, 'Requests that got no answer'), h('ul',{}, bad.map(b => h('li',{}, b)))));
+  body.append(h('div',{class:'note'}, 'Evidence only. Most stores log some third-party errors; none of this changes a pass or fail.'));
+  const bits = [];
+  if (loads.length) bits.push(`${loads.length} page${loads.length>1?'s':''} timed`);
+  bits.push(`console: ${errs} error${errs===1?'':'s'}, ${warns} warning${warns===1?'':'s'}`);
+  if (bad.length) bits.push(`${bad.length} failed request${bad.length===1?'':'s'}`);
+  return h('details',{class:'ev'}, h('summary',{}, 'Page timing & console · ' + bits.join(' · ')), body);
+}
+
 function attemptView(a){
   const maxT = Math.max(0.5, ...a.steps.map(s => s.secs||0));
   const wrap = h('div',{});
@@ -197,6 +230,7 @@ function attemptView(a){
       onclick:()=>{ $('#lb img').src=s.shot; $('#lb').style.display='flex'; }},
       h('img',{src:s.shot, alt:s.name, loading:'lazy'}), h('figcaption',{}, `${i+1}. ${s.name}`)))));
   wrap.append(h('div',{class:'steps'}, a.steps.map(s => stepRow(s,maxT))));
+  const evp = evidencePanel(a); if (evp) wrap.append(evp);
   if (a.screenshot || a.trace) {
     const ev = h('div',{class:'evidence'});
     if (a.screenshot) ev.append(h('img',{src:a.screenshot, alt:'failure screenshot', onclick:()=>{ $('#lb img').src=a.screenshot; $('#lb').style.display='flex'; }}));
@@ -265,11 +299,11 @@ function healing(){
 }
 
 function history(){
-  const H=[...D.history].reverse(); const box=$('#hist');
+  const H=[...D.history].filter(r => r.device===R.device).reverse(); const box=$('#hist');
   H.forEach(r => box.append(h('a',{class:'s-'+({healthy:'pass',degraded:'flaky',down:'confirmed_fail'}[r.verdict]||'skip')+(r.run_id===R.run_id?' cur':''),
     href:`../${r.run_id}/report.html`, title:`${r.started_at} · ${r.device} · ${r.verdict}`, style:`height:${r.verdict==='healthy'?100:r.verdict==='degraded'?65:35}%`})));
   const t=$('#inc'); if (!D.incidents.length) { t.replaceWith(h('div',{class:'empty'}, 'No incidents recorded for this site.')); return; }
-  D.incidents.forEach(i => t.append(h('tr',{}, h('td',{class:'s-'+(i.status==='open'?'fail':'pass')}, i.status), h('td',{}, i.case_id),
+  D.incidents.forEach(i => t.append(h('tr',{}, h('td',{class:'s-'+(i.status==='open'?'fail':'pass')}, i.status), h('td',{}, i.case_id), h('td',{}, i.device||'desktop'),
     h('td',{}, i.occurrences), h('td',{class:'mono'}, new Date(i.first_seen).toLocaleString()), h('td',{}, (i.last_error||'').slice(0,140)))));
 }
 
@@ -282,7 +316,7 @@ RUN_TEMPLATE = """<!doctype html><html lang="en"><head><meta charset="utf-8">
 <style>""" + _CSS + """</style></head><body><div class="wrap">
 <header class="top"><div style="flex:1;min-width:240px"><div class="brand">BugRadar · Radar run</div>
 <h1 id="site"></h1><div class="sub"><a id="base" target="_blank" rel="noopener"></a> · <span id="when"></span></div></div>
-<span id="verdict" class="pill"></span><a class="sub" href="../../index.html">site history →</a></header>
+<span id="device" class="pill" style="background:var(--panel2);color:var(--text)"></span><span id="verdict" class="pill"></span><a class="sub" href="../../index.html">site history →</a></header>
 <div class="grid">
  <div class="card radar-wrap"><h2>Radar</h2><svg id="radar" class="radar" viewBox="-180 -180 360 360" role="img" aria-label="Test results by suite"></svg><div id="tip" class="tip"></div>
  <div class="sub" style="margin-top:6px">Each ring is a suite, each blip a test case. Click a blip to open it.</div></div>
@@ -292,8 +326,8 @@ RUN_TEMPLATE = """<!doctype html><html lang="en"><head><meta charset="utf-8">
 <div class="toolbar"><div id="chips" style="display:flex;gap:6px;flex-wrap:wrap"></div><input id="q" class="search" placeholder="Filter test cases…"></div>
 <div id="suites"></div>
 <div class="section card"><h2>Self-healing log</h2><table><thead><tr><th>Intent</th><th>Method</th><th>New selector</th><th>Why</th></tr></thead><tbody id="heal"></tbody></table></div>
-<div class="section card"><h2>History &amp; incidents</h2><div class="sub">Last runs (click a bar to open that report)</div><div id="hist" class="hist"></div>
-<table style="margin-top:14px"><thead><tr><th>Status</th><th>Test case</th><th>Seen</th><th>First seen</th><th>Last error</th></tr></thead><tbody id="inc"></tbody></table></div>
+<div class="section card"><h2>History &amp; incidents</h2><div class="sub">Last runs on this screen size (click a bar to open that report)</div><div id="hist" class="hist"></div>
+<table style="margin-top:14px"><thead><tr><th>Status</th><th>Test case</th><th>Device</th><th>Seen</th><th>First seen</th><th>Last error</th></tr></thead><tbody id="inc"></tbody></table></div>
 <footer>Generated by Radar. Honest identification: requests carry the BugRadar User-Agent and respect robots.txt. Checkout is never clicked.</footer>
 </div><div id="lb" class="lightbox"><img alt=""></div>
 <script>""" + _RUN_JS + """</script></body></html>"""
@@ -314,7 +348,7 @@ const hist=$('#hist'); [...H].reverse().forEach(r => hist.append(h('a',{class:'s
 const tb=$('#runs'); H.forEach(r => tb.append(h('tr',{}, h('td',{}, h('a',{href:r.folder}, new Date(r.started_at).toLocaleString())),
   h('td',{}, r.device), h('td',{class:'v-'+r.verdict}, r.verdict), h('td',{}, r.n_pass), h('td',{}, r.n_flaky), h('td',{}, r.n_fail), h('td',{}, r.n_blocked))));
 const it=$('#inc'); if(!D.incidents.length) it.replaceWith(h('div',{class:'empty'},'No incidents.'));
-else D.incidents.forEach(i => it.append(h('tr',{}, h('td',{class:'s-'+(i.status==='open'?'fail':'pass')}, i.status), h('td',{}, i.case_id), h('td',{}, i.occurrences), h('td',{}, (i.last_error||'').slice(0,160)))));
+else D.incidents.forEach(i => it.append(h('tr',{}, h('td',{class:'s-'+(i.status==='open'?'fail':'pass')}, i.status), h('td',{}, i.case_id), h('td',{}, i.device||'desktop'), h('td',{}, i.occurrences), h('td',{}, (i.last_error||'').slice(0,160)))));
 """
 
 INDEX_TEMPLATE = """<!doctype html><html lang="en"><head><meta charset="utf-8">
@@ -324,5 +358,5 @@ INDEX_TEMPLATE = """<!doctype html><html lang="en"><head><meta charset="utf-8">
 <div id="tiles" class="tiles"></div>
 <div class="card"><h2>Run timeline</h2><div id="hist" class="hist"></div></div>
 <div class="section card"><h2>Runs</h2><table><thead><tr><th>Started</th><th>Device</th><th>Verdict</th><th>Pass</th><th>Flaky</th><th>Fail</th><th>Blocked</th></tr></thead><tbody id="runs"></tbody></table></div>
-<div class="section card"><h2>Incidents</h2><table><thead><tr><th>Status</th><th>Test case</th><th>Seen</th><th>Last error</th></tr></thead><tbody id="inc"></tbody></table></div>
+<div class="section card"><h2>Incidents</h2><table><thead><tr><th>Status</th><th>Test case</th><th>Device</th><th>Seen</th><th>Last error</th></tr></thead><tbody id="inc"></tbody></table></div>
 </div><script>""" + _INDEX_JS + """</script></body></html>"""

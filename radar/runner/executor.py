@@ -12,6 +12,11 @@
                                                        nothing is reported against the store; bench 8, 6 Oct)
     -> run verdict: down (critical confirmed_fail) | degraded | healthy | unsupported | no_network
     -> SQLite rows + run.json + report.html + site index.html
+
+  scan_devices(url)   = scan() on desktop, then on mobile (the default everywhere since 7 Oct: every check runs
+                        on both screen sizes). Mobile is skipped when desktop could not be tested at all
+                        (blocked, unreachable, offline, not Shopify): a store that refused or could not be
+                        reached is not asked a second time.
 """
 from __future__ import annotations
 
@@ -22,7 +27,7 @@ from datetime import datetime, timezone
 from typing import Callable
 
 from radar.checks.library import REGISTRY, Ctx, Steps, StepFailed
-from radar.core.browser import Browser
+from radar.core.browser import Browser, DEFAULT_DEVICES
 from radar.core.config import Settings, normalize_url, site_id_from_url
 from radar.core.models import AttemptResult, CaseResult, RunResult, SiteMap, StepResult, TestCase
 from radar.core.network import NO_NETWORK_NOTE, online
@@ -35,6 +40,8 @@ from radar.healing.triage import triage
 from radar.runner.confirm import Attempt, should_retry, verdict as confirm_verdict, signature
 
 Progress = Callable[[str, dict], None]
+MAX_FAILED_REQUESTS = 25
+TESTED = ("healthy", "degraded", "down")        # verdicts that mean tests really ran against the store
 
 
 def _now() -> str:
@@ -60,14 +67,17 @@ def _attempt(browser: Browser, case: TestCase, run_dir, robots, healer: Healer, 
             failed = StepFailed("radar_internal", f"{type(e).__name__}: {str(e)[:200]}")
             steps.items.append(StepResult("radar_internal", "fail", None, failed.args[0]))
             sess.failed = True
+        sess.record_load()               # the page the attempt ended on (evidence only)
     ar = AttemptResult(n, failed is None, steps.items, failed.step if failed else None,
                        str(failed) if failed else None, sess.screenshot, sess.trace,
-                       round(time.time() - t0, 2))
+                       round(time.time() - t0, 2), console=list(sess.console),
+                       failed_requests=list(dict.fromkeys(sess.failed_requests))[:MAX_FAILED_REQUESTS],
+                       loads=list(sess.loads))
     return ar, sess, blocked
 
 
 def _run_case(browser: Browser, case: TestCase, run_dir, robots, healer: Healer, retries: int,
-              progress: Progress, probes: tuple = ()) -> CaseResult:
+              progress: Progress, probes: tuple = (), device: str = "desktop") -> CaseResult:
     cr = CaseResult(case.id, case.suite, case.title, case.check, case.severity)
     confirm_attempts: list[Attempt] = []
     last_fail = None
@@ -92,7 +102,7 @@ def _run_case(browser: Browser, case: TestCase, run_dir, robots, healer: Healer,
     if cr.verdict == "confirmed_fail" and last_fail and healer.llm.enabled:
         _triage_and_recheck(browser, case, cr, last_fail, run_dir, robots, healer, progress)
     if cr.verdict == "confirmed_fail":
-        cr.incident_signature = signature(healer.site_id, case.id, cr.attempts[-1].failed_step)
+        cr.incident_signature = signature(healer.site_id, case.id, cr.attempts[-1].failed_step, device)
     return cr
 
 
@@ -112,6 +122,38 @@ def _triage_and_recheck(browser, case, cr: CaseResult, last_fail, run_dir, robot
     progress("attempt", {"case": case, "attempt": re_ar})
     if re_ar.ok:
         cr.verdict, cr.healed_after_triage = "pass", True
+
+
+def perf_summary(cases: list[CaseResult]) -> dict:
+    """Page-load and console evidence of a run in a few numbers (pure, unit-tested). From each case's last attempt;
+    one value per page (the slowest time seen for that URL). Evidence only: nothing here changes a verdict.
+    Empty dict when no page timing was captured."""
+    pages: dict[str, float] = {}
+    console: dict[tuple, dict] = {}
+    failed: set[str] = set()
+    for c in cases:
+        if not c.attempts:
+            continue
+        a = c.attempts[-1]
+        for l in a.loads:
+            if l.get("load") is not None:
+                pages[l["url"]] = max(pages.get(l["url"], 0), l["load"])
+        for e in a.console:
+            console[(e["type"], e["text"][:120])] = e
+        failed.update(a.failed_requests)
+    if not pages and not console and not failed:
+        return {}
+    vals = sorted(pages.values())
+    median = None
+    if vals:
+        mid = len(vals) // 2
+        median = vals[mid] if len(vals) % 2 else round((vals[mid - 1] + vals[mid]) / 2, 2)
+    slow = max(pages.items(), key=lambda kv: kv[1]) if pages else None
+    return {"pages": len(pages), "median_load_secs": median,
+            "slowest": {"url": slow[0], "load_secs": slow[1]} if slow else None,
+            "console_errors": sum(1 for k in console if k[0] in ("error", "pageerror")),
+            "console_warnings": sum(1 for k in console if k[0] == "warning"),
+            "failed_requests": len(failed)}
 
 
 def run_verdict(cases: list[CaseResult]) -> str:
@@ -136,7 +178,7 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + f"-{device[0]}-" + uuid.uuid4().hex[:4]
     run_dir = storage.run_dir(site_id, run_id)
     run = RunResult(run_id, site_id, base, device, _now())
-    progress("start", {"site_id": site_id, "run_id": run_id, "llm": llm.usage()})
+    progress("start", {"site_id": site_id, "run_id": run_id, "llm": llm.usage(), "device": device})
 
     with Browser(s, device) as browser:
         # ---- discovery
@@ -175,12 +217,12 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
                 {"id": x.id, "name": x.name, "description": x.description,
                  "cases": [c.__dict__ for c in x.cases]} for x in suites])
             progress("suites", {"suites": suites})
-            healer = Healer(site_id, run_id, storage, llm, s.selectors)
+            healer = Healer(site_id, run_id, storage, llm, s.selectors, device)
             lost = None
             total = sum(len(x.cases) for x in suites)
             for suite in suites:
                 for case in suite.cases:
-                    cr = _run_case(browser, case, run_dir, robots, healer, s.retries, progress, s.net_probe_urls)
+                    cr = _run_case(browser, case, run_dir, robots, healer, s.retries, progress, s.net_probe_urls, device)
                     run.cases.append(cr)
                     if cr.verdict == "no_network":
                         lost = cr
@@ -196,16 +238,35 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
                 run.verdict = run_verdict(run.cases)
 
     run.finished_at = _now()
+    run.perf = perf_summary(run.cases)
     run.llm_usage = llm.usage()
     d = run.to_dict()
     (run_dir / "run.json").write_text(json.dumps(d, indent=2, default=str))
     storage.save_run(d, run_dir)
     if run.cases and run.verdict != "no_network":   # nothing tested = nothing proven fixed: incidents stay open
-        storage.resolve_missing_incidents(site_id, {c.incident_signature for c in run.cases if c.incident_signature})
+        storage.resolve_missing_incidents(site_id, {c.incident_signature for c in run.cases if c.incident_signature},
+                                          device)
     storage.prune(site_id, s.retention_pass_days, s.retention_fail_days)
 
     from radar.reporting.html import write_run_report, write_site_index
-    write_run_report(d, run_dir, storage.history(site_id), storage.incidents(site_id))
+    write_run_report(d, run_dir, storage.history(site_id, 60), storage.incidents(site_id))
     write_site_index(site_id, storage)
     progress("done", {"run": run, "run_dir": run_dir})
     return run, run_dir
+
+
+def scan_devices(url: str, settings: Settings, devices: tuple[str, ...] = DEFAULT_DEVICES,
+                 progress: Progress | None = None, only_suites: list[str] | None = None,
+                 ) -> list[tuple[RunResult, "Path"]]:
+    """Run the scan on every device, in order (desktop first). Returns one (run, run_dir) per device that RAN.
+    A later device is skipped when the first one could not test the store at all (blocked, unreachable, offline,
+    not Shopify): same answer, and a store that refused Radar is not asked again."""
+    progress = progress or (lambda *_: None)
+    out: list[tuple[RunResult, "Path"]] = []
+    for dev in devices:
+        if out and out[0][0].verdict not in TESTED:
+            progress("device_skipped", {"device": dev, "why": f"not tested on {devices[0]} ({out[0][0].verdict}), "
+                                                                "so not asked again"})
+            continue
+        out.append(scan(url, settings, dev, progress=progress, only_suites=only_suites))
+    return out

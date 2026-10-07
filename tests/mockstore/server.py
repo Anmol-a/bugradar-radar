@@ -74,7 +74,8 @@ Modes (to prove Radar catches and heals what it should):
                    headless storefront hiding a product (foxtale.in, bench 4) -> WARNS + next product
   price_desktop_hidden the vase's only on-page price is in a sticky bar the theme hides on desktop (class
                    hidden-lap-and-up, supplysix.com, bench 4) -> product test FAILS saying the price is only in a
-                   hidden element (a real store finding on this screen size)
+                   hidden element (a real store finding on this screen size). On a phone-sized screen (< 1008 px) the
+                   theme shows that bar, so MOBILE passes (v0.18: every run tests both)
   store_refuses    the homepage answers HTTP 423 "This store is unavailable" to Radar (plumgoodness.com, bench 5, while
                    it was live for other visitors) -> verdict BLOCKED with the reason, never "unsupported" (not Shopify)
   shift_after_scroll  collection cards are tall blocks; ~10 ms after the first scroll the page re-lays out and
@@ -92,6 +93,8 @@ Modes (to prove Radar catches and heals what it should):
   div_buy_control  product pages: NO /cart/add form; the buy control is <div class="pdp-addtobag-btn"
                    data-product-handle=...> "ADD TO BAG", after 3 recommendation cards with their own "Add to Bag"
                    buttons for other products (nicobar.com, held-out 7 Oct) -> product + cart PASS, right product added
+  noisy_console    every page logs a console error + warning and fires a request nobody answers (third-party widget)
+                   -> everything PASSES; the noise only shows up as report evidence (v0.18)
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
                    bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
   robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
@@ -227,6 +230,11 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode in self.OVERLAYS:
             body = body.replace("</body>", self.OVERLAYS[self.mode] + "</body>")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "noisy_console":
+            # a store whose third-party widgets log errors and a request that never gets an answer (7 Oct: evidence only)
+            body = body.replace("</body>", '<script>console.error("Third-party chat widget failed to start"); '
+                                'console.warn("Deprecated API used by theme"); '
+                                'fetch("http://127.0.0.1:1/never-answers").catch(() => {});</script></body>')
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "hostile":
             body = body.replace("<header>", "<header>" + self.HOSTILE_HEADER, 1)
             body = body.replace(self.MAIN_NAV, self.HOSTILE_NAV, 1)
@@ -580,7 +588,10 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body = re.sub(r'<div class="price">(₹[^<]*)</div>',
                           r'<style>@media (min-width: 1008px) { .hidden-lap-and-up { display: none !important; } }</style>'
                           r'<product-sticky-form class="product-sticky-form hidden-lap-and-up" hidden>'
-                          r'<span class="product-sticky-form__price">You Pay: \1</span></product-sticky-form>', body, count=1)
+                          r'<span class="product-sticky-form__price">You Pay: \1</span></product-sticky-form>'
+                          # on a phone-sized screen the theme shows the bar (7 Oct: mobile is tested by default)
+                          '<script>if (matchMedia("(max-width: 1007px)").matches) '
+                          'document.querySelector("product-sticky-form").hidden = false;</script>', body, count=1)
         if self.mode == "free_gift":
             script += "<script>window.GIFT_MODE = true;</script>"
         if p.get("redirect"):
