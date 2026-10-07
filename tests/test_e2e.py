@@ -716,3 +716,19 @@ def test_dead_product_image_link_the_name_opens_it_journey_passes_with_a_store_w
     assert "product name opened it" in st["click_into_product"].detail, st["click_into_product"].detail
     w = st["every_product_link_opens_the_product"]
     assert w.status == "warn" and "IMAGE link" in w.error and "did nothing when clicked" in w.error, (w.status, w.error)
+
+
+# ---------- bench 11 (7 Oct): transient misses on two stores each ----------
+def test_store_data_answering_empty_once_is_retried_not_a_failure(tmp_path):
+    """palmonas.com: /products/x.js answered an empty body once (JSON error); wellbeingnutrition.com: a timeout once.
+    Both made the journey FLAKY in v0.15. Radar now retries the data request: every case passes on its first attempt."""
+    run, _ = _scan("flaky_data", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", [(c.case_id, c.verdict, [a.error for a in c.attempts]) for c in run.cases]
+    assert all(len(c.attempts) == 1 for c in run.cases), [(c.case_id, len(c.attempts)) for c in run.cases]
+
+
+def test_robots_txt_failing_twice_then_answering_is_read_on_the_third_try(tmp_path):
+    """soulflower.in / bummer.in: robots.txt gave no answer on two quick tries, so v0.15 blocked the whole store."""
+    run, _ = _scan("robots_500_twice", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", (run.verdict, run.notes)
+    assert run.sitemap_summary["robots_loaded"] is True
