@@ -83,6 +83,8 @@ Modes (to prove Radar catches and heals what it should):
   shadow_popup     the same YourLio-style promo popup, but rendered INSIDE a shadow root (#chat-widget), appearing
                    300 ms after collection pages load (soulflower.in, bench 9: the popup sat over the product card and
                    v0.13's finder could not see into shadow DOM) -> popup closed by its x, journey PASSES first try
+  dead_image_link  collection cards have an IMAGE link and a NAME link; the theme's slider script cancels mousedown/click on
+                   the image (thefunclab.com, bench 10) -> journey clicks the name, PASSES, store WARNING names the dead link
   robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
   robots_404       /robots.txt answers HTTP 404 (no file) -> everything allowed, store tested normally
   (Radar's own network dropping mid-run is not a mode: tests shut the store down from the progress hook and point
@@ -271,6 +273,15 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                                 f'<a href="/pages/shop">Shop</a>{mega}</div> <a href="/pages/about">About</a></nav>'
                                 '<style>.menu-item:hover .mega{display:block !important}</style>', 1)
             body = body.replace('<a href="/collections/all">Shop all</a>', '')
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "dead_image_link" and path_now.startswith("/collections/"):
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
+                f'<div class="card-wrapper" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
+                f'<a class="card__media" href="/products/{m.group(1)}" style="display:block;height:200px;background:#eee">{m.group(2)}</a>'
+                f'<a class="card__title" href="/products/{m.group(1)}">{m.group(3)}</a></div>'), body)
+            body = body.replace("</body>", """<script>
+document.querySelectorAll('a.card__media').forEach(a => ['mousedown', 'mouseup', 'click'].forEach(t =>
+  a.addEventListener(t, e => e.preventDefault())));   // drag-to-scroll slider: the image never navigates
+</script></body>""")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "rerender_grid" and path_now.startswith("/collections/"):
             body = body.replace("<main>", '<main><div id="grid">', 1).replace("</main>", "</div></main>", 1)
             body = body.replace("</body>", """<script>

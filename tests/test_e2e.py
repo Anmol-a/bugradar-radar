@@ -698,3 +698,21 @@ def test_popup_inside_shadow_dom_is_closed_by_its_x_and_the_journey_passes_first
     assert j.verdict == "pass" and len(j.attempts) == 1, [(a.n, a.error) for a in j.attempts]
     closed = [c for s in j.attempts[0].steps for c in s.checks if c["what"] == "popup popup closed"]
     assert closed and closed[0]["actual"].startswith("clicked 'close' on:") and "bomb size" in closed[0]["actual"], closed
+
+
+def test_dead_product_image_link_the_name_opens_it_journey_passes_with_a_store_warning(tmp_path):
+    """thefunclab.com (bench 10): on the homepage slider the product IMAGE link does nothing when clicked (the theme's
+    script cancels mousedown/click); the product NAME opens it. v0.14 clicked the image twice and failed the journey
+    (FLAKY: the retry happened to go via a collection grid). A shopper clicks the name: journey passes, the dead link
+    is a store warning with the evidence."""
+    srv, url = serve("dead_image_link")
+    try:
+        run = scan(url, _settings(tmp_path), only_suites=["journey"])[0]
+    finally:
+        srv.shutdown()
+    j = _case(run, "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, [(a.n, a.error) for a in j.attempts]
+    st = _steps(j)
+    assert "product name opened it" in st["click_into_product"].detail, st["click_into_product"].detail
+    w = st["every_product_link_opens_the_product"]
+    assert w.status == "warn" and "IMAGE link" in w.error and "did nothing when clicked" in w.error, (w.status, w.error)
