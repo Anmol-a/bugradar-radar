@@ -51,6 +51,17 @@ If the computer running Radar loses its internet, stores are marked **no_network
 reported against them) and the bench prints a warning: run it again. Radar checks its own connection with
 3 always-on hosts; change them with `RADAR_NET_PROBES=url1,url2` in `.env` (empty value = check off).
 
+## Cloud runs (no Mac needed)
+GitHub Actions workflow `.github/workflows/radar-cloud.yml` (needs the repo secret `OPENAI_API_KEY`).
+- **Start a run:** change the one line in `cloud/request.txt` (e.g. `bench stores/bench.txt --quick`) on branch
+  `cloud-runs` and push, or press "Run workflow" on GitHub. Only `bench <list> [flags]` is accepted.
+- **Nightly:** `cloud/nightly.txt`, 02:13 IST, once the workflow is on `main`.
+- **Results:** branch `cloud-results`, folder `runs/<stamp>/` (bench.json, bench.html, log, each store's run.json and
+  failure screenshots); `LATEST` names the newest. Full reports, step screenshots and traces: the run's Actions
+  artifact (7 days).
+- Runs from GitHub's servers (US data centres): some stores may treat that differently from a home connection
+  (blocking, other currency). Compare the first cloud bench with the Mac bench before trusting differences.
+
 ## LLM (healing + failure triage)
 Put the key in `.env` (template: `.env.example`). Default: OpenAI `gpt-5-mini` (15/15 on llm-check, 5 Oct; gpt-4o-mini scored 14/15).
 ```bash

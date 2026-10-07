@@ -1,0 +1,102 @@
+# Radar in the cloud: runs need no Mac (product layer step 2, 7 Oct 2026).
+#
+# How a run starts
+#   - push to branch `cloud-runs` that changes cloud/request.txt  -> runs that request (Claude starts runs this way:
+#     its GitHub connection allows git but not the Actions API)
+#   - schedule (nightly)                                            -> runs cloud/nightly.txt. GitHub only runs
+#     schedules from the DEFAULT branch, so the nightly starts once this file is merged into `main`.
+#   - "Run workflow" button on github.com                           -> runs cloud/request.txt
+#
+# Where results go
+#   - branch `cloud-results`: runs/<bench stamp>/ with bench.json, bench.html, bench.log, meta.json and, per store
+#     and device, run.json + failure screenshots (*.png). Small, readable with plain git. LATEST = newest stamp.
+#   - Actions artifact `radar-data-<run id>` (7 days): the whole data/ folder incl. reports, step screenshots, traces.
+#
+# Same rules as on the Mac: identified User-Agent, robots.txt respected, no stealth, never checkout, read-only on
+# real stores unless the list says `cart` (demo stores only). Only `bench <list> [flags]` requests are accepted.
+name: radar-cloud
+
+on:
+  push:
+    branches: [cloud-runs]
+    paths: ["cloud/request.txt"]
+  schedule:
+    - cron: "43 20 * * *"          # 02:13 IST every night
+  workflow_dispatch: {}
+
+concurrency:
+  group: radar-cloud
+  cancel-in-progress: false
+
+permissions:
+  contents: write                  # to commit results to the cloud-results branch
+
+jobs:
+  radar:
+    runs-on: ubuntu-latest
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install Radar + Chromium
+        run: |
+          pip install -r requirements.txt
+          python3 -m playwright install --with-deps chromium
+
+      - name: Read the request
+        id: req
+        run: |
+          if [ "${{ github.event_name }}" = "schedule" ]; then f=cloud/nightly.txt; else f=cloud/request.txt; fi
+          args=$(grep -v '^[[:space:]]*#' "$f" | grep -v '^[[:space:]]*$' | head -1 | tr -s ' ')
+          if ! printf '%s' "$args" | grep -Eq '^bench [A-Za-z0-9_./ -]+$'; then
+            echo "Refused: only 'bench <store list> [flags]' requests are allowed, got: $args"; exit 1
+          fi
+          echo "file=$f" >> "$GITHUB_OUTPUT"
+          echo "args=$args" >> "$GITHUB_OUTPUT"
+          echo "Request ($f): python3 -m radar $args"
+
+      - name: Run Radar
+        continue-on-error: true
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -o pipefail
+          python3 -m radar ${{ steps.req.outputs.args }} 2>&1 | tee bench.log
+
+      - name: Publish results to the cloud-results branch
+        if: always()
+        run: |
+          git config user.name "bugradar-cloud"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          OUT="$RUNNER_TEMP/results"
+          if git fetch --depth=1 origin cloud-results 2>/dev/null; then
+            git worktree add -B cloud-results "$OUT" FETCH_HEAD
+          else
+            git worktree add --detach "$OUT"
+            git -C "$OUT" checkout --orphan cloud-results
+            git -C "$OUT" rm -rqf .
+          fi
+          python3 tools/publish_cloud_results.py "$OUT" --data data --log bench.log \
+            --event "${{ github.event_name }}" --run-id "${{ github.run_id }}" --sha "${{ github.sha }}" \
+            --request "${{ steps.req.outputs.args }}"
+          cd "$OUT"
+          git add -A
+          git commit -qm "cloud ${{ github.event_name }}: $(cat LATEST) (run ${{ github.run_id }})" || exit 0
+          for i in 1 2 3; do git push -q origin cloud-results && break; git pull -q --rebase origin cloud-results; done
+
+      - name: Keep the full data folder (reports, screenshots, traces) for 7 days
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: radar-data-${{ github.run_id }}
+          path: |
+            data/
+            bench.log
+          retention-days: 7
+          if-no-files-found: ignore
