@@ -5,7 +5,8 @@
 Writes <results>/runs/<bench stamp>/ with bench.json, bench.html, bench.log, meta.json and, for every store and
 device in the bench, sites/<site_id>/<run_id>/run.json plus its failure screenshots (*.png; the per-step journey
 JPEGs and the traces stay in the Actions artifact). <results>/LATEST = that stamp. When Radar produced no bench
-(crash, refused request) the folder is runs/<time>-no-bench/ with the log and meta, so a failed run is visible too.
+(crash, time limit, refused request) the folder is runs/<time>-no-bench/ with the log, meta and every run.json that
+did finish (meta "partial": true), so a failed or cut-short run is visible too.
 Standard library only; never raises on a missing file (a broken run must still publish its log).
 """
 from __future__ import annotations
@@ -49,6 +50,17 @@ def publish(out: Path, data: Path, log: Path | None, meta: dict) -> Path:
                 for png in run_dir.glob("*.png"):          # failure screenshots only
                     shutil.copy2(png, tgt / png.name)
                 copied += 1
+    elif (data / "sites").exists():
+        # no bench.json (Radar stopped early, e.g. the time limit): publish every run that did finish
+        meta["partial"] = True
+        for rj in sorted((data / "sites").glob("*/runs/*/run.json")):
+            site, run_dir = rj.parents[2].name, rj.parent
+            tgt = dest / "sites" / site / run_dir.name
+            tgt.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(rj, tgt / "run.json")
+            for png in run_dir.glob("*.png"):
+                shutil.copy2(png, tgt / png.name)
+            copied += 1
     meta["runs_copied"] = copied
     if log and log.exists():
         data_bytes = log.read_bytes()

@@ -628,3 +628,15 @@ def test_cloud_publisher_still_publishes_the_log_when_radar_made_no_bench(tmp_pa
     dest = publish(tmp_path / "out", tmp_path / "data", log, {"event": "push"})
     assert dest.name.endswith("-no-bench") and (dest / "bench.log").read_text() == "Traceback: boom"
     assert json.loads((dest / "meta.json").read_text())["runs_copied"] == 0
+
+
+def test_cloud_publisher_publishes_the_finished_runs_when_the_bench_was_cut_short(tmp_path):
+    from tools.publish_cloud_results import publish
+    run = tmp_path / "data" / "sites" / "xyz.in" / "runs" / "R1-d"
+    run.mkdir(parents=True)
+    (run / "run.json").write_text("{}")
+    (run / "cart.a1.png").write_bytes(b"p")
+    dest = publish(tmp_path / "out", tmp_path / "data", None, {})
+    assert dest.name.endswith("-no-bench") and (dest / "sites" / "xyz.in" / "R1-d" / "cart.a1.png").exists()
+    meta = json.loads((dest / "meta.json").read_text())
+    assert meta["partial"] is True and meta["runs_copied"] == 1
