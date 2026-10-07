@@ -3,7 +3,7 @@
 Rule for this file: it says what works, what is proven, what is not, and what hurts. No bluff.
 It is updated with every change.
 
-Last updated: 7 Oct 2026 · Framework v0.16. Bench 11 (v0.15, 7 Oct 08:32 IST): 27 healthy / 4 degraded / 0 down; thefunclab fix held. No new Radar mistake in what Radar judged; 2 transient patterns (data request miss, robots.txt no answer), each on 2 stores, fixed in v0.16 (4p). **Rules from 7 Oct: the 36-store list is now a regression set only; fixes only for patterns seen on 2+ stores; R1 closes Fri 9 Oct; the real score comes from 30 never-seen stores (stores/new30.txt) and a seeded-bug store.**
+Last updated: 7 Oct 2026 · Framework v0.17. **First honest score (held-out run, 30 never-seen stores, v0.16, run once): 23 Shopify stores tested; 21 judged correctly, 2 stores with Radar false failures (nicobar, true-elements: buy control not recognised) = 2/30, target was ≤ 1/30, MISSED.** Both are one pattern, fixed in v0.17 (4q). 5 of 30 stores are not Shopify themes (custom/headless) and are not covered by Radar v1 at all.
 
 ---
 
@@ -504,6 +504,26 @@ Proof: mocks `flaky_data` and `robots_500_twice`. v0.15: journey FLAKY with the 
 
 **Anti-loop rules (Anmol, 7 Oct: "no loop like sync8"):** (1) the 36-store bench is a regression set, not a tuning set; (2) fix only patterns seen on 2+ stores, one-offs become documented limits; (3) R1 closes Friday 9 Oct with its limits written down; (4) the real robustness numbers are first-run false failures on 30 never-seen stores (`stores/new30.txt`, run once, no fixes in between) and the catch rate on a seeded-bug store (target ≤ 1/30 and ≥ 80%).
 
+## 4q. Held-out run (30 never-seen stores, 7 Oct 13:02 IST, v0.16, run ONCE): the first honest score
+
+| Outcome | Stores | Count |
+|---|---|---|
+| Healthy, judged right | pilgrim, juicychemistry, themancompany, mokobara, bluetokai, sleepyowl, slurrpfarm, yogabars, urbanmonkey, sugar, dermaco, aqualogica, beardo, opensecret, gonoise, xyxx, freecultr, powerlook, neemans, chumbak | 20 |
+| Real store finding (verified live) | libas.in: sold-out sarees published with **0 images** (Shopify data images = 0, JSON-LD image = [], no og:image) | 1 |
+| **Radar false failure** | nicobar.com, true-elements.com | **2** |
+| Not covered (not a Shopify theme store) | kapiva, plixlife (custom Next.js, GoKwik "non-shopify" script), buywow, nathabit, damensch | 5 |
+| Correctly not tested | mivi (robots.txt blocks), boultaudio.com (redirects to goboult.co.in: wrong URL in our list) | 2 |
+
+**Score: 2 false-failure stores / 30 (target ≤ 1/30): missed.** Accuracy on stores Radar could test: 21/23 = 91%. Coverage: 23/30 stores testable (77%); 5 stores are outside Shopify-theme scope.
+
+Root cause (one pattern, 2 stores), verified live in Anmol's Chrome:
+| Store | What a shopper sees | What Radar did (v0.16) |
+|---|---|---|
+| nicobar.com | "ADD TO BAG" = `<div class="pdp-addtobag-btn" data-product-handle="saanjh-shawl-chartreuse">`, no `/cart/add` form; 10 "Add to Bag" `<button class="_gai-atc-btn">` for OTHER products in recommendation cards | "no add-to-cart form for this product; no other buy control found" on all 3 products. Mock proof: v0.16's healer even clicked a recommended product's button and added the WRONG product |
+| true-elements.com | the form's own "Add to cart" is hidden on desktop; "ADD TO CART" appears in a sticky bar after scrolling | "could not find 'add_to_cart'" on all 3 products |
+
+v0.17: (1) no visible buy button → scroll like a shopper (up to 4 × 60% of the screen) and look again (sticky bars); (2) only when the page has NO Shopify form/input for this product: take the page's own "Add to bag/cart / Buy now" control when an attribute on it or its parents names THIS product (handle / product id / variant id), or it sits with the product title and no link to another product is closer; other products' cards, header, nav, footer, drawers excluded. The cart check still proves what was added. Mocks `sticky_buy_only`, `div_buy_control`; the renamed-button mock (lone button with `data-vid`) is now found by rule (2) instead of heuristic healing (test updated; healing is still proven by the obscure-button/LLM tests).
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -756,6 +776,9 @@ state. 4. Report section "Store profile". Exit: bench shows a profile for every 
 Each new check template gets a mock mode that fails on the old code, as for every rule so far.
 
 ## Change log
+- 7 Oct 2026, v0.17: held-out run (4q), first honest score 2/30 false-failure stores (missed ≤ 1/30). Buy control: scroll
+  to reveal sticky bars; the page's own control that names this product when there is no Shopify form. Mock modes
+  `sticky_buy_only`, `div_buy_control`. 124 tests (66 unit, 58 end-to-end).
 - 7 Oct 2026, v0.16: bench 11 (4p). Store data requests retried on transient misses; robots.txt 3 tries before
   "do not crawl". Mock modes `flaky_data`, `robots_500_twice`. Anti-loop rules recorded. `stores/new30.txt` (held-out
   set). 122 tests (66 unit, 56 end-to-end).

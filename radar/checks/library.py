@@ -239,6 +239,47 @@ MAIN_BUY_JS = r"""([ids, quick]) => {
 }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
 
 
+# The page's OWN buy control when it is not a Shopify cart form button (nicobar.com, held-out run 7 Oct: a
+# <div class="pdp-addtobag-btn" data-product-handle="saanjh-shawl-chartreuse"> "ADD TO BAG", no /cart/add form,
+# and 10 "Add to Bag" buttons for OTHER products in recommendation cards on the same page). Owned when an attribute
+# on it or an ancestor (4 levels) names THIS product (handle, product id or a variant id), or when it sits with the
+# product's title and no link to another product is closer. Innermost match only; header/nav/footer/drawers ignored.
+# Used ONLY when the page has no Shopify form/input carrying this product's variant id.
+OWN_CONTROL_JS = r"""([handle, ids, pid, quick]) => {
+  const otherCard = __OTHER_CARD__;
+  document.querySelectorAll('[data-radar-target="buy"]').forEach(e => e.removeAttribute('data-radar-target'));
+  const mine = new Set([String(handle), String(pid), ...ids.map(String)]);
+  const words = /^(add to (bag|cart|basket)|buy( it)? now|add)$/i;
+  const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
+  const vis = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const here = (location.pathname.match(/\/products\/([^/?#]+)/) || [])[1];
+  const prodOf = a => ((a.getAttribute('href') || '').match(/\/products\/([^/?#]+)/) || [])[1];
+  const named = e => { for (let a = e, k = 0; a && a !== document.body && k < 5; a = a.parentElement, k++)
+      for (const at of a.attributes || []) if (mine.has(String(at.value).trim())) return at.name; return null; };
+  const title = document.querySelector('h1');
+  const withTitle = e => { if (!title) return false;
+    for (let a = e.parentElement, k = 0; a && a !== document.body && k < 7; a = a.parentElement, k++) {
+      const others = [...a.querySelectorAll('a[href*="/products/"]')].map(prodOf).filter(h => h && h !== here);
+      if (others.length) return false;
+      if (a.contains(title)) return true; }
+    return false; };
+  const all = [...document.querySelectorAll('button, a, [role="button"], input[type=submit], div, span')]
+    .filter(e => words.test(txt(e)) && txt(e).length <= 25 && vis(e)
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !otherCard(e, quick));
+  const inner = all.filter(e => !all.some(o => o !== e && e.contains(o)));
+  for (const e of inner) {
+    const by = named(e) ? `${named(e)} names this product` : (withTitle(e) ? 'next to the product title' : null);
+    if (!by) continue;
+    const t = e.closest('button, a, [role="button"], [onclick], [class*="btn" i], [class*="button" i]') || e;
+    t.setAttribute('data-radar-target', 'buy');
+    return {tag: t.tagName.toLowerCase() + (t.className && typeof t.className === 'string' ? '.' + t.className.trim().split(/\s+/)[0] : ''),
+            text: txt(e).slice(0, 30), why: by};
+  }
+  return null; }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
+
+
 FORM_STATE_JS = r"""([ids, quick]) => { const s = new Set(ids.map(String)); const otherCard = __OTHER_CARD__;
   // The product's own form = one carrying one of THIS product's variant ids. A form is never picked
   // for its name alone: hidden cart-drawer / upsell forms are also called product-form / product_form
@@ -324,9 +365,33 @@ def _main_buy_button(ctx: Ctx, product: dict):
     page = ctx.sess.page
     ids = [int(v["id"]) for v in product["variants"]]
     found = ctx.sess.evaluate(MAIN_BUY_JS, [ids, QUICK_SEL])
+    own, scrolled = None, False
+    # A page WITH a Shopify form for this product keeps the old path (healer for a renamed/moved button); the
+    # page's-own-control rule is only for pages that have no such form at all (nicobar.com's div control).
+    has_form = ctx.sess.evaluate("""(ids) => { const mine = new Set(ids.map(String));
+        return [...document.querySelectorAll('[name="id"]')].some(i => mine.has(String(i.value || ''))); }""", ids)
+    # Not visible yet? A shopper scrolls: themes show the buy button in a sticky bar only after scrolling
+    # (true-elements.com, held-out run 7 Oct: the form's own button is hidden on desktop).
+    for step in range(5):
+        if found:
+            break
+        if not has_form:
+            own = ctx.sess.evaluate(OWN_CONTROL_JS, [product.get("handle") or _handle(page.url) or "", ids,
+                                                      product.get("id") or 0, QUICK_SEL])
+        if own or step == 4:
+            break
+        page.evaluate("() => window.scrollBy(0, Math.round(innerHeight * 0.6))")
+        page.wait_for_timeout(500)
+        scrolled = True
+        found = ctx.sess.evaluate(MAIN_BUY_JS, [ids, QUICK_SEL])
     if found:
         loc = page.locator('[data-radar-target="buy"]').first
-        return loc, f"main product form #{found['form']} (variant {found['variant']}, button {found['text']!r})", None
+        return loc, (f"main product form #{found['form']} (variant {found['variant']}, button {found['text']!r})"
+                     + (" — shown only after scrolling (sticky bar)" if scrolled else "")), None
+    if own:
+        loc = page.locator('[data-radar-target="buy"]').first
+        return loc, (f"the page's own buy control <{own['tag']}> {own['text']!r} ({own['why']}; no Shopify cart form,"
+                     f" the cart check verifies what it adds)" + (" — shown after scrolling" if scrolled else "")), None
     try:
         f = ctx.healer.find(page, "add_to_cart")
     except LocatorNotFound as e:

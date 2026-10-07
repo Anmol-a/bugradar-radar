@@ -65,16 +65,18 @@ def test_healthy_store_all_pass_and_artifacts(tmp_path):
     assert json.loads((d / "run.json").read_text())["verdict"] == "healthy"
 
 
-def test_renamed_button_is_healed_with_stable_selector(tmp_path):
+def test_renamed_button_without_a_form_is_found_by_what_names_this_product(tmp_path):
+    """The buy button lost name="add", sits outside any form and says "Add to Bag", but carries data-vid = this
+    product's variant. Until v0.16 only heuristic healing found it; since v0.17 (held-out run, nicobar.com) a control
+    that NAMES this product is taken directly, so no guess and no healing is needed. Healing itself is still proven by
+    the obscure-button tests. The cart check proves the right product was added."""
     run, _ = _scan("renamed_button", tmp_path)
-    assert run.verdict == "healthy"
-    assert len(run.healing_events) == 1
-    ev = run.healing_events[0]
-    assert ev["intent"] == "add_to_cart" and ev["method"] == "heuristic"
-    assert "nth-of-type" not in ev["new"], ev["new"]           # not a brittle positional path
-    # second use came from the cache, not a second healing
-    cart_steps = _case(run, "cart.").attempts[-1].steps
-    assert any("cache" in str(s.detail) for s in cart_steps if s.name == "click_add_to_cart")
+    assert run.verdict == "healthy", [(c.case_id, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    st = _steps(_case(run, "product.pdp."))
+    assert "data-vid names this product" in st["buy_button_ready"].detail, st["buy_button_ready"].detail
+    cart = _steps(_case(run, "cart."))
+    added = [c for s in cart.values() for c in s.checks if c["what"] == "product added to cart"]
+    assert added and all(c["ok"] for c in added), added
 
 
 def test_broken_price_confirmed_with_evidence(tmp_path):
@@ -732,3 +734,25 @@ def test_robots_txt_failing_twice_then_answering_is_read_on_the_third_try(tmp_pa
     run, _ = _scan("robots_500_twice", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict == "healthy", (run.verdict, run.notes)
     assert run.sitemap_summary["robots_loaded"] is True
+
+
+# ---------- held-out run (7 Oct, 30 never-seen stores): buy controls a shopper uses but Radar missed ----------
+def test_buy_button_shown_only_in_a_sticky_bar_after_scrolling_is_found(tmp_path):
+    """true-elements.com: the product form's own button is hidden on desktop; 'ADD TO CART' appears in a sticky bar
+    once the shopper scrolls. v0.16 failed all 3 products ('could not find add_to_cart')."""
+    run = _product_only("sticky_buy_only", tmp_path, max_products=2)
+    assert all(c.verdict == "pass" for c in run.cases), [(c.case_id, c.attempts[-1].error) for c in run.cases]
+    st = _steps(_case(run, "product.pdp."))
+    assert "sticky bar" in st["buy_button_ready"].detail, st["buy_button_ready"].detail
+
+
+def test_div_buy_control_named_for_this_product_is_found_and_adds_the_right_product(tmp_path):
+    """nicobar.com: the buy control is a <div data-product-handle=...> 'ADD TO BAG', no Shopify cart form, and other
+    products' 'Add to Bag' buttons come first on the page. v0.16 failed all 3 products. The cart test proves that
+    clicking it adds THIS product, not a recommended one."""
+    run, _ = _scan("div_buy_control", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    assert not bad, bad
+    st = _steps(_case(run, "product.pdp."))
+    assert "pdp-addtobag-btn" in st["buy_button_ready"].detail and "data-product-handle" in st["buy_button_ready"].detail, \
+        st["buy_button_ready"].detail
