@@ -11,7 +11,7 @@ python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env               # then paste your OPENAI_API_KEY into .env (never into chat or git)
-python3 -m pytest -q                 # 119 tests, about 17 minutes (includes real-browser runs)
+python3 -m pytest -q                 # 120 tests, about 17 minutes (includes real-browser runs)
 python3 -m pytest -q -m "not e2e"    # 66 fast unit tests only
 ```
 
@@ -28,9 +28,10 @@ python3 -m radar open moxiebeauty.in                   # site history page
 ```
 Results: `data/sites/<site_id>/` (see ARCHITECTURE.md, section 7).
 
-Status (6 Oct, v0.14): bench 9 (v0.13) 29 healthy / 4 degraded / 0 down; 2 Radar issues (plum search words,
-soulflower popup inside shadow DOM) fixed in v0.14 (ARCHITECTURE.md 4n). The real store findings: supplysix
-desktop price, soulflower + foxtale soft 404. Next: bench 10 on v0.14 for the R1 exit.
+Status (6 Oct, v0.15): bench 10 (v0.14) 29 healthy / 4 degraded / 0 down, 0 Radar false failures; 1 flaky journey
+(thefunclab) was a real store finding (product image link does nothing) that v0.15 now reports as a warning
+(ARCHITECTURE.md 4o). Store findings: supplysix desktop price, soulflower + foxtale soft 404, thefunclab dead
+image link. Next: bench 11 on v0.15 for the R1 exit (0 false failures, 0 flaky).
 
 ## Bench: many Shopify stores, one table
 ```bash
@@ -62,7 +63,7 @@ Without a key: heuristic healing only, no triage, and the run says so.
 python3 -m tests.mockstore.server renamed_button 8765  # terminal 1
 python3 -m radar scan http://127.0.0.1:8765 --open     # terminal 2: watch it heal
 ```
-Modes (38, described at the top of `tests/mockstore/server.py`), e.g. `healthy`, `renamed_button`,
+Modes (39, described at the top of `tests/mockstore/server.py`), e.g. `healthy`, `renamed_button`,
 `wrong_variant`, `free_gift`, `hostile`, `title_layouts`, `card_layouts`, `hover_menu`,
 `brand_landing`, `rerender_grid`, `icon_popup`, `quick_named_main`, `sticky_price`,
 `hidden_product`, `notfound_product`, `no_buy_form`, `search_misses`.

@@ -1199,6 +1199,12 @@ AIM_JS = r"""(via) => { const t = document.querySelector('[data-radar-target="cl
   if (i < 0 && via === 'card') i = hits.findIndex(h => h && c !== t && c.contains(h) && !h.closest('button, input, select, form, [role="button"]'));
   return i < 0 ? null : {x: pts[i][0], y: pts[i][1], top: Math.round(r.top)}; }"""
 
+MARK_TRIED_JS = r"""() => { const t = document.querySelector('[data-radar-target="click"]'); if (!t) return null;
+  t.setAttribute('data-radar-tried', '1');
+  const txt = (t.innerText || t.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 40);
+  const kind = t.querySelector('img, picture, video') && !txt ? 'the product IMAGE link' : `the link '${txt}'`;
+  return `${kind} <a${t.className && typeof t.className === 'string' ? '.' + t.className.trim().split(/\s+/)[0] : ''}>`; }"""
+
 CLICK_CHECK_JS = r"""([x, y]) => { const t = document.querySelector('[data-radar-target="click"]'); if (!t) return false;
   const c = document.querySelector('[data-radar-target="card"]') || t; const h = document.elementFromPoint(x, y);
   return !!h && (h === t || t.contains(h) || (c.contains(h) && !h.closest('button, input, select, form, [role="button"]'))); }"""
@@ -1354,6 +1360,7 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                    f"{got['href']} ({got['text']!r})" if found else _why_none(got, _path(page.url)), found)
         clicked = _handle(got["href"])
         listing = page.url
+        first = ctx.sess.evaluate(MARK_TRIED_JS)
         _click_picked(ctx, got)
         again = ""
         if _handle(page.url) != clicked and page.url == listing:
@@ -1362,14 +1369,34 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
             got2 = _pick(ctx, "a[href]", PRODUCT_HREF, [f"/products/{clicked}"] + prefer)
             if not got2.get("none"):
                 clicked = _handle(got2["href"])
+                ctx.sess.evaluate(MARK_TRIED_JS)
                 _click_picked(ctx, got2)
                 again = " (first click did not open it: the page re-rendered; clicked again)"
+        if _handle(page.url) != clicked and page.url == listing and clicked:
+            # Still nothing: that LINK does nothing when clicked (thefunclab.com, bench 10: the homepage slider's
+            # script cancels mousedown/click on the product IMAGE; the product NAME opens it, also for a shopper).
+            # A shopper then clicks the product's other link in the same card. If that opens it, the journey goes
+            # on and the dead link is reported as a store WARNING; if not, the step fails as before.
+            got3 = _pick(ctx, "a[href]", rf"/products/{re.escape(clicked)}(?:[/?#]|$)", [f"/products/{clicked}"],
+                         exclude=NOT_SHOPPING + ", [data-radar-tried]", second_pass=False)
+            if not got3.get("none"):
+                _click_picked(ctx, got3)
+                if _handle(page.url) == clicked:
+                    dead["link"] = (f"{first or 'a product link'} on {_path(listing)} did nothing when clicked (twice); "
+                                    f"the product's other link ({got3['text']!r}) opened it")
+                    again = " (its first link did nothing; the product name opened it)"
         ctx.expect("opened the product that was clicked", f"/products/{clicked}", _path(page.url),
                    _handle(page.url) == clicked)
         known = "known in-stock product" if clicked in product_handles else "first clickable product"
         return (f"clicked {known} on {got.get('considered')} candidates → {_path(page.url)}{again}"
                 + (f"; {got['overlay']}" if got.get("overlay") else "") + (" (via its card)" if got.get("via") == "card" else ""))
+    dead: dict = {}
     ctx.steps.run("click_into_product", click_product)
+    if dead.get("link"):
+        # a store finding, not a broken journey: shown as a WARNING step with the evidence
+        ctx.steps.run("every_product_link_opens_the_product",
+                      lambda: ctx.expect("product link opens the product when clicked", "opens the product",
+                                         dead["link"], False), soft=True)
 
     # product data problems are the product suite's (hard) findings; here they only warn
     p, v = _pdp_assertions(ctx, page.url, expect_buyable=allow_cart, soft_data=True)

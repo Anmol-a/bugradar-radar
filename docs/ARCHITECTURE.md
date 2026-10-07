@@ -3,7 +3,7 @@
 Rule for this file: it says what works, what is proven, what is not, and what hurts. No bluff.
 It is updated with every change.
 
-Last updated: 6 Oct 2026 · Framework v0.14. Bench 9 (v0.13, 6 Oct 15:31 IST): 29 healthy / 4 degraded / 0 down, 0 Radar-offline; v0.12's plum product and thehouseofrare search fixes held. 2 Radar issues (plum search words, soulflower popup in shadow DOM) fixed in v0.14 (4n); 3 store findings unchanged. R1 exit needs one clean bench (bench 10).
+Last updated: 6 Oct 2026 · Framework v0.15. Bench 10 (v0.14, 6 Oct 16:45 IST): 29 healthy / 4 degraded / 0 down; v0.14's plum search and soulflower popup fixes held; 0 Radar false failures. 1 FLAKY journey (thefunclab): a real store finding (homepage-slider product IMAGE link does nothing, verified live) that Radar turned into a flaky journey; v0.15 clicks the product name like a shopper and reports the dead link as a store warning (4o). R1 exit needs one bench with 0 false failures AND 0 flaky (bench 11).
 
 ---
 
@@ -475,6 +475,19 @@ Totals: 29 healthy / 4 degraded / 0 down / 1 blocked (vaaree, robots.txt) / 2 un
 
 Proof on v0.13 before the fix: mock `shadow_popup` → journey confirmed_fail ("3 links: 3 covered by div"); the two new search-term unit tests fail. v0.14: all pass. Note: whether plum's search should find 'Mystery Merch' is not judged (stores often keep promo items out of search on purpose).
 
+## 4o. Tenth bench (36 stores, 6 Oct 16:45 IST, v0.14): 0 Radar false failures; 1 flaky = a real store finding
+
+Totals: 29 healthy / 4 degraded / 0 down / 1 blocked / 2 unsupported / 0 no_network. v0.14 fixes held: plumgoodness search PASS, soulflower journey PASS (no flaky).
+
+| Store | Result | Root cause (proven) | Owner | v0.15 |
+|---|---|---|---|---|
+| thefunclab.com | journey FLAKY (attempt 1 failed, 2 passed) | Attempt 1: the collection link Radar picked sits in the auto-rotating hero banner; the click timed out twice (soft step), so Radar went home → product card. The card it clicked is in the homepage 'Shop Our Products' slider: its **product IMAGE link does nothing when clicked**. Trace: link picked, hit-test true at (1073,425), two `mouse.click`s 10 s apart, no navigation. **Live in Anmol's Chrome (6 Oct): 2 of 2 image clicks stayed on `/`; the page's own script calls preventDefault on mousedown, mouseup and click (trusted events, so a shopper's click dies too); the product NAME link opened the product.** Attempt 2's collection link worked, so it went via the collection grid and passed | **Store** (dead image link), Radar turned it into a flaky journey | When a product link does nothing twice, Radar clicks that product's other link in the same card (a shopper clicks the name). Opens → journey goes on; a WARNING step `every_product_link_opens_the_product` names the dead link. Nothing opens → the step fails as before |
+| supplysix / soulflower / foxtale | FAIL | trial-page desktop price / soft 404 / soft 404 | Store | — |
+
+Proof: new mock `dead_image_link` (image link cancels mousedown/click, name link works). v0.14: journey confirmed_fail "expected /products/ceramic-vase, got /collections/home-decor" (both attempts). v0.15: PASS first attempt + the warning.
+
+Known, not changed: links inside an auto-rotating hero banner time out (Playwright waits for a still element). The step is soft and Radar falls back to the homepage cards; picking static links first is a later improvement (seen once, no false result).
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -727,6 +740,9 @@ state. 4. Report section "Store profile". Exit: bench shows a profile for every 
 Each new check template gets a mock mode that fails on the old code, as for every rule so far.
 
 ## Change log
+- 6 Oct 2026, v0.15: bench 10 (4o). A product link that does nothing when clicked (twice) -> Radar clicks the product's
+  other link in the card; journey goes on, dead link = store WARNING. New mock mode `dead_image_link`. 120 tests
+  (66 unit, 54 end-to-end).
 - 6 Oct 2026, v0.14: bench 9 (4n). Search words: brand plurals/stems excluded, promo/bundle words never used, up to 3
   words (fail only if all 3 miss). Popup finder looks inside open shadow roots (YourLio on soulflower). New mock mode
   `shadow_popup`. 119 tests (66 unit, 53 end-to-end).
