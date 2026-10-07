@@ -482,3 +482,110 @@ def test_search_suite_carries_up_to_three_words():
     suites = build_suites(sm, Settings())
     case = next(c for s in suites if s.id == "search" for c in s.cases)
     assert len(case.params["alt_urls"]) == 2, case.params
+
+
+# ---------- desktop + mobile in every run (7 Oct) ----------
+def _attempt_with(loads=(), console=(), failed=()):
+    from radar.core.models import AttemptResult
+    return AttemptResult(1, True, console=list(console), failed_requests=list(failed), loads=list(loads))
+
+
+def _case_with(attempt, verdict="pass"):
+    cr = CaseResult("c", "journey", "t", "x", "major", verdict)
+    cr.attempts.append(attempt)
+    return cr
+
+
+def test_incident_signature_is_per_device_and_desktop_keeps_the_old_key():
+    from radar.runner.confirm import signature, signature_device
+    assert signature("xyz.in", "cart.add", "click") == "xyz.in|cart.add|click"                    # unchanged for desktop
+    assert signature("xyz.in", "cart.add", "click", "mobile") == "xyz.in|cart.add|click|mobile"
+    assert signature_device("xyz.in|cart.add|click") == "desktop"
+    assert signature_device(signature("xyz.in", "cart.add", None, "mobile")) == "mobile"
+
+
+def test_a_passing_mobile_run_never_closes_a_desktop_incident_and_the_reverse(tmp_path):
+    st = Storage(tmp_path)
+
+    def run(rid, device, sig):
+        return {"run_id": rid, "site_id": "xyz.in", "started_at": "2026-10-07T00:00:00+00:00",
+                "finished_at": "2026-10-07T00:01:00+00:00", "device": device, "verdict": "down" if sig else "healthy",
+                "counts": {"pass": 0, "flaky": 0, "confirmed_fail": 1 if sig else 0, "blocked": 0, "skipped": 0},
+                "cases": [{"case_id": "cart.add", "suite": "cart", "title": "t", "severity": "critical",
+                           "verdict": "confirmed_fail", "incident_signature": sig,
+                           "attempts": [{"failed_step": "click", "error": "boom"}]}] if sig else []}
+
+    st.save_run(run("d1", "desktop", "xyz.in|cart.add|click"), tmp_path / "d1")
+    st.save_run(run("m1", "mobile", "xyz.in|cart.add|click|mobile"), tmp_path / "m1")
+    inc = {i["signature"]: i for i in st.incidents("xyz.in")}
+    assert inc["xyz.in|cart.add|click"]["device"] == "desktop" and inc["xyz.in|cart.add|click|mobile"]["device"] == "mobile"
+    st.resolve_missing_incidents("xyz.in", set(), "mobile")          # mobile run passed: only the mobile incident closes
+    inc = {i["signature"]: i["status"] for i in st.incidents("xyz.in")}
+    assert inc == {"xyz.in|cart.add|click": "open", "xyz.in|cart.add|click|mobile": "resolved"}
+    st.resolve_missing_incidents("xyz.in", set(), "desktop")
+    assert {i["status"] for i in st.incidents("xyz.in")} == {"resolved"}
+
+
+def test_remembered_locators_are_kept_per_device(tmp_path):
+    from radar.healing.locator import Healer
+    llm = make_client(replace(Settings(), llm_provider="none"))
+    st = Storage(tmp_path)
+    d, m = Healer("xyz.in", "r", st, llm, None, "desktop"), Healer("xyz.in", "r", st, llm, None, "mobile")
+    assert d.cache_id == "xyz.in" and m.cache_id == "xyz.in@mobile" and m.site_id == "xyz.in"
+    st.cache_locator(d.cache_id, "add_to_cart", "button.desk", "hint")
+    st.cache_locator(m.cache_id, "add_to_cart", "button.phone", "hint")
+    assert st.cached_locator(d.cache_id, "add_to_cart") == "button.desk"
+    assert st.cached_locator(m.cache_id, "add_to_cart") == "button.phone"
+
+
+def test_perf_summary_numbers_and_empty():
+    from radar.runner.executor import perf_summary
+    assert perf_summary([]) == {} and perf_summary([_case_with(_attempt_with())]) == {}
+    a = _attempt_with(
+        loads=[{"url": "/", "ttfb": .2, "dcl": .8, "load": 1.0, "lcp": 1.1},
+               {"url": "/products/x", "ttfb": .3, "dcl": 1.5, "load": 4.0, "lcp": None}],
+        console=[{"type": "error", "text": "boom", "url": "u"}, {"type": "warning", "text": "w", "url": "u"}],
+        failed=["GET https://cdn.x/a.js"])
+    b = _attempt_with(loads=[{"url": "/", "ttfb": .2, "dcl": 1.2, "load": 2.0, "lcp": 1.5}],        # same page, slower
+                      console=[{"type": "error", "text": "boom", "url": "u"}, {"type": "pageerror", "text": "uncaught", "url": "u"}],
+                      failed=["GET https://cdn.x/a.js", "GET https://cdn.x/b.js"])
+    p = perf_summary([_case_with(a), _case_with(b)])
+    assert p["pages"] == 2 and p["slowest"] == {"url": "/products/x", "load_secs": 4.0}
+    assert p["median_load_secs"] == 3.0                 # pages: / = 2.0 (slowest seen), /products/x = 4.0
+    assert (p["console_errors"], p["console_warnings"], p["failed_requests"]) == (2, 1, 2)   # de-duplicated across cases
+
+
+def _row(verdict, suites, failures=(), device="desktop", warnings=0, notes=()):
+    return {"site_id": "xyz.in", "url": "https://xyz.in", "verdict": verdict, "platform": "shopify", "theme": "Dawn",
+            "checkout": "Shopify checkout", "access": "open", "suites": suites, "failures": list(failures),
+            "warnings": warnings, "healed": 0, "radar_suspect": 0, "notes": list(notes), "report": f"/r/{device}.html",
+            "secs": 10, "device": device, "perf": {"pages": 3}}
+
+
+def test_bench_row_combines_devices_worst_wins_and_says_where_it_fails_only_on_one():
+    from radar.bench import combine
+    fail = {"case": "product.pdp.vase", "verdict": "confirmed_fail", "step": "price", "error": "no price"}
+    row = combine({"desktop": _row("down", {"product": "confirmed_fail", "journey": "pass"}, [fail]),
+                   "mobile": _row("healthy", {"product": "pass", "journey": "flaky"}, device="mobile", warnings=2)})
+    assert row["verdict"] == "down" and row["suites"] == {"product": "confirmed_fail", "journey": "flaky"}
+    assert row["suites_by_device"]["mobile"]["product"] == "pass"
+    assert row["failures"] == [dict(fail, device="desktop")]
+    assert row["device_only"] == {"desktop": ["product.pdp.vase"], "mobile": []}
+    assert row["devices"]["mobile"]["verdict"] == "healthy" and row["devices"]["mobile"]["report"] == "/r/mobile.html"
+    assert row["warnings"] == 2 and row["secs"] == 20 and "device" not in row and "perf" not in row
+    both_fail = combine({"desktop": _row("down", {}, [fail]), "mobile": _row("down", {}, [fail], "mobile")})
+    assert both_fail["device_only"] == {"desktop": [], "mobile": []}                   # same failure on both: not 'only'
+
+
+def test_bench_row_verdict_ranking_and_single_device():
+    from radar.bench import combine
+    assert combine({"desktop": _row("healthy", {}), "mobile": _row("degraded", {}, device="mobile")})["verdict"] == "degraded"
+    assert combine({"desktop": _row("down", {}), "mobile": _row("no_network", {}, device="mobile")})["verdict"] == "no_network"
+    one = combine({"desktop": _row("blocked", {}, notes=["robots"])})
+    assert one["verdict"] == "blocked" and list(one["devices"]) == ["desktop"] and one["device_only"] == {}
+
+
+def test_page_url_for_the_timing_table_has_no_host():
+    from radar.core.browser import _short_url
+    assert _short_url("https://xyz.in/products/x?variant=1#top") == "/products/x?variant=1"
+    assert _short_url("https://xyz.in") == "/"

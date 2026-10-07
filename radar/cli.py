@@ -1,7 +1,7 @@
 """Command line.
 
-  python3 -m radar scan moxiebeauty.in              discover, generate, test, report
-  python3 -m radar scan moxiebeauty.in --device both --headed
+  python3 -m radar scan moxiebeauty.in              discover, generate, test, report: desktop AND mobile
+  python3 -m radar scan moxiebeauty.in --device desktop --headed   one screen size only
   python3 -m radar scan moxiebeauty.in --suites smoke,cart
   python3 -m radar bench stores/bench.txt           many stores, one table (see radar/bench.py)
   python3 -m radar sites                            every site scanned so far
@@ -16,7 +16,7 @@ from dataclasses import replace
 
 from radar.core.config import load_settings, site_id_from_url
 from radar.core.storage import Storage
-from radar.runner.executor import scan
+from radar.runner.executor import scan_devices
 
 C = {"pass": "\033[32m", "fail": "\033[31m", "warn": "\033[33m", "dim": "\033[2m", "b": "\033[1m", "x": "\033[0m"}
 if not sys.stdout.isatty():
@@ -29,7 +29,7 @@ VERDICT_COLOR = {"healthy": "pass", "degraded": "warn", "down": "fail", "unsuppo
 def _progress(evt: str, d: dict):
     if evt == "start":
         llm = d["llm"]
-        print(f"{C['b']}RADAR{C['x']} {d['site_id']}  run {d['run_id']}")
+        print(f"{C['b']}RADAR{C['x']} {d['site_id']}  {C['b']}{d.get('device', 'desktop').upper()}{C['x']}  run {d['run_id']}")
         print(f"{C['dim']}LLM (healing + failure triage): {llm['provider']}"
               f"{' (' + llm['model'] + ')' if llm['model'] else ''}"
               f"{'' if llm['provider'] != 'none' else '  · add OPENAI_API_KEY to .env to switch it on'}{C['x']}")
@@ -65,6 +65,8 @@ def _progress(evt: str, d: dict):
                   f"{t['reason'][:140]}{C['x']}")
         else:
             print(f"       {C['dim']}LLM triage: no answer (off, over budget, or invalid reply){C['x']}")
+    elif evt == "device_skipped":
+        print(f"\n{C['warn']}{d['device'].upper()} skipped{C['x']}  {d['why']}")
     elif evt == "done":
         run, run_dir = d["run"], d["run_dir"]
         c = run.counts()
@@ -76,6 +78,13 @@ def _progress(evt: str, d: dict):
             cost = f"  ≈ ${u['est_usd']:.4f}" if u.get("est_usd") is not None else ""
             print(f"{C['dim']}LLM: {u['calls']} call(s), {u['input_tokens']} in / {u['output_tokens']} out tokens{cost}"
                   f"{'  errors: ' + '; '.join(u['errors']) if u.get('errors') else ''}{C['x']}")
+        pf = run.perf or {}
+        if pf:
+            slow = pf.get("slowest")
+            print(f"{C['dim']}Pages {pf['pages']}  median load {pf.get('median_load_secs')}s"
+                  f"{'  slowest ' + slow['url'][:50] + ' ' + str(slow['load_secs']) + 's' if slow else ''}"
+                  f"  · console errors {pf['console_errors']}, warnings {pf['console_warnings']}, "
+                  f"failed requests {pf['failed_requests']}  (evidence only){C['x']}")
         print(f"Report  {run_dir / 'report.html'}")
 
 
@@ -84,7 +93,8 @@ def main(argv=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
     sc = sub.add_parser("scan", help="discover, generate and run tests for a URL")
     sc.add_argument("url")
-    sc.add_argument("--device", default="desktop", choices=["desktop", "mobile", "both"])
+    sc.add_argument("--device", default="both", choices=["desktop", "mobile", "both"],
+                    help="screen size(s) to test (default both: desktop, then mobile)")
     sc.add_argument("--headed", action="store_true", help="show the browser window")
     sc.add_argument("--plain-ua", action="store_true", help="send only 'BugRadar/0.1 (+bugradar.in)' as User-Agent")
     sc.add_argument("--slowmo", type=int, default=None, metavar="MS",
@@ -96,6 +106,8 @@ def main(argv=None):
     bp.add_argument("store_list", help="text file: one URL per line, add 'cart' to enable the cart flow")
     bp.add_argument("--workers", type=int, default=3, help="stores scanned in parallel (default 3)")
     bp.add_argument("--quick", action="store_true", help="fewer pages per store (faster bench)")
+    bp.add_argument("--device", default="both", choices=["desktop", "mobile", "both"],
+                    help="screen size(s) per store (default both: desktop, then mobile)")
     bp.add_argument("--open", action="store_true", help="open the bench page when done")
     bp.add_argument("--headed", action="store_true", help="show the browser windows (a visible Chrome per worker)")
     bp.add_argument("--plain-ua", action="store_true", help="send only 'BugRadar/0.1 (+bugradar.in)' as User-Agent")
@@ -135,10 +147,11 @@ def main(argv=None):
             s = replace(s, headless=False)
         if a.plain_ua:
             s = replace(s, ua_style="plain")
-        print(f"{C['b']}RADAR BENCH{C['x']} {len(entries)} stores, {a.workers} at a time"
+        devices = ("desktop", "mobile") if a.device == "both" else (a.device,)
+        print(f"{C['b']}RADAR BENCH{C['x']} {len(entries)} stores × {' + '.join(devices)}, {a.workers} at a time"
               f"{' (quick)' if a.quick else ''}{' (headed)' if not s.headless else ''}"
               f"  User-Agent: {'BugRadar only' if s.ua_style == 'plain' else 'Chrome + BugRadar'}\n")
-        out = run_bench(entries, s, a.workers)
+        out = run_bench(entries, s, a.workers, devices=devices)
         import json as _json
         payload = _json.loads((out / "bench.json").read_text())
         print("\n" + console_table(payload["rows"]))
@@ -170,11 +183,15 @@ def main(argv=None):
         s = replace(s, allow_cart_flow=False)
     suites = a.suites.split(",") if a.suites else None
     worst = 0
-    for dev in (["desktop", "mobile"] if a.device == "both" else [a.device]):
-        run, run_dir = scan(a.url, s, dev, progress=_progress, only_suites=suites)
+    devices = ("desktop", "mobile") if a.device == "both" else (a.device,)
+    results = scan_devices(a.url, s, devices, progress=_progress, only_suites=suites)
+    for run, run_dir in results:
         if a.open:
             webbrowser.open((run_dir / "report.html").as_uri())
         worst = max(worst, {"healthy": 0, "degraded": 1}.get(run.verdict, 2))
+    if len(results) > 1:
+        print(f"\n{C['b']}Both screen sizes{C['x']}  " + "   ".join(
+            f"{r.device}: {C[VERDICT_COLOR.get(r.verdict, 'warn')]}{r.verdict.upper()}{C['x']}" for r, _ in results))
     return worst
 
 

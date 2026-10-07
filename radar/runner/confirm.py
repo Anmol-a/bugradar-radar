@@ -37,6 +37,13 @@ def verdict(attempts: list[Attempt]) -> str:
     return "flaky"
 
 
-def signature(site_id: str, journey: str, step: str | None) -> str:
-    """Dedupe key: one outage is one incident (later runs append evidence)."""
-    return f"{site_id}|{journey}|{step or 'unknown'}"
+def signature(site_id: str, journey: str, step: str | None, device: str = "desktop") -> str:
+    """Dedupe key: one outage is one incident (later runs append evidence). Desktop keeps the original key; any
+    other device adds '|<device>', so a desktop failure is never closed by a passing mobile run (7 Oct)."""
+    base = f"{site_id}|{journey}|{step or 'unknown'}"
+    return base if device == "desktop" else f"{base}|{device}"
+
+
+def signature_device(sig: str) -> str:
+    """Which device an incident signature belongs to (inverse of signature())."""
+    return "mobile" if sig.endswith("|mobile") else "desktop"

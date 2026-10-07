@@ -150,8 +150,12 @@ class Healer:
     HEURISTIC_MIN = 0.6
     LLM_MIN_CONF = 0.6
 
-    def __init__(self, site_id: str, run_id: str, storage, llm: LLMClient, site_hints: dict | None = None):
+    def __init__(self, site_id: str, run_id: str, storage, llm: LLMClient, site_hints: dict | None = None,
+                 device: str = "desktop"):
         self.site_id, self.run_id, self.storage, self.llm = site_id, run_id, storage, llm
+        # Remembered selectors are per device: a desktop-only control cached for mobile (or the reverse) would
+        # fail, get dropped, be re-found and overwrite the other device's entry on every run (7 Oct).
+        self.cache_id = site_id if device == "desktop" else f"{site_id}@{device}"
         self.hints = site_hints or {}
         self.events: list[dict] = []
 
@@ -180,13 +184,13 @@ class Healer:
         """root: optional CSS selector to search inside (e.g. an open cart drawer)."""
         tried: list[str] = []
         key = intent + ("@scoped" if root else "")
-        cached = self.storage.cached_locator(self.site_id, key)
+        cached = self.storage.cached_locator(self.cache_id, key)
         if cached:
             tried.append(cached)
             loc = self._visible(page, cached, timeout_ms // 2, intent, root)
             if loc:
                 return Found(loc, cached, "cache", None)
-            self.storage.drop_locator(self.site_id, key)   # stale: forget it
+            self.storage.drop_locator(self.cache_id, key)   # stale: forget it
 
         hints = list(self.hints.get(intent, [])) + INTENTS[intent]["defaults"]
         per = max(timeout_ms // max(len(hints), 1), 700)
@@ -196,7 +200,7 @@ class Healer:
             tried.append(sel)
             loc = self._visible(page, sel, per if i == 0 else 700, intent, root)
             if loc:
-                self.storage.cache_locator(self.site_id, key, sel, "hint")
+                self.storage.cache_locator(self.cache_id, key, sel, "hint")
                 return Found(loc, sel, "hint", None)
 
         cands = page.evaluate(CANDIDATES_JS, root)
@@ -228,7 +232,7 @@ class Healer:
         loc = self._visible(page, selector, 2000, intent)
         if not loc:
             raise LocatorNotFound(intent, tried + [selector], f"{method} pick was not visible")
-        self.storage.cache_locator(self.site_id, key, selector, method)
+        self.storage.cache_locator(self.cache_id, key, selector, method)
         self.storage.log_healing(self.site_id, self.run_id, intent, tried, selector, method)
         ev = {"intent": intent, "old": tried, "new": selector, "method": method, "why": why}
         self.events.append(ev)
