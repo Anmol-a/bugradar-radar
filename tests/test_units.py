@@ -589,3 +589,42 @@ def test_page_url_for_the_timing_table_has_no_host():
     from radar.core.browser import _short_url
     assert _short_url("https://xyz.in/products/x?variant=1#top") == "/products/x?variant=1"
     assert _short_url("https://xyz.in") == "/"
+
+
+# ---------- cloud runs: what goes to the cloud-results branch (7 Oct) ----------
+def test_cloud_publisher_copies_the_small_results_and_marks_latest(tmp_path):
+    from tools.publish_cloud_results import publish
+    data, out = tmp_path / "data", tmp_path / "out"
+    run_d = data / "sites" / "xyz.in" / "runs" / "R1-d"
+    run_m = data / "sites" / "xyz.in" / "runs" / "R1-m"
+    for d in (run_d, run_m):
+        d.mkdir(parents=True)
+        (d / "run.json").write_text("{}")
+        (d / "report.html").write_text("x")
+        (d / "journey.a1.01-home.jpg").write_bytes(b"j")
+        (d / "journey.a1_trace.zip").write_bytes(b"z")
+    (run_d / "product.a1.png").write_bytes(b"p")
+    bench = data / "bench" / "20261007T150000Z"
+    bench.mkdir(parents=True)
+    (bench / "bench.json").write_text(json.dumps({"totals": {"stores": 1, "healthy": 1}, "rows": [
+        {"site_id": "xyz.in", "devices": {"desktop": {"report": str(run_d / "report.html")},
+                                          "mobile": {"report": str(run_m / "report.html")}}}]}))
+    (bench / "bench.html").write_text("<html>")
+    log = tmp_path / "bench.log"
+    log.write_text("RADAR BENCH ...")
+    dest = publish(out, data, log, {"event": "push"})
+    assert dest == out / "runs" / "20261007T150000Z" and (out / "LATEST").read_text().strip() == "20261007T150000Z"
+    assert {p.name for p in dest.iterdir()} == {"bench.json", "bench.html", "bench.log", "meta.json", "sites"}
+    assert {p.name for p in (dest / "sites" / "xyz.in" / "R1-d").iterdir()} == {"run.json", "product.a1.png"}
+    assert {p.name for p in (dest / "sites" / "xyz.in" / "R1-m").iterdir()} == {"run.json"}     # no jpg, zip, html
+    meta = json.loads((dest / "meta.json").read_text())
+    assert meta["runs_copied"] == 2 and meta["totals"]["healthy"] == 1
+
+
+def test_cloud_publisher_still_publishes_the_log_when_radar_made_no_bench(tmp_path):
+    from tools.publish_cloud_results import publish
+    log = tmp_path / "bench.log"
+    log.write_text("Traceback: boom")
+    dest = publish(tmp_path / "out", tmp_path / "data", log, {"event": "push"})
+    assert dest.name.endswith("-no-bench") and (dest / "bench.log").read_text() == "Traceback: boom"
+    assert json.loads((dest / "meta.json").read_text())["runs_copied"] == 0
