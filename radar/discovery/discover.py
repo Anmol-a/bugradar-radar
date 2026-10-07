@@ -92,11 +92,13 @@ def _handle(url: str, kind: str) -> str | None:
 
 def load_robots(sess: Session, base: str, s: Settings) -> Robots:
     """RFC 9309: 200 = rules; 4xx = unavailable (allow all); 5xx or no answer = unreachable (disallow all).
-    One retry before calling it unreachable (a single slow answer must not block a whole run)."""
+    Three tries, 2 s and 5 s apart, longer timeout each time, before calling it unreachable (bench 11: soulflower.in
+    and bummer.in had no answer on two quick tries and were blocked for the run; both answer normally)."""
     status = None
-    for i in range(2):
+    tries = ((10000, 2), (15000, 5), (20000, 0))
+    for i, (timeout, gap) in enumerate(tries):
         try:
-            r = sess.page.context.request.get(base + "/robots.txt", timeout=10000)
+            r = sess.page.context.request.get(base + "/robots.txt", timeout=timeout)
             status = r.status
             if r.status == 200:
                 return Robots(r.text(), s.user_agent)
@@ -104,8 +106,8 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
                 return Robots(None, s.user_agent)
         except Exception:  # noqa: BLE001  DNS, TLS, timeout, reset
             status = None
-        if i == 0:
-            time.sleep(2)
+        if gap:
+            time.sleep(gap)
     rb = Robots(None, s.user_agent, unreachable=True)
     rb.status = status
     return rb
@@ -125,7 +127,7 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
             return sm
         code = getattr(sess.robots, "status", None)
         sm.access = "robots_unreachable"
-        sm.notes.append(f"robots.txt could not be fetched ({f'HTTP {code}' if code else 'no answer'}, tried twice); "
+        sm.notes.append(f"robots.txt could not be fetched ({f'HTTP {code}' if code else 'no answer'}, tried 3 times); "
                         "under the robots.txt standard (RFC 9309) that means 'do not crawl', so nothing was tested "
                         "this run. Usually a temporary server problem on the store's side.")
         return sm

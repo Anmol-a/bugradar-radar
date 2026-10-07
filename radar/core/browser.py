@@ -202,7 +202,25 @@ class Session:
     def get_json(self, url: str):
         if not self.allowed(url):
             raise RobotsBlocked(f"robots.txt disallows {url}")
-        r = self.page.context.request.get(url, timeout=20000)
-        if r.status >= 400:
-            raise AssertionError(f"{url} returned HTTP {r.status}")
-        return r.json()
+        # Store data (/products/x.js, /cart.js) is retried on a transient miss: no answer, a 5xx/429, or a body
+        # that is not JSON (bench 11: palmonas.com returned an empty body once, wellbeingnutrition.com timed out
+        # once; both passed on the next attempt). A real 4xx is final.
+        last = None
+        for i, wait in enumerate((0, 1000, 3000)):
+            if wait:
+                self.page.wait_for_timeout(wait)
+            try:
+                r = self.page.context.request.get(url, timeout=20000)
+            except Exception as e:  # noqa: BLE001  timeout, reset, DNS
+                last = f"no answer ({str(e).splitlines()[0][:120]})"
+                continue
+            if r.status >= 500 or r.status == 429:
+                last = f"HTTP {r.status}"
+                continue
+            if r.status >= 400:
+                raise AssertionError(f"{url} returned HTTP {r.status}")
+            try:
+                return r.json()
+            except ValueError:
+                last = f"HTTP {r.status} but the body is not JSON ({(r.text() or '')[:60]!r})"
+        raise AssertionError(f"{url}: no valid data after 3 tries (last: {last})")

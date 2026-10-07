@@ -85,6 +85,10 @@ Modes (to prove Radar catches and heals what it should):
                    v0.13's finder could not see into shadow DOM) -> popup closed by its x, journey PASSES first try
   dead_image_link  collection cards have an IMAGE link and a NAME link; the theme's slider script cancels mousedown/click on
                    the image (thefunclab.com, bench 10) -> journey clicks the name, PASSES, store WARNING names the dead link
+  flaky_data       every /products/<h>.js answers an EMPTY body the first time it is asked (palmonas.com, bench 11) and
+                   JSON after that -> Radar retries the data request; tests PASS on the first attempt
+  robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
+                   bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
   robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
   robots_404       /robots.txt answers HTTP 404 (no file) -> everything allowed, store tested normally
   (Radar's own network dropping mid-run is not a mode: tests shut the store down from the progress hook and point
@@ -374,6 +378,10 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
                                         '<p>Opening soon</p><form action="/password" method="post">'
                                         '<input type="hidden" name="form_type" value="storefront_password">'
                                         '<input type="password" name="password"><button>Enter</button></form>'))
+        if path == "/robots.txt" and self.mode == "robots_500_twice":
+            type(self).ROBOTS_HITS = getattr(type(self), "ROBOTS_HITS", 0) + 1
+            if type(self).ROBOTS_HITS <= 2:
+                return self._send(500, "Internal Server Error", "text/plain")
         if path == "/robots.txt" and self.mode == "robots_500":
             return self._send(500, "Internal Server Error", "text/plain")
         if path == "/robots.txt" and self.mode == "robots_404":
@@ -424,6 +432,12 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
                 p = next((x for x in PRODUCTS if x["handle"] == h[:-3]), None)
                 if not p:
                     return self._json({"error": "not found"}, 404)
+                if self.mode == "flaky_data":
+                    seen = type(self).__dict__.get("DATA_SEEN") or set()
+                    type(self).DATA_SEEN = seen
+                    if h not in seen:
+                        seen.add(h)
+                        return self._send(200, "", "text/html")
                 return self._json({"id": p["id"], "handle": p["handle"], "title": p["title"],
                                    "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in p["variants"]]})
             p = next((x for x in PRODUCTS if x["handle"] == h), None)

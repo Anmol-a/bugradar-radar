@@ -3,7 +3,7 @@
 Rule for this file: it says what works, what is proven, what is not, and what hurts. No bluff.
 It is updated with every change.
 
-Last updated: 6 Oct 2026 · Framework v0.15. Bench 10 (v0.14, 6 Oct 16:45 IST): 29 healthy / 4 degraded / 0 down; v0.14's plum search and soulflower popup fixes held; 0 Radar false failures. 1 FLAKY journey (thefunclab): a real store finding (homepage-slider product IMAGE link does nothing, verified live) that Radar turned into a flaky journey; v0.15 clicks the product name like a shopper and reports the dead link as a store warning (4o). R1 exit needs one bench with 0 false failures AND 0 flaky (bench 11).
+Last updated: 7 Oct 2026 · Framework v0.16. Bench 11 (v0.15, 7 Oct 08:32 IST): 27 healthy / 4 degraded / 0 down; thefunclab fix held. No new Radar mistake in what Radar judged; 2 transient patterns (data request miss, robots.txt no answer), each on 2 stores, fixed in v0.16 (4p). **Rules from 7 Oct: the 36-store list is now a regression set only; fixes only for patterns seen on 2+ stores; R1 closes Fri 9 Oct; the real score comes from 30 never-seen stores (stores/new30.txt) and a seeded-bug store.**
 
 ---
 
@@ -488,6 +488,22 @@ Proof: new mock `dead_image_link` (image link cancels mousedown/click, name link
 
 Known, not changed: links inside an auto-rotating hero banner time out (Playwright waits for a still element). The step is soft and Radar falls back to the homepage cards; picking static links first is a later improvement (seen once, no false result).
 
+## 4p. Eleventh bench (36 stores, 7 Oct 08:32 IST, v0.15) and the anti-loop rules
+
+Totals: 27 healthy / 4 degraded / 0 down / 3 blocked (vaaree robots, soulflower + bummer robots no answer) / 2 unsupported. thefunclab: healthy (v0.15 held).
+
+| Store | Result | Root cause (proven) | Owner | v0.16 |
+|---|---|---|---|---|
+| palmonas.com | journey FLAKY | `/products/x.js` answered a non-JSON body once ("Expecting value: line 1 column 1") | Transient, Radar should absorb | **Pattern, 2 stores:** store data requests retried (0, 1 s, 3 s) on no answer, 5xx/429 or non-JSON; a real 4xx is final |
+| wellbeingnutrition.com | journey FLAKY | same request timed out once (`connect ETIMEDOUT 64:ff9b::…`, the Mac's NAT64/IPv6 path) | Transient | same |
+| soulflower.in, bummer.in | BLOCKED (robots_unreachable) | robots.txt no answer on two quick tries; both answered on every earlier bench | Transient (likely the Mac's network) | **Pattern, 2 stores:** robots.txt 3 tries (10/15/20 s timeouts, 2 s and 5 s apart) before RFC 9309 "do not crawl" |
+| foxtale.in | product FAIL | 'Brightening Under Eye Cream' is published in the catalog (products.json, published 24 Sep) but its page sends shoppers to the homepage. **Verified live in Anmol's Chrome 7 Oct.** No spare product left, so the last candidate failed hard (the v0.9 design) | **Store** (catalog) | none; the message ("URL is a product page") and the LLM triage ('radar problem') are wrong in wording only: goes to the report-wording step |
+| supplysix, foxtale 404 | FAIL | as before | Store | — |
+
+Proof: mocks `flaky_data` and `robots_500_twice`. v0.15: journey FLAKY with the palmonas error / store BLOCKED "tried twice". v0.16: healthy, every case first attempt.
+
+**Anti-loop rules (Anmol, 7 Oct: "no loop like sync8"):** (1) the 36-store bench is a regression set, not a tuning set; (2) fix only patterns seen on 2+ stores, one-offs become documented limits; (3) R1 closes Friday 9 Oct with its limits written down; (4) the real robustness numbers are first-run false failures on 30 never-seen stores (`stores/new30.txt`, run once, no fixes in between) and the catch rate on a seeded-bug store (target ≤ 1/30 and ≥ 80%).
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -740,6 +756,9 @@ state. 4. Report section "Store profile". Exit: bench shows a profile for every 
 Each new check template gets a mock mode that fails on the old code, as for every rule so far.
 
 ## Change log
+- 7 Oct 2026, v0.16: bench 11 (4p). Store data requests retried on transient misses; robots.txt 3 tries before
+  "do not crawl". Mock modes `flaky_data`, `robots_500_twice`. Anti-loop rules recorded. `stores/new30.txt` (held-out
+  set). 122 tests (66 unit, 56 end-to-end).
 - 6 Oct 2026, v0.15: bench 10 (4o). A product link that does nothing when clicked (twice) -> Radar clicks the product's
   other link in the card; journey goes on, dead link = store WARNING. New mock mode `dead_image_link`. 120 tests
   (66 unit, 54 end-to-end).
