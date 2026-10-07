@@ -11,7 +11,7 @@ python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env               # then paste your OPENAI_API_KEY into .env (never into chat or git)
-python3 -m pytest -q                 # 122 tests, about 18 minutes (includes real-browser runs)
+python3 -m pytest -q                 # 124 tests, about 18 minutes (includes real-browser runs)
 python3 -m pytest -q -m "not e2e"    # 66 fast unit tests only
 ```
 
@@ -28,10 +28,11 @@ python3 -m radar open moxiebeauty.in                   # site history page
 ```
 Results: `data/sites/<site_id>/` (see ARCHITECTURE.md, section 7).
 
-Status (7 Oct, v0.16): bench 11 (v0.15) 27 healthy / 4 degraded / 0 down; 2 transient patterns fixed in v0.16
-(ARCHITECTURE.md 4p). The 36-store list is now a regression set; the real test is `stores/new30.txt` (30 stores
-Radar has never seen, run once): `python3 -m radar bench stores/new30.txt --open`. Store findings: supplysix
-desktop price, thefunclab dead image link, foxtale hidden catalog product, soulflower + foxtale soft 404.
+Status (7 Oct, v0.17): first honest score on 30 never-seen stores (v0.16, run once): 21 of 23 testable
+stores judged right; 2 false-failure stores (nicobar, true-elements: buy control) = 2/30, target ≤ 1/30 missed;
+fixed in v0.17 (ARCHITECTURE.md 4q). 5 of 30 stores are custom/headless, not covered by v1. Store findings:
+supplysix desktop price, thefunclab dead image link, foxtale hidden product, libas products with no images,
+soulflower + foxtale soft 404.
 
 ## Bench: many Shopify stores, one table
 ```bash
@@ -63,7 +64,7 @@ Without a key: heuristic healing only, no triage, and the run says so.
 python3 -m tests.mockstore.server renamed_button 8765  # terminal 1
 python3 -m radar scan http://127.0.0.1:8765 --open     # terminal 2: watch it heal
 ```
-Modes (43, described at the top of `tests/mockstore/server.py`), e.g. `healthy`, `renamed_button`,
+Modes (45, described at the top of `tests/mockstore/server.py`), e.g. `healthy`, `renamed_button`,
 `wrong_variant`, `free_gift`, `hostile`, `title_layouts`, `card_layouts`, `hover_menu`,
 `brand_landing`, `rerender_grid`, `icon_popup`, `quick_named_main`, `sticky_price`,
 `hidden_product`, `notfound_product`, `no_buy_form`, `search_misses`.

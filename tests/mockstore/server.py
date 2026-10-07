@@ -87,6 +87,11 @@ Modes (to prove Radar catches and heals what it should):
                    the image (thefunclab.com, bench 10) -> journey clicks the name, PASSES, store WARNING names the dead link
   flaky_data       every /products/<h>.js answers an EMPTY body the first time it is asked (palmonas.com, bench 11) and
                    JSON after that -> Radar retries the data request; tests PASS on the first attempt
+  sticky_buy_only  product pages: the form's own button is hidden on desktop; the same form's button shows in a sticky
+                   bar only after the shopper scrolls (true-elements.com, held-out 7 Oct) -> product tests PASS
+  div_buy_control  product pages: NO /cart/add form; the buy control is <div class="pdp-addtobag-btn"
+                   data-product-handle=...> "ADD TO BAG", after 3 recommendation cards with their own "Add to Bag"
+                   buttons for other products (nicobar.com, held-out 7 Oct) -> product + cart PASS, right product added
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
                    bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
   robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
@@ -544,6 +549,21 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
 </script>"""
         body = (f'{quick}<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="300" height="300" alt="">'
                 f'<div class="price">₹{float(p["price"]):,.2f}</div>{buy}')
+        if self.mode == "sticky_buy_only":
+            sticky = buy.replace('id="product-form-template__main"', 'id="sticky-form"')
+            body += ('<div style="height:2400px"></div><div id="sticky-atc" style="display:none;position:fixed;left:0;right:0;'
+                     'bottom:0;background:#fff;padding:10px;z-index:20">' + sticky + '</div>'
+                     '<style>#product-form-template__main button{display:none}</style>'
+                     '<script>addEventListener("scroll", () => { if (scrollY > 300) document.getElementById("sticky-atc")'
+                     '.style.display = "block"; });</script>')
+        if self.mode == "div_buy_control":
+            others = [x for x in PRODUCTS if x["handle"] != p["handle"] and float(x["price"]) > 0][:3]
+            recs = "".join(f'<div class="rec-card"><a href="/products/{x["handle"]}">{x["title"]}</a>'
+                           f'<button type="submit" class="_gai-atc-btn" onclick="addToCart({x["variants"][0]["id"]})">Add to Bag</button></div>'
+                           for x in others)
+            body = recs + body.replace(buy, f'<div class="pdp-varient-form-main"><div class="pdp-addtobag-btn active" '
+                                            f'data-product-handle="{p["handle"]}" onclick="addToCart({vid})" style="cursor:pointer;'
+                                            f'padding:10px;background:#222;color:#fff;width:200px"><span class="atc-text">ADD TO BAG</span></div></div>')
         if self.mode == "drawer_form_first":
             body = (f'<div class="drawer__scrollable" style="display:none"><form id="product_form_9{rec["id"]}" '
                     f'class="shopify-product-form" action="/cart/add" method="post"><input type="hidden" name="id" value="{rv}">'
