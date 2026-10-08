@@ -59,8 +59,10 @@ GitHub Actions workflow `.github/workflows/radar-cloud.yml` (needs the repo secr
 - **Results:** branch `cloud-results`, folder `runs/<stamp>/` (bench.json, bench.html, log, each store's run.json and
   failure screenshots); `LATEST` names the newest. Full reports, step screenshots and traces: the run's Actions
   artifact (7 days).
-- Runs from GitHub's servers (US data centres): some stores may treat that differently from a home connection
-  (blocking, other currency). Compare the first cloud bench with the Mac bench before trusting differences.
+- **Where:** GitHub's machines by default (US data centres: on 7 Oct this gave 2 location-looking false failures and
+  ~3.5x slower page loads than Mumbai). **Own server near India (recommended):** run `cloud/setup-runner.sh` once on
+  an Ubuntu 24.04 server, then set the repo variable `RADAR_RUNNER=radar`. Data then stays on the server in
+  `/home/radar/radar-data`, so run history and incidents carry over between runs.
 
 ## LLM (healing + failure triage)
 Put the key in `.env` (template: `.env.example`). Default: OpenAI `gpt-5-mini` (15/15 on llm-check, 5 Oct; gpt-4o-mini scored 14/15).

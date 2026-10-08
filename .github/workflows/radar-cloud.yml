@@ -1,5 +1,10 @@
 # Radar in the cloud: runs need no Mac (product layer step 2, 7 Oct 2026).
 #
+# Where it runs
+#   - repo variable RADAR_RUNNER unset   -> GitHub's own machines (ubuntu-latest, US data centres)
+#   - repo variable RADAR_RUNNER=radar   -> our own server (self-hosted runner with the label `radar`, set up once
+#                                           with cloud/setup-runner.sh; near India, no minute limits)
+#
 # How a run starts
 #   - push to branch `cloud-runs` that changes cloud/request.txt  -> runs that request (Claude starts runs this way:
 #     its GitHub connection allows git but not the Actions API)
@@ -10,7 +15,8 @@
 # Where results go
 #   - branch `cloud-results`: runs/<bench stamp>/ with bench.json, bench.html, bench.log, meta.json and, per store
 #     and device, run.json + failure screenshots (*.png). Small, readable with plain git. LATEST = newest stamp.
-#   - Actions artifact `radar-data-<run id>` (7 days): the whole data/ folder incl. reports, step screenshots, traces.
+#   - GitHub machines: Actions artifact `radar-data-<run id>` (7 days) with the whole data/ folder.
+#     Own server: everything stays on the server in /home/radar/radar-data (history kept, so incidents carry over).
 #
 # Same rules as on the Mac: identified User-Agent, robots.txt respected, no stealth, never checkout, read-only on
 # real stores unless the list says `cart` (demo stores only). Only `bench <list> [flags]` requests are accepted.
@@ -33,20 +39,25 @@ permissions:
 
 jobs:
   radar:
-    runs-on: ubuntu-latest
+    runs-on: ${{ vars.RADAR_RUNNER || 'ubuntu-latest' }}
     timeout-minutes: 180
     steps:
-      - uses: actions/checkout@v4
+      - name: Note the start time
+        id: t0
+        run: echo "since=$(date +%s)" >> "$GITHUB_OUTPUT"
 
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.12"
-          cache: pip
+      - uses: actions/checkout@v4
 
       - name: Install Radar + Chromium
         run: |
-          pip install -r requirements.txt
-          python3 -m playwright install --with-deps chromium
+          python3 -m venv .venv
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+          .venv/bin/pip install -q -r requirements.txt
+          if [ "${{ runner.environment }}" = "github-hosted" ]; then
+            .venv/bin/python -m playwright install --with-deps chromium      # GitHub machines: has sudo for apt
+          else
+            .venv/bin/python -m playwright install chromium                  # own server: system libs installed once by setup-runner.sh
+          fi
 
       - name: Read the request
         id: req
@@ -56,15 +67,18 @@ jobs:
           if ! printf '%s' "$args" | grep -Eq '^bench [A-Za-z0-9_./ -]+$'; then
             echo "Refused: only 'bench <store list> [flags]' requests are allowed, got: $args"; exit 1
           fi
+          if [ "${{ runner.environment }}" = "self-hosted" ]; then data=/home/radar/radar-data; else data=data; fi
           echo "file=$f" >> "$GITHUB_OUTPUT"
           echo "args=$args" >> "$GITHUB_OUTPUT"
-          echo "Request ($f): python3 -m radar $args"
+          echo "data=$data" >> "$GITHUB_OUTPUT"
+          echo "Request ($f): python3 -m radar $args   (runner: ${{ runner.name }}, data: $data)"
 
       - name: Run Radar
         continue-on-error: true
         timeout-minutes: 150       # stop Radar in time for the results to be published (job limit 180)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RADAR_DATA_DIR: ${{ steps.req.outputs.data }}
           PYTHONUNBUFFERED: "1"
         run: |
           set -o pipefail
@@ -76,6 +90,7 @@ jobs:
           git config user.name "bugradar-cloud"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           OUT="$RUNNER_TEMP/results"
+          rm -rf "$OUT"; git worktree prune
           if git fetch --depth=1 origin cloud-results 2>/dev/null; then
             git worktree add -B cloud-results "$OUT" FETCH_HEAD
           else
@@ -83,16 +98,17 @@ jobs:
             git -C "$OUT" checkout --orphan cloud-results
             git -C "$OUT" rm -rqf .
           fi
-          python3 tools/publish_cloud_results.py "$OUT" --data data --log bench.log \
-            --event "${{ github.event_name }}" --run-id "${{ github.run_id }}" --sha "${{ github.sha }}" \
-            --request "${{ steps.req.outputs.args }}"
+          python3 tools/publish_cloud_results.py "$OUT" --data "${{ steps.req.outputs.data || 'data' }}" --log bench.log \
+            --since "${{ steps.t0.outputs.since }}" --event "${{ github.event_name }}" --run-id "${{ github.run_id }}" \
+            --sha "${{ github.sha }}" --request "${{ steps.req.outputs.args }}" --runner "${{ runner.name }}"
           cd "$OUT"
           git add -A
-          git commit -qm "cloud ${{ github.event_name }}: $(cat LATEST) (run ${{ github.run_id }})" || exit 0
+          git commit -qm "cloud ${{ github.event_name }}: $(cat LATEST) (run ${{ github.run_id }}, ${{ runner.name }})" || exit 0
           for i in 1 2 3; do git push -q origin cloud-results && break; git pull -q --rebase origin cloud-results; done
+          cd - >/dev/null; git worktree remove --force "$OUT" || true
 
-      - name: Keep the full data folder (reports, screenshots, traces) for 7 days
-        if: always()
+      - name: Keep the full data folder for 7 days (GitHub machines only)
+        if: always() && runner.environment == 'github-hosted'
         uses: actions/upload-artifact@v4
         with:
           name: radar-data-${{ github.run_id }}

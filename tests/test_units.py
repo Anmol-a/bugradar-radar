@@ -640,3 +640,24 @@ def test_cloud_publisher_publishes_the_finished_runs_when_the_bench_was_cut_shor
     assert dest.name.endswith("-no-bench") and (dest / "sites" / "xyz.in" / "R1-d" / "cart.a1.png").exists()
     meta = json.loads((dest / "meta.json").read_text())
     assert meta["partial"] is True and meta["runs_copied"] == 1
+
+
+def test_cloud_publisher_on_our_own_server_publishes_only_this_runs_results(tmp_path):
+    """On the self-hosted server data/ keeps every earlier run: only what THIS run wrote is published."""
+    import os
+    from tools.publish_cloud_results import publish
+    data = tmp_path / "data"
+    old_bench = data / "bench" / "20261001T000000Z"
+    old_bench.mkdir(parents=True)
+    (old_bench / "bench.json").write_text(json.dumps({"rows": []}))
+    old_run = data / "sites" / "old.in" / "runs" / "R0"
+    old_run.mkdir(parents=True)
+    (old_run / "run.json").write_text("{}")
+    for p in (old_bench, old_bench / "bench.json", old_run / "run.json"):
+        os.utime(p, (1000, 1000))
+    new_run = data / "sites" / "new.in" / "runs" / "R1"
+    new_run.mkdir(parents=True)
+    (new_run / "run.json").write_text("{}")
+    dest = publish(tmp_path / "out", data, None, {}, since=2000)
+    assert dest.name.endswith("-no-bench")                                     # the old bench is not this run's
+    assert [p.name for p in (dest / "sites").iterdir()] == ["new.in"]          # the old run is not republished

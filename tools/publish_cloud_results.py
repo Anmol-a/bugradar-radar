@@ -20,13 +20,15 @@ from pathlib import Path
 LOG_TAIL = 400_000      # bytes of the console log kept
 
 
-def newest_bench(data: Path) -> Path | None:
-    benches = sorted((p for p in (data / "bench").glob("*") if p.is_dir()), key=lambda p: p.name)
+def newest_bench(data: Path, since: float = 0) -> Path | None:
+    """Newest bench folder made by THIS run (on our own server data/ keeps every earlier run)."""
+    benches = sorted((p for p in (data / "bench").glob("*") if p.is_dir() and p.stat().st_mtime >= since),
+                     key=lambda p: p.name)
     return benches[-1] if benches else None
 
 
-def publish(out: Path, data: Path, log: Path | None, meta: dict) -> Path:
-    bench = newest_bench(data)
+def publish(out: Path, data: Path, log: Path | None, meta: dict, since: float = 0) -> Path:
+    bench = newest_bench(data, since)
     stamp = bench.name if bench and (bench / "bench.json").exists() else \
         datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-no-bench"
     dest = out / "runs" / stamp
@@ -54,6 +56,8 @@ def publish(out: Path, data: Path, log: Path | None, meta: dict) -> Path:
         # no bench.json (Radar stopped early, e.g. the time limit): publish every run that did finish
         meta["partial"] = True
         for rj in sorted((data / "sites").glob("*/runs/*/run.json")):
+            if rj.stat().st_mtime < since:
+                continue                                    # an earlier run on our own server
             site, run_dir = rj.parents[2].name, rj.parent
             tgt = dest / "sites" / site / run_dir.name
             tgt.mkdir(parents=True, exist_ok=True)
@@ -79,10 +83,12 @@ def main(argv=None) -> int:
     ap.add_argument("--run-id", default="")
     ap.add_argument("--sha", default="")
     ap.add_argument("--request", default="")
+    ap.add_argument("--runner", default="")
+    ap.add_argument("--since", type=float, default=0, help="only results written after this epoch time")
     a = ap.parse_args(argv)
-    meta = {"event": a.event, "run_id": a.run_id, "sha": a.sha, "request": a.request,
+    meta = {"event": a.event, "run_id": a.run_id, "sha": a.sha, "request": a.request, "runner": a.runner,
             "published_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-    dest = publish(Path(a.out), Path(a.data), Path(a.log) if a.log else None, meta)
+    dest = publish(Path(a.out), Path(a.data), Path(a.log) if a.log else None, meta, a.since)
     print(f"published {dest}")
     return 0
 
