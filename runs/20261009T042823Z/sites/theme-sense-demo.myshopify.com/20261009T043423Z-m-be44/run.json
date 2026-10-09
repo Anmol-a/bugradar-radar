@@ -1,0 +1,1923 @@
+{
+  "run_id": "20261009T043423Z-m-be44",
+  "site_id": "theme-sense-demo.myshopify.com",
+  "base_url": "https://theme-sense-demo.myshopify.com",
+  "device": "mobile",
+  "started_at": "2026-10-09T04:34:23+00:00",
+  "finished_at": "2026-10-09T04:37:43+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product \u2192 add to cart \u2192 cart \u2192 checkout button",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.05s",
+              "error": null,
+              "secs": 2.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1481 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/skin (16 products)",
+              "error": null,
+              "secs": 1.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/skin ('Shop now')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/skin",
+                  "actual": "/collections/skin",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 16 candidates \u2192 /products/natural-vegan-lip-balm-lemon-lime",
+              "error": null,
+              "secs": 2.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime ('Lip Balm')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 13.96,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.81,
+              "load": 1.97,
+              "lcp": 0.73
+            },
+            {
+              "url": "/collections/skin",
+              "ttfb": 0.0,
+              "dcl": 0.65,
+              "load": 0.7,
+              "lcp": 0.54
+            },
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime",
+              "ttfb": 0.01,
+              "dcl": 0.53,
+              "load": 0.59,
+              "lcp": 0.56
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.69s",
+              "error": null,
+              "secs": 2.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1481 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/skin (16 products)",
+              "error": null,
+              "secs": 1.81,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/skin ('Shop now')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/skin",
+                  "actual": "/collections/skin",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 16 candidates \u2192 /products/natural-vegan-lip-balm-lemon-lime",
+              "error": null,
+              "secs": 2.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime ('Lip Balm')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 13.75,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.46,
+              "load": 1.51,
+              "lcp": 0.42
+            },
+            {
+              "url": "/collections/skin",
+              "ttfb": 0.04,
+              "dcl": 0.5,
+              "load": 0.59,
+              "lcp": 0.48
+            },
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime",
+              "ttfb": 0.16,
+              "dcl": 0.61,
+              "load": 0.66,
+              "lcp": 0.55
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.92s",
+              "error": null,
+              "secs": 2.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1481 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/skin (16 products)",
+              "error": null,
+              "secs": 2.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/skin ('Shop now')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/skin",
+                  "actual": "/collections/skin",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 16 candidates \u2192 /products/natural-vegan-lip-balm-lemon-lime",
+              "error": null,
+              "secs": 2.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime ('Lip Balm')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 15.63,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.68,
+              "load": 1.78,
+              "lcp": 0.55
+            },
+            {
+              "url": "/collections/skin",
+              "ttfb": 0.01,
+              "dcl": 0.68,
+              "load": 0.76,
+              "lcp": 0.58
+            },
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime",
+              "ttfb": 0.01,
+              "dcl": 0.79,
+              "load": 0.83,
+              "lcp": 0.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-sense-demo.myshopify.com|journey.shopper|product_identified|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product page is clearly visible and contains title, price and Add to cart/Buy it now buttons, so the robot failed to read data (JS fetch throttled 429) or looked in the wrong place rather than the store having a shopper-facing problem.",
+        "evidence": "Visible page text includes product title and purchase controls: \"BKIND Lip Balm ... Regular price $19.00 CAD Sale price $16.00 CAD ... Flavor Lime Berries Peppermint ... Quantity ... Add to cart Buy it now\"; the robot error was an HTTP 429 fetching .js: \"https://theme-sense-demo.myshopify.com/produc"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 2.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1481 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.94s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.94s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.4,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.81,
+              "load": 1.83,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/skin",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.79s",
+              "error": null,
+              "secs": 2.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Skin Care \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1552 chars, 34 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.56s",
+              "error": null,
+              "secs": 1.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Care \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1184 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/body",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.66s",
+              "error": null,
+              "secs": 1.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Body Care \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1140 chars, 19 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/nail-polish",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.7s",
+              "error": null,
+              "secs": 1.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Nail Polish \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1813 chars, 44 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.25,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed parsing 'srcset' attribute value since its 'w' descriptor is invalid.",
+              "url": "https://theme-sense-demo.myshopify.com/collections/hair"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-sense-demo.myshopify.com/cdn/shop/products/ScreenShot2022-01-07at9.29.43AM.png?v=1641565820\"",
+              "url": "https://theme-sense-demo.myshopify.com/collections/hair"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-sense-demo.myshopify.com/cdn/shop/products/ShampooBar_VideoThumb.jpg?v=1641913020\"",
+              "url": "https://theme-sense-demo.myshopify.com/collections/hair"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://theme-sense-demo.myshopify.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/collections/skin",
+              "ttfb": 0.03,
+              "dcl": 0.56,
+              "load": 1.66,
+              "lcp": 0.38
+            },
+            {
+              "url": "/collections/hair",
+              "ttfb": 0.16,
+              "dcl": 0.46,
+              "load": 0.58,
+              "lcp": 0.44
+            },
+            {
+              "url": "/collections/body",
+              "ttfb": 0.21,
+              "dcl": 0.54,
+              "load": 0.68,
+              "lcp": 0.52
+            },
+            {
+              "url": "/collections/nail-polish",
+              "ttfb": 0.17,
+              "dcl": 0.56,
+              "load": 0.71,
+              "lcp": 0.46
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.skin",
+      "suite": "catalog",
+      "title": "Collection 'Skin Care' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.05s",
+              "error": null,
+              "secs": 2.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Skin Care \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1552 chars, 34 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "16 products listed",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.93,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/skin",
+              "ttfb": 0.04,
+              "dcl": 0.86,
+              "load": 1.93,
+              "lcp": 0.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.natural-vegan-lip-balm-lemon-lime",
+      "suite": "product",
+      "title": "PDP 'Lip Balm'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.83s",
+              "error": null,
+              "secs": 6.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Natural vegan Lip Balm LEMON LIME | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1885 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.natural-vegan-lip-balm-lemon-lime.a1.png",
+          "trace": "product.pdp.natural-vegan-lip-balm-lemon-lime.a1_trace.zip",
+          "secs": 12.23,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime?variant=40582358466768",
+              "ttfb": 0.04,
+              "dcl": 0.73,
+              "load": 1.64,
+              "lcp": 0.44
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.93s",
+              "error": null,
+              "secs": 7.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Natural vegan Lip Balm LEMON LIME | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1885 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.natural-vegan-lip-balm-lemon-lime.a2.png",
+          "trace": "product.pdp.natural-vegan-lip-balm-lemon-lime.a2_trace.zip",
+          "secs": 12.62,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime?variant=40582358466768",
+              "ttfb": 0.04,
+              "dcl": 0.82,
+              "load": 2.13,
+              "lcp": 0.46
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.85s",
+              "error": null,
+              "secs": 6.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Natural vegan Lip Balm LEMON LIME | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1885 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.natural-vegan-lip-balm-lemon-lime.a3.png",
+          "trace": "product.pdp.natural-vegan-lip-balm-lemon-lime.a3_trace.zip",
+          "secs": 12.83,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime?variant=40582358466768",
+              "ttfb": 0.03,
+              "dcl": 0.53,
+              "load": 1.68,
+              "lcp": 0.57
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-sense-demo.myshopify.com|product.pdp.natural-vegan-lip-balm-lemon-lime|product_identified|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "other",
+        "reason": "The product page is visible with name, price and buy controls; the robot failed due to a 429 (rate limit) when fetching the product .js data, so the failure is a monitoring/radar issue rather than a store-facing problem.",
+        "evidence": "Visible page text includes: \"Lip Balm\", product price \"$16.00 CAD\", Add to cart, Buy it now, product URL path is /products/natural-vegan-lip-balm-lemon-lime and robot assertion confirms URL is a product page. The robot error: request to /products/natural-vegan-lip-balm-lemon-lime.js returned HTTP 42"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "cart.add_to_cart",
+      "suite": "cart",
+      "title": "Add 'Lip Balm' to cart",
+      "check": "add_to_cart",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.05s",
+              "error": null,
+              "secs": 2.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Natural vegan Lip Balm LEMON LIME | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1885 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a1.png",
+          "trace": "cart.add_to_cart.a1_trace.zip",
+          "secs": 7.94,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime?variant=40582358466768",
+              "ttfb": 0.04,
+              "dcl": 0.9,
+              "load": 1.82,
+              "lcp": 0.57
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.96s",
+              "error": null,
+              "secs": 2.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Natural vegan Lip Balm LEMON LIME | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1885 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a2.png",
+          "trace": "cart.add_to_cart.a2_trace.zip",
+          "secs": 8.09,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime?variant=40582358466768",
+              "ttfb": 0.03,
+              "dcl": 0.79,
+              "load": 1.79,
+              "lcp": 0.51
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.01s",
+              "error": null,
+              "secs": 2.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Natural vegan Lip Balm LEMON LIME | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1885 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a3.png",
+          "trace": "cart.add_to_cart.a3_trace.zip",
+          "secs": 8.08,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime?variant=40582358466768",
+              "ttfb": 0.04,
+              "dcl": 0.9,
+              "load": 1.7,
+              "lcp": 0.45
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-sense-demo.myshopify.com|cart.add_to_cart|product_identified|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product page and visible 'Add to cart' button are present \u2014 the robot failed to fetch the product JSON (HTTP 429) or looked for data in the wrong place, so the failure is from the monitoring robot rather than a shopper-facing store problem.",
+        "evidence": "Visible page text includes product title 'Lip Balm', price '$16.00 CAD', 'Add to cart' and variant selector 'Flavor' on a product URL /products/natural-vegan-lip-balm-lemon-lime; the robot error shows an HTTP 429 from the product .js endpoint (no valid data after 3 tries)."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.natural",
+      "suite": "search",
+      "title": "Search for 'natural' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.78s",
+              "error": null,
+              "secs": 3.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1481 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 24 results, 7 mention 'natural'",
+              "error": null,
+              "secs": 2.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 27 results found for \"natural\" \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1761 chars, 23 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'natural'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "7 of 24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.89,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.65,
+              "load": 2.22,
+              "lcp": 0.69
+            },
+            {
+              "url": "/search?q=natural&type=product",
+              "ttfb": 0.2,
+              "dcl": 0.67,
+              "load": 0.77,
+              "lcp": 0.57
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.78s",
+              "error": null,
+              "secs": 2.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1481 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "theme-sense-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "16: 'theme-sense-demo'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-sense-demo.myshopify.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-sense-demo.myshopify.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-sense-demo.myshopify.com/cdn/shop/files/SENSE.png?v=1638815183",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.43,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.53,
+              "load": 1.51,
+              "lcp": 0.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.11s",
+              "error": null,
+              "secs": 2.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Natural vegan Lip Balm LEMON LIME | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1885 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Natural vegan Lip Balm LEMON LIME | BKIND \u2013 theme-sense-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "60: 'Natural vegan Lip Balm LEMON LIME | BKIND \u2013 theme-sense-demo'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Natural and vegan lip balm, made in Quebec. With lime and lemon essent",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "136: 'Natural and vegan lip balm, made in Quebec. With lime and le'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-sense-demo.myshopify.com/products/natural-vegan-lip-balm-lemon-lime",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Natural vegan Lip Balm LEMON LIME | BKIND",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-sense-demo.myshopify.com/cdn/shop/products/citrus_lip_balm1.jpg?v=1638937074",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.78,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/natural-vegan-lip-balm-lemon-lime",
+              "ttfb": 0.03,
+              "dcl": 0.98,
+              "load": 1.81,
+              "lcp": 0.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 2.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.74,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.16,
+              "dcl": 0.45,
+              "load": 1.96,
+              "lcp": 0.32
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 3,
+    "input_tokens": 10658,
+    "output_tokens": 495,
+    "est_usd": 0.003655,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "theme-sense-demo",
+    "theme": "Dawn (store copy: [Sense] Theme Store demo (latest))",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 6,
+    "collections": 4,
+    "products": 1,
+    "in_stock": 1,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "/collections.json unavailable (https://theme-sense-demo.myshopify.com/collections.json?limit=50: no valid data ); using nav links",
+    "/products.json unavailable (https://theme-sense-demo.myshopify.com/products.json?limit=50: no valid data aft); scraping product links"
+  ],
+  "perf": {
+    "pages": 9,
+    "median_load_secs": 1.7,
+    "slowest": {
+      "url": "/",
+      "load_secs": 2.22
+    },
+    "console_errors": 0,
+    "console_warnings": 3,
+    "failed_requests": 5
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 0,
+    "confirmed_fail": 3,
+    "blocked": 0,
+    "skipped": 0
+  }
+}

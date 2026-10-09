@@ -1,0 +1,1907 @@
+{
+  "run_id": "20261009T043743Z-d-67b7",
+  "site_id": "theme-craft-demo.myshopify.com",
+  "base_url": "https://theme-craft-demo.myshopify.com",
+  "device": "desktop",
+  "started_at": "2026-10-09T04:37:43+00:00",
+  "finished_at": "2026-10-09T04:40:57+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product \u2192 add to cart \u2192 cart \u2192 checkout button",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.91s",
+              "error": null,
+              "secs": 2.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2206 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/bundles (3 products)",
+              "error": null,
+              "secs": 1.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/bundles ('Check out our latest bundled collections')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/bundles",
+                  "actual": "/collections/bundles",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "3",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 3 candidates \u2192 /products/ceramic-bundle",
+              "error": null,
+              "secs": 2.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/ceramic-bundle ('Dinnerware Set')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/ceramic-bundle",
+                  "actual": "/products/ceramic-bundle",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-craft-demo.myshopify.com/products/ceramic-bundle.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/ceramic-bundle",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-craft-demo.myshopify.com/products/ceramic-bundle.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 13.11,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.8,
+              "load": 1.64,
+              "lcp": 0.66
+            },
+            {
+              "url": "/collections/bundles",
+              "ttfb": 0.0,
+              "dcl": 0.34,
+              "load": 0.41,
+              "lcp": 0.33
+            },
+            {
+              "url": "/products/ceramic-bundle",
+              "ttfb": 0.16,
+              "dcl": 0.54,
+              "load": 0.61,
+              "lcp": 0.77
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.65s",
+              "error": null,
+              "secs": 3.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2206 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/bundles (3 products)",
+              "error": null,
+              "secs": 1.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/bundles ('Check out our latest bundled collections')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/bundles",
+                  "actual": "/collections/bundles",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "3",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 3 candidates \u2192 /products/ceramic-bundle",
+              "error": null,
+              "secs": 2.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/ceramic-bundle ('Dinnerware Set')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/ceramic-bundle",
+                  "actual": "/products/ceramic-bundle",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-craft-demo.myshopify.com/products/ceramic-bundle.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/ceramic-bundle",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-craft-demo.myshopify.com/products/ceramic-bundle.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 13.46,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 0.54,
+              "load": 2.17,
+              "lcp": 0.63
+            },
+            {
+              "url": "/collections/bundles",
+              "ttfb": 0.0,
+              "dcl": 0.32,
+              "load": 0.38,
+              "lcp": 0.31
+            },
+            {
+              "url": "/products/ceramic-bundle",
+              "ttfb": 0.19,
+              "dcl": 0.63,
+              "load": 0.7,
+              "lcp": 0.68
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.82s",
+              "error": null,
+              "secs": 2.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2206 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/bundles (3 products)",
+              "error": null,
+              "secs": 1.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/bundles ('Check out our latest bundled collections')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/bundles",
+                  "actual": "/collections/bundles",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "3",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 3 candidates \u2192 /products/ceramic-bundle",
+              "error": null,
+              "secs": 2.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/ceramic-bundle ('Dinnerware Set')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/ceramic-bundle",
+                  "actual": "/products/ceramic-bundle",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-craft-demo.myshopify.com/products/ceramic-bundle.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/ceramic-bundle",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-craft-demo.myshopify.com/products/ceramic-bundle.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 12.67,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.58,
+              "load": 1.62,
+              "lcp": 0.56
+            },
+            {
+              "url": "/collections/bundles",
+              "ttfb": 0.0,
+              "dcl": 0.43,
+              "load": 0.46,
+              "lcp": 0.37
+            },
+            {
+              "url": "/products/ceramic-bundle",
+              "ttfb": 0.15,
+              "dcl": 0.61,
+              "load": 0.67,
+              "lcp": 0.84
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-craft-demo.myshopify.com|journey.shopper|product_identified",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "other",
+        "reason": "The product page and buy controls are visible in the page text and screenshot, the failure came from a 429 (rate-limited JS request) so the monitor looked in the wrong place or hit a transient rate limit rather than a shopper-facing store error.",
+        "evidence": "Visible page text includes product title \"Dinnerware Set\", prices, Add to cart and Buy it now buttons, and the URL matched /products/ceramic-bundle as expected; robot's FACTS list is empty and the only error shown is an HTTP 429 fetching https://theme-craft-demo.myshopify.com/products/ceramic-bundle"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.52s",
+              "error": null,
+              "secs": 2.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2206 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.52s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.52s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.95,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.41,
+              "load": 1.46,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/speckled-white",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.58s",
+              "error": null,
+              "secs": 2.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Speckled White \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1181 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/dove-gray",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.66s",
+              "error": null,
+              "secs": 1.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Dove Gray \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1182 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/blush-pink",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.59s",
+              "error": null,
+              "secs": 1.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Blush Pink \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1179 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/beachgrass-green",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.57s",
+              "error": null,
+              "secs": 1.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Beachgrass Green \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1180 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.84,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/speckled-white",
+              "ttfb": 0.03,
+              "dcl": 0.46,
+              "load": 1.31,
+              "lcp": 0.38
+            },
+            {
+              "url": "/collections/dove-gray",
+              "ttfb": 0.22,
+              "dcl": 0.56,
+              "load": 0.65,
+              "lcp": 0.6
+            },
+            {
+              "url": "/collections/blush-pink",
+              "ttfb": 0.16,
+              "dcl": 0.45,
+              "load": 0.6,
+              "lcp": 0.44
+            },
+            {
+              "url": "/collections/beachgrass-green",
+              "ttfb": 0.2,
+              "dcl": 0.46,
+              "load": 0.57,
+              "lcp": 0.45
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.speckled-white",
+      "suite": "catalog",
+      "title": "Collection 'Speckled White' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.85s",
+              "error": null,
+              "secs": 2.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Speckled White \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1181 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "8 products listed",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "8",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.82,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/speckled-white",
+              "ttfb": 0.05,
+              "dcl": 0.6,
+              "load": 1.69,
+              "lcp": 0.47
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.dinner-plate",
+      "suite": "product",
+      "title": "PDP 'The Dinner Plates'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 8.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Dinner Plates | Ceramic Plates With Different Colors \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1196 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/dinner-plate",
+                  "actual": "/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.dinner-plate.a1.png",
+          "trace": "product.pdp.dinner-plate.a1_trace.zip",
+          "secs": 14.05,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/dinner-plate?variant=42061172572414",
+              "ttfb": 0.24,
+              "dcl": 0.72,
+              "load": 2.84,
+              "lcp": 1.62
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.39s",
+              "error": null,
+              "secs": 6.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Dinner Plates | Ceramic Plates With Different Colors \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1196 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/dinner-plate",
+                  "actual": "/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.dinner-plate.a2.png",
+          "trace": "product.pdp.dinner-plate.a2_trace.zip",
+          "secs": 12.75,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/dinner-plate?variant=42061172572414",
+              "ttfb": 0.2,
+              "dcl": 1.25,
+              "load": 1.26,
+              "lcp": 1.01
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.95s",
+              "error": null,
+              "secs": 7.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Dinner Plates | Ceramic Plates With Different Colors \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1196 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/dinner-plate",
+                  "actual": "/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.dinner-plate.a3.png",
+          "trace": "product.pdp.dinner-plate.a3_trace.zip",
+          "secs": 12.67,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/dinner-plate?variant=42061172572414",
+              "ttfb": 0.19,
+              "dcl": 0.77,
+              "load": 1.78,
+              "lcp": 0.41
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-craft-demo.myshopify.com|product.pdp.dinner-plate|product_identified",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product page and shopper-facing buy controls are clearly visible in the page text and screenshot, so the monitoring robot failed to read the product data (looked in the wrong place) rather than the store being broken.",
+        "evidence": "Visible page text includes the product title and buy controls: \"The Dinner Plates\"; \"Regular price $69.00 CAD\"; \"Quantity\"; \"Add to cart\"; \"Buy it now\". URL at failure: /products/dinner-plate?variant=42061172572414. Error shown by robot: https://theme-craft-demo.myshopify.com/products/dinner-plate.j"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "cart.add_to_cart",
+      "suite": "cart",
+      "title": "Add 'The Dinner Plates' to cart",
+      "check": "add_to_cart",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 3.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Dinner Plates | Ceramic Plates With Different Colors \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1196 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a1.png",
+          "trace": "cart.add_to_cart.a1_trace.zip",
+          "secs": 8.68,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/dinner-plate?variant=42061172572414",
+              "ttfb": 0.22,
+              "dcl": 0.91,
+              "load": 2.35,
+              "lcp": 0.52
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.85s",
+              "error": null,
+              "secs": 2.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Dinner Plates | Ceramic Plates With Different Colors \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1196 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a2.png",
+          "trace": "cart.add_to_cart.a2_trace.zip",
+          "secs": 7.95,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/dinner-plate?variant=42061172572414",
+              "ttfb": 0.2,
+              "dcl": 0.56,
+              "load": 1.69,
+              "lcp": 0.49
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.8s",
+              "error": null,
+              "secs": 2.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Dinner Plates | Ceramic Plates With Different Colors \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1196 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-craft-demo.myshopify.com/products/dinner-plate.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a3.png",
+          "trace": "cart.add_to_cart.a3_trace.zip",
+          "secs": 7.68,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/dinner-plate?variant=42061172572414",
+              "ttfb": 0.18,
+              "dcl": 0.53,
+              "load": 1.62,
+              "lcp": 0.6
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-craft-demo.myshopify.com|cart.add_to_cart|product_identified",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product and buy controls are visible on the page, so the robot looked in the wrong place (the JS/data fetch returned 429) rather than the store lacking the item.",
+        "evidence": "Visible page text includes product title, price, quantity controls, and Add to cart and Buy it now buttons: \"The Dinner Plates\" \"$69.00 CAD\" \"Quantity\" \"Add to cart\" \"Buy it now\". The failed error was an HTTP 429 from /products/dinner-plate.js (no valid data after 3 tries)."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.dinner",
+      "suite": "search",
+      "title": "Search for 'dinner' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.77s",
+              "error": null,
+              "secs": 2.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2206 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 24 results, 6 mention 'dinner'",
+              "error": null,
+              "secs": 2.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 44 results found for \"dinner\" \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1610 chars, 49 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'dinner'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "6 of 24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.36,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.5,
+              "load": 1.51,
+              "lcp": 0.59
+            },
+            {
+              "url": "/search?q=dinner&type=product",
+              "ttfb": 0.33,
+              "dcl": 0.84,
+              "load": 0.95,
+              "lcp": 0.74
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.75s",
+              "error": null,
+              "secs": 2.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2206 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "theme-craft-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "16: 'theme-craft-demo'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-craft-demo.myshopify.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-craft-demo.myshopify.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-craft-demo.myshopify.com/cdn/shop/files/Header_Logo.png?v=1637171080",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.52,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.52,
+              "load": 1.56,
+              "lcp": 0.59
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.9s",
+              "error": null,
+              "secs": 2.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Dinner Plates | Ceramic Plates With Different Colors \u2013 theme-craft-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1196 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 75: 'The Dinner Plates | Ceramic Plates With Different Colors \u2013 t'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "75: 'The Dinner Plates | Ceramic Plates With Different Colors \u2013 t'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Shop Fable Home for organically shaped, premium, and one of a kind cer",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "150: 'Shop Fable Home for organically shaped, premium, and one of '",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-craft-demo.myshopify.com/products/dinner-plate",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-craft-demo.myshopify.com/products/dinner-plate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "The Dinner Plates | Ceramic Plates With Different Colors",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-craft-demo.myshopify.com/cdn/shop/products/the-dinner-plates-dinnerware-fable-home-669014.jpg?v=1639664650",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.67,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/dinner-plate",
+              "ttfb": 0.04,
+              "dcl": 0.62,
+              "load": 1.73,
+              "lcp": 0.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 2.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.53,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-craft-demo.myshopify.com/api/collect",
+            "POST https://theme-craft-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.18,
+              "dcl": 0.42,
+              "load": 1.75,
+              "lcp": 0.37
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 3,
+    "input_tokens": 6810,
+    "output_tokens": 506,
+    "est_usd": 0.002714,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "theme-craft-demo",
+    "theme": "Dawn (store copy: [Craft] Theme store demo (latest))",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 10,
+    "collections": 10,
+    "products": 1,
+    "in_stock": 1,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "/collections.json unavailable (https://theme-craft-demo.myshopify.com/collections.json?limit=50: no valid data ); using nav links",
+    "/products.json unavailable (https://theme-craft-demo.myshopify.com/products.json?limit=50: no valid data aft); scraping product links"
+  ],
+  "perf": {
+    "pages": 11,
+    "median_load_secs": 0.95,
+    "slowest": {
+      "url": "/products/dinner-plate?variant=42061172572414",
+      "load_secs": 1.78
+    },
+    "console_errors": 0,
+    "console_warnings": 0,
+    "failed_requests": 4
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 0,
+    "confirmed_fail": 3,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
