@@ -778,7 +778,11 @@ def _page_market(ctx: Ctx) -> str:
     try:
         m = ctx.sess.evaluate("""() => ({country: (window.Shopify || {}).country || '',
             currency: ((window.Shopify || {}).currency || {}).active || '',
-            nojs: document.documentElement.classList.contains('no-js')})""") or {}
+            nojs: document.documentElement.classList.contains('no-js'),
+            gate: (() => { const re = /navigator\.platform|x86_64|lighthouse|gtmetrix|pagespeed|isbot|\bbot\b/i;
+              for (const sc of document.scripts) { const t = sc.textContent || ''; const m = t.match(re);
+                if (m) return (sc.type || 'js') + ': ' + t.slice(Math.max(0, m.index - 50), m.index + 70).replace(/\s+/g, ' '); }
+              return ''; })()})""") or {}
     except Exception:  # noqa: BLE001
         return ""
     bits = []
@@ -786,6 +790,8 @@ def _page_market(ctx: Ctx) -> str:
         bits.append(f"store served market {m.get('country') or '?'}/{m.get('currency') or '?'}")
     if m.get("nojs"):
         bits.append("theme scripts had not run (html.no-js)")
+        if m.get("gate"):            # evidence for the next cycle: a script that holds the theme for 'bots' / Linux
+            bits.append(f"page script mentions {m['gate'][:130]!r}")
     return ("; " + ", ".join(bits)) if bits else ""
 
 
@@ -1059,7 +1065,7 @@ def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
         links, waited = _settled_search_links(ctx, term)
         if waited:
             how += f" (waited {waited:.0f}s for the store's search app to render results)"
-        ctx.expect("product results", "≥ 1", len(links), len(links) >= 1)
+        ctx.expect("product results", "≥ 1", f"{len(links)}{_page_market(ctx) if not links else ''}", len(links) >= 1)
         match = [l for l in links if term in (l["text"] + " " + l["handle"]).lower()]
         ctx.expect(f"results relevant to '{term}'", "≥ 1 result mentions the term",
                    f"{len(match)} of {len(links)}", len(match) >= 1)
