@@ -1,0 +1,1986 @@
+{
+  "run_id": "20261009T204758Z-m-c093",
+  "site_id": "okhai.org",
+  "base_url": "https://okhai.org",
+  "device": "mobile",
+  "started_at": "2026-10-09T20:47:58+00:00",
+  "finished_at": "2026-10-09T20:54:54+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.04s",
+              "error": null,
+              "secs": 14.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8240 chars, 87 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "warn",
+              "detail": null,
+              "error": "landed on that collection: expected /collections/sustainable-fashion-online-sustainable-clothing-online, got /",
+              "secs": 36.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://okhai.org/collections/sustainable-fashion-online-sustainable-clothing-online ('EXPLORE NOW')",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked \"clicked 'close icon' inside the popup frame\" on: 'iframe popup 5'",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'pressed Escape; still open' on: 'iframe popup 5'",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'pressed Escape; still open' on: 'iframe popup 5'",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/sustainable-fashion-online-sustainable-clothing-online",
+                  "actual": "/",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "fail",
+              "detail": null,
+              "error": "opened the product that was clicked: expected /products/okhai-caspia-cotton-handloom-antifit-dress, got /",
+              "secs": 31.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/okhai-caspia-cotton-handloom-antifit-dress ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/okhai-caspia-cotton-handloom-antifit-dress",
+                  "actual": "/",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "click_into_product",
+          "error": "opened the product that was clicked: expected /products/okhai-caspia-cotton-handloom-antifit-dress, got /",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 108.24,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled and not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGro",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/swiper-bundle-min.js?v=10094408239294256371745481715"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4508131579002880.ingest.us.sentry.io/api/4508131592241152/envelope/?sentry_version=7&sentry_key=d97a825a449bcf2e640608e705016d56&se"
+            },
+            {
+              "type": "warning",
+              "text": "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.",
+              "url": "about:srcdoc"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://okhai.org/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1819404292.1791578899&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurta",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791578898990&cv=11&fst=1791578898990&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1819404292.1791578899&gtm=45be6a72h1v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72h1v9122044462za200zb9100039967zd9100039967xf1&_p=1791578896514",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72h1v890381850za200zb9100039967zd9100039967xf1&_p=1791578896514&_gaz=1&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791578896514&_gaz=1&gcs=G111&gc",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791578952885&cv=11&fst=1791578952885&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1819404292.1791578899&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurtas",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72h1v890381850za200zb9100039967zd9100039967xf1&_p=1791578949985&gcs=G111&gcd=13t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791578949985&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791578949985&gcs=G111&gcd=13t3t"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.82,
+              "load": 8.67,
+              "lcp": 0.94
+            },
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.46,
+              "load": 5.47,
+              "lcp": 1.09
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.08s",
+              "error": null,
+              "secs": 9.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8240 chars, 87 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "warn",
+              "detail": null,
+              "error": "landed on that collection: expected /collections/sustainable-fashion-online-sustainable-clothing-online, got /",
+              "secs": 13.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://okhai.org/collections/sustainable-fashion-online-sustainable-clothing-online ('EXPLORE NOW')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/sustainable-fashion-online-sustainable-clothing-online",
+                  "actual": "/",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "fail",
+              "detail": null,
+              "error": "opened the product that was clicked: expected /products/okhai-caspia-cotton-handloom-antifit-dress, got /",
+              "secs": 28.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/okhai-caspia-cotton-handloom-antifit-dress ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/okhai-caspia-cotton-handloom-antifit-dress",
+                  "actual": "/",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "click_into_product",
+          "error": "opened the product that was clicked: expected /products/okhai-caspia-cotton-handloom-antifit-dress, got /",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 70.69,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled and not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGro",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/swiper-bundle-min.js?v=10094408239294256371745481715"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/"
+            },
+            {
+              "type": "warning",
+              "text": "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.",
+              "url": "about:srcdoc"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://okhai.org/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=318977497.1791579007&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurtas",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579006666&cv=11&fst=1791579006666&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=McFyBUb54ISgextx_YsBExYFcCfI7Xypxg&auid=318977497.1791579007&gtm=45be6a72h1v9100039967za208zd9100039967",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579004623&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72h1v890381850za200zb9100039967zd9100039967xf1&_p=1791579004623&_gaz=1&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a80h2v877793589za200zb9100039967zd9100039967xf1&_p=1791579004623&_gaz=1&gcs=G111&",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579030999&cv=11&fst=1791579030999&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=318977497.1791579007&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurtas%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579028827&gcs=G111&gcd=13t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579028827&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579028827&gcs=G111&gcd=13t3t"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.51,
+              "load": 3.72,
+              "lcp": 0.59
+            },
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 1.87,
+              "load": 4.55,
+              "lcp": 0.99
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.12s",
+              "error": null,
+              "secs": 9.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8240 chars, 87 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "warn",
+              "detail": null,
+              "error": "landed on that collection: expected /collections/sustainable-fashion-online-sustainable-clothing-online, got /",
+              "secs": 13.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://okhai.org/collections/sustainable-fashion-online-sustainable-clothing-online ('EXPLORE NOW')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/sustainable-fashion-online-sustainable-clothing-online",
+                  "actual": "/",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "fail",
+              "detail": null,
+              "error": "opened the product that was clicked: expected /products/okhai-caspia-cotton-handloom-antifit-dress, got /",
+              "secs": 29.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/okhai-caspia-cotton-handloom-antifit-dress ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/okhai-caspia-cotton-handloom-antifit-dress",
+                  "actual": "/",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "click_into_product",
+          "error": "opened the product that was clicked: expected /products/okhai-caspia-cotton-handloom-antifit-dress, got /",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 69.43,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled and not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGro",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/swiper-bundle-min.js?v=10094408239294256371745481715"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'sessionId')",
+              "url": "https://okhai.org/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/"
+            },
+            {
+              "type": "warning",
+              "text": "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.",
+              "url": "about:srcdoc"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4508131579002880.ingest.us.sentry.io/api/4508131592241152/envelope/?sentry_version=7&sentry_key=d97a825a449bcf2e640608e705016d56&se"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/api/collect",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1234197149.1791579080&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurta",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579079671&cv=11&fst=1791579079671&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1234197149.1791579080&gtm=45be6a72h1v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579077379&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579077379&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579077379&_gaz=1&gcs=G111&gc",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1234197149.1791579080&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurta",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579103934&cv=11&fst=1791579103934&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72h1v890381850za200zb9100039967zd9100039967xf1&_p=1791579101969&gcs=G111&gcd=13t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579101969&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579101969&gcs=G111&gcd=13t3t"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.39,
+              "load": 4.15,
+              "lcp": 0.58
+            },
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 1.82,
+              "load": 4.86,
+              "lcp": 1.06
+            }
+          ]
+        }
+      ],
+      "incident_signature": "okhai.org|journey.shopper|click_into_product|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The expected product URL appears to be present in the site content (product cards are visible) so the robot likely looked in the wrong place or read the wrong link rather than a shopper-facing site error.",
+        "evidence": "Visible page text shows a homepage with product cards listed (many product names and prices are visible) and the Page URL at failure is https://okhai.org/ but the robot reports it opened '/' instead of the expected product path /products/okhai-caspia-cotton-handloom-antifit-dress; the robot's FACTS "
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.17s",
+              "error": null,
+              "secs": 10.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8240 chars, 87 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.17s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.17s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.22,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled and not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGro",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/swiper-bundle-min.js?v=10094408239294256371745481715"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/api/collect",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579149142&cv=11&fst=1791579149142&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1693598755.1791579149&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurta",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1693598755.1791579149&gtm=45be6a72v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579147040&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579147040&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579147040&_gaz=1&gcs=G111&gc",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.64,
+              "load": 4.83,
+              "lcp": 0.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/sustainable-fashion-online-",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.61s",
+              "error": null,
+              "secs": 8.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sustainable Clothing Online \u2013 Okhai",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5270 chars, 51 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/artisanal-clothing-handcraf",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.94s",
+              "error": null,
+              "secs": 9.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Artisanal Clothing - Handcrafted Designer Women Dresses Online \u2013 Okhai",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4929 chars, 51 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/okhai-store-new-arrival-sar",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.57s",
+              "error": null,
+              "secs": 9.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "New Arrivals | Sarees, Dresses & Kurtas | Okhai",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5653 chars, 51 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/kurtas-kurta-sets-copy",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.04s",
+              "error": null,
+              "secs": 9.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hand Embroidered Kurta Set For Women Online \u2013 Okhai",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6076 chars, 51 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 36.95,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://okhai.org/collections/sustainable-fashion-online-sustainable-clothing-online"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/collections/sustainable-fashion-online-sustainable-clothing-online"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1704953920.1791579161&dt=Sustainable%20Clothing%20Online%20%E2%80%93%20Okhai&tid=AW-8196571",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579160518&cv=11&fst=1791579160518&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://okhai.org/api/collect",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1704953920.1791579161&gtm=45be6a72v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579159021&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579159021&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579159021&gcs=G111&gcd=13t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579159021&_gaz=1&gcs=G111&gc",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1704953920.1791579161&dt=Buy%20Artisanal%20Clothing%20-%20Handcrafted%20Designer%20Women%2",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579169494&cv=11&fst=1791579169494&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579167731&gcs=G111&gcd=13t3t",
+            "POST https://okhai.org/api/event/collect",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1704953920.1791579161&dt=New%20Arrivals%20%7C%20Sarees%2C%20Dresses%20%26%20Kurtas%20%7C%20",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579178693&cv=11&fst=1791579178693&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a80h2v890381850za200zb9100039967zd9100039967xf1&_p=1791579177406&gcs=G111&gcd=13t",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1704953920.1791579161&dt=Hand%20Embroidered%20Kurta%20Set%20For%20Women%20Online%20%E2%80%",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579189241&cv=11&fst=1791579189241&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72h1v890381850za200zb9100039967zd9100039967xf1&_p=1791579186994&gcs=G111&gcd=13t"
+          ],
+          "loads": [
+            {
+              "url": "/collections/sustainable-fashion-online-sustainable-clothing-online",
+              "ttfb": 0.04,
+              "dcl": 2.24,
+              "load": 4.65,
+              "lcp": 1.29
+            },
+            {
+              "url": "/collections/artisanal-clothing-handcrafted-designer-women-dresses-online",
+              "ttfb": 0.18,
+              "dcl": 4.08,
+              "load": 5.78,
+              "lcp": 1.66
+            },
+            {
+              "url": "/collections/okhai-store-new-arrival-sarees-new-arrivals-dresses-online",
+              "ttfb": 0.22,
+              "dcl": 3.72,
+              "load": 5.85,
+              "lcp": 1.37
+            },
+            {
+              "url": "/collections/kurtas-kurta-sets-copy",
+              "ttfb": 0.03,
+              "dcl": 3.4,
+              "load": 5.5,
+              "lcp": 1.51
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.sustainable-fashion-online-sustainable-c",
+      "suite": "catalog",
+      "title": "Collection 'All Apparel' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.67s",
+              "error": null,
+              "secs": 9.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sustainable Clothing Online \u2013 Okhai",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5270 chars, 51 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "49 products listed",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "49",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.57,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://okhai.org/collections/sustainable-fashion-online-sustainable-clothing-online"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/collections/sustainable-fashion-online-sustainable-clothing-online"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/api/collect",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579198122&cv=11&fst=1791579198122&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=677710847.1791579198&dt=Sustainable%20Clothing%20Online%20%E2%80%93%20Okhai&tid=AW-8196571",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=677710847.1791579198&gtm=45be6a72v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579196119&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579196119&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579196119&gcs=G111&gcd=13t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579196119&_gaz=1&gcs=G111&gc",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/collections/sustainable-fashion-online-sustainable-clothing-online",
+              "ttfb": 0.05,
+              "dcl": 2.93,
+              "load": 6.43,
+              "lcp": 0.78
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.rangsutra-dhwani-red-mandarin-collar-han",
+      "suite": "product",
+      "title": "PDP 'Rangsutra Dhwani Red Mandarin Collar Handloom Cott'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "warn",
+              "detail": null,
+              "error": "catalog product page reachable: expected /products/rangsutra-dhwani-red-mandarin-collar-handloom-cotton-top shows the product, got redirects to / (in the store's catalog but hidden from shoppers)",
+              "secs": 10.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8240 chars, 87 images",
+                  "ok": true
+                },
+                {
+                  "what": "catalog product page reachable",
+                  "expected": "/products/rangsutra-dhwani-red-mandarin-collar-handloom-cotton-top shows the product",
+                  "actual": "redirects to / (in the store's catalog but hidden from shoppers)",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "loads_next_catalog_product_1",
+              "status": "warn",
+              "detail": null,
+              "error": "HTTP status: expected < 400, got 404",
+              "secs": 5.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "404",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "loads_next_catalog_product_2",
+              "status": "fail",
+              "detail": null,
+              "error": "HTTP status: expected < 400, got 404",
+              "secs": 5.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "404",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "loads_next_catalog_product_2",
+          "error": "HTTP status: expected < 400, got 404",
+          "screenshot": "product.pdp.rangsutra-dhwani-red-mandarin-collar-han.a1.png",
+          "trace": "product.pdp.rangsutra-dhwani-red-mandarin-collar-han.a1_trace.zip",
+          "secs": 23.01,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled and not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGro",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/swiper-bundle-min.js?v=10094408239294256371745481715"
+            },
+            {
+              "type": "warning",
+              "text": "jQuery.Deferred exception: Cannot read properties of null (reading 'dataset') TypeError: Cannot read properties of null (reading 'dataset') at HTMLDocument.<anonymous> (https://okhai.org/cdn/shop/t/148/assets/global.js?v",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/jquery.min.js?v=115860211936397945481745481717"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'dataset')",
+              "url": "https://okhai.org/?variant=50707053969601"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/?variant=50707053969601"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://okhai.org/products/rangsutra-dhwani-black-handloom-cotton-dress?variant=50707053805761"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4508131579002880.ingest.us.sentry.io/api/4508131592241152/envelope/?sentry_version=7&sentry_key=d97a825a449bcf2e640608e705016d56&se"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://okhai.org/api/collect",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579210216&cv=11&fst=1791579210216&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1706531671.1791579210&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurta",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1706531671.1791579210&gtm=45be6a72v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579207625&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579207625&_gaz=1&gcs=G111&gc",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579207625&g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1706531671.1791579210&dt=404%20Not%20Found%20%E2%80%93%20Okhai&tid=AW-819657183&en=page_vi",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579218654&cv=11&fst=1791579218654&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72h1v890381850za200zb9100039967zd9100039967xf1&_p=1791579217711&gcs=G111&gcd=13t",
+            "GET https://okhai.org/products/rangsutra-dhwani-black-handloom-cotton-dress.json",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1706531671.1791579210&dt=404%20Not%20Found%20%E2%80%93%20Okhai&tid=AW-819657183&en=page_vie",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579224624&cv=11&fst=1791579224624&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72h1v890381850za200zb9100039967zd9100039967xf1&_p=1791579223664&gcs=G111&gcd=13t",
+            "GET https://okhai.org/products/rangsutra-dhwani-black-checked-handloom-sleeveless-cotton-dress.json",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579223664&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579223664&gcs=G111&gcd=13t3t"
+          ],
+          "loads": [
+            {
+              "url": "/?variant=50707053969601",
+              "ttfb": 0.16,
+              "dcl": 1.81,
+              "load": 4.6,
+              "lcp": 0.56
+            },
+            {
+              "url": "/products/rangsutra-dhwani-black-handloom-cotton-dress?variant=50707053805761",
+              "ttfb": 0.16,
+              "dcl": 0.77,
+              "load": 2.58,
+              "lcp": 0.81
+            },
+            {
+              "url": "/products/rangsutra-dhwani-black-checked-handloom-sleeveless-cotton-dress?variant=50707053510849",
+              "ttfb": 0.13,
+              "dcl": 0.74,
+              "load": 2.61,
+              "lcp": 0.73
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "warn",
+              "detail": null,
+              "error": "catalog product page reachable: expected /products/rangsutra-dhwani-red-mandarin-collar-handloom-cotton-top shows the product, got redirects to / (in the store's catalog but hidden from shoppers)",
+              "secs": 9.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8240 chars, 87 images",
+                  "ok": true
+                },
+                {
+                  "what": "catalog product page reachable",
+                  "expected": "/products/rangsutra-dhwani-red-mandarin-collar-handloom-cotton-top shows the product",
+                  "actual": "redirects to / (in the store's catalog but hidden from shoppers)",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "loads_next_catalog_product_1",
+              "status": "warn",
+              "detail": null,
+              "error": "HTTP status: expected < 400, got 404",
+              "secs": 5.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "404",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "loads_next_catalog_product_2",
+              "status": "fail",
+              "detail": null,
+              "error": "HTTP status: expected < 400, got 404",
+              "secs": 5.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "404",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "loads_next_catalog_product_2",
+          "error": "HTTP status: expected < 400, got 404",
+          "screenshot": "product.pdp.rangsutra-dhwani-red-mandarin-collar-han.a2.png",
+          "trace": "product.pdp.rangsutra-dhwani-red-mandarin-collar-han.a2_trace.zip",
+          "secs": 21.24,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled and not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGro",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/swiper-bundle-min.js?v=10094408239294256371745481715"
+            },
+            {
+              "type": "warning",
+              "text": "jQuery.Deferred exception: Cannot read properties of null (reading 'dataset') TypeError: Cannot read properties of null (reading 'dataset') at HTMLDocument.<anonymous> (https://okhai.org/cdn/shop/t/148/assets/global.js?v",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/jquery.min.js?v=115860211936397945481745481717"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'dataset')",
+              "url": "https://okhai.org/?variant=50707053969601"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/?variant=50707053969601"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://okhai.org/products/rangsutra-dhwani-black-handloom-cotton-dress?variant=50707053805761"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://okhai.org/api/collect",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579232711&cv=11&fst=1791579232711&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1883630043.1791579233&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurtas",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1883630043.1791579233&gtm=45be6a72h1v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579230679&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a80h2v890381850za200zb9100039967zd9100039967xf1&_p=1791579230679&_gaz=1&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579230679&_gaz=1&gcs=G111&gc",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579241295&cv=11&fst=1791579241295&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1883630043.1791579233&dt=404%20Not%20Found%20%E2%80%93%20Okhai&tid=AW-819657183&en=page_vi",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579240225&gcs=G111&gcd=13t3t",
+            "GET https://okhai.org/products/rangsutra-dhwani-black-handloom-cotton-dress.json",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579246104&cv=11&fst=1791579246104&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1883630043.1791579233&dt=404%20Not%20Found%20%E2%80%93%20Okhai&tid=AW-819657183&en=page_vie",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579245242&gcs=G111&gcd=13t3t",
+            "GET https://okhai.org/products/rangsutra-dhwani-black-checked-handloom-sleeveless-cotton-dress.json"
+          ],
+          "loads": [
+            {
+              "url": "/?variant=50707053969601",
+              "ttfb": 0.17,
+              "dcl": 1.32,
+              "load": 5.65,
+              "lcp": 0.67
+            },
+            {
+              "url": "/products/rangsutra-dhwani-black-handloom-cotton-dress?variant=50707053805761",
+              "ttfb": 0.13,
+              "dcl": 0.86,
+              "load": 2.22,
+              "lcp": 0.83
+            },
+            {
+              "url": "/products/rangsutra-dhwani-black-checked-handloom-sleeveless-cotton-dress?variant=50707053510849",
+              "ttfb": 0.14,
+              "dcl": 0.75,
+              "load": 2.01,
+              "lcp": 0.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": "okhai.org|product.pdp.rangsutra-dhwani-red-mandarin-collar-han|loads_next_catalog_product_2|mobile",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_changed_or_down",
+        "reason": "The product URL returned a 404 page with a visible 'Page not found' message, meaning the product page is missing or moved and a shopper cannot reach it.",
+        "evidence": "Visible page text contains: \"404 Page not found\" and the page shows a 404 Page not found message."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.dhwani",
+      "suite": "search",
+      "title": "Search for 'dhwani' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.04s",
+              "error": null,
+              "secs": 9.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8240 chars, 87 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 7 results, 6 mention 'dhwani'",
+              "error": null,
+              "secs": 9.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "dhwani - okhai.org",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1046 chars, 9 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "7",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'dhwani'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "6 of 7",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.15,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled and not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGro",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/swiper-bundle-min.js?v=10094408239294256371745481715"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://okhai.org/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1206582411.1791579256&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurta",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579255624&cv=11&fst=1791579255624&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1206582411.1791579256&gtm=45be6a72v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72h1v9122044462za200zb9100039967zd9100039967xf1&_p=1791579253670",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579253670&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579253670&_gaz=1&gcs=G111&gc",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1206582411.1791579256&dt=dhwani%20-%20okhai.org&tid=AW-819657183&en=page_view&dl=https%3A%2",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579265779&cv=11&fst=1791579265779&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72h1v890381850za200zb9100039967zd9100039967xf1&_p=1791579264872&gcs=G111&gcd=13t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579264872&gcs=G111&gcd=13t3t",
+            "GET https://okhai.org/products/rangsutra-dhwani-red-mandarin-collar-handloom-cotton-top",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579264872&g"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 1.66,
+              "load": 4.53,
+              "lcp": 0.62
+            },
+            {
+              "url": "/search?q=dhwani",
+              "ttfb": 0.3,
+              "dcl": 1.03,
+              "load": 2.99,
+              "lcp": 0.99
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.35s",
+              "error": null,
+              "secs": 8.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8240 chars, 87 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "66: 'Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 256: 'Okhai offers handcrafted apparel and lifestyle products crea'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "256: 'Okhai offers handcrafted apparel and lifestyle products crea'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://okhai.org/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://okhai.org/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://okhai.org/cdn/shop/files/Group_15848.png?height=628&pad_color=fff&v=1691154131&width=1200",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.2,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled and not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGro",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/swiper-bundle-min.js?v=10094408239294256371745481715"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://okhai.org/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=60481001.1791579275&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurtas%2",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579274975&cv=11&fst=1791579274975&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=60481001.1791579275&gtm=45be6a72h1v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579272899&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579272899&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579272899&_gaz=1&gcs=G111&gc",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.8,
+              "load": 4.89,
+              "lcp": 0.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.51s, redirected to /",
+              "error": null,
+              "secs": 7.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8240 chars, 87 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "66: 'Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 256: 'Okhai offers handcrafted apparel and lifestyle products crea'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "256: 'Okhai offers handcrafted apparel and lifestyle products crea'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://okhai.org/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://okhai.org/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://okhai.org/cdn/shop/files/Group_15848.png?height=628&pad_color=fff&v=1691154131&width=1200",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.4,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled and not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGro",
+              "url": "https://okhai.org/cdn/shop/t/148/assets/swiper-bundle-min.js?v=10094408239294256371745481715"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://okhai.org/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://okhai.org/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1118641204.1791579283&dt=Authentic%20Hand%20Embroidered%20Designer%20Dresses%20%26%20Kurta",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579283362&cv=11&fst=1791579283362&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=K9p1FiSQyEyreGf2PVQLD7Ibw2PWXZleOg&auid=1118641204.1791579283&gtm=45be6a72v9100039967za208zd9100039967x",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a80h2v9122044462za200zb9100039967zd9100039967xf1&_p=1791579281927",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72h1v890381850za200zb9100039967zd9100039967xf1&_p=1791579281927&_gaz=1&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579281927&_gaz=1&gcs=G111&gc",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.15,
+              "dcl": 1.13,
+              "load": 3.88,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 5.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.23,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://d24sh1msnqkirc.cloudfront.net/shopflo.bundle.js",
+            "POST https://okhai.org/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://okhai.org/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=690268417.1791579290&dt=404%20Not%20Found%20%E2%80%93%20Okhai&tid=AW-819657183&en=page_vie",
+            "POST https://www.google.com/rmkt/collect/819657183/?random=1791579290154&cv=11&fst=1791579290154&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=690268417.1791579290&gtm=45be6a72v9100039967za208zd9100039967xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-LD7JW75Q3E&gtm=45Pe6a72v9122044462za200zb9100039967zd9100039967xf1&_p=1791579289213&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-79RTCVMR88&gtm=45je6a72v890381850za200zb9100039967zd9100039967xf1&_p=1791579289213&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-TGQ57CJS73&gtm=45je6a72v877793589za200zb9100039967zd9100039967xf1&_p=1791579289213&_gaz=1&gcs=G111&gc",
+            "GET https://okhai.org/products/bugradar-check-does-not-exist.json",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.16,
+              "dcl": 0.83,
+              "load": 2.39,
+              "lcp": 0.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 2,
+    "input_tokens": 7147,
+    "output_tokens": 252,
+    "est_usd": 0.002291,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Authentic Hand Embroidered Designer Dresses & Kurtas | Okhai Store",
+    "theme": "Dawn (store copy: Okhai-Shopify-Store/main)",
+    "checkout_app": "GoKwik + Shopflo",
+    "access": "open",
+    "nav": 25,
+    "collections": 44,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "no search form found on homepage; assuming Shopify default /search"
+  ],
+  "perf": {
+    "pages": 10,
+    "median_load_secs": 5.2,
+    "slowest": {
+      "url": "/collections/sustainable-fashion-online-sustainable-clothing-online",
+      "load_secs": 6.43
+    },
+    "console_errors": 8,
+    "console_warnings": 3,
+    "failed_requests": 90
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 0,
+    "confirmed_fail": 2,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
