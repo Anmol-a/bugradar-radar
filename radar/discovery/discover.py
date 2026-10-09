@@ -98,7 +98,7 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
     tries = ((10000, 2), (15000, 5), (20000, 0))
     for i, (timeout, gap) in enumerate(tries):
         try:
-            r = sess.page.context.request.get(base + "/robots.txt", timeout=timeout)
+            r = sess.page.context.request.get(base + "/robots.txt", timeout=timeout, headers=sess.sign(base + "/robots.txt") or None)
             status = r.status
             if r.status == 200:
                 return Robots(r.text(), s.user_agent)

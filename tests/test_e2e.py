@@ -958,3 +958,32 @@ def test_cards_hidden_until_the_shopper_scrolls_are_found(tmp_path):
     run, _ = _scan("scroll_reveal", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     j = _case(run, "journey.")
     assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
+
+
+def _signing_key(monkeypatch):
+    import secrets as _s
+    from radar.core.webbotauth import Signer, b64u
+    from tests.mockstore.server import Handler
+    seed = b64u(_s.token_bytes(32))
+    monkeypatch.setenv("RADAR_SIGNING_KEY", seed)
+    monkeypatch.setattr(Handler, "SIGNER_X", Signer(seed).x)
+
+
+def test_signed_radar_passes_a_store_edge_that_refuses_unsigned_bots(tmp_path, monkeypatch):
+    """9 Oct: Shopify's edge (Cloudflare) answered 429 to every unsigned request from Oracle Cloud and Contabo. With
+    Web Bot Auth signing (RADAR_SIGNING_KEY), every page, data request, robots.txt and add-to-cart call to the store
+    carries a verifiable BugRadar signature: the store is tested normally."""
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    _signing_key(monkeypatch)
+    run, _ = _scan("signed_only", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", (run.verdict, run.notes, [(c.case_id, c.verdict, c.attempts[-1].error)
+                                                               for c in run.cases if c.verdict != "pass"])
+
+
+def test_unsigned_radar_is_blocked_rate_limited_by_that_edge(tmp_path, monkeypatch):
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    monkeypatch.delenv("RADAR_SIGNING_KEY", raising=False)
+    run, _ = _scan("signed_only", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict in ("blocked", "unreachable"), (run.verdict, run.notes)

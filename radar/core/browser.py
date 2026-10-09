@@ -25,6 +25,7 @@ from playwright.sync_api import sync_playwright, Page, BrowserContext
 
 from radar.core.config import Settings
 from radar.core.robots import Robots
+from radar.core.webbotauth import signer_from_env
 
 DEVICES = {"desktop": None, "mobile": "Pixel 7"}
 DEFAULT_DEVICES = ("desktop", "mobile")      # every run tests both (product decision, 7 Oct: Revenue Shield parity)
@@ -89,10 +90,27 @@ class RateLimited(Exception):
     store failure, never an incident."""
 
 
+def _store_domain(url: str | None) -> str:
+    from urllib.parse import urlparse
+    host = (urlparse(url).hostname or "").lower() if url else ""
+    return host[4:] if host.startswith("www.") else host
+
+
 class Browser:
-    def __init__(self, settings: Settings, device: str = "desktop"):
+    def __init__(self, settings: Settings, device: str = "desktop", store_url: str | None = None):
         self.s, self.device = settings, device
         self._pw = self._browser = None
+        # Web Bot Auth (9 Oct): when RADAR_SIGNING_KEY is set, every request to THIS store's own domain carries a
+        # signature proving it is BugRadar. Third-party hosts (CDNs, apps, analytics) are never signed.
+        self.signer = signer_from_env()
+        self.sign_domain = _store_domain(store_url)
+
+    def signs(self, url: str) -> bool:
+        if not (self.signer and self.sign_domain):
+            return False
+        from urllib.parse import urlparse
+        h = (urlparse(url).hostname or "").lower()
+        return h == self.sign_domain or h.endswith("." + self.sign_domain)
 
     def __enter__(self):
         self._pw = sync_playwright().start()
@@ -116,7 +134,13 @@ class Browser:
                       device_scale_factor=d["device_scale_factor"])
         else:
             kw.update(viewport={"width": 1366, "height": 850})
-        return self._browser.new_context(**kw)
+        ctx = self._browser.new_context(**kw)
+        if self.signer and self.sign_domain:
+            def sign(route):
+                req = route.request
+                route.continue_(headers={**req.headers, **self.signer.headers(req.url)})
+            ctx.route(lambda url: self.signs(url), sign)
+        return ctx
 
     @contextmanager
     def attempt(self, evidence_dir: Path, tag: str):
@@ -127,6 +151,7 @@ class Browser:
         page = ctx.new_page()
         sess = Session(page, self.s)
         sess.evidence_dir, sess.tag = Path(evidence_dir), tag
+        sess.sign = lambda url: self.signer.headers(url) if self.signs(url) else {}
         try:
             yield sess
         finally:
@@ -182,6 +207,7 @@ class Session:
         # runner wait out a short server hiccup before re-checking (9 Oct cloud run)
         self.server_errors: list[str] = []
         page.on("response", self._on_response)
+        self.sign = lambda url: {}             # replaced by Browser.attempt when Web Bot Auth signing is on
 
     def _on_response(self, r):
         try:
@@ -327,7 +353,7 @@ class Session:
             if wait:
                 self.page.wait_for_timeout(int(min(30000, max(wait, after * 1000)) * self.backoff_scale))
             try:
-                r = self.page.context.request.get(url, timeout=20000)
+                r = self.page.context.request.get(url, timeout=20000, headers=self.sign(url) or None)
             except Exception as e:  # noqa: BLE001  timeout, reset, DNS
                 last = f"no answer ({str(e).splitlines()[0][:120]})"
                 continue

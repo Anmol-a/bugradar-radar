@@ -202,7 +202,7 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
     run = RunResult(run_id, site_id, base, device, _now())
     progress("start", {"site_id": site_id, "run_id": run_id, "llm": llm.usage(), "device": device})
 
-    with Browser(s, device) as browser:
+    with Browser(s, device, base) as browser:
         # ---- discovery
         with browser.attempt(run_dir, "discovery") as sess:
             try:

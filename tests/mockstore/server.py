@@ -101,6 +101,9 @@ Modes (to prove Radar catches and heals what it should):
   scroll_reveal    collection product cards are invisible (opacity 0, reveal animation) until the shopper scrolls the page
                    (reequil.com '151 not visible', wearcomet.com, held-out run 9 Oct) -> journey scrolls like a shopper,
                    PASSES
+  signed_only      like Shopify's edge for cloud networks (9 Oct): EVERY request without a valid Web Bot Auth signature
+                   (verified against Handler.SIGNER_X) answers HTTP 429 -> unsigned Radar is BLOCKED (rate-limited);
+                   Radar with RADAR_SIGNING_KEY set PASSES
   flaky_data       every /products/<h>.js answers an EMPTY body the first time it is asked (palmonas.com, bench 11) and
                    JSON after that -> Radar retries the data request; tests PASS on the first attempt
   sticky_buy_only  product pages: the form's own button is hidden on desktop; the same form's button shows in a sticky
@@ -444,8 +447,17 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
         CARTS.setdefault(cid, [])
         return cid, new
 
+    SIGNER_X = ""
+
+    def _signed_ok(self) -> bool:
+        from radar.core.webbotauth import verify
+        h = {k: self.headers.get(k) for k in ("Signature", "Signature-Input", "Signature-Agent")}
+        return all(h.values()) and verify(h, (self.headers.get("Host") or "").lower(), type(self).SIGNER_X)
+
     def do_GET(self):
         Handler.SEEN_UA.add(self.headers.get("User-Agent") or "")
+        if self.mode == "signed_only" and not self._signed_ok():
+            return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
         if self.mode == "products_down" and path.startswith("/products/") and not path.endswith((".js", ".json")):
@@ -697,6 +709,8 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
         return page(f"{p['title']} | Mock Store", body, f'<script type="application/ld+json">{ld}</script>{script}')
 
     def do_POST(self):
+        if self.mode == "signed_only" and not self._signed_ok():
+            return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         cid, new = self._cart()
         if u.path == "/cart/add.js":
