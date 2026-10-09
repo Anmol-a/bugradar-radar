@@ -127,6 +127,25 @@ def main(argv=None) -> int:
         print(f"\nPUBLIC key directory written to ./http-message-signatures-directory (keyid {s.keyid});")
         print(f"publish it at {DEFAULT_AGENT}{DIRECTORY_PATH} with Content-Type {DIRECTORY_MEDIA_TYPE}")
         return 0
+    if a[:1] == ["check"]:
+        # Cloudflare's checker: 200 = BugRadar's key is registered and the signature verified, 401 = well formed but
+        # the key is not (yet) registered, 400 = malformed. Printed into every cloud run's log.
+        s = signer_from_env()
+        if not s:
+            print("Web Bot Auth check: no RADAR_SIGNING_KEY (requests are unsigned)")
+            return 0
+        import urllib.request
+        url = "https://crawltest.com/cdn-cgi/web-bot-auth"
+        req = urllib.request.Request(url, headers={**s.headers(url), "User-Agent": "BugRadar/0.1 (+bugradar.in)"})
+        try:
+            code = urllib.request.urlopen(req, timeout=20).status
+        except urllib.error.HTTPError as e:
+            code = e.code
+        except Exception as e:  # noqa: BLE001
+            code = f"no answer ({type(e).__name__})"
+        meaning = {200: "VERIFIED by Cloudflare", 401: "format OK, key not registered yet", 400: "MALFORMED"}.get(code, "")
+        print(f"Web Bot Auth check (crawltest.com): {code} {meaning}")
+        return 0
     if a[:1] == ["headers"] and len(a) > 1:
         s = signer_from_env()
         if not s:
