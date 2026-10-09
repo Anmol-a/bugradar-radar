@@ -1,0 +1,2377 @@
+{
+  "run_id": "20261009T224028Z-m-52a7",
+  "site_id": "littleboxindia.com",
+  "base_url": "https://littleboxindia.com",
+  "device": "mobile",
+  "started_at": "2026-10-09T22:40:28+00:00",
+  "finished_at": "2026-10-09T22:44:00+00:00",
+  "verdict": "degraded",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.05s",
+              "error": null,
+              "secs": 9.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Littlebox India - Online Clothing and Footwear Hub for the GenZ",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4984 chars, 134 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/best-sellers (97 products)",
+              "error": null,
+              "secs": 10.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/best-sellers ('BESTSELLERS')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/best-sellers",
+                  "actual": "/collections/best-sellers",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "97",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 80 candidates \u2192 /collections/best-sellers/products/cropped-vest-ruffle-top-in-apricot",
+              "error": null,
+              "secs": 10.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/best-sellers/products/cropped-vest-ruffle-top-in-apricot ('Cropped Vest Ruffle Top In Apricot')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/cropped-vest-ruffle-top-in-apricot",
+                  "actual": "/collections/best-sellers/products/cropped-vest-ruffle-top-in-apricot",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Cropped Vest Ruffle Top In Apricot', selected variant 45005675594015 at \u20b9499.00",
+              "error": null,
+              "secs": 0.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/collections/best-sellers/products/cropped-vest-ruffle-top-in-apricot",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/cropped-vest-ruffle-top-in-apricot.js with variants",
+                  "actual": "'Cropped Vest Ruffle Top In Apricot', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Cropped Vest Ruffle Top In Apricot",
+                  "actual": "'Cropped Vest Ruffle Top In Apricot' (h1, 14px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9499.00",
+                  "actual": "\u20b9499.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Cropped Vest Ruffle Top In Apricot",
+                  "actual": "'Cropped Vest Ruffle Top In Apricot' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "XS Cropped Vest Ruffle Top In Apricot",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "499.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.07-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 34.86,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "viewedProducts array is invalid or empty",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 413 ()",
+              "url": "https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb9216924049zd9216924049xf1&_p=1791585651692&gcs=G111"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=940392821.1791585643&dt=Littlebox%20India%20-%20Online%20Clothing%20and%20Footwear%20Hub%20",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585642973&cv=11&fst=1791585642973&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585642942&cv=11&fst=1791585642942&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=940392821.1791585643&gtm=45be6a72v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=940392821.1791585643&dt=Littlebox%20India%20-%20Online%20Clothing%20and%20Footwear%20H",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585640804&gcs",
+            "POST https://www.google.com/measurement/conversion?random=1791585644120&cv=11&tid=G-LNMXSWXNN8&fst=1791585644120&fmt=8&en=session_start&gtm=45je6a72v885775",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585640804&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585640804&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585640804&_gaz=1&gcs=G111&gcd=",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585644743&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585645023&ec=3",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585654552&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585654559&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=940392821.1791585643&dt=Best%20Sellers&tid=AW-10880492231&en=page_view&dl=https%3A%2F%2Fli",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585658851&cv=11&fst=1791585658851&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585658889&cv=11&fst=1791585658889&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=940392821.1791585643&dt=Best%20Sellers&en=page_view&dl=https%3A%2F%2Flittleboxindia.c",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb9216924049zd9216924049xf1&_p=1791585651692&gcs=G111&gcd=13t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb9216924049zd9216924049xf1&_p=1791585651692&gcs=G111&gcd=13t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb9216924049zd9216924049xf1&_p=1791585651692&gcs=G1",
+            "POST https://www.google.com/measurement/conversion?random=1791585658963&cv=11&tid=G-LNMXSWXNN8&fst=1791585658963&fmt=8&en=view_item_list&gtm=45je6a72v88577"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.57,
+              "load": 7.13,
+              "lcp": 1.2
+            },
+            {
+              "url": "/collections/best-sellers",
+              "ttfb": 0.0,
+              "dcl": 2.34,
+              "load": 6.14,
+              "lcp": 0.72
+            },
+            {
+              "url": "/collections/best-sellers/products/cropped-vest-ruffle-top-in-apricot",
+              "ttfb": 0.04,
+              "dcl": 1.14,
+              "load": 5.73,
+              "lcp": 1.82
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.54s",
+              "error": null,
+              "secs": 9.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Littlebox India - Online Clothing and Footwear Hub for the GenZ",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4981 chars, 134 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.54s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.54s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 2",
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "2",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 3: Identifier 'avadaLightJsExclude' has already been declared",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "3: Identifier 'avadaLightJsExclude' has already been declared",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.47,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "viewedProducts array is invalid or empty",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1340260979.1791585678&dt=Littlebox%20India%20-%20Online%20Clothing%20and%20Footwear%20Hub%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1340260979.1791585678&gtm=45be6a72v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585677846&cv=11&fst=1791585677846&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585677879&cv=11&fst=1791585677879&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=1340260979.1791585678&dt=Littlebox%20India%20-%20Online%20Clothing%20and%20Footwear%20",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585675613&gcs",
+            "POST https://www.google.com/measurement/conversion?random=1791585678473&cv=11&tid=G-LNMXSWXNN8&fst=1791585678473&fmt=8&en=session_start&gtm=45je6a72v885775",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585675613&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585675613&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585675613&gcs=G111",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585679849&ec=2",
+            "POST https://littleboxindia.com/api/event/collect",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585680077&ec=3"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.96,
+              "load": 7.0,
+              "lcp": 1.06
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/best-sellers",
+              "status": "pass",
+              "detail": "HTTP 200 in 5.31s",
+              "error": null,
+              "secs": 12.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Sellers",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8022 chars, 175 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/fast-delivery",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.04s",
+              "error": null,
+              "secs": 10.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fast Delivery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8478 chars, 178 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/new-dress",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.16s",
+              "error": null,
+              "secs": 10.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "New Dresses",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8839 chars, 178 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/new-skirts",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.86s",
+              "error": null,
+              "secs": 7.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "NEW SKIRTS",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3019 chars, 97 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 41.73,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/collections/best-sellers"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/collections/best-sellers"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 413 ()",
+              "url": "https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72h1v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585687"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/collections/best-sellers"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/collections/best-sellers"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "viewedProducts array is invalid or empty",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=464626971.1791585689&dt=Best%20Sellers&tid=AW-10880492231&en=page_view&dl=https%3A%2F%2Fli",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=464626971.1791585689&gtm=45be6a72v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585689063&cv=11&fst=1791585689063&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585689108&cv=11&fst=1791585689108&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=464626971.1791585689&dt=Best%20Sellers&en=page_view&dl=https%3A%2F%2Flittleboxindia.co",
+            "POST https://www.google.com/measurement/conversion?random=1791585689952&cv=11&tid=G-LNMXSWXNN8&fst=1791585689952&fmt=8&en=view_item_list&gtm=45je6a72h1v885",
+            "POST https://www.google.com/measurement/conversion?random=1791585689889&cv=11&tid=G-LNMXSWXNN8&fst=1791585689889&fmt=8&en=session_start&gtm=45je6a72h1v8857",
+            "POST https://www.google.com/measurement/conversion?random=1791585689965&cv=11&tid=G-LNMXSWXNN8&fst=1791585689965&fmt=8&en=view_item_list&gtm=45je6a72h1v885",
+            "POST https://www.google.com/measurement/conversion?random=1791585689976&cv=11&tid=G-LNMXSWXNN8&fst=1791585689976&fmt=8&en=view_item_list&gtm=45je6a72h1v885",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72h1v885775642za200zb893960418zd893960418xf1&_p=1791585687508&gcs=G111&gcd=13t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72h1v885775642za208zb893960418zd893960418xf1&_p=1791585687508&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72h1v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585687508&gcs=G1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585687508&gcs",
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585691217&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585691262&ec=3",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585703113&ec=3",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585703139&ec=2",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&ae=g&auid=464626971.1791585689&dt=Fast%20Delivery&en=page_view&dl=https%3A%2F%2Flittleboxindia.",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=464626971.1791585689&dt=Fast%20Delivery&tid=AW-10880492231&en=page_view&dl=https%3A%2F%2Fli",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585706859&cv=11&fst=1791585706859&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585706890&cv=11&fst=1791585706890&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za20ozb9165619195zd9165619195xf1&_p=1791585699925&gcs=G111&gcd=13t3t"
+          ],
+          "loads": [
+            {
+              "url": "/collections/best-sellers",
+              "ttfb": 0.07,
+              "dcl": 4.51,
+              "load": 9.38,
+              "lcp": 2.0
+            },
+            {
+              "url": "/collections/fast-delivery",
+              "ttfb": 0.06,
+              "dcl": 3.27,
+              "load": 6.67,
+              "lcp": 1.59
+            },
+            {
+              "url": "/collections/new-dress",
+              "ttfb": 1.04,
+              "dcl": 3.4,
+              "load": 6.81,
+              "lcp": 1.99
+            },
+            {
+              "url": "/collections/new-skirts",
+              "ttfb": 0.48,
+              "dcl": 1.31,
+              "load": 4.75,
+              "lcp": 1.26
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.best-sellers",
+      "suite": "catalog",
+      "title": "Collection 'Best Sellers' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.91s",
+              "error": null,
+              "secs": 10.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Sellers",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8011 chars, 175 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "97 products listed",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "97",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 2",
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "2",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.63,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/collections/best-sellers"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/collections/best-sellers"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 413 ()",
+              "url": "https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585729226&gcs=G111&g"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/collections/best-sellers"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/collections/best-sellers"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1550041367.1791585731&gtm=45be6a72h1v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1550041367.1791585731&dt=Best%20Sellers&tid=AW-10880492231&en=page_view&dl=https%3A%2F%2Fl",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585731009&cv=11&fst=1791585731009&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585731044&cv=11&fst=1791585731044&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=1550041367.1791585731&dt=Best%20Sellers&en=page_view&dl=https%3A%2F%2Flittleboxindia.c",
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://www.google.com/measurement/conversion?random=1791585732369&cv=11&tid=G-LNMXSWXNN8&fst=1791585732369&fmt=8&en=view_item_list&gtm=45je6a72v88577",
+            "POST https://www.google.com/measurement/conversion?random=1791585732381&cv=11&tid=G-LNMXSWXNN8&fst=1791585732381&fmt=8&en=view_item_list&gtm=45je6a72v88577",
+            "POST https://www.google.com/measurement/conversion?random=1791585732316&cv=11&tid=G-LNMXSWXNN8&fst=1791585732316&fmt=8&en=session_start&gtm=45je6a72v885775",
+            "POST https://www.google.com/measurement/conversion?random=1791585732392&cv=11&tid=G-LNMXSWXNN8&fst=1791585732392&fmt=8&en=view_item_list&gtm=45je6a72v88577",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585729226&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585729226&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585729226&gcs=G111",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585729226&gcs",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585732581&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585733610&ec=3",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199"
+          ],
+          "loads": [
+            {
+              "url": "/collections/best-sellers",
+              "ttfb": 0.07,
+              "dcl": 3.92,
+              "load": 7.28,
+              "lcp": 1.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.eyelet-knit-tie-front-bell-sleeve-shrug-",
+      "suite": "product",
+      "title": "PDP 'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal '",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.0s",
+              "error": null,
+              "secs": 10.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green- Littlebox India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2961 chars, 85 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "actual": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green', selected variant 53006747992351 at \u20b9699.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green.js with variants",
+                  "actual": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green",
+                  "actual": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green' (h1, 14px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9699.00",
+                  "actual": "\u20b9699.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green",
+                  "actual": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "XS Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "699.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 53006747992351 (XS) selected, in stock",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "5 of 5 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "fail",
+              "detail": null,
+              "error": "buy button enabled: expected true, got false",
+              "secs": 6.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "false",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "buy_button_ready",
+          "error": "buy button enabled: expected true, got false",
+          "screenshot": "product.pdp.eyelet-knit-tie-front-bell-sleeve-shrug-.a1.png",
+          "trace": "product.pdp.eyelet-knit-tie-front-bell-sleeve-shrug-.a1_trace.zip",
+          "secs": 20.09,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://play.google.com/store/apps/details?id=lbindia.android.app"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=2114280137.1791585742&dt=Eyelet%20Knit%20Tie%20Front%20Bell%20Sleeve%20Shrug%20in%20Herbal",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585742399&cv=11&fst=1791585742399&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585742430&cv=11&fst=1791585742430&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2114280137.1791585742&gtm=45be6a72v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=2114280137.1791585742&dt=Eyelet%20Knit%20Tie%20Front%20Bell%20Sleeve%20Shrug%20in%20H",
+            "POST https://www.google.com/measurement/conversion?random=1791585742855&cv=11&tid=G-LNMXSWXNN8&fst=1791585742855&fmt=8&en=session_start&gtm=45je6a72v885775",
+            "POST https://www.google.com/measurement/conversion?random=1791585742908&cv=11&tid=G-LNMXSWXNN8&fst=1791585742908&fmt=8&en=view_item&gtm=45je6a72v885775642z",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585740284&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585740284&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585740284&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585740284&gcs",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585744800&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585745962&ec=4",
+            "GET https://play.google.com/store/apps/details?id=lbindia.android.app"
+          ],
+          "loads": [
+            {
+              "url": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351",
+              "ttfb": 0.06,
+              "dcl": 1.6,
+              "load": 7.98,
+              "lcp": 1.89
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.47s",
+              "error": null,
+              "secs": 10.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green- Littlebox India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3032 chars, 85 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "actual": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green', selected variant 53006747992351 at \u20b9699.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green.js with variants",
+                  "actual": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green",
+                  "actual": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green' (h1, 14px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9699.00",
+                  "actual": "\u20b9699.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green",
+                  "actual": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "XS Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "699.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 53006747992351 (XS) selected, in stock",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "5 of 5 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "fail",
+              "detail": null,
+              "error": "buy button enabled: expected true, got false",
+              "secs": 2.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "false",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "buy_button_ready",
+          "error": "buy button enabled: expected true, got false",
+          "screenshot": "product.pdp.eyelet-knit-tie-front-bell-sleeve-shrug-.a2.png",
+          "trace": "product.pdp.eyelet-knit-tie-front-bell-sleeve-shrug-.a2_trace.zip",
+          "secs": 16.25,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://play.google.com/store/apps/details?id=lbindia.android.app"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=839742870.1791585762&dt=Eyelet%20Knit%20Tie%20Front%20Bell%20Sleeve%20Shrug%20in%20Herbal%2",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585762007&cv=11&fst=1791585762007&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585762038&cv=11&fst=1791585762038&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=ZD7jvMx2dgnn3ggpZDFspcBayfBrGaUbdA&auid=839742870.1791585762&gtm=45be6a72v893960418za208zd893960418xecx",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=839742870.1791585762&dt=Eyelet%20Knit%20Tie%20Front%20Bell%20Sleeve%20Shrug%20in%20Her",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585760444&gcs",
+            "POST https://www.google.com/measurement/conversion?random=1791585763360&cv=11&tid=G-LNMXSWXNN8&fst=1791585763360&fmt=8&en=session_start&gtm=45je6a80h2v8857",
+            "POST https://www.google.com/measurement/conversion?random=1791585763406&cv=11&tid=G-LNMXSWXNN8&fst=1791585763406&fmt=8&en=view_item&gtm=45je6a80h2v88577564",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a80h2v885775642za208zb893960418zd893960418xf1&_p=1791585760444&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a80h2v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585760444&gcs=G1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a80h2v885775642za200zb893960418zd893960418xf1&_p=1791585760444&gcs=G111&gcd=13t3t",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585764587&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585765375&ec=4",
+            "GET https://play.google.com/store/apps/details?id=lbindia.android.app"
+          ],
+          "loads": [
+            {
+              "url": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351",
+              "ttfb": 0.07,
+              "dcl": 1.85,
+              "load": 8.05,
+              "lcp": 2.28
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.34s",
+              "error": null,
+              "secs": 9.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green- Littlebox India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3031 chars, 85 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "actual": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green', selected variant 53006747992351 at \u20b9699.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green.js with variants",
+                  "actual": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green",
+                  "actual": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green' (h1, 14px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9699.00",
+                  "actual": "\u20b9699.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green",
+                  "actual": "'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "XS Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "699.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 53006747992351 (XS) selected, in stock",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "5 of 5 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "fail",
+              "detail": null,
+              "error": "buy button enabled: expected true, got false",
+              "secs": 2.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "false",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "buy_button_ready",
+          "error": "buy button enabled: expected true, got false",
+          "screenshot": "product.pdp.eyelet-knit-tie-front-bell-sleeve-shrug-.a3.png",
+          "trace": "product.pdp.eyelet-knit-tie-front-bell-sleeve-shrug-.a3_trace.zip",
+          "secs": 15.49,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://play.google.com/store/apps/details?id=lbindia.android.app"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2101778742.1791585782&gtm=45be6a72v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=2101778742.1791585782&dt=Eyelet%20Knit%20Tie%20Front%20Bell%20Sleeve%20Shrug%20in%20Herbal",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585781905&cv=11&fst=1791585781905&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585781858&cv=11&fst=1791585781858&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=2101778742.1791585782&dt=Eyelet%20Knit%20Tie%20Front%20Bell%20Sleeve%20Shrug%20in%20H",
+            "POST https://www.google.com/measurement/conversion?random=1791585782590&cv=11&tid=G-LNMXSWXNN8&fst=1791585782590&fmt=8&en=session_start&gtm=45je6a72v885775",
+            "POST https://www.google.com/measurement/conversion?random=1791585782635&cv=11&tid=G-LNMXSWXNN8&fst=1791585782635&fmt=8&en=view_item&gtm=45je6a72v885775642z",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585779765&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585779765&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585779765&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585779765&gcs",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585782862&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585785222&ec=4",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585787678&ec=1",
+            "GET https://play.google.com/store/apps/details?id=lbindia.android.app"
+          ],
+          "loads": [
+            {
+              "url": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green?variant=53006747992351",
+              "ttfb": 0.04,
+              "dcl": 1.76,
+              "load": 7.42,
+              "lcp": 2.11
+            }
+          ]
+        }
+      ],
+      "incident_signature": "littleboxindia.com|product.pdp.eyelet-knit-tie-front-bell-sleeve-shrug-|buy_button_ready|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "popup_or_overlay",
+        "reason": "A bottom overlay/banner is covering the buy/add-to-cart area in the viewport, blocking the robot from interacting with the button rather than the store disabling purchase.",
+        "evidence": "Visible page text includes product title, price, size options and multiple 'ADD TO CART' buttons but also shows a modal/toast bar at the bottom: a dark bar reading 'Free shipping on all pre-paid orders' overlaying the page and the bottom of viewport where the 'ADD TO CART' control sits (screenshot s"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.eyelet",
+      "suite": "search",
+      "title": "Search for 'eyelet' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.51s",
+              "error": null,
+              "secs": 9.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Littlebox India - Online Clothing and Footwear Hub for the GenZ",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4981 chars, 134 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 4 results, 4 mention 'eyelet'",
+              "error": null,
+              "secs": 8.96,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "eyelet - littleboxindia.com",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2300 chars, 81 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "4",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'eyelet'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "4 of 4",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.52,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "viewedProducts array is invalid or empty",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1907200491.1791585798&dt=Littlebox%20India%20-%20Online%20Clothing%20and%20Footwear%20Hub%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1907200491.1791585798&gtm=45be6a72h1v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585797793&cv=11&fst=1791585797793&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585797753&cv=11&fst=1791585797753&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=1907200491.1791585798&dt=Littlebox%20India%20-%20Online%20Clothing%20and%20Footwear%2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585795486&gcs",
+            "POST https://www.google.com/measurement/conversion?random=1791585798258&cv=11&tid=G-LNMXSWXNN8&fst=1791585798258&fmt=8&en=session_start&gtm=45je6a72v885775",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585795486&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585795486&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585795486&_gaz=1&gcs=G111&gcd=",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585799418&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585799682&ec=3",
+            "POST https://littleboxindia.com/api/event/collect",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585807397&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585808440&ec=3",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585810523&cv=11&fst=1791585810523&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585810555&cv=11&fst=1791585810555&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1907200491.1791585798&dt=eyelet%20-%20littleboxindia.com&tid=AW-10880492231&en=page_view&d",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=1907200491.1791585798&dt=eyelet%20-%20littleboxindia.com&en=page_view&dl=https%3A%2F%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585805335&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585805335&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585805335&gcs=G111&gcd=13t3t3t"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.02,
+              "load": 6.86,
+              "lcp": 1.06
+            },
+            {
+              "url": "/search?q=eyelet",
+              "ttfb": 0.02,
+              "dcl": 1.11,
+              "load": 4.34,
+              "lcp": 2.41
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.17s",
+              "error": null,
+              "secs": 9.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Littlebox India - Online Clothing and Footwear Hub for the GenZ",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4982 chars, 134 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Littlebox India - Online Clothing and Footwear Hub for the GenZ",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "63: 'Littlebox India - Online Clothing and Footwear Hub for the G'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Step into style with Littlebox India's best-selling shoes and clothing",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "155: \"Step into style with Littlebox India's best-selling shoes an\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://littleboxindia.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://littleboxindia.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Littlebox India - Online Clothing and Footwear Hub for the GenZ",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://littleboxindia.com/cdn/shop/files/provicali_new_logo_2_1_1200x1200.png?v=1661172939",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.73,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "viewedProducts array is invalid or empty",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=141757642.1791585816&dt=Littlebox%20India%20-%20Online%20Clothing%20and%20Footwear%20Hub%2",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585816069&cv=11&fst=1791585816069&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585816020&cv=11&fst=1791585816020&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=141757642.1791585816&gtm=45be6a72v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=141757642.1791585816&dt=Littlebox%20India%20-%20Online%20Clothing%20and%20Footwear%20H",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585814021&gcs",
+            "POST https://www.google.com/measurement/conversion?random=1791585817589&cv=11&tid=G-LNMXSWXNN8&fst=1791585817589&fmt=8&en=session_start&gtm=45je6a72v885775",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585814021&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585814021&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585814021&gcs=G111",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585817986&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585818214&ec=3"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 1.77,
+              "load": 7.02,
+              "lcp": 1.1
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.28s",
+              "error": null,
+              "secs": 9.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green- Littlebox India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2911 chars, 85 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 72: 'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green- Lit'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "72: 'Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green- Lit'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Eyelet Knit Tie Front Bell Sleeve Shrug features an open fro'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Eyelet Knit Tie Front Bell Sleeve Shrug features an open fro'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Eyelet Knit Tie Front Bell Sleeve Shrug in Herbal Green- Littlebox India",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://littleboxindia.com/cdn/shop/files/20261008124309-productImages-609_1200x1200.png?v=1791470478",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.6,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'avadaLightJsExclude' has already been declared",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'isSpeedUpEnable' has already been declared",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'checkout')",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://littleboxindia.com/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green"
+            }
+          ],
+          "failed_requests": [
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=29141235.1791585826&dt=Eyelet%20Knit%20Tie%20Front%20Bell%20Sleeve%20Shrug%20in%20Herbal%20",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585825526&cv=11&fst=1791585825526&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=29141235.1791585826&gtm=45be6a80h2v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585825565&cv=11&fst=1791585825565&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=29141235.1791585826&dt=Eyelet%20Knit%20Tie%20Front%20Bell%20Sleeve%20Shrug%20in%20Herb",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585823451&gcs",
+            "POST https://www.google.com/measurement/conversion?random=1791585826143&cv=11&tid=G-LNMXSWXNN8&fst=1791585826143&fmt=8&en=session_start&gtm=45je6a72v885775",
+            "POST https://www.google.com/measurement/conversion?random=1791585826194&cv=11&tid=G-LNMXSWXNN8&fst=1791585826194&fmt=8&en=view_item&gtm=45je6a72v885775642z",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585823451&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585823451&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585823451&gcs=G111",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585826455&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585828169&ec=4",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585830913&ec=1"
+          ],
+          "loads": [
+            {
+              "url": "/products/eyelet-knit-tie-front-bell-sleeve-shrug-in-herbal-green",
+              "ttfb": 0.07,
+              "dcl": 1.64,
+              "load": 7.19,
+              "lcp": 2.0
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 7.84,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.96,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of undefined (reading 'values') at Proxy.<anonymous> (https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642:1:439356) at wi (https://littleboxind",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "viewedProducts array is invalid or empty",
+              "url": "https://littleboxindia.com/cdn/shop/t/275/assets/searchtap.js?v=128193205502271457521791540642"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://littleboxindia.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://api.seomanager.com/404-catch?key=6828590173&path=%2Fproducts%2Fbugradar-check-does-not-exist&referrer=&useragent=Mozilla%2F5.0%20(Linux%3B%20A",
+            "POST https://littleboxindia.com/api/collect",
+            "POST https://littleboxindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1747846134.1791585835&dt=404%20Not%20Found%20%E2%80%93%20Littlebox%20India&tid=AW-10880492",
+            "POST https://www.google.com/rmkt/collect/11319040659/?random=1791585834802&cv=11&fst=1791585834802&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1747846134.1791585835&gtm=45be6a72v893960418za208zd893960418xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/10880492231/?random=1791585834766&cv=11&fst=1791585834766&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=1747846134.1791585835&dt=404%20Not%20Found%20%E2%80%93%20Littlebox%20India&en=page_vi",
+            "GET https://cdn.shopify.com/s/files/1/1335/5701/t/12/assets/bootstrap3.3.5.css?v=3239892402173170571697398199",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-H5J1Q3BE42&gtm=45Pe6a72v9216924049za200zb893960418zd893960418xf1&_p=1791585833038&gcs",
+            "POST https://www.google.com/measurement/conversion?random=1791585836179&cv=11&tid=G-LNMXSWXNN8&fst=1791585836179&fmt=8&en=session_start&gtm=45je6a72v885775",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za208zb893960418zd893960418xf1&_p=1791585833038&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642z89165619195za200zb893960418zd893960418xf1&_p=1791585833038&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-LNMXSWXNN8&gtm=45je6a72v885775642za200zb893960418zd893960418xf1&_p=1791585833038&gcs=G111&gcd=13t3t3t",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585836468&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=1CouAmBZJuvFntghWeYL5D&st=oaiq-web&sv=0.1.41&t=1791585836856&ec=3",
+            "GET https://littleboxindia.com/products/bugradar-check-does-not-exist"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.28,
+              "dcl": 1.13,
+              "load": 6.0,
+              "lcp": 0.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 1,
+    "input_tokens": 3884,
+    "output_tokens": 170,
+    "est_usd": 0.001311,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Littlebox India - Online Clothing and Footwear Hub for the GenZ",
+    "theme": "Symmetry (store copy: Copy of October Default Jaipur Theme )",
+    "checkout_app": "GoKwik",
+    "access": "open",
+    "nav": 25,
+    "collections": 47,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [],
+  "perf": {
+    "pages": 10,
+    "median_load_secs": 6.74,
+    "slowest": {
+      "url": "/collections/best-sellers",
+      "load_secs": 9.38
+    },
+    "console_errors": 7,
+    "console_warnings": 2,
+    "failed_requests": 153
+  },
+  "counts": {
+    "pass": 8,
+    "flaky": 0,
+    "confirmed_fail": 1,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
