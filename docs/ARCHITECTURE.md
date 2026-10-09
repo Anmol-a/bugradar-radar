@@ -645,6 +645,18 @@ emulates nothing. Mock `pagespeed_gate` (theme held when platform is 'Linux x86_
 (desktop price hidden, quoted snippet) and passes desktop + mobile on the new; unit test
 `test_emulated_platform_matches_the_user_agent_sent`.
 
+Verified on the real stores (run 37954995865, both devices): **baccabucci healthy, bellavitaorganic healthy**,
+bonkerscorner mobile healthy (search fixed; '404 page redirects to /' is a store finding). Pages now load the full
+theme, so measured load times rose from ~1 s (stripped page) to 6-9 s: that is what shoppers get.
+
+Second fix, same cycle: with the theme running, bonkerscorner desktop showed the **GoKwik KwikPass login popup**: a
+full-screen iframe from another origin (`div#d2c-pass > iframe#iframe-kp`, src pdp.gokwik.co/kwikpass), no
+popup-like name, its × inside the frame: 'could not click: <iframe id="iframe-kp" ...>'. Seen before on boldcare.in
+(7 + 9 Oct) and consciouschemist.com (9 Oct): 3 stores. `overlays.IFRAME_POPUPS_JS` now also treats a fixed iframe
+that covers half the screen and is on top at its centre as a popup (and reads the iframe's src: kwikpass / gokwik),
+then clicks the close control inside the frame (Escape as fallback); never 'Join' / log in. Mock `kwikpass_popup`
+(cross-origin frame on 'localhost') fails on the old code ('4 covered by iframe.iframe-kp') and passes on the new.
+
 One-offs left as documented limits: bellavita second search word 'magicpin' (a partner-offer product; only tried
 because the first word failed under the held theme), consciouschemist 'build your box' bundle-app collection.
 
@@ -906,7 +918,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
-- **v0.19 loop cycle 2 (9 Oct, 20:45 IST):** emulated devices report a matching `navigator.platform` (desktop = Windows Chrome, mobile = Pixel 7 Android) instead of the runner's 'Linux x86_64', which PageSpeed-bot snippets on bonkerscorner / bellavita / baccabucci treat as a bot; mock `pagespeed_gate` (4v).
+- **v0.19 loop cycle 2 (9 Oct, 20:45 IST):** emulated devices report a matching `navigator.platform` (desktop = Windows Chrome, mobile = Pixel 7 Android) instead of the runner's 'Linux x86_64', which PageSpeed-bot snippets on bonkerscorner / bellavita / baccabucci treat as a bot; mock `pagespeed_gate`. GoKwik KwikPass login iframe closed inside the frame; mock `kwikpass_popup` (4v).
 - **v0.19 loop cycle 1 (9 Oct, 16:45 IST):** scroll-reveal pass fixed (real document height), search-app wait, first-interaction nudge for held theme scripts, hidden-price evidence (market, no-js, gating script), workflow LATEST-conflict fix; mocks `search_app`, `search_app_popular`, `delayed_scripts` (4u).
 
 - **v0.19 (9 Oct, later):** Web Bot Auth request signing (`RADAR_SIGNING_KEY`), rounded-price tolerance, 5xx/429 handling; mock `signed_only`.

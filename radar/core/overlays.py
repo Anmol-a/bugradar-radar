@@ -116,10 +116,15 @@ IFRAME_POPUPS_JS = r"""() => {
   const vw = innerWidth, vh = innerHeight; const out = [];
   document.querySelectorAll('iframe').forEach((f, i) => {
     const r = f.getBoundingClientRect(); const s = getComputedStyle(f);
-    const name = ((f.id || '') + ' ' + (f.className || '') + ' ' + (f.title || '') + ' ' + (f.name || '')).toLowerCase();
+    const name = ((f.id || '') + ' ' + (f.className || '') + ' ' + (f.title || '') + ' ' + (f.name || '') + ' ' +
+                  (f.getAttribute('src') || '')).toLowerCase();
     let fixed = false; for (let n = f; n && n !== document.body; n = n.parentElement) { if (getComputedStyle(n).position === 'fixed') { fixed = true; break; } }
+    // A fixed iframe over half the screen that is on top at its centre blocks the shopper whatever it is called:
+    // GoKwik KwikPass login (id 'iframe-kp', src pdp.gokwik.co/kwikpass; bonkerscorner, boldcare, consciouschemist).
+    const x = Math.min(vw - 1, Math.max(0, r.left + r.width / 2)), y = Math.min(vh - 1, Math.max(0, r.top + r.height / 2));
+    const covers = r.width * r.height >= 0.5 * vw * vh && document.elementFromPoint(x, y) === f;
     if (s.display !== 'none' && s.visibility !== 'hidden' && r.width * r.height >= 0.08 * vw * vh && fixed
-        && /popup|modal|klaviyo|newsletter|privy|wisepops|optin|spin|offer|signup|subscribe/.test(name)) {
+        && (covers || /popup|modal|klaviyo|newsletter|privy|wisepops|optin|spin|offer|signup|subscribe|kwikpass|gokwik/.test(name))) {
       f.setAttribute('data-radar-iframe', String(i)); out.push(String(i)); }
   });
   return out;

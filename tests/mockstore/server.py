@@ -214,6 +214,22 @@ class Handler(BaseHTTPRequestHandler):
         return c["cart"].value if "cart" in c else None
 
     OVERLAYS = {
+        "kwikpass_popup": """<script>
+// GoKwik KwikPass login popup (bonkerscorner.com, boldcare.in, consciouschemist.com: 'could not click: <iframe
+// id="iframe-kp" class="iframe-kp" src="https://pdp.gokwik.co/kwikpass/kwikpass.html"> from <div id="d2c-pass">'):
+// a full-screen iframe from ANOTHER origin, no popup-like name, its × inside the frame. Shown after the theme
+// loads, on every page until closed.
+if (!document.cookie.includes('kp=1')) setTimeout(() => {
+  const d = document.createElement('div'); d.id = 'd2c-pass';
+  d.style.cssText = 'position:fixed;inset:0;z-index:2147483000';
+  const f = document.createElement('iframe'); f.id = 'iframe-kp'; f.className = ' iframe-kp'; f.title = '';
+  f.setAttribute('allow', 'otp-credentials');
+  f.src = 'http://localhost:' + location.port + '/kwikpass/kwikpass.html';
+  f.style.cssText = 'width:100%;height:100%;border:0;background:transparent';
+  d.appendChild(f); document.body.appendChild(d);
+  addEventListener('message', e => { if (e.data === 'kp-close') { document.cookie = 'kp=1;path=/'; d.remove(); } });
+}, 500);
+</script>""",
         "div_x_popup": """<script>
 if (!document.cookie.includes('bday=1')) setTimeout(() => {
   const d = document.createElement('div');
@@ -497,6 +513,15 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
+        if path == "/kwikpass/kwikpass.html":      # the KwikPass frame (served on 'localhost': another origin)
+            return self._send(200, """<html><body style="margin:0;background:rgba(0,0,0,.55)">
+<div style="background:#fff;width:600px;margin:20vh auto;padding:20px;position:relative;border-radius:16px">
+<span class="kp-close" style="position:absolute;top:12px;right:12px;cursor:pointer;width:24px;height:24px;text-align:center"
+ aria-label="Close" role="button">×</span>
+<h3>Log in to shop the collection.</h3><input placeholder="Enter Mobile Number*"> <input placeholder="Email*">
+<button class="join">Join Us</button></div>
+<script>document.querySelector('.kp-close').onclick = () => parent.postMessage('kp-close', '*');
+document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', '*');</script></body></html>""")
         if self.mode == "products_down" and path.startswith("/products/") and not path.endswith((".js", ".json")):
             return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
         if self.mode == "server_blip" and (path == "/" or path.startswith(("/products/", "/collections/"))) \
