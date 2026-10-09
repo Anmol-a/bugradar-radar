@@ -918,3 +918,37 @@ def test_rate_limited_discovery_is_blocked_not_error(tmp_path, monkeypatch):
     first = results[0][0]
     assert first.verdict == "blocked" and any("rate-limit" in n for n in first.notes), (first.verdict, first.notes)
     assert len(results) == 1 or results[1][0].verdict in ("blocked", "skipped"), [r.verdict for r, _ in results]
+
+
+def test_image_link_under_a_slider_layer_falls_back_to_the_product_name(tmp_path):
+    """bummer.in (9 Oct cloud run, desktop, 3/3 attempts): a slider layer over the product image swallowed the click and
+    Playwright's fallback click was intercepted, so Radar raised 'could not click' before trying the product's name
+    link, which a shopper would click. The journey must pass and the dead image link be a store WARNING."""
+    run, _ = _scan("slider_over_image", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    j = _case(run, "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
+
+
+def test_short_server_error_is_waited_out_not_confirmed(tmp_path, monkeypatch):
+    """9 Oct cloud run: Shopify demo stores answered 503 for ~2 minutes; retries seconds apart confirmed it (2 stores
+    'down', 1 'unreachable'). Radar must wait before re-checking a 5xx, so a short hiccup is not a store failure."""
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.25, raising=False)
+    run, _ = _scan("server_blip", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", (run.verdict, [(c.case_id, c.verdict) for c in run.cases if c.verdict != "pass"])
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict == "confirmed_fail"]
+    assert not bad, bad
+
+
+def test_a_real_outage_is_still_confirmed(tmp_path, monkeypatch):
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    run = _product_only("products_down", tmp_path, max_products=1)
+    assert run.cases and all(c.verdict == "confirmed_fail" for c in run.cases), [(c.case_id, c.verdict) for c in run.cases]
+    assert "503" in (run.cases[0].attempts[-1].error or "")
+
+
+def test_popup_closed_by_a_bare_x_in_a_div(tmp_path):
+    run, _ = _scan("div_x_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    j = _case(run, "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]

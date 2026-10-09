@@ -159,6 +159,21 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
                         f"({urlparse(sess.page.url).hostname}, '{sm.home_title[:60]}'): the store URL is probably wrong "
                         "or the domain is parked/for sale")
         return sm
+    # A 5xx homepage is waited out twice (20 s, 60 s) before Radar calls the store unreachable: on 9 Oct three Shopify
+    # demo stores answered 503 'Something went wrong' within the same 2 minutes from three different machines, a
+    # platform hiccup. A store still down after ~80 s is reported as before.
+    waited = 0
+    for pause in (20, 60):
+        if not (resp is not None and 500 <= resp.status <= 599):
+            break
+        sess.page.wait_for_timeout(int(pause * 1000 * sess.backoff_scale))
+        waited += pause
+        try:
+            resp, _ = sess.goto(base_url + "/")
+        except Exception:  # noqa: BLE001
+            break
+    if waited and resp is not None and resp.status < 400:
+        sm.notes.append(f"homepage answered HTTP 5xx at first and recovered after ~{waited} s (short server hiccup)")
     html = sess.evaluate("() => document.documentElement.outerHTML") or ""
     sm.home_title = sess.evaluate("() => document.title") or ""
     sm.access = detect_access(resp.status if resp else None, sm.home_title, html, urlparse(sess.page.url).path)
