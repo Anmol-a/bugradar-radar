@@ -664,3 +664,13 @@ def test_cloud_publisher_on_our_own_server_publishes_only_this_runs_results(tmp_
     dest = publish(tmp_path / "out", data, None, {}, since=2000)
     assert dest.name.endswith("-no-bench")                                     # the old bench is not this run's
     assert [p.name for p in (dest / "sites").iterdir()] == ["new.in"]          # the old run is not republished
+
+
+def test_price_shown_accepts_whole_rupee_rounding_only():
+    from radar.checks.library import price_shown
+    assert price_shown(3391.50, [3990.0, 3392.0])[0]          # thelabellife.com
+    assert price_shown(727.18, [727.0])[0]                     # salty.co.in
+    assert price_shown(1299.0, [1299.0])[0]
+    assert not price_shown(1299.0, [1300.0])[0]               # a whole-rupee price must match exactly
+    assert not price_shown(727.18, [728.5])[0]
+    assert not price_shown(3391.50, [3390.0])[0]

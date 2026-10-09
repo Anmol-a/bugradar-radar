@@ -747,6 +747,20 @@ HIDDEN_PRICE_JS = r"""() => { const out = [];
   } return out; }"""
 
 
+def price_shown(want: float, nums) -> tuple[bool, str]:
+    """Is the variant's price on the page? Exact, or rounded to whole rupees the way many themes display it
+    (thelabellife.com shows ₹3,392 for ₹3,391.50, salty.co.in ₹727 for ₹727.18: held-out run 9 Oct). Pure."""
+    nums = set(nums)
+    if want in nums:
+        return True, f"₹{want:,.2f}"
+    import math
+    whole = {round(want), math.floor(want), math.ceil(want)}
+    hit = next((n for n in nums if n in whole and abs(n - want) < 1), None)
+    if hit is not None and want != int(want):
+        return True, f"₹{hit:,.0f} (the page rounds ₹{want:,.2f} to whole rupees)"
+    return False, ""
+
+
 def _hidden_price(ctx: Ctx, want: float) -> str:
     """The price is not in the visible text: is it in the page at all, only hidden? (supplysix.com, bench 4:
     '₹ 199.00' only in a sticky bar the theme hides on desktop, class 'hidden-lap-and-up'). Says where,
@@ -779,16 +793,17 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
                    else "none: no visible text matching the product name, and no main heading", bool(heading))
         want = round(int(v["price"]) / 100, 2)
         nums = prices_in_text(text)
-        if want not in nums:        # price in a sticky bar / lazy block that appears on scroll (supplysix.com, bench 3)
+        if not price_shown(want, nums)[0]:        # price in a sticky bar / lazy block that appears on scroll (supplysix.com, bench 3)
             ctx.sess.evaluate("""async () => { const h = document.body.scrollHeight;
                 for (let y = 0; y <= Math.min(h, 12000); y += Math.round(innerHeight * 0.8)) { scrollTo(0, y); await new Promise(r => setTimeout(r, 250)); }
                 scrollTo(0, Math.round(innerHeight * 0.6)); await new Promise(r => setTimeout(r, 400)); }""")
             text = ctx.sess.evaluate("() => document.body.innerText")
             nums = prices_in_text(text)
             ctx.sess.evaluate("() => scrollTo(0, 0)")
-        where = "" if want in nums else _hidden_price(ctx, want)
+        ok, how = price_shown(want, nums)
+        where = "" if ok else _hidden_price(ctx, want)
         ctx.expect("selected variant price shown", rupees(v["price"]),
-                   rupees(v["price"]) if want in nums else f"not on page{where}", want in nums)
+                   how if ok else f"not on page{where}", ok)
         img = ctx.sess.evaluate("""() => [...document.images].some(i => { const r = i.getBoundingClientRect();
                 return r.width >= 150 && r.height >= 150 && i.naturalWidth > 0 && r.top < 1400; })""")
         ctx.expect("main product image loaded", "image ≥150px rendered", "yes" if img else "none loaded", img)
@@ -1357,6 +1372,13 @@ def _pick(ctx: Ctx, sel: str, href_re: str | None = None, prefer=(), exclude: st
     if got and got.get("none") and second_pass:
         ctx.sess.page.wait_for_timeout(1200)
         _dismiss(ctx)
+        got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
+    if got and got.get("none") and second_pass and got.get("why", {}).get("not visible"):
+        # cards exist but none is visible: themes reveal them with an animation on the first scroll (reequil.com,
+        # wearcomet.com, held-out run 9 Oct). A shopper scrolls; so does Radar, then looks again from the top.
+        ctx.sess.evaluate("""async () => { const h = Math.min(document.body.scrollHeight, 15000);
+            for (let y = 0; y <= h; y += Math.round(innerHeight * 0.7)) { scrollTo(0, y); await new Promise(r => setTimeout(r, 200)); }
+            scrollTo(0, 0); await new Promise(r => setTimeout(r, 400)); }""")
         got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
     if got and got.get("none") and second_pass and any(k.startswith("covered by") for k in got.get("why", {})) \
             and ctx.sess.evaluate(BIG_FIXED_LAYER_JS):
