@@ -1,0 +1,163 @@
+<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Radar bench</title><style>
+:root{--bg:#070b10;--panel:#0d141c;--panel2:#111a24;--line:#1c2835;--text:#e4ecf3;--muted:#8796a5;
+--green:#36d68a;--amber:#f2b33d;--red:#ff5c5c;--grey:#5f6c79;--accent:#2ee6c5;--accent2:#1a9e8a;
+--mono:ui-monospace,"JetBrains Mono","SF Mono",Menlo,Consolas,monospace;
+--sans:-apple-system,BlinkMacSystemFont,"Inter","Segoe UI",Roboto,sans-serif}
+@media (prefers-color-scheme: light){:root:not([data-theme=dark]){--bg:#f4f7f9;--panel:#fff;--panel2:#f7fafc;
+--line:#dfe6ec;--text:#0f1b26;--muted:#5b6b7a;--accent:#0f9f88;--accent2:#0b7a69}}
+*{box-sizing:border-box;min-width:0}html,body{margin:0;background:var(--bg);color:var(--text);font:14px/1.5 var(--sans)}
+a{color:var(--accent)}code,.mono{font-family:var(--mono);font-size:12.5px;overflow-wrap:anywhere}
+.wrap{max-width:1240px;margin:0 auto;padding:24px 16px 80px}
+header.top{display:flex;align-items:center;gap:16px;flex-wrap:wrap;margin-bottom:20px}
+.brand{font-family:var(--mono);letter-spacing:.18em;font-size:12px;color:var(--accent);text-transform:uppercase}
+h1{font-size:26px;margin:2px 0 0;font-weight:650;letter-spacing:-.01em}
+.sub{color:var(--muted);font-size:13px}
+.pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px;border-radius:999px;font-weight:700;
+font-family:var(--mono);font-size:13px;letter-spacing:.08em;border:1px solid currentColor}
+.pill::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;box-shadow:0 0 12px currentColor}
+.v-healthy,.s-pass{color:var(--green)}.v-degraded,.s-flaky,.s-warn{color:var(--amber)}
+.v-down,.v-error,.v-unreachable,.s-confirmed_fail,.s-fail{color:var(--red)}.v-unsupported,.v-blocked,.v-no_network,.s-no_network,.s-blocked,.s-skip,.s-skipped,.s-info{color:var(--grey)}
+.grid{display:grid;grid-template-columns:400px 1fr;gap:18px}
+@media(max-width:920px){.grid{grid-template-columns:1fr}}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px}
+.card h2{font-size:12px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 12px;font-weight:600}
+.radar-wrap{position:relative}
+svg.radar{width:100%;height:auto;display:block}
+.ring{fill:none;stroke:var(--line)}.ring-label{fill:var(--muted);font:10px var(--mono);letter-spacing:.08em}
+.axis{stroke:var(--line);stroke-dasharray:2 4}
+.sweep{transform-origin:0 0;animation:spin 4.5s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion: reduce){.sweep,.blip.fail{animation:none}}
+.blip{cursor:pointer;transition:r .15s}.blip:hover{r:8}
+.blip.fail{animation:pulse 1.4s ease-in-out infinite}
+@keyframes pulse{50%{opacity:.35}}
+.tip{position:absolute;pointer-events:none;background:var(--panel2);border:1px solid var(--line);border-radius:8px;
+padding:6px 9px;font-size:12px;max-width:240px;display:none;z-index:5;box-shadow:0 6px 24px rgba(0,0,0,.35)}
+.tiles{display:grid;grid-template-columns:repeat(auto-fit,minmax(118px,1fr));gap:10px;margin-bottom:14px}
+.tile{background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:12px}
+.tile .n{font:700 26px var(--mono)}.tile .l{color:var(--muted);font-size:11.5px;letter-spacing:.06em;text-transform:uppercase}
+.kv{display:grid;grid-template-columns:auto 1fr;gap:4px 14px;font-size:13px}.kv dt{color:var(--muted)}.kv dd{margin:0}
+.notes{margin:10px 0 0;padding:0;list-style:none}.notes li{font-size:12.5px;color:var(--amber);padding:3px 0}
+.notes li::before{content:"\25B8  "}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:18px 0 10px}
+.chip{border:1px solid var(--line);background:var(--panel);color:var(--text);border-radius:999px;padding:5px 12px;
+font-size:12.5px;cursor:pointer}.chip.on{border-color:var(--accent);color:var(--accent)}
+input.search{flex:1;min-width:160px;background:var(--panel);border:1px solid var(--line);color:var(--text);
+border-radius:10px;padding:7px 12px;font-size:13px}
+.suite{margin-bottom:14px}.suite-h{display:flex;align-items:baseline;gap:10px;margin:0 0 8px}
+.suite-h h3{margin:0;font-size:15px}.suite-h span{color:var(--muted);font-size:12.5px}
+.case{border:1px solid var(--line);border-radius:12px;background:var(--panel);margin-bottom:8px;overflow:hidden}
+.case>summary{list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:10px;padding:11px 14px;cursor:pointer}
+.case>summary::-webkit-details-marker{display:none}
+.case[open]>summary{border-bottom:1px solid var(--line);background:var(--panel2)}
+.dot{width:10px;height:10px;border-radius:50%;background:currentColor;flex:none;box-shadow:0 0 10px currentColor}
+.ct{flex:1 1 160px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tag{font:600 10.5px var(--mono);letter-spacing:.06em;padding:2px 7px;border-radius:6px;border:1px solid var(--line);color:var(--muted)}
+.tag.seo{color:var(--muted, #888)}
+.tag.critical{color:var(--red);border-color:color-mix(in srgb,var(--red) 40%,transparent)}
+.tag.warn{color:var(--amber)}.tag.heal{color:var(--accent)}
+.meta{color:var(--muted);font:12px var(--mono)}
+.body{padding:12px 14px}
+.tabs{display:flex;gap:6px;margin-bottom:10px}
+.tab{font:12px var(--mono);padding:4px 10px;border-radius:8px;border:1px solid var(--line);cursor:pointer;background:none;color:var(--text)}
+.tab.on{background:var(--panel2);border-color:var(--accent)}
+.steps{display:flex;flex-direction:column;gap:2px}
+.step{display:grid;grid-template-columns:22px 190px 1fr 90px;gap:10px;align-items:start;padding:6px 4px;border-radius:8px}
+.step:hover{background:var(--panel2)}
+@media(max-width:700px){.step{grid-template-columns:22px minmax(0,1fr)}.step .sd,.step .sb{grid-column:2}}
+.si{font:700 13px var(--mono);text-align:center}.sn{font:12.5px var(--mono)}
+.sd{font-size:12.5px;color:var(--muted);word-break:break-word}.sd .err{color:var(--red)}.sd .wrn{color:var(--amber)}
+.sb{display:flex;align-items:center;gap:6px}.bar{height:6px;border-radius:3px;background:currentColor;opacity:.7;min-width:2px}
+.sb .t{font:11px var(--mono);color:var(--muted)}
+.heal{margin-top:4px;font-size:12px;color:var(--accent)}
+.strip{display:flex;gap:8px;overflow-x:auto;padding:8px 2px 4px;margin-bottom:8px}
+.strip figure{margin:0;flex:0 0 150px;cursor:pointer}.strip img{width:150px;height:94px;object-fit:cover;object-position:top;border-radius:6px;border:2px solid var(--line)}
+.strip figure.fail img{border-color:var(--red)}.strip figure.warn img{border-color:var(--amber)}.strip figure.pass img{border-color:var(--green)}
+.strip figcaption{font:10.5px var(--mono);color:var(--muted);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.triage{margin:0 0 10px;padding:8px 10px;border-radius:8px;border:1px solid var(--line);background:var(--panel2);font-size:12.5px}
+.triage b{font-family:var(--mono)}.triage.real b{color:var(--red)}.triage.radar b,.triage.unsure b{color:var(--amber)}
+.checks{margin:6px 0 2px;border:1px solid var(--line);border-radius:8px;overflow:hidden;display:table;width:100%;font-size:12px}
+.checks .r{display:table-row}.checks .r>div{display:table-cell;padding:4px 8px;border-top:1px solid var(--line);vertical-align:top}
+.checks .r:first-child>div{border-top:0}.checks .h>div{color:var(--muted);font-size:10.5px;letter-spacing:.06em;text-transform:uppercase;background:var(--panel2)}
+.checks .ok{color:var(--green);font-weight:700;width:18px}.checks .no{color:var(--red);font-weight:700;width:18px}
+.checks .exp{color:var(--muted)}.checks .bad{color:var(--red)}
+@media(max-width:700px){.checks,.checks .r,.checks .r>div{display:block}.checks .h{display:none}}
+.ev{margin-top:12px;border:1px solid var(--line);border-radius:10px;background:var(--panel2)}
+.ev>summary{cursor:pointer;padding:8px 12px;font:12px var(--mono);color:var(--muted)}
+.ev .evb{padding:4px 12px 12px;display:flex;flex-direction:column;gap:10px}
+.ev h4{margin:0 0 4px;font:600 11px var(--mono);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.ev table{font:12px var(--mono)}.ev td.slow{color:var(--amber);font-weight:700}
+.ev ul{margin:0;padding-left:18px;font:12px var(--mono);word-break:break-word}.ev li.error,.ev li.pageerror{color:var(--red)}.ev li.warning{color:var(--amber)}
+.ev .note{font:11.5px var(--mono);color:var(--muted)}
+.evidence{display:flex;gap:14px;flex-wrap:wrap;margin-top:12px;align-items:flex-start}
+.evidence img{max-width:min(420px,100%);border:1px solid var(--line);border-radius:10px;cursor:zoom-in}
+.evidence .how{font-size:12px;color:var(--muted);max-width:420px}
+table{display:block;overflow-x:auto;width:100%;border-collapse:collapse;font-size:12.5px}th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+th{color:var(--muted);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase}
+.hist{display:flex;gap:3px;align-items:flex-end;height:46px;margin-top:6px}
+.hist a{flex:1;max-width:16px;border-radius:3px;background:currentColor;opacity:.8;min-height:8px}
+.hist a.cur{outline:2px solid var(--text);outline-offset:2px}
+.section{margin-top:22px}
+.empty{color:var(--muted);font-size:13px;padding:8px 0}
+.lightbox{position:fixed;inset:0;background:rgba(0,0,0,.85);display:none;align-items:center;justify-content:center;z-index:20;padding:20px}
+.lightbox img{max-width:100%;max-height:100%;border-radius:8px}
+footer{margin-top:40px;color:var(--muted);font-size:12px}
+ .srow{cursor:pointer}.srow:hover{background:var(--panel2)} .det td{background:var(--panel2)}
+</style></head><body><div class="wrap">
+<header class="top"><div style="flex:1"><div class="brand">BugRadar · Radar bench</div><h1>Shopify coverage</h1><div class="sub" id="when"></div></div></header>
+<div id="tiles" class="tiles"></div>
+<div class="toolbar"><div id="chips" style="display:flex;gap:6px;flex-wrap:wrap"></div></div>
+<div class="card"><table><thead><tr><th>Store</th><th>Verdict</th><th>Desktop</th><th>Mobile</th><th>Theme</th><th>Checkout</th>
+<th>Journey</th><th>Smoke</th><th>Catalog</th><th>Product</th><th>Cart</th><th>Search</th><th>Health</th><th>Fails</th><th>Warns</th><th></th></tr></thead>
+<tbody id="rows"></tbody></table><div class="sub" style="margin-top:8px">Click a row for failures and notes. Suite cells show desktop then mobile: ✓ pass · ~ flaky · ✕ confirmed failure · – blocked/skipped · · not run. Verdict = the worse of the two.</div></div>
+</div><script>
+const D = {"stamp": "20261009T060124Z", "rows": [{"site_id": "theme-refresh-demo.myshopify.com", "url": "https://theme-refresh-demo.myshopify.com", "verdict": "healthy", "platform": "shopify", "theme": "Dawn (store copy: refresh/refresh-demo-store)", "checkout": "Shopify checkout", "access": "open", "suites": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "cart": "pass", "search": "pass", "health": "pass"}, "failures": [], "warnings": 8, "healed": 0, "radar_suspect": 0, "notes": ["9 product(s) not listed in the browsed collections are tested last (e.g. conditioner-2)"], "report": "data/sites/theme-refresh-demo.myshopify.com/runs/20261009T060124Z-d-1eff/report.html", "secs": 195, "suites_by_device": {"desktop": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "cart": "pass", "search": "pass", "health": "pass"}, "mobile": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "cart": "pass", "search": "pass", "health": "pass"}}, "device_only": {"desktop": [], "mobile": []}, "devices": {"desktop": {"verdict": "healthy", "report": "data/sites/theme-refresh-demo.myshopify.com/runs/20261009T060124Z-d-1eff/report.html", "secs": 96, "perf": {"pages": 10, "median_load_secs": 2.15, "slowest": {"url": "/products/body-duo?variant=42961974460668", "load_secs": 4.85}, "console_errors": 0, "console_warnings": 3, "failed_requests": 4}, "failures": 0, "warnings": 4, "report_rel": "../../sites/theme-refresh-demo.myshopify.com/runs/20261009T060124Z-d-1eff/report.html"}, "mobile": {"verdict": "healthy", "report": "data/sites/theme-refresh-demo.myshopify.com/runs/20261009T060300Z-m-dc70/report.html", "secs": 99, "perf": {"pages": 10, "median_load_secs": 2.57, "slowest": {"url": "/products/body-duo", "load_secs": 4.26}, "console_errors": 0, "console_warnings": 3, "failed_requests": 5}, "failures": 0, "warnings": 4, "report_rel": "../../sites/theme-refresh-demo.myshopify.com/runs/20261009T060300Z-m-dc70/report.html"}}, "cart": true, "input": "https://theme-refresh-demo.myshopify.com", "report_rel": "../../sites/theme-refresh-demo.myshopify.com/runs/20261009T060124Z-d-1eff/report.html"}, {"site_id": "theme-ride-demo.myshopify.com", "url": "https://theme-ride-demo.myshopify.com", "verdict": "healthy", "platform": "shopify", "theme": "Ride (store copy: [Ride] Theme Store demo (latest))", "checkout": "Shopify checkout", "access": "open", "suites": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "cart": "pass", "search": "pass", "health": "pass"}, "failures": [], "warnings": 6, "healed": 0, "radar_suspect": 0, "notes": ["6 product(s) not listed in the browsed collections are tested last (e.g. roller)"], "report": "data/sites/theme-ride-demo.myshopify.com/runs/20261009T060124Z-d-3ebb/report.html", "secs": 181, "suites_by_device": {"desktop": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "cart": "pass", "search": "pass", "health": "pass"}, "mobile": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "cart": "pass", "search": "pass", "health": "pass"}}, "device_only": {"desktop": [], "mobile": []}, "devices": {"desktop": {"verdict": "healthy", "report": "data/sites/theme-ride-demo.myshopify.com/runs/20261009T060124Z-d-3ebb/report.html", "secs": 89, "perf": {"pages": 10, "median_load_secs": 2.26, "slowest": {"url": "/products/filipe-toledo-wildfire", "load_secs": 3.42}, "console_errors": 0, "console_warnings": 3, "failed_requests": 4}, "failures": 0, "warnings": 3, "report_rel": "../../sites/theme-ride-demo.myshopify.com/runs/20261009T060124Z-d-3ebb/report.html"}, "mobile": {"verdict": "healthy", "report": "data/sites/theme-ride-demo.myshopify.com/runs/20261009T060253Z-m-5b94/report.html", "secs": 92, "perf": {"pages": 10, "median_load_secs": 2.27, "slowest": {"url": "/products/filipe-toledo-wildfire", "load_secs": 3.46}, "console_errors": 0, "console_warnings": 3, "failed_requests": 5}, "failures": 0, "warnings": 3, "report_rel": "../../sites/theme-ride-demo.myshopify.com/runs/20261009T060253Z-m-5b94/report.html"}}, "cart": true, "input": "https://theme-ride-demo.myshopify.com", "report_rel": "../../sites/theme-ride-demo.myshopify.com/runs/20261009T060124Z-d-3ebb/report.html"}, {"site_id": "supplysix.com", "url": "https://supplysix.com", "verdict": "healthy", "platform": "shopify", "theme": "Focal (store copy: Copy of 18/9/2026 4 PM || Gayatri || FRE)", "checkout": "GoKwik", "access": "open", "suites": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}, "failures": [], "warnings": 6, "healed": 0, "radar_suspect": 0, "notes": [], "report": "data/sites/supplysix.com/runs/20261009T060124Z-d-98d0/report.html", "secs": 538, "suites_by_device": {"desktop": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}, "mobile": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}}, "device_only": {"desktop": [], "mobile": []}, "devices": {"desktop": {"verdict": "healthy", "report": "data/sites/supplysix.com/runs/20261009T060124Z-d-98d0/report.html", "secs": 252, "perf": {"pages": 9, "median_load_secs": 12.85, "slowest": {"url": "/products/supply6-salts-peach", "load_secs": 16.39}, "console_errors": 4, "console_warnings": 1, "failed_requests": 144}, "failures": 0, "warnings": 3, "report_rel": "../../sites/supplysix.com/runs/20261009T060124Z-d-98d0/report.html"}, "mobile": {"verdict": "healthy", "report": "data/sites/supplysix.com/runs/20261009T060536Z-m-822e/report.html", "secs": 286, "perf": {"pages": 10, "median_load_secs": 12.98, "slowest": {"url": "/collections/all", "load_secs": 18.26}, "console_errors": 4, "console_warnings": 1, "failed_requests": 143}, "failures": 0, "warnings": 3, "report_rel": "../../sites/supplysix.com/runs/20261009T060536Z-m-822e/report.html"}}, "cart": false, "input": "https://supplysix.com", "report_rel": "../../sites/supplysix.com/runs/20261009T060124Z-d-98d0/report.html"}, {"site_id": "peepbeauty.in", "url": "https://peepbeauty.in", "verdict": "healthy", "platform": "shopify", "theme": "Horizon (store copy: 08-09-2026)", "checkout": "GoKwik", "access": "open", "suites": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}, "failures": [], "warnings": 3, "healed": 0, "radar_suspect": 0, "notes": ["1 product(s) not listed in the browsed collections are tested last (e.g. the-triptii-edit)"], "report": "data/sites/peepbeauty.in/runs/20261009T060425Z-d-df94/report.html", "secs": 518, "suites_by_device": {"desktop": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}, "mobile": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}}, "device_only": {"desktop": [], "mobile": []}, "devices": {"desktop": {"verdict": "healthy", "report": "data/sites/peepbeauty.in/runs/20261009T060425Z-d-df94/report.html", "secs": 253, "perf": {"pages": 10, "median_load_secs": 10.37, "slowest": {"url": "/products/moonstone-grey-coloured-contact-lenses?variant=45990637797583", "load_secs": 19.56}, "console_errors": 3, "console_warnings": 2, "failed_requests": 81}, "failures": 0, "warnings": 1, "report_rel": "../../sites/peepbeauty.in/runs/20261009T060425Z-d-df94/report.html"}, "mobile": {"verdict": "healthy", "report": "data/sites/peepbeauty.in/runs/20261009T060838Z-m-ea93/report.html", "secs": 265, "perf": {"pages": 10, "median_load_secs": 10.57, "slowest": {"url": "/products/moonstone-grey-coloured-contact-lenses", "load_secs": 17.37}, "console_errors": 3, "console_warnings": 3, "failed_requests": 79}, "failures": 0, "warnings": 2, "report_rel": "../../sites/peepbeauty.in/runs/20261009T060838Z-m-ea93/report.html"}}, "cart": false, "input": "https://peepbeauty.in", "report_rel": "../../sites/peepbeauty.in/runs/20261009T060425Z-d-df94/report.html"}, {"site_id": "bombayshavingcompany.com", "url": "https://www.bombayshavingcompany.com", "verdict": "healthy", "platform": "shopify", "theme": "Dawn (store copy: Troopod Agent \u2014 BSC-16)", "checkout": "GoKwik", "access": "open", "suites": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}, "failures": [], "warnings": 6, "healed": 0, "radar_suspect": 0, "notes": ["17 product(s) not listed in the browsed collections are tested last (e.g. aqua-deo-120ml)"], "report": "data/sites/bombayshavingcompany.com/runs/20261009T060439Z-d-7c46/report.html", "secs": 654, "suites_by_device": {"desktop": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}, "mobile": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}}, "device_only": {"desktop": [], "mobile": []}, "devices": {"desktop": {"verdict": "healthy", "report": "data/sites/bombayshavingcompany.com/runs/20261009T060439Z-d-7c46/report.html", "secs": 399, "perf": {"pages": 8, "median_load_secs": 16.18, "slowest": {"url": "/", "load_secs": 20.8}, "console_errors": 3, "console_warnings": 3, "failed_requests": 116}, "failures": 0, "warnings": 3, "report_rel": "../../sites/bombayshavingcompany.com/runs/20261009T060439Z-d-7c46/report.html"}, "mobile": {"verdict": "healthy", "report": "data/sites/bombayshavingcompany.com/runs/20261009T061118Z-m-7825/report.html", "secs": 255, "perf": {"pages": 9, "median_load_secs": 9.3, "slowest": {"url": "/", "load_secs": 17.13}, "console_errors": 3, "console_warnings": 3, "failed_requests": 116}, "failures": 0, "warnings": 3, "report_rel": "../../sites/bombayshavingcompany.com/runs/20261009T061118Z-m-7825/report.html"}}, "cart": false, "input": "https://www.bombayshavingcompany.com", "report_rel": "../../sites/bombayshavingcompany.com/runs/20261009T060439Z-d-7c46/report.html"}, {"site_id": "suta.in", "url": "https://suta.in", "verdict": "healthy", "platform": "shopify", "theme": "Prestige (store copy: Suta-031026-sale-mystery gift--AM)", "checkout": "GoKwik", "access": "open", "suites": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}, "failures": [], "warnings": 10, "healed": 0, "radar_suspect": 0, "notes": ["18 product(s) not listed in the browsed collections are tested last (e.g. make-this-saree-ready-to-wear-custom-size)"], "report": "data/sites/suta.in/runs/20261009T061022Z-d-83c7/report.html", "secs": 536, "suites_by_device": {"desktop": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}, "mobile": {"journey": "pass", "smoke": "pass", "catalog": "pass", "product": "pass", "search": "pass", "health": "pass"}}, "device_only": {"desktop": [], "mobile": []}, "devices": {"desktop": {"verdict": "healthy", "report": "data/sites/suta.in/runs/20261009T061022Z-d-83c7/report.html", "secs": 359, "perf": {"pages": 10, "median_load_secs": 10.19, "slowest": {"url": "/products/ponvaani", "load_secs": 27.18}, "console_errors": 6, "console_warnings": 4, "failed_requests": 200}, "failures": 0, "warnings": 5, "report_rel": "../../sites/suta.in/runs/20261009T061022Z-d-83c7/report.html"}, "mobile": {"verdict": "healthy", "report": "data/sites/suta.in/runs/20261009T061621Z-m-bdc1/report.html", "secs": 177, "perf": {"pages": 11, "median_load_secs": 6.29, "slowest": {"url": "/collections/saree?f.Availability=In+Stock+Only", "load_secs": 10.39}, "console_errors": 6, "console_warnings": 2, "failed_requests": 194}, "failures": 0, "warnings": 5, "report_rel": "../../sites/suta.in/runs/20261009T061621Z-m-bdc1/report.html"}}, "cart": false, "input": "https://suta.in", "report_rel": "../../sites/suta.in/runs/20261009T061022Z-d-83c7/report.html"}], "totals": {"stores": 6, "healthy": 6, "tested": 6}, "devices": ["desktop", "mobile"], "browser": {"ua_style": "browser", "identity": "BugRadar/0.1 (+bugradar.in)", "headless": true}};
+const $ = s => document.querySelector(s);
+const h = (t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x==='class')e.className=v;
+  else if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else if(v!=null)e.setAttribute(x,v)}
+  for(const c of k.flat())if(c!=null)e.append(c.nodeType?c:document.createTextNode(String(c)));return e};
+const SUITES = ['journey','smoke','catalog','product','cart','search','health'];
+const CELL = {pass:['✓','s-pass'], flaky:['~','s-flaky'], confirmed_fail:['✕','s-confirmed_fail'], blocked:['–','s-blocked'], skipped:['–','s-skip']};
+const DEV = D.devices || ['desktop'];
+const mark = (r, dev, s) => { const sd = (r.suites_by_device||{})[dev]; const v = sd ? sd[s] : undefined; const c = CELL[v] || ['·','meta'];
+  return h('span',{class:c[1], title: dev + ': ' + (v||'not run')}, c[0]); };
+const dvv = (r, dev) => { const d = (r.devices||{})[dev]; return d ? h('span',{class:'v-'+d.verdict}, d.verdict) : h('span',{class:'meta'}, '–'); };
+$('#when').textContent = 'bench ' + D.stamp + ' · ' + D.rows.length + ' stores';
+const T = D.totals;
+[[T.tested||0,'Tested'],[T.healthy||0,'Healthy'],[T.degraded||0,'Degraded'],[T.down||0,'Down'],
+ [(T.unsupported||0)+(T.blocked||0),'Not testable'],[T.unreachable||0,'Wrong / dead URL'],[T.no_network||0,'Radar offline'],[T.error||0,'Radar crashed']].forEach(([n,l]) =>
+  $('#tiles').append(h('div',{class:'tile'}, h('div',{class:'n'},n), h('div',{class:'l'},l))));
+const tb = $('#rows');
+function render(filter){
+  tb.innerHTML='';
+  D.rows.filter(r => filter==='all' || (filter==='fail' && r.failures.length) || r.verdict===filter).forEach(r => {
+    const tr = h('tr',{class:'srow'},
+      h('td',{}, h('b',{}, r.site_id), h('div',{class:'meta'}, r.cart ? 'cart flow on' : 'read-only')),
+      h('td',{class:'v-'+r.verdict}, r.verdict),
+      ...['desktop','mobile'].map(dev => h('td',{}, dvv(r, dev))),
+      h('td',{}, r.theme || '–'), h('td',{}, r.checkout || '–'),
+      ...SUITES.map(s => h('td',{style:'text-align:center;font-weight:700;white-space:nowrap'},
+        DEV.length > 1 ? [mark(r,'desktop',s), ' ', mark(r,'mobile',s)] : mark(r, DEV[0], s))),
+      h('td',{}, r.failures.length || ''), h('td',{}, r.warnings || ''),
+      h('td',{}, r.report_rel ? h('a',{href:r.report_rel}, 'report') : ''));
+    const only = Object.entries(r.device_only||{}).filter(([d,l]) => l.length);
+    const det = h('tr',{class:'det',style:'display:none'}, h('td',{colspan: 16},
+      only.length ? h('div',{class:'sub',style:'margin:4px 0 8px'}, only.map(([d,l]) => h('div',{}, h('b',{}, 'Fails only on ' + d + ': '), l.join(', ')))) : null,
+      Object.entries(r.devices||{}).length ? h('div',{class:'sub',style:'margin:4px 0 8px'}, Object.entries(r.devices).map(([d,v]) => h('div',{},
+        h('b',{}, d + ': '), v.verdict, ' · ', v.report_rel ? h('a',{href:v.report_rel}, 'report') : '', v.perf && v.perf.pages ?
+        ` · ${v.perf.pages} pages, median load ${v.perf.median_load_secs}s` + (v.perf.slowest ? `, slowest ${v.perf.slowest.url} ${v.perf.slowest.load_secs}s` : '')
+        + ` · console errors ${v.perf.console_errors}, failed requests ${v.perf.failed_requests}` : ''))) : null,
+      r.notes.length ? h('ul',{class:'notes'}, r.notes.map(n => h('li',{}, n))) : null,
+      r.failures.length ? h('table',{}, h('thead',{}, h('tr',{}, h('th',{},'Test case'), h('th',{},'Device'), h('th',{},'Verdict'), h('th',{},'Step'), h('th',{},'Why'), h('th',{},'LLM triage'))),
+        h('tbody',{}, r.failures.map(f => h('tr',{}, h('td',{class:'mono'}, f.case), h('td',{}, f.device||''), h('td',{class:'s-'+f.verdict}, f.verdict),
+          h('td',{class:'mono'}, f.step||''), h('td',{}, f.error), h('td',{}, f.llm||''))))) : h('div',{class:'empty'}, 'No failures.')));
+    tr.addEventListener('click', e => { if (e.target.tagName !== 'A') det.style.display = det.style.display === 'none' ? '' : 'none'; });
+    tb.append(tr, det);
+  });
+}
+const F=[['all','All'],['fail','With failures'],['healthy','Healthy'],['degraded','Degraded'],['down','Down'],['blocked','Blocked'],['unsupported','Unsupported'],['unreachable','Wrong URL'],['no_network','Radar offline'],['error','Crashed']];
+F.forEach(([k,l]) => $('#chips').append(h('button',{class:'chip'+(k==='all'?' on':''), onclick:e=>{
+  document.querySelectorAll('#chips .chip').forEach(c=>c.classList.remove('on')); e.target.classList.add('on'); render(k);}}, l)));
+render('all');
+</script></body></html>

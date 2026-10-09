@@ -1,0 +1,1861 @@
+{
+  "run_id": "20261009T061621Z-m-bdc1",
+  "site_id": "suta.in",
+  "base_url": "https://suta.in",
+  "device": "mobile",
+  "started_at": "2026-10-09T06:16:21+00:00",
+  "finished_at": "2026-10-09T06:19:18+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.9s",
+              "error": null,
+              "secs": 9.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "541 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/sale (10 products)",
+              "error": null,
+              "secs": 15.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://suta.in/collections/sale ('\ud83d\udd25 DIL WAL')",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/sale",
+                  "actual": "/collections/sale",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "10",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 20 candidates \u2192 /products/kochu-pata",
+              "error": null,
+              "secs": 10.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/kochu-pata ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/kochu-pata",
+                  "actual": "/products/kochu-pata",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Kochu Pata', selected variant 39636461125697 at \u20b95,100.00",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/kochu-pata",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/kochu-pata.js with variants",
+                  "actual": "'Kochu Pata', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Kochu Pata",
+                  "actual": "'KOCHU PATA' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b95,100.00",
+                  "actual": "\u20b95,100.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Kochu Pata",
+                  "actual": "'KOCHU PATA' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Kochu Pata",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "5100.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.07-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 40.84,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a11bbd-db0a-77e0-baed-9b8ace2332b2/swym-relay-846/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'createElement' on 'Document': The result must not have children",
+              "url": "https://suta.in/collections/sale"
+            },
+            {
+              "type": "pageerror",
+              "text": "nconsole.warn is not a function",
+              "url": "https://suta.in/collections/sale?f.Availability=In+Stock+Only"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://suta.in/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=1601021219.1791526596&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1601021219.1791526596&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526596315&cv=11&fst=1791526596315&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a72z",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=9t5TPlpJjw6x_MA5k_rZ5p8KISdlPSmzgw&auid=1601021219.1791526596&gtm=45be6a72z8d_AW-848170364za208xecxf1&f",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526596630&cv=11&fst=1791526596630&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526596678&cv=11&fst=1791526596678&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526596697&cv=11&fst=1791526596697&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526596714&cv=11&fst=1791526596714&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a72v875243985za200xf1&_p=1791526593378&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-R4741RF69P&gtm=45Pe6a72v9173328936za200xf1&_p=1791526593378&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=907459125&cv=11&fst=1791526596666&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=619277732&cv=11&fst=1791526596690&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1765457028&cv=11&fst=1791526596728&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1812273033&cv=11&fst=1791526596748&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=763800086&cv=11&fst=1791526596754&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=983210277&cv=11&fst=1791526596707&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526603394&cv=11&fst=1791526603394&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526603456&cv=11&fst=1791526603456&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526603704&cv=11&fst=1791526603704&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526603726&cv=11&fst=1791526603726&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9126917489z89",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=1601021219.1791526596&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 2.69,
+              "load": 8.19,
+              "lcp": 2.17
+            },
+            {
+              "url": "/collections/sale?f.Availability=In+Stock+Only",
+              "ttfb": 0.01,
+              "dcl": 2.36,
+              "load": 5.23,
+              "lcp": 2.32
+            },
+            {
+              "url": "/products/kochu-pata",
+              "ttfb": 0.19,
+              "dcl": 3.21,
+              "load": 5.76,
+              "lcp": 2.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.78s",
+              "error": null,
+              "secs": 9.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "504 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.78s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.78s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of null (reading 'addEventListener')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of null (reading 'addEventListener')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.64,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a11bbd-db0a-77e0-baed-9b8ace2332b2/swym-relay-846/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://suta.in/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1028471957.1791526637&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526637131&cv=11&fst=1791526637131&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a72z",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=1028471957.1791526637&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1028471957.1791526637&gtm=45be6a72z8d_AW-848170364za208zb9173328936zd9173328936xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526637258&cv=11&fst=1791526637258&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526637320&cv=11&fst=1791526637320&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526637340&cv=11&fst=1791526637340&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526637358&cv=11&fst=1791526637358&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&auid=1028471957.1791526637&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-R4741RF69P&gtm=45Pe6a72v9173328936za200zd9173328936xf1&_p=1791526634205&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a72v875243985za200zb9173328936zd9173328936xf1&_p=1791526634205&_gaz=1&gcs=G111&gc",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1713060261&cv=11&fst=1791526637308&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1954188621&cv=11&fst=1791526637351&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1139656130&cv=11&fst=1791526637368&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=635082602&cv=11&fst=1791526637333&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=415689707&cv=11&fst=1791526637384&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1293150605&cv=11&fst=1791526637390&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=938130264&cv=11&fst=1791526637397&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526644216&cv=11&fst=1791526644216&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526644276&cv=11&fst=1791526644276&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1283045728&cv=11&fst=1791526644268&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 2.58,
+              "load": 7.94,
+              "lcp": 2.14
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.14s",
+              "error": null,
+              "secs": 8.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "539 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/saree-collection",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.33s",
+              "error": null,
+              "secs": 5.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Latest Sarees (\u0938\u093e\u0921\u093c\u0940) Collection At Best Price In India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "333 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/blouse-collection",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.48s",
+              "error": null,
+              "secs": 5.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Blouse Collection",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "345 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/women-wear",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.46s",
+              "error": null,
+              "secs": 5.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Women wear",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "359 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 25.25,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a11bbd-db0a-77e0-baed-9b8ace2332b2/swym-relay-846/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://suta.in/api/collect",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526648390&cv=11&fst=1791526648390&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526648462&cv=11&fst=1791526648462&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526648486&cv=11&fst=1791526648486&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526648512&cv=11&fst=1791526648512&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=503478167.1791526648&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%2",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=503478167.1791526648&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=503478167.1791526648&gtm=45be6a72v9126917489za208zd9126917489xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526648791&cv=11&fst=1791526648791&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a72z",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=503478167.1791526648&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-R4741RF69P&gtm=45Pe6a72v9173328936za200zb9126917489zd9126917489xf1&_p=1791526645755&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a72h1v875243985za200zb9126917489zd9126917489xf1&_p=1791526645755&_gaz=1&gcs=G111&",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1724989471&cv=11&fst=1791526648450&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=809124325&cv=11&fst=1791526648499&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1145672664&cv=11&fst=1791526648477&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=569393667&cv=11&fst=1791526648525&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1139227839&cv=11&fst=1791526648547&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=147397210&cv=11&fst=1791526648554&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=2139948200&cv=11&fst=1791526648562&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526657012&cv=11&fst=1791526657012&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526657030&cv=11&fst=1791526657030&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526657047&cv=11&fst=1791526657047&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 1.9,
+              "load": 7.54,
+              "lcp": 5.1
+            },
+            {
+              "url": "/pages/saree-collection",
+              "ttfb": 0.33,
+              "dcl": 2.16,
+              "load": 4.04,
+              "lcp": 2.16
+            },
+            {
+              "url": "/pages/blouse-collection",
+              "ttfb": 0.16,
+              "dcl": 2.26,
+              "load": 4.17,
+              "lcp": 2.24
+            },
+            {
+              "url": "/pages/women-wear",
+              "ttfb": 0.14,
+              "dcl": 2.28,
+              "load": 3.99,
+              "lcp": 2.13
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.saree",
+      "suite": "catalog",
+      "title": "Collection 'All collections - Online saree shopping' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.82s",
+              "error": null,
+              "secs": 14.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Saree for Women Online at Best Prices - Suta",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4191 chars, 15 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "12 products listed",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 16.44,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/collections/saree"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'createElement' on 'Document': The result must not have children",
+              "url": "https://suta.in/collections/saree"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a11bbd-db0a-77e0-baed-9b8ace2332b2/swym-relay-846/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://suta.in/api/collect",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526675119&cv=11&fst=1791526675119&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526675144&cv=11&fst=1791526675144&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526675162&cv=11&fst=1791526675162&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526675185&cv=11&fst=1791526675185&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=36737487.1791526675&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%20Suta&t",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=36737487.1791526675&gtm=45be6a72v9126917489za208zb875243985zd875243985xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526675310&cv=11&fst=1791526675310&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a72z",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&auid=36737487.1791526675&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%20Suta&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a72v875243985za200zd875243985xf1&_p=1791526670994&_gaz=1&gcs=G111&gcd=13t3t3t3t5l",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-R4741RF69P&gtm=45Pe6a72v9173328936za200zb875243985zd875243985xf1&_p=1791526670994&gcs",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1863119470&cv=11&fst=1791526675100&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=403984712&cv=11&fst=1791526675111&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1355345425&cv=11&fst=1791526675176&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=2051003105&cv=11&fst=1791526675157&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=100943099&cv=11&fst=1791526675197&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=2071554266&cv=11&fst=1791526675130&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1917745612&cv=11&fst=1791526675089&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526677043&cv=11&fst=1791526677043&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=36737487.1791526675&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%20Suta&t",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526677119&cv=11&fst=1791526677119&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526677154&cv=11&fst=1791526677154&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a72v875243985za200zd875243985xf1&_p=1791526670994&gcs=G111&gcd=13t3t3t3t5l1&npa=0"
+          ],
+          "loads": [
+            {
+              "url": "/collections/saree?f.Availability=In+Stock+Only",
+              "ttfb": 0.03,
+              "dcl": 3.4,
+              "load": 10.39,
+              "lcp": 3.31
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.bliss-alat-palat",
+      "suite": "product",
+      "title": "PDP 'Bliss Alat Palat'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.97s",
+              "error": null,
+              "secs": 11.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bliss Alat Palat",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1446 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/bliss-alat-palat",
+                  "actual": "/products/bliss-alat-palat",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Bliss Alat Palat', selected variant 67040185844083 at \u20b94,950.00",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bliss-alat-palat",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/bliss-alat-palat.js with variants",
+                  "actual": "'Bliss Alat Palat', 8 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Bliss Alat Palat",
+                  "actual": "'BLISS ALAT PALAT' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b94,950.00",
+                  "actual": "\u20b94,950.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Bliss Alat Palat",
+                  "actual": "'BLISS ALAT PALAT' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Bliss Alat Palat",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "4,950.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 67040185844083 (XS) selected, in stock",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "6 of 8 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-main-15583396299123-template--29366290481523__main (variant 67040185844083, button 'ADD TO CART')",
+              "error": null,
+              "secs": 0.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of null (reading 'addEventListener')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of null (reading 'addEventListener')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.71,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/products/bliss-alat-palat?variant=67040185844083"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a11bbd-db0a-77e0-baed-9b8ace2332b2/swym-relay-846/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://suta.in/api/collect",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526690902&cv=11&fst=1791526690902&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526690932&cv=11&fst=1791526690932&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526690955&cv=11&fst=1791526690955&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526690983&cv=11&fst=1791526690983&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1195927354.1791526691&dt=Bliss%20Alat%20Palat&tid=AW-739549334&en=page_view&dl=https%3A%2F",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1195927354.1791526691&gtm=45be6a72v9126917489za208zb875243985zd875243985xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526691122&cv=11&fst=1791526691122&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a72h",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526691134&cv=11&fst=1791526691134&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a72h",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1195927354.1791526691&dt=Bliss%20Alat%20Palat&tid=AW-848170364&en=page_view&dl=https%3A%2F%",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1195927354.1791526691&dt=Bliss%20Alat%20Palat&tid=AW-848170364&en=view_item&dl=https%3A%2F%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a72v875243985za200zd875243985xf1&_p=1791526687618&_gaz=1&gcs=G111&gcd=13t3t3t3t5l",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-R4741RF69P&gtm=45Pe6a72v9173328936za200zb875243985zd875243985xf1&_p=1791526687618&gcs",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=903566057&cv=11&fst=1791526690861&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=35051120&cv=11&fst=1791526690869&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1207994521&cv=11&fst=1791526690852&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=157613122&cv=11&fst=1791526690879&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=488955147&cv=11&fst=1791526690923&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1613222431&cv=11&fst=1791526690893&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1054279186&cv=11&fst=1791526690887&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=720273231&cv=11&fst=1791526690967&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=491569922&cv=11&fst=1791526690973&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1377868868&cv=11&fst=1791526690947&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be"
+          ],
+          "loads": [
+            {
+              "url": "/products/bliss-alat-palat?variant=67040185844083",
+              "ttfb": 0.03,
+              "dcl": 2.73,
+              "load": 8.97,
+              "lcp": 2.14
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.bliss",
+      "suite": "search",
+      "title": "Search for 'bliss' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.8s",
+              "error": null,
+              "secs": 9.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "545 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 59 results, 15 mention 'bliss'",
+              "error": null,
+              "secs": 12.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "bliss - suta.in",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1714 chars, 41 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "59",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'bliss'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "15 of 59",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 22.05,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a11bbd-db0a-77e0-baed-9b8ace2332b2/swym-relay-846/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Removed URL query parameters due to potential violations.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "nconsole.warn is not a function",
+              "url": "https://suta.in/search?q=bliss"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://suta.in/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1803787968.1791526703&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526703171&cv=11&fst=1791526703171&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a80h",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1803787968.1791526703&gtm=45be6a80h2z8d_AW-848170364za208zb875243985zd875243985xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=1803787968.1791526703&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526703306&cv=11&fst=1791526703306&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526703355&cv=11&fst=1791526703355&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526703377&cv=11&fst=1791526703377&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526703396&cv=11&fst=1791526703396&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&auid=1803787968.1791526703&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a80h2v875243985za200zd875243985xf1&_p=1791526700141&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-R4741RF69P&gtm=45Pe6a72v9173328936za200zb875243985zd875243985xf1&_p=1791526700141&gcs",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1402993640&cv=11&fst=1791526703343&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=337474247&cv=11&fst=1791526703409&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=235041507&cv=11&fst=1791526703368&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=222050844&cv=11&fst=1791526703389&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=2131990542&cv=11&fst=1791526703426&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1503504984&cv=11&fst=1791526703431&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=811173654&cv=11&fst=1791526703438&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526710145&cv=11&fst=1791526710145&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526710224&cv=11&fst=1791526710224&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526710400&cv=11&fst=1791526710400&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 2.57,
+              "load": 7.95,
+              "lcp": 2.1
+            },
+            {
+              "url": "/search?q=bliss",
+              "ttfb": 0.01,
+              "dcl": 2.68,
+              "load": 6.29,
+              "lcp": 4.62
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.83s",
+              "error": null,
+              "secs": 9.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "505 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "63: 'Suta|Shop Latest Collection of Designer Blouses & Sarees Onl'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 216: 'Suta works with weavers across India to create affordable et'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "216: 'Suta works with weavers across India to create affordable et'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://suta.in/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://suta.in/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.91,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a11bbd-db0a-77e0-baed-9b8ace2332b2/swym-relay-846/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://suta.in/api/collect",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526725289&cv=11&fst=1791526725289&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a72h",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=921062425.1791526725&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=921062425.1791526725&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=921062425.1791526725&gtm=45be6a72h1z8d_AW-848170364za208xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526725482&cv=11&fst=1791526725482&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526725580&cv=11&fst=1791526725580&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526725603&cv=11&fst=1791526725603&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526725623&cv=11&fst=1791526725623&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&auid=921062425.1791526725&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-R4741RF69P&gtm=45Pe6a72v9173328936za200xf1&_p=1791526722190&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a72v875243985za200xf1&_p=1791526722190&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1030363648&cv=11&fst=1791526725568&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1930064267&cv=11&fst=1791526725596&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=2128399822&cv=11&fst=1791526725653&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=924787072&cv=11&fst=1791526725616&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1754040938&cv=11&fst=1791526725661&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1599925590&cv=11&fst=1791526725669&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1295166975&cv=11&fst=1791526725635&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.63,
+              "load": 8.16,
+              "lcp": 1.93
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.88s",
+              "error": null,
+              "secs": 10.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bliss Alat Palat",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1448 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Bliss Alat Palat",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "16: 'Bliss Alat Palat'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Details Collection: Alat Palat Type: Padded Fabric: Cotton a'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Details Collection: Alat Palat Type: Padded Fabric: Cotton a'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://suta.in/products/bliss-alat-palat",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://suta.in/products/bliss-alat-palat",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Bliss Alat Palat",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://suta.in/cdn/shop/files/BlissAlatPalat-4.jpg?v=1791264529&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.35,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/products/bliss-alat-palat"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a11bbd-db0a-77e0-baed-9b8ace2332b2/swym-relay-846/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://suta.in/api/collect",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526734970&cv=11&fst=1791526734970&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a72z",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526734982&cv=11&fst=1791526734982&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a72z",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1536189642.1791526735&dt=Bliss%20Alat%20Palat&tid=AW-848170364&en=page_view&dl=https%3A%2F%",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1536189642.1791526735&dt=Bliss%20Alat%20Palat&tid=AW-848170364&en=page_view&dl=https%3A%2F%",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1536189642.1791526735&dt=Bliss%20Alat%20Palat&tid=AW-848170364&en=view_item&dl=https%3A%2F%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1536189642.1791526735&gtm=45be6a72z8d_AW-848170364za208xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526735399&cv=11&fst=1791526735399&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526735427&cv=11&fst=1791526735427&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526735453&cv=11&fst=1791526735453&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526735475&cv=11&fst=1791526735475&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=1536189642.1791526735&dt=Bliss%20Alat%20Palat&tid=AW-739549334&en=page_view&dl=https%3A%2F",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a80h2v875243985za200xf1&_p=1791526732247&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&d",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-R4741RF69P&gtm=45Pe6a72v9173328936za200xf1&_p=1791526732247&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=59364953&cv=11&fst=1791526735354&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1204015306&cv=11&fst=1791526735379&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1079491012&cv=11&fst=1791526735390&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1179742622&cv=11&fst=1791526735363&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=15929642&cv=11&fst=1791526735412&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1834547152&cv=11&fst=1791526735419&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1948185061&cv=11&fst=1791526735439&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1756504771&cv=11&fst=1791526735385&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=421950546&cv=11&fst=1791526735464&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6"
+          ],
+          "loads": [
+            {
+              "url": "/products/bliss-alat-palat",
+              "ttfb": 0.02,
+              "dcl": 2.66,
+              "load": 8.65,
+              "lcp": 2.02
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 15.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404 (redirected to /collections/all)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 16.01,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'createElement' on 'Document': The result must not have children",
+              "url": "https://suta.in/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a11bbd-db0a-77e0-baed-9b8ace2332b2/swym-relay-846/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://suta.in/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1872274469.1791526745&dt=404%20Not%20Found&tid=AW-848170364&en=page_view&dl=https%3A%2F%2F",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&auid=1872274469.1791526745&dt=404%20Not%20Found&tid=AW-848170364&en=page_view&dl=https%3A%2F%2F",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526745508&cv=11&fst=1791526745508&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a72z",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1872274469.1791526745&gtm=45be6a72z8d_AW-848170364za208xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1872274469.1791526745&dt=Shop%20Online%20From%20Suta%27s%20Wide%20Range%20of%20Clothes%20%2",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791526748907&cv=11&fst=1791526748907&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a72z",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=1872274469.1791526745&dt=Shop%20Online%20From%20Suta%27s%20Wide%20Range%20of%20Clothes%20%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526749183&cv=11&fst=1791526749183&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526749219&cv=11&fst=1791526749219&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526749240&cv=11&fst=1791526749240&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526749260&cv=11&fst=1791526749260&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=1872274469.1791526745&dt=Shop%20Online%20From%20Suta%27s%20Wide%20Range%20of%20Clothes%20%2",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1976081223&cv=11&fst=1791526748772&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=559035010&cv=11&fst=1791526748791&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=2123514638&cv=11&fst=1791526748808&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=364166999&cv=11&fst=1791526749253&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=156061586&cv=11&fst=1791526749209&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=2127319608&cv=11&fst=1791526749230&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=1164450018&cv=11&fst=1791526749274&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-P4ZM2JCMGY&gtm=45je6a80h2v875243985za200zd875243985xf1&_p=1791526746610&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791526750588&cv=11&fst=1791526750588&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a80h",
+            "GET https://www.google.com/pagead/1p-conversion/739549334/?random=883711825&cv=11&fst=1791526750626&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all?f.Availability=In+Stock+Only",
+              "ttfb": 0.03,
+              "dcl": 3.31,
+              "load": 9.65,
+              "lcp": 2.37
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+    "theme": "Prestige (store copy: Suta-031026-sale-mystery gift--AM)",
+    "checkout_app": "GoKwik",
+    "access": "open",
+    "nav": 25,
+    "collections": 47,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "18 product(s) not listed in the browsed collections are tested last (e.g. make-this-saree-ready-to-wear-custom-size)"
+  ],
+  "perf": {
+    "pages": 11,
+    "median_load_secs": 6.29,
+    "slowest": {
+      "url": "/collections/saree?f.Availability=In+Stock+Only",
+      "load_secs": 10.39
+    },
+    "console_errors": 6,
+    "console_warnings": 2,
+    "failed_requests": 194
+  },
+  "counts": {
+    "pass": 9,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
