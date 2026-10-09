@@ -719,6 +719,28 @@ sibling-colour product links). Web Bot Auth check: 401.
 note now says "the store's domain does not resolve (DNS: no such host): check the address" instead of "temporary
 server problem". new30c is scored on 26 stores: **first-run score 6/26 Radar false-failure stores**.
 
+## 4x. Loop cycle 6 (10 Oct 2026, 03:46 IST, automated): delivery-pincode gate on the buy button
+
+**Problem (new30d held-out run 37988362552, bombaysweetshop.com, both devices):** the right variant WAS selected
+(form id = expected id), but the store's own buy button stays disabled and reads 'PLEASE ENTER YOUR PINCODE TO CHECK
+AVAILABILITY', with an 'ENTER YOUR PINCODE' box + CHECK button below it. `_ensure_variant` failed 'variant selected
+like a shopper: expected X, got X' (the disabled button was hidden in the condition, not in the message).
+
+**Fix (`radar/checks/library.py`):** `PINCODE_GATE_JS` looks for a disabled own buy button whose text asks for a
+pincode / zip / delivery check, or a visible pincode box on the page (not header/footer/newsletter/quick-add). When the
+right variant is selected and that gate is there: variant step passes saying so; `buy_button_ready` is a **warning**
+("disabled until the shopper checks a delivery pincode: <evidence>"); the cart steps (cart case and journey cart) are
+**BLOCKED** (`PincodeGate`, same path as robots/age gate), because Radar never types a pincode (it submits no form but
+add-to-cart). A disabled button with no gate still fails, now saying "but the buy button is still disabled". Common on
+Indian food / perishables / furniture stores. Mock `pincode_gate`: fails on the old code ('expected 201 (Small), got
+201'), passes on the new. Full e2e 84/84 green, unit 82/82.
+
+**Verified (run 38000157483):** bombaysweetshop.com healthy desktop + mobile, the pincode warning on the product test.
+littleboxindia.com mobile (new30c) re-run: still 'buy button enabled: false' while the variant step read the form as
+enabled and the screenshot shows an enabled sticky ADD TO CART: Radar's `MAIN_BUY_JS` picks a different (disabled)
+button than `FORM_STATE_JS`. One store, 2 runs → watch; next step if it reappears: name the chosen button in the
+failure. Web Bot Auth check: 401.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
