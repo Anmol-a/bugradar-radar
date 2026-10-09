@@ -665,6 +665,31 @@ round-1 code, passes on round 2).
 One-offs left as documented limits: bellavita second search word 'magicpin' (a partner-offer product; only tried
 because the first word failed under the held theme), consciouschemist 'build your box' bundle-app collection.
 
+**Loop cycle 3 (10 Oct 00:00–01:15 IST, no code change).** Full 36 regression (run 37973724156, after cycle 2's
+platform + KwikPass changes): 62 healthy / 4 degraded / 0 down / 2 unsupported (snitch, thewholetruthfoods) /
+1 blocked (vaaree robots.txt). The 4 degraded = foxtale + plumgoodness both devices = the known store catalog
+finding (all 3 sampled catalog products hidden: foxtale 'Page Not Found, redirecting to homepage' screenshot,
+plum 'The product is currently unavailable'). **0 Radar false failures.** boldcare (KwikPass) healthy both devices.
+Web Bot Auth check: 401 (registration pending).
+
+**Held-out set #3 `stores/new30c.txt`, run ONCE (run 37976141781, v0.19 as of cycle 2).** WebFetch needs a human
+approval in unattended runs, so the list was not pre-checked; Radar's own discovery decided: ustraa.com not Shopify,
+bareanatomy.com now redirects to innovist.com (list error, not scored) → 28 scored stores.
+Right: 17 healthy both devices + 3 honest blocks (berrylush password, nestasia bot challenge, tagzfoods HTTP 423).
+Unverified: chemistatplay + neemli 'robots.txt no answer x3' (Radar obeyed RFC 9309; 2 stores = check next whether
+our robots fetch is refused by the store's CDN). **Radar false failures: 6/28 stores** (new30b: 12/30):
+
+| Store | Device | What Radar said | Evidence | Next |
+|---|---|---|---|---|
+| ptron | both | search 'sonor': 0 results | title "Search: 517 results found", results area blank (screenshot) | search-app pattern (2 stores) |
+| kushals | mobile | search: 0 of 1 result mentions zircon / antique / trendy | title "1000 results found", results area blank | same pattern |
+| fablestreet | both | /collections/all: empty <title> | page is the store's 404 'checkout our best sellers' (store turned off /collections/all) | Radar should use a real collection when /collections/all is a 404 (one store: watch) |
+| tigc | desktop | clicked card stayed on /collections/premium-jackets-for-men | card with image carousel arrows | one-off, watch |
+| naaginsauce | mobile | no clickable product card ('18 covered by img.loadify_img') | screenshot fully white (lazy-load app overlay) | one-off, watch |
+| littleboxindia | mobile | buy button disabled | sticky 'ADD TO CART' visible; size not chosen | one-off, watch |
+
+Watch: fireboltt 'every sampled product is sold out' on both devices (possible location (US runner)).
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -923,6 +948,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 loop cycle 3 (10 Oct, 00:00 IST):** no code change. Full 36 regression clean (0 Radar false failures); held-out `stores/new30c.txt` run once: 6/28 Radar false-failure stores (4v).
 - **v0.19 loop cycle 2 (9 Oct, 20:45 IST):** emulated devices report a matching `navigator.platform` (desktop = Windows Chrome, mobile = Pixel 7 Android) instead of the runner's 'Linux x86_64', which PageSpeed-bot snippets on bonkerscorner / bellavita / baccabucci treat as a bot; mock `pagespeed_gate`. GoKwik KwikPass login iframe closed inside the frame; mock `kwikpass_popup` (4v).
 - **v0.19 loop cycle 1 (9 Oct, 16:45 IST):** scroll-reveal pass fixed (real document height), search-app wait, first-interaction nudge for held theme scripts, hidden-price evidence (market, no-js, gating script), workflow LATEST-conflict fix; mocks `search_app`, `search_app_popular`, `delayed_scripts` (4u).
 
