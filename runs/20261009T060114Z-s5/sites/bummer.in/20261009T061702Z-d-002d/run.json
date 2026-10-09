@@ -1,0 +1,2051 @@
+{
+  "run_id": "20261009T061702Z-d-002d",
+  "site_id": "bummer.in",
+  "base_url": "https://www.bummer.in",
+  "device": "desktop",
+  "started_at": "2026-10-09T06:17:02+00:00",
+  "finished_at": "2026-10-09T06:23:20+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 5.02s",
+              "error": null,
+              "secs": 14.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bummer | Stylish and Comfortable Underwear and Loungewear",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3220 chars, 113 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/men (57 products)",
+              "error": null,
+              "secs": 15.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://bummer.in/collections/men?filter.v.availability=1&grid=default ('Extra 10% off on 999+ | Free Socks \u20b91499+ | Free Socks & Per')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/men",
+                  "actual": "/collections/men",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "57",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "fail",
+              "detail": null,
+              "error": "could not click: </div> subtree intercepts pointer events",
+              "secs": 45.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/trunks-aurora?variant=48984402559227 ('Modal Stretch Trunks - Aurora')",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked \"clicked 'close' inside the popup frame\" on: 'iframe popup 7'",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'pressed Escape; still open' on: 'iframe popup 7'",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'pressed Escape; still open' on: 'iframe popup 7'",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "click_into_product",
+          "error": "could not click: </div> subtree intercepts pointer events",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 85.11,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1296728315@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://bummer.in/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            },
+            {
+              "type": "warning",
+              "text": "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.",
+              "url": "about:srcdoc"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://bummer.in/api/collect",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526646377&ec=2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526642825&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1092012814.1791526647&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Lo",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1092012814.1791526647&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a80h2v9202456357za200zb830629700zd830629700xf1&_p=1791526642825&g",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=39776850&cv=11&fst=1791526647440&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526649927&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526651018&cv=11&fst=1791526651018&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=2&apvc=1&auid=1843864166.1791526651&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Lo",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1843864166.1791526651&gtm=45be6a72v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526650076&gcd=13l3l",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526652743&ec=1",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za200zd894986238xf1&_p=1791526649927&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526650076&gcd=13l3l3l3l1l1&npa",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526664735&ec=1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526660820&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1843864166.1791526651&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Colle",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=1493480463&cv=11&fst=1791526666408&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526667611&cv=11&fst=1791526667611&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 4.07,
+              "load": 11.46,
+              "lcp": 2.0
+            },
+            {
+              "url": "/collections/men?filter.v.availability=1&grid=default",
+              "ttfb": 0.06,
+              "dcl": 5.23,
+              "load": 10.56,
+              "lcp": 3.22
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.51s",
+              "error": null,
+              "secs": 15.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bummer | Stylish and Comfortable Underwear and Loungewear",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3220 chars, 113 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/men (57 products)",
+              "error": null,
+              "secs": 14.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://bummer.in/collections/men?filter.v.availability=1&grid=default ('Extra 10% off on 999+ | Free Socks \u20b91499+ | Free Socks & Per')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/men",
+                  "actual": "/collections/men",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "57",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "fail",
+              "detail": null,
+              "error": "could not click: </div> subtree intercepts pointer events",
+              "secs": 47.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/trunks-aurora?variant=48984402559227 ('Modal Stretch Trunks - Aurora')",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked \"clicked 'close' inside the popup frame\" on: 'iframe popup 7'",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'pressed Escape; still open' on: 'iframe popup 7'",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'pressed Escape; still open' on: 'iframe popup 7'",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "click_into_product",
+          "error": "could not click: </div> subtree intercepts pointer events",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 88.01,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1296728315@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://bummer.in/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            },
+            {
+              "type": "warning",
+              "text": "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.",
+              "url": "about:srcdoc"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/api/collect",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526728073&_gaz=1&gcs=G111&gcd=",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526733623&ec=2",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=263807426.1791526734&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Loun",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=263807426.1791526734&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526728073&gcs",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=1043331096&cv=11&fst=1791526734315&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=2&apvc=1&auid=1490608696.1791526739&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Lo",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1490608696.1791526739&gtm=45be6a72h1v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526738953&cv=11&fst=1791526738953&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526736393&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526739383&ec=1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526736652&gcd=13l3l",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za200zd894986238xf1&_p=1791526736393&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526736652&gcd=13l3l3l3l1l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1490608696.1791526739&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Collec",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526750103&ec=1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526746205&gcs=G111&gcd=13t3t3t",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=1295633901&cv=11&fst=1791526750189&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=1&auid=1490608696.1791526739&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Colle"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 3.35,
+              "load": 10.99,
+              "lcp": 1.89
+            },
+            {
+              "url": "/collections/men?filter.v.availability=1&grid=default",
+              "ttfb": 0.16,
+              "dcl": 4.58,
+              "load": 10.09,
+              "lcp": 2.68
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 7.37s",
+              "error": null,
+              "secs": 15.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bummer | Stylish and Comfortable Underwear and Loungewear",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3220 chars, 113 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/men (57 products)",
+              "error": null,
+              "secs": 14.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://bummer.in/collections/men?filter.v.availability=1&grid=default ('Extra 10% off on 999+ | Free Socks \u20b91499+ | Free Socks & Per')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/men",
+                  "actual": "/collections/men",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "57",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "fail",
+              "detail": null,
+              "error": "could not click: </div> subtree intercepts pointer events",
+              "secs": 54.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/trunks-aurora?variant=48984402559227 ('Modal Stretch Trunks - Aurora')",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'pressed Escape; still open' on: 'iframe popup 7'",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'pressed Escape; still open' on: 'iframe popup 7'",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'pressed Escape; still open' on: 'iframe popup 7'",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "click_into_product",
+          "error": "could not click: </div> subtree intercepts pointer events",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 94.69,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "warning",
+              "text": "Did not find element expected to be parsed from: <link rel=expect href=\"#MainContent\">",
+              "url": "https://www.googletagmanager.com/gtm.js?id=GTM-TX84GV7"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1296728315@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://bummer.in/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            },
+            {
+              "type": "warning",
+              "text": "An iframe which has both allow-scripts and allow-same-origin for its sandbox attribute can escape its sandboxing.",
+              "url": "about:srcdoc"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526821708&ec=2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526818321&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1025441930.1791526823&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Lou",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1025441930.1791526823&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526818321&gcs",
+            "POST https://bummer.in/api/collect",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=692402029&cv=11&fst=1791526823124&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45b",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526826786&ec=1",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526825699&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526827248&cv=11&fst=1791526827248&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=2&apvc=1&auid=979267656.1791526827&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Loun",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=979267656.1791526827&gtm=45be6a72v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526826800&gcd=13l3l",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za200zd894986238xf1&_p=1791526825699&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526826800&gcd=13l3l3l3l1l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=2&apvc=0&auid=979267656.1791526827&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Loun",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526835743&cv=11&fst=1791526835743&fmt=8&bg=ffffff&guid=ON&async=1&en=user_engagement&gtm=45b",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526841038&ec=1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526837042&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=979267656.1791526827&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Collect"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.08,
+              "dcl": 6.7,
+              "load": 11.95,
+              "lcp": 3.74
+            },
+            {
+              "url": "/collections/men?filter.v.availability=1&grid=default",
+              "ttfb": 0.12,
+              "dcl": 5.3,
+              "load": 9.18,
+              "lcp": 2.74
+            }
+          ]
+        }
+      ],
+      "incident_signature": "bummer.in|journey.shopper|click_into_product",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "popup_or_overlay",
+        "reason": "A popup/overlay (promotional/iframe element) covered the product card and blocked the robot's click, so the failure is due to the robot encountering an overlay rather than a store checkout or product error.",
+        "evidence": "The robot's click target was covered by another element lying on top of it; visible page text includes promo/marketing bar 'Extra 10% off on 999+ | Free Socks \u20b91499+ | Free Socks & Perfume \u20b91999+ | Free Shipping \u20b9699+ \ud83d\ude9a'; robot error: 'could not click: </div> subtree intercepts pointer events' and r"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 5.0s",
+              "error": null,
+              "secs": 11.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bummer | Stylish and Comfortable Underwear and Loungewear",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3220 chars, 113 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "5.0s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "5.0s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.24,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1296728315@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://bummer.in/api/collect",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526916902&ec=2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526913201&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1284879040.1791526918&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Lou",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1284879040.1791526918&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526913201&gcs",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=1821955052&cv=11&fst=1791526918044&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526920335&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=822038328.1791526921&gtm=45be6a72v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=822038328.1791526921&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Loun",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526921303&cv=11&fst=1791526921303&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526920499&gcd=13l3l",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526923220&ec=1"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 4.25,
+              "load": 10.22,
+              "lcp": 2.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/men",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.28s",
+              "error": null,
+              "secs": 8.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Men's Underwear, Boxer Shorts, & Briefs Collection | Bummer",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6813 chars, 132 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/multi-pack",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.02s",
+              "error": null,
+              "secs": 4.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Multi-Packs for Everyday Comfort & Savings | Bummer",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3631 chars, 84 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/women",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.04s",
+              "error": null,
+              "secs": 8.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Women | Buy Bummer Women's Panties Underwear online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4536 chars, 88 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/new-arrivals",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.09s",
+              "error": null,
+              "secs": 4.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Latest Styles: New Arrivals in Underwear & Apparel | Bummer",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3125 chars, 89 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 26.79,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/collections/men?filter.v.availability=1&grid=default"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1296728315@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/co"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/collections/men?filter.v.availability=1&grid=default"
+            },
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://bummer.in/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelector' on 'Element': '[js-product-grid] .product-grid__item:nth-child(NaN)' is not a valid selector.",
+              "url": "https://bummer.in/collections/multi-pack?filter.v.availability=1&grid=default"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/api/collect",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72h1v894986238za20gzb830629700zd830629700xf1&_p=1791526926886&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72h1v894986238za20gzb830629700zd830629700xf1&_p=1791526926886&gcs=G111&gcd=13t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526926886&gcs",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1115626121.1791526930&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Collec",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1115626121.1791526930&gtm=45be6a72h1z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=1219348969&cv=11&fst=1791526929921&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526930581&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=1&auid=589172286.1791526931&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Collec",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526931101&cv=11&fst=1791526931101&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=589172286.1791526931&gtm=45be6a80h2v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526931355&cv=11&fst=1791526931355&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za200zd894986238xf1&_p=1791526930581&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=0&auid=589172286.1791526931&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Collec",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526931304&ec=2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72h1v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526930698&gcd=13l",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526936825&cv=11&fst=1791526936825&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=589172286.1791526931&dt=Multi-Packs%20for%20Everyday%20Comfort%20%26%20Savings%20%7C%20Bumm",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=0&auid=589172286.1791526931&dt=Multi-Packs%20for%20Everyday%20Comfort%20%26%20Savings%20%7C%20Bumm",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526936835&cv=11&fst=1791526936835&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be"
+          ],
+          "loads": [
+            {
+              "url": "/collections/men?filter.v.availability=1&grid=default",
+              "ttfb": 0.35,
+              "dcl": 2.54,
+              "load": 6.38,
+              "lcp": 1.99
+            },
+            {
+              "url": "/collections/multi-pack?filter.v.availability=1&grid=default",
+              "ttfb": 0.17,
+              "dcl": 1.67,
+              "load": 3.44,
+              "lcp": 1.3
+            },
+            {
+              "url": "/collections/women?filter.v.availability=1&grid=default",
+              "ttfb": 0.05,
+              "dcl": 2.62,
+              "load": 6.74,
+              "lcp": 2.06
+            },
+            {
+              "url": "/collections/new-arrivals?filter.v.availability=1&grid=default",
+              "ttfb": 0.17,
+              "dcl": 1.8,
+              "load": 3.47,
+              "lcp": 1.41
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.men",
+      "suite": "catalog",
+      "title": "Collection 'Shop All Men's' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.23s",
+              "error": null,
+              "secs": 8.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Men's Underwear, Boxer Shorts, & Briefs Collection | Bummer",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6813 chars, 132 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "57 products listed",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "57",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.15,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/collections/men"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1296728315@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/co"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/collections/men"
+            },
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://bummer.in/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://bummer.in/api/collect",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526953601&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526953601&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526953601&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=573403452.1791526956&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Collect",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=573403452.1791526956&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526956409&ec=2",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=1634586975&cv=11&fst=1791526956215&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526956603&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=1478107553.1791526957&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Colle",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1478107553.1791526957&gtm=45be6a72v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526957129&cv=11&fst=1791526957129&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526957319&cv=11&fst=1791526957319&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za200zd894986238xf1&_p=1791526956603&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=0&auid=1478107553.1791526957&dt=Men%27s%20Underwear%2C%20Boxer%20Shorts%2C%20%26%20Briefs%20Colle",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526956757&gcd=13l3l",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526960885&ec=1"
+          ],
+          "loads": [
+            {
+              "url": "/collections/men",
+              "ttfb": 0.2,
+              "dcl": 2.65,
+              "load": 6.19,
+              "lcp": 1.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.hipster-pack-of-6marina-nox",
+      "suite": "product",
+      "title": "PDP 'Hipster 6-Pack'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.72s",
+              "error": null,
+              "secs": 7.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hipster 6-Pack Underwear for Women | Soft & Comfortable | Bummer",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2648 chars, 41 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/hipster-pack-of-6marina-nox",
+                  "actual": "/products/hipster-pack-of-6marina-nox",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Hipster 6-Pack', selected variant 47577346932987 at \u20b91,999.00",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/hipster-pack-of-6marina-nox",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/hipster-pack-of-6marina-nox.js with variants",
+                  "actual": "'Hipster 6-Pack', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Hipster 6-Pack",
+                  "actual": "'Hipster 6-Pack' (h1, 36px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,999.00",
+                  "actual": "\u20b91,999.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Hipster 6-Pack",
+                  "actual": "'Hipster 6-Pack' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Hipster 6-Pack Underwear for Women | Soft & Comfortable | Bummer",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1,999",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 47577346932987 (M) selected, in stock",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "3 of 5 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #BuyButtons-ProductForm-AQnpnZ2JTUjZSU0FnZ__buy_buttons_eYQEYi (variant 47577346932987, button 'SELECT A SIZE\\nAdded')",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.87,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-95256827@6/sandbox/modern/products/hipster-pack-of-6marina"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/products/hipster-pack-of-6marina-nox?variant=47577346932987"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/products/hipster-pack-of-6marina-nox?variant=47577346932987"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/api/collect",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=ViewContent",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526965430&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=2&apvc=1&auid=1682975838.1791526966&dt=Hipster%206-Pack%20Underwear%20for%20Women%20%7C%20Soft%20%26%20C",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526965920&cv=11&fst=1791526965920&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1682975838.1791526966&gtm=45be6a80h2v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72h1v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526965406&_gaz=1&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526963186&gcs=G111&gcd=13t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526963186&gcs",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1487370157.1791526966&dt=Hipster%206-Pack%20Underwear%20for%20Women%20%7C%20Soft%20%26%20C",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1487370157.1791526966&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72h1v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526965406&gcd=13l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za200zd894986238xf1&_p=1791526965430&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526966544&cv=11&fst=1791526966544&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a80h",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=2&apvc=0&auid=1682975838.1791526966&dt=Hipster%206-Pack%20Underwear%20for%20Women%20%7C%20Soft%20%26%20C",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526966537&ec=2",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=1996150663&cv=11&fst=1791526966368&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=432355485&cv=11&fst=1791526966358&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45b",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/hipster-pack-of-6marina-nox?variant=47577346932987",
+              "ttfb": 0.17,
+              "dcl": 1.4,
+              "load": 6.38,
+              "lcp": 1.11
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.hipster",
+      "suite": "search",
+      "title": "Search for 'hipster' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.15s",
+              "error": null,
+              "secs": 6.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bummer | Stylish and Comfortable Underwear and Loungewear",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3220 chars, 113 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 16 results, 10 mention 'hipster'",
+              "error": null,
+              "secs": 6.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'hipster'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "10 of 16",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.44,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1296728315@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://bummer.in/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://bummer.in/api/collect",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526970806&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526970806&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=2116627824.1791526973&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Lo",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2116627824.1791526973&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526972898&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=1&auid=1602735052.1791526974&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Lou",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526973645&cv=11&fst=1791526973645&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1602735052.1791526974&gtm=45be6a72v9216893742za208zd9216893742xecxf1&fmt=8",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=242547147&cv=11&fst=1791526973427&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45b",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526973444&gcd=13l3l",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526974708&ec=2",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za200zd894986238xf1&_p=1791526972898&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "GET https://bummer.in/search?q=hipster",
+            "POST https://www.google.com/rmkt/collect/17915210765/?random=1791526978975&cv=11&fst=1791526978975&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526970806&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/rmkt/collect/17915210765/?random=1791526979009&cv=11&fst=1791526979009&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=1602735052.1791526974&dt=Search%3A%2016%20results%20found%20for%20%22hipster%22%20%E2%80%93",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za200zd894986238xf1&_p=1791526980939&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526980939&gcd=13l3l3l3l1l1&npa=0&dma=0&ec"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.73,
+              "load": 5.77,
+              "lcp": 0.96
+            },
+            {
+              "url": "/search?q=hipster&options%5Bprefix%5D=last",
+              "ttfb": 0.31,
+              "dcl": 1.48,
+              "load": 3.01,
+              "lcp": 1.0
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.42s",
+              "error": null,
+              "secs": 5.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bummer | Stylish and Comfortable Underwear and Loungewear",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3220 chars, 113 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Bummer | Stylish and Comfortable Underwear and Loungewear",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "57: 'Bummer | Stylish and Comfortable Underwear and Loungewear'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 189: 'Ultra Soft and Most comfortable Underwear For Men and Women '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "189: 'Ultra Soft and Most comfortable Underwear For Men and Women '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://bummer.in/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://bummer.in/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Bummer | Stylish and Comfortable Underwear and Loungewear",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://bummer.in/cdn/shop/files/Yellow.png?v=1759730110",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.15,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Did not find element expected to be parsed from: <link rel=expect href=\"#MainContent\">",
+              "url": "https://www.googletagmanager.com/gtm.js?id=GTM-TX84GV7"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1296728315@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://bummer.in/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526984290&_gaz=1&gcs=G111&gcd=",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1754159469.1791526987&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Lo",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1754159469.1791526987&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526984290&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526986365&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=2&apvc=1&auid=103690638.1791526987&dt=Bummer%20%7C%20Stylish%20and%20Comfortable%20Underwear%20and%20Loun",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526987263&cv=11&fst=1791526987263&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=103690638.1791526987&gtm=45be6a72v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=1778756618&cv=11&fst=1791526986801&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526986453&gcd=13l3l",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526987678&ec=2",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.01,
+              "load": 4.83,
+              "lcp": 1.4
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.55s",
+              "error": null,
+              "secs": 5.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hipster 6-Pack Underwear for Women | Soft & Comfortable | Bummer",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2648 chars, 41 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Hipster 6-Pack Underwear for Women | Soft & Comfortable | Bummer",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "64: 'Hipster 6-Pack Underwear for Women | Soft & Comfortable | Bu'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Experience ultimate comfort with the Hipster 6-Pack made from sustaina",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "151: 'Experience ultimate comfort with the Hipster 6-Pack made fro'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://bummer.in/products/hipster-pack-of-6marina-nox",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://bummer.in/products/hipster-pack-of-6marina-nox",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Hipster 6-Pack Underwear for Women | Soft & Comfortable | Bummer",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://bummer.in/cdn/shop/files/Packof6Hipster_0afd03e3-5280-4bda-8bc1-16e69b99d002.png?v=1759488571",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.75,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bummer.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1296728315@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/pr"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://bummer.in/products/hipster-pack-of-6marina-nox"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Chrome currently does not support the Push API in incognito mode (https://crbug.com/41124656). There is deliberately no way to feature-detect this, since incognito mode needs to be undetectable by websites.",
+              "url": "https://bummer.in/products/hipster-pack-of-6marina-nox"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/api/collect",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=ViewContent",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526992560&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=1&auid=1382231911.1791526993&dt=Hipster%206-Pack%20Underwear%20for%20Women%20%7C%20Soft%20%26%20Co",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526993120&cv=11&fst=1791526993120&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1382231911.1791526993&gtm=45be6a72v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526990685&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526990685&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526990685&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=463555288.1791526993&dt=Hipster%206-Pack%20Underwear%20for%20Women%20%7C%20Soft%20%26%20Com",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=463555288.1791526993&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za200zd894986238xf1&_p=1791526992560&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=0&auid=1382231911.1791526993&dt=Hipster%206-Pack%20Underwear%20for%20Women%20%7C%20Soft%20%26%20Co",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526993489&cv=11&fst=1791526993489&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a72v",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526992630&_gaz=1&gc",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526993641&ec=2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526992630&gcd=13l3l",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=1345573397&cv=11&fst=1791526993381&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=520724379&cv=11&fst=1791526993390&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45b",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/hipster-pack-of-6marina-nox",
+              "ttfb": 0.24,
+              "dcl": 1.3,
+              "load": 4.77,
+              "lcp": 1.04
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 4.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.81,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/5255",
+            "POST https://bummer.in/api/collect",
+            "GET https://bummer.in/products/bugradar-check-does-not-exist.js",
+            "POST https://bummer.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://alb.reddit.com/rp?id=a2_gapm9796g45p&event=PageVisit",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1863274586.1791526999&dt=404%20Not%20Found%20%E2%80%93%20Bummer&tid=AW-17915210765&en=page_",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1863274586.1791526999&gtm=45be6a72z8f_AW-17915210765za208zb830629700zd830629700xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-D76EE2X3R2&gtm=45Pe6a72v9202456357za200zb830629700zd830629700xf1&_p=1791526996341&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za20gzb830629700zd830629700xf1&_p=1791526996341&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238za208zd894986238xf1&_p=1791526998404&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=2&apvc=1&auid=6073490.1791526999&dt=404%20Not%20Found%20%E2%80%93%20Bummer&tid=AW-671897081&en=page_view&",
+            "POST https://www.google.com/rmkt/collect/671897081/?random=1791526999150&cv=11&fst=1791526999150&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=6073490.1791526999&gtm=45be6a72v9216893742za208zd9216893742xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526998378&_gaz=1&gc",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=FkTn6BqHwXLs9g7kp34UJz&st=oaiq-web&sv=0.1.41&t=1791526999293&ec=2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-2SFZKXBKPK&gtm=45je6a72v894986238z8830629700za20gzb830629700zd830629700xf1&_p=1791526998378&gcd=13l3l",
+            "GET https://www.google.com/pagead/1p-conversion/17915210765/?random=243130986&cv=11&fst=1791526998899&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45b",
+            "POST https://mpc2-prod-28-is5qnl632q-ue.a.run.app/events?cee=no",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://bummer.in/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.19,
+              "dcl": 1.2,
+              "load": 3.86,
+              "lcp": 0.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 1,
+    "input_tokens": 2982,
+    "output_tokens": 171,
+    "est_usd": 0.001087,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Bummer | Stylish and Comfortable Underwear and Loungewear",
+    "theme": "Bummer 3.0 Native Cart (store copy: Copy of Bummer-Shopify-Cart/main)",
+    "checkout_app": "GoKwik + Shiprocket Fastrr",
+    "access": "open",
+    "nav": 17,
+    "collections": 29,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "13 product(s) not listed in the browsed collections are tested last (e.g. hipster-nox-pack-of-2)",
+    "4 product(s) priced 0 (free samples/gifts, e.g. cotton-ankle-length-socks-size-unisex-buzz) are not used for product or cart tests"
+  ],
+  "perf": {
+    "pages": 10,
+    "median_load_secs": 5.48,
+    "slowest": {
+      "url": "/",
+      "load_secs": 11.95
+    },
+    "console_errors": 3,
+    "console_warnings": 5,
+    "failed_requests": 150
+  },
+  "counts": {
+    "pass": 8,
+    "flaky": 0,
+    "confirmed_fail": 1,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
