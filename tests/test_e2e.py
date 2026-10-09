@@ -549,6 +549,22 @@ def test_search_app_that_renders_results_late_is_waited_for(tmp_path, mode):
     assert "search app" in st["returns_relevant_products"].detail
 
 
+def test_theme_scripts_delayed_until_the_first_interaction_run(tmp_path):
+    """baccabucci.com + bellavitaorganic.com (new30b and the 9 Oct re-run): a speed app holds every script until the
+    shopper first moves / touches / scrolls; Radar never did, so html stayed 'no-js', the price stayed hidden and the
+    search app never rendered. A shopper moves the mouse; so does Radar, then the page is read."""
+    from radar.runner.executor import scan_devices
+    srv, url = serve("delayed_scripts")
+    try:
+        runs = [r for r, _ in scan_devices(url, _settings(tmp_path), only_suites=["product", "search"])]
+    finally:
+        srv.shutdown()
+    assert [r.device for r in runs] == ["desktop", "mobile"]
+    bad = [(r.device, c.case_id, c.attempts[-1].error) for r in runs for c in r.cases if c.verdict != "pass"]
+    assert not bad, bad
+    assert all({c.suite for c in r.cases} == {"product", "search"} for r in runs)
+
+
 @pytest.mark.parametrize("mode", ["drawer_form_first", "upsell_forms_first"])
 def test_hidden_drawer_and_upsell_forms_never_taken_for_the_product_form(tmp_path, mode):
     """boldcare.in + bummer.in (bench 4): hidden cart-drawer / upsell forms named product_form / shopify-product-form
