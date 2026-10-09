@@ -17,7 +17,7 @@ from dataclasses import dataclass, field
 from typing import Callable
 from urllib.parse import urlparse, urljoin
 
-from radar.core.browser import Session, RobotsBlocked
+from radar.core.browser import Session, RobotsBlocked, RateLimited
 from radar.core.models import StepResult
 from radar.discovery.shopify_data import (parse_product_data, price_ok, assess_add, parse_sent_variant_ids,
                                           rupees, norm_text, prices_in_text)
@@ -67,7 +67,7 @@ class Steps:
             self.items.append(StepResult(name, "pass", out, None, round(time.time() - t0, 2), healed, self._checks,
                                          self._shot(name)))
             return out if out is not None else True
-        except (RobotsBlocked, AgeGate) as e:
+        except (RobotsBlocked, AgeGate, RateLimited) as e:
             self.items.append(StepResult(name, "skip", None, str(e), round(time.time() - t0, 2), None, self._checks))
             raise StepFailed(name, str(e), blocked=True) from e
         except Exception as e:  # noqa: BLE001
@@ -132,6 +132,13 @@ def _load(ctx: Ctx, url: str) -> str:
     if status is None:      # served without a network response (cache / service worker / same-document)
         ctx.expect("HTTP status", "< 400", "no network response (cache or service worker); content checked below", True)
     else:
+        if status == 429:                     # wait once (Shopify's limit resets in seconds), then give up as BLOCKED
+            ctx.sess.page.wait_for_timeout(int(8000 * ctx.sess.backoff_scale))
+            resp, secs = ctx.sess.goto(url)
+            status = resp.status if resp else 200
+        if status == 429:
+            raise RateLimited(f"{_path(url)} answered HTTP 429 (Too Many Requests): the platform is rate-limiting Radar, "
+                              "this is not a store failure")
         ctx.expect("HTTP status", "< 400", status, status < 400)
     title = (ctx.sess.evaluate("() => document.title") or "").strip()
     ctx.expect("page <title>", "not empty", title or "(empty)", bool(title))

@@ -573,6 +573,8 @@ Bench `20261008T183333Z`: 33 tested, 26 healthy / 7 degraded / 0 down. Root caus
 | soulflower, foxtale, palmonas | soft 404 | Store (SEO) | health suite severity `seo`: shown in reports, ignored by the run verdict, no incident (so never an alert), no LLM triage |
 | supplysix (desktop), plumgoodness | price only in a hidden sticky bar / hidden catalog product | Store | — |
 
+**Own server, first runs (9 Oct, Contabo Mumbai, runner `radar-vmi3647713`):** `demo3 --quick` = all 3 stores DOWN, every failure `HTTP 429` on `/products/<h>.js`; with `--workers 1` the first store passed and the next two hit 429 again, so Shopify gives this datacenter IP a smaller cumulative request budget than the Mac or GitHub's rotating IPs. v0.19: (1) 429 waits 1, 3, 8, 20 s (or Retry-After, max 30 s); still 429 = `RateLimited` → test BLOCKED with the reason, never a store failure, no incident, run never "down"; a page load answering 429 waits 8 s and retries once; (2) `/products/<h>.js` answers cached per process for 2 min (checks asked the same product 3-4 times per page). `/cart.js` never cached. Mocks `rate_limited` (v0.18: DOWN; v0.19: BLOCKED) and `rate_limited_once`.
+
 **Decision (9 Oct, Anmol's TO-DO):** SEO findings never make a store degraded or down and never alert. `broken_price` mock now passes with an SEO warning (was a confirmed failure).
 
 ## 5. Self-healing locators
@@ -833,7 +835,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
-- **v0.19 (9 Oct 2026):** popup finder ignores closed/off-screen drawers and skips candidates it could not close; variant read from the page's own selected option before `?variant=`; SEO-note severity (soft 404, meta tags, JSON-LD) never a verdict or incident; llm-check 22 cases. Mocks `drawer_decoy_popup`, `preselected_variant`.
+- **v0.19 (9 Oct 2026):** popup finder ignores closed/off-screen drawers and skips candidates it could not close; variant read from the page's own selected option before `?variant=`; SEO-note severity (soft 404, meta tags, JSON-LD) never a verdict or incident; llm-check 22 cases; HTTP 429 = BLOCKED (rate-limited) after backing off, product data cached 2 min. Mocks `drawer_decoy_popup`, `preselected_variant`, `rate_limited`, `rate_limited_once`.
 - 7 Oct 2026, v0.18: product layer step 1 (4r). Desktop + mobile is the default for `scan` and `bench`; mobile skipped when desktop could
   not test the store; incidents and remembered selectors per device; bench row per store with per-device verdicts and `device_only`;
   console errors, failed requests and page-load times captured and shown in reports (evidence only). Mock `price_desktop_hidden`
