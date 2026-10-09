@@ -60,6 +60,10 @@ Modes (to prove Radar catches and heals what it should):
   quick_named_main the MAIN buy button sits in <form class="cart-form"><div class="quick-add-container">, a plain
                    type=button with no /cart/add action, plus the icon-only popup (soulflower.in, bench 3)
                    -> found as the product's own button, cart flow PASSES
+  search_app       /search is filled by a search app ~2.5 s after load: empty until then (bonkerscorner.com, baccabucci.com,
+                   held-out new30b 9 Oct: Radar read the page at 0.8 s, '0 results') -> search PASSES
+  search_app_popular  same, but 'popular products' (none matching the word) show until then (bellavitaorganic.com
+                   'Custom Search': '0 of 23 mention the term') -> search PASSES
   search_misses    searching the first product's word returns only unrelated products (the word came from a
                    product the store hides: foxtale.in 'purify', bench 3) -> a second word is tried; the miss is a
                    WARNING, the search test PASSES on the second word
@@ -352,7 +356,9 @@ document.querySelectorAll('a.card__media').forEach(a => ['mousedown', 'mouseup',
                 f'<div class="swiper-wrapper" style="position:absolute;inset:0;z-index:2"></div></div>'
                 f'<a class="card__title" href="/products/{m.group(1)}">{m.group(3)}</a></div>'), body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "scroll_reveal" and path_now.startswith("/collections/"):
-            body = body.replace("</body>", """<style>a.card{opacity:0;transition:opacity .2s} a.card.aos-animate{opacity:1}</style>
+            # a real collection page is long (filters, more rows, footer): the grid reveals on the first scroll
+            body = body.replace("</body>", """<div class="footer-spacer" style="height:2400px"></div>
+<style>a.card{opacity:0;transition:opacity .2s} a.card.aos-animate{opacity:1}</style>
 <script>addEventListener('scroll', () => document.querySelectorAll('a.card').forEach(a => a.classList.add('aos-animate')),
   {once: true});</script></body>""")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "rerender_grid" and path_now.startswith("/collections/"):
@@ -598,7 +604,17 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             hits = [p for p in PRODUCTS if term and term in p["title"].lower()]
             if self.mode == "search_misses" and term == "ceramic":
                 hits = [p for p in PRODUCTS if p["handle"] == "wooden-spoon-set"]
-            return self._send(200, page(f"Search: {term} | Mock Store", "".join(card(p) for p in hits) or "<p>No results</p>"))
+            found = "".join(card(p) for p in hits) or "<p>No results</p>"
+            if self.mode in ("search_app", "search_app_popular"):
+                # a search app renders results ~2.5 s after the page loads, from its own API (bonkerscorner, baccabucci:
+                # empty until then; bellavitaorganic: 'popular products' placeholders until then)
+                popular = "".join(card(p) for p in PRODUCTS if p not in hits and float(p["price"]) > 0) \
+                    if self.mode == "search_app_popular" else ""
+                return self._send(200, page("Custom Search | Mock Store", f'<div id="app-results">{popular}</div>'
+                                            f'<template id="app-found">{found}</template><script>setTimeout(() => '
+                                            f'document.getElementById("app-results").innerHTML = '
+                                            f'document.getElementById("app-found").innerHTML, 2500);</script>'))
+            return self._send(200, page(f"Search: {term} | Mock Store", found))
         return self._send(404, page("Page not found", "<h1>404</h1>"))
 
     def _pdp(self, p):
