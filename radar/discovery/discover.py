@@ -94,7 +94,7 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
     """RFC 9309: 200 = rules; 4xx = unavailable (allow all); 5xx or no answer = unreachable (disallow all).
     Three tries, 2 s and 5 s apart, longer timeout each time, before calling it unreachable (bench 11: soulflower.in
     and bummer.in had no answer on two quick tries and were blocked for the run; both answer normally)."""
-    status = None
+    status, err = None, ""
     tries = ((10000, 2), (15000, 5), (20000, 0))
     for i, (timeout, gap) in enumerate(tries):
         try:
@@ -104,12 +104,14 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
                 return Robots(r.text(), s.user_agent)
             if 400 <= r.status < 500:
                 return Robots(None, s.user_agent)
-        except Exception:  # noqa: BLE001  DNS, TLS, timeout, reset
+        except Exception as e:  # noqa: BLE001  DNS, TLS, timeout, reset
             status = None
+            err = str(e).split("\n")[0][:160]   # evidence: which network error (chemistatplay.com, neemli.in new30c)
         if gap:
             time.sleep(gap)
     rb = Robots(None, s.user_agent, unreachable=True)
     rb.status = status
+    rb.error = "" if status else err
     return rb
 
 
@@ -127,7 +129,8 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
             return sm
         code = getattr(sess.robots, "status", None)
         sm.access = "robots_unreachable"
-        sm.notes.append(f"robots.txt could not be fetched ({f'HTTP {code}' if code else 'no answer'}, tried 3 times); "
+        why = f"HTTP {code}" if code else ("no answer: " + getattr(sess.robots, "error", "") if getattr(sess.robots, "error", "") else "no answer")
+        sm.notes.append(f"robots.txt could not be fetched ({why}, tried 3 times); "
                         "under the robots.txt standard (RFC 9309) that means 'do not crawl', so nothing was tested "
                         "this run. Usually a temporary server problem on the store's side.")
         return sm

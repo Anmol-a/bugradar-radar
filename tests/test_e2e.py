@@ -549,6 +549,40 @@ def test_search_app_that_renders_results_late_is_waited_for(tmp_path, mode):
     assert "search app" in st["returns_relevant_products"].detail
 
 
+def test_search_app_that_renders_only_after_a_scroll_is_scrolled(tmp_path):
+    """ptron.in desktop (new30c held-out run, 10 Oct): title 'Search: 513 results found for "sonor"', the search app's
+    results area stayed a grey block for 10 s. A shopper scrolls; Radar now scrolls the results area and waits again."""
+    srv, url = serve("search_app_scroll")
+    try:
+        run = scan(url, _settings(tmp_path), only_suites=["search"])[0]
+    finally:
+        srv.shutdown()
+    c = _case(run, "search.")
+    assert c.verdict == "pass", c.attempts[-1].error
+    st = _steps(c)
+    assert st["returns_relevant_products"].status == "pass", st["returns_relevant_products"].error
+    assert "scroll" in st["returns_relevant_products"].detail
+
+
+def test_search_app_that_never_renders_is_a_warning_when_shopify_search_finds_the_word(tmp_path):
+    """ptron.in (both devices) + kushals.com mobile (new30c held-out run, 10 Oct): Shopify's own count in the title
+    ('1000 results found for "zircon"'), but the search app never filled the results area for Radar's browser. Shopify's
+    own search (/search/suggest.json) finds the word, so search works on the store; what Radar cannot prove is the
+    app's rendering: a WARNING with that evidence, not a failure."""
+    srv, url = serve("search_app_never")
+    try:
+        run = scan(url, _settings(tmp_path), only_suites=["search"])[0]
+    finally:
+        srv.shutdown()
+    c = _case(run, "search.")
+    assert c.verdict != "confirmed_fail" and c.verdict != "fail", c.attempts[-1].error
+    steps = [s for a in c.attempts for s in a.steps]
+    warn = [s for s in steps if s.status == "warn" and "did not render" in (s.error or "")]
+    assert warn, [(s.name, s.status, s.error) for s in steps]
+    assert "suggest.json" in warn[0].error or "Shopify's own search" in warn[0].error
+    assert not [s for s in steps if s.status == "fail"], [(s.name, s.error) for s in steps]
+
+
 def test_theme_scripts_delayed_until_the_first_interaction_run(tmp_path):
     """baccabucci.com + bellavitaorganic.com (new30b and the 9 Oct re-run): a speed app holds every script until the
     shopper first moves / touches / scrolls; Radar never did, so html stayed 'no-js', the price stayed hidden and the

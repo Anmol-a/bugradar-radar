@@ -779,7 +779,7 @@ def _page_market(ctx: Ctx) -> str:
         m = ctx.sess.evaluate("""() => ({country: (window.Shopify || {}).country || '',
             currency: ((window.Shopify || {}).currency || {}).active || '',
             nojs: document.documentElement.classList.contains('no-js'),
-            gate: (() => { const re = /navigator\.platform|x86_64|lighthouse|gtmetrix|pagespeed|isbot|\bbot\b/i;
+            gate: (() => { const re = /navigator\\.platform|x86_64|lighthouse|gtmetrix|pagespeed|isbot|\bbot\b/i;
               for (const sc of document.scripts) { const t = sc.textContent || ''; const m = t.match(re);
                 if (m) return (sc.type || 'js') + ': ' + t.slice(Math.max(0, m.index - 50), m.index + 70).replace(/\s+/g, ' '); }
               return ''; })()})""") or {}
@@ -1029,6 +1029,8 @@ def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
     ctx.steps.run({"returns_relevant_products": "open_homepage", "returns_relevant_products_other_word": "open_homepage_again"}
                   .get(step, "open_homepage_third"), lambda: _load(ctx, home))
 
+    state: dict = {}
+
     def search():
         page = ctx.sess.page
         _dismiss(ctx)
@@ -1065,12 +1067,67 @@ def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
         links, waited = _settled_search_links(ctx, term)
         if waited:
             how += f" (waited {waited:.0f}s for the store's search app to render results)"
+        if not _relevant(links, term):
+            # a search app that fills its results area only once the shopper scrolls (ptron.in desktop, new30c 10 Oct)
+            ctx.sess.evaluate("""async () => { const h = Math.min(document.documentElement.scrollHeight, 6000);
+                for (let y = 0; y <= h; y += Math.round(innerHeight * 0.7)) { scrollTo(0, y); await new Promise(r => setTimeout(r, 250)); }
+                scrollTo(0, 0); await new Promise(r => setTimeout(r, 300)); }""")
+            more, w2 = _settled_search_links(ctx, term, cap=6.0)
+            if _relevant(more, term) or (len(more) > len(links)):
+                links = more
+                how += " (results shown after scrolling)"
+        counted = _title_count(page.title() if not page.is_closed() else "")
+        if not _relevant(links, term) and (not links or (counted or 0) > len(links) + 3):
+            # results area (nearly) empty while Shopify itself counted many results: the app did not render.
+            # Unrelated results with no such count stay a search miss (search_misses, foxtale.in 'purify').
+            shop = _shopify_search(ctx, term)
+            if shop["n"]:
+                # The app owning the results area showed nothing relevant (ptron.in, kushals.com mobile, new30c 10 Oct:
+                # blank area, title 'Search: 1000 results found'), yet Shopify's own search finds the word: search works
+                # on the store; what Radar cannot prove is the app's rendering in its browser -> warning with evidence.
+                ctx.expect("Shopify's own search (/search/suggest.json) finds the word", "≥ 1 product",
+                           f"{shop['n']}, e.g. {shop['first']!r}", True)
+                state["app_blank"] = (f"search app did not render results for '{term}' in Radar's browser "
+                                      f"({len(links)} product links shown{', title: ' + repr(shop['title']) if shop['title'] else ''}); "
+                                      f"Shopify's own search (/search/suggest.json) finds {shop['n']} product(s), e.g. {shop['first']!r}")
+                return f"{how}: search app showed {len(links)} results; Shopify's own search finds {shop['n']} for '{term}'"
         ctx.expect("product results", "≥ 1", f"{len(links)}{_page_market(ctx) if not links else ''}", len(links) >= 1)
         match = [l for l in links if term in (l["text"] + " " + l["handle"]).lower()]
         ctx.expect(f"results relevant to '{term}'", "≥ 1 result mentions the term",
                    f"{len(match)} of {len(links)}", len(match) >= 1)
         return f"{how}: {len(links)} results, {len(match)} mention '{term}'"
-    return ctx.steps.run(step, search, soft=soft)
+    out = ctx.steps.run(step, search, soft=soft)
+    if state.get("app_blank"):
+        ctx.steps.items.append(StepResult(step.replace("returns_relevant_products", "search_app_rendered"), "warn",
+                                          None, state["app_blank"]))
+    return out
+
+
+def _title_count(title: str) -> int | None:
+    """Shopify's own result count printed in the search page title ('Search: 513 results found for "sonor"'). Pure."""
+    m = re.search(r"(\d[\d,]*)\s+results?\b", title or "", re.I)
+    return int(m.group(1).replace(",", "")) if m else None
+
+
+def _relevant(links: list[dict], term: str) -> bool:
+    return any(term in (l["text"] + " " + l["handle"]).lower() for l in links)
+
+
+def _shopify_search(ctx: Ctx, term: str) -> dict:
+    """Shopify's own predictive search for the word, fetched from the page (same origin, the store's own endpoint),
+    plus the result count Shopify printed in the <title>. {'n': products found, 'first': a title, 'title': page title}."""
+    try:
+        r = ctx.sess.evaluate("""async (q) => { try {
+            const res = await fetch('/search/suggest.json?q=' + encodeURIComponent(q) + '&resources[type]=product&resources[limit]=10',
+                                    {credentials: 'same-origin', headers: {accept: 'application/json'}});
+            if (!res.ok) return {n: 0, first: '', title: document.title};
+            const j = await res.json(); const ps = ((j.resources || {}).results || {}).products || [];
+            const hit = ps.filter(p => ((p.title || '') + ' ' + (p.handle || '')).toLowerCase().includes(q));
+            return {n: hit.length, first: (hit[0] || {}).title || '', title: document.title};
+          } catch (e) { return {n: 0, first: '', title: document.title}; } }""", term)
+    except Exception:  # noqa: BLE001
+        r = None
+    return r or {"n": 0, "first": "", "title": ""}
 
 
 def meta_tags(ctx: Ctx, url: str):

@@ -68,6 +68,12 @@ Modes (to prove Radar catches and heals what it should):
                    html stays 'no-js' (price hidden by the theme's no-js CSS), window.Shopify undefined, search results
                    rendered by a delayed script (baccabucci.com, bellavitaorganic.com: new30b + re-run 9 Oct, evidence
                    'theme scripts had not run (html.no-js)') -> Radar moves the mouse like a shopper; product + search PASS
+  search_app_scroll  the search page title carries Shopify's own count ('Search: N results found for ...') and the
+                   search app renders its results only after the shopper scrolls (ptron.in desktop, new30c 10 Oct:
+                   grey empty results area) -> Radar scrolls; search PASSES
+  search_app_never  same title, but the search app never renders anything (ptron.in mobile, kushals.com mobile,
+                   new30c 10 Oct: blank results area after 10 s); Shopify's own /search/suggest.json finds the word
+                   -> search WARNS "search app did not render results", never FAILS
   search_misses    searching the first product's word returns only unrelated products (the word came from a
                    product the store hides: foxtale.in 'purify', bench 3) -> a second word is tried; the miss is a
                    WARNING, the search test PASSES on the second word
@@ -657,8 +663,24 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(200, page("Your Cart | Mock Store",
                                         f'{rows}<form action="/checkout" method="post"><button type="submit" name="checkout">Check out</button></form>'),
                               set_cart=new)
+        if path == "/search/suggest.json":
+            term = (q.get("q") or [""])[0].lower()
+            hits = [p for p in PRODUCTS if term and term in p["title"].lower()]
+            return self._json({"resources": {"results": {"products": [
+                {"title": p["title"], "handle": p["handle"], "url": f"/products/{p['handle']}"} for p in hits]}}})
         if path == "/search":
             term = (q.get("q") or [""])[0].lower()
+            if self.mode in ("search_app_scroll", "search_app_never"):
+                # ptron.in / kushals.com (new30c, 10 Oct): Shopify counts the results in the title, a search app owns the
+                # results area and fills it on the first scroll (ptron desktop) or never (ptron + kushals mobile)
+                hits = [p for p in PRODUCTS if term and term in p["title"].lower()]
+                found = "".join(card(p) for p in hits)
+                fill = ("addEventListener('scroll', () => { const a = document.getElementById('app-results'); "
+                        "if (!a.dataset.done) { a.dataset.done = 1; a.innerHTML = document.getElementById('app-found').innerHTML; } "
+                        "}, {passive: true});") if self.mode == "search_app_scroll" else ""
+                return self._send(200, page(f'Search: {len(hits) * 171} results found for "{term}" | Mock Store',
+                                            f'<div id="app-results" style="min-height:1400px;background:#f0f0f0"></div>'
+                                            f'<template id="app-found">{found}</template><script>{fill}</script>'))
             hits = [p for p in PRODUCTS if term and term in p["title"].lower()]
             if self.mode == "search_misses" and term == "ceramic":
                 hits = [p for p in PRODUCTS if p["handle"] == "wooden-spoon-set"]

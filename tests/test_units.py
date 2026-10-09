@@ -711,3 +711,11 @@ def test_webbotauth_signature_verifies_and_is_per_host():
     assert authority("http://127.0.0.1:8765/x") == "127.0.0.1:8765" and authority("https://A.com:443/") == "a.com"
     d = s.directory()["keys"][0]
     assert d["kid"] == s.keyid and d["kty"] == "OKP" and d["crv"] == "Ed25519"
+
+
+def test_title_count_reads_shopifys_search_count():
+    """ptron.in / kushals.com (new30c, 10 Oct): Shopify prints its own result count in the search page title."""
+    from radar.checks.library import _title_count
+    assert _title_count('Search: 513 results found for "sonor" - pTron India') == 513
+    assert _title_count('Search: 1,000 results found for "zircon"') == 1000
+    assert _title_count("Search: ceramic | Mock Store") is None
