@@ -1,0 +1,1989 @@
+{
+  "run_id": "20261009T232657Z-m-1d80",
+  "site_id": "beyondsnack.in",
+  "base_url": "https://beyondsnack.in",
+  "device": "mobile",
+  "started_at": "2026-10-09T23:26:57+00:00",
+  "finished_at": "2026-10-09T23:29:26+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.36s",
+              "error": null,
+              "secs": 5.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Beyond Snack Kerala Banana Chips",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2900 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "warn",
+              "detail": null,
+              "error": "landed on that collection: expected /collections/flavours, got /",
+              "secs": 9.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/flavours ('Flavours')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/flavours",
+                  "actual": "/",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 1 candidates \u2192 /products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+              "error": null,
+              "secs": 4.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style ('Dakshin Pepper Fry made in Coconut Oil')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+                  "actual": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Dakshin Pepper Fry made in Coconut Oil', selected variant 47179086397597 at \u20b90.00",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style.js with variants",
+                  "actual": "'Dakshin Pepper Fry made in Coconut Oil', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b90.00, got not on page",
+              "secs": 1.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Dakshin Pepper Fry made in Coconut Oil",
+                  "actual": "'Dakshin Pepper Fry made in Coconut Oil' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b90.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b90.00, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 30.38,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.beyondsnack.in/master"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0xdc094e8e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4507894054453248.ingest.us.sentry.io/api/4508290549481472/envelope/?sentry_key=180a8e3b31f479bfb071f51605e542b7&sentry_version=7&se"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodstTriggerEvents.includes is not a function",
+              "url": "https://www.beyondsnack.in/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-sty"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72h1v9118949181za200zd9118949181xf1&_p=1791588427269&gcs=G111&gcd=13n3n3n3n5",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=440076441.1791588429&dt=Beyond%20Snack%20Kerala%20Banana%20Chips&tid=AW-16882418698&en=pag",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=440076441.1791588429&gtm=45be6a72v9207437047za208zb9183057363zd9183057363xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zd9183057363xf1&_p=1791588426613&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zb9183057363zd9183057363xf1&_p=1791588426613&g",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zd9183057363xf1&_p=1791588426613&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9186876175zd9186876175xf1&_p=1791588442515&gcs=G111&gcd=13t3",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=440076441.1791588429&dt=Beyond%20Snack%20Kerala%20Banana%20Chips&tid=AW-16882418698&en=pag",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=440076441.1791588429&dt=Dakshin%20Pepper%20Fry%20made%20in%20Coconut%20Oil%20%7C%20Beyond%2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588447863&gcs=G111&gcd=13t3",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72v9118949181za200zd9118949181xf1&_p=1791588448499&gcs=G111&gcd=13n3n3n3n5l1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zb9207437047zd9207437047xf1&_p=1791588447863&g"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 1.13,
+              "load": 3.88,
+              "lcp": 1.12
+            },
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.16,
+              "load": 3.42,
+              "lcp": 0.93
+            },
+            {
+              "url": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-so",
+              "ttfb": 0.0,
+              "dcl": 1.35,
+              "load": 2.77,
+              "lcp": 1.32
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.47s",
+              "error": null,
+              "secs": 5.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Beyond Snack Kerala Banana Chips",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2900 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "warn",
+              "detail": null,
+              "error": "landed on that collection: expected /collections/flavours, got /",
+              "secs": 9.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/flavours ('Flavours')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/flavours",
+                  "actual": "/",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 1 candidates \u2192 /products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+              "error": null,
+              "secs": 4.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style ('Dakshin Pepper Fry made in Coconut Oil')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+                  "actual": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Dakshin Pepper Fry made in Coconut Oil', selected variant 47179086397597 at \u20b90.00",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style.js with variants",
+                  "actual": "'Dakshin Pepper Fry made in Coconut Oil', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b90.00, got not on page",
+              "secs": 1.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Dakshin Pepper Fry made in Coconut Oil",
+                  "actual": "'Dakshin Pepper Fry made in Coconut Oil' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b90.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b90.00, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 29.94,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.beyondsnack.in/master"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0xdc026dd600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4507894054453248.ingest.us.sentry.io/api/4508290549481472/envelope/?sentry_key=180a8e3b31f479bfb071f51605e542b7&sentry_version=7&se"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodstTriggerEvents.includes is not a function",
+              "url": "https://www.beyondsnack.in/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-sty"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72h1v9118949181za200zd9118949181xf1&_p=1791588457496&gcs=G111&gcd=13n3n3n3n5",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1801271061.1791588459&dt=Beyond%20Snack%20Kerala%20Banana%20Chips&tid=AW-16882418698&en=pag",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1801271061.1791588459&gtm=45be6a72v9207437047za208zb9186876175zd9186876175xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9186876175zd9186876175xf1&_p=1791588457163&_gaz=1&gcs=G111&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zd9186876175xf1&_p=1791588457163&gcs=G111&gcd=",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9186876175zd9186876175xf1&_p=1791588457163&gcs=G111&gcd=13t3",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1801271061.1791588459&dt=Beyond%20Snack%20Kerala%20Banana%20Chips&tid=AW-16882418698&en=pag",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588473431&gcs=G111&gcd=13t3",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1801271061.1791588459&dt=Dakshin%20Pepper%20Fry%20made%20in%20Coconut%20Oil%20%7C%20Beyond",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9186876175zd9186876175xf1&_p=1791588478450&gcs=G111&gcd=13t3",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72v9118949181za200zd9118949181xf1&_p=1791588478692&gcs=G111&gcd=13n3n3n3n5l1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zd9186876175xf1&_p=1791588478450&gcs=G111&gcd="
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.38,
+              "load": 4.23,
+              "lcp": 1.2
+            },
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 1.42,
+              "load": 3.58,
+              "lcp": 1.05
+            },
+            {
+              "url": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-so",
+              "ttfb": 0.0,
+              "dcl": 1.24,
+              "load": 2.52,
+              "lcp": 1.27
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.4s",
+              "error": null,
+              "secs": 5.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Beyond Snack Kerala Banana Chips",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2900 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "warn",
+              "detail": null,
+              "error": "landed on that collection: expected /collections/flavours, got /",
+              "secs": 9.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/flavours ('Flavours')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/flavours",
+                  "actual": "/",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 1 candidates \u2192 /products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+              "error": null,
+              "secs": 3.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style ('Dakshin Pepper Fry made in Coconut Oil')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+                  "actual": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Dakshin Pepper Fry made in Coconut Oil', selected variant 47179086397597 at \u20b90.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-style.js with variants",
+                  "actual": "'Dakshin Pepper Fry made in Coconut Oil', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b90.00, got not on page",
+              "secs": 1.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Dakshin Pepper Fry made in Coconut Oil",
+                  "actual": "'Dakshin Pepper Fry made in Coconut Oil' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b90.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b90.00, got not on page",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 26.07,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.beyondsnack.in/master"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0xdc0a7eb800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4507894054453248.ingest.us.sentry.io/api/4508290549481472/envelope/?sentry_key=180a8e3b31f479bfb071f51605e542b7&sentry_version=7&se"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodstTriggerEvents.includes is not a function",
+              "url": "https://www.beyondsnack.in/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-south-indian-sty"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72h1v9118949181za200zd9118949181xf1&_p=1791588489540&gcs=G111&gcd=13n3n3n3n5",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1410874620.1791588491&dt=Beyond%20Snack%20Kerala%20Banana%20Chips&tid=AW-16882418698&en=pa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1410874620.1791588491&gtm=45be6a72v9207437047za208zd9207437047xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588489088&_gaz=1&gcs=G111&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zb9207437047zd9207437047xf1&_p=1791588489088&g",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588489088&gcs=G111&gcd=13t3",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1410874620.1791588491&dt=Beyond%20Snack%20Kerala%20Banana%20Chips&tid=AW-16882418698&en=pa",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588504279&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zd9183057363xf1&_p=1791588508087&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1410874620.1791588491&dt=Dakshin%20Pepper%20Fry%20made%20in%20Coconut%20Oil%20%7C%20Beyond",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a80h2v9118949181za200zd9118949181xf1&_p=1791588508267&gcs=G111&gcd=13n3n3n3n5"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.2,
+              "load": 3.91,
+              "lcp": 1.25
+            },
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 0.86,
+              "load": 2.23,
+              "lcp": 0.76
+            },
+            {
+              "url": "/products/beyond-snack-kerala-banana-chips-dakshin-pepper-flavour-made-in-coconut-oil-traditional-so",
+              "ttfb": 0.0,
+              "dcl": 1.0,
+              "load": 1.98,
+              "lcp": 1.09
+            }
+          ]
+        }
+      ],
+      "incident_signature": "beyondsnack.in|journey.shopper|shows_title_price_image|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The page clearly shows product text and an MRP but the robot looked for a specific selected-variant price (\u20b90.00) that is not present in the visible page text, so the check was looking in the wrong place or using the wrong expected value.",
+        "evidence": "Visible page text includes product title 'Dakshin Pepper Fry made in Coconut Oil' and 'MRP 75/80gms' but contains no \u20b90.00 or any selected-variant price string; the robot reported: expected \u20b90.00, got not on page."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 3.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Beyond Snack Kerala Banana Chips",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2900 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.94s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.94s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.2,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.beyondsnack.in/master"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4507894054453248.ingest.us.sentry.io/api/4508290549481472/envelope/?sentry_key=180a8e3b31f479bfb071f51605e542b7&sentry_version=7&se"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72v9118949181za200zd9118949181xf1&_p=1791588515319&gcs=G111&gcd=13n3n3n3n5l1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zd9186876175xf1&_p=1791588514860&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=388558263.1791588516&dt=Beyond%20Snack%20Kerala%20Banana%20Chips&tid=AW-16882418698&en=page",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=388558263.1791588516&gtm=45be6a72h1v9207437047za208zb9186876175zd9186876175xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9186876175zd9186876175xf1&_p=1791588514860&_gaz=1&gcs=G111&g",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.83,
+              "load": 2.75,
+              "lcp": 0.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /pages/hygiene",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.75s",
+              "error": null,
+              "secs": 2.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hygiene | Beyond Snack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1832 chars, 2 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/annual-report",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.65s",
+              "error": null,
+              "secs": 2.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Annual reports | Beyond Snack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1170 chars, 1 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/pushpa-fire-flavour",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.84s",
+              "error": null,
+              "secs": 2.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fire | Beyond Snack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1218 chars, 6 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/become-a-distributor",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.65s",
+              "error": null,
+              "secs": 3.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Become a distributor | Beyond Snack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "846 chars, 1 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.33,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4507894054453248.ingest.us.sentry.io/api/4508290549481472/envelope/?sentry_key=180a8e3b31f479bfb071f51605e542b7&sentry_version=7&se"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72h1v9118949181za200zd9118949181xf1&_p=1791588519939&gcs=G111&gcd=13n3n3n3n5",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1900903810.1791588520&dt=Hygiene%20%7C%20Beyond%20Snack&tid=AW-16882418698&en=page_view&dl=",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1900903810.1791588520&gtm=45be6a72v9207437047za208zd9207437047xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588519788&_gaz=1&gcs=G111&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zb9207437047zd9207437047xf1&_p=1791588519788&g",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1900903810.1791588520&dt=Annual%20reports%20%7C%20Beyond%20Snack&tid=AW-16882418698&en=pag",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588522663&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zd9183057363xf1&_p=1791588524743&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1900903810.1791588520&dt=Fire%20%7C%20Beyond%20Snack&tid=AW-16882418698&en=page_view&dl=htt",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1900903810.1791588520&dt=Become%20a%20distributor%20%7C%20Beyond%20Snack&tid=AW-1688241869",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a80h2v9183057363za200zb9207437047zd9207437047xf1&_p=1791588527241&gcs=G111&gcd=13",
+            "GET https://3e5aa5c6f5f0.w.hcaptcha.com/logo.png"
+          ],
+          "loads": [
+            {
+              "url": "/pages/hygiene",
+              "ttfb": 0.18,
+              "dcl": 0.68,
+              "load": 2.18,
+              "lcp": 1.24
+            },
+            {
+              "url": "/pages/annual-report",
+              "ttfb": 0.13,
+              "dcl": 0.56,
+              "load": 1.46,
+              "lcp": 0.54
+            },
+            {
+              "url": "/collections/pushpa-fire-flavour",
+              "ttfb": 0.14,
+              "dcl": 0.79,
+              "load": 1.67,
+              "lcp": 0.82
+            },
+            {
+              "url": "/pages/become-a-distributor",
+              "ttfb": 0.01,
+              "dcl": 0.59,
+              "load": 2.89,
+              "lcp": 0.57
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.flavours",
+      "suite": "catalog",
+      "title": "Collection 'Flavours' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.87s",
+              "error": null,
+              "secs": 3.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Flavours | Beyond Snack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1035 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "16 products listed",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.15,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4507894054453248.ingest.us.sentry.io/api/4508290549481472/envelope/?sentry_key=180a8e3b31f479bfb071f51605e542b7&sentry_version=7&se"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72v9118949181za200zd9118949181xf1&_p=1791588531257&gcs=G111&gcd=13n3n3n3n5l1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zd9186876175xf1&_p=1791588531120&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1799336973.1791588532&dt=Flavours%20%7C%20Beyond%20Snack&tid=AW-16882418698&en=page_view&dl",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1799336973.1791588532&gtm=45be6a72h1v9207437047za208zb9186876175zd9186876175xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a80h2v9183057363za200zb9186876175zd9186876175xf1&_p=1791588531120&_gaz=1&gcs=G111",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css"
+          ],
+          "loads": [
+            {
+              "url": "/collections/flavours",
+              "ttfb": 0.15,
+              "dcl": 0.81,
+              "load": 2.25,
+              "lcp": 0.97
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.diwali-box",
+      "suite": "product",
+      "title": "PDP 'Diwali Box'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.88s",
+              "error": null,
+              "secs": 4.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Diwali Box | Beyond Snack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2973 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/diwali-box",
+                  "actual": "/products/diwali-box",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Diwali Box', selected variant 48985518964893 at \u20b9299.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/diwali-box",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/diwali-box.js with variants",
+                  "actual": "'Diwali Box', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b9299.00, got not on page",
+              "secs": 2.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Diwali Box",
+                  "actual": "'Diwali Box' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9299.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9299.00, got not on page",
+          "screenshot": "product.pdp.diwali-box.a1.png",
+          "trace": "product.pdp.diwali-box.a1_trace.zip",
+          "secs": 7.66,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodstTriggerEvents.includes is not a function",
+              "url": "https://www.beyondsnack.in/products/diwali-box?variant=48985518964893"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4507894054453248.ingest.us.sentry.io/api/4508290549481472/envelope/?sentry_key=180a8e3b31f479bfb071f51605e542b7&sentry_version=7&se"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72h1v9118949181za200zd9118949181xf1&_p=1791588535687&gcs=G111&gcd=13n3n3n3n5",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=2115204891.1791588537&dt=Diwali%20Box%20%7C%20Beyond%20Snack&tid=AW-16882418698&en=page_vi",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=4HJ_J2JSiQlV238g-pQR2FoJtdv9spAGvw&auid=2115204891.1791588537&gtm=45be6a72v9207437047za208zd9207437047x",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a80h2v9183057363za200zb9207437047zd9207437047xf1&_p=1791588535498&_gaz=1&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a80h2v9183057363za200zb9207437047zd9207437047xf1&_p=1791588535498&gcs=G111&gcd=13",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72h1v9186876175za200zb9207437047zd9207437047xf1&_p=1791588535498",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css",
+            "POST https://www.beyondsnack.in/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/products/diwali-box?variant=48985518964893",
+              "ttfb": 0.16,
+              "dcl": 0.79,
+              "load": 2.44,
+              "lcp": 0.84
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.95s",
+              "error": null,
+              "secs": 3.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Diwali Box | Beyond Snack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2973 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/diwali-box",
+                  "actual": "/products/diwali-box",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Diwali Box', selected variant 48985518964893 at \u20b9299.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/diwali-box",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/diwali-box.js with variants",
+                  "actual": "'Diwali Box', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b9299.00, got not on page",
+              "secs": 2.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Diwali Box",
+                  "actual": "'Diwali Box' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9299.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9299.00, got not on page",
+          "screenshot": "product.pdp.diwali-box.a2.png",
+          "trace": "product.pdp.diwali-box.a2_trace.zip",
+          "secs": 6.39,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodstTriggerEvents.includes is not a function",
+              "url": "https://www.beyondsnack.in/products/diwali-box?variant=48985518964893"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4507894054453248.ingest.us.sentry.io/api/4508290549481472/envelope/?sentry_key=180a8e3b31f479bfb071f51605e542b7&sentry_version=7&se"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72v9118949181za200zd9118949181xf1&_p=1791588543109&gcs=G111&gcd=13n3n3n3n5l1",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1443588690.1791588544&dt=Diwali%20Box%20%7C%20Beyond%20Snack&tid=AW-16882418698&en=page_vi",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1443588690.1791588544&gtm=45be6a72v9207437047za208zd9207437047xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zb9207437047zd9207437047xf1&_p=1791588542962&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588542962&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588542962&_gaz=1&gcs=G111&g",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css"
+          ],
+          "loads": [
+            {
+              "url": "/products/diwali-box?variant=48985518964893",
+              "ttfb": 0.19,
+              "dcl": 0.87,
+              "load": 2.42,
+              "lcp": 0.95
+            }
+          ]
+        }
+      ],
+      "incident_signature": "beyondsnack.in|product.pdp.diwali-box|shows_title_price_image|mobile",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The product page is missing the visible price for the selected variant, so a shopper cannot see the expected \u20b9299.00 price and is hindered from purchasing.",
+        "evidence": "Visible page text and screenshot show the product title and description but no price or variant price (page contains 'Diwali Box' and product copy; no '\u20b9299.00' or any price text is present)."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.diwali",
+      "suite": "search",
+      "title": "Search for 'diwali' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.99s",
+              "error": null,
+              "secs": 3.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Beyond Snack Kerala Banana Chips",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2900 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 16 results, 1 mention 'diwali'",
+              "error": null,
+              "secs": 3.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 19 results found for \"diwali\" | Beyond Snack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1660 chars, 17 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'diwali'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "1 of 16",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.95,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.beyondsnack.in/master"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4507894054453248.ingest.us.sentry.io/api/4508290549481472/envelope/?sentry_key=180a8e3b31f479bfb071f51605e542b7&sentry_version=7&se"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72v9118949181za200zd9118949181xf1&_p=1791588550947&gcs=G111&gcd=13n3n3n3n5l1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zd9186876175xf1&_p=1791588550661&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1628939203.1791588552&dt=Beyond%20Snack%20Kerala%20Banana%20Chips&tid=AW-16882418698&en=pag",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1628939203.1791588552&gtm=45be6a72v9207437047za208zb9186876175zd9186876175xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9186876175zd9186876175xf1&_p=1791588550661&_gaz=1&gcs=G111&g",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9186876175zd9186876175xf1&_p=1791588554245&gcs=G111&gcd=13t3",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1628939203.1791588552&dt=Search%3A%2019%20results%20found%20for%20%22diwali%22%20%7C%20Beyo"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.83,
+              "load": 2.66,
+              "lcp": 0.8
+            },
+            {
+              "url": "/search?q=diwali&type=product",
+              "ttfb": 0.03,
+              "dcl": 0.79,
+              "load": 1.67,
+              "lcp": 0.84
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.04s",
+              "error": null,
+              "secs": 3.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Beyond Snack Kerala Banana Chips",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2900 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Beyond Snack Kerala Banana Chips",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "32: 'Beyond Snack Kerala Banana Chips'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Discover Beyond Snack Banana Chips - delicious, thin, crispy and flavo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "131: 'Discover Beyond Snack Banana Chips - delicious, thin, crispy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.beyondsnack.in/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.beyondsnack.in/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Beyond Snack Kerala Banana Chips",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.beyondsnack.in/cdn/shop/files/Logo_New-01_2_2_d882545c-9b45-474f-ac32-e6680e9970ff.png?v=1721901306",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.64,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.beyondsnack.in/master"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72v9118949181za200zd9118949181xf1&_p=1791588558235&gcs=G111&gcd=13n3n3n3n5l1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zd9186876175xf1&_p=1791588557858&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9186876175zd9186876175xf1&_p=1791588557858&_gaz=1&gcs=G111&g",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1585165649.1791588559&dt=Beyond%20Snack%20Kerala%20Banana%20Chips&tid=AW-16882418698&en=pa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1585165649.1791588559&gtm=45be6a72h1v9207437047za208zb9186876175zd9186876175xecxf1&fmt=8",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.8,
+              "load": 2.74,
+              "lcp": 0.68
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 3.21,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Diwali Box | Beyond Snack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2973 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Diwali Box | Beyond Snack",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "25: 'Diwali Box | Beyond Snack'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Beyond Snack Diwali Gift Box \u2013 Premium Assortment of Flavour'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Beyond Snack Diwali Gift Box \u2013 Premium Assortment of Flavour'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.beyondsnack.in/products/diwali-box",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.beyondsnack.in/products/diwali-box",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Diwali Box",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.beyondsnack.in/cdn/shop/files/WhatsApp_Image_2026-10-08_at_13.04.46_1.jpg?v=1791449647&width=1200",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.31,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodstTriggerEvents.includes is not a function",
+              "url": "https://www.beyondsnack.in/products/diwali-box"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72v9118949181za200zd9118949181xf1&_p=1791588561457&gcs=G111&gcd=13n3n3n3n5l1",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1407044527.1791588562&dt=Diwali%20Box%20%7C%20Beyond%20Snack&tid=AW-16882418698&en=page_vie",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1407044527.1791588562&gtm=45be6a72v9207437047za208zd9207437047xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a80h2v9183057363za200zb9207437047zd9207437047xf1&_p=1791588561092&_gaz=1&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a80h2v9183057363za200zb9207437047zd9207437047xf1&_p=1791588561092&gcs=G111&gcd=13",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zb9207437047zd9207437047xf1&_p=1791588561092&g",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css",
+            "POST https://www.beyondsnack.in/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/products/diwali-box",
+              "ttfb": 0.18,
+              "dcl": 0.83,
+              "load": 2.42,
+              "lcp": 0.85
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 2.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.02,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.beyondsnack.in/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.beyondsnack.in/api/collect",
+            "POST https://www.beyondsnack.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-H8NK2ZD7C9&gtm=45je6a72v9118949181za200zd9118949181xf1&_p=1791588564733&gcs=G111&gcd=13n3n3n3n5l1",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1911837410.1791588565&dt=404%20Not%20Found%20%7C%20Beyond%20Snack&tid=AW-16882418698&en=pa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1911837410.1791588565&gtm=45be6a72v9207437047za208zd9207437047xecxf1&fmt=8",
+            "GET https://sdk.breeze.in/configs/beyondsnack/checkout-style.css",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-T050YE5JYD&gtm=45Pe6a72v9186876175za200zb9207437047zd9207437047xf1&_p=1791588564498&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-273JT8P001&gtm=45je6a72v9183057363za200zb9207437047zd9207437047xf1&_p=1791588564498&_gaz=1&gcs=G111&g"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.14,
+              "dcl": 0.66,
+              "load": 2.25,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 2,
+    "input_tokens": 7131,
+    "output_tokens": 253,
+    "est_usd": 0.002289,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Beyond Snack Kerala Banana Chips",
+    "theme": "Blockshop (store copy: Beyond Snack <> Breeze with Annual Repor)",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 16,
+    "collections": 10,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "1 product(s) not listed in the browsed collections are tested last (e.g. party-pack-original-style-peri-peri-salt-black-pepper-and-desi-masalapack-of-2-100gms-200gms)",
+    "7 product(s) priced 0 (free samples/gifts, e.g. beyond-snack-upperi) are not used for product or cart tests"
+  ],
+  "perf": {
+    "pages": 11,
+    "median_load_secs": 2.25,
+    "slowest": {
+      "url": "/",
+      "load_secs": 3.91
+    },
+    "console_errors": 3,
+    "console_warnings": 2,
+    "failed_requests": 66
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 0,
+    "confirmed_fail": 2,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
