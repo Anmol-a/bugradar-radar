@@ -27,10 +27,10 @@ def newest_bench(data: Path, since: float = 0) -> Path | None:
     return benches[-1] if benches else None
 
 
-def publish(out: Path, data: Path, log: Path | None, meta: dict, since: float = 0) -> Path:
+def publish(out: Path, data: Path, log: Path | None, meta: dict, since: float = 0, suffix: str = "") -> Path:
     bench = newest_bench(data, since)
-    stamp = bench.name if bench and (bench / "bench.json").exists() else \
-        datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-no-bench"
+    stamp = (bench.name if bench and (bench / "bench.json").exists() else
+             datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + "-no-bench") + suffix
     dest = out / "runs" / stamp
     dest.mkdir(parents=True, exist_ok=True)
     copied = 0
@@ -84,11 +84,17 @@ def main(argv=None) -> int:
     ap.add_argument("--sha", default="")
     ap.add_argument("--request", default="")
     ap.add_argument("--runner", default="")
+    ap.add_argument("--shard", type=int, default=None, help="this machine's shard number (parallel runs)")
+    ap.add_argument("--shards", type=int, default=None)
     ap.add_argument("--since", type=float, default=0, help="only results written after this epoch time")
     a = ap.parse_args(argv)
     meta = {"event": a.event, "run_id": a.run_id, "sha": a.sha, "request": a.request, "runner": a.runner,
             "published_at": datetime.now(timezone.utc).isoformat(timespec="seconds")}
-    dest = publish(Path(a.out), Path(a.data), Path(a.log) if a.log else None, meta, a.since)
+    suffix = ""
+    if a.shard is not None:
+        meta.update(shard=a.shard, shards=a.shards)
+        suffix = f"-s{a.shard}"            # parallel machines never write into the same folder
+    dest = publish(Path(a.out), Path(a.data), Path(a.log) if a.log else None, meta, a.since, suffix)
     print(f"published {dest}")
     return 0
 

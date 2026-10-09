@@ -39,8 +39,18 @@ permissions:
 
 jobs:
   radar:
-    runs-on: ${{ vars.RADAR_RUNNER || 'ubuntu-latest' }}
+    # 9 Oct: GitHub's machines only. The own Contabo server got HTTP 429 from Shopify on every store from the first
+    # request (its IP range is throttled); GitHub's machines got none on 36 stores x 2 devices. The RADAR_RUNNER
+    # variable is ignored on purpose.
+    runs-on: ubuntu-latest
     timeout-minutes: 180
+    # 6 machines in parallel, each takes every 6th store of the list: full 36 x 2 devices in ~30 min, not 2 h 15 m
+    strategy:
+      fail-fast: false
+      matrix:
+        shard: [0, 1, 2, 3, 4, 5]
+    env:
+      SHARDS: "6"
     steps:
       - name: Note the start time
         id: t0
@@ -68,12 +78,23 @@ jobs:
             echo "Refused: only 'bench <store list> [flags]' requests are allowed, got: $args"; exit 1
           fi
           if [ "${{ runner.environment }}" = "self-hosted" ]; then data=/home/radar/radar-data; else data=data; fi
+          # this machine's share of the store list: every SHARDS-th store, starting at its shard number
+          list=$(printf '%s' "$args" | awk '{print $2}')
+          rest=$(printf '%s' "$args" | cut -d' ' -f3-)
+          [ -f "$list" ] || { echo "Refused: store list $list not found"; exit 1; }
+          grep -v '^[[:space:]]*#' "$list" | grep -v '^[[:space:]]*$' \
+            | awk -v n="$SHARDS" -v k="${{ matrix.shard }}" '(NR-1)%n==k' > shard.txt
+          count=$(wc -l < shard.txt | tr -d ' ')
+          echo "count=$count" >> "$GITHUB_OUTPUT"
+          args="bench shard.txt $rest"
           echo "file=$f" >> "$GITHUB_OUTPUT"
           echo "args=$args" >> "$GITHUB_OUTPUT"
+          echo "list=$list" >> "$GITHUB_OUTPUT"
           echo "data=$data" >> "$GITHUB_OUTPUT"
           echo "Request ($f): python3 -m radar $args   (runner: ${{ runner.name }}, data: $data)"
 
       - name: Run Radar
+        if: steps.req.outputs.count != '0'
         continue-on-error: true
         timeout-minutes: 150       # stop Radar in time for the results to be published (job limit 180)
         env:
@@ -85,7 +106,7 @@ jobs:
           python3 -m radar ${{ steps.req.outputs.args }} 2>&1 | tee bench.log
 
       - name: Publish results to the cloud-results branch
-        if: always()
+        if: always() && steps.req.outputs.count != '0'
         run: |
           git config user.name "bugradar-cloud"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
@@ -100,18 +121,20 @@ jobs:
           fi
           python3 tools/publish_cloud_results.py "$OUT" --data "${{ steps.req.outputs.data || 'data' }}" --log bench.log \
             --since "${{ steps.t0.outputs.since }}" --event "${{ github.event_name }}" --run-id "${{ github.run_id }}" \
-            --sha "${{ github.sha }}" --request "${{ steps.req.outputs.args }}" --runner "${{ runner.name }}"
+            --sha "${{ github.sha }}" --request "bench ${{ steps.req.outputs.list }} (shard ${{ matrix.shard }}/${{ env.SHARDS }})" \
+            --runner "${{ runner.name }}" --shard "${{ matrix.shard }}" --shards "${{ env.SHARDS }}"
           cd "$OUT"
           git add -A
           git commit -qm "cloud ${{ github.event_name }}: $(cat LATEST) (run ${{ github.run_id }}, ${{ runner.name }})" || exit 0
-          for i in 1 2 3; do git push -q origin cloud-results && break; git pull -q --rebase origin cloud-results; done
+          # 6 machines push at about the same time: retry with a random pause
+          for i in 1 2 3 4 5 6 7 8; do git push -q origin cloud-results && break; sleep $((RANDOM % 10 + 2)); git pull -q --rebase origin cloud-results; done
           cd - >/dev/null; git worktree remove --force "$OUT" || true
 
       - name: Keep the full data folder for 7 days (GitHub machines only)
-        if: always() && runner.environment == 'github-hosted'
+        if: always() && runner.environment == 'github-hosted' && steps.req.outputs.count != '0'
         uses: actions/upload-artifact@v4
         with:
-          name: radar-data-${{ github.run_id }}
+          name: radar-data-${{ github.run_id }}-s${{ matrix.shard }}
           path: |
             data/
             bench.log
