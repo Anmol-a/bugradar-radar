@@ -1102,3 +1102,13 @@ def test_pincode_gate_is_a_warning_and_the_cart_is_blocked_not_failed(tmp_path):
     for prefix in ("cart.", "journey."):
         c = _case(run, prefix)
         assert c.verdict == "blocked" and "pincode" in c.attempts[-1].error, (prefix, c.verdict, c.attempts[-1].error)
+
+
+def test_disabled_buy_button_failure_names_the_button_and_the_enabled_one(tmp_path):
+    """littleboxindia.com mobile (new30c + loop cycle 6): 'buy button enabled: false' while an enabled ADD TO CART for the
+    same product was on screen. One store = watch, so no behaviour change: the failure must NAME the button Radar read
+    and the enabled one, so the next store with this layout is diagnosable from run.json alone."""
+    run, _ = _scan("disabled_dup_button", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    errs = [s.error or "" for c in run.cases if c.case_id.startswith("product.pdp.")
+            for s in c.attempts[-1].steps if s.name == "buy_button_ready"]
+    assert errs and all("btn-mobile-atc" in e and "ARE enabled" in e and "sticky-atc" in e for e in errs), errs

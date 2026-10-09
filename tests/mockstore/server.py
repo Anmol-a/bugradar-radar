@@ -815,6 +815,14 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
             body += ('<div class="pincode-check"><input type="text" placeholder="ENTER YOUR PINCODE" maxlength="6">'
                      '<button type="button" class="pincode-btn">CHECK</button></div>')
+        if self.mode == "disabled_dup_button" and available:
+            # littleboxindia.com mobile (new30c + loop cycle 6): the product form holds TWO buy buttons; the one Radar
+            # reads is disabled while an enabled ADD TO CART for the same product is on screen. Radar must name both.
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" style="display:none">Add to cart</button>'
+                                '<button type="submit" class="btn-mobile-atc" disabled>Add to cart</button>')
+            body += ('<div class="sticky-bar" style="position:fixed;left:0;right:0;bottom:0;background:#fff;padding:8px;z-index:20">'
+                     '<button type="submit" form="product-form-template__main" class="sticky-atc">ADD TO CART</button></div>')
         if self.mode == "free_gift":
             script += "<script>window.GIFT_MODE = true;</script>"
         if p.get("redirect"):

@@ -98,6 +98,7 @@ class Ctx:
     redirected_to: str | None = None
     sent_add_requests: list[str] = field(default_factory=list)
     llm_assist: bool = False     # True only in the re-check after triage blamed Radar (see healing/triage.py)
+    buy_evidence: str = ""       # which buy button _main_buy_button read (shown when it is disabled)
 
     def expect(self, what, expected, actual, ok=None):
         return self.steps.expect(what, expected, actual, ok)
@@ -287,13 +288,18 @@ MAIN_BUY_JS = r"""([ids, quick]) => {
       if (!(r.width > 0 && r.height > 0 && st.visibility !== 'hidden' && st.display !== 'none')) continue;
       out.push({b, form: fid || (f.tagName.toLowerCase() + '.' + String(f.className || '').split(' ')[0]), variant: v,
                 main: /main|product-form|product_form/i.test(fid + ' ' + f.getAttribute('class')) ? 1 : 0,
-                text: (b.innerText || b.value || '').trim().slice(0, 40)});
+                text: (b.innerText || b.value || '').trim().slice(0, 40), off: !!(b.disabled || b.getAttribute('aria-disabled') === 'true'),
+                tag: b.tagName.toLowerCase() + (b.getAttribute('name') ? '[name=' + b.getAttribute('name') + ']' : '')
+                     + (typeof b.className === 'string' && b.className.trim() ? '.' + b.className.trim().split(/\s+/)[0] : '')});
     }
   }
   out.sort((x, y) => y.main - x.main);
   if (!out.length) return null;
   out[0].b.setAttribute('data-radar-target', 'buy');
-  return {form: out[0].form, variant: out[0].variant, text: out[0].text, candidates: out.length};
+  // evidence for a 'buy button disabled' failure: which button was read, and whether another one for THIS product
+  // is enabled (littleboxindia.com mobile, new30c + loop cycle 6: disabled pick, enabled sticky ADD TO CART on screen)
+  return {form: out[0].form, variant: out[0].variant, text: out[0].text, candidates: out.length, tag: out[0].tag,
+          enabled_others: out.slice(1).filter(o => !o.off).map(o => o.tag + ' ' + JSON.stringify(o.text)).slice(0, 3)};
 }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
 
 
@@ -450,6 +456,13 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
     return target
 
 
+def _expect_buy_enabled(ctx: Ctx, loc):
+    """'buy button enabled', and when it is NOT: name the button Radar read and any enabled one for the same
+    product, so a disabled-button failure is diagnosable from run.json alone (littleboxindia.com mobile)."""
+    en = loc.is_enabled()
+    ctx.expect("buy button enabled", True, True if en else f"False ({ctx.buy_evidence or 'button found by the healer'})", en)
+
+
 def _main_buy_button(ctx: Ctx, product: dict):
     """The product's OWN add-to-cart button: in a cart/add form whose variant belongs to this
     product, not inside a product card / quick-add / recommendation. Falls back to the healer."""
@@ -457,6 +470,7 @@ def _main_buy_button(ctx: Ctx, product: dict):
     ids = [int(v["id"]) for v in product["variants"]]
     found = ctx.sess.evaluate(MAIN_BUY_JS, [ids, QUICK_SEL])
     own, scrolled = None, False
+    ctx.buy_evidence = ""
     # A page WITH a Shopify form for this product keeps the old path (healer for a renamed/moved button); the
     # page's-own-control rule is only for pages that have no such form at all (nicobar.com's div control).
     has_form = ctx.sess.evaluate("""(ids) => { const mine = new Set(ids.map(String));
@@ -477,6 +491,9 @@ def _main_buy_button(ctx: Ctx, product: dict):
         found = ctx.sess.evaluate(MAIN_BUY_JS, [ids, QUICK_SEL])
     if found:
         loc = page.locator('[data-radar-target="buy"]').first
+        ctx.buy_evidence = (f"read <{found.get('tag') or 'button'}> {found['text']!r} in form #{found['form']}"
+                            + (f"; other buy button(s) for this product ARE enabled: {', '.join(found['enabled_others'])}"
+                               if found.get("enabled_others") else ""))
         return loc, (f"main product form #{found['form']} (variant {found['variant']}, button {found['text']!r})"
                      + (" — shown only after scrolling (sticky bar)" if scrolled else "")), None
     if own:
@@ -526,7 +543,7 @@ def _add_and_verify(ctx: Ctx, product: dict, variant: dict):
     def click():
         _dismiss(ctx)
         loc, how, healed = _main_buy_button(ctx, product)
-        ctx.expect("buy button enabled", True, loc.is_enabled())
+        _expect_buy_enabled(ctx, loc)
         ctx.sent_add_requests.clear()
         loc.evaluate("e => e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'})")
         try:
@@ -911,7 +928,7 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             if gate and not loc.is_enabled():
                 # a store choice, not a broken buy: shown as a WARNING with the evidence (bombaysweetshop.com)
                 ctx.expect("buy button enabled", True, f"disabled until the shopper checks a delivery pincode: {gate}", False)
-            ctx.expect("buy button enabled", True, loc.is_enabled())
+            _expect_buy_enabled(ctx, loc)
             return (how, healed)
         ctx.steps.run("buy_button_ready", buy, soft=bool((state.get("v") or {}).get("_pincode_gate")))
     return p, state["v"]
