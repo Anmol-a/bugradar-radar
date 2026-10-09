@@ -130,8 +130,6 @@ IFRAME_POPUPS_JS = r"""() => {
   return out;
 }"""
 
-IFRAME_CLOSE = ("[aria-label*='close' i], button[class*='close' i], [class*='close' i], button:has-text('×'), "
-                "button:has-text('✕'), button:has-text('No thanks'), button:has-text('Not now'), button:has-text('Maybe later')")
 
 
 def dismiss_overlays(page, rounds: int = 3) -> list[dict]:
@@ -167,27 +165,65 @@ def dismiss_overlays(page, rounds: int = 3) -> list[dict]:
     return done
 
 
+CLOSE_IN_FRAME_JS = r"""() => {
+  // The close control inside a popup frame, as a shopper finds it: a VISIBLE close / dismiss control, a visible
+  // '×' / 'No thanks', or an icon-only control (svg / img, no text) small and top-right in the popup box.
+  // GoKwik KwikPass (bonkerscorner, run 37958664708): the first '.close' match in the frame was hidden, its real
+  // close an icon-only element, so the CSS selector + Escape left it open. Never a join / login / subscribe control.
+  document.querySelectorAll('[data-radar-close]').forEach(e => e.removeAttribute('data-radar-close'));
+  const shown = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
+  const text = e => (e.innerText || e.getAttribute('aria-label') || e.getAttribute('title') || '').trim().replace(/\s+/g, ' ');
+  const bad = /subscribe|sign ?up|join|log ?in|login|continue|submit|accept|agree|yes|verify|otp/i;
+  const all = [...document.querySelectorAll('button, a, [role="button"], [aria-label], [class*="close" i], [class*="dismiss" i], div, span, i, svg, img')]
+    .filter(e => shown(e) && !bad.test(text(e)));
+  const named = all.find(e => /close|dismiss/i.test((e.getAttribute('aria-label') || '') + ' ' + String(e.className && e.className.baseVal !== undefined ? e.className.baseVal : e.className || '')))
+    || all.find(e => /^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip)$/i.test(text(e)) && e.children.length <= 1);
+  let btn = named;
+  if (!btn) {
+    const icon = e => !text(e) && (e.matches('svg, img') || e.querySelector('svg, img'));
+    const vw = innerWidth, vh = innerHeight;
+    btn = all.filter(e => { if (!icon(e) || e.matches('svg *')) return false;
+        const r = e.getBoundingClientRect(); if (r.width > 48 || r.height > 48) return false;
+        const box = (e.parentElement || document.body).closest('div[style], div[class], section, form') || document.body;
+        const b = box.getBoundingClientRect();
+        return r.left > b.left + b.width * 0.6 && r.top < b.top + Math.max(b.height * 0.3, 60) &&
+               (getComputedStyle(e).cursor === 'pointer' || e.matches('button, [role="button"], a') || !!e.onclick); })
+      .sort((a, b) => b.getBoundingClientRect().width - a.getBoundingClientRect().width)[0];
+  }
+  if (!btn) return null;
+  const tgt = btn.matches('svg, svg *, img') && btn.parentElement ? btn.closest('button, a, [role="button"], div, span') || btn : btn;
+  tgt.setAttribute('data-radar-close', '1');
+  return text(tgt).slice(0, 30) || 'close icon';
+}"""
+
+
 def _iframe_popup(page) -> dict | None:
-    """Marketing popups rendered inside an <iframe> (e.g. srcdoc popups): find the close control
-    inside the frame. Escape as a last resort. Never clicks subscribe/accept."""
+    """Marketing / login popups rendered inside an <iframe> (srcdoc popups, GoKwik KwikPass from another origin):
+    find the close control inside the frame like a shopper would (CLOSE_IN_FRAME_JS). Escape as a last resort.
+    Never clicks subscribe / accept / join / log in."""
     try:
         ids = page.evaluate(IFRAME_POPUPS_JS)
     except Exception:  # noqa: BLE001
         return None
     for i in ids:
         sel = f'iframe[data-radar-iframe="{i}"]'
-        fl = page.frame_locator(sel)
+        how = ""
         try:
-            btn = fl.locator(IFRAME_CLOSE).first
-            label = (btn.inner_text(timeout=1500) or btn.get_attribute("aria-label") or "close").strip()[:30]
-            if any(w in label.lower() for w in ("subscribe", "accept", "agree", "sign up", "yes")):
-                raise ValueError("only a consent/subscribe button found")
-            btn.click(timeout=3000)
-            how = f"clicked {label!r} inside the popup frame"
-        except Exception:  # noqa: BLE001
+            frame = page.locator(sel).first.element_handle(timeout=1500).content_frame()
+            label = frame.evaluate(CLOSE_IN_FRAME_JS) if frame else None
+            if label:
+                frame.locator('[data-radar-close]').first.click(timeout=3000)
+                how = f"clicked {label!r} inside the popup frame"
+        except Exception:  # noqa: BLE001  frame gone / navigating / click intercepted
+            how = ""
+        if not how:
             page.keyboard.press("Escape")
             how = "pressed Escape"
         page.wait_for_timeout(500)
-        still = page.locator(sel).count() and page.locator(sel).first.is_visible()
+        try:
+            still = page.locator(sel).count() and page.locator(sel).first.is_visible()
+        except Exception:  # noqa: BLE001
+            still = False
         return {"kind": "popup (iframe)", "text": f"iframe popup {i}", "button": how + ("" if not still else "; still open")}
     return None

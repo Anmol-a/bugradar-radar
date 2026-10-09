@@ -218,7 +218,8 @@ class Handler(BaseHTTPRequestHandler):
 // GoKwik KwikPass login popup (bonkerscorner.com, boldcare.in, consciouschemist.com: 'could not click: <iframe
 // id="iframe-kp" class="iframe-kp" src="https://pdp.gokwik.co/kwikpass/kwikpass.html"> from <div id="d2c-pass">'):
 // a full-screen iframe from ANOTHER origin, no popup-like name, its × inside the frame. Shown after the theme
-// loads, on every page until closed.
+// loads, on every page until closed. Its real close is an icon-only div (no label, no 'close' class) while a hidden
+// 'close' button comes first in the frame (run 37958664708: 'pressed Escape; still open' with the class selector).
 if (!document.cookie.includes('kp=1')) setTimeout(() => {
   const d = document.createElement('div'); d.id = 'd2c-pass';
   d.style.cssText = 'position:fixed;inset:0;z-index:2147483000';
@@ -516,11 +517,12 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
         if path == "/kwikpass/kwikpass.html":      # the KwikPass frame (served on 'localhost': another origin)
             return self._send(200, """<html><body style="margin:0;background:rgba(0,0,0,.55)">
 <div style="background:#fff;width:600px;margin:20vh auto;padding:20px;position:relative;border-radius:16px">
-<span class="kp-close" style="position:absolute;top:12px;right:12px;cursor:pointer;width:24px;height:24px;text-align:center"
- aria-label="Close" role="button">×</span>
+<div class="kp-close-confirm" style="display:none"><button class="close">Close</button></div>
+<div class="kp-x" style="position:absolute;top:12px;right:12px;cursor:pointer;width:28px;height:28px;border:1px solid #ccc">
+<svg viewBox="0 0 24 24" width="20" height="20"><path d="M18 6 6 18M6 6l12 12" stroke="#000"/></svg></div>
 <h3>Log in to shop the collection.</h3><input placeholder="Enter Mobile Number*"> <input placeholder="Email*">
 <button class="join">Join Us</button></div>
-<script>document.querySelector('.kp-close').onclick = () => parent.postMessage('kp-close', '*');
+<script>document.querySelector('.kp-x').onclick = () => parent.postMessage('kp-close', '*');
 document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', '*');</script></body></html>""")
         if self.mode == "products_down" and path.startswith("/products/") and not path.endswith((".js", ".json")):
             return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))

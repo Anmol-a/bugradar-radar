@@ -1011,7 +1011,8 @@ def test_login_popup_in_a_cross_origin_iframe_is_closed_inside_the_frame(tmp_pat
     run, _ = _scan("kwikpass_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     j = _case(run, "journey.")
     assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
-    assert any(k["what"].startswith("popup (iframe)") and "'×'" in k["actual"] for k in _checks(j))
+    assert any(k["what"].startswith("popup (iframe)") and "inside the popup frame" in k["actual"]
+               and "still open" not in k["actual"] for k in _checks(j))
 
 
 def test_cards_hidden_until_the_shopper_scrolls_are_found(tmp_path):
