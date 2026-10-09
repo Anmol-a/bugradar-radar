@@ -565,6 +565,24 @@ def test_theme_scripts_delayed_until_the_first_interaction_run(tmp_path):
     assert all({c.suite for c in r.cases} == {"product", "search"} for r in runs)
 
 
+def test_store_that_holds_scripts_for_linux_pagespeed_bots_shows_the_emulated_shopper_the_full_page(tmp_path):
+    """bonkerscorner.com, bellavitaorganic.com, baccabucci.com (new30b + re-runs, 9 Oct): a speed snippet treats any
+    browser reporting navigator.platform 'Linux x86_64' as Google PageSpeed and never runs the theme's scripts: no
+    price, no search results. GitHub's machines are Linux, and Playwright's device emulation left the platform at
+    'Linux x86_64' even for the Pixel 7. Radar now reports the platform of the device it emulates (desktop: Windows
+    Chrome, mobile: Pixel 7 Android), the same as the User-Agent it sends (which still names BugRadar)."""
+    from radar.runner.executor import scan_devices
+    srv, url = serve("pagespeed_gate")
+    try:
+        runs = [r for r, _ in scan_devices(url, _settings(tmp_path), only_suites=["product", "search"])]
+    finally:
+        srv.shutdown()
+    assert [r.device for r in runs] == ["desktop", "mobile"]
+    bad = [(r.device, c.case_id, c.attempts[-1].error) for r in runs for c in r.cases if c.verdict != "pass"]
+    assert not bad, bad
+    assert all({c.suite for c in r.cases} == {"product", "search"} for r in runs)
+
+
 @pytest.mark.parametrize("mode", ["drawer_form_first", "upsell_forms_first"])
 def test_hidden_drawer_and_upsell_forms_never_taken_for_the_product_form(tmp_path, mode):
     """boldcare.in + bummer.in (bench 4): hidden cart-drawer / upsell forms named product_form / shopify-product-form

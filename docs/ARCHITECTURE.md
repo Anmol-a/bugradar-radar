@@ -623,6 +623,31 @@ Infra: shard 1 of run 37927492715 lost its results (cloud-results push: LATEST r
 workflow now resolves LATEST conflicts with this shard's line (`-X theirs`, then `rebase --continue`).
 GitHub machine-minutes this cycle: about 40 (re-run 1) + 30 (re-run 2).
 
+## 4v. Loop cycle 2 (9 Oct 2026, 20:45 IST, automated): held theme scripts = a 'PageSpeed bot' check on navigator.platform
+
+Re-run 37950556202 (`stores/retest_new30b_2.txt`, both devices) quoted the page script that holds the theme, on all
+three stores:
+- bonkerscorner.com: `// 2. Detect Google PageSpeed / Lighthouse testing bot (Linux x86_64 ...`
+- bellavitaorganic.com: same snippet (html.no-js, price only in `div.no-js-hidden`)
+- baccabucci.com: minified `e.platform.indexOf("x86_64")`
+
+So these stores serve a stripped page (theme JS never runs: no price, no gallery, no search results) to ANY browser
+whose `navigator.platform` is 'Linux x86_64', to look fast on PageSpeed. GitHub's machines are Linux, and Playwright's
+device emulation changes the User-Agent but leaves `navigator.platform` at the host's value: the "Pixel 7" Radar
+emulated said Android in its UA and 'Linux x86_64' in its platform, a mix no real phone shows. Not a store bug for
+real shoppers (Android reports 'Linux armv81', iPhone 'iPhone', PCs 'Win32' / 'MacIntel').
+
+Fix (`radar/core/browser.py`): Radar's emulated devices are now consistent. Desktop = Chrome on Windows (the commonest
+desktop in India) on every host: UA 'Windows NT 10.0; Win64; x64' + `navigator.platform` 'Win32'. Mobile = Pixel 7:
+`navigator.platform` 'Linux armv81', `userAgentData.platform` 'Android'. Done with a context init script; the UA
+still ends with BugRadar's own name (identified, not stealth: this is device emulation, like the viewport). `--plain-ua`
+emulates nothing. Mock `pagespeed_gate` (theme held when platform is 'Linux x86_64') fails on the old code
+(desktop price hidden, quoted snippet) and passes desktop + mobile on the new; unit test
+`test_emulated_platform_matches_the_user_agent_sent`.
+
+One-offs left as documented limits: bellavita second search word 'magicpin' (a partner-offer product; only tried
+because the first word failed under the held theme), consciouschemist 'build your box' bundle-app collection.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -881,6 +906,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 loop cycle 2 (9 Oct, 20:45 IST):** emulated devices report a matching `navigator.platform` (desktop = Windows Chrome, mobile = Pixel 7 Android) instead of the runner's 'Linux x86_64', which PageSpeed-bot snippets on bonkerscorner / bellavita / baccabucci treat as a bot; mock `pagespeed_gate` (4v).
 - **v0.19 loop cycle 1 (9 Oct, 16:45 IST):** scroll-reveal pass fixed (real document height), search-app wait, first-interaction nudge for held theme scripts, hidden-price evidence (market, no-js, gating script), workflow LATEST-conflict fix; mocks `search_app`, `search_app_popular`, `delayed_scripts` (4u).
 
 - **v0.19 (9 Oct, later):** Web Bot Auth request signing (`RADAR_SIGNING_KEY`), rounded-price tolerance, 5xx/429 handling; mock `signed_only`.

@@ -58,6 +58,32 @@ def _short_url(url: str) -> str:
 
 _OS = {"Darwin": "Macintosh; Intel Mac OS X 10_15_7", "Windows": "Windows NT 10.0; Win64; x64"}
 
+# The desktop shopper Radar emulates: Chrome on Windows, the commonest desktop in India, whatever machine Radar runs
+# on (9 Oct: GitHub's machines are Linux, and stores' 'speed' snippets treat a 'Linux x86_64' browser as Google
+# PageSpeed and never run the theme for it: bonkerscorner.com, bellavitaorganic.com, baccabucci.com).
+DESKTOP_SYSTEM = "Windows"
+# navigator.platform of each emulated device, kept consistent with the User-Agent Radar sends. Playwright's device
+# emulation changes the UA but leaves navigator.platform at the host's ('Linux x86_64'), a mix no real phone shows.
+PLATFORM = {"Windows": "Win32", "Darwin": "MacIntel", "Linux": "Linux x86_64", "android": "Linux armv81",
+            "iphone": "iPhone", "ipad": "iPad"}
+UACH_PLATFORM = {"Windows": "Windows", "Darwin": "macOS", "Linux": "Linux", "android": "Android", "iphone": "iOS",
+                 "ipad": "iOS"}
+
+
+def emulated_system(device_ua: str | None) -> str:
+    """Which system the sent User-Agent claims: a PLATFORM key. Pure, unit-tested."""
+    if not device_ua:
+        return DESKTOP_SYSTEM
+    u = device_ua.lower()
+    return "android" if "android" in u else "ipad" if "ipad" in u else "iphone" if "iphone" in u else "Linux"
+
+
+PLATFORM_JS = """(([p, ch]) => { try {
+  Object.defineProperty(Navigator.prototype, 'platform', {get: () => p, configurable: true});
+  if (typeof NavigatorUAData !== 'undefined')
+    Object.defineProperty(NavigatorUAData.prototype, 'platform', {get: () => ch, configurable: true});
+} catch (e) {} })(%s)"""
+
 
 def browser_user_agent(identity: str, chrome_version: str, style: str = "browser",
                        device_ua: str | None = None, system: str | None = None) -> str:
@@ -127,7 +153,7 @@ class Browser:
         name = DEVICES.get(self.device)
         d = self._pw.devices[name] if name else None
         ua = browser_user_agent(self.s.user_agent, self._browser.version, self.s.ua_style,
-                                d["user_agent"] if d else None)
+                                d["user_agent"] if d else None, system=DESKTOP_SYSTEM)
         kw = dict(user_agent=ua, locale=self.s.locale, timezone_id=self.s.timezone)
         if d:
             kw.update(viewport=d["viewport"], is_mobile=True, has_touch=True,
@@ -135,6 +161,10 @@ class Browser:
         else:
             kw.update(viewport={"width": 1366, "height": 850})
         ctx = self._browser.new_context(**kw)
+        if self.s.ua_style != "plain":       # the platform the sent UA names (plain UA: nothing emulated)
+            import json
+            system = emulated_system(d["user_agent"] if d else None)
+            ctx.add_init_script(PLATFORM_JS % json.dumps([PLATFORM[system], UACH_PLATFORM[system]]))
         if self.signer and self.sign_domain:
             def sign(route):
                 req = route.request
