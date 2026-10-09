@@ -587,6 +587,26 @@ Store findings (Radar right): foxtale and plumgoodness list catalog products who
 
 **Decision (9 Oct, Anmol's TO-DO):** SEO findings never make a store degraded or down and never alert. `broken_price` mock now passes with an SEO warning (was a confirmed failure).
 
+## 4t. Web Bot Auth: signed requests (9 Oct 2026)
+
+**Root cause of the 429s on our own servers (proven 9 Oct):** from Oracle Cloud Mumbai, every request to Shopify stores
+got HTTP 429 with `server: cloudflare`, `retry-after: 60`, for every User-Agent (Radar's, plain Chrome, python-requests),
+the homepage included, after a 3-minute cold pause. Contabo the same. GitHub's Azure machines and the Mac: none.
+Shopify's 2026 storefront protection throttles UNSIGNED automated traffic hardest; a Shopify developer-forum case
+(OCI 429s, residential fine, changing the Oracle IP did not help) matches exactly. Undetected-browser tricks cannot help
+(the IP is refused before any browser runs) and proxies/IP rotation are evasion: not built (no-stealth rule).
+
+**Fix: sign every request to the store (HTTP Message Signatures, RFC 9421, Web Bot Auth profile).** `radar/core/webbotauth.py`:
+Ed25519 key; `Signature-Agent: "https://bugradar.in"`; `Signature-Input: sig1=("@authority" "signature-agent");created;
+expires (1 h);keyid=<RFC 8037 JWK thumbprint>;alg="ed25519";nonce;tag="web-bot-auth"`; signature cached per host for its
+lifetime. Signed: page loads + XHR/fetch + add-to-cart POSTs to the store's own domain (Playwright route, store domain
+and its subdomains only, never third parties), `/products/*.js`, listings and robots.txt. Key only from the environment
+variable `RADAR_SIGNING_KEY` (GitHub secret / runner env); no key = unsigned as before. Public key directory to publish at
+`https://bugradar.in/.well-known/http-message-signatures-directory` (`application/http-message-signatures-directory+json`).
+Keygen: `python3 -m radar.core.webbotauth keygen`. Mock `signed_only` (429 unless the signature verifies): signed Radar
+healthy, unsigned Radar BLOCKED. Not yet proven on real Shopify: Shopify may also need the signed agent registered
+(Cloudflare signed-agents / Shopify higher-access form); the Oracle test decides.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -844,6 +864,8 @@ state. 4. Report section "Store profile". Exit: bench shows a profile for every 
 Each new check template gets a mock mode that fails on the old code, as for every rule so far.
 
 ## Change log
+
+- **v0.19 (9 Oct, later):** Web Bot Auth request signing (`RADAR_SIGNING_KEY`), rounded-price tolerance, 5xx/429 handling; mock `signed_only`.
 
 - **v0.19 (9 Oct 2026):** popup finder ignores closed/off-screen drawers and skips candidates it could not close; variant read from the page's own selected option before `?variant=`; SEO-note severity (soft 404, meta tags, JSON-LD) never a verdict or incident; llm-check 22 cases; HTTP 429 = BLOCKED (rate-limited) after backing off, product data cached 2 min. Mocks `drawer_decoy_popup`, `preselected_variant`, `rate_limited`, `rate_limited_once`.
 - 7 Oct 2026, v0.18: product layer step 1 (4r). Desktop + mobile is the default for `scan` and `bench`; mobile skipped when desktop could

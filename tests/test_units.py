@@ -674,3 +674,27 @@ def test_price_shown_accepts_whole_rupee_rounding_only():
     assert not price_shown(1299.0, [1300.0])[0]               # a whole-rupee price must match exactly
     assert not price_shown(727.18, [728.5])[0]
     assert not price_shown(3391.50, [3390.0])[0]
+
+
+# ---------- Web Bot Auth (signed requests, 9 Oct) ----------
+def test_webbotauth_thumbprint_matches_rfc8037_vector():
+    from radar.core.webbotauth import jwk_thumbprint
+    assert jwk_thumbprint("11qYAYKxCrfVS_7TyWQHOg7hcvPapiMlrwIaaPcHURo") == "kPrK_qmxVWaYVA9wwBF6Iuo3vVzz7TxHCTwXBygrS4k"
+
+
+def test_webbotauth_signature_verifies_and_is_per_host():
+    from radar.core.webbotauth import Signer, verify, authority, b64u
+    import secrets as _s
+    t = [1_800_000_000]
+    s = Signer(b64u(_s.token_bytes(32)), clock=lambda: t[0])
+    h = s.headers("https://www.bummer.in/products/x.js")
+    assert h["Signature-Agent"] == '"https://bugradar.in"'
+    assert 'tag="web-bot-auth"' in h["Signature-Input"] and 'alg="ed25519"' in h["Signature-Input"]
+    assert f'keyid="{s.keyid}"' in h["Signature-Input"] and "created=1800000000;expires=1800003600" in h["Signature-Input"]
+    assert verify(h, "www.bummer.in", s.x) and not verify(h, "bummer.in", s.x)      # bound to the host
+    assert s.headers("https://www.bummer.in/") == h                                  # cached within its lifetime
+    t[0] += 3560
+    assert s.headers("https://www.bummer.in/") != h                                  # renewed before it expires
+    assert authority("http://127.0.0.1:8765/x") == "127.0.0.1:8765" and authority("https://A.com:443/") == "a.com"
+    d = s.directory()["keys"][0]
+    assert d["kid"] == s.keyid and d["kty"] == "OKP" and d["crv"] == "Ed25519"

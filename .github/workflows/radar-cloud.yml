@@ -99,6 +99,7 @@ jobs:
         timeout-minutes: 150       # stop Radar in time for the results to be published (job limit 180)
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}   # Web Bot Auth: empty = unsigned, as before
           RADAR_DATA_DIR: ${{ steps.req.outputs.data }}
           PYTHONUNBUFFERED: "1"
         run: |
