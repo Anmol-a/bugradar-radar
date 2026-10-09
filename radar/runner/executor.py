@@ -27,7 +27,7 @@ from datetime import datetime, timezone
 from typing import Callable
 
 from radar.checks.library import REGISTRY, Ctx, Steps, StepFailed
-from radar.core.browser import Browser, DEFAULT_DEVICES
+from radar.core.browser import Browser, DEFAULT_DEVICES, RateLimited
 from radar.core.config import Settings, normalize_url, site_id_from_url
 from radar.core.models import AttemptResult, CaseResult, RunResult, SiteMap, StepResult, TestCase
 from radar.core.network import NO_NETWORK_NOTE, online
@@ -188,6 +188,9 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
         with browser.attempt(run_dir, "discovery") as sess:
             try:
                 sm = discover(sess, base, s)
+            except RateLimited as e:          # the platform throttled Radar before anything was tested (9 Oct)
+                sm = SiteMap(site_id=site_id, base_url=base, notes=[f"rate-limited: {e}"[:300]])
+                sm.access = "rate_limited"
             except Exception as e:  # noqa: BLE001
                 sess.failed = True
                 sm = SiteMap(site_id=site_id, base_url=base, notes=[f"discovery crashed: {e}"[:300]])
@@ -206,7 +209,7 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
 
         if sm.access == "no_network":
             run.verdict = "no_network"
-        elif sm.access in ("password", "bot_blocked", "robots_blocked", "robots_unreachable", "refused"):
+        elif sm.access in ("password", "bot_blocked", "robots_blocked", "robots_unreachable", "refused", "rate_limited"):
             run.verdict = "blocked"
         elif sm.access in ("unreachable", "offsite"):
             run.verdict = "unreachable"

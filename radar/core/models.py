@@ -38,7 +38,7 @@ class SiteMap:
     platform_evidence: list[str] = field(default_factory=list)
     theme: str | None = None          # Shopify theme (schema name, e.g. Dawn), from window.Shopify.theme
     checkout_app: str = ""            # Shopify checkout | GoKwik | Shopflo | Shiprocket Fastrr | Razorpay Magic ...
-    access: str = "open"              # open | password | bot_blocked | robots_blocked | robots_unreachable | refused | unreachable | offsite | no_network
+    access: str = "open"              # open | password | bot_blocked | robots_blocked | robots_unreachable | refused | rate_limited | unreachable | offsite | no_network
     robots_loaded: bool = False
     home_title: str = ""
     nav: list[dict] = field(default_factory=list)            # [{text, url}]
