@@ -1,0 +1,1963 @@
+{
+  "run_id": "20261009T042108Z-d-4f67",
+  "site_id": "theme-dawn-demo.myshopify.com",
+  "base_url": "https://theme-dawn-demo.myshopify.com",
+  "device": "desktop",
+  "started_at": "2026-10-09T04:21:08+00:00",
+  "finished_at": "2026-10-09T04:24:22+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product \u2192 add to cart \u2192 cart \u2192 checkout button",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.07s",
+              "error": null,
+              "secs": 2.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1411 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/bags (16 products)",
+              "error": null,
+              "secs": 3.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/bags ('Bags')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/bags",
+                  "actual": "/collections/bags",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 16 candidates \u2192 /products/bo-ivy-black",
+              "error": null,
+              "secs": 3.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/bo-ivy-black ('Bo Ivy')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/bo-ivy-black",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 16.69,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.92,
+              "load": 1.9,
+              "lcp": 0.54
+            },
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.01,
+              "dcl": 0.88,
+              "load": 0.95,
+              "lcp": 0.81
+            },
+            {
+              "url": "/products/bo-ivy-black",
+              "ttfb": 0.18,
+              "dcl": 0.85,
+              "load": 0.92,
+              "lcp": 0.69
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.19s",
+              "error": null,
+              "secs": 2.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1411 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/bags (16 products)",
+              "error": null,
+              "secs": 2.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/bags ('Bags')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/bags",
+                  "actual": "/collections/bags",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 16 candidates \u2192 /products/bo-ivy-black",
+              "error": null,
+              "secs": 2.79,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/bo-ivy-black ('Bo Ivy')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/bo-ivy-black",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 15.56,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.06,
+              "load": 2.0,
+              "lcp": 0.59
+            },
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.17,
+              "dcl": 0.85,
+              "load": 0.94,
+              "lcp": 0.65
+            },
+            {
+              "url": "/products/bo-ivy-black",
+              "ttfb": 0.22,
+              "dcl": 0.73,
+              "load": 0.8,
+              "lcp": 0.57
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.15s",
+              "error": null,
+              "secs": 2.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1411 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/bags (16 products)",
+              "error": null,
+              "secs": 3.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/bags ('Bags')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/bags",
+                  "actual": "/collections/bags",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 16 candidates \u2192 /products/bo-ivy-black",
+              "error": null,
+              "secs": 2.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/bo-ivy-black ('Bo Ivy')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/bo-ivy-black",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 16.19,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 1.01,
+              "load": 1.95,
+              "lcp": 0.58
+            },
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.01,
+              "dcl": 0.76,
+              "load": 0.83,
+              "lcp": 0.54
+            },
+            {
+              "url": "/products/bo-ivy-black",
+              "ttfb": 0.01,
+              "dcl": 0.59,
+              "load": 0.67,
+              "lcp": 0.41
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-dawn-demo.myshopify.com|journey.shopper|product_identified",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product page clearly contains the product name, price and purchase controls, so the robot failed to find product data (likely looked in the wrong place or tried to fetch a JS endpoint that rate-limited) rather than the store having a shopper-facing problem.",
+        "evidence": "Visible page text includes product name 'Bo Ivy', price '$390.00 CAD', variant buttons, quantity and 'Add to cart' / 'Buy it now' buttons on the product page at URL /products/bo-ivy-black; robot error: https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last:"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 2.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1411 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.94s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.94s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.35,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.72,
+              "load": 1.71,
+              "lcp": 0.44
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/bags",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 2.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bags \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1367 chars, 33 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/tote-bags",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 2.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tote Bags \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "852 chars, 13 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/shoulder-bags",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.83s",
+              "error": null,
+              "secs": 1.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shoulder bags \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "902 chars, 15 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/crossbody-bags",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.65s",
+              "error": null,
+              "secs": 1.7,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Crossbody bags \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "865 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.78,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://theme-dawn-demo.myshopify.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.06,
+              "dcl": 0.92,
+              "load": 1.86,
+              "lcp": 0.59
+            },
+            {
+              "url": "/collections/tote-bags",
+              "ttfb": 0.2,
+              "dcl": 0.91,
+              "load": 1.02,
+              "lcp": 0.87
+            },
+            {
+              "url": "/collections/shoulder-bags",
+              "ttfb": 0.17,
+              "dcl": 0.66,
+              "load": 0.79,
+              "lcp": 0.57
+            },
+            {
+              "url": "/collections/crossbody-bags",
+              "ttfb": 0.17,
+              "dcl": 0.56,
+              "load": 0.71,
+              "lcp": 0.61
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.bags",
+      "suite": "catalog",
+      "title": "Collection 'Shop all' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.2s",
+              "error": null,
+              "secs": 3.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bags \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1367 chars, 33 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "16 products listed",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.31,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.05,
+              "dcl": 0.87,
+              "load": 2.01,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.bo-ivy-black",
+      "suite": "product",
+      "title": "PDP 'Bo Ivy'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.0s",
+              "error": null,
+              "secs": 7.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bo Ivy \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1817 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/bo-ivy-black",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.bo-ivy-black.a1.png",
+          "trace": "product.pdp.bo-ivy-black.a1_trace.zip",
+          "secs": 12.9,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bo-ivy-black?variant=39577048875097",
+              "ttfb": 0.22,
+              "dcl": 0.79,
+              "load": 1.78,
+              "lcp": 0.59
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.27s",
+              "error": null,
+              "secs": 7.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bo Ivy \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1817 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/bo-ivy-black",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.bo-ivy-black.a2.png",
+          "trace": "product.pdp.bo-ivy-black.a2_trace.zip",
+          "secs": 12.61,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bo-ivy-black?variant=39577048875097",
+              "ttfb": 0.2,
+              "dcl": 0.87,
+              "load": 1.97,
+              "lcp": 0.96
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.92s",
+              "error": null,
+              "secs": 7.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bo Ivy \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1817 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/bo-ivy-black",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.bo-ivy-black.a3.png",
+          "trace": "product.pdp.bo-ivy-black.a3_trace.zip",
+          "secs": 12.95,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bo-ivy-black?variant=39577048875097",
+              "ttfb": 0.18,
+              "dcl": 0.73,
+              "load": 1.9,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-dawn-demo.myshopify.com|product.pdp.bo-ivy-black|product_identified",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product page is clearly visible and contains the product name, price and buy buttons, so the failure was caused by the robot looking for product data in the .js endpoint (which returned 429) rather than reading the visible page text.",
+        "evidence": "Visible page text includes the product title and price and add-to-cart buttons: \"Bo Ivy\", \"$390.00 CAD\", \"Add to cart\", \"Buy it now\" (page URL: /products/bo-ivy-black). The robot error shows a fetch to /products/bo-ivy-black.js returned HTTP 429 (no valid data)."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "cart.add_to_cart",
+      "suite": "cart",
+      "title": "Add 'Bo Ivy' to cart",
+      "check": "add_to_cart",
+      "severity": "critical",
+      "verdict": "flaky",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.25s",
+              "error": null,
+              "secs": 2.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bo Ivy \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1817 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a1.png",
+          "trace": "cart.add_to_cart.a1_trace.zip",
+          "secs": 8.55,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bo-ivy-black?variant=39577048875097",
+              "ttfb": 0.03,
+              "dcl": 0.88,
+              "load": 2.05,
+              "lcp": 0.53
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.08s",
+              "error": null,
+              "secs": 2.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bo Ivy \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1817 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Bo Ivy', variant 39577048875097 at \u20b9390.00",
+              "error": null,
+              "secs": 1.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bo-ivy-black",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/bo-ivy-black.js with variants",
+                  "actual": "'Bo Ivy', 7 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 39577048875097 selected",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "4 of 7 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "click_add_to_cart",
+              "status": "pass",
+              "detail": "clicked main product form #product-form-template--15968258293849__main (variant 39577048875097, button 'Add to cart')",
+              "error": null,
+              "secs": 0.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_received_this_product",
+              "status": "pass",
+              "detail": "cart has 'Bo Ivy' \u00d71 at \u20b9390.00",
+              "error": null,
+              "secs": 2.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "variant the page sent to /cart/add",
+                  "expected": "39577048875097 (Bo Ivy)",
+                  "actual": "39577048875097 (Bo Ivy)",
+                  "ok": true
+                },
+                {
+                  "what": "cart item count",
+                  "expected": "0 \u2192 1",
+                  "actual": "0 \u2192 1",
+                  "ok": true
+                },
+                {
+                  "what": "product added to cart",
+                  "expected": "Bo Ivy (variant 39577048875097)",
+                  "actual": "Bo Ivy (variant 39577048875097)",
+                  "ok": true
+                },
+                {
+                  "what": "quantity added",
+                  "expected": "1",
+                  "actual": "1",
+                  "ok": true
+                },
+                {
+                  "what": "unit price in cart",
+                  "expected": "\u20b9390.00",
+                  "actual": "\u20b9390.00",
+                  "ok": true
+                },
+                {
+                  "what": "other paid products added",
+                  "expected": "none",
+                  "actual": "none",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_total_increase",
+              "status": "pass",
+              "detail": "\u20b90.00 \u2192 \u20b9390.00",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart total went up by",
+                  "expected": "\u20b9390.00",
+                  "actual": "\u20b9390.00",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_shows_product",
+              "status": "pass",
+              "detail": "cart drawer opened after adding",
+              "error": null,
+              "secs": 0.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart shows the product",
+                  "expected": "Bo Ivy",
+                  "actual": "listed",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "checkout_button_ready",
+              "status": "pass",
+              "detail": "checkout visible + enabled via hint (drawer); NOT clicked",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "checkout button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.66,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bo-ivy-black?variant=39577048875097",
+              "ttfb": 0.04,
+              "dcl": 0.81,
+              "load": 1.76,
+              "lcp": 0.57
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.black",
+      "suite": "search",
+      "title": "Search for 'black' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.01s",
+              "error": null,
+              "secs": 2.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1411 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 9 results, 2 mention 'black'",
+              "error": null,
+              "secs": 2.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 9 results found for \"black\" \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "885 chars, 10 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "9",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'black'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "2 of 9",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.71,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.7,
+              "load": 1.9,
+              "lcp": 0.46
+            },
+            {
+              "url": "/search?q=black&type=product",
+              "ttfb": 0.24,
+              "dcl": 0.81,
+              "load": 0.81,
+              "lcp": 0.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.88s",
+              "error": null,
+              "secs": 2.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1411 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "theme-dawn-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "15: 'theme-dawn-demo'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-dawn-demo.myshopify.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-dawn-demo.myshopify.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-dawn-demo.myshopify.com/cdn/shop/files/Dawn_logo.png?height=628&pad_color=ffffff&v=1637111732&width=1200",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.81,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.61,
+              "load": 1.71,
+              "lcp": 0.43
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.28s",
+              "error": null,
+              "secs": 2.21,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bo Ivy \u2013 theme-dawn-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1817 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Bo Ivy \u2013 theme-dawn-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "24: 'Bo Ivy \u2013 theme-dawn-demo'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Mlouye Mini Lantern Bag with Pleats, Lantern inspired mini bucket bag ",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "101: 'Mlouye Mini Lantern Bag with Pleats, Lantern inspired mini b'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-dawn-demo.myshopify.com/products/bo-ivy-black",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Bo Ivy",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-dawn-demo.myshopify.com/cdn/shop/products/mlouye-bo-ivy-emerald-1_73c3987e-5ec7-4e72-879a-2ba2e560648f.jpg?v=1637107948",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.4,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/bo-ivy-black",
+              "ttfb": 0.05,
+              "dcl": 1.11,
+              "load": 1.13,
+              "lcp": 0.85
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 2.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.45,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-dawn-demo.myshopify.com/api/collect",
+            "POST https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.2,
+              "dcl": 0.69,
+              "load": 1.57,
+              "lcp": 0.62
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 2,
+    "input_tokens": 4778,
+    "output_tokens": 332,
+    "est_usd": 0.001858,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "theme-dawn-demo",
+    "theme": "Dawn",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 11,
+    "collections": 9,
+    "products": 1,
+    "in_stock": 1,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "/collections.json unavailable (https://theme-dawn-demo.myshopify.com/collections.json?limit=50: no valid data a); using nav links",
+    "/products.json unavailable (https://theme-dawn-demo.myshopify.com/products.json?limit=50: no valid data afte); scraping product links"
+  ],
+  "perf": {
+    "pages": 9,
+    "median_load_secs": 1.13,
+    "slowest": {
+      "url": "/collections/bags",
+      "load_secs": 2.01
+    },
+    "console_errors": 0,
+    "console_warnings": 0,
+    "failed_requests": 5
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 1,
+    "confirmed_fail": 2,
+    "blocked": 0,
+    "skipped": 0
+  }
+}

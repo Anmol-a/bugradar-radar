@@ -1,0 +1,1924 @@
+{
+  "run_id": "20261009T042108Z-d-7714",
+  "site_id": "theme-sense-demo.myshopify.com",
+  "base_url": "https://theme-sense-demo.myshopify.com",
+  "device": "desktop",
+  "started_at": "2026-10-09T04:21:08+00:00",
+  "finished_at": "2026-10-09T04:24:29+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product \u2192 add to cart \u2192 cart \u2192 checkout button",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.88s",
+              "error": null,
+              "secs": 2.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1519 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/nail-polish (21 products)",
+              "error": null,
+              "secs": 2.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/nail-polish ('Nail Polish')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/nail-polish",
+                  "actual": "/collections/nail-polish",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "21",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 21 candidates \u2192 /products/the-selfcare-nail-polish-collection",
+              "error": null,
+              "secs": 2.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/the-selfcare-nail-polish-collection ('Self-Care Nail Polish Collection')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/the-selfcare-nail-polish-collection",
+                  "actual": "/products/the-selfcare-nail-polish-collection",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/the-selfcare-nail-polish-collection.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/the-selfcare-nail-polish-collection",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/the-selfcare-nail-polish-collection.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 15.05,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://theme-sense-demo.myshopify.com/api/event/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.75,
+              "load": 1.75,
+              "lcp": 0.57
+            },
+            {
+              "url": "/collections/nail-polish",
+              "ttfb": 0.0,
+              "dcl": 0.96,
+              "load": 1.02,
+              "lcp": 0.73
+            },
+            {
+              "url": "/products/the-selfcare-nail-polish-collection",
+              "ttfb": 0.18,
+              "dcl": 0.8,
+              "load": 0.85,
+              "lcp": 1.48
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.93s",
+              "error": null,
+              "secs": 2.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1519 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/nail-polish (21 products)",
+              "error": null,
+              "secs": 2.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/nail-polish ('Nail Polish')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/nail-polish",
+                  "actual": "/collections/nail-polish",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "21",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 21 candidates \u2192 /products/the-selfcare-nail-polish-collection",
+              "error": null,
+              "secs": 2.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/the-selfcare-nail-polish-collection ('Self-Care Nail Polish Collection')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/the-selfcare-nail-polish-collection",
+                  "actual": "/products/the-selfcare-nail-polish-collection",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/the-selfcare-nail-polish-collection.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/the-selfcare-nail-polish-collection",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/the-selfcare-nail-polish-collection.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 15.32,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.61,
+              "load": 1.55,
+              "lcp": 0.71
+            },
+            {
+              "url": "/collections/nail-polish",
+              "ttfb": 0.01,
+              "dcl": 0.71,
+              "load": 0.85,
+              "lcp": 0.72
+            },
+            {
+              "url": "/products/the-selfcare-nail-polish-collection",
+              "ttfb": 0.17,
+              "dcl": 0.83,
+              "load": 0.91,
+              "lcp": 0.92
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.86s",
+              "error": null,
+              "secs": 2.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1519 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/nail-polish (21 products)",
+              "error": null,
+              "secs": 2.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/nail-polish ('Nail Polish')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/nail-polish",
+                  "actual": "/collections/nail-polish",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "21",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 21 candidates \u2192 /products/the-selfcare-nail-polish-collection",
+              "error": null,
+              "secs": 3.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/the-selfcare-nail-polish-collection ('Self-Care Nail Polish Collection')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/the-selfcare-nail-polish-collection",
+                  "actual": "/products/the-selfcare-nail-polish-collection",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/the-selfcare-nail-polish-collection.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/the-selfcare-nail-polish-collection",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/the-selfcare-nail-polish-collection.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 14.9,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.63,
+              "load": 1.66,
+              "lcp": 0.57
+            },
+            {
+              "url": "/collections/nail-polish",
+              "ttfb": 0.18,
+              "dcl": 0.79,
+              "load": 0.84,
+              "lcp": 0.64
+            },
+            {
+              "url": "/products/the-selfcare-nail-polish-collection",
+              "ttfb": 0.17,
+              "dcl": 0.76,
+              "load": 0.86,
+              "lcp": 0.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-sense-demo.myshopify.com|journey.shopper|product_identified",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product page and buy controls are visible in the page text and URL, so the checker looked in the wrong place (it failed fetching a .js resource/API and raised a false product_identified alarm).",
+        "evidence": "Visible page text contains product title and buy controls: \"Self-Care Nail Polish Collection\" \"Regular price $40.00 CAD\" \"Quantity\" \"Add to cart\" \"Buy it now\" and the URL is /products/the-selfcare-nail-polish-collection. The robot error shows a failure to fetch: https://theme-sense-demo.myshopify.co"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.9s",
+              "error": null,
+              "secs": 2.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1519 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.9s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.9s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.25,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.54,
+              "load": 1.74,
+              "lcp": 0.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/skin",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.87s",
+              "error": null,
+              "secs": 2.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Skin Care \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1776 chars, 35 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.82s",
+              "error": null,
+              "secs": 1.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Care \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1408 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/body",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.68s",
+              "error": null,
+              "secs": 1.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Body Care \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1364 chars, 19 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/nail-polish",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.21s",
+              "error": null,
+              "secs": 2.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Nail Polish \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2037 chars, 44 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.51,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed parsing 'srcset' attribute value since its 'w' descriptor is invalid.",
+              "url": "https://theme-sense-demo.myshopify.com/collections/hair"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-sense-demo.myshopify.com/cdn/shop/products/ScreenShot2022-01-07at9.29.43AM.png?v=1641565820\"",
+              "url": "https://theme-sense-demo.myshopify.com/collections/hair"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-sense-demo.myshopify.com/cdn/shop/products/ShampooBar_VideoThumb.jpg?v=1641913020\"",
+              "url": "https://theme-sense-demo.myshopify.com/collections/hair"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://theme-sense-demo.myshopify.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/collections/skin",
+              "ttfb": 0.04,
+              "dcl": 0.73,
+              "load": 1.84,
+              "lcp": 0.6
+            },
+            {
+              "url": "/collections/hair",
+              "ttfb": 0.01,
+              "dcl": 0.74,
+              "load": 0.86,
+              "lcp": 0.6
+            },
+            {
+              "url": "/collections/body",
+              "ttfb": 0.18,
+              "dcl": 0.59,
+              "load": 0.72,
+              "lcp": 0.5
+            },
+            {
+              "url": "/collections/nail-polish",
+              "ttfb": 0.01,
+              "dcl": 1.01,
+              "load": 1.2,
+              "lcp": 0.88
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.nail-polish",
+      "suite": "catalog",
+      "title": "Collection 'Nail Polish' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.44s",
+              "error": null,
+              "secs": 3.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Nail Polish \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2037 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "21 products listed",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "21",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.63,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/nail-polish",
+              "ttfb": 0.04,
+              "dcl": 1.31,
+              "load": 2.24,
+              "lcp": 0.9
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.monoi-conditioner-moisture-and-brightnes",
+      "suite": "product",
+      "title": "PDP 'Monoi Conditioner'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.26s",
+              "error": null,
+              "secs": 7.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Monoi conditioner Moisture and Brightness | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1534 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/monoi-conditioner-moisture-and-brightness",
+                  "actual": "/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.monoi-conditioner-moisture-and-brightnes.a1.png",
+          "trace": "product.pdp.monoi-conditioner-moisture-and-brightnes.a1_trace.zip",
+          "secs": 13.55,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/monoi-conditioner-moisture-and-brightness?variant=40492606030032",
+              "ttfb": 0.24,
+              "dcl": 1.07,
+              "load": 2.08,
+              "lcp": 0.93
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.03s",
+              "error": null,
+              "secs": 7.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Monoi conditioner Moisture and Brightness | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1534 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/monoi-conditioner-moisture-and-brightness",
+                  "actual": "/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.monoi-conditioner-moisture-and-brightnes.a2.png",
+          "trace": "product.pdp.monoi-conditioner-moisture-and-brightnes.a2_trace.zip",
+          "secs": 13.33,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/monoi-conditioner-moisture-and-brightness?variant=40492606030032",
+              "ttfb": 0.21,
+              "dcl": 0.69,
+              "load": 1.95,
+              "lcp": 0.74
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.9s",
+              "error": null,
+              "secs": 7.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Monoi conditioner Moisture and Brightness | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1534 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/monoi-conditioner-moisture-and-brightness",
+                  "actual": "/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "product.pdp.monoi-conditioner-moisture-and-brightnes.a3.png",
+          "trace": "product.pdp.monoi-conditioner-moisture-and-brightnes.a3_trace.zip",
+          "secs": 12.52,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/monoi-conditioner-moisture-and-brightness?variant=40492606030032",
+              "ttfb": 0.23,
+              "dcl": 0.61,
+              "load": 1.73,
+              "lcp": 0.66
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-sense-demo.myshopify.com|product.pdp.monoi-conditioner-moisture-and-brightnes|product_identified",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product page clearly displays the product title, price and purchase buttons \u2014 the robot failed due to a blocked/failed fetch of the .js product data (HTTP 429), so the monitor looked in the wrong place for product identification.",
+        "evidence": "Visible page text includes the product title and price: \"Monoi Conditioner\" and \"$28.00 CAD\" and shows Add to cart / Buy it now buttons (page URL: /products/monoi-conditioner-moisture-and-brightness). The robot error was an HTTP 429 when fetching a .js product endpoint: https://theme-sense-demo.mysh"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "cart.add_to_cart",
+      "suite": "cart",
+      "title": "Add 'Monoi Conditioner' to cart",
+      "check": "add_to_cart",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.86s",
+              "error": null,
+              "secs": 2.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Monoi conditioner Moisture and Brightness | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1534 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a1.png",
+          "trace": "cart.add_to_cart.a1_trace.zip",
+          "secs": 7.96,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/monoi-conditioner-moisture-and-brightness?variant=40492606030032",
+              "ttfb": 0.17,
+              "dcl": 0.6,
+              "load": 1.69,
+              "lcp": 0.62
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.87s",
+              "error": null,
+              "secs": 2.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Monoi conditioner Moisture and Brightness | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1534 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a2.png",
+          "trace": "cart.add_to_cart.a2_trace.zip",
+          "secs": 9.04,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/products/monoi-conditioner-moisture-and-brightness?variant=40492606030032",
+              "ttfb": 0.07,
+              "dcl": 0.58,
+              "load": 1.59,
+              "lcp": 0.62
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.11s",
+              "error": null,
+              "secs": 2.55,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Monoi conditioner Moisture and Brightness | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1534 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "fail",
+              "detail": null,
+              "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+              "secs": 4.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "product_identified",
+          "error": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 tries (last: HTTP 429)",
+          "screenshot": "cart.add_to_cart.a3.png",
+          "trace": "cart.add_to_cart.a3_trace.zip",
+          "secs": 8.04,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/monoi-conditioner-moisture-and-brightness?variant=40492606030032",
+              "ttfb": 0.02,
+              "dcl": 0.91,
+              "load": 1.76,
+              "lcp": 0.74
+            }
+          ]
+        }
+      ],
+      "incident_signature": "theme-sense-demo.myshopify.com|cart.add_to_cart|product_identified",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product is present and visible on the page (title, price and Add to cart button), so the monitor looked in the wrong place or failed to read the visible HTML/JS asset (429) rather than the store actually lacking the product.",
+        "evidence": "Visible page text includes the product title, price, quantity controls and Add to cart / Buy it now buttons (e.g. \u201cMonoi Conditioner\u201d, \u201c$28.00 CAD\u201d, \u201cAdd to cart\u201d, \u201cBuy it now\u201d). The failure error was an HTTP 429 fetching /products/monoi-conditioner-moisture-and-brightness.js: no valid data after 3 "
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.monoi",
+      "suite": "search",
+      "title": "Search for 'monoi' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.74s",
+              "error": null,
+              "secs": 2.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1519 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 3 results, 3 mention 'monoi'",
+              "error": null,
+              "secs": 2.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 3 results found for \"monoi\" \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "882 chars, 5 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "3",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'monoi'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "3 of 3",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.9,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.62,
+              "load": 1.59,
+              "lcp": 0.68
+            },
+            {
+              "url": "/search?q=monoi&type=product",
+              "ttfb": 0.19,
+              "dcl": 0.49,
+              "load": 0.5,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.85s",
+              "error": null,
+              "secs": 2.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1519 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "theme-sense-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "16: 'theme-sense-demo'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-sense-demo.myshopify.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-sense-demo.myshopify.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-sense-demo.myshopify.com/cdn/shop/files/SENSE.png?v=1638815183",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.27,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.61,
+              "load": 1.31,
+              "lcp": 0.72
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.16s",
+              "error": null,
+              "secs": 2.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Monoi conditioner Moisture and Brightness | BKIND \u2013 theme-sense-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1534 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Monoi conditioner Moisture and Brightness | BKIND \u2013 theme-sense-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "68: 'Monoi conditioner Moisture and Brightness | BKIND \u2013 theme-se'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 250: 'Monoi conditioner for moisture and brightness. For dry, curl'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "250: 'Monoi conditioner for moisture and brightness. For dry, curl'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-sense-demo.myshopify.com/products/monoi-conditioner-moisture-and-brightness",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Monoi conditioner Moisture and Brightness | BKIND",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-sense-demo.myshopify.com/cdn/shop/products/revitalisant_monoi_beigebackground.png?v=1637170065",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.04,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/monoi-conditioner-moisture-and-brightness",
+              "ttfb": 0.2,
+              "dcl": 0.84,
+              "load": 2.04,
+              "lcp": 0.84
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 2.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.34,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-sense-demo.myshopify.com/api/collect",
+            "POST https://theme-sense-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.22,
+              "dcl": 0.55,
+              "load": 1.56,
+              "lcp": 0.46
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 3,
+    "input_tokens": 7183,
+    "output_tokens": 533,
+    "est_usd": 0.002862,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "theme-sense-demo",
+    "theme": "Dawn (store copy: [Sense] Theme Store demo (latest))",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 6,
+    "collections": 6,
+    "products": 1,
+    "in_stock": 1,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "/products.json unavailable (https://theme-sense-demo.myshopify.com/products.json?limit=50: no valid data aft); scraping product links"
+  ],
+  "perf": {
+    "pages": 10,
+    "median_load_secs": 1.65,
+    "slowest": {
+      "url": "/collections/nail-polish",
+      "load_secs": 2.24
+    },
+    "console_errors": 0,
+    "console_warnings": 3,
+    "failed_requests": 5
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 0,
+    "confirmed_fail": 3,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
