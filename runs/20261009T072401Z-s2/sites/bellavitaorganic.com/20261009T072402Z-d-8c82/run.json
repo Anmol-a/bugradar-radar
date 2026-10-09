@@ -1,0 +1,2062 @@
+{
+  "run_id": "20261009T072402Z-d-8c82",
+  "site_id": "bellavitaorganic.com",
+  "base_url": "https://bellavitaorganic.com",
+  "device": "desktop",
+  "started_at": "2026-10-09T07:24:02+00:00",
+  "finished_at": "2026-10-09T07:27:35+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.39s",
+              "error": null,
+              "secs": 3.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4875 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/luxury-perfumes (44 products)",
+              "error": null,
+              "secs": 4.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/luxury-perfumes ('PERFUMES')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/luxury-perfumes",
+                  "actual": "/collections/luxury-perfumes",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "44",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 80 candidates \u2192 /products/beast-mode-collection-for-men (via its card)",
+              "error": null,
+              "secs": 8.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/beast-mode-collection-for-men ('Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | ')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/beast-mode-collection-for-men",
+                  "actual": "/products/beast-mode-collection-for-men",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | 3 x 20ml', selected variant 41985646133294 at \u20b9529.00",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/beast-mode-collection-for-men",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/beast-mode-collection-for-men.js with variants",
+                  "actual": "'Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | 3 x 20ml', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b9529.00, got not on page (\u20b9529.00 is only inside a hidden element <div.no-js-hidden>, not shown on this screen size)",
+              "secs": 2.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | 3 x 20ml",
+                  "actual": "'Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | 3 x 20ml' (h1, 19px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9529.00",
+                  "actual": "not on page (\u20b9529.00 is only inside a hidden element <div.no-js-hidden>, not shown on this screen size)",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9529.00, got not on page (\u20b9529.00 is only inside a hidden element <div.no-js-hidden>, not shown on this screen size)",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 25.19,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/Untitleddesign.jpg?v=1791460699&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has ",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/front_2.jpg?v=1736851564&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appr",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/front_1.jpg?v=1723645186&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appr",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/1_5f66d63c-c516-41df-b3bc-b1e77df898b8.jpg?v=1714554831&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. ",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/62f0e3d4-775a-4571-a00c-abea28ab091c/uppromote-affiliate-70/assets/customer-referral.css was preloaded using link preload but not used within a few seconds from the window'",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/t/761/assets/media-gallery.js?v=100483473661208274711763611196 was preloaded using link preload but not used within a few seconds from the window's load event. Please ma",
+              "url": "https://bellavitaorganic.com/products/beast-mode-collection-for-men"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.09,
+              "load": 2.31,
+              "lcp": 1.52
+            },
+            {
+              "url": "/collections/luxury-perfumes",
+              "ttfb": 0.01,
+              "dcl": 1.8,
+              "load": 1.82,
+              "lcp": 1.74
+            },
+            {
+              "url": "/products/beast-mode-collection-for-men",
+              "ttfb": 0.01,
+              "dcl": 1.83,
+              "load": 1.84,
+              "lcp": 1.55
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.01s",
+              "error": null,
+              "secs": 4.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4875 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/luxury-perfumes (44 products)",
+              "error": null,
+              "secs": 5.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/luxury-perfumes ('PERFUMES')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/luxury-perfumes",
+                  "actual": "/collections/luxury-perfumes",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "44",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 80 candidates \u2192 /products/beast-mode-collection-for-men (via its card)",
+              "error": null,
+              "secs": 8.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/beast-mode-collection-for-men ('Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | ')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/beast-mode-collection-for-men",
+                  "actual": "/products/beast-mode-collection-for-men",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | 3 x 20ml', selected variant 41985646133294 at \u20b9529.00",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/beast-mode-collection-for-men",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/beast-mode-collection-for-men.js with variants",
+                  "actual": "'Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | 3 x 20ml', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b9529.00, got not on page (\u20b9529.00 is only inside a hidden element <div.no-js-hidden>, not shown on this screen size)",
+              "secs": 2.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | 3 x 20ml",
+                  "actual": "'Beast Mode Perfume Gift Set for Men | 12 hr+ long lasting | 3 x 20ml' (h1, 19px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9529.00",
+                  "actual": "not on page (\u20b9529.00 is only inside a hidden element <div.no-js-hidden>, not shown on this screen size)",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9529.00, got not on page (\u20b9529.00 is only inside a hidden element <div.no-js-hidden>, not shown on this screen size)",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 28.95,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/62f0e3d4-775a-4571-a00c-abea28ab091c/uppromote-affiliate-70/assets/customer-referral.css was preloaded using link preload but not used within a few seconds from the window'",
+              "url": "https://bellavitaorganic.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/860-1150_16.webp?v=1768303523&width=800 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an",
+              "url": "https://bellavitaorganic.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/Untitleddesign.jpg?v=1791460699&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has ",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/front_2.jpg?v=1736851564&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appr",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/front_1.jpg?v=1723645186&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appr",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/1_5f66d63c-c516-41df-b3bc-b1e77df898b8.jpg?v=1714554831&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. ",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/t/761/assets/media-gallery.js?v=100483473661208274711763611196 was preloaded using link preload but not used within a few seconds from the window's load event. Please ma",
+              "url": "https://bellavitaorganic.com/products/beast-mode-collection-for-men"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.67,
+              "load": 2.7,
+              "lcp": 1.72
+            },
+            {
+              "url": "/collections/luxury-perfumes",
+              "ttfb": 0.01,
+              "dcl": 2.36,
+              "load": 2.37,
+              "lcp": 2.16
+            },
+            {
+              "url": "/products/beast-mode-collection-for-men",
+              "ttfb": 0.01,
+              "dcl": 2.04,
+              "load": 2.05,
+              "lcp": 1.63
+            }
+          ]
+        }
+      ],
+      "incident_signature": "bellavitaorganic.com|journey.shopper|shows_title_price_image",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The page does not display the product's selected variant price to shoppers (the expected \u20b9529.00 is present only in a hidden element), so customers cannot see the correct price on the product page.",
+        "evidence": "Robot checked page HTML and visible text: expected price \u20b9529.00 exists ONLY inside a hidden element <div.no-js-hidden> (a theme-hidden/mobile sticky bar) and is not in the visible text after scrolling; visible page shows price area with \u201cPay only \u20b9476.10 with Prepaid Discounts\u201d but the expected \u20b952"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.93s",
+              "error": null,
+              "secs": 4.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4875 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.93s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.93s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: window is not defined",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: window is not defined",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.6,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/62f0e3d4-775a-4571-a00c-abea28ab091c/uppromote-affiliate-70/assets/customer-referral.css was preloaded using link preload but not used within a few seconds from the window'",
+              "url": "https://bellavitaorganic.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/860-1150_16.webp?v=1768303523&width=800 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an",
+              "url": "https://bellavitaorganic.com/"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.4,
+              "load": 2.52,
+              "lcp": 1.63
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /pages/build-a-box",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.14s",
+              "error": null,
+              "secs": 3.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Gift Boxes For Men & Women By Bella Vita Organic",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4004 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/shop-all-products",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.9s",
+              "error": null,
+              "secs": 7.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop All Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7242 chars, 31 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/bestsellers",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.65s",
+              "error": null,
+              "secs": 6.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Best Selling Beauty & Personal Care Products | 2025 Best Skin Care",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7709 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/luxury-perfumes",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.43s",
+              "error": null,
+              "secs": 7.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Perfumes for Women & Men Online at Best Long Lasting Perfumes 2025 I BellaVita",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8814 chars, 33 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 24.67,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/pages/build-a-box"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/1_1_2_1.jpg?v=1779961958&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appr",
+              "url": "https://bellavitaorganic.com/collections/shop-all-products"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/Untitleddesign.jpg?v=1791460699&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has ",
+              "url": "https://bellavitaorganic.com/collections/shop-all-products"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/front_2.jpg?v=1736851564&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appr",
+              "url": "https://bellavitaorganic.com/collections/shop-all-products"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/1_5f66d63c-c516-41df-b3bc-b1e77df898b8.jpg?v=1714554831&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. ",
+              "url": "https://bellavitaorganic.com/collections/shop-all-products"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/62f0e3d4-775a-4571-a00c-abea28ab091c/uppromote-affiliate-70/assets/customer-referral.css was preloaded using link preload but not used within a few seconds from the window'",
+              "url": "https://bellavitaorganic.com/collections/shop-all-products"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/1_f3651453-9ace-4b6e-b0ac-4ee2b9e5e7cd.jpg?v=1714548565&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. ",
+              "url": "https://bellavitaorganic.com/collections/bestsellers"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/1_eb8a6d98-7eee-4929-8a87-c7f76d57d089.jpg?v=1769162957&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. ",
+              "url": "https://bellavitaorganic.com/collections/bestsellers"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/front_1.jpg?v=1723645186&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appr",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/pages/build-a-box",
+              "ttfb": 0.22,
+              "dcl": 1.81,
+              "load": 1.85,
+              "lcp": 1.92
+            },
+            {
+              "url": "/collections/shop-all-products",
+              "ttfb": 0.01,
+              "dcl": 2.24,
+              "load": 2.25,
+              "lcp": 2.08
+            },
+            {
+              "url": "/collections/bestsellers",
+              "ttfb": 0.24,
+              "dcl": 2.1,
+              "load": 2.11,
+              "lcp": 2.03
+            },
+            {
+              "url": "/collections/luxury-perfumes",
+              "ttfb": 0.02,
+              "dcl": 2.38,
+              "load": 2.39,
+              "lcp": 2.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.luxury-perfumes",
+      "suite": "catalog",
+      "title": "Collection 'All Perfumes' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.5s",
+              "error": null,
+              "secs": 6.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Perfumes for Women & Men Online at Best Long Lasting Perfumes 2025 I BellaVita",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8814 chars, 33 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "44 products listed",
+              "error": null,
+              "secs": 0.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "44",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.18,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/Untitleddesign.jpg?v=1791460699&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has ",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/front_2.jpg?v=1736851564&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appr",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/front_1.jpg?v=1723645186&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appr",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/1_5f66d63c-c516-41df-b3bc-b1e77df898b8.jpg?v=1714554831&width=750 was preloaded using link preload but not used within a few seconds from the window's load event. ",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/62f0e3d4-775a-4571-a00c-abea28ab091c/uppromote-affiliate-70/assets/customer-referral.css was preloaded using link preload but not used within a few seconds from the window'",
+              "url": "https://bellavitaorganic.com/collections/luxury-perfumes"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/collections/luxury-perfumes",
+              "ttfb": 0.05,
+              "dcl": 3.59,
+              "load": 3.64,
+              "lcp": 3.23
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.detan-wonder-exfoliating-detan-body-wash",
+      "suite": "product",
+      "title": "PDP 'Detan Wonder Exfoliating Detan Body Wash'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.42s",
+              "error": null,
+              "secs": 4.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Detan Wonder Exfoliating Detan Body Wash",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4599 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/detan-wonder-exfoliating-detan-body-wash",
+                  "actual": "/products/detan-wonder-exfoliating-detan-body-wash",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Detan Wonder Exfoliating Detan Body Wash', selected variant 42754915532846 at \u20b9299.00",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/detan-wonder-exfoliating-detan-body-wash",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/detan-wonder-exfoliating-detan-body-wash.js with variants",
+                  "actual": "'Detan Wonder Exfoliating Detan Body Wash', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b9299.00, got not on page (\u20b9299.00 is only inside a hidden element <div.price__regular>, not shown on this screen size)",
+              "secs": 2.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Detan Wonder Exfoliating Detan Body Wash",
+                  "actual": "'Detan Wonder Exfoliating Detan Body Wash' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9299.00",
+                  "actual": "not on page (\u20b9299.00 is only inside a hidden element <div.price__regular>, not shown on this screen size)",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9299.00, got not on page (\u20b9299.00 is only inside a hidden element <div.price__regular>, not shown on this screen size)",
+          "screenshot": "product.pdp.detan-wonder-exfoliating-detan-body-wash.a1.png",
+          "trace": "product.pdp.detan-wonder-exfoliating-detan-body-wash.a1_trace.zip",
+          "secs": 8.95,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/products/detan-wonder-exfoliating-detan-body-wash?variant=42754915532846"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/t/761/assets/media-gallery.js?v=100483473661208274711763611196 was preloaded using link preload but not used within a few seconds from the window's load event. Please ma",
+              "url": "https://bellavitaorganic.com/products/detan-wonder-exfoliating-detan-body-wash?variant=42754915532846"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/62f0e3d4-775a-4571-a00c-abea28ab091c/uppromote-affiliate-70/assets/customer-referral.css was preloaded using link preload but not used within a few seconds from the window'",
+              "url": "https://bellavitaorganic.com/products/detan-wonder-exfoliating-detan-body-wash?variant=42754915532846"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/products/detan-wonder-exfoliating-detan-body-wash?variant=42754915532846",
+              "ttfb": 0.23,
+              "dcl": 2.15,
+              "load": 2.15,
+              "lcp": 1.68
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.19s",
+              "error": null,
+              "secs": 3.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Detan Wonder Exfoliating Detan Body Wash",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4599 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/detan-wonder-exfoliating-detan-body-wash",
+                  "actual": "/products/detan-wonder-exfoliating-detan-body-wash",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Detan Wonder Exfoliating Detan Body Wash', selected variant 42754915532846 at \u20b9299.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/detan-wonder-exfoliating-detan-body-wash",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/detan-wonder-exfoliating-detan-body-wash.js with variants",
+                  "actual": "'Detan Wonder Exfoliating Detan Body Wash', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b9299.00, got not on page (\u20b9299.00 is only inside a hidden element <div.price__regular>, not shown on this screen size)",
+              "secs": 2.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Detan Wonder Exfoliating Detan Body Wash",
+                  "actual": "'Detan Wonder Exfoliating Detan Body Wash' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9299.00",
+                  "actual": "not on page (\u20b9299.00 is only inside a hidden element <div.price__regular>, not shown on this screen size)",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9299.00, got not on page (\u20b9299.00 is only inside a hidden element <div.price__regular>, not shown on this screen size)",
+          "screenshot": "product.pdp.detan-wonder-exfoliating-detan-body-wash.a2.png",
+          "trace": "product.pdp.detan-wonder-exfoliating-detan-body-wash.a2_trace.zip",
+          "secs": 6.93,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/products/detan-wonder-exfoliating-detan-body-wash?variant=42754915532846"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/t/761/assets/media-gallery.js?v=100483473661208274711763611196 was preloaded using link preload but not used within a few seconds from the window's load event. Please ma",
+              "url": "https://bellavitaorganic.com/products/detan-wonder-exfoliating-detan-body-wash?variant=42754915532846"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/62f0e3d4-775a-4571-a00c-abea28ab091c/uppromote-affiliate-70/assets/customer-referral.css was preloaded using link preload but not used within a few seconds from the window'",
+              "url": "https://bellavitaorganic.com/products/detan-wonder-exfoliating-detan-body-wash?variant=42754915532846"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/products/detan-wonder-exfoliating-detan-body-wash?variant=42754915532846",
+              "ttfb": 0.17,
+              "dcl": 1.92,
+              "load": 1.92,
+              "lcp": 1.48
+            }
+          ]
+        }
+      ],
+      "incident_signature": "bellavitaorganic.com|product.pdp.detan-wonder-exfoliating-detan-body-wash|shows_title_price_image",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The product page does not show the selected variant price in any visible text for shoppers on this screen size (the price is present only in a hidden element), so customers cannot see the price before adding to cart.",
+        "evidence": "The robot's HTML check found the expected price only inside a hidden element <div.price__regular> (not visible at this screen size) and the visible page text and screenshot show no price before adding to cart: the page displays the product title, description, and an ADD TO CART button but no visible"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.detan",
+      "suite": "search",
+      "title": "Search for 'detan' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.76s",
+              "error": null,
+              "secs": 4.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4875 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "warn",
+              "detail": null,
+              "error": "results relevant to 'detan': expected \u2265 1 result mentions the term, got 0 of 23",
+              "secs": 6.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Search",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3057 chars, 7 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "23",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'detan'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "0 of 23",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open_homepage_again",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.32s",
+              "error": null,
+              "secs": 4.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4875 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products_other_word",
+              "status": "fail",
+              "detail": null,
+              "error": "results relevant to 'magicpin': expected \u2265 1 result mentions the term, got 0 of 23",
+              "secs": 7.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Search",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3057 chars, 7 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "23",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'magicpin'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "0 of 23",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "returns_relevant_products_other_word",
+          "error": "results relevant to 'magicpin': expected \u2265 1 result mentions the term, got 0 of 23",
+          "screenshot": "search.detan.a1.png",
+          "trace": "search.detan.a1_trace.zip",
+          "secs": 26.77,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/62f0e3d4-775a-4571-a00c-abea28ab091c/uppromote-affiliate-70/assets/customer-referral.css was preloaded using link preload but not used within a few seconds from the window'",
+              "url": "https://bellavitaorganic.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/860-1150_16.webp?v=1768303523&width=800 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an",
+              "url": "https://bellavitaorganic.com/"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.47,
+              "load": 2.47,
+              "lcp": 1.34
+            },
+            {
+              "url": "/pages/custom-search?q=detan&type=product",
+              "ttfb": 0.01,
+              "dcl": 1.01,
+              "load": 1.02,
+              "lcp": 0.73
+            },
+            {
+              "url": "/",
+              "ttfb": 0.01,
+              "dcl": 1.91,
+              "load": 1.93,
+              "lcp": 1.23
+            },
+            {
+              "url": "/pages/custom-search?q=magicpin&type=product",
+              "ttfb": 0.01,
+              "dcl": 1.0,
+              "load": 1.02,
+              "lcp": 0.68
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.37s",
+              "error": null,
+              "secs": 4.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4875 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "warn",
+              "detail": null,
+              "error": "results relevant to 'detan': expected \u2265 1 result mentions the term, got 0 of 23",
+              "secs": 7.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Search",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3057 chars, 7 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "23",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'detan'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "0 of 23",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open_homepage_again",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.04s",
+              "error": null,
+              "secs": 3.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4875 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products_other_word",
+              "status": "fail",
+              "detail": null,
+              "error": "results relevant to 'magicpin': expected \u2265 1 result mentions the term, got 0 of 23",
+              "secs": 7.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Search",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3057 chars, 7 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "23",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'magicpin'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "0 of 23",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "returns_relevant_products_other_word",
+          "error": "results relevant to 'magicpin': expected \u2265 1 result mentions the term, got 0 of 23",
+          "screenshot": "search.detan.a2.png",
+          "trace": "search.detan.a2_trace.zip",
+          "secs": 25.04,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/62f0e3d4-775a-4571-a00c-abea28ab091c/uppromote-affiliate-70/assets/customer-referral.css was preloaded using link preload but not used within a few seconds from the window'",
+              "url": "https://bellavitaorganic.com/pages/custom-search?q=detan&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://bellavitaorganic.com/cdn/shop/files/860-1150_16.webp?v=1768303523&width=800 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an",
+              "url": "https://bellavitaorganic.com/"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.26,
+              "load": 2.26,
+              "lcp": 1.74
+            },
+            {
+              "url": "/pages/custom-search?q=detan&type=product",
+              "ttfb": 0.0,
+              "dcl": 1.06,
+              "load": 1.07,
+              "lcp": 0.52
+            },
+            {
+              "url": "/",
+              "ttfb": 0.01,
+              "dcl": 1.68,
+              "load": 1.7,
+              "lcp": 1.53
+            },
+            {
+              "url": "/pages/custom-search?q=magicpin&type=product",
+              "ttfb": 0.01,
+              "dcl": 1.07,
+              "load": 1.1,
+              "lcp": 0.69
+            }
+          ]
+        }
+      ],
+      "incident_signature": "bellavitaorganic.com|search.detan|returns_relevant_products_other_word",
+      "triage": {
+        "verdict": "unsure",
+        "category": "other",
+        "reason": "The page returned results and a 200 response but there is no positive evidence (error message, broken buy flow, or overlay) proving a real storefront failure; the search simply returned products that don't contain the term, so it's unclear whether the store search is misconfigured or the test term i",
+        "evidence": "Visible page text (excerpt) includes site navigation, search results headings and keywords like \"Perfume\", \"Perfume gift sets\", \"Perfumes for men under 500\" but does NOT contain the term 'magicpin' anywhere in the scraped content; robot found 23 product results but 0 mention the search term ('magicp"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.82s",
+              "error": null,
+              "secs": 4.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4875 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "64: 'Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Prod'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Discover Bellavita Organic's premium perfumes, skincare and beauty pro",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "141: \"Discover Bellavita Organic's premium perfumes, skincare and \"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://bellavitaorganic.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://bellavitaorganic.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://bellavitaorganic.com/cdn/shop/files/Logo-App-Icon.jpg?v=1695652826",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.69,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.33,
+              "load": 2.36,
+              "lcp": 1.85
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.35s",
+              "error": null,
+              "secs": 3.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Detan Wonder Exfoliating Detan Body Wash",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4599 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Detan Wonder Exfoliating Detan Body Wash",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "40: 'Detan Wonder Exfoliating Detan Body Wash'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Daily sun exposure, pollution, sweat, and dead skin buildup '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Daily sun exposure, pollution, sweat, and dead skin buildup '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://bellavitaorganic.com/products/detan-wonder-exfoliating-detan-body-wash",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://bellavitaorganic.com/products/detan-wonder-exfoliating-detan-body-wash",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Detan Wonder Exfoliating Detan Body Wash",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://bellavitaorganic.com/cdn/shop/files/1_2035dcab-121e-42a2-aa1b-431c15f5115a.jpg?v=1790746426",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.68,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "window is not defined",
+              "url": "https://bellavitaorganic.com/products/detan-wonder-exfoliating-detan-body-wash"
+            }
+          ],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "/products/detan-wonder-exfoliating-detan-body-wash",
+              "ttfb": 0.21,
+              "dcl": 2.06,
+              "load": 2.07,
+              "lcp": 1.45
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 25.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 25.56,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://bellavitaorganic.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bellavitaorganic.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&ae=g&auid=1726691165.1791530835&dt=404%20Not%20Found&en=page_view&dl=https%3A%2F%2Fbellavitaorg",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1726691165.1791530835&gtm=45He6a72v866394104za200zd866394104xeaxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791530833452&cv=11&tid=G-98WWSPJLZD&fst=1791530833452&fmt=8&en=session_start&gtm=45je6a72v879682",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-98WWSPJLZD&gtm=45je6a72v879682491za208zd879682491xf1&_p=1791530829901&_gaz=1&gcs=G111&gcd=13t3t3t3t5l",
+            "POST https://www.google.com/rmkt/collect/734414223/?random=1791530836852&cv=11&fst=1791530836852&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1726691165.1791530835&dt=404%20Not%20Found&tid=AW-734414223&en=page_view&dl=https%3A%2F%2Fb",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-7D7N15CNB6&gtm=45je6a72v9169891759za20ozb866394104zd866394104xf1&_p=1791530829901&_gaz=1&gcs=G111&gcd",
+            "POST https://dev.visualwebsiteoptimizer.com/as01/events/t?en=shopify.pageViewed&a=964814",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-QKD3N17H25&gtm=45Pe6a72v9200752590za200zb879682491zd879682491xf1&_p=1791530829901&gcs",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "GET https://www.google.com/pagead/1p-conversion/734414223/?random=1727340700&cv=11&fst=1791530836920&fmt=8&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45b",
+            "POST https://bellavitaorganic.com/api/collect",
+            "HEAD https://bellavitaorganic.com/a/s/shopifyEvents.js",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1794907044.1791530842&gtm=45He6a72v866394104za200zd866394104xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&ae=g&auid=1794907044.1791530842&dt=404%20Not%20Found&en=page_view&dl=https%3A%2F%2Fbellavitaorga",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1TMZ9RDGGZ&gtm=45je6a72v869236732za208zd869236732xf1&_p=1791530839761&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7246L42JVJ&gtm=45je6a72v9208335372za20ozb9208334886zd9208334886xf1&_p=1791530839725&gcs=G111&gcd=",
+            "POST https://www.google.com/rmkt/collect/734414223/?random=1791530845537&cv=11&fst=1791530845537&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/734414223/?random=1791530845599&cv=11&fst=1791530845599&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v887784990z886",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=0&auid=1794907044.1791530842&dt=404%20Not%20Found&tid=AW-734414223&en=page_view&dl=https%3A%2F%2Fb",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=0&ae=g&auid=1794907044.1791530842&dt=404%20Not%20Found&tid=AW-734414223&dl=https%3A%2F%2Fbellavita",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-7D7N15CNB6&gtm=45je6a72v9169891759za20ozb866394104zd866394104xf1&_p=1791530839795&gcs=G111&gcd=13n3n3",
+            "GET https://www.google.com/pagead/1p-conversion/734414223/?random=425941560&cv=11&fst=1791530845586&fmt=8&bg=ffffff&guid=ON&async=1&en=conversion&gtm=45be",
+            "POST https://bellavitaorganic.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.17,
+              "dcl": 13.68,
+              "load": 23.5,
+              "lcp": 2.02
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 3,
+    "input_tokens": 8473,
+    "output_tokens": 462,
+    "est_usd": 0.003042,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Bellavita Organic \u2013 Premium Perfumes, Skincare & Beauty Products",
+    "theme": null,
+    "checkout_app": "GoKwik + Zecpe",
+    "access": "open",
+    "nav": 25,
+    "collections": 49,
+    "products": 20,
+    "in_stock": 2,
+    "search_path": "/pages/custom-search",
+    "robots_loaded": true
+  },
+  "notes": [],
+  "perf": {
+    "pages": 11,
+    "median_load_secs": 2.07,
+    "slowest": {
+      "url": "/products/bugradar-check-does-not-exist",
+      "load_secs": 23.5
+    },
+    "console_errors": 1,
+    "console_warnings": 12,
+    "failed_requests": 25
+  },
+  "counts": {
+    "pass": 6,
+    "flaky": 0,
+    "confirmed_fail": 3,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
