@@ -1,0 +1,21 @@
+Web Bot Auth check (crawltest.com): 401 format OK, key not registered yet
+/home/runner/work/bugradar-radar/bugradar-radar/radar/checks/library.py:823: SyntaxWarning: invalid escape sequence '\s'
+  m = ctx.sess.evaluate("""() => ({country: (window.Shopify || {}).country || '',
+RADAR BENCH 5 stores × desktop + mobile, 3 at a time (quick)  User-Agent: Chrome + BugRadar
+
+[1/5] wishcare.co                      BLOCKED     D:blocked                      theme=None               checkout=                 fails=0 warns=0 33s
+[2/5] rustorange.com                   HEALTHY     D:healthy M:healthy            theme=Prestige (store co checkout=Shopflo          fails=0 warns=8 377s
+[3/5] mydesignation.com                HEALTHY     D:healthy M:healthy            theme=Be Yours (store co checkout=GoKwik           fails=1 warns=3 454s
+[4/5] crossbeats.com                   DEGRADED    D:healthy M:degraded           theme=Futurer (store cop checkout=Zecpe            fails=1 warns=2 452s
+[5/5] freedomtree.in                   DEGRADED    D:degraded M:healthy           theme=Impulse (store cop checkout=GoKwik + Shiproc fails=0 warns=10 273s
+
+store                          verdict     desktop   mobile    theme            checkout         journey smoke   catalog product cart    search  health 
+--------------------------------------------------------------------------------------------------------------------------------------------------------
+mydesignation.com              healthy     healthy   healthy   Be Yours (store  GoKwik           ok      ok      ok      ok      .       ok      FAIL   
+rustorange.com                 healthy     healthy   healthy   Prestige (store  Shopflo          ok      ok      ok      ok      .       ok      ok     
+wishcare.co                    blocked     blocked   -         -                -                .       .       .       .       .       .       .      
+crossbeats.com                 degraded    healthy   degraded  Futurer (store c Zecpe            ok      ok      ok      FAIL    .       ok      ok     
+freedomtree.in                 degraded    degraded  healthy   Impulse (store c GoKwik + Shiproc FLAKY   ok      ok      ok      .       ok      ok     
+
+Totals {'stores': 5, 'healthy': 2, 'blocked': 1, 'degraded': 2, 'tested': 4}
+Bench page  data/bench/20261009T232418Z/bench.html
