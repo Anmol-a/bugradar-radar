@@ -56,6 +56,7 @@ border-radius:10px;padding:7px 12px;font-size:13px}
 .dot{width:10px;height:10px;border-radius:50%;background:currentColor;flex:none;box-shadow:0 0 10px currentColor}
 .ct{flex:1 1 160px;min-width:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .tag{font:600 10.5px var(--mono);letter-spacing:.06em;padding:2px 7px;border-radius:6px;border:1px solid var(--line);color:var(--muted)}
+.tag.seo{color:var(--muted, #888)}
 .tag.critical{color:var(--red);border-color:color-mix(in srgb,var(--red) 40%,transparent)}
 .tag.warn{color:var(--amber)}.tag.heal{color:var(--accent)}
 .meta{color:var(--muted);font:12px var(--mono)}

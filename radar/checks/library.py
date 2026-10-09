@@ -196,7 +196,9 @@ def _product_js(ctx: Ctx, url: str) -> dict:
 
 
 def _selected_variant(ctx: Ctx, product: dict) -> dict:
-    """Variant currently selected on the page: the main form's id input, else ?variant=, else first available."""
+    """Variant currently selected on the page: the main form's id input, else the option the page visibly marks
+    as chosen, else ?variant=, else first available. The page's own mark beats ?variant= because Radar opens
+    product links WITH ?variant=<first available> itself, and headless pages ignore it (foxtale.in, 9 Oct)."""
     vids = [int(v["id"]) for v in product["variants"]]
     val = ctx.sess.evaluate("""(ids) => { const s = new Set(ids.map(String));
         for (const f of document.querySelectorAll('form[action*="/cart/add"]')) {
@@ -204,8 +206,51 @@ def _selected_variant(ctx: Ctx, product: dict) -> dict:
         return null; }""", vids)
     m = re.search(r"[?&]variant=(\d+)", ctx.sess.page.url)
     vid = int(val) if val else (int(m.group(1)) if m else None)
+    if not val:
+        marked = _page_marked_variant(ctx, product)
+        if marked:
+            return marked
     v = next((x for x in product["variants"] if int(x["id"]) == vid), None)
-    return v or next((x for x in product["variants"] if x.get("available")), product["variants"][0])
+    return v or next(
+        (x for x in product["variants"] if x.get("available")), product["variants"][0])
+
+
+SELECTED_OPTIONS_JS = r"""() => {
+  // option labels the page itself marks as chosen: checked radios (and their labels), selected <option>s,
+  // aria-checked / aria-pressed / aria-selected, or an active/selected/current class on a small control
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const t = e => (e.innerText || e.value || e.getAttribute('aria-label') || e.getAttribute('data-value') || '').trim();
+  const out = new Set();
+  document.querySelectorAll('input[type=radio]:checked').forEach(i => { out.add(i.value);
+    const l = i.id && document.querySelector('label[for="' + CSS.escape(i.id) + '"]'); if (l) out.add(t(l)); });
+  document.querySelectorAll('select option:checked').forEach(o => out.add(t(o)));
+  document.querySelectorAll('[aria-checked="true"], [aria-pressed="true"], [aria-selected="true"], ' +
+    'button[class*="active" i], button[class*="selected" i], [role="radio"][class*="active" i], ' +
+    'li[class*="active" i], li[class*="selected" i], [class*="swatch" i][class*="active" i], [class*="swatch" i][class*="selected" i]')
+    .forEach(e => { if (vis(e) && t(e).length <= 40 && !e.closest('header, nav, footer, [class*="cart" i]')) out.add(t(e)); });
+  return [...out].filter(Boolean);
+}"""
+
+
+def _page_marked_variant(ctx: Ctx, product: dict) -> dict | None:
+    """No cart form and no ?variant= (headless / app-built pages: foxtale.in pre-selects its 200g 'Best Value'
+    size): the variant whose option values ALL match controls the page marks as chosen, and whose price is shown.
+    Only an unambiguous match counts; otherwise None (caller falls back to the first available variant)."""
+    try:
+        chosen = {norm_text(x) for x in (ctx.sess.evaluate(SELECTED_OPTIONS_JS) or [])}
+        shown = set(prices_in_text(ctx.sess.evaluate("() => document.body.innerText") or ""))
+    except Exception:  # noqa: BLE001
+        return None
+    if len(product.get("variants") or []) < 2:
+        return None
+
+    def opts(x):
+        vals = [x.get(k) for k in ("option1", "option2", "option3") if x.get(k)]
+        return vals or [s for s in str(x.get("title") or "").split(" / ") if s and s != "Default Title"]
+    price = lambda x: round(int(x["price"]) / 100, 2) if isinstance(x["price"], int) else round(float(x["price"]), 2)
+    hits = [x for x in product["variants"] if opts(x) and all(norm_text(o) in chosen for o in opts(x))]
+    hits = [x for x in hits if price(x) in shown] or hits
+    return hits[0] if len(hits) == 1 else None
 
 
 MAIN_BUY_JS = r"""([ids, quick]) => {
@@ -760,7 +805,9 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         ctx.expect("structured data: price", "> 0", d["price"], price_ok(d["price"]))
         ctx.expect("structured data: image", "present", "present" if d["image"] else "(missing)", bool(d["image"]))
         return f"via {d['source']}"
-    ctx.steps.run("structured_data_valid", structured, soft=soft_data)
+    # SEO note, never a failure (9 Oct): wellbeingnutrition.com shows the right price to shoppers while its JSON-LD
+    # price is null. That costs Google Shopping / rich results, not a sale, so it is a warning on the product test.
+    ctx.steps.run("structured_data_valid", structured, soft=True)
 
     if expect_buyable:
         def variant_ready():

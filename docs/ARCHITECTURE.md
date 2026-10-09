@@ -561,6 +561,20 @@ bench is the next honest data point.** Per the anti-loop rules: read it, fix onl
 Cost: a bench is now about twice as long and sends about twice the requests to each testable store (mobile skipped where desktop
 was blocked).
 
+## 4s. Full-depth Mac bench (36 stores, 9 Oct, v0.18) and v0.19 fixes
+
+Bench `20261008T183333Z`: 33 tested, 26 healthy / 7 degraded / 0 down. Root causes (from run.json + screenshots):
+
+| Store | Cause (proven) | Owner | v0.19 |
+|---|---|---|---|
+| suta.in (mobile), soulflower.in (mobile, 7 Oct) | popup finder picked a CLOSED side drawer (wishlist / cart, slid off-screen, `aria-modal`) as the popup; its close click timed out; the same candidate was retried every round; the real promo popup over the grid stayed open | Radar (2 stores) | only layers in the viewport AND on top (`elementFromPoint` at 7 points, through shadow roots) are popups; `[inert]` skipped; a popup still open after its close attempt is marked `data-radar-tried` and skipped. Mock `drawer_decoy_popup` (fails on v0.18, passes desktop + mobile) |
+| foxtale.in (both devices, 3 runs) | **Not the fallback.** The fallback product's page (no cart form, headless) pre-selects the 200g size; Radar took the first size (75g, ₹349) because it opens product links with its OWN `?variant=<first available>` and the page ignores it. 9 Oct handoff said "first product's price": wrong, corrected from the trace | Radar | variant order: cart-form id → option the page marks as chosen (checked radio, aria-checked/pressed/selected, active/selected class; must match ALL option values; price shown breaks ties; only an unambiguous match) → `?variant=` → first available. Mock `preselected_variant` |
+| wellbeingnutrition.com | JSON-LD `offers.price` null, visible price right | Store (SEO) | structured-data problems are a warning (SEO note) on the product test, never a failure. llm-check case `wellbeing_jsonld_price_null` (22 cases) |
+| soulflower, foxtale, palmonas | soft 404 | Store (SEO) | health suite severity `seo`: shown in reports, ignored by the run verdict, no incident (so never an alert), no LLM triage |
+| supplysix (desktop), plumgoodness | price only in a hidden sticky bar / hidden catalog product | Store | — |
+
+**Decision (9 Oct, Anmol's TO-DO):** SEO findings never make a store degraded or down and never alert. `broken_price` mock now passes with an SEO warning (was a confirmed failure).
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -818,6 +832,8 @@ state. 4. Report section "Store profile". Exit: bench shows a profile for every 
 Each new check template gets a mock mode that fails on the old code, as for every rule so far.
 
 ## Change log
+
+- **v0.19 (9 Oct 2026):** popup finder ignores closed/off-screen drawers and skips candidates it could not close; variant read from the page's own selected option before `?variant=`; SEO-note severity (soft 404, meta tags, JSON-LD) never a verdict or incident; llm-check 22 cases. Mocks `drawer_decoy_popup`, `preselected_variant`.
 - 7 Oct 2026, v0.18: product layer step 1 (4r). Desktop + mobile is the default for `scan` and `bench`; mobile skipped when desktop could
   not test the store; incidents and remembered selectors per device; bench row per store with per-device verdicts and `device_only`;
   console errors, failed requests and page-load times captured and shown in reports (evidence only). Mock `price_desktop_hidden`

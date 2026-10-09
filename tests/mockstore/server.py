@@ -93,6 +93,15 @@ Modes (to prove Radar catches and heals what it should):
   div_buy_control  product pages: NO /cart/add form; the buy control is <div class="pdp-addtobag-btn"
                    data-product-handle=...> "ADD TO BAG", after 3 recommendation cards with their own "Add to Bag"
                    buttons for other products (nicobar.com, held-out 7 Oct) -> product + cart PASS, right product added
+  preselected_variant  the vase's page has NO cart form (headless-style div buy control) and pre-selects its SECOND
+                   size ("Large", marked active + aria-checked); only that size's price is shown (foxtale.in, 9 Oct: the
+                   200g Best Value size pre-selected, Radar read the first size's ₹349 and failed "price not on page")
+                   -> product test reads the size the page shows and PASSES (v0.18 FAILED: expected the first size's price)
+  drawer_decoy_popup  every homepage / collection page carries a CLOSED wishlist drawer (role=dialog, aria-modal, slid
+                   off-screen with translateX(100%), close button unclickable) BEFORE a real promo popup in the DOM: a
+                   bottom sheet over the product grid, 300 ms after load (suta.in wishlist drawer + soulflower.in cart drawer,
+                   7-9 Oct: v0.18 retried the hidden drawer ~10 times and never closed the real popup) -> real popup
+                   closed, journey PASSES on desktop and mobile
   noisy_console    every page logs a console error + warning and fires a request nobody answers (third-party widget)
                    -> everything PASSES; the noise only shows up as report evidence (v0.18)
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
@@ -316,6 +325,21 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
     + '<h2>NEW LAUNCH: BOMB SIZE SPRAY</h2><button type="button" class="try" style="padding:12px">TRY IT NOW</button></div>';
   d.querySelector('.try').onclick = () => { window.TRIED = true; };
   d.querySelector('.absolute').onclick = () => { document.cookie = 'lio=1;path=/'; d.remove(); };
+  document.body.appendChild(d); }, 300);
+</script></body>""")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "drawer_decoy_popup" and \
+                (self.path.split("?")[0] == "/" or "/collections/" in self.path):
+            body = body.replace("<body>", """<body><div role="dialog" aria-modal="true" class="wishlist-panel" style="position:fixed;top:0;right:0;
+width:380px;height:100%;background:#fff;z-index:60;transform:translateX(100%)"><h3>My Wishlist</h3>
+<p>Your lists are empty. Start adding products you love.</p><button type="button" class="panel-close" aria-label="Close">×</button></div>""", 1)
+            body = body.replace("</body>", """<script>
+if (!document.cookie.includes('sheet=1')) setTimeout(() => {
+  const d = document.createElement('div'); d.setAttribute('role', 'dialog'); d.className = 'promo-sheet';
+  d.style.cssText = 'position:fixed;left:0;right:0;bottom:0;top:8vh;z-index:70;background:#fff;box-shadow:0 -4px 20px rgba(0,0,0,.3)';
+  d.innerHTML = '<h2>NEW LAUNCH: ROSE BODY MIST</h2><button type="button" class="try" style="padding:12px">SHOP NOW</button>'
+    + '<button type="button" class="sheet-close" aria-label="Close" style="position:absolute;top:8px;right:8px">×</button>';
+  d.querySelector('.try').onclick = () => { location.href = '/pages/tried-it'; };
+  d.querySelector('.sheet-close').onclick = () => { document.cookie = 'sheet=1;path=/'; d.remove(); };
   document.body.appendChild(d); }, 300);
 </script></body>""")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "shadow_popup" and "/collections/" in self.path:
@@ -572,6 +596,15 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body = recs + body.replace(buy, f'<div class="pdp-varient-form-main"><div class="pdp-addtobag-btn active" '
                                             f'data-product-handle="{p["handle"]}" onclick="addToCart({vid})" style="cursor:pointer;'
                                             f'padding:10px;background:#222;color:#fff;width:200px"><span class="atc-text">ADD TO BAG</span></div></div>')
+        if self.mode == "preselected_variant" and len(p["variants"]) > 1:
+            pre = p["variants"][1]
+            sizes = '<div class="variant-picker" role="radiogroup">' + "".join(
+                f'<button type="button" role="radio" class="size-btn{" active" if v is pre else ""}" '
+                f'aria-checked="{"true" if v is pre else "false"}">{v["option1"]}</button>' for v in p["variants"]) + '</div>'
+            body = re.sub(r'<div class="price">₹[^<]*</div>', f'<div class="price">₹{float(pre["price"]):,.2f}</div>' + sizes, body, count=1)
+            body = body.replace(buy, f'<div class="pdp-addtobag-btn" data-product-handle="{p["handle"]}" '
+                                     f'onclick="addToCart({pre["id"]})" style="cursor:pointer;padding:10px;background:#222;color:#fff;'
+                                     f'width:200px">ADD TO BAG</div>')
         if self.mode == "drawer_form_first":
             body = (f'<div class="drawer__scrollable" style="display:none"><form id="product_form_9{rec["id"]}" '
                     f'class="shopify-product-form" action="/cart/add" method="post"><input type="hidden" name="id" value="{rv}">'

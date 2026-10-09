@@ -67,7 +67,7 @@ class TestCase:
     title: str
     check: str                 # name in the checks registry
     params: dict[str, Any] = field(default_factory=dict)
-    severity: str = "major"    # critical | major | minor
+    severity: str = "major"    # critical | major | minor | seo (SEO note: shown, never a verdict, never an incident)
     description: str = ""
 
 

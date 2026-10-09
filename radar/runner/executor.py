@@ -99,9 +99,9 @@ def _run_case(browser: Browser, case: TestCase, run_dir, robots, healer: Healer,
         cr.verdict = "no_network"
         cr.attempts[-1].note = "Radar was offline when this failure would have been confirmed"
         return cr
-    if cr.verdict == "confirmed_fail" and last_fail and healer.llm.enabled:
+    if cr.verdict == "confirmed_fail" and last_fail and healer.llm.enabled and case.severity != "seo":
         _triage_and_recheck(browser, case, cr, last_fail, run_dir, robots, healer, progress)
-    if cr.verdict == "confirmed_fail":
+    if cr.verdict == "confirmed_fail" and case.severity != "seo":      # SEO notes never open incidents (no alerts)
         cr.incident_signature = signature(healer.site_id, case.id, cr.attempts[-1].failed_step, device)
     return cr
 
@@ -157,6 +157,9 @@ def perf_summary(cases: list[CaseResult]) -> dict:
 
 
 def run_verdict(cases: list[CaseResult]) -> str:
+    # SEO notes (soft 404, meta tags; severity "seo", 9 Oct) are shown in reports but never make a store
+    # degraded or down: a shopper can still find and buy everything.
+    cases = [c for c in cases if c.severity != "seo"]
     if any(c.verdict == "confirmed_fail" and c.severity == "critical" for c in cases):
         return "down"
     if any(c.verdict in ("confirmed_fail", "flaky") for c in cases):
