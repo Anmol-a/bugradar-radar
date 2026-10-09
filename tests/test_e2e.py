@@ -1082,3 +1082,23 @@ def test_unsigned_radar_is_blocked_rate_limited_by_that_edge(tmp_path, monkeypat
     monkeypatch.delenv("RADAR_SIGNING_KEY", raising=False)
     run, _ = _scan("signed_only", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict in ("blocked", "unreachable"), (run.verdict, run.notes)
+
+
+def test_pincode_gate_is_a_warning_and_the_cart_is_blocked_not_failed(tmp_path):
+    """bombaysweetshop.com (new30d held-out run, 10 Oct, both devices): the right variant WAS selected, but the buy button
+    stays disabled and says 'PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY'. Radar never types a pincode (it submits
+    no form but add-to-cart), so: product test PASSES with a pincode WARNING, cart + journey cart steps are BLOCKED
+    with the reason, nothing is a failure."""
+    run, _ = _scan("pincode_gate", tmp_path)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict in ("confirmed_fail", "flaky")]
+    assert not bad, bad
+    pdp = [c for c in run.cases if c.case_id.startswith("product.pdp.")]
+    assert pdp and all(c.verdict == "pass" for c in pdp), [(c.case_id, c.verdict) for c in pdp]
+    steps = [s for c in pdp for s in c.attempts[-1].steps]
+    k = [ch for s in steps if s.name == "variant_ready" for ch in s.checks if ch["what"] == "variant selected like a shopper"]
+    assert k and all(ch["ok"] and "pincode" in ch["actual"] for ch in k), k
+    assert any(s.name == "buy_button_ready" and s.status == "warn" and "pincode" in (s.error or "") for s in steps), \
+        [(s.name, s.status, s.error) for s in steps]
+    for prefix in ("cart.", "journey."):
+        c = _case(run, prefix)
+        assert c.verdict == "blocked" and "pincode" in c.attempts[-1].error, (prefix, c.verdict, c.attempts[-1].error)

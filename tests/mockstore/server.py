@@ -74,6 +74,11 @@ Modes (to prove Radar catches and heals what it should):
   search_app_never  same title, but the search app never renders anything (ptron.in mobile, kushals.com mobile,
                    new30c 10 Oct: blank results area after 10 s); Shopify's own /search/suggest.json finds the word
                    -> search WARNS "search app did not render results", never FAILS
+  pincode_gate     every in-stock product's buy button is disabled and reads 'PLEASE ENTER YOUR PINCODE TO CHECK
+                   AVAILABILITY' with a pincode box + CHECK button below (bombaysweetshop.com, new30d 10 Oct: the right
+                   variant WAS selected, Radar failed 'variant selected like a shopper') -> Radar never types a pincode
+                   (no form but add-to-cart is ever submitted): product test PASSES with a 'pincode gate' WARNING, the cart
+                   test is BLOCKED (cannot add without a pincode), never a failure
   search_misses    searching the first product's word returns only unrelated products (the word came from a
                    product the store hides: foxtale.in 'purify', bench 3) -> a second word is tried; the miss is a
                    WARNING, the search test PASSES on the second word
@@ -803,6 +808,13 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                           # on a phone-sized screen the theme shows the bar (7 Oct: mobile is tested by default)
                           '<script>if (matchMedia("(max-width: 1007px)").matches) '
                           'document.querySelector("product-sticky-form").hidden = false;</script>', body, count=1)
+        if self.mode == "pincode_gate" and available:
+            # bombaysweetshop.com (new30d held-out, 10 Oct): variant selected, but the store's own buy button stays
+            # disabled and says 'PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY' until a delivery pincode is checked
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
+            body += ('<div class="pincode-check"><input type="text" placeholder="ENTER YOUR PINCODE" maxlength="6">'
+                     '<button type="button" class="pincode-btn">CHECK</button></div>')
         if self.mode == "free_gift":
             script += "<script>window.GIFT_MODE = true;</script>"
         if p.get("redirect"):

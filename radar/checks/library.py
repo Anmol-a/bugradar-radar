@@ -25,6 +25,12 @@ from radar.core.overlays import dismiss_overlays, AgeGate
 from radar.healing.locator import Healer, QUICK_SEL, LocatorNotFound, OTHER_CARD_FN
 
 
+class PincodeGate(Exception):
+    """The store's buy button stays disabled until the shopper checks a delivery pincode (bombaysweetshop.com,
+    new30d 10 Oct). Radar never types one (it submits no form but add-to-cart), so the cart cannot be tested:
+    BLOCKED with the reason, never a store failure."""
+
+
 class StepFailed(Exception):
     def __init__(self, step: str, message: str, blocked: bool = False):
         self.step, self.blocked = step, blocked
@@ -67,7 +73,7 @@ class Steps:
             self.items.append(StepResult(name, "pass", out, None, round(time.time() - t0, 2), healed, self._checks,
                                          self._shot(name)))
             return out if out is not None else True
-        except (RobotsBlocked, AgeGate, RateLimited) as e:
+        except (RobotsBlocked, AgeGate, RateLimited, PincodeGate) as e:
             self.items.append(StepResult(name, "skip", None, str(e), round(time.time() - t0, 2), None, self._checks))
             raise StepFailed(name, str(e), blocked=True) from e
         except Exception as e:  # noqa: BLE001
@@ -354,6 +360,23 @@ FORM_STATE_JS = r"""([ids, quick]) => { const s = new Set(ids.map(String)); cons
   const r = best(own) || best(named);
   return r ? {variant: r.variant, disabled: r.disabled} : null; }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
 
+PINCODE_GATE_JS = r"""([ids, quick]) => { const s = new Set(ids.map(String));
+  // The product's own (disabled) buy button, or a visible pincode box on the page, asks for a delivery pincode first
+  // (bombaysweetshop.com 'PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY' + 'ENTER YOUR PINCODE' box, new30d 10 Oct).
+  const rx = /pin\s*-?\s*code|zip\s*code|postal\s*code|delivery\s+(location|availability)|check\s+(availability|delivery|serviceab)/i;
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const txt = e => ((e.innerText || e.value || '') + ' ' + (e.getAttribute('aria-label') || '')).replace(/\s+/g, ' ').trim();
+  for (const f of document.querySelectorAll('form[action*="/cart/add"]')) {
+    const i = f.querySelector('[name="id"]'); if (!i || !s.has(String(i.value || ''))) continue;
+    const fid = f.getAttribute('id') || '';
+    for (const b of [...f.querySelectorAll('button, input[type=submit]'), ...(fid ? document.querySelectorAll('[form="' + CSS.escape(fid) + '"]') : [])])
+      if ((b.disabled || b.getAttribute('aria-disabled') === 'true') && rx.test(txt(b))) return 'buy button says ' + JSON.stringify(txt(b).slice(0, 80));
+  }
+  const box = [...document.querySelectorAll('input:not([type=hidden]):not([type=radio]):not([type=checkbox])')]
+    .find(e => vis(e) && !e.closest(quick) && !e.closest('header, footer, [class*="newsletter" i]')
+               && rx.test([e.placeholder, e.name, e.id, e.getAttribute('aria-label'), e.className].join(' ')));
+  return box ? 'page asks for a delivery pincode (' + JSON.stringify((box.placeholder || box.name || box.id || '').slice(0, 40)) + ' box)' : null; }"""
+
 CHOOSE_JS = r"""([values, quick]) => {
   const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const ok = e => !e.closest(quick);
@@ -400,14 +423,30 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
     cur = next((v for v in product["variants"] if st["variant"] and int(v["id"]) == int(st["variant"])), None)
     if cur and cur.get("available") and not st["disabled"]:
         return cur
+    if cur and cur.get("available"):        # right variant, button disabled: a delivery-pincode gate?
+        gate = ctx.sess.evaluate(PINCODE_GATE_JS, [ids, QUICK_SEL])
+        if gate:
+            ctx.expect("variant selected like a shopper", f"{cur['id']} ({cur.get('title')})",
+                       f"{cur['id']} (already selected); buy button disabled until the shopper checks a delivery pincode",
+                       True)
+            return dict(cur, _pincode_gate=gate)
     values = [target.get(k) for k in ("option1", "option2", "option3") if target.get(k)]
     picked = ctx.sess.evaluate(CHOOSE_JS, [values, QUICK_SEL]) if values else []
     ctx.sess.page.wait_for_timeout(700)
     st = ctx.sess.evaluate(FORM_STATE_JS, [ids, QUICK_SEL])
     got = st["variant"] if st else "(no product form)"
+    right = bool(st) and str(st["variant"]) == str(target["id"])
+    if right and st["disabled"]:
+        gate = ctx.sess.evaluate(PINCODE_GATE_JS, [ids, QUICK_SEL])
+        if gate:
+            ctx.expect("variant selected like a shopper", f"{target['id']} ({' / '.join(values) or target.get('title')})",
+                       f"{got} after choosing {', '.join(picked) or 'nothing'}; buy button disabled until the shopper "
+                       f"checks a delivery pincode", True)
+            return dict(target, _pincode_gate=gate)
     ctx.expect("variant selected like a shopper", f"{target['id']} ({' / '.join(values) or target.get('title')})",
-               f"{got} after choosing {', '.join(picked) or 'nothing (no matching picker)'}",
-               bool(st) and str(st["variant"]) == str(target["id"]) and not st["disabled"])
+               f"{got} after choosing {', '.join(picked) or 'nothing (no matching picker)'}"
+               + ("; but the buy button is still disabled" if right and st["disabled"] else ""),
+               right and not st["disabled"])
     return target
 
 
@@ -475,6 +514,11 @@ def _capture_add_requests(ctx: Ctx):
 def _add_and_verify(ctx: Ctx, product: dict, variant: dict):
     """Click the product's own buy button and prove, from the store's /cart.js, that exactly this
     product was added once at its own price. Each claim is a separate recorded assertion."""
+    if variant.get("_pincode_gate"):
+        def gated():
+            raise PincodeGate("cart not tested: the buy button stays disabled until the shopper checks a delivery "
+                              f"pincode ({variant['_pincode_gate']}); Radar never enters one")
+        ctx.steps.run("click_add_to_cart", gated)
     page = ctx.sess.page
     base = _base(page.url)
     before = ctx.sess.get_json(f"{base}/cart.js")
@@ -863,9 +907,13 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
 
         def buy():
             loc, how, healed = _main_buy_button(ctx, p)
+            gate = (state.get("v") or {}).get("_pincode_gate")
+            if gate and not loc.is_enabled():
+                # a store choice, not a broken buy: shown as a WARNING with the evidence (bombaysweetshop.com)
+                ctx.expect("buy button enabled", True, f"disabled until the shopper checks a delivery pincode: {gate}", False)
             ctx.expect("buy button enabled", True, loc.is_enabled())
             return (how, healed)
-        ctx.steps.run("buy_button_ready", buy)
+        ctx.steps.run("buy_button_ready", buy, soft=bool((state.get("v") or {}).get("_pincode_gate")))
     return p, state["v"]
 
 
@@ -976,7 +1024,8 @@ def add_to_cart(ctx: Ctx, url: str, variant_id: int | None = None, cart_path: st
         cur = _ensure_variant(ctx, state["p"])
         if variant_id and int(cur["id"]) != int(variant_id) and next(
                 (x for x in state["p"]["variants"] if int(x["id"]) == int(variant_id) and x.get("available")), None):
-            cur = next(x for x in state["p"]["variants"] if int(x["id"]) == int(variant_id))
+            cur = dict(next(x for x in state["p"]["variants"] if int(x["id"]) == int(variant_id)),
+                       **({"_pincode_gate": cur["_pincode_gate"]} if cur.get("_pincode_gate") else {}))
         state["v"] = cur
         return f"variant {cur['id']} selected"
     ctx.steps.run("variant_ready", variant_ready)
