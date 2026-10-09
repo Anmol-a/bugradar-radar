@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 # One-time setup of Radar's own server as a GitHub runner for Anmol-a/bugradar-radar (Ubuntu 24.04, run as root).
 #
-#   1. GitHub -> repo Settings -> Actions -> Runners -> "New self-hosted runner" -> Linux x64:
+#   1. GitHub -> repo Settings -> Actions -> Runners -> "New self-hosted runner" -> Linux (x64 or ARM64):
 #      copy ONLY the token shown after "--token" (valid ~1 hour).
 #   2. On the server, as root (the repo is private, so copy the file by hand):
 #        nano setup-runner.sh      <- paste this whole file (GitHub: cloud/setup-runner.sh on branch cloud-runs, "Raw"),
@@ -47,7 +47,8 @@ echo "== GitHub runner"
 VER=$(curl -fsSL https://api.github.com/repos/actions/runner/releases/latest | jq -r .tag_name | sed 's/^v//')
 cd /home/radar/actions-runner
 if [ ! -x ./config.sh ]; then
-  curl -fsSL -o runner.tgz "https://github.com/actions/runner/releases/download/v${VER}/actions-runner-linux-x64-${VER}.tar.gz"
+  case "$(uname -m)" in aarch64|arm64) ARCH=arm64 ;; *) ARCH=x64 ;; esac     # Oracle's free Ampere machines are ARM
+  curl -fsSL -o runner.tgz "https://github.com/actions/runner/releases/download/v${VER}/actions-runner-linux-${ARCH}-${VER}.tar.gz"
   tar xzf runner.tgz && rm runner.tgz
   chown -R radar:radar /home/radar/actions-runner
   ./bin/installdependencies.sh
