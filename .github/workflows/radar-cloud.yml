@@ -104,7 +104,8 @@ jobs:
           PYTHONUNBUFFERED: "1"
         run: |
           set -o pipefail
-          python3 -m radar ${{ steps.req.outputs.args }} 2>&1 | tee bench.log
+          python3 -m radar.core.webbotauth check 2>&1 | tee bench.log || true
+          python3 -m radar ${{ steps.req.outputs.args }} 2>&1 | tee -a bench.log
 
       - name: Publish results to the cloud-results branch
         if: always() && steps.req.outputs.count != '0'
