@@ -51,6 +51,9 @@ def test_run_verdict_severity():
     assert run_verdict([mk("confirmed_fail", "critical")]) == "down"
     assert run_verdict([mk("blocked", "critical")]) == "blocked"
     assert run_verdict([mk("blocked", "minor")]) == "healthy"
+    # SEO notes (soft 404, meta tags) never make a store degraded or down (9 Oct)
+    assert run_verdict([mk("confirmed_fail", "seo"), mk("flaky", "seo"), mk("pass", "critical")]) == "healthy"
+    assert run_verdict([mk("confirmed_fail", "seo"), mk("confirmed_fail", "major")]) == "degraded"
 
 
 # ---------- catalog parsing ----------
@@ -392,10 +395,10 @@ def test_llm_check_scores_answers():
                 "usage": {"prompt_tokens": 700, "completion_tokens": 40}}
     llm = LLMClient("openai", "gpt-4o-mini", 100, base_url="https://api.openai.com/v1", api_key="k", transport=perfect)
     r = llmcheck.run(llm, progress=lambda *_: None)
-    assert r["correct"] == r["total"] == 21 and r["calls"] == 21 and r["est_usd"] > 0 and r["held_out"] == "3/3"
+    assert r["correct"] == r["total"] == 22 and r["calls"] == 22 and r["est_usd"] > 0 and r["held_out"] == "3/3"
     always_store = LLMClient("openai", "gpt-4o-mini", 100, base_url="https://api.openai.com/v1", api_key="k",
                              transport=lambda u, h, b: {"choices": [{"message": {"content": '{"verdict": "real_store_problem"}'}}]})
-    assert llmcheck.run(always_store, progress=lambda *_: None)["correct"] == 11    # blaming the store always is caught
+    assert llmcheck.run(always_store, progress=lambda *_: None)["correct"] == 12    # blaming the store always is caught
 
 
 def test_triage_answer_validation():

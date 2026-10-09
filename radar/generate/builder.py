@@ -141,11 +141,11 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
 
     health = Suite("health", "Health & SEO", "Basics that cost traffic when missing")
     health.cases.append(TestCase("health.meta.home", "health", "Homepage meta tags", "meta_tags",
-                                 {"url": base + "/"}, "minor"))
+                                 {"url": base + "/"}, "seo"))
     if picks:
         health.cases.append(TestCase("health.meta.pdp", "health", "Product page meta tags", "meta_tags",
-                                     {"url": picks[0].url}, "minor"))
+                                     {"url": picks[0].url}, "seo"))
     health.cases.append(TestCase("health.not_found", "health", "Missing page returns 404", "not_found",
-                                 {"url": base + "/products/bugradar-check-does-not-exist"}, "minor"))
+                                 {"url": base + "/products/bugradar-check-does-not-exist"}, "seo"))
     suites.append(health)
     return [x for x in suites if x.cases]

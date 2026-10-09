@@ -79,13 +79,15 @@ def test_renamed_button_without_a_form_is_found_by_what_names_this_product(tmp_p
     assert added and all(c["ok"] for c in added), added
 
 
-def test_broken_price_confirmed_with_evidence(tmp_path):
+def test_broken_structured_price_is_an_seo_note_not_a_failure(tmp_path):
+    """Structured price 0 while the page shows the right price (wellbeingnutrition.com JSON-LD price null, 9 Oct):
+    a Google Shopping / SEO finding, shown as a warning on the product test; the store stays healthy."""
     run, d = _scan("broken_price", tmp_path)
-    bad = _case(run, "product.pdp.ceramic")
-    assert bad.verdict == "confirmed_fail" and len(bad.attempts) == 2
-    assert bad.attempts[-1].failed_step == "structured_data_valid"
-    assert (d / bad.attempts[-1].screenshot).exists() and (d / bad.attempts[-1].trace).exists()
-    assert run.verdict == "degraded"
+    case = _case(run, "product.pdp.ceramic")
+    assert case.verdict == "pass" and len(case.attempts) == 1
+    st = _steps(case)
+    assert st["structured_data_valid"].status == "warn" and "structured data: price" in (st["structured_data_valid"].error or "")
+    assert not case.incident_signature and run.verdict == "healthy"
 
 
 def test_broken_cart_means_down_and_incident(tmp_path):
@@ -863,3 +865,26 @@ def test_bench_runs_both_devices_per_store_and_one_row_says_where_it_fails(tmp_p
     assert data["totals"]["down"] == 1 and data["totals"]["healthy"] == 1
     html = (out / "bench.html").read_text()
     assert "Mobile" in html and "suites_by_device" in html
+
+
+def test_preselected_size_without_a_cart_form_is_read_from_the_page(tmp_path):
+    """foxtale.in (9 Oct bench, both devices, 3 runs): a headless-style page with no cart form pre-selects its
+    200g 'Best Value' size; v0.18 fell back to the first size (75g, ₹349), found that price nowhere and failed a
+    working page. Radar must read the size the page marks as selected."""
+    run = _product_only("preselected_variant", tmp_path, max_products=2)
+    vase = _case(run, "product.pdp.ceramic-vase")
+    st = _steps(vase)
+    assert vase.verdict == "pass", [(s.name, s.error) for s in vase.attempts[-1].steps if s.status == "fail"]
+    assert "202" in st["product_identified"].detail and "1,399" in st["product_identified"].detail, st["product_identified"].detail
+
+
+def test_closed_drawer_is_never_taken_for_the_popup_and_the_real_popup_is_closed(tmp_path):
+    """suta.in (wishlist drawer, 8 Oct) and soulflower.in (cart drawer, 7 Oct), mobile: v0.18's popup finder kept
+    picking a closed, off-screen side drawer, its close click timed out, and the real promo popup over the product
+    grid was never closed ('26 covered by div'). On both devices the journey must pass, the real popup closed."""
+    results = _both("drawer_decoy_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1,
+                    max_nav_links=2)
+    for run, _ in results:
+        j = _case(run, "journey.")
+        assert j.verdict == "pass", (run.device, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"])
+        assert len(j.attempts) == 1, (run.device, "needed a retry")

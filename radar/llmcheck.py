@@ -146,6 +146,16 @@ CASES += [
      "checks": [bad("HTTP status for a page that does not exist", 404, "200 (redirected to /)")],
      "url": "https://soulflower.in/",
      "text": "IT'S OUR BIRTHDAY! BUY 1 GET 1 FREE IS LIVE SITEWIDE\nShop\nHair + Skin Quiz\nLearn\nBestsellers"},
+    {"id": "wellbeing_jsonld_price_null", "want": {"real_store_problem"}, "source": "wellbeingnutrition.com, cloud 7 Oct + Mac 9 Oct",
+     "title": "PDP 'Plant Protein 22g | 907g | 3B CFU Probiotics'", "check": "product_page", "step": "structured_data_valid",
+     "error": "structured data: price: expected > 0, got null",
+     "checks": [ok_("selected variant price shown", "₹2,549.00", "₹2,549.00"),
+                ok_("structured data: name", "present", "Plant Protein 22g | 907g | 3B CFU Probiotics"),
+                bad("structured data: price", "> 0", "null")],
+     "url": "https://wellbeingnutrition.com/products/plant-protein-22g-907g-3b-cfu-probiotics",
+     "text": "Plant Protein 22g | 907g | 3B CFU Probiotics\n₹2,549 ₹3,399 Sale price 25% off\nFrench Vanilla Caramel\n"
+             "Add to cart\n(Radar read the price from the store's own JSON-LD <script type=application/ld+json> Product "
+             "block: its offers.price field is null. The visible price matches Shopify's product data.)"},
     {"id": "soulflower_icon_popup", "want": {"radar_problem"}, "source": "soulflower.in, bench 3",
      "title": "PDP 'Rosemary Shampoo + Conditioner'", "check": "product_page", "step": "buy_button_ready",
      "error": "could not click: <div class=\"fixed inset-0 z-50 flex justify-center\"></div> subtree intercepts pointer events",

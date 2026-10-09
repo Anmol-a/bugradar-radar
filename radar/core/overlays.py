@@ -30,7 +30,21 @@ FIND_JS = r"""() => {
     '[class*="klaviyo" i], [class*="newsletter" i], [class*="cookie" i], [id*="cookie" i], [class*="consent" i], ' +
     '[id*="consent" i], [class*="privy" i], [class*="omnisend" i], [class*="geolocation" i], [class*="country-selector" i], ' +
     '[class*="age-verif" i], [class*="ageverif" i], [class*="agegate" i], [class*="age-gate" i], [id*="age" i][class*="gate" i]';
-  const named = all(sel).filter(e => shown(e) && !isCart(e) && !e.closest('header, nav'))
+  // Only a layer a shopper can SEE counts: inside the viewport and on top at some point of it. Closed side drawers
+  // (wishlist / cart / menu slid off-screen, suta.in + soulflower.in, 7-9 Oct) are never popups, and a candidate
+  // whose close did not work is marked tried and skipped (v0.18 retried the same hidden drawer ~10 times).
+  const deepHit = (x, y) => { let el = document.elementFromPoint(x, y);
+    while (el && el.shadowRoot) { const inner = el.shadowRoot.elementFromPoint(x, y); if (!inner || inner === el) break; el = inner; }
+    return el; };
+  const inside = (root, el) => { for (let n = el; n; n = n.parentNode || n.host) if (n === root) return true; return false; };
+  const onScreen = e => { const r = e.getBoundingClientRect();
+    const x1 = Math.max(0, r.left), y1 = Math.max(0, r.top), x2 = Math.min(vw, r.right), y2 = Math.min(vh, r.bottom);
+    if (x2 - x1 < 8 || y2 - y1 < 8 || (x2 - x1) * (y2 - y1) < 0.3 * r.width * r.height) return false;
+    const pts = [[0.5, 0.5], [0.25, 0.25], [0.75, 0.25], [0.25, 0.75], [0.75, 0.75], [0.5, 0.15], [0.9, 0.1]];
+    return pts.some(([fx, fy]) => inside(e, deepHit(x1 + (x2 - x1) * fx, y1 + (y2 - y1) * fy))); };
+  const tried = e => { for (let n = e; n; n = n.parentNode || n.host) if (n.getAttribute && (n.hasAttribute('data-radar-tried') || n.hasAttribute('inert'))) return true; return false; };
+  all('[data-radar-popup]').forEach(e => e.removeAttribute('data-radar-popup'));
+  const named = all(sel).filter(e => shown(e) && !isCart(e) && !e.closest('header, nav') && !tried(e) && onScreen(e))
     .filter(e => { const r = e.getBoundingClientRect();
       return e.getAttribute('aria-modal') === 'true' || e.tagName === 'DIALOG' ||
              (fixedish(e) && r.width * r.height >= 0.08 * vw * vh); });
@@ -40,7 +54,7 @@ FIND_JS = r"""() => {
   const generic = [...document.querySelectorAll('body *'), ...hosts.flatMap(h => [...h.querySelectorAll('*')])].filter(e => {
     const s = getComputedStyle(e); if (s.position !== 'fixed' || !shown(e) || s.pointerEvents === 'none') return false;
     const r = e.getBoundingClientRect(); if (r.width * r.height < 0.5 * vw * vh || (parseInt(s.zIndex) || 0) < 1) return false;
-    if (isCart(e) || e.closest('header, nav, [id*="header" i]')) return false;
+    if (isCart(e) || e.closest('header, nav, [id*="header" i]') || tried(e) || !onScreen(e)) return false;
     // a popup is small inside: not the page's own content (main, the buy form, a menu full of links)
     if (e.querySelector('main, form[action*="/cart/add"], [role="navigation"]') || e.querySelectorAll('a[href]').length > 12) return false;
     return !!e.querySelector('button, [role="button"]');
@@ -67,11 +81,21 @@ FIND_JS = r"""() => {
       const b = c.getBoundingClientRect(), box = (c.closest('[class*="bg-white" i], [class*="modal" i], [class*="popup" i], [class*="content" i]') || root).getBoundingClientRect();
       return b.width <= 48 && b.height <= 48 && b.left > box.left + box.width * 0.6 && b.top < box.top + box.height * 0.3; });
     if (!btn || /accept|agree|allow all|subscribe|sign ?up|submit|yes/i.test(text(btn))) continue;   // never consent, never sign up
-    btn.setAttribute('data-radar-target', 'dismiss');
+    btn.setAttribute('data-radar-target', 'dismiss'); root.setAttribute('data-radar-popup', '1');
     return {kind, text: t.slice(0, 60), button: text(btn).slice(0, 30) || (btn.getAttribute('aria-label') || 'close')};
   }
   return null;
 }"""
+
+
+STILL_OPEN_JS = r"""() => { const all = []; const walk = r => r.querySelectorAll('*').forEach(e => { if (e.hasAttribute('data-radar-popup')) all.push(e);
+    if (e.shadowRoot) walk(e.shadowRoot); }); walk(document);
+  const e = all[0]; if (!e || !e.isConnected) return false;
+  const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+  const open = r.width > 0 && r.height > 0 && s.display !== 'none' && s.visibility !== 'hidden' && parseFloat(s.opacity || 1) > 0.05
+    && r.right > 0 && r.bottom > 0 && r.left < innerWidth && r.top < innerHeight;
+  if (open) e.setAttribute('data-radar-tried', '1');
+  return open; }"""
 
 
 class AgeGate(Exception):
@@ -118,6 +142,12 @@ def dismiss_overlays(page, rounds: int = 3) -> list[dict]:
         except Exception:  # noqa: BLE001  covered by another layer: try Escape once
             page.keyboard.press("Escape")
         page.wait_for_timeout(500)
+        try:
+            still = page.evaluate(STILL_OPEN_JS)
+        except Exception:  # noqa: BLE001  page navigating: the popup went with it
+            still = False
+        if still:
+            found = {**found, "button": f"{found.get('button')}; did not close it, skipped"}
         done.append(found)
     return done
 

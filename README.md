@@ -67,7 +67,7 @@ GitHub Actions workflow `.github/workflows/radar-cloud.yml` (needs the repo secr
 ## LLM (healing + failure triage)
 Put the key in `.env` (template: `.env.example`). Default: OpenAI `gpt-5-mini` (15/15 on llm-check, 5 Oct; gpt-4o-mini scored 14/15).
 ```bash
-python3 -m radar llm-check                    # score the model on 21 known failure cases (~$0.002)
+python3 -m radar llm-check                    # score the model on 22 known failure cases (~$0.002)
 python3 -m radar llm-check --model gpt-4o-mini # try another model without editing .env
 ```
 Switching later (e.g. to Claude once BugRadar earns) is one line in `.env`; run `llm-check` again.
