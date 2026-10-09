@@ -148,9 +148,20 @@ def _load(ctx: Ctx, url: str) -> str:
                               "this is not a store failure")
         ctx.expect("HTTP status", "< 400", status, status < 400)
     title = (ctx.sess.evaluate("() => document.title") or "").strip()
-    ctx.expect("page <title>", "not empty", title or "(empty)", bool(title))
+    for _ in range(4):                      # some themes / apps set the title from a script after load
+        if title:
+            break
+        ctx.sess.page.wait_for_timeout(500)
+        title = (ctx.sess.evaluate("() => document.title") or "").strip()
     shown = ctx.sess.evaluate("""() => ({text: ((document.body && document.body.innerText) || '').trim().length,
         imgs: [...document.images].filter(i => i.getBoundingClientRect().width > 20 && i.naturalWidth > 0).length})""")
+    rendered = shown["text"] >= 40 or shown["imgs"] > 0
+    # An empty <title> on a page that visibly rendered is an SEO finding (the SEO test 'title' reports it as a
+    # warning), not a broken page: shoppers never see the tab title. hairoriginals.com (new30e held-out, 10 Oct: every
+    # page fully rendered, document.title empty, both devices) and fablestreet.com (new30c) were 'down' for this alone.
+    ctx.expect("page <title>", "not empty", title or ("(empty; the page itself rendered, so this is only an SEO "
+                                                      "finding, see the SEO test)" if rendered else "(empty)"),
+               bool(title) or rendered)
     ctx.expect("page not blank", "≥ 40 chars of text or an image",
                f"{shown['text']} chars, {shown['imgs']} images", shown["text"] >= 40 or shown["imgs"] > 0)
     _dismiss(ctx)

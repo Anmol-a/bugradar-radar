@@ -1112,3 +1112,15 @@ def test_disabled_buy_button_failure_names_the_button_and_the_enabled_one(tmp_pa
     errs = [s.error or "" for c in run.cases if c.case_id.startswith("product.pdp.")
             for s in c.attempts[-1].steps if s.name == "buy_button_ready"]
     assert errs and all("btn-mobile-atc" in e and "ARE enabled" in e and "sticky-atc" in e for e in errs), errs
+
+
+def test_empty_document_title_on_a_rendered_page_is_an_seo_warning_not_down(tmp_path):
+    """hairoriginals.com (new30e held-out run, 10 Oct, both devices): every page rendered in full (screenshot), but
+    document.title was empty, so every load step failed and the store was 'down'. Shoppers never see the tab title:
+    the page loads, and the SEO test 'title' reports the empty title as a warning."""
+    run, _ = _scan("empty_doc_title", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict in ("confirmed_fail", "flaky")]
+    assert not bad, bad
+    meta = _case(run, "health.meta.home")
+    t = [s for s in meta.attempts[-1].steps if s.name == "title"]
+    assert t and t[0].status == "warn" and "missing" in (t[0].error or ""), [(s.name, s.status, s.error) for s in t]

@@ -153,6 +153,8 @@ Modes (to prove Radar catches and heals what it should):
   robots_404       /robots.txt answers HTTP 404 (no file) -> everything allowed, store tested normally
   (Radar's own network dropping mid-run is not a mode: tests shut the store down from the progress hook and point
    the connectivity probe at a dead port (Radar offline) or at a live server (Radar online, store died).)
+  empty_doc_title  every page renders normally but its <title> is empty (hairoriginals.com, new30e held-out)
+                   -> pages load (no 'down'); the SEO test 'title' warns
   no_title         product pages show no product name at all (snitch.co.in after its move)
                    -> product tests FAIL at shows_title_price_image with "none"
 
@@ -309,6 +311,8 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "empty_doc_title":
+            body = re.sub(r"<title>.*?</title>", "<title></title>", body, count=1, flags=re.S)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode in self.OVERLAYS:
             body = body.replace("</body>", self.OVERLAYS[self.mode] + "</body>")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "noisy_console":

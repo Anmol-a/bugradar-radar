@@ -741,6 +741,35 @@ enabled and the screenshot shows an enabled sticky ADD TO CART: Radar's `MAIN_BU
 button than `FORM_STATE_JS`. One store, 2 runs → watch; next step if it reappears: name the chosen button in the
 failure. Web Bot Auth check: 401.
 
+## 4y. Loop cycle 7 (10 Oct 2026, 04:47 IST, automated): held-out set #5 (new30e); empty <title>; buy-button evidence
+
+**new30e held-out (run 38004196155, run ONCE, no fixes in between):** 30 never-seen stores (fashion 10, beauty 7,
+electronics 4, food 3, home 2, baby/health 2, jewellery 2). Not scored: 6 not Shopify (almo, beatxp, gritzo,
+kamaayurveda, masonchocolates, technosport), robots.txt Disallow-all (breakbounce), domain does not resolve (skinq.in;
+wishcare.co EAI_AGAIN), robots.txt timed out 3× (zaveripearls, wingslifestyle), isharya.com redirects to isharya.co.
+**18 scored: 3 Radar false-failure stores** (hairoriginals empty title, crossbeats mobile buy disabled, beyondsnack no
+price), 2 store findings (mydesignation + bblunt mobile: a missing page answers 200 / redirects; bblunt mobile is sent
+to store.bblunt.com), 1 flaky (freedomtree desktop journey cart, passed on retry), 12 fully right.
+
+**Empty `<title>` (`_load`, radar/checks/library.py):** hairoriginals.com rendered every page in full on both devices
+(screenshots) but `document.title` was empty, so every load step failed and the store was 'down'; fablestreet.com
+(new30c) failed the same check on a 404 page. A shopper never sees the tab title. Now Radar waits up to 2 s for a
+script-set title, and an empty title on a page that visibly rendered (≥ 40 chars or an image) is a passed load with
+the note "only an SEO finding"; the SEO test `health.meta.*` step `title` still WARNS ("missing"). A blank page with
+an empty title still fails. Mock `empty_doc_title`: fails on the old code (every case 'page <title> … (empty)'),
+passes on the new. Touches every page load → full 36 regression due next cycle.
+
+**Buy button disabled = diagnosable (`MAIN_BUY_JS`, `_expect_buy_enabled`):** littleboxindia.com mobile (new30c, cycle
+6) and now crossbeats.com mobile (new30e: variant ready, price shown, 'buy button enabled: false') fail while the
+screen shows a buyable product. Behaviour unchanged; the failure now names the button Radar read (tag, name, class,
+text, form) and any OTHER enabled buy button for the same product. Mock `disabled_dup_button` (disabled visible form
+button + enabled sticky `form=` button) fails on the old code ('got false'), passes on the new. Next: re-run both
+stores, then fix from the evidence (2 stores = fixable pattern).
+
+**beyondsnack.in (watch, 1 store):** product pages show no price and no cart, only "Shop Now On:" (marketplace
+links): a catalog-only storefront, or prices hidden for US visitors. Radar says 'price not on page' (down). If a
+second catalog-only store appears: detect "no price + no cart + no buy control" → 'no online checkout' note, not down.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
