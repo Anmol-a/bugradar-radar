@@ -656,6 +656,11 @@ popup-like name, its × inside the frame: 'could not click: <iframe id="iframe-k
 that covers half the screen and is on top at its centre as a popup (and reads the iframe's src: kwikpass / gokwik),
 then clicks the close control inside the frame (Escape as fallback); never 'Join' / log in. Mock `kwikpass_popup`
 (cross-origin frame on 'localhost') fails on the old code ('4 covered by iframe.iframe-kp') and passes on the new.
+Round 2 (run 37958664708): the frame was now found, but the old in-frame CSS selector picked a hidden '.close' and
+fell back to Escape ('pressed Escape; still open'). `CLOSE_IN_FRAME_JS` now looks inside the frame like a shopper:
+a VISIBLE close / dismiss / '×' control, else an icon-only (svg / img) control small and top-right in the popup box;
+never join / log in / subscribe / OTP. The mock now has a hidden '.close' first and an icon-only close (fails on
+round-1 code, passes on round 2).
 
 One-offs left as documented limits: bellavita second search word 'magicpin' (a partner-offer product; only tried
 because the first word failed under the held theme), consciouschemist 'build your box' bundle-app collection.
