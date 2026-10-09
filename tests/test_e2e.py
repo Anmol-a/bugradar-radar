@@ -1004,6 +1004,16 @@ def test_popup_closed_by_a_bare_x_in_a_div(tmp_path):
     assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
 
 
+def test_login_popup_in_a_cross_origin_iframe_is_closed_inside_the_frame(tmp_path):
+    """GoKwik KwikPass (bonkerscorner.com, boldcare.in, consciouschemist.com, 7-9 Oct): a full-screen iframe from
+    another origin with no popup-like name (id 'iframe-kp' in div#d2c-pass) and its × inside the frame blocked every
+    click: 'could not click: <iframe id="iframe-kp" ...>'. Radar closes it with the frame's own ×, never logs in."""
+    run, _ = _scan("kwikpass_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    j = _case(run, "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
+    assert any(k["what"].startswith("popup (iframe)") and "'×'" in k["actual"] for k in _checks(j))
+
+
 def test_cards_hidden_until_the_shopper_scrolls_are_found(tmp_path):
     run, _ = _scan("scroll_reveal", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     j = _case(run, "journey.")
