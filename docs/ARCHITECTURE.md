@@ -607,6 +607,22 @@ Keygen: `python3 -m radar.core.webbotauth keygen`. Mock `signed_only` (429 unles
 healthy, unsigned Radar BLOCKED. Not yet proven on real Shopify: Shopify may also need the signed agent registered
 (Cloudflare signed-agents / Shopify higher-access form); the Oracle test decides.
 
+## 4u. Loop cycle 1 (9 Oct 2026, 16:45 IST, automated): new30b fixes, re-runs 37924565102 + 37927492715
+
+| Issue (new30b held-out) | Stores | Owner | Status |
+|---|---|---|---|
+| Collection cards invisible until the first scroll ('151 not visible') | reequil, wearcomet | Radar | **fixed + verified** (reequil healthy desktop + mobile). `_pick()` scroll pass now measures the document's real height; mock `scroll_reveal` is a long page like a real collection (fails without the scroll pass) |
+| Price rounded to whole rupees | thelabellife, salty | Radar | **verified** (thelabellife healthy both devices, salty desktop healthy) |
+| Search read at 0.8 s while a search app still renders | bonkerscorner, baccabucci, bellavita | Radar | waits for the app (link set stable 1.5 s after 4-6 s, max 10 s; early exit on a match). Mocks `search_app`, `search_app_popular`. **Not enough on the real stores**: see next row |
+| Theme scripts never run: `html.no-js`, no `window.Shopify`, price block + gallery empty, search app silent; console 'header.js / app.js / side-cart.js preloaded but not used' | baccabucci, bellavita (+ bonkerscorner search) | Radar environment, cause open | proven from run.json: the scripts are HELD. v0.19 now moves the mouse + wheels once when a page shows held scripts (`Session.first_touch`, mock `delayed_scripts` fails before, passes desktop + mobile). Re-run 2: **still held** on the real stores, so the hold is not interaction-based. Leading hypothesis: a 'speed' script that holds the theme for bots / Lighthouse (UA or `navigator.platform == "Linux x86_64"`: GitHub machines are Linux). The failure text now quotes any page script mentioning platform / lighthouse / bot, to decide next cycle. Not a store bug |
+| Location gate 'Welcome to Comet, confirm shipping location: UNITED STATES'; product pages 'Page not found' | wearcomet | **location (US runner)** | not fixed in code |
+| 'build your box' collection: bundle-app tiles without /products/ links, 0 products counted | consciouschemist | Radar, one store | documented limit (fix only if seen on a 2nd store) |
+| Mobile collection: 48 cards 'covered by main.main-content' | salty (mobile, 2 runs) | Radar?, one store | watch |
+
+Infra: shard 1 of run 37927492715 lost its results (cloud-results push: LATEST rebase conflict while 6 machines pushed). The
+workflow now resolves LATEST conflicts with this shard's line (`-X theirs`, then `rebase --continue`).
+GitHub machine-minutes this cycle: about 40 (re-run 1) + 30 (re-run 2).
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -864,6 +880,8 @@ state. 4. Report section "Store profile". Exit: bench shows a profile for every 
 Each new check template gets a mock mode that fails on the old code, as for every rule so far.
 
 ## Change log
+
+- **v0.19 loop cycle 1 (9 Oct, 16:45 IST):** scroll-reveal pass fixed (real document height), search-app wait, first-interaction nudge for held theme scripts, hidden-price evidence (market, no-js, gating script), workflow LATEST-conflict fix; mocks `search_app`, `search_app_popular`, `delayed_scripts` (4u).
 
 - **v0.19 (9 Oct, later):** Web Bot Auth request signing (`RADAR_SIGNING_KEY`), rounded-price tolerance, 5xx/429 handling; mock `signed_only`.
 

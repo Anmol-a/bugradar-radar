@@ -127,8 +127,9 @@ jobs:
           cd "$OUT"
           git add -A
           git commit -qm "cloud ${{ github.event_name }}: $(cat LATEST) (run ${{ github.run_id }}, ${{ runner.name }})" || exit 0
-          # 6 machines push at about the same time: retry with a random pause
-          for i in 1 2 3 4 5 6 7 8; do git push -q origin cloud-results && break; sleep $((RANDOM % 10 + 2)); git pull -q --rebase origin cloud-results; done
+          # 6 machines push at about the same time: retry with a random pause; LATEST conflicts keep this shard's
+          # line (9 Oct: shard 1 of run 37927492715 lost its results on a LATEST conflict)
+          for i in 1 2 3 4 5 6 7 8; do git push -q origin cloud-results && break; sleep $((RANDOM % 10 + 2)); git pull -q --rebase -X theirs origin cloud-results || { git checkout --theirs LATEST 2>/dev/null; git add -A; GIT_EDITOR=true git rebase --continue || git rebase --abort; }; done
           cd - >/dev/null; git worktree remove --force "$OUT" || true
 
       - name: Keep the full data folder for 7 days (GitHub machines only)
