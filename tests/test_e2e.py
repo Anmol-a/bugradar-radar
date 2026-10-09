@@ -533,6 +533,22 @@ def test_search_word_from_a_hidden_product_falls_back_to_a_second_word(tmp_path)
     assert st["returns_relevant_products_other_word"].status == "pass"
 
 
+@pytest.mark.parametrize("mode", ["search_app", "search_app_popular"])
+def test_search_app_that_renders_results_late_is_waited_for(tmp_path, mode):
+    """bonkerscorner.com + baccabucci.com (empty search page at 0.8 s) and bellavitaorganic.com (placeholder 'popular'
+    products) in the new30b held-out run, 9 Oct: the store's search app renders the real results seconds later."""
+    srv, url = serve(mode)
+    try:
+        run = scan(url, _settings(tmp_path), only_suites=["search"])[0]
+    finally:
+        srv.shutdown()
+    c = _case(run, "search.")
+    assert c.verdict == "pass", c.attempts[-1].error
+    st = _steps(c)
+    assert st["returns_relevant_products"].status == "pass", st["returns_relevant_products"].error
+    assert "search app" in st["returns_relevant_products"].detail
+
+
 @pytest.mark.parametrize("mode", ["drawer_form_first", "upsell_forms_first"])
 def test_hidden_drawer_and_upsell_forms_never_taken_for_the_product_form(tmp_path, mode):
     """boldcare.in + bummer.in (bench 4): hidden cart-drawer / upsell forms named product_form / shopify-product-form

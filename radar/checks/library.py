@@ -767,8 +767,26 @@ def _hidden_price(ctx: Ctx, want: float) -> str:
     so the failure (a shopper on this screen sees no price) is not mistaken for Radar looking wrong."""
     for r in ctx.sess.evaluate(HIDDEN_PRICE_JS) or []:
         if want in prices_in_text(r["text"]):
-            return f" (₹{want:,.2f} is only inside a hidden element <{r['by'][:60]}>, not shown on this screen size)"
+            return f" (₹{want:,.2f} is only inside a hidden element <{r['by'][:60]}>, not shown on this screen size{_page_market(ctx)})"
     return ""
+
+
+def _page_market(ctx: Ctx) -> str:
+    """Evidence for a price the page hides: which Shopify market the store served this visitor and whether the
+    theme's scripts ran (bellavitaorganic.com + baccabucci.com, new30b 9 Oct: price and gallery empty from a US
+    runner; a market other than India points to location, html.no-js to theme scripts that never ran)."""
+    try:
+        m = ctx.sess.evaluate("""() => ({country: (window.Shopify || {}).country || '',
+            currency: ((window.Shopify || {}).currency || {}).active || '',
+            nojs: document.documentElement.classList.contains('no-js')})""") or {}
+    except Exception:  # noqa: BLE001
+        return ""
+    bits = []
+    if m.get("country") or m.get("currency"):
+        bits.append(f"store served market {m.get('country') or '?'}/{m.get('currency') or '?'}")
+    if m.get("nojs"):
+        bits.append("theme scripts had not run (html.no-js)")
+    return ("; " + ", ".join(bits)) if bits else ""
 
 
 def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = False):
@@ -974,6 +992,31 @@ def search_results(ctx: Ctx, url: str, alt_urls: list[str] | tuple = ()):
             return
 
 
+def _settled_search_links(ctx: Ctx, term: str, cap: float = 10.0) -> tuple[list[dict], float]:
+    """Product links on the search page once the store's search app has rendered. Search apps fill the page
+    after it loads, from their own API: first nothing (bonkerscorner.com, baccabucci.com) or 'popular products'
+    placeholders (bellavitaorganic.com 'Custom Search'), real results seconds later (held-out new30b, 9 Oct).
+    Returns at once when a result mentions the word; else when the links have not changed for 1.5 s after a
+    minimum wait (6 s for an empty page, 4 s for unrelated links); never longer than cap. (links, seconds waited)."""
+    import time
+    t0 = time.monotonic()
+    links = _product_links(ctx.sess) or []
+    key, since = None, t0
+    while True:
+        if any(term in (l["text"] + " " + l["handle"]).lower() for l in links):
+            break
+        now = time.monotonic()
+        k = tuple(sorted(l["handle"] for l in links))
+        if k != key:
+            key, since = k, now
+        if now - t0 >= cap or (now - t0 >= (4.0 if links else 6.0) and now - since >= 1.5):
+            break
+        ctx.sess.page.wait_for_timeout(400)
+        links = _product_links(ctx.sess) or []
+    waited = time.monotonic() - t0
+    return links, (waited if waited >= 1 else 0.0)
+
+
 def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
     term = (re.search(r"[?&]q=([^&]+)", url) or [None, ""])[1].lower()
     home = _base(url) + "/"
@@ -1013,7 +1056,9 @@ def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
             _load(ctx, url)
             how = "no visible search box; opened /search"
         page.wait_for_timeout(800)
-        links = _product_links(ctx.sess)
+        links, waited = _settled_search_links(ctx, term)
+        if waited:
+            how += f" (waited {waited:.0f}s for the store's search app to render results)"
         ctx.expect("product results", "≥ 1", len(links), len(links) >= 1)
         match = [l for l in links if term in (l["text"] + " " + l["handle"]).lower()]
         ctx.expect(f"results relevant to '{term}'", "≥ 1 result mentions the term",
@@ -1376,7 +1421,7 @@ def _pick(ctx: Ctx, sel: str, href_re: str | None = None, prefer=(), exclude: st
     if got and got.get("none") and second_pass and got.get("why", {}).get("not visible"):
         # cards exist but none is visible: themes reveal them with an animation on the first scroll (reequil.com,
         # wearcomet.com, held-out run 9 Oct). A shopper scrolls; so does Radar, then looks again from the top.
-        ctx.sess.evaluate("""async () => { const h = Math.min(document.body.scrollHeight, 15000);
+        ctx.sess.evaluate("""async () => { const h = Math.min(Math.max(document.body.scrollHeight, document.documentElement.scrollHeight), 15000);
             for (let y = 0; y <= h; y += Math.round(innerHeight * 0.7)) { scrollTo(0, y); await new Promise(r => setTimeout(r, 200)); }
             scrollTo(0, 0); await new Promise(r => setTimeout(r, 400)); }""")
         got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
