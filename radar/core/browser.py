@@ -178,6 +178,17 @@ class Session:
         page.on("console", lambda m: self._log(m.type, m.text, (m.location or {}).get("url") or page.url)
                 if m.type in ("error", "warning") else None)
         page.on("requestfailed", lambda r: self.failed_requests.append(f"{r.method} {r.url[:150]}"))
+        # pages of the store (main frame) that answered 5xx during this attempt, also when reached by a click: lets the
+        # runner wait out a short server hiccup before re-checking (9 Oct cloud run)
+        self.server_errors: list[str] = []
+        page.on("response", self._on_response)
+
+    def _on_response(self, r):
+        try:
+            if 500 <= r.status <= 599 and r.request.resource_type == "document" and r.frame.parent_frame is None:
+                self.server_errors.append(f"HTTP {r.status} {r.url[:150]}")
+        except Exception:  # noqa: BLE001  never break a page event
+            pass
 
     def _log(self, kind: str, text: str, url: str):
         """One console entry for the report. Never raises (called from a browser event)."""

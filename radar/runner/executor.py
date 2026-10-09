@@ -21,13 +21,14 @@
 from __future__ import annotations
 
 import json
+import re
 import time
 import uuid
 from datetime import datetime, timezone
 from typing import Callable
 
 from radar.checks.library import REGISTRY, Ctx, Steps, StepFailed
-from radar.core.browser import Browser, DEFAULT_DEVICES, RateLimited
+from radar.core.browser import Browser, DEFAULT_DEVICES, RateLimited, Session
 from radar.core.config import Settings, normalize_url, site_id_from_url
 from radar.core.models import AttemptResult, CaseResult, RunResult, SiteMap, StepResult, TestCase
 from radar.core.network import NO_NETWORK_NOTE, online
@@ -41,6 +42,7 @@ from radar.runner.confirm import Attempt, should_retry, verdict as confirm_verdi
 
 Progress = Callable[[str, dict], None]
 MAX_FAILED_REQUESTS = 25
+SERVER_ERROR_RX = re.compile(r"(got|HTTP) 5\d\d\b")
 TESTED = ("healthy", "degraded", "down")        # verdicts that mean tests really ran against the store
 
 
@@ -68,11 +70,14 @@ def _attempt(browser: Browser, case: TestCase, run_dir, robots, healer: Healer, 
             steps.items.append(StepResult("radar_internal", "fail", None, failed.args[0]))
             sess.failed = True
         sess.record_load()               # the page the attempt ended on (evidence only)
+    server_errors = list(dict.fromkeys(getattr(sess, "server_errors", [])))[:5]
     ar = AttemptResult(n, failed is None, steps.items, failed.step if failed else None,
                        str(failed) if failed else None, sess.screenshot, sess.trace,
                        round(time.time() - t0, 2), console=list(sess.console),
                        failed_requests=list(dict.fromkeys(sess.failed_requests))[:MAX_FAILED_REQUESTS],
                        loads=list(sess.loads))
+    if server_errors and failed is not None:
+        ar.note = "store pages answered a server error during this try: " + ", ".join(server_errors)
     return ar, sess, blocked
 
 
@@ -93,7 +98,21 @@ def _run_case(browser: Browser, case: TestCase, run_dir, robots, healer: Healer,
         confirm_attempts.append(Attempt(ar.ok, ar.failed_step, ar.error))
         if not should_retry(confirm_attempts) or len(cr.attempts) > retries:
             break
+        if not ar.ok and (SERVER_ERROR_RX.search(ar.error or "") or "answered a server error" in (ar.note or "")):
+            # the page answered 5xx: wait before re-checking so one short platform hiccup (9 Oct: 503s on 3 Shopify
+            # demo stores within 2 minutes) is not confirmed by retries seconds apart. A real outage still confirms.
+            pause = (20, 60)[min(len(cr.attempts) - 1, 1)]
+            time.sleep(pause * Session.backoff_scale)
+            ar.note = (ar.note + "; " if ar.note else "") + f"server error: waited {pause} s before the next try"
     cr.verdict = confirm_verdict(confirm_attempts)
+    if cr.verdict == "flaky" and cr.attempts[-1].ok and all(
+            "answered a server error" in (a.note or "") or SERVER_ERROR_RX.search(a.error or "")
+            for a in cr.attempts if not a.ok):
+        # every failed try coincided with the store's pages answering 5xx, and the re-check after waiting passed: a short
+        # server hiccup, kept as a note (evidence), not a flaky test that marks the store degraded
+        cr.verdict = "pass"
+        cr.attempts[-1].note = ((cr.attempts[-1].note + "; ") if cr.attempts[-1].note else "") + \
+            "passed after the store recovered from a short server error (see the earlier try)"
     if cr.verdict == "confirmed_fail" and not online(probes):
         # Radar's own connection is gone: this failure says nothing about the store (bench 8, 6 Oct)
         cr.verdict = "no_network"

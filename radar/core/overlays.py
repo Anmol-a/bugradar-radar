@@ -51,13 +51,18 @@ FIND_JS = r"""() => {
   // Popups with no telling names (utility classes like "fixed inset-0 z-50", soulflower.in's YourLio
   // popup, bench 3): any FIXED layer covering half the screen that takes clicks and holds a small box
   // with a button in it. Cart drawers, the site header and click-through layers are excluded.
+  const bareX = r => [...r.querySelectorAll('div, span, i, em, b, p'), ...[...r.querySelectorAll('*')].filter(x => x.shadowRoot)
+      .flatMap(x => [...x.shadowRoot.querySelectorAll('div, span, i, em, b, p')])].some(c => {
+    if (!/^(×|✕|✖)$/.test((c.innerText || '').trim()) || c.children.length > 1) return false;
+    const b = c.getBoundingClientRect(); return b.width > 0 && b.width <= 48 && b.height <= 48; });
   const generic = [...document.querySelectorAll('body *'), ...hosts.flatMap(h => [...h.querySelectorAll('*')])].filter(e => {
     const s = getComputedStyle(e); if (s.position !== 'fixed' || !shown(e) || s.pointerEvents === 'none') return false;
     const r = e.getBoundingClientRect(); if (r.width * r.height < 0.5 * vw * vh || (parseInt(s.zIndex) || 0) < 1) return false;
     if (isCart(e) || e.closest('header, nav, [id*="header" i]') || tried(e) || !onScreen(e)) return false;
     // a popup is small inside: not the page's own content (main, the buy form, a menu full of links)
     if (e.querySelector('main, form[action*="/cart/add"], [role="navigation"]') || e.querySelectorAll('a[href]').length > 12) return false;
-    return !!e.querySelector('button, [role="button"]');
+    // a control to close it: a real button, or a bare "×" drawn by a div/span (soulflower.in birthday popup, 9 Oct)
+    return !!e.querySelector('button, [role="button"]') || bareX(e);
   }).slice(0, 4);
   const roots = [...new Set([...named, ...generic])];
   const text = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
@@ -80,6 +85,11 @@ FIND_JS = r"""() => {
     btn = btn || clickables.find(c => { if (text(c) || !c.matches('button, [role="button"]')) return false;
       const b = c.getBoundingClientRect(), box = (c.closest('[class*="bg-white" i], [class*="modal" i], [class*="popup" i], [class*="content" i]') || root).getBoundingClientRect();
       return b.width <= 48 && b.height <= 48 && b.left > box.left + box.width * 0.6 && b.top < box.top + box.height * 0.3; });
+    // a bare "×" drawn by a div / span / i (no button, no label): small, clickable-looking, near the top of the box
+    btn = btn || within(root, 'div, span, i, em, b, p').filter(shown).find(c => {
+      if (!/^(×|✕|✖|x)$/i.test(text(c)) || c.children.length > 1) return false;
+      const b = c.getBoundingClientRect(); return b.width <= 48 && b.height <= 48 &&
+        (getComputedStyle(c).cursor === 'pointer' || /close|dismiss|cross/i.test(String(c.className || ''))); });
     if (!btn || /accept|agree|allow all|subscribe|sign ?up|submit|yes/i.test(text(btn))) continue;   // never consent, never sign up
     btn.setAttribute('data-radar-target', 'dismiss'); root.setAttribute('data-radar-popup', '1');
     return {kind, text: t.slice(0, 60), button: text(btn).slice(0, 30) || (btn.getAttribute('aria-label') || 'close')};

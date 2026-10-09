@@ -575,6 +575,16 @@ Bench `20261008T183333Z`: 33 tested, 26 healthy / 7 degraded / 0 down. Root caus
 
 **Own server, first runs (9 Oct, Contabo Mumbai, runner `radar-vmi3647713`):** `demo3 --quick` = all 3 stores DOWN, every failure `HTTP 429` on `/products/<h>.js`; with `--workers 1` the first store passed and the next two hit 429 again, so Shopify gives this datacenter IP a smaller cumulative request budget than the Mac or GitHub's rotating IPs. v0.19: (1) 429 waits 1, 3, 8, 20 s (or Retry-After, max 30 s); still 429 = `RateLimited` → test BLOCKED with the reason, never a store failure, no incident, run never "down"; a page load answering 429 waits 8 s and retries once; (2) `/products/<h>.js` answers cached per process for 2 min (checks asked the same product 3-4 times per page). `/cart.js` never cached. Mocks `rate_limited` (v0.18: DOWN; v0.19: BLOCKED) and `rate_limited_once`.
 
+**Cloud cycle 1 (9 Oct 11:30 IST, GitHub machines, 6 in parallel, `bench stores/bench.txt --quick`, v0.19, 20 min):** 69 store runs: 55 healthy / 7 degraded / 3 down / 2 unsupported / 1 blocked / 1 unreachable. suta, soulflower mobile, wellbeingnutrition and the soft-404 stores verified fixed. New Radar issues, fixed in v0.19 (each with a mock that fails on the previous code):
+
+| Issue | Stores | Fix | Mock |
+|---|---|---|---|
+| Shopify answered 503 'Something went wrong' for ~2 min (06:02-06:04 UTC) on 3 demo stores from 3 machines; retries seconds apart confirmed it (2 down, 1 unreachable, 2 flaky) | colorblock, spotlight, taste | 5xx homepage waited out (20 s, 60 s); a test whose try saw a 5xx store page (main frame, also via clicks) is re-checked after 20 s / 60 s; a pass after that = pass with a note, not flaky. A store still failing after that is confirmed as before | `server_blip`, guard `products_down` |
+| A layer over the product image intercepted the click; the click helper raised before the "other link" fallback ran | bummer (desktop, 3/3) | an intercepted click counts as "did nothing": click again, then the product's other link; the first error is kept if nothing works | `slider_over_image` |
+| Popup whose only close control is a bare "×" in a div (no button): not seen as a popup at all | soulflower desktop (new 'It's Our Birthday' popup) | unnamed full-screen layers qualify with a bare ×; that × is clicked; Escape when a big fixed layer still covers every card | `div_x_popup` |
+
+Store findings (Radar right): foxtale and plumgoodness list catalog products whose pages are hidden (all 3 sampled candidates on foxtale).
+
 **Decision (9 Oct, Anmol's TO-DO):** SEO findings never make a store degraded or down and never alert. `broken_price` mock now passes with an SEO warning (was a confirmed failure).
 
 ## 5. Self-healing locators

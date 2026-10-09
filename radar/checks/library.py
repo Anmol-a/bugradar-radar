@@ -1337,6 +1337,17 @@ def _why_none(got: dict | None, where: str) -> str:
     return f"none on {where} ({got['total']} links: {why})"
 
 
+BIG_FIXED_LAYER_JS = r"""() => { const vw = innerWidth, vh = innerHeight;
+  for (const [x, y] of [[vw / 2, vh / 2], [vw / 3, vh / 3], [2 * vw / 3, 2 * vh / 3]]) {
+    let e = document.elementFromPoint(x, y);
+    while (e && e.shadowRoot) { const i = e.shadowRoot.elementFromPoint(x, y); if (!i || i === e) break; e = i; }
+    for (let n = e; n && n !== document.body; n = n.parentNode || n.host) {
+      if (!(n instanceof Element)) continue;
+      const s = getComputedStyle(n), r = n.getBoundingClientRect();
+      if ((s.position === 'fixed') && r.width * r.height >= 0.25 * vw * vh && !n.closest('header, nav')) return true; } }
+  return false; }"""
+
+
 def _pick(ctx: Ctx, sel: str, href_re: str | None = None, prefer=(), exclude: str | None = NOT_SHOPPING,
           second_pass: bool = True):
     """First element a shopper could actually click: visible, enabled, not covered, on screen.
@@ -1347,6 +1358,15 @@ def _pick(ctx: Ctx, sel: str, href_re: str | None = None, prefer=(), exclude: st
         ctx.sess.page.wait_for_timeout(1200)
         _dismiss(ctx)
         got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
+    if got and got.get("none") and second_pass and any(k.startswith("covered by") for k in got.get("why", {})) \
+            and ctx.sess.evaluate(BIG_FIXED_LAYER_JS):
+        # every card is covered by a large fixed layer our rules could not close (soulflower.in's 'It's Our Birthday'
+        # scratch popup, 9 Oct): Escape closes most modals and never consents to anything
+        ctx.sess.page.keyboard.press("Escape")
+        ctx.sess.page.wait_for_timeout(500)
+        got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
+        if not got.get("none"):
+            got["overlay"] = "pressed Escape to close a layer covering the cards"
     if got and got.get("none") and any(k.startswith("covered by") for k in got.get("why", {})):
         closed = _llm_close_overlay(ctx)            # re-check after triage only
         if closed:
@@ -1480,7 +1500,17 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
         clicked = _handle(got["href"])
         listing = page.url
         first = ctx.sess.evaluate(MARK_TRIED_JS)
-        _click_picked(ctx, got)
+        errors: list[str] = []
+
+        def try_click(g):
+            # A click another layer intercepts is, for the shopper, a click that did nothing: the fallbacks below
+            # (click again, the product's other link) must still get their turn (bummer.in, 9 Oct: a slider layer over
+            # the image link; v0.19 raised here and never tried the product name).
+            try:
+                _click_picked(ctx, g)
+            except AssertionError as e:
+                errors.append(str(e))
+        try_click(got)
         again = ""
         if _handle(page.url) != clicked and page.url == listing:
             # nothing happened: the grid was re-rendered under the click (dotandkey.com, bench 3). A shopper clicks again.
@@ -1489,7 +1519,7 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
             if not got2.get("none"):
                 clicked = _handle(got2["href"])
                 ctx.sess.evaluate(MARK_TRIED_JS)
-                _click_picked(ctx, got2)
+                try_click(got2)
                 again = " (first click did not open it: the page re-rendered; clicked again)"
         if _handle(page.url) != clicked and page.url == listing and clicked:
             # Still nothing: that LINK does nothing when clicked (thefunclab.com, bench 10: the homepage slider's
@@ -1499,11 +1529,13 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
             got3 = _pick(ctx, "a[href]", rf"/products/{re.escape(clicked)}(?:[/?#]|$)", [f"/products/{clicked}"],
                          exclude=NOT_SHOPPING + ", [data-radar-tried]", second_pass=False)
             if not got3.get("none"):
-                _click_picked(ctx, got3)
+                try_click(got3)
                 if _handle(page.url) == clicked:
                     dead["link"] = (f"{first or 'a product link'} on {_path(listing)} did nothing when clicked (twice); "
                                     f"the product's other link ({got3['text']!r}) opened it")
                     again = " (its first link did nothing; the product name opened it)"
+        if _handle(page.url) != clicked and errors:
+            raise AssertionError(errors[0])           # same evidence as before when nothing worked
         ctx.expect("opened the product that was clicked", f"/products/{clicked}", _path(page.url),
                    _handle(page.url) == clicked)
         known = "known in-stock product" if clicked in product_handles else "first clickable product"

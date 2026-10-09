@@ -86,6 +86,18 @@ Modes (to prove Radar catches and heals what it should):
                    v0.13's finder could not see into shadow DOM) -> popup closed by its x, journey PASSES first try
   dead_image_link  collection cards have an IMAGE link and a NAME link; the theme's slider script cancels mousedown/click on
                    the image (thefunclab.com, bench 10) -> journey clicks the name, PASSES, store WARNING names the dead link
+  slider_over_image  collection cards: a slider layer (not a link) sits OVER the product image link and swallows clicks;
+                   the product NAME link below opens it (bummer.in /collections/men, 9 Oct cloud run: v0.19 failed 3/3 with
+                   'could not click: ... intercepts pointer events' and never tried the name link) -> journey PASSES via the
+                   name, store WARNING names the dead image link
+  server_blip      the whole store answers HTTP 503 'Something went wrong' to every page for 3 s, starting the first time a
+                   collection page is asked for (mid-journey), then normally (9 Oct cloud run: 3 Shopify demo stores 503 within the same 2 minutes; retries seconds apart
+                   confirmed it) -> Radar waits before re-checking: homepage and tests PASS
+  products_down    every product PAGE answers HTTP 503, always (a real outage) -> product tests are still CONFIRMED failures
+                   after Radar's spaced re-checks; never softened into a hiccup
+  div_x_popup      every page opens a 'It's Our Birthday' scratch-to-win popup whose only close control is a bare '×' in a
+                   <div> (no button, no label, no telling class) (soulflower.in, 9 Oct cloud run) -> closed by its ×,
+                   never 'Reveal my reward'; journey PASSES first try
   flaky_data       every /products/<h>.js answers an EMPTY body the first time it is asked (palmonas.com, bench 11) and
                    JSON after that -> Radar retries the data request; tests PASS on the first attempt
   sticky_buy_only  product pages: the form's own button is hidden on desktop; the same form's button shows in a sticky
@@ -188,6 +200,18 @@ class Handler(BaseHTTPRequestHandler):
         return c["cart"].value if "cart" in c else None
 
     OVERLAYS = {
+        "div_x_popup": """<script>
+if (!document.cookie.includes('bday=1')) setTimeout(() => {
+  const d = document.createElement('div');
+  d.style.cssText = 'position:fixed;inset:0;z-index:80;background:rgba(0,0,0,.45);display:flex;align-items:center;justify-content:center';
+  d.innerHTML = '<div style="position:relative;background:#fff;width:640px;height:520px;border-radius:16px">'
+    + '<div class="bd-x" style="position:absolute;top:12px;right:12px;width:22px;height:22px;cursor:pointer;text-align:center">×</div>'
+    + "<h2>It's Our Birthday</h2><p>Scratch to see what you won.</p><div class='scratch' style='height:200px;background:pink'>SCRATCH TO WIN</div>"
+    + '<span class="reveal" style="text-decoration:underline;cursor:pointer">Reveal my reward</span></div>';
+  d.querySelector('.bd-x').onclick = () => { document.cookie = 'bday=1;path=/'; d.remove(); };
+  d.querySelector('.reveal').onclick = () => { location.href = '/pages/tried-it'; };
+  document.body.appendChild(d); }, 300);
+</script>""",
         "newsletter_popup": """<script>
 if (!document.cookie.includes('nl_closed=1')) setTimeout(() => {
   const d = document.createElement('div');
@@ -314,6 +338,13 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
 document.querySelectorAll('a.card__media').forEach(a => ['mousedown', 'mouseup', 'click'].forEach(t =>
   a.addEventListener(t, e => e.preventDefault())));   // drag-to-scroll slider: the image never navigates
 </script></body>""")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "slider_over_image" and path_now.startswith("/collections/"):
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
+                f'<div class="card-wrapper" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
+                f'<div class="card__media" style="position:relative;height:200px">'
+                f'<a class="card__img" href="/products/{m.group(1)}" style="display:block;height:200px;background:#eee">{m.group(2)}</a>'
+                f'<div class="swiper-wrapper" style="position:absolute;inset:0;z-index:2"></div></div>'
+                f'<a class="card__title" href="/products/{m.group(1)}">{m.group(3)}</a></div>'), body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "rerender_grid" and path_now.startswith("/collections/"):
             body = body.replace("<main>", '<main><div id="grid">', 1).replace("</main>", "</div></main>", 1)
             body = body.replace("</body>", """<script>
@@ -410,6 +441,17 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
         Handler.SEEN_UA.add(self.headers.get("User-Agent") or "")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
+        if self.mode == "products_down" and path.startswith("/products/") and not path.endswith((".js", ".json")):
+            return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
+        if self.mode == "server_blip" and (path == "/" or path.startswith(("/products/", "/collections/"))) \
+                and not path.endswith((".js", ".json")):
+            import time as _t
+            st = type(self).__dict__.get("BLIP") or {}
+            type(self).BLIP = st
+            if path.startswith("/collections/"):
+                st.setdefault("t0", _t.time())
+            if "t0" in st and _t.time() - st["t0"] < 3.0:
+                return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
         cid, new = self._cart()
         if self.mode == "password" and path not in ("/password", "/robots.txt") and not path.startswith("/cdn/"):
             self.send_response(302)
