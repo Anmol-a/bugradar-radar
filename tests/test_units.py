@@ -463,6 +463,19 @@ def test_user_agent_always_carries_radars_name():
     assert not r.allowed("https://x.in/")            # the store's rule for BugRadar still applies
 
 
+def test_emulated_platform_matches_the_user_agent_sent():
+    """9 Oct: speed snippets hold the theme for 'Linux x86_64' (PageSpeed). Radar's navigator.platform must match the
+    device its UA names: desktop = Windows Chrome on every host, Pixel 7 = Android, never the runner's Linux."""
+    from radar.core.browser import PLATFORM, browser_user_agent, emulated_system, DESKTOP_SYSTEM
+    me = "BugRadar/0.1 (+bugradar.in)"
+    pixel = "Mozilla/5.0 (Linux; Android 14; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.6422.0 Mobile Safari/537.36"
+    assert PLATFORM[emulated_system(None)] == "Win32"
+    assert PLATFORM[emulated_system(pixel)] == "Linux armv81"
+    assert PLATFORM[emulated_system("Mozilla/5.0 (iPhone; CPU iPhone OS 17_0 like Mac OS X)")] == "iPhone"
+    desk = browser_user_agent(me, "141.0.1", "browser", system=DESKTOP_SYSTEM)
+    assert "Windows NT 10.0" in desk and desk.endswith(me)
+
+
 def test_search_term_skips_brand_plurals_and_promo_words():
     """plumgoodness.com, bench 9: 'plums' (brand 'Plum' + s) matched all 246 products by brand; 'mystery' came from
     a promo item the store's search app leaves out. Neither is a word a shopper's search can be judged by."""

@@ -449,6 +449,21 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
     n.textContent = o.textContent; o.replaceWith(n); }); };
   ['mousemove', 'touchstart', 'wheel', 'keydown'].forEach(t => addEventListener(t, run, {once: true, passive: true})); })();
 </script></body>""")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "pagespeed_gate":
+            # a 'speed' snippet treats every Linux x86_64 browser as Google PageSpeed / Lighthouse and never runs the
+            # theme's scripts for it: html stays 'no-js', the price stays hidden, the search app never renders
+            # (bonkerscorner.com, bellavitaorganic.com, baccabucci.com, re-run 9 Oct: the quoted script says
+            # 'Detect Google PageSpeed / Lighthouse testing bot (Linux x86_64 ...'). Real shoppers' phones and PCs
+            # report Android ('Linux armv81'), iPhone, Win32 or MacIntel and get the full page.
+            body = body.replace("<html>", '<html class="no-js">', 1).replace("<script>", '<script type="text/delayed">')
+            body = body.replace("</head>", "<style>html.no-js .price{display:none}</style></head>", 1)
+            body = body.replace("</body>", """<script>(function () {
+  // 2. Detect Google PageSpeed / Lighthouse testing bot (Linux x86_64 desktop)
+  if (navigator.platform === 'Linux x86_64') return;
+  document.documentElement.classList.remove('no-js');
+  document.querySelectorAll('script[type="text/delayed"]').forEach(o => { const n = document.createElement('script');
+    n.textContent = o.textContent; o.replaceWith(n); }); })();
+</script></body>""")
         data = body if isinstance(body, bytes) else body.encode()
         self.send_response(code)
         self.send_header("Content-Type", ctype)
@@ -621,7 +636,7 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             if self.mode == "search_misses" and term == "ceramic":
                 hits = [p for p in PRODUCTS if p["handle"] == "wooden-spoon-set"]
             found = "".join(card(p) for p in hits) or "<p>No results</p>"
-            if self.mode == "delayed_scripts":        # the search app renders from a (delayed) theme script
+            if self.mode in ("delayed_scripts", "pagespeed_gate"):   # the search app renders from a (delayed) theme script
                 return self._send(200, page("Custom Search | Mock Store", f'<div id="app-results"></div>'
                                             f'<template id="app-found">{found}</template><script>'
                                             f'document.getElementById("app-results").innerHTML = '
