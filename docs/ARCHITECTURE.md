@@ -690,6 +690,35 @@ our robots fetch is refused by the store's CDN). **Radar false failures: 6/28 st
 
 Watch: fireboltt 'every sampled product is sold out' on both devices (possible location (US runner)).
 
+## 4w. Loop cycle 4 (10 Oct 2026, 00:47 IST, automated): search apps that never render; robots.txt evidence
+
+**Problem (new30c held-out run 37976141781, 2 stores):** ptron.in (both devices) and kushals.com (mobile): the search
+page title carried Shopify's own count ('Search: 513 results found for "sonor"', '1000 results found for "zircon"'),
+but the search app that owns the results area left it empty (ptron: grey block; kushals: white page, 1 stray link)
+after the 10 s search-app wait. Radar said "0 results" / "0 of 1 mention the term": a false failure, since the
+store's search works.
+
+**Fix (`radar/checks/library.py` `_search_once`):** (1) when nothing relevant shows, Radar scrolls the results page
+like a shopper and waits again (apps that render on the first scroll); (2) if still nothing relevant AND the results
+area is (nearly) empty while Shopify's title count says more (`_title_count`), Radar asks Shopify's own predictive
+search (`/search/suggest.json`, fetched from the page, the store's own endpoint). If it finds products with the word,
+the search step passes with that evidence and a separate **warning** `search_app_rendered` says "search app did not
+render results for '<word>' in Radar's browser … Shopify's own search finds N". Unrelated results with no such count
+stay a search miss (mock `search_misses`, foxtale 'purify'). Mocks: `search_app_scroll` (results on first scroll) and
+`search_app_never` (never renders; suggest.json finds the word): both fail on the old code, pass on the new; unit test
+`test_title_count_reads_shopifys_search_count`. Full e2e 83/83 green.
+
+**Verified (run 37981589190):** kushals.com healthy desktop + mobile (mobile = the warning, Shopify finds 10 for
+'zircon'); ptron.in desktop healthy (warning: 0 shown, Shopify finds 6 for 'sonor'). ptron mobile still degraded by a
+DIFFERENT step: 'product name shown: none', while the screenshot shows the name under the gallery (the new30c desktop
+run needed LLM help for the same name). One store → watch (suspect: Radar's 'another product's card' rule on a box of
+sibling-colour product links). Web Bot Auth check: 401.
+
+**robots.txt 'no answer' (chemistatplay.com, neemli.in):** Radar now records the network error. Both were
+`getaddrinfo ENOTFOUND`: the domains do not exist (list errors in new30c, written without a web pre-check). Radar's
+note now says "the store's domain does not resolve (DNS: no such host): check the address" instead of "temporary
+server problem". new30c is scored on 26 stores: **first-run score 6/26 Radar false-failure stores**.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).

@@ -132,7 +132,9 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
         why = f"HTTP {code}" if code else ("no answer: " + getattr(sess.robots, "error", "") if getattr(sess.robots, "error", "") else "no answer")
         sm.notes.append(f"robots.txt could not be fetched ({why}, tried 3 times); "
                         "under the robots.txt standard (RFC 9309) that means 'do not crawl', so nothing was tested "
-                        "this run. Usually a temporary server problem on the store's side.")
+                        + ("this run. The store's domain does not resolve (DNS: no such host): check the address."
+                           if "ENOTFOUND" in getattr(sess.robots, "error", "") else
+                           "this run. Usually a temporary server problem on the store's side."))
         return sm
     if not sm.robots_loaded:
         sm.notes.append("store has no robots.txt (HTTP 4xx); everything allowed (RFC 9309)")
