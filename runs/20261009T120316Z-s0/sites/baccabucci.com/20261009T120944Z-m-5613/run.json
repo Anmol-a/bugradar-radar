@@ -1,0 +1,1977 @@
+{
+  "run_id": "20261009T120944Z-m-5613",
+  "site_id": "baccabucci.com",
+  "base_url": "https://www.baccabucci.com",
+  "device": "mobile",
+  "started_at": "2026-10-09T12:09:44+00:00",
+  "finished_at": "2026-10-09T12:14:46+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.88s",
+              "error": null,
+              "secs": 7.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 115 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/big-festive-sale (28 products)",
+              "error": null,
+              "secs": 9.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/big-festive-sale ('\ud83d\udd25BIG FESTIVE SALE IS LIVE \u2014 60% OFF + EXTRA 7.5% OFF*')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/big-festive-sale",
+                  "actual": "/collections/big-festive-sale",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 80 candidates \u2192 /collections/big-festive-sale/products/bacca-bucci-colossus",
+              "error": null,
+              "secs": 7.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/big-festive-sale/products/bacca-bucci-colossus ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/bacca-bucci-colossus",
+                  "actual": "/collections/big-festive-sale/products/bacca-bucci-colossus",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'COLOSSUS', selected variant 48596535804150 at \u20b92,199.00",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/collections/big-festive-sale/products/bacca-bucci-colossus",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/bacca-bucci-colossus.js with variants",
+                  "actual": "'COLOSSUS', 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,199.00, got not on page (\u20b92,199.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+              "secs": 1.96,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "COLOSSUS",
+                  "actual": "'COLOSSUS' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,199.00",
+                  "actual": "not on page (\u20b92,199.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,199.00, got not on page (\u20b92,199.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 31.98,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.69,
+              "load": 1.69,
+              "lcp": 0.72
+            },
+            {
+              "url": "/collections/big-festive-sale",
+              "ttfb": 0.02,
+              "dcl": 1.25,
+              "load": 1.39,
+              "lcp": 0.86
+            },
+            {
+              "url": "/collections/big-festive-sale/products/bacca-bucci-colossus",
+              "ttfb": 0.22,
+              "dcl": 1.06,
+              "load": 1.06,
+              "lcp": 0.8
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.73s",
+              "error": null,
+              "secs": 7.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 115 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/big-festive-sale (28 products)",
+              "error": null,
+              "secs": 8.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/big-festive-sale ('\ud83d\udd25BIG FESTIVE SALE IS LIVE \u2014 60% OFF + EXTRA 7.5% OFF*')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/big-festive-sale",
+                  "actual": "/collections/big-festive-sale",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 80 candidates \u2192 /collections/big-festive-sale/products/bacca-bucci-colossus",
+              "error": null,
+              "secs": 7.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/big-festive-sale/products/bacca-bucci-colossus ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/bacca-bucci-colossus",
+                  "actual": "/collections/big-festive-sale/products/bacca-bucci-colossus",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'COLOSSUS', selected variant 48596535804150 at \u20b92,199.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/collections/big-festive-sale/products/bacca-bucci-colossus",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/bacca-bucci-colossus.js with variants",
+                  "actual": "'COLOSSUS', 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,199.00, got not on page (\u20b92,199.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+              "secs": 1.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "COLOSSUS",
+                  "actual": "'COLOSSUS' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,199.00",
+                  "actual": "not on page (\u20b92,199.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,199.00, got not on page (\u20b92,199.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 30.41,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.56,
+              "load": 1.68,
+              "lcp": 0.65
+            },
+            {
+              "url": "/collections/big-festive-sale",
+              "ttfb": 0.02,
+              "dcl": 1.28,
+              "load": 1.28,
+              "lcp": 0.71
+            },
+            {
+              "url": "/collections/big-festive-sale/products/bacca-bucci-colossus",
+              "ttfb": 0.24,
+              "dcl": 0.97,
+              "load": 0.97,
+              "lcp": 0.77
+            }
+          ]
+        }
+      ],
+      "incident_signature": "baccabucci.com|journey.shopper|shows_title_price_image|mobile",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The product price is not visible to shoppers on the product page (the price exists only in a hidden element because theme scripts didn\u2019t run), so customers cannot see the price before adding to cart.",
+        "evidence": "Visible page text and screenshot show the product name COLOSSUS and Add to Cart button, but no visible price; the only occurrence of \u201c\u20b92,199.00\u201d is inside a hidden element (<div.price__regular>) and theme scripts had not run (html.no-js), so the price is not shown to a shopper on this screen size."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.4s",
+              "error": null,
+              "secs": 8.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 115 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.4s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.4s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.26,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.22,
+              "load": 2.35,
+              "lcp": 1.32
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/men",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.6s",
+              "error": null,
+              "secs": 7.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shoes for Men | Sneakers | Boots | Sports | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3308 chars, 68 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/bacca-bucci-sneakers",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.46s",
+              "error": null,
+              "secs": 7.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sneakers for Men | High Top Sneakers & Casual Sneakers | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6928 chars, 60 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/sports-and-athleisure-footw",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.11s",
+              "error": null,
+              "secs": 7.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sports Shoes for Men | Running Gym & Athleisure Shoes | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7567 chars, 63 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/boots-for-men",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.26s",
+              "error": null,
+              "secs": 7.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Boots for Men Online | Trekking, Hiking & Waterproof Boots | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6481 chars, 63 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 29.35,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/collections/men"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/collections/men"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/collections/men"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/collections/men",
+              "ttfb": 0.25,
+              "dcl": 1.42,
+              "load": 1.62,
+              "lcp": 1.11
+            },
+            {
+              "url": "/collections/bacca-bucci-sneakers",
+              "ttfb": 0.19,
+              "dcl": 1.26,
+              "load": 1.27,
+              "lcp": 0.95
+            },
+            {
+              "url": "/collections/sports-and-athleisure-footwear",
+              "ttfb": 0.19,
+              "dcl": 0.84,
+              "load": 1.09,
+              "lcp": 0.67
+            },
+            {
+              "url": "/collections/boots-for-men",
+              "ttfb": 0.19,
+              "dcl": 1.0,
+              "load": 1.07,
+              "lcp": 0.81
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.bacca-bucci-best-seller-collection",
+      "suite": "catalog",
+      "title": "Collection 'Best Seller' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.31s",
+              "error": null,
+              "secs": 7.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Footwear for Men | Bacca Bucci | Shop Bestseller Collection",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5332 chars, 69 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "28 products listed",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.91,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/collections/bacca-bucci-best-seller-collection"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/collections/bacca-bucci-best-seller-collection"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/collections/bacca-bucci-best-seller-collection"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/collections/bacca-bucci-best-seller-collection",
+              "ttfb": 0.04,
+              "dcl": 1.06,
+              "load": 1.33,
+              "lcp": 0.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.bacca-bucci-balance-ultra-light-rebound-",
+      "suite": "product",
+      "title": "PDP 'BALANCE'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.01s",
+              "error": null,
+              "secs": 6.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "BALANCE",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4831 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4",
+                  "actual": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'BALANCE', selected variant 51649165033718 at \u20b91,799.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4.js with variants",
+                  "actual": "'BALANCE', 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b91,799.00, got not on page (\u20b91,799.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+              "secs": 1.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "BALANCE",
+                  "actual": "'BALANCE' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,799.00",
+                  "actual": "not on page (\u20b91,799.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b91,799.00, got not on page (\u20b91,799.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+          "screenshot": "product.pdp.bacca-bucci-balance-ultra-light-rebound-.a1.png",
+          "trace": "product.pdp.bacca-bucci-balance-ultra-light-rebound-.a1_trace.zip",
+          "secs": 8.87,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4?variant=51649165033718"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4?variant=51649165033718"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4?variant=51649165033718"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4?variant=51649165033718",
+              "ttfb": 0.22,
+              "dcl": 0.91,
+              "load": 1.01,
+              "lcp": 0.91
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.11s",
+              "error": null,
+              "secs": 5.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "BALANCE",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4831 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4",
+                  "actual": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'BALANCE', selected variant 51649165033718 at \u20b91,799.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4.js with variants",
+                  "actual": "'BALANCE', 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b91,799.00, got not on page (\u20b91,799.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+              "secs": 1.93,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "BALANCE",
+                  "actual": "'BALANCE' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,799.00",
+                  "actual": "not on page (\u20b91,799.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b91,799.00, got not on page (\u20b91,799.00 is only inside a hidden element <div.price__regular>, not shown on this screen size; theme scripts had not run (html.no-js))",
+          "screenshot": "product.pdp.bacca-bucci-balance-ultra-light-rebound-.a2.png",
+          "trace": "product.pdp.bacca-bucci-balance-ultra-light-rebound-.a2_trace.zip",
+          "secs": 8.73,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4?variant=51649165033718"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4?variant=51649165033718"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4?variant=51649165033718"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4?variant=51649165033718",
+              "ttfb": 0.28,
+              "dcl": 1.02,
+              "load": 1.1,
+              "lcp": 0.92
+            }
+          ]
+        }
+      ],
+      "incident_signature": "baccabucci.com|product.pdp.bacca-bucci-balance-ultra-light-rebound-|shows_title_price_image|mobile",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The product price is not visible to shoppers on this page/viewport (it's only present inside a hidden element while theme scripts that reveal the price did not run), so customers cannot see the price before adding to cart.",
+        "evidence": "Visible page text and screenshot show the product title and Add to Cart but no visible price; robot found the expected \u20b91,799.00 only inside a hidden <div.price__regular> and the page HTML contains html.no-js (theme scripts had not run), so price is present in HTML but not visible to shoppers on thi"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.balance",
+      "suite": "search",
+      "title": "Search for 'balance' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.17s",
+              "error": null,
+              "secs": 7.96,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 115 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "warn",
+              "detail": null,
+              "error": "product results: expected \u2265 1, got 0",
+              "secs": 12.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "0",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open_homepage_again",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.65s",
+              "error": null,
+              "secs": 8.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 123 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products_other_word",
+              "status": "warn",
+              "detail": null,
+              "error": "product results: expected \u2265 1, got 0",
+              "secs": 13.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "0",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open_homepage_third",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.12s",
+              "error": null,
+              "secs": 7.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 123 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products_third_word",
+              "status": "fail",
+              "detail": null,
+              "error": "product results: expected \u2265 1, got 0",
+              "secs": 12.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "0",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "returns_relevant_products_third_word",
+          "error": "product results: expected \u2265 1, got 0",
+          "screenshot": "search.balance.a1.png",
+          "trace": "search.balance.a1_trace.zip",
+          "secs": 68.25,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.01,
+              "load": 2.01,
+              "lcp": 1.18
+            },
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 1.42,
+              "load": 1.51,
+              "lcp": 0.94
+            },
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 0.87,
+              "load": 0.93,
+              "lcp": 0.38
+            },
+            {
+              "url": "/pages/search?q=stratos",
+              "ttfb": 0.03,
+              "dcl": 0.51,
+              "load": 0.51,
+              "lcp": 0.36
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.63s",
+              "error": null,
+              "secs": 7.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 115 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "warn",
+              "detail": null,
+              "error": "product results: expected \u2265 1, got 0",
+              "secs": 12.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "0",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open_homepage_again",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.15s",
+              "error": null,
+              "secs": 7.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 123 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products_other_word",
+              "status": "warn",
+              "detail": null,
+              "error": "product results: expected \u2265 1, got 0",
+              "secs": 12.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "0",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open_homepage_third",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.15s",
+              "error": null,
+              "secs": 7.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 123 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products_third_word",
+              "status": "fail",
+              "detail": null,
+              "error": "product results: expected \u2265 1, got 0",
+              "secs": 12.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "0",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "returns_relevant_products_third_word",
+          "error": "product results: expected \u2265 1, got 0",
+          "screenshot": "search.balance.a2.png",
+          "trace": "search.balance.a2_trace.zip",
+          "secs": 66.92,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.28,
+              "load": 1.67,
+              "lcp": 0.68
+            },
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 0.92,
+              "load": 1.01,
+              "lcp": 0.44
+            },
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 0.93,
+              "load": 0.95,
+              "lcp": 0.35
+            },
+            {
+              "url": "/pages/search?q=stratos",
+              "ttfb": 0.04,
+              "dcl": 0.41,
+              "load": 0.45,
+              "lcp": 0.33
+            }
+          ]
+        }
+      ],
+      "incident_signature": "baccabucci.com|search.balance|returns_relevant_products_third_word|mobile",
+      "triage": {
+        "verdict": "unsure",
+        "category": "other",
+        "reason": "The page capture shows no product listings but also contains no explicit error message or indication the store is broken; further checks (e.g., different viewport, closing overlays, or checking search API) are needed to determine if the robot missed results or the store returned none.",
+        "evidence": "Visible page text includes site header, footer and site content but shows no product listings or any 'no results' message; robot searched https://baccabucci.com/pages/search?q=stratos and the page text captured begins with promotional banners and contact/footer content with no product elements prese"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.57s",
+              "error": null,
+              "secs": 8.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3448 chars, 115 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "56: 'Best Shoes Brands in India for Men & Women | Bacca Bucci'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Bacca Bucci is one of the best shoe brands in India, known for stylish",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "142: 'Bacca Bucci is one of the best shoe brands in India, known f'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://baccabucci.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://baccabucci.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://baccabucci.com/cdn/shop/files/LOGO2.png?v=1708593642",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.64,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 2.42,
+              "load": 2.42,
+              "lcp": 1.49
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.12s",
+              "error": null,
+              "secs": 5.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "BALANCE",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4831 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 7: 'BALANCE'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "7: 'BALANCE'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 719: 'Ultra-Light Jacquard Performance Upper: Crafted using a full'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "719: 'Ultra-Light Jacquard Performance Upper: Crafted using a full'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "BALANCE",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://baccabucci.com/cdn/shop/files/BALANCE_LILAC_d4fb5c7d-c45f-4653-a4f8-cbfba30523cd.png?v=1789459085",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.01,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "The resource https://kwikcart.gokwik.co/kwikcart/side-cart.js was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is p",
+              "url": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/Marble_Clog_Banner-Recovered.jpg_result.webp?v=1789627474 was preloaded using link preload but not used within a few seconds from the window's load event. Please make su",
+              "url": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://baccabucci.com/cdn/shop/files/mobile_banner_clog_2.jpg_result.webp?v=1789627409&width=768 was preloaded using link preload but not used within a few seconds from the window's load event. Please make ",
+              "url": "https://baccabucci.com/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/products/bacca-bucci-balance-ultra-light-rebound-sports-sneakers-4",
+              "ttfb": 0.31,
+              "dcl": 1.04,
+              "load": 1.14,
+              "lcp": 0.92
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 5.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.47,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/2057"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.24,
+              "dcl": 0.72,
+              "load": 0.82,
+              "lcp": 0.66
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 3,
+    "input_tokens": 11318,
+    "output_tokens": 413,
+    "est_usd": 0.003655,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Best Shoes Brands in India for Men & Women | Bacca Bucci",
+    "theme": null,
+    "checkout_app": "GoKwik",
+    "access": "open",
+    "nav": 25,
+    "collections": 48,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/pages/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "19 product(s) not listed in the browsed collections are tested last (e.g. bacca-bucci-trekzon-trekking-trail-running-shoes-with-allterrax-grip-outsole-3)"
+  ],
+  "perf": {
+    "pages": 12,
+    "median_load_secs": 1.12,
+    "slowest": {
+      "url": "/",
+      "load_secs": 2.42
+    },
+    "console_errors": 0,
+    "console_warnings": 3,
+    "failed_requests": 1
+  },
+  "counts": {
+    "pass": 6,
+    "flaky": 0,
+    "confirmed_fail": 3,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
