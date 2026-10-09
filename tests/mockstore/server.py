@@ -98,6 +98,9 @@ Modes (to prove Radar catches and heals what it should):
   div_x_popup      every page opens a 'It's Our Birthday' scratch-to-win popup whose only close control is a bare '×' in a
                    <div> (no button, no label, no telling class) (soulflower.in, 9 Oct cloud run) -> closed by its ×,
                    never 'Reveal my reward'; journey PASSES first try
+  scroll_reveal    collection product cards are invisible (opacity 0, reveal animation) until the shopper scrolls the page
+                   (reequil.com '151 not visible', wearcomet.com, held-out run 9 Oct) -> journey scrolls like a shopper,
+                   PASSES
   flaky_data       every /products/<h>.js answers an EMPTY body the first time it is asked (palmonas.com, bench 11) and
                    JSON after that -> Radar retries the data request; tests PASS on the first attempt
   sticky_buy_only  product pages: the form's own button is hidden on desktop; the same form's button shows in a sticky
@@ -345,6 +348,10 @@ document.querySelectorAll('a.card__media').forEach(a => ['mousedown', 'mouseup',
                 f'<a class="card__img" href="/products/{m.group(1)}" style="display:block;height:200px;background:#eee">{m.group(2)}</a>'
                 f'<div class="swiper-wrapper" style="position:absolute;inset:0;z-index:2"></div></div>'
                 f'<a class="card__title" href="/products/{m.group(1)}">{m.group(3)}</a></div>'), body)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "scroll_reveal" and path_now.startswith("/collections/"):
+            body = body.replace("</body>", """<style>a.card{opacity:0;transition:opacity .2s} a.card.aos-animate{opacity:1}</style>
+<script>addEventListener('scroll', () => document.querySelectorAll('a.card').forEach(a => a.classList.add('aos-animate')),
+  {once: true});</script></body>""")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "rerender_grid" and path_now.startswith("/collections/"):
             body = body.replace("<main>", '<main><div id="grid">', 1).replace("</main>", "</div></main>", 1)
             body = body.replace("</body>", """<script>

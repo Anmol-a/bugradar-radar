@@ -952,3 +952,9 @@ def test_popup_closed_by_a_bare_x_in_a_div(tmp_path):
     run, _ = _scan("div_x_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     j = _case(run, "journey.")
     assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
+
+
+def test_cards_hidden_until_the_shopper_scrolls_are_found(tmp_path):
+    run, _ = _scan("scroll_reveal", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    j = _case(run, "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
