@@ -292,7 +292,32 @@ class Session:
                 pass
             self.page.wait_for_timeout(600)
             if self.page.url == before:
+                self.first_touch()
                 return
+
+    DELAYED_JS = r"""() => { const t = /^(text\/javascript|application\/javascript|module|importmap|speculationrules|application\/(ld\+)?json|text\/(x-)?template|text\/html)$/i;
+      return document.documentElement.classList.contains('no-js')
+        || [...document.scripts].some(s => s.type && !t.test(s.type.trim()) && (s.src || s.getAttribute('data-src') || s.textContent.length > 40)); }"""
+
+    def first_touch(self):
+        """Speed apps hold the theme's scripts until the shopper's first interaction (mousemove / touch / wheel):
+        until then html stays 'no-js', prices and galleries stay hidden, search apps never render (baccabucci.com,
+        bellavitaorganic.com, 9 Oct). A shopper always moves or touches; when the page shows held scripts, Radar
+        moves the mouse along the left edge (no menus or exit-intent there) and wheels 0 px, then waits for them."""
+        try:
+            if not self.page.evaluate(self.DELAYED_JS):
+                return
+            vh = (self.page.viewport_size or {}).get("height", 800)
+            self.page.mouse.move(3, int(vh * 0.6))
+            self.page.mouse.move(8, int(vh * 0.6) + 6, steps=2)
+            self.page.mouse.wheel(0, 1)
+            for _ in range(10):                           # up to ~3 s for the held scripts to run
+                self.page.wait_for_timeout(300)
+                if not self.page.evaluate("() => document.documentElement.classList.contains('no-js')"):
+                    break
+            self.page.wait_for_timeout(600)
+        except Exception:  # noqa: BLE001  navigation during the nudge: the next settle round reads the new page
+            pass
 
     def step_shot(self, step: str) -> str | None:
         """Compressed viewport JPEG after a step (~60-120 KB). Returns the file name or None."""

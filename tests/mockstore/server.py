@@ -64,6 +64,10 @@ Modes (to prove Radar catches and heals what it should):
                    held-out new30b 9 Oct: Radar read the page at 0.8 s, '0 results') -> search PASSES
   search_app_popular  same, but 'popular products' (none matching the word) show until then (bellavitaorganic.com
                    'Custom Search': '0 of 23 mention the term') -> search PASSES
+  delayed_scripts  a speed app delays every theme script until the shopper's first mousemove / touch / wheel / key:
+                   html stays 'no-js' (price hidden by the theme's no-js CSS), window.Shopify undefined, search results
+                   rendered by a delayed script (baccabucci.com, bellavitaorganic.com: new30b + re-run 9 Oct, evidence
+                   'theme scripts had not run (html.no-js)') -> Radar moves the mouse like a shopper; product + search PASS
   search_misses    searching the first product's word returns only unrelated products (the word came from a
                    product the store hides: foxtale.in 'purify', bench 3) -> a second word is tried; the miss is a
                    WARNING, the search test PASSES on the second word
@@ -433,6 +437,18 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
                                 '<div style="position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:60">'
                                 '<a href="/pages/about" style="color:#fff">About us</a></div></details>', 1)
             body = body.replace('<a href="/collections/all">Shop all</a>', '')
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "delayed_scripts":
+            # a speed app delays EVERY theme script until the shopper's first interaction (mousemove, touch, wheel,
+            # key): html stays 'no-js', window.Shopify is undefined, the price block is hidden by the theme's no-js CSS
+            # and the search app has not rendered (baccabucci.com + bellavitaorganic.com, new30b + re-run 9 Oct)
+            body = body.replace("<html>", '<html class="no-js">', 1).replace("<script>", '<script type="text/delayed">')
+            body = body.replace("</head>", "<style>html.no-js .price{display:none}</style></head>", 1)
+            body = body.replace("</body>", """<script>(function () { let done = false; const run = () => { if (done) return; done = true;
+  document.documentElement.classList.remove('no-js');
+  document.querySelectorAll('script[type="text/delayed"]').forEach(o => { const n = document.createElement('script');
+    n.textContent = o.textContent; o.replaceWith(n); }); };
+  ['mousemove', 'touchstart', 'wheel', 'keydown'].forEach(t => addEventListener(t, run, {once: true, passive: true})); })();
+</script></body>""")
         data = body if isinstance(body, bytes) else body.encode()
         self.send_response(code)
         self.send_header("Content-Type", ctype)
@@ -605,6 +621,11 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             if self.mode == "search_misses" and term == "ceramic":
                 hits = [p for p in PRODUCTS if p["handle"] == "wooden-spoon-set"]
             found = "".join(card(p) for p in hits) or "<p>No results</p>"
+            if self.mode == "delayed_scripts":        # the search app renders from a (delayed) theme script
+                return self._send(200, page("Custom Search | Mock Store", f'<div id="app-results"></div>'
+                                            f'<template id="app-found">{found}</template><script>'
+                                            f'document.getElementById("app-results").innerHTML = '
+                                            f'document.getElementById("app-found").innerHTML;</script>'))
             if self.mode in ("search_app", "search_app_popular"):
                 # a search app renders results ~2.5 s after the page loads, from its own API (bonkerscorner, baccabucci:
                 # empty until then; bellavitaorganic: 'popular products' placeholders until then)
