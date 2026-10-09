@@ -1,0 +1,2402 @@
+{
+  "run_id": "20261009T073220Z-m-904e",
+  "site_id": "reequil.com",
+  "base_url": "https://www.reequil.com",
+  "device": "mobile",
+  "started_at": "2026-10-09T07:32:20+00:00",
+  "finished_at": "2026-10-09T07:41:18+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 14.44s",
+              "error": null,
+              "secs": 24.69,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Payday Sale | Upto 15% off + free gifts \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2430 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/all (60 products)",
+              "error": null,
+              "secs": 26.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/all ('Free Gifts Worth Up to \u20b9999 on Every Order')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "60",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "fail",
+              "detail": null,
+              "error": "product card a shopper can click: expected found, got none on /collections/all (151 links: 151 not visible)",
+              "secs": 7.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "none on /collections/all (151 links: 151 not visible)",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            }
+          ],
+          "failed_step": "click_into_product",
+          "error": "product card a shopper can click: expected found, got none on /collections/all (151 links: 151 not visible)",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 91.78,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "l is not a function",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x2054001a4e00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&ae=g&auid=621100170.1791531173&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=621100170.1791531173&gtm=45He6a72v838454048za200zd838454048xeaxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791531174164&cv=11&tid=G-GQ9999QB60&fst=1791531174164&fmt=8&en=session_start&gtm=45je6a72v873926",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531169653&_gaz=1&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531169653&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531169653&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531176300&cv=11&fst=1791531176300&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=621100170.1791531173&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=621100170.1791531173&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%20%E2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531169653&gcs",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=1028425660&cv=11&fst=1791531176426&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965",
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&ae=g&auid=621100170.1791531173&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&en=page_v",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531202541&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531202541&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791531207427&cv=11&tid=G-GQ9999QB60&fst=1791531207427&fmt=8&en=view_item_list&gtm=45je6a72v87392",
+            "POST https://www.google.com/measurement/conversion?random=1791531207611&cv=11&tid=G-GQ9999QB60&fst=1791531207611&fmt=8&en=view_item_list&gtm=45je6a72v87392",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531208623&cv=11&fst=1791531208623&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=621100170.1791531173&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-8",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=621100170.1791531173&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-801591"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 13.12,
+              "load": 17.46,
+              "lcp": 0.58
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.0,
+              "dcl": 25.63,
+              "load": 28.29,
+              "lcp": 2.06
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 16.38s",
+              "error": null,
+              "secs": 28.96,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Payday Sale | Upto 15% off + free gifts \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2430 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/all (60 products)",
+              "error": null,
+              "secs": 25.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/all ('Free Gifts Worth Up to \u20b9999 on Every Order')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "60",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "fail",
+              "detail": null,
+              "error": "product card a shopper can click: expected found, got none on /collections/all (151 links: 151 not visible)",
+              "secs": 9.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "none on /collections/all (151 links: 151 not visible)",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            }
+          ],
+          "failed_step": "click_into_product",
+          "error": "product card a shopper can click: expected found, got none on /collections/all (151 links: 151 not visible)",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 90.26,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "l is not a function",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x205400a7a600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-107486665-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtag_UA_107486665_1.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtag_UA_107486665_1.send, pageview, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.reequil.com/collections/all"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&ae=g&auid=1406095833.1791531264&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gift",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1406095833.1791531264&gtm=45He6a80h2v838454048za200zd838454048xeaxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791531265322&cv=11&tid=G-GQ9999QB60&fst=1791531265322&fmt=8&en=session_start&gtm=45je6a80h2v8739",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a80h2v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531261472&_gaz=1&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a80h2v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531261472&gcs=G11",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a80h2v873926941za20gzb838454048zd838454048xf1&_p=1791531261472&gcs=G111&gcd=13t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531261472&gcs",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531267552&cv=11&fst=1791531267552&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=1406095833.1791531264&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=1406095833.1791531264&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%20%E",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=1842023973&cv=11&fst=1791531267774&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965",
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&ae=g&auid=1406095833.1791531264&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&en=page",
+            "GET https://www.facebook.com/tr/?id=494353541319873&ev=PageView&dl=https%3A%2F%2Fwww.reequil.com%2Fcollections%2Fall&rl=direct&ts=1791531299892&it=1791531",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531300330&cv=11&fst=1791531300330&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=1406095833.1791531264&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-8",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1406095833.1791531264&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-801591",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531296587&gcs=G11",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941za20gzb838454048zd838454048xf1&_p=1791531296587&gcs=G111&gcd=13t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791531300637&cv=11&tid=G-GQ9999QB60&fst=1791531300637&fmt=8&en=view_item_list&gtm=45je6a72h1v873"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 14.42,
+              "load": 20.17,
+              "lcp": 1.0
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.01,
+              "dcl": 14.83,
+              "load": 17.76,
+              "lcp": 2.08
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 15.84s",
+              "error": null,
+              "secs": 31.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Payday Sale | Upto 15% off + free gifts \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2430 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/all (60 products)",
+              "error": null,
+              "secs": 22.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/all ('Free Gifts Worth Up to \u20b9999 on Every Order')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "60",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "fail",
+              "detail": null,
+              "error": "product card a shopper can click: expected found, got none on /collections/all (151 links: 151 not visible)",
+              "secs": 6.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "none on /collections/all (151 links: 151 not visible)",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            }
+          ],
+          "failed_step": "click_into_product",
+          "error": "product card a shopper can click: expected found, got none on /collections/all (151 links: 151 not visible)",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 76.79,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "No available storage method found.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x205401f56600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "l is not a function",
+              "url": "https://www.reequil.com/collections/all"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&ae=g&auid=1882819684.1791531356&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1882819684.1791531356&gtm=45He6a72v838454048za200zd838454048xeaxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531353387&_gaz=1&gc",
+            "POST https://www.google.com/measurement/conversion?random=1791531357803&cv=11&tid=G-GQ9999QB60&fst=1791531357803&fmt=8&en=session_start&gtm=45je6a72v873926",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531353387&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531353387&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531359605&cv=11&fst=1791531359605&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=1882819684.1791531356&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gift",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&auid=1882819684.1791531356&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%20%",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531353387&gcs",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=353763040&cv=11&fst=1791531359800&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a",
+            "GET https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965",
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&ae=g&auid=1882819684.1791531356&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&en=page",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531395248&cv=11&fst=1791531395248&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=1882819684.1791531356&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531391672&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531391672&gcd=13l3l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531391672&gcs=G111&",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&auid=1882819684.1791531356&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-80159",
+            "POST https://www.google.com/measurement/conversion?random=1791531395546&cv=11&tid=G-GQ9999QB60&fst=1791531395546&fmt=8&en=view_item_list&gtm=45je6a72v87392"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 13.6,
+              "load": 21.3,
+              "lcp": 0.39
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.01,
+              "dcl": 13.43,
+              "load": 16.24,
+              "lcp": 2.04
+            }
+          ]
+        }
+      ],
+      "incident_signature": "reequil.com|journey.shopper|click_into_product|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The collection page content is present and loaded but the robot did not find clickable product cards in the visible text/screenshot, indicating the monitoring bot looked in the wrong place or used the wrong selector for product cards.",
+        "evidence": "Visible page text and screenshot show the collection page header, promotional banners, and the heading \"Our range of products (63)\" with filter buttons visible; there is no error message, 4xx/5xx, or disabled buttons shown, and the page appears to be fully loaded but the robot reports \"151 links: 15"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 14.25s",
+              "error": null,
+              "secs": 24.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Payday Sale | Upto 15% off + free gifts \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2430 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "warn",
+              "detail": null,
+              "error": "DOM ready time: expected \u2264 8s, got 14.25s",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "14.25s",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 5: Identifier 'observer' has already been declared",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "5: Identifier 'observer' has already been declared",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 27.59,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "GET https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965",
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&ae=g&auid=328020398.1791531433&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=328020398.1791531433&gtm=45He6a72v838454048za200zd838454048xeaxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791531433969&cv=11&tid=G-GQ9999QB60&fst=1791531433969&fmt=8&en=session_start&gtm=45je6a72v873926",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531430123&_gaz=1&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531430123&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531430123&gcs=G111&gcd=13t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531430123&gcs",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531436294&cv=11&fst=1791531436294&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=328020398.1791531433&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=328020398.1791531433&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%20%E2",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=819608373&cv=11&fst=1791531436480&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 12.44,
+              "load": 18.49,
+              "lcp": 0.41
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/all",
+              "status": "pass",
+              "detail": "HTTP 200 in 27.35s",
+              "error": null,
+              "secs": 37.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Our range of products \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "573 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/about-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 6.85s",
+              "error": null,
+              "secs": 14.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About Us - Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2186 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/support",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.51s",
+              "error": null,
+              "secs": 7.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Support - Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1146 chars, 3 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/skin-hair-tips",
+              "status": "pass",
+              "detail": "HTTP 200 in 6.8s",
+              "error": null,
+              "secs": 10.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Podcasts, Expert Video Sessions and Blogs on Skin & Hair Health - Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1484 chars, 13 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 70.11,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            },
+            {
+              "type": "warning",
+              "text": "Allow attribute will take precedence over 'allowfullscreen'.",
+              "url": "https://www.reequil.com/pages/about-us"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-107486665-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.reequil.com/pages/about-us"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.reequil.com/pages/about-us"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtag_UA_107486665_1.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.reequil.com/pages/about-us"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtag_UA_107486665_1.send, pageview, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.reequil.com/pages/about-us"
+            },
+            {
+              "type": "pageerror",
+              "text": "Swiper is not defined",
+              "url": "https://www.reequil.com/pages/about-us"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://player.vimeo.com/video/1173237172?badge=0&autopause=0&player_id=0&app_id=58479&autoplay=1&muted=1&loop=1"
+            },
+            {
+              "type": "pageerror",
+              "text": "l is not a function",
+              "url": "https://www.reequil.com/pages/about-us"
+            },
+            {
+              "type": "warning",
+              "text": "Swiper Loop Warning: The number of slides is not enough for loop mode, it will be disabled or not function properly. You need to add more slides (or make duplicates) or lower the values of slidesPerView and slidesPerGrou",
+              "url": "https://www.reequil.com/cdn/shop/t/866/assets/swiper-bundle-min.js?v=108059131501615647841784294487"
+            },
+            {
+              "type": "warning",
+              "text": "[Cloudflare Turnstile] Turnstile has already been rendered in this container. The render attempt was rejected.",
+              "url": "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=turnstileLoad"
+            },
+            {
+              "type": "warning",
+              "text": "No available adapters.",
+              "url": "https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/xuw6b/0x4AAAAAAAbaszMygKLnGbeo/auto/fbE/new/normal?lang"
+            },
+            {
+              "type": "error",
+              "text": "%c%d font-size:0;color:transparent NaN",
+              "url": "https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/xuw6b/0x4AAAAAAAbaszMygKLnGbeo/auto/fbE/new/normal?lang"
+            },
+            {
+              "type": "warning",
+              "text": "%c%d font-size:0;color:transparent NaN",
+              "url": "https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/xuw6b/0x4AAAAAAAbaszMygKLnGbeo/auto/fbE/new/normal?lang"
+            },
+            {
+              "type": "warning",
+              "text": "OTS parsing error: Size of decompressed WOFF 2.0 is less than compressed size",
+              "url": "https://challenges.cloudflare.com/cdn-cgi/challenge-platform/h/g/turnstile/f/av0/rch/xuw6b/0x4AAAAAAAbaszMygKLnGbeo/auto/fbE/new/normal?lang"
+            },
+            {
+              "type": "warning",
+              "text": "[Cloudflare Turnstile] Error: 600010.",
+              "url": "https://challenges.cloudflare.com/turnstile/v0/api.js?onload=turnstileLoad"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6jlmhjuv52\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6jlmhjuv52\" host=\"https://gkx.gokwik.co/gke\" at initConfig ",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "It is recommended that a robustness level be specified. Not specifying the robustness level could result in unexpected behavior.",
+              "url": "https://embed-cdn.spotifycdn.com/_next/static/chunks/5039.a54f1bd47316601a.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&ae=g&auid=626449166.1791531460&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&en=page_v",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=626449166.1791531460&gtm=45He6a72v838454048za200zd838454048xeaxf1&fmt=8",
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/measurement/conversion?random=1791531461685&cv=11&tid=G-GQ9999QB60&fst=1791531461685&fmt=8&en=session_start&gtm=45je6a72v873926",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531457850&_gaz=1&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531457850&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531457850&gcd=13l3l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531457850&gcs=G111&",
+            "POST https://www.google.com/measurement/conversion?random=1791531463674&cv=11&tid=G-GQ9999QB60&fst=1791531463674&fmt=8&en=view_item_list&gtm=45je6a72v87392",
+            "POST https://www.google.com/measurement/conversion?random=1791531463688&cv=11&tid=G-GQ9999QB60&fst=1791531463688&fmt=8&en=view_item_list&gtm=45je6a72v87392",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531464657&cv=11&fst=1791531464657&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=626449166.1791531460&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-80",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=626449166.1791531460&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-8015914",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531457850&gcs",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=711737992&cv=11&fst=1791531465042&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&ae=g&auid=626449166.1791531460&dt=About%20Us%20-%20Re%27equil&en=page_view&dl=https%3A%2F%2Fwww.",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531495372&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531495372&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531498016&cv=11&fst=1791531498016&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=626449166.1791531460&dt=About%20Us%20-%20Re%27equil&tid=AW-801591408&dl=https%3A%2F%2F",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=626449166.1791531460&dt=About%20Us%20-%20Re%27equil&tid=AW-801591408&en=page_view&dl=https%"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.08,
+              "dcl": 26.16,
+              "load": 31.29,
+              "lcp": 6.38
+            },
+            {
+              "url": "/pages/about-us",
+              "ttfb": 0.23,
+              "dcl": 6.15,
+              "load": 8.24,
+              "lcp": 4.04
+            },
+            {
+              "url": "/pages/support",
+              "ttfb": 0.22,
+              "dcl": 3.91,
+              "load": 5.58,
+              "lcp": 1.51
+            },
+            {
+              "url": "/pages/skin-hair-tips",
+              "ttfb": 0.23,
+              "dcl": 6.23,
+              "load": 7.97,
+              "lcp": 4.01
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.all",
+      "suite": "catalog",
+      "title": "Collection 'Our range of products' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 18.16s",
+              "error": null,
+              "secs": 27.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Our range of products \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "573 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "60 products listed",
+              "error": null,
+              "secs": 0.55,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "60",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 31.01,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=Sg_0U_p9MDqhKTE1v2fplXdcfuUcMfeqUA&auid=2142240907.1791531528&gtm=45He6a72h1v838454048za200zd838454048x",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&ae=g&auid=2142240907.1791531528&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&en=page_",
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/measurement/conversion?random=1791531530745&cv=11&tid=G-GQ9999QB60&fst=1791531530745&fmt=8&en=session_start&gtm=45je6a72h1v8739",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531527725&_gaz=1&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531527725&gcd=13l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941za20gzb838454048zd838454048xf1&_p=1791531527725&gcs=G111&gcd=13t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531527725&gcs=G11",
+            "POST https://www.google.com/measurement/conversion?random=1791531531668&cv=11&tid=G-GQ9999QB60&fst=1791531531668&fmt=8&en=view_item_list&gtm=45je6a72h1v873",
+            "POST https://www.google.com/measurement/conversion?random=1791531531743&cv=11&tid=G-GQ9999QB60&fst=1791531531743&fmt=8&en=view_item_list&gtm=45je6a72h1v873",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531532056&cv=11&fst=1791531532056&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72h1v9117389531z",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=2142240907.1791531528&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-801591",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=2142240907.1791531528&dt=Our%20range%20of%20products%20%E2%80%93%20Re%27equil&tid=AW-8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531527725&gcs",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=24232624&cv=11&fst=1791531532131&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a7",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.03,
+              "dcl": 16.3,
+              "load": 21.09,
+              "lcp": 2.75
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.oil-free-moisturiser",
+      "suite": "product",
+      "title": "PDP '\ud83c\udf81Oil Free Moisturiser'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 12.16s, redirected to /products/oil-free-moisturiser%F0%9F%8E%81",
+              "error": null,
+              "secs": 23.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "\ud83c\udf81Oil Free Moisturiser \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3322 chars, 27 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "warn",
+              "detail": null,
+              "error": "final URL: expected /products/oil-free-moisturiser\ud83c\udf81, got /products/oil-free-moisturiser%F0%9F%8E%81",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/oil-free-moisturiser\ud83c\udf81",
+                  "actual": "/products/oil-free-moisturiser%F0%9F%8E%81",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'\ud83c\udf81Oil Free Moisturiser', selected variant 50686911316154 at \u20b9265.50",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/oil-free-moisturiser%F0%9F%8E%81",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/oil-free-moisturiser%F0%9F%8E%81.js with variants",
+                  "actual": "'\ud83c\udf81Oil Free Moisturiser', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "\ud83c\udf81Oil Free Moisturiser",
+                  "actual": "'\ud83c\udf81Oil Free Moisturiser' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9265.50",
+                  "actual": "\u20b9265.50",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "\ud83c\udf81Oil Free Moisturiser",
+                  "actual": "'\ud83c\udf81Oil Free Moisturiser' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "\ud83c\udf81Oil Free Moisturiser",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "265.50",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 50686911316154 (100g) selected, in stock",
+              "error": null,
+              "secs": 0.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--21241197789370__main (variant 50686911316154, button 'Add To Cart')",
+              "error": null,
+              "secs": 0.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 10: Cannot read properties of null (reading 'shadowRoot')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "10: Cannot read properties of null (reading 'shadowRoot')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 26.99,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'shadowRoot')",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154"
+            },
+            {
+              "type": "warning",
+              "text": "GA4Events not defined or product cards missing.",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154"
+            },
+            {
+              "type": "pageerror",
+              "text": "Vimeo is not defined",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://api.lively.li/shoppable-feeds/configuration/6195f217b7?layout_uuid=8a1aaececb"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&ae=g&auid=2008158155.1791531561&dt=%F0%9F%8E%81Oil%20Free%20Moisturiser%20%E2%80%93%20Re%27equil",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2008158155.1791531561&gtm=45He6a72v838454048za200zd838454048xeaxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791531562747&cv=11&tid=G-GQ9999QB60&fst=1791531562747&fmt=8&en=session_start&gtm=45je6a72v873926",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531558872&_gaz=1&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531558872&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531558872&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791531562993&cv=11&tid=G-GQ9999QB60&fst=1791531562993&fmt=8&en=view_item&gtm=45je6a72v873926941z",
+            "POST https://www.google.com/measurement/conversion?random=1791531563021&cv=11&tid=G-GQ9999QB60&fst=1791531563021&fmt=8&en=view_item&gtm=45je6a72v873926941z",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531564214&cv=11&fst=1791531564214&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=2008158155.1791531561&dt=%F0%9F%8E%81Oil%20Free%20Moisturiser%20%E2%80%93%20Re%27equil",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=2008158155.1791531561&dt=%F0%9F%8E%81Oil%20Free%20Moisturiser%20%E2%80%93%20Re%27equil&tid=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531558872&gcs",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=120035649&cv=11&fst=1791531564364&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=2084938231&cv=11&fst=1791531564339&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://www.google.com/measurement/conversion?random=1791531571630&cv=11&tid=G-GQ9999QB60&fst=1791531571630&fmt=8&en=view_item&gtm=45je6a72v873926941z",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com"
+          ],
+          "loads": [
+            {
+              "url": "/products/oil-free-moisturiser%F0%9F%8E%81?variant=50686911316154",
+              "ttfb": 0.27,
+              "dcl": 11.25,
+              "load": 16.42,
+              "lcp": 4.87
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.moisturiser",
+      "suite": "search",
+      "title": "Search for 'moisturiser' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 11.76s",
+              "error": null,
+              "secs": 22.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Payday Sale | Upto 15% off + free gifts \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2430 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 13 results, 5 mention 'moisturiser'",
+              "error": null,
+              "secs": 18.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "13",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'moisturiser'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "5 of 13",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 41.24,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            },
+            {
+              "type": "pageerror",
+              "text": "l is not a function",
+              "url": "https://www.reequil.com/search?options%5Bprefix%5D=last&q=moisturiser"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'style')",
+              "url": "https://www.reequil.com/search?options%5Bprefix%5D=last&q=moisturiser"
+            },
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://www.reequil.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&ae=g&auid=1212551263.1791531586&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1212551263.1791531586&gtm=45He6a72v838454048za200zd838454048xeaxf1&fmt=8",
+            "GET https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531585692&_gaz=1&gc",
+            "POST https://www.google.com/measurement/conversion?random=1791531588677&cv=11&tid=G-GQ9999QB60&fst=1791531588677&fmt=8&en=session_start&gtm=45je6a72v873926",
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531590088&cv=11&fst=1791531590088&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=1212551263.1791531586&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gift",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=1212551263.1791531586&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%20%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531585692&gcd=13l3l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531585692&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531585692&gcs=G111&",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72h1v9122227025za200zb838454048zd838454048xf1&_p=1791531585692&g",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=1226101766&cv=11&fst=1791531590388&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531616839&cv=11&fst=1791531616839&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a72",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531617015&cv=11&fst=1791531617015&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&ae=g&auid=1212551263.1791531586&dt=Search%3A%2062%20results%20found%20for%20%22moisturiser%22%20",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531617708&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531617708&gcs=G111&",
+            "POST https://www.google.com/measurement/conversion?random=1791531619550&cv=11&tid=G-GQ9999QB60&fst=1791531619550&fmt=8&en=view_search_results&gtm=45je6a72v",
+            "POST https://www.google.com/measurement/conversion?random=1791531619432&cv=11&tid=G-GQ9999QB60&fst=1791531619432&fmt=8&en=view_search_results&gtm=45je6a72v"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 10.58,
+              "load": 15.46,
+              "lcp": 0.3
+            },
+            {
+              "url": "/search?options%5Bprefix%5D=last&q=moisturiser",
+              "ttfb": 0.24,
+              "dcl": 4.47,
+              "load": 6.29,
+              "lcp": 2.99
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 9.5s",
+              "error": null,
+              "secs": 20.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Payday Sale | Upto 15% off + free gifts \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2430 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Payday Sale | Upto 15% off + free gifts \u2013 Re'equil",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "50: \"Payday Sale | Upto 15% off + free gifts \u2013 Re'equil\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Shop our Payday Sale and stock up on your skincare essentials | Get up",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "111: 'Shop our Payday Sale and stock up on your skincare essential'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.reequil.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.reequil.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Payday Sale | Upto 15% off + free gifts",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.reequil.com/cdn/shop/files/Social_Sharing_SEO_Image.png?v=1788505241",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.73,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "l is not a function",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "GET https://www.reequil.com/cdn/shop/t/866/assets/our-journey.js?v=288965",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&ae=g&auid=912077096.1791531628&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=912077096.1791531628&gtm=45He6a72h1v838454048za200zd838454048xeaxf1&fmt=8",
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531626913&_gaz=1&",
+            "POST https://www.google.com/measurement/conversion?random=1791531629993&cv=11&tid=G-GQ9999QB60&fst=1791531629993&fmt=8&en=session_start&gtm=45je6a72h1v8739",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531626913&gcd=13l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941za20gzb838454048zd838454048xf1&_p=1791531626913&gcs=G111&gcd=13t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72h1v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531626913&gcs=G11",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531631252&cv=11&fst=1791531631252&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72h1v9117389531z",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=912077096.1791531628&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=912077096.1791531628&dt=Payday%20Sale%20%7C%20Upto%2015%25%20off%20%2B%20free%20gifts%20%E2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531626913&gcs",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=1636893372&cv=11&fst=1791531631310&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 8.45,
+              "load": 13.65,
+              "lcp": 0.3
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 11.53s, redirected to /products/oil-free-moisturiser%F0%9F%8E%81",
+              "error": null,
+              "secs": 17.81,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "\ud83c\udf81Oil Free Moisturiser \u2013 Re'equil",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3322 chars, 27 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "\ud83c\udf81Oil Free Moisturiser \u2013 Re'equil",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "32: \"\ud83c\udf81Oil Free Moisturiser \u2013 Re'equil\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Re\u2019equil Oil Free Moisturiser works great for normal, oily or a combin",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "154: 'Re\u2019equil Oil Free Moisturiser works great for normal, oily o'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.reequil.com/products/oil-free-moisturiser%f0%9f%8e%81",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.reequil.com/products/oil-free-moisturiser%f0%9f%8e%81",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "\ud83c\udf81Oil Free Moisturiser",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.reequil.com/cdn/shop/files/Oil_free_moisturiser_ea5d3f71-dc0e-45f3-9fbb-53988ec99340.webp?v=1788196661",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.61,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'shadowRoot')",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'observer' has already been declared",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "pincode is not defined",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81"
+            },
+            {
+              "type": "warning",
+              "text": "Newly launched products list container not found or GA4Events.selectItem is not defined. GA4 tracking for menu product clicks will not work.",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81"
+            },
+            {
+              "type": "warning",
+              "text": "GA4Events not defined or product cards missing.",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81"
+            },
+            {
+              "type": "pageerror",
+              "text": "Vimeo is not defined",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2' from origin 'https://www.reequil.com' has been blocked by CORS policy: Response to preflight request doesn't pass ac",
+              "url": "https://www.reequil.com/products/oil-free-moisturiser%F0%9F%8E%81"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://api.lively.li/shoppable-feeds/configuration/6195f217b7?layout_uuid=8a1aaececb"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&ae=g&auid=635918045.1791531651&dt=%F0%9F%8E%81Oil%20Free%20Moisturiser%20%E2%80%93%20Re%27equil",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=635918045.1791531651&gtm=45He6a72v838454048za200zd838454048xeaxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791531652508&cv=11&tid=G-GQ9999QB60&fst=1791531652508&fmt=8&en=session_start&gtm=45je6a72v873926",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531648708&_gaz=1&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531648708&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531648708&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791531652825&cv=11&tid=G-GQ9999QB60&fst=1791531652825&fmt=8&en=view_item&gtm=45je6a72v873926941z",
+            "POST https://www.google.com/measurement/conversion?random=1791531652852&cv=11&tid=G-GQ9999QB60&fst=1791531652852&fmt=8&en=view_item&gtm=45je6a72v873926941z",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531654294&cv=11&fst=1791531654294&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=635918045.1791531651&dt=%F0%9F%8E%81Oil%20Free%20Moisturiser%20%E2%80%93%20Re%27equil",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=635918045.1791531651&dt=%F0%9F%8E%81Oil%20Free%20Moisturiser%20%E2%80%93%20Re%27equil&tid=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531648708&gcs",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=1031453398&cv=11&fst=1791531654418&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=235480961&cv=11&fst=1791531654442&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://www.google.com/measurement/conversion?random=1791531660396&cv=11&tid=G-GQ9999QB60&fst=1791531660396&fmt=8&en=view_item&gtm=45je6a72v873926941z",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com"
+          ],
+          "loads": [
+            {
+              "url": "/products/oil-free-moisturiser%F0%9F%8E%81",
+              "ttfb": 0.22,
+              "dcl": 10.56,
+              "load": 14.17,
+              "lcp": 1.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 9.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.25,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&ae=g&auid=113799480.1791531668&dt=404%20Not%20Found%20%E2%80%93%20Re%27equil&en=page_view&dl=htt",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=113799480.1791531668&gtm=45He6a72v838454048za200zd838454048xeaxf1&fmt=8",
+            "POST https://www.reequil.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/measurement/conversion?random=1791531669878&cv=11&tid=G-GQ9999QB60&fst=1791531669878&fmt=8&en=session_start&gtm=45je6a72v873926",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531667340&_gaz=1&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941z8838454048za20gzb838454048zd838454048xf1&_p=1791531667340&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GQ9999QB60&gtm=45je6a72v873926941za20gzb838454048zd838454048xf1&_p=1791531667340&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/rmkt/collect/801591408/?random=1791531670819&cv=11&fst=1791531670819&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9117389531z88",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=113799480.1791531668&dt=404%20Not%20Found%20%E2%80%93%20Re%27equil&tid=AW-801591408&d",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&auid=113799480.1791531668&dt=404%20Not%20Found%20%E2%80%93%20Re%27equil&tid=AW-801591408&en=pag",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-MHPJL5THD0&gtm=45Pe6a72v9122227025za200zb838454048zd838454048xf1&_p=1791531667340&gcs",
+            "GET https://www.google.ca/pagead/1p-conversion/801591408/?random=1543645932&cv=11&fst=1791531670928&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6",
+            "POST https://www.reequil.com/api/collect",
+            "POST https://sp-kf-collector-prod.gokwik.io/com.snowplowanalytics.snowplow/tp2",
+            "GET https://ma.zoho.in/js/V2/shopify_store.js?shop=reequil-store.myshopify.com"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.22,
+              "dcl": 5.6,
+              "load": 7.73,
+              "lcp": 4.92
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 1,
+    "input_tokens": 3180,
+    "output_tokens": 148,
+    "est_usd": 0.001091,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Payday Sale | Upto 15% off + free gifts \u2013 Re'equil",
+    "theme": "Sleek (store copy: Anniversary Sale Theme 2026)",
+    "checkout_app": "GoKwik + Shopflo",
+    "access": "open",
+    "nav": 25,
+    "collections": 47,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "5 product(s) not listed in the browsed collections are tested last (e.g. \ud83c\udf81-damage-repair-hair-conditioner-for-curly-hair-copy)"
+  ],
+  "perf": {
+    "pages": 9,
+    "median_load_secs": 8.24,
+    "slowest": {
+      "url": "/collections/all",
+      "load_secs": 31.29
+    },
+    "console_errors": 23,
+    "console_warnings": 13,
+    "failed_requests": 142
+  },
+  "counts": {
+    "pass": 8,
+    "flaky": 0,
+    "confirmed_fail": 1,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
