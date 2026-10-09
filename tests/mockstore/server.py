@@ -102,6 +102,10 @@ Modes (to prove Radar catches and heals what it should):
                    bottom sheet over the product grid, 300 ms after load (suta.in wishlist drawer + soulflower.in cart drawer,
                    7-9 Oct: v0.18 retried the hidden drawer ~10 times and never closed the real popup) -> real popup
                    closed, journey PASSES on desktop and mobile
+  rate_limited     every /products/<h>.js answers HTTP 429 Too Many Requests, always (Shopify throttling Radar's own
+                   server IP, 9 Oct: all 3 demo stores 'down') -> tests needing product data are BLOCKED (rate-limited),
+                   never a store failure, no incident; the run is never 'down'
+  rate_limited_once  each /products/<h>.js answers 429 (Retry-After: 1) twice, then normally -> Radar backs off, PASSES
   noisy_console    every page logs a console error + warning and fires a request nobody answers (third-party widget)
                    -> everything PASSES; the noise only shows up as report evidence (v0.18)
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
@@ -469,6 +473,14 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
                 p = next((x for x in PRODUCTS if x["handle"] == h[:-3]), None)
                 if not p:
                     return self._json({"error": "not found"}, 404)
+                if self.mode == "rate_limited":
+                    return self._send(429, "Too Many Requests", "text/plain")
+                if self.mode == "rate_limited_once":
+                    seen = type(self).__dict__.get("RL_SEEN") or {}
+                    type(self).RL_SEEN = seen
+                    seen[h] = seen.get(h, 0) + 1
+                    if seen[h] <= 2:
+                        return self._send(429, "Too Many Requests", "text/plain")
                 if self.mode == "flaky_data":
                     seen = type(self).__dict__.get("DATA_SEEN") or set()
                     type(self).DATA_SEEN = seen

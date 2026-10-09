@@ -888,3 +888,24 @@ def test_closed_drawer_is_never_taken_for_the_popup_and_the_real_popup_is_closed
         j = _case(run, "journey.")
         assert j.verdict == "pass", (run.device, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"])
         assert len(j.attempts) == 1, (run.device, "needed a retry")
+
+
+def test_rate_limited_store_is_blocked_never_down(tmp_path, monkeypatch):
+    """Own Contabo server, 9 Oct: Shopify answered HTTP 429 to every product-data request and all 3 demo stores were
+    reported DOWN. A 429 is the platform throttling Radar: tests are BLOCKED with the reason, no incident, never down."""
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    run, _ = _scan("rate_limited", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict != "down", run.verdict
+    hit = [c for c in run.cases if c.suite in ("product", "journey")]
+    assert hit and all(c.verdict == "blocked" for c in hit), [(c.case_id, c.verdict) for c in hit]
+    assert all("429" in (c.attempts[-1].error or "") and "rate-limiting" in c.attempts[-1].error for c in hit)
+    assert not any(c.incident_signature for c in run.cases)
+
+
+def test_short_rate_limit_is_waited_out(tmp_path, monkeypatch):
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.05, raising=False)
+    run = _product_only("rate_limited_once", tmp_path, max_products=1)
+    assert all(c.verdict == "pass" and len(c.attempts) == 1 for c in run.cases), \
+        [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]

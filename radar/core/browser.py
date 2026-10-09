@@ -12,6 +12,8 @@ robots.txt is always matched on the BugRadar token, whatever the style.
 """
 from __future__ import annotations
 
+import json
+
 import hashlib
 import platform
 import re
@@ -74,6 +76,17 @@ def browser_user_agent(identity: str, chrome_version: str, style: str = "browser
 
 class RobotsBlocked(Exception):
     pass
+
+
+def _host(url: str) -> str:
+    from urllib.parse import urlparse
+    return urlparse(url).netloc or url
+
+
+class RateLimited(Exception):
+    """The store's platform kept answering HTTP 429 to Radar after backing off (Shopify throttling Radar's IP:
+    own Contabo server, 9 Oct, all 3 demo stores). Says nothing about the store: the test is BLOCKED, never a
+    store failure, never an incident."""
 
 
 class Browser:
@@ -272,22 +285,50 @@ class Session:
                     raise
                 self.settle()
 
+    backoff_scale = 1.0          # tests shrink the waits; real runs use the full ones
+    _DATA_CACHE: dict = {}       # /products/<h>.js answers, per process (= per store in a bench), 2 min
+
     def get_json(self, url: str):
+        """Product data (/products/<h>.js) is asked 3-4 times per page by different checks; one answer is reused
+        for 2 minutes so Radar sends a store's platform far fewer requests (Shopify rate-limits datacenter IPs:
+        own server, 9 Oct). Cart data (/cart.js) and listings are never cached."""
+        key = url.split("#")[0]
+        cacheable = bool(re.search(r"/products/[^/?#]+\.js(\?|$)", key))
+        if cacheable:
+            hit = Session._DATA_CACHE.get(key)
+            if hit and time.time() - hit[0] < 120:
+                return json.loads(hit[1])
+        out = self._get_json(url)
+        if cacheable:
+            Session._DATA_CACHE[key] = (time.time(), json.dumps(out))
+        return out
+
+    def _get_json(self, url: str):
         if not self.allowed(url):
             raise RobotsBlocked(f"robots.txt disallows {url}")
         # Store data (/products/x.js, /cart.js) is retried on a transient miss: no answer, a 5xx/429, or a body
         # that is not JSON (bench 11: palmonas.com returned an empty body once, wellbeingnutrition.com timed out
         # once; both passed on the next attempt). A real 4xx is final.
-        last = None
-        for i, wait in enumerate((0, 1000, 3000)):
+        last, limited, after = None, 0, 0
+        for i, wait in enumerate((0, 1000, 3000, 8000, 20000)):
+            if i >= 3 and not limited:
+                break                       # the 2 extra, longer waits are only for HTTP 429 (rate limit)
             if wait:
-                self.page.wait_for_timeout(wait)
+                self.page.wait_for_timeout(int(min(30000, max(wait, after * 1000)) * self.backoff_scale))
             try:
                 r = self.page.context.request.get(url, timeout=20000)
             except Exception as e:  # noqa: BLE001  timeout, reset, DNS
                 last = f"no answer ({str(e).splitlines()[0][:120]})"
                 continue
-            if r.status >= 500 or r.status == 429:
+            if r.status == 429:
+                limited += 1
+                try:
+                    after = float((r.headers or {}).get("retry-after") or 0)
+                except ValueError:
+                    after = 0
+                last = "HTTP 429"
+                continue
+            if r.status >= 500:
                 last = f"HTTP {r.status}"
                 continue
             if r.status >= 400:
@@ -296,4 +337,7 @@ class Session:
                 return r.json()
             except ValueError:
                 last = f"HTTP {r.status} but the body is not JSON ({(r.text() or '')[:60]!r})"
-        raise AssertionError(f"{url}: no valid data after 3 tries (last: {last})")
+        if last == "HTTP 429":
+            raise RateLimited(f"{_host(url)} kept answering HTTP 429 (Too Many Requests) to Radar's data request "
+                              f"after waiting ~32 s: the platform is rate-limiting Radar, this is not a store failure")
+        raise AssertionError(f"{url}: no valid data after {i + 1} tries (last: {last})")
