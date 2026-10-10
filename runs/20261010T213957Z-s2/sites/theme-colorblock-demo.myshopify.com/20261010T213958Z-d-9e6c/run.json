@@ -1,0 +1,2822 @@
+{
+  "run_id": "20261010T213958Z-d-9e6c",
+  "site_id": "theme-colorblock-demo.myshopify.com",
+  "base_url": "https://theme-colorblock-demo.myshopify.com",
+  "device": "desktop",
+  "started_at": "2026-10-10T21:39:58+00:00",
+  "finished_at": "2026-10-10T21:41:40+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product \u2192 add to cart \u2192 cart \u2192 checkout button",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.08s",
+              "error": null,
+              "secs": 2.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1679 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/spring-lookbook (6 products)",
+              "error": null,
+              "secs": 1.93,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/spring-lookbook ('Shop vibrant knitwear')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/spring-lookbook",
+                  "actual": "/collections/spring-lookbook",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "6",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 6 candidates \u2192 /products/purple-patchwork-cardi",
+              "error": null,
+              "secs": 2.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/purple-patchwork-cardi ('Patchwork Cardi')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/purple-patchwork-cardi",
+                  "actual": "/products/purple-patchwork-cardi",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Patchwork Cardi', selected variant 42044032483350 at \u20b9295.00",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/purple-patchwork-cardi",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/purple-patchwork-cardi.js with variants",
+                  "actual": "'Patchwork Cardi', 12 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Patchwork Cardi",
+                  "actual": "'Patchwork Cardi' (h1, 52px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9295.00",
+                  "actual": "\u20b9295.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Patchwork Cardi",
+                  "actual": "'Patchwork Cardi' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Patchwork Cardi",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "295.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 42044032483350 (S / Purple) selected, in stock",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "12 of 12 available",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--22715895742486__main (variant 42044032483350, button 'Add to cart')",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "click_add_to_cart",
+              "status": "pass",
+              "detail": "clicked main product form #product-form-template--22715895742486__main (variant 42044032483350, button 'Add to cart')",
+              "error": null,
+              "secs": 0.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-click_add_to_cart.jpg"
+            },
+            {
+              "name": "cart_received_this_product",
+              "status": "pass",
+              "detail": "cart has 'Patchwork Cardi' \u00d71 at \u20b9295.00",
+              "error": null,
+              "secs": 2.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "variant the page sent to /cart/add",
+                  "expected": "42044032483350 (Patchwork Cardi)",
+                  "actual": "42044032483350 (Patchwork Cardi)",
+                  "ok": true
+                },
+                {
+                  "what": "cart item count",
+                  "expected": "0 \u2192 1",
+                  "actual": "0 \u2192 1",
+                  "ok": true
+                },
+                {
+                  "what": "product added to cart",
+                  "expected": "Patchwork Cardi (variant 42044032483350)",
+                  "actual": "Patchwork Cardi (variant 42044032483350)",
+                  "ok": true
+                },
+                {
+                  "what": "quantity added",
+                  "expected": "1",
+                  "actual": "1",
+                  "ok": true
+                },
+                {
+                  "what": "unit price in cart",
+                  "expected": "\u20b9295.00",
+                  "actual": "\u20b9295.00",
+                  "ok": true
+                },
+                {
+                  "what": "other paid products added",
+                  "expected": "none",
+                  "actual": "none",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-cart_received_this_product.jpg"
+            },
+            {
+              "name": "cart_total_increase",
+              "status": "pass",
+              "detail": "\u20b90.00 \u2192 \u20b9295.00",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart total went up by",
+                  "expected": "\u20b9295.00",
+                  "actual": "\u20b9295.00",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-cart_received_this_product.jpg"
+            },
+            {
+              "name": "cart_shows_product",
+              "status": "pass",
+              "detail": "cart drawer opened after adding",
+              "error": null,
+              "secs": 0.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart shows the product",
+                  "expected": "Patchwork Cardi",
+                  "actual": "listed",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-cart_received_this_product.jpg"
+            },
+            {
+              "name": "checkout_button_ready",
+              "status": "pass",
+              "detail": "checkout visible + enabled via hint (drawer); NOT clicked",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "checkout button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-cart_received_this_product.jpg"
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.17,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed parsing 'srcset' attribute value since its 'w' descriptor is invalid.",
+              "url": "https://theme-colorblock-demo.myshopify.com/products/purple-patchwork-cardi"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-colorblock-demo.myshopify.com/cdn/shop/products/cropnew2.jpg?v=1644606157\"",
+              "url": "https://theme-colorblock-demo.myshopify.com/products/purple-patchwork-cardi"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.9,
+              "load": 1.54,
+              "lcp": 0.99
+            },
+            {
+              "url": "/collections/spring-lookbook",
+              "ttfb": 0.13,
+              "dcl": 0.58,
+              "load": 0.76,
+              "lcp": 0.52
+            },
+            {
+              "url": "/products/purple-patchwork-cardi",
+              "ttfb": 0.14,
+              "dcl": 0.69,
+              "load": 0.92,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.63s",
+              "error": null,
+              "secs": 1.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1679 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.63s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.63s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "warn",
+              "detail": null,
+              "error": "Core Web Vitals: expected LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner), got CLS 0.259 (poor > 0.25), biggest shift: div.color-background-1.gradient",
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "CLS 0.259 (poor > 0.25), biggest shift: div.color-background-1.gradient",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "103 scripts, at least 926 KB of JavaScript, 0 third-party script hosts",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "103 scripts, at least 926 KB of JavaScript, 0 third-party script hosts",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.79,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 0.55,
+              "load": 0.85,
+              "lcp": 0.62
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/mens-cardigans",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.84s",
+              "error": null,
+              "secs": 2.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Cardigans \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1417 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/mens-sweaters",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.89s",
+              "error": null,
+              "secs": 2.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sweaters \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1700 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/mens-jackets",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.61s",
+              "error": null,
+              "secs": 2.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Jackets \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "734 chars, 4 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/t-shirts",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.21s",
+              "error": null,
+              "secs": 2.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "T-shirts \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "939 chars, 7 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.02,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/mens-cardigans",
+              "ttfb": 0.19,
+              "dcl": 0.68,
+              "load": 1.15,
+              "lcp": 0.56
+            },
+            {
+              "url": "/collections/mens-sweaters",
+              "ttfb": 0.14,
+              "dcl": 0.71,
+              "load": 1.03,
+              "lcp": 0.56
+            },
+            {
+              "url": "/collections/mens-jackets",
+              "ttfb": 0.13,
+              "dcl": 0.45,
+              "load": 0.89,
+              "lcp": 0.4
+            },
+            {
+              "url": "/collections/t-shirts",
+              "ttfb": 0.19,
+              "dcl": 1.1,
+              "load": 1.4,
+              "lcp": 0.84
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.74s",
+              "error": null,
+              "secs": 1.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1679 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.14,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.52,
+              "load": 0.94,
+              "lcp": 0.61
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/multi-color",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.98s",
+              "error": null,
+              "secs": 2.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Multicolor \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "990 chars, 9 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Multicolor \u2013 theme-colorblock-demo', heading 'Collection:\\nMulticolor'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/multi-color",
+                  "actual": "/collections/multi-color",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections/red",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.74s",
+              "error": null,
+              "secs": 1.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Red \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "963 chars, 8 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Red \u2013 theme-colorblock-demo', heading 'Collection:\\nRed'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/red",
+                  "actual": "/collections/red",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "2 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.34,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/multi-color",
+              "ttfb": 0.16,
+              "dcl": 0.79,
+              "load": 1.31,
+              "lcp": 0.41
+            },
+            {
+              "url": "/collections/red",
+              "ttfb": 0.14,
+              "dcl": 0.65,
+              "load": 0.97,
+              "lcp": 0.52
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.knitwear",
+      "suite": "catalog",
+      "title": "Collection 'Clothing' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.69s",
+              "error": null,
+              "secs": 1.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clothing \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1792 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "24 products listed",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.4s, CLS 0.03",
+              "error": null,
+              "secs": 0.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.4s, CLS 0.03",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "101 scripts, at least 919 KB of JavaScript, 0 third-party script hosts",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "101 scripts, at least 919 KB of JavaScript, 0 third-party script hosts",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.37,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/knitwear",
+              "ttfb": 0.14,
+              "dcl": 0.58,
+              "load": 0.89,
+              "lcp": 0.4
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.knitwear",
+      "suite": "catalog",
+      "title": "Collection 'Clothing' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.75s",
+              "error": null,
+              "secs": 1.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clothing \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1792 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "24 products on the first page",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products on the first page",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.61s",
+              "error": null,
+              "secs": 1.69,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clothing \u2013 Page 2 \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1331 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 15 more products",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "15",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.9,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/knitwear",
+              "ttfb": 0.14,
+              "dcl": 0.55,
+              "load": 0.95,
+              "lcp": 0.44
+            },
+            {
+              "url": "/collections/knitwear?page=2",
+              "ttfb": 0.13,
+              "dcl": 0.52,
+              "load": 0.71,
+              "lcp": 0.39
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.copy-of-portuguese-jersey-lt-grey",
+      "suite": "product",
+      "title": "PDP 'C.O.O x P.J \u2014 Lt.Grey Cardigan'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.58s",
+              "error": null,
+              "secs": 2.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "C.O.O x P.J \u2014 Lt.Grey Cardigan \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1474 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/copy-of-portuguese-jersey-lt-grey",
+                  "actual": "/products/copy-of-portuguese-jersey-lt-grey",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'C.O.O x P.J \u2014 Lt.Grey Cardigan', selected variant 42052026138646 at \u20b9125.00",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/copy-of-portuguese-jersey-lt-grey",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/copy-of-portuguese-jersey-lt-grey.js with variants",
+                  "actual": "'C.O.O x P.J \u2014 Lt.Grey Cardigan', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "C.O.O x P.J \u2014 Lt.Grey Cardigan",
+                  "actual": "'C.O.O x P.J \u2014 Lt.Grey Cardigan' (h1, 52px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9125.00",
+                  "actual": "\u20b9125.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "C.O.O x P.J \u2014 Lt.Grey Cardigan",
+                  "actual": "'C.O.O x P.J \u2014 Lt.Grey Cardigan' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "C.O.O x P.J \u2014 Lt.Grey Cardigan",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "125.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 42052026138646 (S) selected, in stock",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "4 of 4 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--22715895775254__main (variant 42052026138646, button 'Add to cart')",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.54s, CLS 0.03",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.54s, CLS 0.03",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "82 scripts, at least 870 KB of JavaScript, 0 third-party script hosts",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "82 scripts, at least 870 KB of JavaScript, 0 third-party script hosts",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.74,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/copy-of-portuguese-jersey-lt-grey?variant=42052026138646",
+              "ttfb": 0.16,
+              "dcl": 0.48,
+              "load": 1.01,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "cart.add_to_cart",
+      "suite": "cart",
+      "title": "Add 'C.O.O x P.J \u2014 Lt.Grey Cardigan' to cart",
+      "check": "add_to_cart",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.67s",
+              "error": null,
+              "secs": 2.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "C.O.O x P.J \u2014 Lt.Grey Cardigan \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1474 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'C.O.O x P.J \u2014 Lt.Grey Cardigan', variant 42052026138646 at \u20b9125.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/copy-of-portuguese-jersey-lt-grey",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/copy-of-portuguese-jersey-lt-grey.js with variants",
+                  "actual": "'C.O.O x P.J \u2014 Lt.Grey Cardigan', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 42052026138646 selected",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "4 of 4 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "click_add_to_cart",
+              "status": "pass",
+              "detail": "clicked main product form #product-form-template--22715895775254__main (variant 42052026138646, button 'Add to cart')",
+              "error": null,
+              "secs": 0.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_received_this_product",
+              "status": "pass",
+              "detail": "cart has 'C.O.O x P.J \u2014 Lt.Grey Cardigan' \u00d71 at \u20b9125.00",
+              "error": null,
+              "secs": 1.7,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "variant the page sent to /cart/add",
+                  "expected": "42052026138646 (C.O.O x P.J \u2014 Lt.Grey Cardigan)",
+                  "actual": "42052026138646 (C.O.O x P.J \u2014 Lt.Grey Cardigan)",
+                  "ok": true
+                },
+                {
+                  "what": "cart item count",
+                  "expected": "0 \u2192 1",
+                  "actual": "0 \u2192 1",
+                  "ok": true
+                },
+                {
+                  "what": "product added to cart",
+                  "expected": "C.O.O x P.J \u2014 Lt.Grey Cardigan (variant 42052026138646)",
+                  "actual": "C.O.O x P.J \u2014 Lt.Grey Cardigan (variant 42052026138646)",
+                  "ok": true
+                },
+                {
+                  "what": "quantity added",
+                  "expected": "1",
+                  "actual": "1",
+                  "ok": true
+                },
+                {
+                  "what": "unit price in cart",
+                  "expected": "\u20b9125.00",
+                  "actual": "\u20b9125.00",
+                  "ok": true
+                },
+                {
+                  "what": "other paid products added",
+                  "expected": "none",
+                  "actual": "none",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_total_increase",
+              "status": "pass",
+              "detail": "\u20b90.00 \u2192 \u20b9125.00",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart total went up by",
+                  "expected": "\u20b9125.00",
+                  "actual": "\u20b9125.00",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_shows_product",
+              "status": "pass",
+              "detail": "cart drawer opened after adding",
+              "error": null,
+              "secs": 0.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart shows the product",
+                  "expected": "C.O.O x P.J \u2014 Lt.Grey Cardigan",
+                  "actual": "listed",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "checkout_button_ready",
+              "status": "pass",
+              "detail": "checkout visible + enabled via cache (drawer); NOT clicked",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "checkout button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.14,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/copy-of-portuguese-jersey-lt-grey?variant=42052026138646",
+              "ttfb": 0.21,
+              "dcl": 0.55,
+              "load": 1.27,
+              "lcp": 0.82
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "cart.edit_and_checkout",
+      "suite": "cart",
+      "title": "Cart page: change quantity, checkout opens, remove item",
+      "check": "cart_edit",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.72s",
+              "error": null,
+              "secs": 1.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "C.O.O x P.J \u2014 Lt.Grey Cardigan \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1474 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "item_in_cart",
+              "status": "pass",
+              "detail": "'C.O.O x P.J \u2014 Lt.Grey Cardigan' \u00d71 in Radar's own cart",
+              "error": null,
+              "secs": 0.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/copy-of-portuguese-jersey-lt-grey",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/copy-of-portuguese-jersey-lt-grey.js with variants",
+                  "actual": "'C.O.O x P.J \u2014 Lt.Grey Cardigan', 4 variant(s)",
+                  "ok": true
+                },
+                {
+                  "what": "variant in the store's product data",
+                  "expected": "42052026138646",
+                  "actual": "42052026138646",
+                  "ok": true
+                },
+                {
+                  "what": "/cart/add.js answer",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "cart quantity of this product",
+                  "expected": "1",
+                  "actual": "1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_page_line",
+              "status": "pass",
+              "detail": "cart page line: qty 1; + control: plus  quantity__button no-js-hidden  increase quantity for c; remove control:  remove c.o.o x p.j \u2014 lt.grey cardigan - s button button--te",
+              "error": null,
+              "secs": 2.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Your Shopping Cart \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1049 chars, 10 images",
+                  "ok": true
+                },
+                {
+                  "what": "cart page lists the product with a quantity box",
+                  "expected": "C.O.O x P.J \u2014 Lt.Grey Cardigan line",
+                  "actual": "line found, qty 1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "change_quantity",
+              "status": "pass",
+              "detail": "pressed + ('plus  quantity__button no-js-h'): /cart.js quantity 1 \u2192 2, page shows \u20b9250.00",
+              "error": null,
+              "secs": 1.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart quantity after pressing +",
+                  "expected": "2",
+                  "actual": "2",
+                  "ok": true
+                },
+                {
+                  "what": "quantity shown on the page",
+                  "expected": "2",
+                  "actual": "2",
+                  "ok": true
+                },
+                {
+                  "what": "line / subtotal shows 2 \u00d7 price",
+                  "expected": "\u20b9250.00",
+                  "actual": "\u20b9250.00",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "checkout_opens",
+              "status": "warn",
+              "detail": null,
+              "error": "checkout order summary names the product: expected C.O.O x P.J \u2014 Lt.Grey Cardigan, got not found in the checkout page",
+              "secs": 20.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "checkout page HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "landed on the checkout",
+                  "expected": "/checkouts/\u2026 or /checkout",
+                  "actual": "/checkouts/cn/hWNHp701TrMdNTfwP7bbXbMu/en-ca",
+                  "ok": true
+                },
+                {
+                  "what": "checkout shows a form a shopper would fill",
+                  "expected": "\u2265 1 field (NOT filled by Radar)",
+                  "actual": "18 fields",
+                  "ok": true
+                },
+                {
+                  "what": "checkout order summary names the product",
+                  "expected": "C.O.O x P.J \u2014 Lt.Grey Cardigan",
+                  "actual": "not found in the checkout page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "remove_item",
+              "status": "pass",
+              "detail": "pressed ' remove c.o.o x p.j \u2014 lt.grey ': /cart.js has 0 of it, the cart page no longer lists it",
+              "error": null,
+              "secs": 3.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Your Shopping Cart \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1050 chars, 10 images",
+                  "ok": true
+                },
+                {
+                  "what": "remove control on the product's cart line",
+                  "expected": "found",
+                  "actual": " remove c.o.o x p.j \u2014 lt.grey cardigan - s button button--te",
+                  "ok": true
+                },
+                {
+                  "what": "cart quantity of this product after remove",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                },
+                {
+                  "what": "cart page no longer lists the product",
+                  "expected": "gone (or 'cart is empty')",
+                  "actual": "gone, 'empty' message shown",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 30.33,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://theme-colorblock-demo.myshopify.com/private_access_tokens?id=89ddf20ebacb15b819b3255f073f9526&checkout_type=c1"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-colorblock-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/AnnouncementRuntimeExtensions.DbBB6lBJ.css was preloaded using link preload but not used within a few seconds from t",
+              "url": "https://theme-colorblock-demo.myshopify.com/checkouts/cn/hWNHp701TrMdNTfwP7bbXbMu/en-ca?_r=AQABQWhNFbPphSB1hZCpNp81yNICJBCAkurnL9U7iqSkurH7U"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-colorblock-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/RuntimeExtension.DWkDBM73.css was preloaded using link preload but not used within a few seconds from the window's l",
+              "url": "https://theme-colorblock-demo.myshopify.com/checkouts/cn/hWNHp701TrMdNTfwP7bbXbMu/en-ca?_r=AQABQWhNFbPphSB1hZCpNp81yNICJBCAkurnL9U7iqSkurH7U"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-colorblock-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/NumberField.CRpcZnVJ.css was preloaded using link preload but not used within a few seconds from the window's load e",
+              "url": "https://theme-colorblock-demo.myshopify.com/checkouts/cn/hWNHp701TrMdNTfwP7bbXbMu/en-ca?_r=AQABQWhNFbPphSB1hZCpNp81yNICJBCAkurnL9U7iqSkurH7U"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-colorblock-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/QRCode.BZ_m5G5a.css was preloaded using link preload but not used within a few seconds from the window's load event.",
+              "url": "https://theme-colorblock-demo.myshopify.com/checkouts/cn/hWNHp701TrMdNTfwP7bbXbMu/en-ca?_r=AQABQWhNFbPphSB1hZCpNp81yNICJBCAkurnL9U7iqSkurH7U"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-colorblock-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/DateField.CFFsBmUK.css was preloaded using link preload but not used within a few seconds from the window's load eve",
+              "url": "https://theme-colorblock-demo.myshopify.com/checkouts/cn/hWNHp701TrMdNTfwP7bbXbMu/en-ca?_r=AQABQWhNFbPphSB1hZCpNp81yNICJBCAkurnL9U7iqSkurH7U"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://theme-colorblock-demo.myshopify.com/api/event/collect",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://theme-colorblock-demo.myshopify.com/private_access_tokens?id=89ddf20ebacb15b819b3255f073f9526&checkout_type=c1"
+          ],
+          "loads": [
+            {
+              "url": "/products/copy-of-portuguese-jersey-lt-grey?variant=42052026138646",
+              "ttfb": 0.16,
+              "dcl": 0.62,
+              "load": 0.92,
+              "lcp": 0.67
+            },
+            {
+              "url": "/cart",
+              "ttfb": 0.24,
+              "dcl": 0.79,
+              "load": 1.13,
+              "lcp": 0.98
+            },
+            {
+              "url": "/checkouts/cn/hWNHp701TrMdNTfwP7bbXbMu/en-ca?_r=AQABQWhNFbPphSB1hZCpNp81yNICJBCAkurnL9U7iqSkurH7UXQr",
+              "ttfb": 0.19,
+              "dcl": 1.46,
+              "load": 3.12,
+              "lcp": 1.51
+            },
+            {
+              "url": "/cart",
+              "ttfb": 0.02,
+              "dcl": 0.46,
+              "load": 0.58,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.portuguese",
+      "suite": "search",
+      "title": "Search for 'portuguese' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.66s",
+              "error": null,
+              "secs": 1.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1679 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 20 results, 20 mention 'portuguese'",
+              "error": null,
+              "secs": 3.79,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "20",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'portuguese'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "20 of 20",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.99,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 0.55,
+              "load": 0.91,
+              "lcp": 0.62
+            },
+            {
+              "url": "/search?q=portuguese&options%5Bprefix%5D=last",
+              "ttfb": 0.26,
+              "dcl": 0.68,
+              "load": 0.88,
+              "lcp": 0.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.8s",
+              "error": null,
+              "secs": 2.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\" \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "397 chars, 1 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "says 'Search results Search No results found for \u201cqzxvbugradar\u201d. Check the spe'",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "message 'Search results Search No results found for \u201cqzxvbugradar\u201d. Check the spe'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.32,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.31,
+              "dcl": 0.65,
+              "load": 1.27,
+              "lcp": 0.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'portuguese' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.67s",
+              "error": null,
+              "secs": 1.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1679 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "4 product suggestion(s) while typing 'portuguese', e.g. 'C.O.O x P.J \u2014 Multi Cardigan'",
+              "error": null,
+              "secs": 3.01,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.8,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 0.41,
+              "load": 0.87,
+              "lcp": 0.48
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.5s",
+              "error": null,
+              "secs": 1.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1679 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "theme-colorblock-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "21: 'theme-colorblock-demo'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-colorblock-demo.myshopify.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-colorblock-demo.myshopify.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 1.82,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.43,
+              "load": 0.92,
+              "lcp": 0.51
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.65s",
+              "error": null,
+              "secs": 1.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "C.O.O x P.J \u2014 Lt.Grey Cardigan \u2013 theme-colorblock-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1474 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "C.O.O x P.J \u2014 Lt.Grey Cardigan \u2013 theme-colorblock-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "54: 'C.O.O x P.J \u2014 Lt.Grey Cardigan \u2013 theme-colorblock-demo'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 224: 'Easy-wearing and refined, our new supersoft jersey collectio'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "224: 'Easy-wearing and refined, our new supersoft jersey collectio'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-colorblock-demo.myshopify.com/products/copy-of-portuguese-jersey-lt-grey",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-colorblock-demo.myshopify.com/products/copy-of-portuguese-jersey-lt-grey",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "C.O.O x P.J \u2014 Lt.Grey Cardigan",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-colorblock-demo.myshopify.com/cdn/shop/products/highres-COOMarch2022-399_9fc5d75a-4186-417e-928f-b22aa8eb5ececopy.jpg?v=1648132989",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 1.9,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/copy-of-portuguese-jersey-lt-grey",
+              "ttfb": 0.06,
+              "dcl": 0.57,
+              "load": 1.01,
+              "lcp": 0.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 1.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 1.85,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-colorblock-demo.myshopify.com/api/collect",
+            "POST https://theme-colorblock-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.17,
+              "dcl": 0.42,
+              "load": 1.01,
+              "lcp": 0.3
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "theme-colorblock-demo",
+    "theme": "Dawn (store copy: [Colorblock] Theme store demo (latest))",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 21,
+    "collections": 33,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "no policy or contact links found in the footer",
+    "16 product(s) not listed in the browsed collections are tested last (e.g. portuguese-jersey-olive-contra-q-zip)"
+  ],
+  "perf": {
+    "pages": 18,
+    "median_load_secs": 1.02,
+    "slowest": {
+      "url": "/checkouts/cn/hWNHp701TrMdNTfwP7bbXbMu/en-ca?_r=AQABQWhNFbPphSB1hZCpNp81yNICJBCAkurnL9U7iqSkurH7UXQr",
+      "load_secs": 3.12
+    },
+    "console_errors": 1,
+    "console_warnings": 7,
+    "failed_requests": 5
+  },
+  "counts": {
+    "pass": 16,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
