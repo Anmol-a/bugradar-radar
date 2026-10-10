@@ -848,6 +848,36 @@ frozen store `stopped` on desktop, mobile not asked, whole bench < 300 s.
 **Not covered yet:** a single `radar scan` (not bench) of a frozen page still waits; the per-call fix (a watchdog that
 closes the page) is only worth it if the stopped-store evidence shows Radar, not the store, froze the page.
 
+## 4z2. Loop cycle 11 (10 Oct 2026, 09:46 IST, automated): product links opening a new tab; one-marker 'not Shopify'
+
+**new30f final score** (run 38012566834, shard 1 published after its step limit): 21 scored → **4/21 Radar
+false-failure stores**: rawpressery (variant read), koskii (mobile 'not Shopify'), fashor (product click did nothing),
+doodlage (froze the shard; on the re-run 38023578047 it finished in 205 s and shows USD prices = location (US
+runner)). mylittlemoppet = not Shopify (left out). The freeze did not repeat, so its cause stays unknown (the cycle-9
+bench time limit now bounds it). Full 36 regression #3 (38018580250, after the bench time limit): 61 healthy /
+5 degraded (foxtale + plum store findings, palmonas mobile journey flaky but passed on retry) / **0 Radar false
+failures**, no store stopped.
+
+**Pattern 1 (2 stores: fashor.com new30f, tigc.in new30c): the product click left the collection page unchanged** on
+all 3 attempts (fashor on both devices), the 'click again' and 'other link' fallbacks included. Radar only watched its
+own tab. A link with `target=_blank` (or a card script calling `window.open`) opens the product in a NEW tab: for a
+shopper that click worked. **Mock `new_tab_cards`** (every product link on home/collections gets target=_blank): the
+old code failed with exactly the stores' message ('opened the product that was clicked: expected
+/products/ceramic-vase, got /collections/home-decor'). **Fix (`_click_picked`):** it listens for pages the browser
+context opens during the click; when the current page did not move and a same-site tab opened, Radar closes that tab
+and continues at its address in the session's tab (same cookies); the step says 'the link opened it in a new tab;
+followed it there'. The post-click wait stops as soon as a tab opens. A tab to another site is never followed. The
+cause is unproven for the two stores until the re-run: if they still fail, it is not a new tab and the next round
+needs the link's own evidence.
+
+**Pattern 2 (koskii.com: new30f mobile and the re-run's desktop said 'not Shopify', new30f desktop was a healthy
+Shopify store): one marker.** That homepage load had only `cdn.shopify.com` (2 markers needed) and robots.txt
+answered 4xx. **Mock `stripped_first_home`** (first homepage load keeps only a cdn.shopify.com preconnect): old code =
+unsupported; new = healthy. **Fix (`discover.py`):** with 1 marker on an open 2xx homepage Radar waits 3 s and loads
+the homepage once more; if that load is Shopify it goes on (note 'homepage showed only one Shopify marker … loaded it
+again'). The 'not Shopify' note now carries the evidence (title, HTML size, markers found), so it is visible whether
+other 'not Shopify' stores (thewholetruthfoods, snitch, mylittlemoppet) are the same case.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -1106,6 +1136,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 loop cycle 11 (10 Oct, 09:46 IST):** product link opening a new tab is followed (mock `new_tab_cards`; fashor, tigc); one Shopify marker → homepage loaded again before 'not Shopify', evidence in the note (mock `stripped_first_home`; koskii); new30f final 4/21 (4z2).
 - **v0.19 loop cycle 9 (10 Oct, 07:47 IST):** bench time limit per store and device (`device_budget_s`, 25 min): an over-time store's process group (browser included) is killed, row verdict `stopped`, other stores unaffected; mock `frozen_product_page` (4z1).
 - **v0.19 loop cycle 8 (10 Oct, 05:46 IST):** prefer an enabled add-to-cart over a disabled one for the same product (form path `MAIN_BUY_JS` and healer path `ENABLED_ADD_JS`); mocks `disabled_dup_button` (now passes), `healer_disabled_sticky`, `disabled_buy_now_only`, `buy_now_first` ('buy it now' ranked after add-to-cart, never clicked); full 36 regression 38008403059 = 0 Radar false failures; littleboxindia mobile verified (4z).
 - **v0.19 loop cycle 5 (10 Oct, 01:47 IST):** no code change. Full 36 regression after the cycle-4 search change (run 37985975688): 62 healthy / 4 degraded (foxtale + plum hidden catalog products = store finding) / 0 Radar false failures, no store's search turned into the new warning. Held-out `stores/new30d.txt` run once (37988362552): 22 stores scored, **3 Radar false-failure stores** (bombaysweetshop: variant was right, buy button disabled by a 'PLEASE ENTER YOUR PINCODE' gate, the error hid 'disabled'; happilo: search results rendered but `Locator.press` timed out; kirobeauty: no buy control on one product page, not proven a store bug). Location (US runner): houseofchikankari (USD prices + US import-duty popup), skinkraft ('Visiting from United States?' popup over cards), okhai (USD market, product → /). Store finding: thedecorkart mobile nav links `/collections/crystal-decorative-candle-standss` (typo, 404). Not scored: gynoveda, theloom, virgio not Shopify; rarerabbit → thehouseofrare.com, fastandup → in.fastandup.com (list errors); tribeconcepts connection closed; theayurvedaco robots.txt disallows; truke robots.txt timeout.
