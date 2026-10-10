@@ -1019,6 +1019,18 @@ warnings: 'no results' message missing while 8–24 products are listed for a no
 soulflower, supplysix), LCP > 4 s from the US runner (cava, mcaffeine, plum 9.6 s), CLS 0.34–0.6 on mcaffeine
 collections, uncaught JS errors on 18 stores (mostly third-party: gtag, clarity, snaptr, jdgm).
 
+**Real-store proof of journeys 15, 16, 31** (full 36, both devices, run 38086122556, cloud-runs 19aa66a, on top of loop
+cycle 25's journeys 19–21): 59 healthy / 7 degraded = foxtale + plum (store findings) and **2 Radar issues, fixed and
+re-run** (run 38090661291, 5 stores × 2 devices: beminimalist ✔ both, thehouseofrare ✔ both, giva ✔ both):
+beminimalist.co's footer 'Email' link is Cloudflare's `/cdn-cgi/l/email-protection` (now never opened; mock footer
+carries one); thehouseofrare.com phone showed 0 cards on the first page once (grid rendered late): `catalog.more` waits
+6 s with a scroll nudge and leaves the listing to the collection test, which itself now waits up to 6 s for a grid a
+script renders after load (mock `late_cards`). Journey 16 opened the menu or found it shown on every phone run (16
+stores); journey 15 passed on 28 store runs; journey 31 found no store at the extreme. **Store finding:** beyondsnack.in's
+homepage banner links `/https://www.beyondsnack.in/collections/kerala-banana-chips-with-coconut-oil` (a theme-settings
+typo, 404 for shoppers); Radar now names such links 'malformed link' with an info step explaining it (mock
+`broken_section_link`).
+
 **Gaps vs Revenue Shield still open** (rows added to the status doc): 'Buy it now' flow opening the checkout (not
 filled), and storefront app changes between runs (needs run history: store profile, ARCHITECTURE 12).
 
@@ -1280,6 +1292,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 chat session (11 Oct, 04:00 IST):** journeys 15/16/31 proven on the 36 (run 38086122556 + re-run 38090661291); Cloudflare email links skipped, late collection grids waited for (journey 4 too), malformed '/https://' links named (beyondsnack store finding) (4zc-3).
 - **v0.19 loop cycle 25 (11 Oct, 00:50 IST):** marketplace-only catalog stores BLOCKED with the reason, not DOWN (`marketplace_only`; antesports, beyondsnack); journeys 19–21 on the cart page (`cart.edit_and_checkout`: quantity +, checkout page renders, remove), warnings until benched; `/checkout` opened only inside the cart flow; new30g 2/19; reports list the `info` suite; mocks `cart_qty_broken`, `cart_remove_broken`, `checkout_broken` (4zd). Full 36 regression 38075087892 (before 28–30) = 62 healthy / 4 degraded (store findings) / 0 Radar false failures.
 - **v0.19 chat session (11 Oct, 01:45 IST):** journey 16 (phone menu opens, `smoke.mobile_menu`); search box opener widened (icon-only toggles; mock `search_icon_only`); journey 26 judged from ≥ 8 / 25% missing, stepwise infinite scroll (4zc-3).
 - **v0.19 chat session (11 Oct, 01:10 IST):** journey 15 (links beyond the menu: announcement bar, homepage sections, footer; `smoke.more_links`), journey 31 (scripts and third-party script hosts per key page, Revenue Shield's 'script size'); mocks `broken_section_link`, `script_heavy` (4zc-3).
