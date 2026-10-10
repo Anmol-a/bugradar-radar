@@ -1,0 +1,119 @@
+{
+  "stamp": "20261010T044747Z",
+  "rows": [
+    {
+      "site_id": "koskii.com",
+      "url": "https://koskii.com",
+      "verdict": "degraded",
+      "platform": "shopify",
+      "theme": null,
+      "checkout": "GoKwik",
+      "access": "open",
+      "suites": {
+        "smoke": "pass",
+        "catalog": "confirmed_fail",
+        "health": "pass"
+      },
+      "failures": [
+        {
+          "case": "catalog.collection.all",
+          "verdict": "confirmed_fail",
+          "step": "lists_products",
+          "error": "products listed: expected \u2265 1, got 0",
+          "llm": "real store problem: The collection page explicitly shows a shopper-facing 'No Products Found' message indicating products are not visible to customers.",
+          "device": "mobile"
+        }
+      ],
+      "warnings": 0,
+      "healed": 0,
+      "radar_suspect": 0,
+      "notes": [
+        "store has no robots.txt (HTTP 4xx); everything allowed (RFC 9309)",
+        "homepage showed only one Shopify marker (cdn.shopify.com) on the first load; Radar loaded it again and it is a Shopify store",
+        "no header/nav links found",
+        "/collections.json unavailable (https://www.koskii.com/collections.json?limit=50 returned HTTP 404); using nav links",
+        "no collections discovered; falling back to /collections/all",
+        "/products.json unavailable (https://www.koskii.com/products.json?limit=50 returned HTTP 404); scraping product links",
+        "no products discovered; product and cart suites will be skipped",
+        "no search form found on homepage; assuming Shopify default /search"
+      ],
+      "report": "data/sites/koskii.com/runs/20261010T044747Z-d-5111/report.html",
+      "secs": 66,
+      "suites_by_device": {
+        "desktop": {
+          "smoke": "pass",
+          "catalog": "pass",
+          "health": "pass"
+        },
+        "mobile": {
+          "smoke": "pass",
+          "catalog": "confirmed_fail",
+          "health": "pass"
+        }
+      },
+      "device_only": {
+        "desktop": [],
+        "mobile": [
+          "catalog.collection.all"
+        ]
+      },
+      "devices": {
+        "desktop": {
+          "verdict": "healthy",
+          "report": "data/sites/koskii.com/runs/20261010T044747Z-d-5111/report.html",
+          "secs": 33,
+          "perf": {
+            "pages": 3,
+            "median_load_secs": 1.51,
+            "slowest": {
+              "url": "/collections/all",
+              "load_secs": 1.93
+            },
+            "console_errors": 0,
+            "console_warnings": 1,
+            "failed_requests": 39
+          },
+          "failures": 0,
+          "warnings": 0,
+          "report_rel": "../../sites/koskii.com/runs/20261010T044747Z-d-5111/report.html"
+        },
+        "mobile": {
+          "verdict": "degraded",
+          "report": "data/sites/koskii.com/runs/20261010T044820Z-m-bd65/report.html",
+          "secs": 33,
+          "perf": {
+            "pages": 3,
+            "median_load_secs": 0.84,
+            "slowest": {
+              "url": "/collections/all",
+              "load_secs": 1.08
+            },
+            "console_errors": 0,
+            "console_warnings": 1,
+            "failed_requests": 35
+          },
+          "failures": 1,
+          "warnings": 0,
+          "report_rel": "../../sites/koskii.com/runs/20261010T044820Z-m-bd65/report.html"
+        }
+      },
+      "cart": false,
+      "input": "https://koskii.com",
+      "report_rel": "../../sites/koskii.com/runs/20261010T044747Z-d-5111/report.html"
+    }
+  ],
+  "totals": {
+    "stores": 1,
+    "degraded": 1,
+    "tested": 1
+  },
+  "devices": [
+    "desktop",
+    "mobile"
+  ],
+  "browser": {
+    "ua_style": "browser",
+    "identity": "BugRadar/0.1 (+bugradar.in)",
+    "headless": true
+  }
+}
