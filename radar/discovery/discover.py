@@ -183,6 +183,22 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
     sm.home_title = sess.evaluate("() => document.title") or ""
     sm.access = detect_access(resp.status if resp else None, sm.home_title, html, urlparse(sess.page.url).path)
     det = detect_platform(html)
+    if det["platform"] != "shopify" and det["evidence"] and sm.access == "open" and resp is not None and resp.status < 400:
+        # One Shopify marker but not two (koskii.com, new30f, 10 Oct: 'not Shopify' on one device and a healthy Shopify
+        # store on the other). A store is one platform: load the homepage once more before saying it is not Shopify.
+        first = list(det["evidence"])
+        sess.page.wait_for_timeout(int(3000 * sess.backoff_scale))
+        try:
+            resp2, _ = sess.goto(base_url + "/")
+            html2 = sess.evaluate("() => document.documentElement.outerHTML") or ""
+            det2 = detect_platform(html2)
+            if resp2 is not None and resp2.status < 400 and det2["platform"] == "shopify":
+                resp, html, det = resp2, html2, det2
+                sm.home_title = sess.evaluate("() => document.title") or sm.home_title
+                sm.notes.append(f"homepage showed only one Shopify marker ({', '.join(first)}) on the first load; "
+                                "Radar loaded it again and it is a Shopify store")
+        except Exception:  # noqa: BLE001  the first verdict stands
+            pass
     sm.platform, sm.platform_evidence = det["platform"], det["evidence"]
     if sm.access == "password":
         sm.notes.append("store is password-protected (Shopify storefront password); nothing can be tested")
@@ -209,7 +225,9 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
             sm.theme = f"{th['schema']} (store copy: {th['name'][:40]})"
     sm.checkout_app = detect_checkout_app(html) if sm.platform == "shopify" else ""
     if sm.platform != "shopify":
-        sm.notes.append("platform is not Shopify; v1 builds tests for Shopify only")
+        sm.notes.append("platform is not Shopify; v1 builds tests for Shopify only"
+                        + (f" (homepage '{sm.home_title[:50]}', {len(html)} chars of HTML, Shopify markers found: "
+                           f"{', '.join(sm.platform_evidence)}; 2 needed)" if sm.platform_evidence else ""))
         return sm
 
     # 3. navigation

@@ -85,6 +85,10 @@ Modes (to prove Radar catches and heals what it should):
                    an enabled sticky ADD TO CART bar (no form link) is on screen (littleboxindia.com mobile) -> PASSES
   disabled_buy_now_only  add-to-cart disabled, only an enabled 'Buy it now' -> never clicked; the failure names it
   buy_now_first    an enabled 'Buy it now' sits before the add-to-cart in the form -> Radar clicks add to cart, PASSES
+  stripped_first_home  the FIRST homepage load shows only one Shopify marker (cdn.shopify.com; koskii.com) -> Radar
+                   loads it once more before calling it 'not Shopify', PASSES
+  new_tab_cards    product links on the homepage and collections open in a NEW TAB (target=_blank; fashor.com,
+                   tigc.in) -> journey follows the product into that tab, PASSES with a note
   search_misses    searching the first product's word returns only unrelated products (the word came from a
                    product the store hides: foxtale.in 'purify', bench 3) -> a second word is tried; the miss is a
                    WARNING, the search test PASSES on the second word
@@ -322,6 +326,19 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             # new30f (10 Oct): one shard ran 60+ min on 5 stores (normal: ~11 min) = a page that never answers.
             # A script that never ends freezes the page: every evaluate() Radar sends then waits for ever.
             body = body.replace("</body>", "<script>addEventListener('load', () => setTimeout(() => { for (;;) {} }, 200));</script></body>")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "stripped_first_home" \
+                and urlparse(self.path).path in ("", "/") and not getattr(self.server, "home_served", False):
+            # koskii.com (new30f + re-run, 10 Oct): one load of the homepage carried a single Shopify marker
+            # (cdn.shopify.com) and Radar said 'not Shopify'; the other device's run of the same store was healthy.
+            self.server.home_served = True
+            body = re.sub(r"<script>window\.Shopify = .*?</script>", "", body, count=1).replace("/cdn/shop/", "/static/") \
+                .replace("</head>", '<link rel="preconnect" href="https://cdn.shopify.com"></head>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "new_tab_cards" \
+                and "/products/" not in self.path:
+            # fashor.com (new30f) + tigc.in (new30c), 10 Oct: the product card click left the collection unchanged
+            # (3 attempts, both devices). Suspected: product links open in a NEW TAB (target=_blank / window.open);
+            # the shopper is on the product in that tab, Radar kept looking at the old one.
+            body = body.replace("</body>", """<script>document.querySelectorAll('a[href*="/products/"]').forEach(a => a.target = '_blank');</script></body>""")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "empty_doc_title":
             body = re.sub(r"<title>.*?</title>", "<title></title>", body, count=1, flags=re.S)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode in self.OVERLAYS:

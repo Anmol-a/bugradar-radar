@@ -488,6 +488,23 @@ def test_grid_rerendered_under_the_click_is_clicked_again(tmp_path):
     assert "clicked again" in _steps(j)["click_into_product"].detail
 
 
+def test_product_link_opening_a_new_tab_is_followed(tmp_path):
+    """fashor.com (new30f) + tigc.in (new30c), 10 Oct: clicking the product card left the collection page as it was,
+    on every attempt. A link that opens the product in a new tab works for a shopper: the journey follows it."""
+    j = _case(_journey_only("new_tab_cards", tmp_path), "journey.")
+    assert j.verdict == "pass", [(a.ok, a.error) for a in j.attempts]
+    st = _steps(j)
+    assert "/products/" in st["click_into_product"].detail and "new tab" in st["click_into_product"].detail
+
+
+def test_one_shopify_marker_is_checked_again_before_not_shopify(tmp_path):
+    """koskii.com (new30f, 10 Oct): one homepage load showed a single Shopify marker and Radar called the store 'not
+    Shopify' while the other device found a healthy Shopify store. A store is one platform: Radar loads it once more."""
+    run, _ = _scan("stripped_first_home", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", (run.verdict, run.notes)
+    assert any("loaded it again" in n for n in run.notes), run.notes
+
+
 def _product_only(mode, tmp_path, **kw):
     srv, url = serve(mode)
     try:

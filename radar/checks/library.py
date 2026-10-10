@@ -1643,6 +1643,43 @@ def _click_picked(ctx: Ctx, got: dict | None = None) -> None:
     loc = page.locator('[data-radar-target="click"]').first
     before = page.url
     clicked = False
+    # Links that open in a NEW TAB (target=_blank or window.open: fashor.com, tigc.in, 10 Oct): for a shopper the click
+    # worked, the page is in that tab. Collect tabs opened during this click and follow them below.
+    opened: list = []
+
+    def on_page(p):                         # a plain function: Playwright tags its handlers (list.append cannot be)
+        opened.append(p)
+    page.context.on("page", on_page)
+    try:
+        _click_at(ctx, page, loc, got, before, opened)
+    finally:
+        try:
+            page.context.remove_listener("page", on_page)
+        except Exception:  # noqa: BLE001
+            pass
+    if page.url == before and opened:
+        tab = opened[0]
+        try:
+            tab.wait_for_load_state("domcontentloaded", timeout=15000)
+        except Exception:  # noqa: BLE001
+            pass
+        url = tab.url
+        for t in opened:
+            try:
+                t.close()
+            except Exception:  # noqa: BLE001
+                pass
+        if url and urlparse(url).netloc == urlparse(before).netloc:
+            # continue in the same browser tab at the address the new tab opened (same session, same cookies)
+            ctx.sess.goto(url)
+            if got is not None:
+                got["new_tab"] = _path(url)
+            return
+    ctx.sess.settle()
+
+
+def _click_at(ctx: Ctx, page, loc, got: dict | None, before: str, opened: list) -> None:
+    clicked = False
     if got and got.get("x") is not None:
         # The pick scrolled the card into view. Some stores re-lay out right after a scroll (boat-lifestyle.com,
         # bench 5: the header changes ~20 ms after scrolling and a click 30 ms after the pick landed on the NEXT
@@ -1665,6 +1702,8 @@ def _click_picked(ctx: Ctx, got: dict | None = None) -> None:
                 page.wait_for_url(lambda u: u != before, timeout=4000)
             except Exception:  # noqa: BLE001
                 clicked = False
+            if not clicked and opened:
+                return                              # it opened a new tab: the caller follows it (no second click)
     if not clicked:
         try:
             loc.click(timeout=6000)
@@ -1675,11 +1714,13 @@ def _click_picked(ctx: Ctx, got: dict | None = None) -> None:
             except Exception as e:  # noqa: BLE001
                 m = re.search(r"<[^>]{0,160}>[^\n]{0,60}intercepts pointer events", str(e))
                 raise AssertionError("could not click: " + (m.group(0)[:200] if m else str(e).splitlines()[0][:160])) from e
-    try:
-        page.wait_for_url(lambda u: u != before, timeout=8000)
-    except Exception:  # noqa: BLE001  same-page links / slow stores: the caller's assertion decides
-        pass
-    ctx.sess.settle()
+    for _ in range(16):                     # up to 8 s: the page moves on, or the link opened a new tab
+        if page.url != before or opened:
+            break
+        try:
+            page.wait_for_url(lambda u: u != before, timeout=500)
+        except Exception:  # noqa: BLE001  same-page links / slow stores: the caller's assertion decides
+            pass
 
 
 def _click(ctx: Ctx, el) -> None:
@@ -1763,7 +1804,10 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
         first = ctx.sess.evaluate(MARK_TRIED_JS)
         errors: list[str] = []
 
+        tabs: list = []
+
         def try_click(g):
+            tabs.append(g)
             # A click another layer intercepts is, for the shopper, a click that did nothing: the fallbacks below
             # (click again, the product's other link) must still get their turn (bummer.in, 9 Oct: a slider layer over
             # the image link; v0.19 raised here and never tried the product name).
@@ -1801,7 +1845,8 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                    _handle(page.url) == clicked)
         known = "known in-stock product" if clicked in product_handles else "first clickable product"
         return (f"clicked {known} on {got.get('considered')} candidates → {_path(page.url)}{again}"
-                + (f"; {got['overlay']}" if got.get("overlay") else "") + (" (via its card)" if got.get("via") == "card" else ""))
+                + (f"; {got['overlay']}" if got.get("overlay") else "") + (" (via its card)" if got.get("via") == "card" else "")
+                + (" (the link opened it in a new tab; followed it there)" if any(g.get("new_tab") for g in tabs) else ""))
     dead: dict = {}
     ctx.steps.run("click_into_product", click_product)
     if dead.get("link"):
