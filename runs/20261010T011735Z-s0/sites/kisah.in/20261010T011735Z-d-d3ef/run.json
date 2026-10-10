@@ -1,0 +1,2412 @@
+{
+  "run_id": "20261010T011735Z-d-d3ef",
+  "site_id": "kisah.in",
+  "base_url": "https://kisah.in",
+  "device": "desktop",
+  "started_at": "2026-10-10T01:17:35+00:00",
+  "finished_at": "2026-10-10T01:24:20+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.77s",
+              "error": null,
+              "secs": 13.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11886 chars, 89 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/new-arrivals (24 products)",
+              "error": null,
+              "secs": 12.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://kisah.in/collections/new-arrivals ('NEW ARRIVALS')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/new-arrivals",
+                  "actual": "/collections/new-arrivals",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 80 candidates \u2192 /products/kisah-men-kurta-set-ka-1351-w513 (its first link did nothing; the product name opened it)",
+              "error": null,
+              "secs": 35.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 choose your preferred size size: xs - 36 size chart xs - 3'",
+                  "ok": true
+                },
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/kisah-men-kurta-set-ka-1351-w513?_pos=1&_fid=cf6e13df9&_ss=c&variant=49677792182424 ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/kisah-men-kurta-set-ka-1351-w513",
+                  "actual": "/products/kisah-men-kurta-set-ka-1351-w513",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "every_product_link_opens_the_product",
+              "status": "warn",
+              "detail": null,
+              "error": "product link opens the product when clicked: expected opens the product, got the link '' <a.btn> on /collections/new-arrivals did nothing when clicked (twice); the product's other link ('Men Coral Blended Print Kurta Set $82.78 $88.81')\u2026",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product link opens the product when clicked",
+                  "expected": "opens the product",
+                  "actual": "the link '' <a.btn> on /collections/new-arrivals did nothing when clicked (twice); the product's other link ('Men Coral Blended Print Kurta Set $82.78 $88.81')\u2026",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Men Coral Blended Print Kurta Set', selected variant 49677792182424 at \u20b98,014.00",
+              "error": null,
+              "secs": 0.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/kisah-men-kurta-set-ka-1351-w513",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/kisah-men-kurta-set-ka-1351-w513.js with variants",
+                  "actual": "'Men Coral Blended Print Kurta Set', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b98,014.00, got not on page",
+              "secs": 5.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Men Coral Blended Print Kurta Set",
+                  "actual": "'Men Coral Blended Print Kurta Set' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b98,014.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b98,014.00, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 78.88,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'write' on 'Document': It isn't possible to write into a document from an asynchronously-loaded external script unless it is explicitly opened.",
+              "url": "https://dunsregistered.dnb.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'country')",
+              "url": "https://kisah.in/collections/new-arrivals?filter.v.availability=1"
+            },
+            {
+              "type": "pageerror",
+              "text": "CTBIS is not defined",
+              "url": "https://kisah.in/collections/new-arrivals?filter.v.availability=1"
+            },
+            {
+              "type": "warning",
+              "text": "[Helium] Grid not found or empty, trying fallback selectors",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/managers.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://kisah.in/api/collect",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595071893&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=189785339.1791595079&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Online%20",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595078930&cv=11&fst=1791595078930&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=189785339.1791595079&gtm=45be6a72v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a72v9257248301za200zb9166582672zd9166582672xf1&_p=1791595071893&g",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=189785339.1791595079&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onl",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595080032&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=189785339.1791595079&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onli",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595081482&cv=11&fst=1791595081482&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://kisah.in/a/elevar/browser/bulk",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20gzb9236273325zd9236273325xf1&_p=1791595080032&gcs=G111&gcd=",
+            "GET https://kisah.in/cdn/shop/t/115/assets/main.js?v=32952526386773197381790683401",
+            "GET https://kisah.in/cdn/shop/t/115/assets/jquery-3.7.1.min.js?v=147293088974801289311789470096",
+            "GET https://kisah.in/cdn/shop/t/115/assets/slick.js?v=182247254638562121901789470097",
+            "GET https://kisah.in/cdn/shop/t/115/assets/size-inclusive-collection.js?v=34256696799601194831789470096",
+            "GET https://cdn.shopify.com/extensions/01a10bd6-cbd2-75a7-ade0-b6dd6106a813/wishlist-hero-100/assets/bundle2.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/managers.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/providers-base.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/product-card.js",
+            "GET https://cdn.shopify.com/extensions/01a12014-c68d-7df1-a911-a1a25d1ccc70/mida-fraud-ip-blocker-341/assets/blocker-listener.min.js",
+            "GET https://cdn.shopify.com/extensions/01a12014-c68d-7df1-a911-a1a25d1ccc70/mida-fraud-ip-blocker-341/assets/script.min.js?fbv=20260602-rsa2"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.84,
+              "load": 9.94,
+              "lcp": 1.27
+            },
+            {
+              "url": "/collections/new-arrivals?filter.v.availability=1",
+              "ttfb": 0.23,
+              "dcl": 4.87,
+              "load": 8.67,
+              "lcp": 5.1
+            },
+            {
+              "url": "/products/kisah-men-kurta-set-ka-1351-w513?_pos=1&_fid=cf6e13df9&_ss=c&variant=49677792182424",
+              "ttfb": 0.01,
+              "dcl": 2.69,
+              "load": 8.0,
+              "lcp": 1.03
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.74s",
+              "error": null,
+              "secs": 10.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11886 chars, 89 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/new-arrivals (24 products)",
+              "error": null,
+              "secs": 9.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://kisah.in/collections/new-arrivals ('NEW ARRIVALS')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/new-arrivals",
+                  "actual": "/collections/new-arrivals",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 80 candidates \u2192 /products/kisah-men-kurta-set-ka-1351-w513 (its first link did nothing; the product name opened it)",
+              "error": null,
+              "secs": 32.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 choose your preferred size size: xs - 36 size chart xs - 3'",
+                  "ok": true
+                },
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/kisah-men-kurta-set-ka-1351-w513?_pos=1&_fid=cf6e13df9&_ss=c&variant=49677792182424 ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/kisah-men-kurta-set-ka-1351-w513",
+                  "actual": "/products/kisah-men-kurta-set-ka-1351-w513",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "every_product_link_opens_the_product",
+              "status": "warn",
+              "detail": null,
+              "error": "product link opens the product when clicked: expected opens the product, got the link '' <a.btn> on /collections/new-arrivals did nothing when clicked (twice); the product's other link ('Men Coral Blended Print Kurta Set $82.78 $88.81')\u2026",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product link opens the product when clicked",
+                  "expected": "opens the product",
+                  "actual": "the link '' <a.btn> on /collections/new-arrivals did nothing when clicked (twice); the product's other link ('Men Coral Blended Print Kurta Set $82.78 $88.81')\u2026",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Men Coral Blended Print Kurta Set', selected variant 49677792182424 at \u20b98,014.00",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/kisah-men-kurta-set-ka-1351-w513",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/kisah-men-kurta-set-ka-1351-w513.js with variants",
+                  "actual": "'Men Coral Blended Print Kurta Set', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b98,014.00, got not on page",
+              "secs": 4.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Men Coral Blended Print Kurta Set",
+                  "actual": "'Men Coral Blended Print Kurta Set' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b98,014.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b98,014.00, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 68.48,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'country')",
+              "url": "https://kisah.in/collections/new-arrivals?filter.v.availability=1"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'write' on 'Document': It isn't possible to write into a document from an asynchronously-loaded external script unless it is explicitly opened.",
+              "url": "https://dunsregistered.dnb.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "CTBIS is not defined",
+              "url": "https://kisah.in/collections/new-arrivals?filter.v.availability=1"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/extensions/01a11fc5-0b69-7cf2-97bf-998c75882cca/click-new-188/assets/clickpost-edd.css was preloaded using link preload but not used within a few seconds from the window's load event.",
+              "url": "https://kisah.in/collections/new-arrivals?filter.v.availability=1"
+            },
+            {
+              "type": "warning",
+              "text": "[Helium] Grid not found or empty, trying fallback selectors",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/managers.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://kisah.in/api/collect",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595150744&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=131639274.1791595156&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Online%20",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595155869&cv=11&fst=1791595155869&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=131639274.1791595156&gtm=45be6a72v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a72v9257248301za200zb9166582672zd9166582672xf1&_p=1791595150744&g",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=131639274.1791595156&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onl",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72h1v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595156508&gcs=G111&gc",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=131639274.1791595156&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onli",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595158977&cv=11&fst=1791595158977&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://kisah.in/a/elevar/browser/bulk",
+            "GET https://kisah.in/cdn/shop/t/115/assets/main.js?v=32952526386773197381790683401",
+            "GET https://kisah.in/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js",
+            "GET https://kisah.in/cdn/shop/t/115/assets/jquery-3.7.1.min.js?v=147293088974801289311789470096",
+            "GET https://kisah.in/cdn/shop/t/115/assets/slick.js?v=182247254638562121901789470097",
+            "GET https://kisah.in/cdn/shop/t/115/assets/size-inclusive-collection.js?v=34256696799601194831789470096",
+            "GET https://cdn.shopify.com/extensions/01a10bd6-cbd2-75a7-ade0-b6dd6106a813/wishlist-hero-100/assets/default.js",
+            "GET https://cdn.shopify.com/extensions/01a10bd6-cbd2-75a7-ade0-b6dd6106a813/wishlist-hero-100/assets/bundle2.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/managers.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/providers-base.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/product-card.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/cart-manager.js"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.11,
+              "dcl": 2.94,
+              "load": 8.57,
+              "lcp": 1.12
+            },
+            {
+              "url": "/collections/new-arrivals?filter.v.availability=1",
+              "ttfb": 0.09,
+              "dcl": 3.16,
+              "load": 6.21,
+              "lcp": 3.39
+            },
+            {
+              "url": "/products/kisah-men-kurta-set-ka-1351-w513?_pos=1&_fid=cf6e13df9&_ss=c&variant=49677792182424",
+              "ttfb": 0.01,
+              "dcl": 1.48,
+              "load": 5.66,
+              "lcp": 1.05
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.72s",
+              "error": null,
+              "secs": 10.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11886 chars, 89 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/new-arrivals (24 products)",
+              "error": null,
+              "secs": 11.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://kisah.in/collections/new-arrivals ('NEW ARRIVALS')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/new-arrivals",
+                  "actual": "/collections/new-arrivals",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 80 candidates \u2192 /products/kisah-men-kurta-set-ka-1351-w513 (its first link did nothing; the product name opened it)",
+              "error": null,
+              "secs": 35.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 choose your preferred size size: xs - 36 size chart xs - 3'",
+                  "ok": true
+                },
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/kisah-men-kurta-set-ka-1351-w513?_pos=1&_fid=cf6e13df9&_ss=c&variant=49677792182424 ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/kisah-men-kurta-set-ka-1351-w513",
+                  "actual": "/products/kisah-men-kurta-set-ka-1351-w513",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "every_product_link_opens_the_product",
+              "status": "warn",
+              "detail": null,
+              "error": "product link opens the product when clicked: expected opens the product, got the link '' <a.btn> on /collections/new-arrivals did nothing when clicked (twice); the product's other link ('Men Coral Blended Print Kurta Set $82.78 $88.81')\u2026",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product link opens the product when clicked",
+                  "expected": "opens the product",
+                  "actual": "the link '' <a.btn> on /collections/new-arrivals did nothing when clicked (twice); the product's other link ('Men Coral Blended Print Kurta Set $82.78 $88.81')\u2026",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Men Coral Blended Print Kurta Set', selected variant 49677792182424 at \u20b98,014.00",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/kisah-men-kurta-set-ka-1351-w513",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/kisah-men-kurta-set-ka-1351-w513.js with variants",
+                  "actual": "'Men Coral Blended Print Kurta Set', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b98,014.00, got not on page",
+              "secs": 4.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Men Coral Blended Print Kurta Set",
+                  "actual": "'Men Coral Blended Print Kurta Set' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b98,014.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b98,014.00, got not on page",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 72.63,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'write' on 'Document': It isn't possible to write into a document from an asynchronously-loaded external script unless it is explicitly opened.",
+              "url": "https://dunsregistered.dnb.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'country')",
+              "url": "https://kisah.in/collections/new-arrivals?filter.v.availability=1"
+            },
+            {
+              "type": "pageerror",
+              "text": "CTBIS is not defined",
+              "url": "https://kisah.in/collections/new-arrivals?filter.v.availability=1"
+            },
+            {
+              "type": "warning",
+              "text": "[Helium] Grid not found or empty, trying fallback selectors",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/managers.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://kisah.in/api/collect",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595222101&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=355220139.1791595227&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Online%20",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595227300&cv=11&fst=1791595227300&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=355220139.1791595227&gtm=45be6a72v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a72v9257248301za200zb9166582672zd9166582672xf1&_p=1791595222101&g",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=355220139.1791595227&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onli",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a80h2v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595228286&gcs=G111&gc",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595229983&cv=11&fst=1791595229983&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://kisah.in/a/elevar/browser/bulk",
+            "GET https://kisah.in/cdn/shop/t/115/assets/main.js?v=32952526386773197381790683401",
+            "GET https://kisah.in/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js",
+            "GET https://kisah.in/cdn/shop/t/115/assets/jquery-3.7.1.min.js?v=147293088974801289311789470096",
+            "GET https://kisah.in/cdn/shop/t/115/assets/slick.js?v=182247254638562121901789470097",
+            "GET https://kisah.in/cdn/shop/t/115/assets/size-inclusive-collection.js?v=34256696799601194831789470096",
+            "GET https://cdn.shopify.com/extensions/01a12014-c68d-7df1-a911-a1a25d1ccc70/mida-fraud-ip-blocker-341/assets/blocker-listener.min.js",
+            "GET https://cdn.shopify.com/extensions/01a12014-c68d-7df1-a911-a1a25d1ccc70/mida-fraud-ip-blocker-341/assets/script.min.js?fbv=20260602-rsa2",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/managers.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/providers-base.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/product-card.js",
+            "GET https://cdn.shopify.com/extensions/01a10bd6-cbd2-75a7-ade0-b6dd6106a813/wishlist-hero-100/assets/default.js",
+            "GET https://cdn.shopify.com/extensions/01a10bd6-cbd2-75a7-ade0-b6dd6106a813/wishlist-hero-100/assets/bundle2.js"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.82,
+              "load": 8.18,
+              "lcp": 1.12
+            },
+            {
+              "url": "/collections/new-arrivals?filter.v.availability=1",
+              "ttfb": 0.31,
+              "dcl": 3.67,
+              "load": 8.61,
+              "lcp": 4.08
+            },
+            {
+              "url": "/products/kisah-men-kurta-set-ka-1351-w513?_pos=1&_fid=cf6e13df9&_ss=c&variant=49677792182424",
+              "ttfb": 0.01,
+              "dcl": 2.25,
+              "load": 7.75,
+              "lcp": 1.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": "kisah.in|journey.shopper|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The robot expected a different price (\u20b98,014.00) but the page clearly shows a price ($82.78), so the check looked for the wrong expected value or in the wrong format rather than the store being broken.",
+        "evidence": "Visible page text includes the product title 'Men Coral Blended Print Kurta Set' and shows a price of '$82.78' (with MRP $88.81) in the viewport; the expected price '\u20b98,014.00' is not present on the page."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.42s",
+              "error": null,
+              "secs": 11.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11886 chars, 89 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.42s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.42s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.12,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://kisah.in/api/collect",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595294723&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=53801128.1791595300&gtm=45be6a72v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=53801128.1791595300&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Online%20f",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595299623&cv=11&fst=1791595299623&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a72h1v9257248301za200zb9166582672zd9166582672xf1&_p=1791595294723",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=53801128.1791595300&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onli",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595301023&gcs=G111&gcd=",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595302822&cv=11&fst=1791595302822&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=53801128.1791595300&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onlin",
+            "POST https://kisah.in/a/elevar/browser/bulk"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.96,
+              "load": 8.45,
+              "lcp": 1.0
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.89s",
+              "error": null,
+              "secs": 10.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11886 chars, 89 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/new-arrivals",
+              "status": "pass",
+              "detail": "HTTP 200 in 6.65s",
+              "error": null,
+              "secs": 15.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "New Arrivals \u2013 Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4239 chars, 38 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 choose your preferred size size: xs - 36 size chart xs - 3'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/kids",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.91s",
+              "error": null,
+              "secs": 13.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Kurta Set for Kids Online at Best Prices - Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4434 chars, 38 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 choose your preferred size kids size: 3-4 years size chart'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/plus",
+              "status": "pass",
+              "detail": "HTTP 200 in 5.32s",
+              "error": null,
+              "secs": 10.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Plus \u2013 Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "13302 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 50.7,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'write' on 'Document': It isn't possible to write into a document from an asynchronously-loaded external script unless it is explicitly opened.",
+              "url": "https://dunsregistered.dnb.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'country')",
+              "url": "https://kisah.in/collections/new-arrivals?filter.v.availability=1"
+            }
+          ],
+          "failed_requests": [
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://kisah.in/api/collect",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595307736&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=693605508.1791595313&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Online%20",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595312630&cv=11&fst=1791595312630&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=693605508.1791595313&gtm=45be6a80h2v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a72v9257248301za200zb9166582672zd9166582672xf1&_p=1791595307736&g",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595313048&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=693605508.1791595313&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onl",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=693605508.1791595313&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onli",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595316699&cv=11&fst=1791595316699&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a80h2v919365609",
+            "POST https://kisah.in/a/elevar/browser/bulk",
+            "GET https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4",
+            "GET https://kisah.in/cdn/shop/t/115/assets/main.js?v=32952526386773197381790683401",
+            "GET https://kisah.in/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js",
+            "GET https://kisah.in/cdn/shop/t/115/assets/jquery-3.7.1.min.js?v=147293088974801289311789470096",
+            "GET https://kisah.in/cdn/shop/t/115/assets/slick.js?v=182247254638562121901789470097",
+            "GET https://kisah.in/cdn/shop/t/115/assets/size-inclusive-collection.js?v=34256696799601194831789470096",
+            "GET https://cdn.shopify.com/extensions/01a10bd6-cbd2-75a7-ade0-b6dd6106a813/wishlist-hero-100/assets/default.js",
+            "GET https://cdn.shopify.com/extensions/01a10bd6-cbd2-75a7-ade0-b6dd6106a813/wishlist-hero-100/assets/bundle2.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/cart-manager.js",
+            "GET https://cdn.shopify.com/extensions/01a12014-c68d-7df1-a911-a1a25d1ccc70/mida-fraud-ip-blocker-341/assets/blocker-listener.min.js",
+            "GET https://cdn.shopify.com/extensions/01a12014-c68d-7df1-a911-a1a25d1ccc70/mida-fraud-ip-blocker-341/assets/script.min.js?fbv=20260602-rsa2"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 3.85,
+              "load": 9.3,
+              "lcp": 0.98
+            },
+            {
+              "url": "/collections/new-arrivals?filter.v.availability=1",
+              "ttfb": 0.44,
+              "dcl": 3.67,
+              "load": 9.72,
+              "lcp": 4.07
+            },
+            {
+              "url": "/collections/kids?filter.v.availability=1",
+              "ttfb": 0.22,
+              "dcl": 2.78,
+              "load": 6.71,
+              "lcp": 3.06
+            },
+            {
+              "url": "/collections/plus?filter.v.availability=1",
+              "ttfb": 0.31,
+              "dcl": 3.53,
+              "load": 7.36,
+              "lcp": 3.69
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.all",
+      "suite": "catalog",
+      "title": "Collection 'all' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 6.86s",
+              "error": null,
+              "secs": 13.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Find All Men's Ethnic Wear Sets and Kurtas from Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4947 chars, 38 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 choose your preferred size size: xs - 36 size chart xs - 3'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "24 products listed",
+              "error": null,
+              "secs": 0.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.68,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'write' on 'Document': It isn't possible to write into a document from an asynchronously-loaded external script unless it is explicitly opened.",
+              "url": "https://dunsregistered.dnb.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'country')",
+              "url": "https://kisah.in/collections/all?filter.v.availability=1"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/collections/all?filter.v.availab"
+            }
+          ],
+          "failed_requests": [
+            "GET https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4",
+            "GET https://kisah.in/cdn/shop/t/115/assets/main.js?v=32952526386773197381790683401",
+            "GET https://kisah.in/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js",
+            "GET https://kisah.in/cdn/shop/t/115/assets/jquery-3.7.1.min.js?v=147293088974801289311789470096",
+            "GET https://kisah.in/cdn/shop/t/115/assets/slick.js?v=182247254638562121901789470097",
+            "GET https://kisah.in/cdn/shop/t/115/assets/size-inclusive-collection.js?v=34256696799601194831789470096",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/cart-manager.js",
+            "GET https://cdn.shopify.com/extensions/01a12014-c68d-7df1-a911-a1a25d1ccc70/mida-fraud-ip-blocker-341/assets/blocker-listener.min.js",
+            "GET https://cdn.shopify.com/extensions/01a12014-c68d-7df1-a911-a1a25d1ccc70/mida-fraud-ip-blocker-341/assets/script.min.js?fbv=20260602-rsa2",
+            "GET https://cdn.shopify.com/extensions/01a10bd6-cbd2-75a7-ade0-b6dd6106a813/wishlist-hero-100/assets/default.js",
+            "GET https://cdn.shopify.com/extensions/01a10bd6-cbd2-75a7-ade0-b6dd6106a813/wishlist-hero-100/assets/bundle2.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/managers.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/providers-base.js",
+            "GET https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/product-card.js",
+            "GET https://cdn.shopify.com/extensions/01a11b30-98d5-7ae3-b2f4-f79b3c6f32c4/judgeme-775/assets/loader.js",
+            "GET https://cdn.shopify.com/extensions/019dbe41-333e-7edd-a4ce-2128c404ca9a/bucks-currency-converter-29/assets/widgetLoader.js",
+            "GET https://kisah.in/cdn/shopifycloud/perf-kit/shopify-perf-kit-3.10.1.min.js",
+            "GET https://kisah.in/cdn/shop/t/115/assets/main-search.js?v=96876510234544991841791451597",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://kisah.in/api/collect",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595361204&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595365660&cv=11&fst=1791595365660&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595365728&cv=11&fst=1791595365728&fmt=8&bg=ffffff&guid=ON&async=1&en=helium_enabled&gtm=45",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=2085986301.1791595366&dt=Find%20All%20Men%27s%20Ethnic%20Wear%20Sets%20and%20Kurtas%20from"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all?filter.v.availability=1",
+              "ttfb": 1.36,
+              "dcl": 4.16,
+              "load": 8.14,
+              "lcp": 4.46
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.kisah-mens-wide-leg-trouser-w513",
+      "suite": "product",
+      "title": "PDP 'Mens Off-White Rayon Plain Wide Leg Trouser'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 6.55s",
+              "error": null,
+              "secs": 12.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Mens Off-White Rayon Plain Wide Leg Trouser \u2013 Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3124 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/kisah-mens-wide-leg-trouser-w513",
+                  "actual": "/products/kisah-mens-wide-leg-trouser-w513",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Mens Off-White Rayon Plain Wide Leg Trouser', selected variant 67673730089112 at \u20b92,998.00",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/kisah-mens-wide-leg-trouser-w513",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/kisah-mens-wide-leg-trouser-w513.js with variants",
+                  "actual": "'Mens Off-White Rayon Plain Wide Leg Trouser', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,998.00, got not on page",
+              "secs": 2.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Mens Off-White Rayon Plain Wide Leg Trouser",
+                  "actual": "'Mens Off-White Rayon Plain Wide Leg Trouser' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,998.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,998.00, got not on page",
+          "screenshot": "product.pdp.kisah-mens-wide-leg-trouser-w513.a1.png",
+          "trace": "product.pdp.kisah-mens-wide-leg-trouser-w513.a1_trace.zip",
+          "secs": 17.94,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/products/kisah-mens-wide-leg-tro"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/6148",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-Z7JGKLREKL&gtm=45je6a72v9201842683za208zb9166582672zd9166582672xf1&_p=1791595374211&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595374211&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595374211&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-Z7JGKLREKL&gtm=45je6a72v9201842683za200zb9166582672zd9166582672xf1&_p=1791595374211&gcs=G111&gcd=",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://kisah.in/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=1207509040.1791595380&dt=Mens%20Off-White%20Rayon%20Plain%20Wide%20Leg%20Trouser%20%E2%80%9",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595379499&cv=11&fst=1791595379499&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1207509040.1791595380&gtm=45be6a72v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a72v9257248301za200zb9166582672zd9166582672xf1&_p=1791595374211&g",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=1207509040.1791595380&dt=Mens%20Off-White%20Rayon%20Plain%20Wide%20Leg%20Trouser%20%E",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595380975&gcs=G111&gcd=",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595383199&cv=11&fst=1791595383199&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=1207509040.1791595380&dt=Mens%20Off-White%20Rayon%20Plain%20Wide%20Leg%20Trouser%20%E2",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595383515&cv=11&fst=1791595383515&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a7",
+            "POST https://kisah.in/a/elevar/browser/bulk",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672z89190270145za200zd9166582672xf1&_p=1791595374211&gcs=G111&gcd=13t3",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20gzb9236273325zd9236273325xf1&_p=1791595380975&gcs=G111&gcd="
+          ],
+          "loads": [
+            {
+              "url": "/products/kisah-mens-wide-leg-trouser-w513?variant=67673730089112",
+              "ttfb": 0.43,
+              "dcl": 5.6,
+              "load": 9.46,
+              "lcp": 1.58
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.82s",
+              "error": null,
+              "secs": 12.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Mens Off-White Rayon Plain Wide Leg Trouser \u2013 Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3124 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/kisah-mens-wide-leg-trouser-w513",
+                  "actual": "/products/kisah-mens-wide-leg-trouser-w513",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Mens Off-White Rayon Plain Wide Leg Trouser', selected variant 67673730089112 at \u20b92,998.00",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/kisah-mens-wide-leg-trouser-w513",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/kisah-mens-wide-leg-trouser-w513.js with variants",
+                  "actual": "'Mens Off-White Rayon Plain Wide Leg Trouser', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,998.00, got not on page",
+              "secs": 2.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Mens Off-White Rayon Plain Wide Leg Trouser",
+                  "actual": "'Mens Off-White Rayon Plain Wide Leg Trouser' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,998.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,998.00, got not on page",
+          "screenshot": "product.pdp.kisah-mens-wide-leg-trouser-w513.a2.png",
+          "trace": "product.pdp.kisah-mens-wide-leg-trouser-w513.a2_trace.zip",
+          "secs": 17.29,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/products/kisah-mens-wide-leg-tro"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/6148",
+            "POST https://kisah.in/api/collect",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-Z7JGKLREKL&gtm=45je6a72v9201842683za208zb9166582672zd9166582672xf1&_p=1791595392304&gcs=G111&gcd=",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-Z7JGKLREKL&gtm=45je6a72v9201842683za200zb9166582672zd9166582672xf1&_p=1791595392304&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595392304&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595392304&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=667603983.1791595399&dt=Mens%20Off-White%20Rayon%20Plain%20Wide%20Leg%20Trouser%20%E2%80%9",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595398761&cv=11&fst=1791595398761&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=667603983.1791595399&gtm=45be6a72v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a72v9257248301za200zb9166582672zd9166582672xf1&_p=1791595392304&g",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=667603983.1791595399&dt=Mens%20Off-White%20Rayon%20Plain%20Wide%20Leg%20Trouser%20%E2",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595399842&gcs=G111&gcd=",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=667603983.1791595399&dt=Mens%20Off-White%20Rayon%20Plain%20Wide%20Leg%20Trouser%20%E2",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595401580&cv=11&fst=1791595401580&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595402258&cv=11&fst=1791595402258&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a7",
+            "POST https://kisah.in/a/elevar/browser/bulk",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672z89190270145za200zd9166582672xf1&_p=1791595392304&gcs=G111&gcd=13t3",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20gzb9236273325zd9236273325xf1&_p=1791595399842&gcs=G111&gcd="
+          ],
+          "loads": [
+            {
+              "url": "/products/kisah-mens-wide-leg-trouser-w513?variant=67673730089112",
+              "ttfb": 0.05,
+              "dcl": 3.61,
+              "load": 9.75,
+              "lcp": 1.28
+            }
+          ]
+        }
+      ],
+      "incident_signature": "kisah.in|product.pdp.kisah-mens-wide-leg-trouser-w513|shows_title_price_image",
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.wide",
+      "suite": "search",
+      "title": "Search for 'wide' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.82s",
+              "error": null,
+              "secs": 11.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11886 chars, 89 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 23 results, 23 mention 'wide'",
+              "error": null,
+              "secs": 10.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 1000 results found for \"wide\" \u2013 Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3862 chars, 40 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "23",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'wide'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "23 of 23",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.83,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'write' on 'Document': It isn't possible to write into a document from an asynchronously-loaded external script unless it is explicitly opened.",
+              "url": "https://dunsregistered.dnb.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://kisah.in/api/collect",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a80h2v9166582672za200zd9166582672xf1&_p=1791595410533&_gaz=1&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=66673976.1791595417&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Online%20f",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595416940&cv=11&fst=1791595416940&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=66673976.1791595417&gtm=45be6a80h2v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a80h2v9257248301za200zb9166582672zd9166582672xf1&_p=1791595410533",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=66673976.1791595417&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onlin",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595417930&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=66673976.1791595417&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Onlin",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595419242&cv=11&fst=1791595419242&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a80h2v919365609",
+            "POST https://kisah.in/a/elevar/browser/bulk",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595422934&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595427310&cv=11&fst=1791595427310&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=66673976.1791595417&dt=Search%3A%201000%20results%20found%20for%20%22wide%22%20%E2%80%93%2",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=66673976.1791595417&dt=Search%3A%201000%20results%20found%20for%20%22wide%22%20%E2%80",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20gzb9236273325zd9236273325xf1&_p=1791595427889&gcs=G111&gcd=",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595428654&cv=11&fst=1791595428654&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595427889&gcs=G111&gcd=",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595431174&cv=11&fst=1791595431174&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&g"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.16,
+              "load": 9.03,
+              "lcp": 1.32
+            },
+            {
+              "url": "/search?q=wide&type=product",
+              "ttfb": 0.02,
+              "dcl": 2.54,
+              "load": 6.58,
+              "lcp": 2.66
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.52s",
+              "error": null,
+              "secs": 9.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11886 chars, 89 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "57: \"Buy Men's Wedding & Festive Ethnic Wear Online from Kisah\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Discover curated ethnic wear at Kisah with premium men's clothing blen",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "153: \"Discover curated ethnic wear at Kisah with premium men's clo\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://kisah.in/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://kisah.in/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.1,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            }
+          ],
+          "failed_requests": [
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://kisah.in/api/collect",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595432354&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a80h2v9257248301za200zb9166582672zd9166582672xf1&_p=1791595432354",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1856619369.1791595437&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20Online%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1856619369.1791595437&gtm=45be6a72v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595437249&cv=11&fst=1791595437249&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=1856619369.1791595437&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20On",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595437730&gcs=G111&gcd=",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1856619369.1791595437&dt=Buy%20Men%27s%20Wedding%20%26%20Festive%20Ethnic%20Wear%20On",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595439855&cv=11&fst=1791595439855&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://kisah.in/a/elevar/browser/bulk"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.75,
+              "load": 7.87,
+              "lcp": 1.36
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.0s",
+              "error": null,
+              "secs": 10.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Mens Off-White Rayon Plain Wide Leg Trouser \u2013 Kisah",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3124 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Mens Off-White Rayon Plain Wide Leg Trouser \u2013 Kisah",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "51: 'Mens Off-White Rayon Plain Wide Leg Trouser \u2013 Kisah'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Off-White Rayon Wide Leg Trouser With Button-And-Zip Front And Side Po",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "133: 'Off-White Rayon Wide Leg Trouser With Button-And-Zip Front A'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://kisah.in/products/kisah-mens-wide-leg-trouser-w513",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://kisah.in/products/kisah-mens-wide-leg-trouser-w513",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Mens Off-White Rayon Plain Wide Leg Trouser",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://kisah.in/cdn/shop/files/d511763.jpg?crop=center&height=1200&v=1791529129&width=1200",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.57,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://kisah.in/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181207192@2/sandbox/modern/products/kisah-mens-wide-leg-tro"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisah-mens-wide-leg-trouser-w513/pdp-questions.json"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/6148",
+            "POST https://kisah.in/api/collect",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-Z7JGKLREKL&gtm=45je6a72v9201842683za208zb9166582672zd9166582672xf1&_p=1791595442509&gcs=G111&gcd=",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-Z7JGKLREKL&gtm=45je6a72v9201842683za200zb9166582672zd9166582672xf1&_p=1791595442509&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595442509&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595442509&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=614792265.1791595448&gtm=45be6a72v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=614792265.1791595448&dt=Mens%20Off-White%20Rayon%20Plain%20Wide%20Leg%20Trouser%20%E2%80%9",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595447595&cv=11&fst=1791595447595&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a72v9257248301za200zb9166582672zd9166582672xf1&_p=1791595442509&g",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&ae=g&auid=614792265.1791595448&dt=Mens%20Off-White%20Rayon%20Plain%20Wide%20Leg%20Trouser%20%E2",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595448656&gcs=G111&gcd=",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=614792265.1791595448&dt=Mens%20Off-White%20Rayon%20Plain%20Wide%20Leg%20Trouser%20%E2",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595449940&cv=11&fst=1791595449940&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595450052&cv=11&fst=1791595450052&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a7",
+            "POST https://kisah.in/a/elevar/browser/bulk"
+          ],
+          "loads": [
+            {
+              "url": "/products/kisah-mens-wide-leg-trouser-w513",
+              "ttfb": 0.07,
+              "dcl": 2.9,
+              "load": 7.89,
+              "lcp": 1.24
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 7.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.81,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "AppmakerWebSdk: Not running inside Appmaker Webview",
+              "url": "https://cdn.shopify.com/extensions/01a11509-5458-7ef5-8e3e-e93fd90c5cc3/impulse-agentic-cro-904/assets/chat-bot.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 422 ()",
+              "url": "https://fastapi-backend-production-b68g.up.railway.app/predict/gender"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://cdn.heliumbuilder.com/kisahonline.myshopify.com/chat/kisahonline.myshopify.com/chat-config.json"
+            }
+          ],
+          "failed_requests": [
+            "POST https://impulse-lite.heliumbuilder.com/ev/batch",
+            "POST https://kisah.in/api/collect",
+            "POST https://kisah.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-31X587J1SK&gtm=45je6a72v9166582672za200zd9166582672xf1&_p=1791595452972&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1415554390.1791595457&dt=404%20Not%20Found%20%E2%80%93%20Kisah&tid=AW-16459568302&en=page_v",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595457244&cv=11&fst=1791595457244&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-ZQM1MQETFZ&gtm=45Pe6a72v9257248301za200zb9166582672zd9166582672xf1&_p=1791595452972&g",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1415554390.1791595457&gtm=45be6a72v9193656097za208zb9166582672zd9166582672xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=1415554390.1791595457&dt=404%20Not%20Found%20%E2%80%93%20Kisah&en=page_view&dl=https%3",
+            "GET https://cdn.shopify.com/s/files/1/0496/1003/1256/t/3/assets/globo.formbuilder.init.js?v=1680693384&shop=kisahonline.myshopify.com",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=1415554390.1791595457&dt=404%20Not%20Found%20%E2%80%93%20Kisah&tid=AW-16459568302&dl=h",
+            "POST https://www.google.com/rmkt/collect/16459568302/?random=1791595458730&cv=11&fst=1791595458730&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9193656097z",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-7GFWMDXW2E&gtm=45je6a72v9234811016za20ozb9236273325zd9236273325xf1&_p=1791595458044&gcs=G111&gcd="
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.37,
+              "dcl": 1.89,
+              "load": 6.13,
+              "lcp": 0.92
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 2,
+    "input_tokens": 5434,
+    "output_tokens": 168,
+    "est_usd": 0.001694,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Buy Men's Wedding & Festive Ethnic Wear Online from Kisah",
+    "theme": "Symmetry (store copy: KisahXBH/main)",
+    "checkout_app": "GoKwik + Shopflo",
+    "access": "open",
+    "nav": 25,
+    "collections": 50,
+    "products": 20,
+    "in_stock": 0,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "every sampled product is sold out; cart suite will be skipped"
+  ],
+  "perf": {
+    "pages": 10,
+    "median_load_secs": 7.82,
+    "slowest": {
+      "url": "/products/kisah-mens-wide-leg-trouser-w513?variant=67673730089112",
+      "load_secs": 9.75
+    },
+    "console_errors": 4,
+    "console_warnings": 5,
+    "failed_requests": 117
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 0,
+    "confirmed_fail": 2,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
