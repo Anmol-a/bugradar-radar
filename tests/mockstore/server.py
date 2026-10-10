@@ -191,6 +191,9 @@ Modes (to prove Radar catches and heals what it should):
   account_open     robots.txt allows /account; /account/login shows an email + password form (journey 29)
                    -> info.account_page PASSES, nothing typed
   account_broken   same, but /account/login answers 404 -> info.account_page FAILS
+  hamburger_menu   phones only: the header menu hides behind a ☰ button (aria-label Menu) opening a drawer (journey 16)
+                   -> smoke.mobile_menu PASSES 'tapped the menu button'; desktop / healthy -> not judged / links shown
+  hamburger_broken same, but the button's script throws and the drawer never opens -> smoke.mobile_menu WARNS
   search_icon_only the header search form is hidden behind a bare icon link (title="Search", svg icon; no aria-label, not a
                    button, not a /search link) -> Radar opens it and TYPES the search like a shopper (old opener: 'no visible
                    search box; opened /search')
@@ -429,6 +432,16 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             # navigation and must not get an extra link to follow)
             body = body.replace("<main>", '<div class="announcement-bar"><a href="/pages/offers">Festive offers: up to 20% '
                                 'off</a></div><main>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("hamburger_menu", "hamburger_broken") \
+                and "Mobile" in (self.headers.get("User-Agent") or ""):
+            # journey 16, phones only: the header menu hides behind a ☰ button that opens a drawer with the links
+            # (hamburger_broken: the button's script throws, the drawer never opens)
+            js = ("throw new Error('menu-drawer.js: toggle is not a function')" if self.mode == "hamburger_broken" else
+                  "document.getElementById('m-drawer').style.display = 'block'")
+            body = body.replace(self.MAIN_NAV, '<button type="button" class="header__icon--menu" aria-label="Menu" '
+                                f'onclick="{js}">&#9776;</button><div id="m-drawer" style="display:none"><nav>'
+                                '<a href="/collections/home-decor">Home Decor</a> <a href="/collections/kitchen">Kitchen</a> '
+                                '<a href="/pages/about">About</a></nav></div>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "search_icon_only":
             # the header's search form stays hidden until a bare icon link is clicked: no aria-label, not a button, not a
             # /search link, only title="Search" and an svg icon (antinorm, plum, soulflower... 36-store run 11 Oct)

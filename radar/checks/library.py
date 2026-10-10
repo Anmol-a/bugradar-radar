@@ -1869,6 +1869,58 @@ def _vitals(ctx: Ctx) -> str:
     return actual
 
 
+# ---------------- journey 16: the phone menu opens (judged alone, not only inside the journey) ----------------
+
+MENU_BUTTONS = ("button[aria-label*='menu' i], summary[aria-label*='menu' i], [role='button'][aria-label*='menu' i], "
+                ".header__icon--menu, .menu-toggle, .hamburger, button[class*='burger' i], [class*='menu-drawer' i] > summary, "
+                "a[aria-label*='menu' i], [data-action*='menu' i], [aria-controls*='menu' i], [aria-controls*='drawer' i]")
+MARK_LINKS_JS = r"""() => { let n = 0; for (const a of document.querySelectorAll('a[href]')) { const r = a.getBoundingClientRect();
+  const v = r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && getComputedStyle(a).visibility !== 'hidden';
+  if (v) { a.setAttribute('data-radar-was', '1'); n++; } } return n; }"""
+NEW_LINKS_JS = r"""() => [...document.querySelectorAll('a[href]:not([data-radar-was])')].filter(a => { const r = a.getBoundingClientRect();
+  return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && getComputedStyle(a).visibility !== 'hidden'
+         && !/\/(cart|account|search)(\/|$|\?)/.test(a.pathname); }).map(a => (a.innerText || '').trim().slice(0, 30)).filter(Boolean)"""
+NAV_VISIBLE_JS = r"""() => [...document.querySelectorAll('header a[href], nav a[href], [role="navigation"] a[href]')].filter(a => {
+  const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0 && r.top < innerHeight && getComputedStyle(a).visibility !== 'hidden'
+    && /\/(collections|pages|blogs)\//.test(a.pathname); }).length"""
+
+
+def mobile_menu(ctx: Ctx, home: str):
+    """Journey 16. On a phone-sized screen the menu hides behind a button: tapping it must show the menu's links.
+    Judged only on phone-sized screens with a menu button; a menu that never opens is a WARNING (the journey's own
+    critical click-through already fails when a shopper cannot reach a collection at all)."""
+    ctx.steps.run("open_homepage", lambda: _load(ctx, home))
+
+    def opens():
+        page = ctx.sess.page
+        if (ctx.sess.evaluate("() => Math.min(innerWidth, screen.width)") or 0) >= 900:
+            return "not judged: desktop-sized screen, the menu sits in the header (judged on phones)"
+        if (ctx.sess.evaluate(NAV_VISIBLE_JS) or 0) >= 3:
+            return "menu links are shown without a button on this phone layout"
+        btns = page.locator(MENU_BUTTONS)
+        tried = []
+        for i in range(min(btns.count(), 4)):
+            b = btns.nth(i)
+            try:
+                if not b.is_visible():
+                    continue
+                label = (b.get_attribute("aria-label") or b.inner_text() or b.get_attribute("class") or "")[:30].strip()
+                ctx.sess.evaluate(MARK_LINKS_JS)
+                _click(ctx, b)
+                page.wait_for_timeout(900)
+                new = ctx.sess.evaluate(NEW_LINKS_JS) or []
+                if len(new) >= 3:
+                    return f"tapped the menu button ({label!r}): {len(new)} links shown, e.g. {', '.join(new[:3])}"
+                tried.append(label or f"button {i + 1}")
+            except Exception:  # noqa: BLE001
+                continue
+        if not tried:
+            return "not judged: no menu button found on this phone layout"
+        ctx.expect("menu opens when its button is tapped", "≥ 3 menu links appear", f"none after tapping {', '.join(map(repr, tried))}",
+                   False)
+    ctx.steps.run("menu_opens", opens, soft=True)
+
+
 # ---------------- LLM assist (re-check after triage only; code verifies every answer) ----------------
 
 NAME_CANDIDATES_JS = r"""() => {
@@ -2607,6 +2659,6 @@ REGISTRY: dict[str, Callable] = {
     "meta_tags": meta_tags, "not_found": not_found, "shopper_journey": shopper_journey,
     "info_pages": info_pages, "account_page": account_page,
     "search_no_results": search_no_results, "search_suggestions": search_suggestions,
-    "collection_more": collection_more, "more_links_resolve": more_links_resolve,
+    "collection_more": collection_more, "more_links_resolve": more_links_resolve, "mobile_menu": mobile_menu,
     "cart_edit": cart_edit,
 }

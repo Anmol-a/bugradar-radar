@@ -1430,3 +1430,15 @@ def test_search_box_behind_a_bare_icon_link_is_opened_and_typed_into(tmp_path):
     assert s.status == "pass" and s.detail.startswith("typed into the store's search box"), s.detail
     sug = _steps(_case(run, "search.suggestions"))["suggestions_while_typing"]
     assert sug.detail == "not judged: this store's search box has no search-as-you-type", sug.detail
+
+
+def test_phone_menu_behind_a_button_opens_and_a_dead_button_warns(tmp_path):
+    run = _info("hamburger_menu", tmp_path, device="mobile", suites=("smoke",))
+    s = _steps(_case(run, "smoke.mobile_menu"))["menu_opens"]
+    assert s.status == "pass" and s.detail.startswith("tapped the menu button ('Menu'): 3 links shown"), s.detail
+    run = _info("hamburger_broken", tmp_path, device="mobile", suites=("smoke",))
+    c = _case(run, "smoke.mobile_menu")
+    s = _steps(c)["menu_opens"]
+    assert c.verdict == "pass" and s.status == "warn" and "none after tapping 'Menu'" in s.error, (s.status, s.error)
+    run = _info("hamburger_menu", tmp_path, device="desktop", suites=("smoke",))
+    assert _steps(_case(run, "smoke.mobile_menu"))["menu_opens"].detail.startswith("not judged: desktop-sized screen")

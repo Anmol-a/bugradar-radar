@@ -100,6 +100,9 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
         smoke.cases.append(TestCase("smoke.nav_links", "smoke", "Navigation links resolve", "links_resolve",
                                     {"urls": [n["url"] for n in sm.nav[:15]], "max_links": s.max_nav_links}, "major",
                                     "Each menu page opens in the browser and shows content"))
+    smoke.cases.append(TestCase("smoke.mobile_menu", "smoke", "Menu opens on phones", "mobile_menu", {"home": base + "/"},
+                                "minor", "On a phone-sized screen, tapping the menu button shows the menu's links "
+                                "(judged on phones only)"))      # journey 16
     if sm.more_links:      # journey 15: links beyond the menu (announcement bar, homepage sections, footer)
         smoke.cases.append(TestCase("smoke.more_links", "smoke", "Links beyond the menu open (announcement bar, homepage, footer)",
                                     "more_links_resolve", {"links": sm.more_links}, "minor",
