@@ -190,6 +190,8 @@ Modes (to prove Radar catches and heals what it should):
   account_open     robots.txt allows /account; /account/login shows an email + password form (journey 29)
                    -> info.account_page PASSES, nothing typed
   account_broken   same, but /account/login answers 404 -> info.account_page FAILS
+  script_heavy     every page loads 26 app scripts from 26 different third-party hosts (journey 31) -> 'scripts the page
+                   loads' WARNS on home, collection and product pages; healthy -> passes with the counts
   collection_js_error  collection pages throw an uncaught TypeError after load (journey 14) -> collection test WARNS
                    'uncaught JavaScript errors', never fails
   layout_shift     home + collection pages: a tall hero, then an offer banner pushes the page down 900 px 300 ms after
@@ -418,6 +420,11 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
     const ps = (((await r.json()).resources || {}).results || {}).products || [];
     """ + render + """ }, 300); }); })();
 </script></body>""")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "script_heavy":
+            # journey 31: 26 app scripts, each from its own third-party host (*.localhost resolves to this machine)
+            body = body.replace("</body>", "<script>for (let i = 1; i <= 26; i++) { const s = document.createElement('script'); "
+                                "s.src = `http://app${i}.localhost:${location.port}/static/app${i}.js`; document.head.appendChild(s); }"
+                                "</script></body>")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "collection_js_error" \
                 and "/collections/" in self.path:
             # journey 14: the collection page's filter script throws (uncaught) after load
@@ -717,6 +724,8 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             self.end_headers()
             self.wfile.write(b"%PDF-1.4")
             return
+        if path.startswith("/static/") and path.endswith(".js"):      # third-party app scripts (script_heavy mode)
+            return self._send(200, "void 0;", "application/javascript")
         if path.startswith("/cdn/shop/files/") or path.startswith("/static/"):
             return self._send(200, SVG, "image/svg+xml")
         if path == "/" and self.mode == "store_refuses":

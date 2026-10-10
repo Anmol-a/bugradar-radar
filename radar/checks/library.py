@@ -1733,6 +1733,39 @@ def layout_steps(ctx: Ctx) -> None:
     ctx.steps.run("layout_fits_screen", lambda: _layout(ctx, 0), soft=True)
     ctx.steps.run("layout_not_covered", lambda: _layout(ctx, 1), soft=True)
     ctx.steps.run("web_vitals", lambda: _vitals(ctx), soft=True)
+    ctx.steps.run("scripts_weight", lambda: _scripts(ctx), soft=True)
+
+
+# Journey 31 (Revenue Shield's 'script size' check): JavaScript the page loads and from how many third-party hosts.
+# Bytes come from resource timing: same-origin and Timing-Allow-Origin scripts report their size, other third-party
+# scripts report 0, so the total is a floor ('at least'). Hosts are always known.
+SCRIPTS_JS = r"""() => { const here = location.hostname.replace(/^www\./, '');
+  const mine = h => { h = h.replace(/^www\./, ''); return h === here || h.endsWith('.' + here) || /(^|\.)(shopify\.com|shopifycdn\.com|shopifysvc\.com)$/.test(h) || h === 'cdn.shopify.com'; };
+  const rs = performance.getEntriesByType('resource').filter(e => e.initiatorType === 'script' || /\.m?js(\?|$)/.test(e.name));
+  const third = new Map(); let bytes = 0, sized = 0;
+  for (const e of rs) { let h = ''; try { h = new URL(e.name).hostname; } catch (x) { continue; }
+    const b = e.transferSize || e.encodedBodySize || 0; if (b) { bytes += b; sized++; }
+    if (!mine(h)) third.set(h, (third.get(h) || 0) + 1); }
+  return {scripts: rs.length, sized, kb: Math.round(bytes / 1024), third: third.size,
+          top: [...third].sort((a, b) => b[1] - a[1]).slice(0, 5).map(([h, n]) => `${h} (${n})`)}; }"""
+
+SCRIPTS_MAX_KB, THIRD_PARTY_MAX = 4096, 25     # warn only at the extreme: most stores stay well under both
+
+
+def scripts_verdict(s: dict) -> tuple[str, str, bool]:
+    """(expected, actual, ok) for the page's scripts. Pure, unit-tested."""
+    kb, third = int(s.get("kb") or 0), int(s.get("third") or 0)
+    size = f"at least {kb / 1024:.1f} MB" if kb >= 1024 else f"at least {kb} KB"
+    actual = (f"{s.get('scripts', 0)} scripts, {size} of JavaScript, {third} third-party script hosts"
+              + (f": {', '.join(s.get('top') or [])}" if third else ""))
+    return (f"< {SCRIPTS_MAX_KB // 1024} MB of JavaScript and < {THIRD_PARTY_MAX} third-party script hosts", actual,
+            kb < SCRIPTS_MAX_KB and third < THIRD_PARTY_MAX)
+
+
+def _scripts(ctx: Ctx) -> str:
+    expected, actual, ok = scripts_verdict(ctx.sess.evaluate(SCRIPTS_JS) or {})
+    ctx.expect("scripts the page loads", expected, actual, ok)
+    return actual
 
 
 # Journey 17: Core Web Vitals of the page as Radar's browser saw it. LCP = the last largest-contentful-paint entry;

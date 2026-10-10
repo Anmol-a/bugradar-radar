@@ -1414,3 +1414,11 @@ def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_p
     err = c.attempts[-1].error
     assert c.verdict == "confirmed_fail" and "homepage section /pages/our-story" in err and "announcement bar /pages/offers" in err, err
     assert "sent to the homepage" in _steps(c)["announcement bar: opens /pages/offers"].error
+
+
+def test_too_many_third_party_scripts_warn_with_the_hosts_named(tmp_path):
+    run = _info("script_heavy", tmp_path, suites=("smoke", "catalog", "product"))
+    assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
+    for prefix in ("smoke.home_health", "catalog.collection", "product.pdp"):
+        s = _steps(_case(run, prefix))["scripts_weight"]
+        assert s.status == "warn" and "26 third-party script hosts" in s.error and "app1.localhost" in s.error, (prefix, s.error)

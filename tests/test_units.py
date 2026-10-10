@@ -837,3 +837,12 @@ def test_links_beyond_the_menu_skip_menu_info_product_and_file_links():
     assert [(x["where"], x["url"]) for x in got] == [
         ("announcement bar", b + "/collections/sale"), ("homepage section", b + "/collections/new"),
         ("homepage section", b + "/pages/story"), ("footer", b + "/blogs/news")]
+
+
+def test_script_weight_warns_only_at_the_extreme():
+    from radar.checks.library import scripts_verdict
+    ok = scripts_verdict({"scripts": 40, "kb": 1800, "third": 12, "top": ["cdn.judge.me (3)"]})
+    assert ok[2] and ok[1] == "40 scripts, at least 1.8 MB of JavaScript, 12 third-party script hosts: cdn.judge.me (3)"
+    assert not scripts_verdict({"scripts": 90, "kb": 5200, "third": 8})[2]
+    assert not scripts_verdict({"scripts": 60, "kb": 900, "third": 25})[2]
+    assert scripts_verdict({})[1] == "0 scripts, at least 0 KB of JavaScript, 0 third-party script hosts"
