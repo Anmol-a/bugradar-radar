@@ -22,7 +22,6 @@ import json
 import multiprocessing
 import os
 import time
-from concurrent.futures import ProcessPoolExecutor, as_completed
 from dataclasses import replace
 from datetime import datetime, timezone
 from pathlib import Path
@@ -35,7 +34,7 @@ RANK = {"pass": 0, "skipped": 0, "blocked": 1, "flaky": 2, "confirmed_fail": 3}
 # worst-of for a store's verdict across devices. 'no_network' is highest on purpose: the row then says "run again"
 # (the device that did run is still shown under `devices`).
 VERDICT_RANK = {"healthy": 0, "degraded": 1, "down": 2, "unsupported": 3, "blocked": 3, "unreachable": 3,
-                "error": 4, "no_network": 5}
+                "error": 4, "stopped": 4, "no_network": 5}
 
 
 def parse_store_list(text: str) -> list[tuple[str, bool]]:
@@ -120,9 +119,26 @@ def _secs(run: dict) -> int:
         return 0
 
 
+def _error_row(url: str, dev: str, step: str, error: str, secs: int, verdict: str = "error") -> dict:
+    try:
+        sid = site_id_from_url(url)
+    except ValueError:
+        sid = url
+    return {"site_id": sid, "url": url, "verdict": verdict, "platform": None, "theme": None, "checkout": None,
+            "access": None, "suites": {}, "failures": [{"case": "radar", "verdict": "error", "step": step,
+                                                        "error": error[:300]}],
+            "warnings": 0, "healed": 0, "radar_suspect": 0,
+            "notes": [error[:300]] if verdict == "stopped" else [], "report": None,
+            "secs": secs, "device": dev, "perf": {}}
+
+
 def _one(args) -> dict:
-    """Runs in a worker process: one store on every device, one after the other, quiet."""
-    url, cart, settings, devices = args
+    """Runs in a worker process: one store on every device, one after the other, quiet.
+    With `workdir` (bench), each device's row is written to <workdir>/<device>.json as soon as it is done and
+    <workdir>/now.json says which device is running since when: the parent stops a store that runs over its time
+    budget and keeps the devices that did finish."""
+    url, cart, settings, devices, *rest = args
+    workdir = Path(rest[0]) if rest and rest[0] else None
     from radar.core.network import NO_NETWORK_NOTE, online
     from radar.runner.executor import TESTED, scan
     s = replace(settings, allow_cart_flow=cart)
@@ -141,25 +157,115 @@ def _one(args) -> dict:
     for dev in devices:
         if per_device and next(iter(per_device.values()))["verdict"] not in TESTED:
             break                           # desktop could not test this store: not asked again on mobile
+        if workdir:
+            (workdir / "now.json").write_text(json.dumps({"device": dev, "since": time.time()}))
         try:
             run, run_dir = scan(url, s, dev)
             d = json.loads((run_dir / "run.json").read_text())
             per_device[dev] = summarise(d, str(run_dir / "report.html"))
         except Exception as e:  # noqa: BLE001  one store must never stop the bench
-            try:
-                sid = site_id_from_url(url)
-            except ValueError:
-                sid = url
-            per_device[dev] = {
-                "site_id": sid, "url": url, "verdict": "error", "platform": None, "theme": None, "checkout": None,
-                "access": None, "suites": {}, "failures": [{"case": "radar", "verdict": "error", "step": "scan",
-                                                            "error": f"{type(e).__name__}: {str(e)[:250]}"}],
-                "warnings": 0, "healed": 0, "radar_suspect": 0, "notes": [], "report": None,
-                "secs": int(time.time() - t0), "device": dev, "perf": {}}
+            per_device[dev] = _error_row(url, dev, "scan", f"{type(e).__name__}: {str(e)[:250]}",
+                                         int(time.time() - t0))
+        if workdir:
+            (workdir / f"{dev}.json").write_text(json.dumps(per_device[dev], default=str))
     row = combine(per_device)
     row["cart"] = cart
     row["input"] = url
     return row
+
+
+STOPPED_NOTE = ("Radar stopped this store on {device} after {mins} min (time limit per store and device): the page "
+                "stopped answering Radar (a script that never ends freezes the tab; a shopper's tab would freeze too). "
+                "Look at this store by hand before calling it a store bug.")
+
+
+def _child(args, workdir: str) -> None:
+    """Process entry for one store (bench). Own process group, so the parent can stop the store's browser too."""
+    try:
+        os.setsid()
+    except (AttributeError, OSError):
+        pass
+    row = _one(tuple(args) + (workdir,))
+    (Path(workdir) / "row.json").write_text(json.dumps(row, default=str))
+
+
+def _stop(proc) -> None:
+    import signal
+    try:
+        os.killpg(proc.pid, signal.SIGKILL)       # the store's Python process AND its browser
+    except (AttributeError, OSError):
+        proc.kill()
+    proc.join(10)
+
+
+def _stopped_row(url: str, cart: bool, devices: tuple[str, ...], workdir: Path, budget: int) -> dict:
+    """Row for a store stopped over its time budget: the devices that finished keep their result."""
+    per_device: dict[str, dict] = {}
+    for dev in devices:
+        f = workdir / f"{dev}.json"
+        if f.exists():
+            per_device[dev] = json.loads(f.read_text())
+    try:
+        now = json.loads((workdir / "now.json").read_text())
+    except (OSError, ValueError):
+        now = {"device": next((d for d in devices if d not in per_device), devices[0])}
+    dev = now["device"]
+    mins = max(1, round(budget / 60))
+    per_device[dev] = _error_row(url, dev, "time limit", STOPPED_NOTE.format(device=dev, mins=mins), budget,
+                                 verdict="stopped")
+    row = combine(per_device)
+    row["cart"] = cart
+    row["input"] = url
+    return row
+
+
+def _run_all(entries, settings: Settings, workers: int, devices: tuple[str, ...], tmp: Path):
+    """Yields one row per store as it finishes. Each store runs in its own process (spawn) with a time budget per
+    device (settings.device_budget_s): over it, the store's process group (Python + browser) is killed and the
+    row says 'stopped'. new30f (10 Oct): a frozen page held a GitHub shard for 2.5 h and its other stores' rows."""
+    ctx = multiprocessing.get_context("spawn")
+    budget = max(1, int(settings.device_budget_s))
+    todo = list(enumerate(entries))
+    running: dict[int, tuple] = {}
+    try:
+        while todo or running:
+            while todo and len(running) < max(1, workers):
+                i, (url, cart) = todo.pop(0)
+                wd = tmp / f"s{i}"
+                wd.mkdir(parents=True, exist_ok=True)
+                p = ctx.Process(target=_child, args=((url, cart, settings, devices), str(wd)), daemon=False)
+                p.start()
+                running[i] = (p, url, cart, wd, time.time())
+            time.sleep(0.5)
+            for i, (p, url, cart, wd, t_start) in list(running.items()):
+                if not p.is_alive():
+                    p.join()
+                    del running[i]
+                    f = wd / "row.json"
+                    if f.exists():
+                        yield json.loads(f.read_text())
+                    else:                                 # crashed without a row
+                        per = {d: json.loads((wd / f"{d}.json").read_text()) for d in devices
+                               if (wd / f"{d}.json").exists()}
+                        if not per:
+                            per = {devices[0]: _error_row(url, devices[0], "scan",
+                                                          f"Radar's process for this store ended (exit code {p.exitcode})",
+                                                          int(time.time() - t_start))}
+                        row = combine(per)
+                        row.update(cart=cart, input=url)
+                        yield row
+                    continue
+                try:
+                    since = json.loads((wd / "now.json").read_text())["since"]
+                except (OSError, ValueError, KeyError):
+                    since = t_start
+                if time.time() - since > budget:
+                    _stop(p)
+                    del running[i]
+                    yield _stopped_row(url, cart, devices, wd, budget)
+    finally:                                          # interrupted (Ctrl+C): no orphan browsers
+        for p, *_ in running.values():
+            _stop(p)
 
 
 def run_bench(entries: list[tuple[str, bool]], settings: Settings, workers: int = 3, progress=print,
@@ -169,10 +275,9 @@ def run_bench(entries: list[tuple[str, bool]], settings: Settings, workers: int 
     out.mkdir(parents=True, exist_ok=True)
     rows: list[dict] = []
     # spawn on every OS: same behaviour as macOS (where it is the default), no forked browser state
-    with ProcessPoolExecutor(max_workers=max(1, workers), mp_context=multiprocessing.get_context("spawn")) as pool:
-        futs = {pool.submit(_one, (u, c, settings, tuple(devices))): u for u, c in entries}
-        for i, f in enumerate(as_completed(futs), 1):
-            r = f.result()
+    import tempfile
+    with tempfile.TemporaryDirectory(prefix="radar-bench-") as tmp:
+        for i, r in enumerate(_run_all(entries, settings, workers, tuple(devices), Path(tmp)), 1):
             rows.append(r)
             fails = len([x for x in r["failures"] if x["verdict"] == "confirmed_fail"])
             per = " ".join(f"{d[0].upper()}:{v['verdict']}" for d, v in r.get("devices", {}).items())

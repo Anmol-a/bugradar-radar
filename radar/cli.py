@@ -23,7 +23,7 @@ if not sys.stdout.isatty():
     C = {k: "" for k in C}
 
 VERDICT_COLOR = {"healthy": "pass", "degraded": "warn", "down": "fail", "unsupported": "warn", "blocked": "warn",
-                 "unreachable": "warn", "no_network": "warn", "error": "fail"}
+                 "unreachable": "warn", "no_network": "warn", "error": "fail", "stopped": "fail"}
 
 
 def _progress(evt: str, d: dict):

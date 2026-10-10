@@ -256,6 +256,31 @@ def test_bench_runs_many_stores_into_one_table(tmp_path):
     assert (out / "bench.html").exists() and rows[url_a]["report_rel"].endswith("report.html")
 
 
+def test_bench_stops_a_store_whose_page_freezes_and_keeps_the_others(tmp_path):
+    """new30f (10 Oct): one GitHub shard ran 60+ min on 5 stores (normal ~11 min): a page that never answers held the
+    whole shard (and every later run, queued behind it) for 2.5 h. Each store now has a time budget per device; over
+    it Radar stops that store (Python + browser), says so, and the other stores' rows are there."""
+    import time as _t
+    from radar.bench import run_bench
+    a, url_a = serve("healthy")
+    b, url_b = serve("frozen_product_page")
+    t0 = _t.time()
+    try:
+        out = run_bench([(url_a, False), (url_b, False)],
+                        _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=2, device_budget_s=90),
+                        workers=2, progress=lambda *_: None)
+    finally:
+        for s in (a, b):
+            s.shutdown()
+    assert _t.time() - t0 < 300
+    rows = {r["input"]: r for r in json.loads((out / "bench.json").read_text())["rows"]}
+    assert rows[url_a]["verdict"] == "healthy"
+    assert rows[url_b]["verdict"] == "stopped"
+    assert rows[url_b]["devices"]["desktop"]["verdict"] == "stopped"
+    assert "mobile" not in rows[url_b]["devices"]                     # desktop could not test: mobile not asked
+    assert any("time limit" in n for n in rows[url_b]["notes"])
+
+
 def _steps(case):
     return {s.name: s for s in case.attempts[-1].steps}
 

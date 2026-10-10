@@ -58,6 +58,8 @@ class Settings:
     headless: bool = True
     slow_mo_ms: int = 0                 # >0 slows every browser action (for watching headed runs)
     nav_timeout_ms: int = 30000
+    device_budget_s: int = 1500         # bench: one store on one device is stopped after this (25 min; slowest real
+                                        # store seen 10 Oct ≈ 19 min). A frozen page otherwise holds a shard for hours
     max_products: int = 3               # products tested per run
     max_collections: int = 2
     max_nav_links: int = 10             # menu pages opened by the smoke suite

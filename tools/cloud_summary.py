@@ -43,6 +43,19 @@ def summary(results: Path, run_id: str | None = None) -> dict:
                          "notes": (r.get("notes") or [])[:2], "not_passing": bad,
                          "median_load_secs": (r.get("perf") or {}).get("median_load_secs")})
             totals[r.get("verdict")] += 1
+        bj = d / "bench.json"           # stores Radar stopped (time limit) or crashed on have no run.json
+        if bj.exists():
+            for br in json.loads(bj.read_text()).get("rows", []):
+                for dev, dv in (br.get("devices") or {}).items():
+                    if dv.get("verdict") in ("stopped", "error"):
+                        errs = [f for f in br.get("failures", []) if f.get("device") == dev and f.get("case") == "radar"]
+                        rows.append({"store": br.get("url"), "device": dev, "verdict": dv["verdict"],
+                                     "notes": [], "median_load_secs": None,
+                                     "not_passing": [{"case": "radar", "verdict": dv["verdict"],
+                                                      "step": (errs[0].get("step") if errs else None),
+                                                      "error": (errs[0].get("error") if errs else "")[:160],
+                                                      "triage": None}]})
+                        totals[dv["verdict"]] += 1
     return {"run_id": run_id or (json.loads((dirs[0] / "meta.json").read_text()).get("run_id") if dirs else None),
             "parts": [d.name for d in dirs], "runs": len(rows), "verdicts": dict(totals), "rows": rows}
 

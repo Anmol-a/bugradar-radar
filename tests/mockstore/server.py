@@ -317,6 +317,11 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "frozen_product_page" \
+                and "/products/" in self.path:
+            # new30f (10 Oct): one shard ran 60+ min on 5 stores (normal: ~11 min) = a page that never answers.
+            # A script that never ends freezes the page: every evaluate() Radar sends then waits for ever.
+            body = body.replace("</body>", "<script>addEventListener('load', () => setTimeout(() => { for (;;) {} }, 200));</script></body>")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "empty_doc_title":
             body = re.sub(r"<title>.*?</title>", "<title></title>", body, count=1, flags=re.S)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode in self.OVERLAYS:

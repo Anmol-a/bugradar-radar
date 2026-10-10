@@ -821,6 +821,33 @@ while the page had 'Pack of 6' ₹672 selected and out of stock → price 'not o
 kisah, nappadori. Store finding: myborosil mobile missing page → / (200). Fully right: godesi, gullylabs,
 hammeronline, ikkivi, jokerandwitch, justherbs, powergummies, thewhitewillow, tistabene, tjori, zariin.
 
+## 4z1. Loop cycle 9 (10 Oct 2026, 07:47 IST, automated): a frozen page held a whole shard for hours
+
+**What happened:** shard 1 of the new30f held-out run (38012566834: doodlage, fashor, jusamazin, letsbeco,
+mylittlemoppet) was still running after 60+ min, while the other 5 shards finished in ~11 min each. Nothing per store
+stopped Radar: the bench waited on each store's process for ever, so one store that never finished (a) held its 4
+neighbours' rows (bench.json is written at the end) until the 150-min step limit, and (b) blocked every later cloud
+run (the workflow's concurrency group queues them). Which store it was is known only after that shard's partial
+results are published; the cause class is clear and generic, so this is a harness fix, not a store-pattern fix.
+
+**Mock `frozen_product_page`:** product pages run a script that never ends shortly after load (a frozen tab). On the
+old code `radar scan` of that mock never finished (killed after 400 s), and the bench test with it was killed after
+420 s. Playwright's `evaluate()` has no time limit, so any page whose main thread is stuck holds Radar.
+
+**Fix (`radar/bench.py`):** each store now runs in its own process (spawn, own process group) instead of a process
+pool; the store's process writes `now.json` (device + start time) before each device and `<device>.json` after it.
+The bench stops a store that is over `device_budget_s` (default 1500 s = 25 min per store and device; slowest
+healthy real store seen ≈ 19 min) by killing its whole process group (Python + Playwright driver + Chromium). The
+row says verdict **`stopped`** with the note 'Radar stopped this store on <device> after N min (time limit) …'; a
+device that finished keeps its result; mobile is not run after a desktop stop. A store process that dies without a
+row gets an `error` row ('process ended, exit code N'). Ctrl+C stops every store's browser. `tools/cloud_summary.py`
+lists stopped/crashed stores from bench.json (they have no run.json). Bench page + CLI show 'Stopped (time limit)'.
+Test `test_bench_stops_a_store_whose_page_freezes_and_keeps_the_others` (budget 90 s): healthy store healthy,
+frozen store `stopped` on desktop, mobile not asked, whole bench < 300 s.
+
+**Not covered yet:** a single `radar scan` (not bench) of a frozen page still waits; the per-call fix (a watchdog that
+closes the page) is only worth it if the stopped-store evidence shows Radar, not the store, froze the page.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -1079,6 +1106,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 loop cycle 9 (10 Oct, 07:47 IST):** bench time limit per store and device (`device_budget_s`, 25 min): an over-time store's process group (browser included) is killed, row verdict `stopped`, other stores unaffected; mock `frozen_product_page` (4z1).
 - **v0.19 loop cycle 8 (10 Oct, 05:46 IST):** prefer an enabled add-to-cart over a disabled one for the same product (form path `MAIN_BUY_JS` and healer path `ENABLED_ADD_JS`); mocks `disabled_dup_button` (now passes), `healer_disabled_sticky`, `disabled_buy_now_only`, `buy_now_first` ('buy it now' ranked after add-to-cart, never clicked); full 36 regression 38008403059 = 0 Radar false failures; littleboxindia mobile verified (4z).
 - **v0.19 loop cycle 5 (10 Oct, 01:47 IST):** no code change. Full 36 regression after the cycle-4 search change (run 37985975688): 62 healthy / 4 degraded (foxtale + plum hidden catalog products = store finding) / 0 Radar false failures, no store's search turned into the new warning. Held-out `stores/new30d.txt` run once (37988362552): 22 stores scored, **3 Radar false-failure stores** (bombaysweetshop: variant was right, buy button disabled by a 'PLEASE ENTER YOUR PINCODE' gate, the error hid 'disabled'; happilo: search results rendered but `Locator.press` timed out; kirobeauty: no buy control on one product page, not proven a store bug). Location (US runner): houseofchikankari (USD prices + US import-duty popup), skinkraft ('Visiting from United States?' popup over cards), okhai (USD market, product → /). Store finding: thedecorkart mobile nav links `/collections/crystal-decorative-candle-standss` (typo, 404). Not scored: gynoveda, theloom, virgio not Shopify; rarerabbit → thehouseofrare.com, fastandup → in.fastandup.com (list errors); tribeconcepts connection closed; theayurvedaco robots.txt disallows; truke robots.txt timeout.
 - **v0.19 loop cycle 3 (10 Oct, 00:00 IST):** no code change. Full 36 regression clean (0 Radar false failures); held-out `stores/new30c.txt` run once: 6/28 Radar false-failure stores (4v).
