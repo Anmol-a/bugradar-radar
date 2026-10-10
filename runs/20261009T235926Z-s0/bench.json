@@ -1,0 +1,150 @@
+{
+  "stamp": "20261009T235926Z",
+  "rows": [
+    {
+      "site_id": "hairoriginals.com",
+      "url": "https://hairoriginals.com",
+      "verdict": "down",
+      "platform": "shopify",
+      "theme": "Zest (store copy: Gokwik 8thFeb <> International)",
+      "checkout": "GoKwik",
+      "access": "open",
+      "suites": {
+        "journey": "confirmed_fail",
+        "smoke": "pass",
+        "catalog": "pass",
+        "product": "confirmed_fail",
+        "search": "pass",
+        "health": "pass"
+      },
+      "failures": [
+        {
+          "case": "journey.shopper",
+          "verdict": "confirmed_fail",
+          "step": "click_into_product",
+          "error": "product card a shopper can click: expected found, got none on /collections/diy-hair-extensions-1 (199 links: 151 inside cart drawer / quick-add, 19 hidden from shoppers (aria-hidden/inert), 7 covered by a.full-wid\u2026",
+          "llm": "radar problem: A floating overlay (a.full-wid review/chat widget) is covering the product cards so the robot couldn't click \u2014 the robot should close or dismiss the overlay before interacting.",
+          "device": "desktop"
+        },
+        {
+          "case": "product.pdp.bangs-without-temple-bangs",
+          "verdict": "confirmed_fail",
+          "step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9999.00, got not on page",
+          "llm": "radar problem: A modal signup/discount popup blocked the robot from seeing the product price so the check failed even though the product page itself shows the name.",
+          "device": "desktop"
+        },
+        {
+          "case": "journey.shopper",
+          "verdict": "confirmed_fail",
+          "step": "click_into_product",
+          "error": "product card a shopper can click: expected found, got none on /collections/diy-hair-extensions-1 (194 links: 151 inside cart drawer / quick-add, 19 not visible, 19 hidden from shoppers (aria-hidden/inert))",
+          "llm": "radar problem: The page clearly displays clickable product cards and titles a shopper can use, so the robot looked in the wrong place or mis-identified which elements are shopper-clickable.",
+          "device": "mobile"
+        },
+        {
+          "case": "product.pdp.bow-clips-golden-glitter-and-unicorn",
+          "verdict": "confirmed_fail",
+          "step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9299.00, got not on page",
+          "llm": "radar problem: A signup popup/overlay is covering the product area so the robot couldn't see the expected price; the robot should have closed the popup before checking the variant price.",
+          "device": "mobile"
+        }
+      ],
+      "warnings": 14,
+      "healed": 0,
+      "radar_suspect": 4,
+      "notes": [
+        "11 product(s) not listed in the browsed collections are tested last (e.g. bow-clips-golden-glitter-and-unicorn)",
+        "2 product(s) priced 0 (free samples/gifts, e.g. men-patches-100-human-hair) are not used for product or cart tests",
+        "no header/nav links found",
+        "8 product(s) not listed in the browsed collections are tested last (e.g. linen-bow)"
+      ],
+      "report": "data/sites/hairoriginals.com/runs/20261009T235927Z-d-6038/report.html",
+      "secs": 581,
+      "suites_by_device": {
+        "desktop": {
+          "journey": "confirmed_fail",
+          "smoke": "pass",
+          "catalog": "pass",
+          "product": "confirmed_fail",
+          "search": "pass",
+          "health": "pass"
+        },
+        "mobile": {
+          "journey": "confirmed_fail",
+          "smoke": "pass",
+          "catalog": "pass",
+          "product": "confirmed_fail",
+          "search": "pass",
+          "health": "pass"
+        }
+      },
+      "device_only": {
+        "desktop": [
+          "product.pdp.bangs-without-temple-bangs"
+        ],
+        "mobile": [
+          "product.pdp.bow-clips-golden-glitter-and-unicorn"
+        ]
+      },
+      "devices": {
+        "desktop": {
+          "verdict": "down",
+          "report": "data/sites/hairoriginals.com/runs/20261009T235927Z-d-6038/report.html",
+          "secs": 308,
+          "perf": {
+            "pages": 8,
+            "median_load_secs": 3.95,
+            "slowest": {
+              "url": "/",
+              "load_secs": 5.0
+            },
+            "console_errors": 6,
+            "console_warnings": 8,
+            "failed_requests": 174
+          },
+          "failures": 2,
+          "warnings": 7,
+          "report_rel": "../../sites/hairoriginals.com/runs/20261009T235927Z-d-6038/report.html"
+        },
+        "mobile": {
+          "verdict": "down",
+          "report": "data/sites/hairoriginals.com/runs/20261010T000435Z-m-e26d/report.html",
+          "secs": 273,
+          "perf": {
+            "pages": 6,
+            "median_load_secs": 4.04,
+            "slowest": {
+              "url": "/",
+              "load_secs": 4.4
+            },
+            "console_errors": 6,
+            "console_warnings": 8,
+            "failed_requests": 158
+          },
+          "failures": 2,
+          "warnings": 7,
+          "report_rel": "../../sites/hairoriginals.com/runs/20261010T000435Z-m-e26d/report.html"
+        }
+      },
+      "cart": false,
+      "input": "https://hairoriginals.com",
+      "report_rel": "../../sites/hairoriginals.com/runs/20261009T235927Z-d-6038/report.html"
+    }
+  ],
+  "totals": {
+    "stores": 1,
+    "down": 1,
+    "tested": 1
+  },
+  "devices": [
+    "desktop",
+    "mobile"
+  ],
+  "browser": {
+    "ua_style": "browser",
+    "identity": "BugRadar/0.1 (+bugradar.in)",
+    "headless": true
+  }
+}
