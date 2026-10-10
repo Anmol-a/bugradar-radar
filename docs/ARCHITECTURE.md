@@ -986,6 +986,13 @@ the box's highest ancestor holding only that box and no cart-level control; the 
 the mock now carries both traits (old code fails on `healthy`). beyondsnack 'Diwali Box' shows only a 'Shop Now On:'
 heading (no links): also catalog-only now.
 
+**Round 1 result (run 38086965951, same 12 demos × 2):** remove 24/24 ✔ (journey 20 done), cart line 24/24, quantity +
+22/24 (Studio theme: + does not change cart.js within 8 s: limit, warning). Checkout page opens on 24/24 (HTTP, lands on
+/checkouts/, form fields shown) but the product name is still not read from the order summary in 15 s on any theme:
+round 2 (last) next cycle = save the checkout page's screenshot + HTML as evidence and read the summary where it really
+is; until then that one assertion stays a warning. antesports + beyondsnack = BLOCKED 'sells only on marketplaces'
+(both devices; beyondsnack 'Diwali Box' via 'Shop Now On:').
+
 Also: the bench table and both HTML reports list the `info` suite (journeys 28–30): their suite lists stopped at
 `health`, so the report never showed it.
 ### 4zc-3. Journeys 15 and 31 (chat session, 11 Oct 2026, 01:10 IST)
