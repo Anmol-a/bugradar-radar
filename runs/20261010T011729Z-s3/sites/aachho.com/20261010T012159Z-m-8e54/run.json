@@ -1,0 +1,2319 @@
+{
+  "run_id": "20261010T012159Z-m-8e54",
+  "site_id": "aachho.com",
+  "base_url": "https://aachho.com",
+  "device": "mobile",
+  "started_at": "2026-10-10T01:21:59+00:00",
+  "finished_at": "2026-10-10T01:25:36+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.56s",
+              "error": null,
+              "secs": 7.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Online - Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "18885 chars, 47 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/bestseller-100-days (28 products)",
+              "error": null,
+              "secs": 6.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/bestseller-100-days ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/bestseller-100-days",
+                  "actual": "/collections/bestseller-100-days",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 40 candidates \u2192 /collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta",
+              "error": null,
+              "secs": 6.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta?_pos=1&_fid=d87a3be0a&_ss=c ('Kavya Purple Embroidered Crepe Kurta AACHHO from $\u2026",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/kavya-purple-embroidered-crepe-kurta",
+                  "actual": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Kavya Purple Embroidered Crepe Kurta', selected variant 45208973148226 at \u20b93,287.15",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/kavya-purple-embroidered-crepe-kurta.js with variants",
+                  "actual": "'Kavya Purple Embroidered Crepe Kurta', 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b93,287.15, got not on page",
+              "secs": 3.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Kavya Purple Embroidered Crepe Kurta",
+                  "actual": "'KAVYA PURPLE EMBROIDERED CREPE KURTA' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b93,287.15",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b93,287.15, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 30.17,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://app.shopgracias.com/widgets/videos_api/?widget_type=floating_pop&shop=www-aachho-com.myshopify.com&wizup_sid=m1q03gix9qp&templatenam"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Unable to parse JSON-LD tag. Malformed JSON found: ' '.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=466294050.1791595333&gtm=45be6a80h2v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=466294050.1791595333&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595332823&cv=11&fst=1791595332823&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595332956&cv=11&fst=1791595332956&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=1&auid=290996475.1791595333&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=290996475.1791595333&gtm=45be6a72v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=290996475.1791595333&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a80h2v9169985042za20ozb78551807zd78551807xf1&_p=1791595332273&_gaz=1&gcd=13l3l3l3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zb9178981703zd9178981703xf1&_p=1791595331367&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9178981703zd9178981703xf1&_p=1791595331367&_gaz=1&gcs=G111&g",
+            "GET https://app.sagepilot.ai/mixkit-message-pop-alert-2354.mp3",
+            "GET https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4",
+            "GET https://www.aachho.com/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/vendor-scripts-v11.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/theme.js?v=22554912860141883171791365199",
+            "GET https://cdn.shopify.com/extensions/01a1205b-2d60-7e58-a81f-9220beb5713d/powerful-form-builder-363/assets/globo.formbuilder.index.js",
+            "GET https://cdn.shopify.com/extensions/01a11b30-98d5-7ae3-b2f4-f79b3c6f32c4/judgeme-775/assets/loader.js",
+            "GET https://cdn.shopify.com/extensions/01a0e6d8-55ac-7532-811a-4502935d7ece/my-wishlist-share-remind-327/assets/hulkapps-wishlist-collection.js",
+            "GET https://cdn.shopify.com/extensions/01a0acae-48ed-764e-9b04-878137b134ab/cartbite-83/assets/cartbite-embed.js",
+            "GET https://cdn.shopify.com/extensions/019dbe41-333e-7edd-a4ce-2128c404ca9a/bucks-currency-converter-29/assets/widgetLoader.js",
+            "GET https://www.aachho.com/cdn/shopifycloud/perf-kit/shopify-perf-kit-3.10.1.min.js",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=1&auid=290996475.1791595333&dt=Bestseller%20Products%20Last%20100%20Days%20-%20Top%20Picks%20%7C%"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.22,
+              "load": 5.64,
+              "lcp": 2.38
+            },
+            {
+              "url": "/collections/bestseller-100-days?filter.v.availability=1&rts_redirect_done=1",
+              "ttfb": 0.08,
+              "dcl": 1.66,
+              "load": 3.27,
+              "lcp": 1.6
+            },
+            {
+              "url": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta?_pos=1&_fid=d87a3be0a",
+              "ttfb": 0.12,
+              "dcl": 1.87,
+              "load": 3.18,
+              "lcp": 0.5
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.65s",
+              "error": null,
+              "secs": 7.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Online - Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "18885 chars, 47 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/bestseller-100-days (28 products)",
+              "error": null,
+              "secs": 6.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/bestseller-100-days ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/bestseller-100-days",
+                  "actual": "/collections/bestseller-100-days",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 40 candidates \u2192 /collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta",
+              "error": null,
+              "secs": 6.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta?_pos=1&_fid=d87a3be0a&_ss=c ('Kavya Purple Embroidered Crepe Kurta AACHHO from $\u2026",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/kavya-purple-embroidered-crepe-kurta",
+                  "actual": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Kavya Purple Embroidered Crepe Kurta', selected variant 45208973148226 at \u20b93,287.15",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/kavya-purple-embroidered-crepe-kurta.js with variants",
+                  "actual": "'Kavya Purple Embroidered Crepe Kurta', 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b93,287.15, got not on page",
+              "secs": 3.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Kavya Purple Embroidered Crepe Kurta",
+                  "actual": "'KAVYA PURPLE EMBROIDERED CREPE KURTA' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b93,287.15",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b93,287.15, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 31.47,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-28016706@3/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://app.shopgracias.com/widgets/videos_api/?widget_type=floating_pop&shop=www-aachho-com.myshopify.com&wizup_sid=9r8fuxhx419&templatenam"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Unable to parse JSON-LD tag. Malformed JSON found: ' '.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=2&apvc=1&auid=1741178107.1791595363&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595362556&cv=11&fst=1791595362556&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1741178107.1791595363&gtm=45be6a80h2v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595362667&cv=11&fst=1791595362667&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=2&apvc=1&auid=1827189612.1791595363&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1827189612.1791595363&gtm=45be6a72v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1827189612.1791595363&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9178981703zd9178981703xf1&_p=1791595361082&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zb9178981703zd9178981703xf1&_p=1791595361082&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595362381&gcd=13l3l3l3l1l1&npa=",
+            "GET https://www.aachho.com/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/vendor-scripts-v11.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/theme.js?v=22554912860141883171791365199",
+            "GET https://cdn.shopify.com/extensions/01a1205b-2d60-7e58-a81f-9220beb5713d/powerful-form-builder-363/assets/globo.formbuilder.index.js",
+            "GET https://cdn.shopify.com/extensions/01a11b30-98d5-7ae3-b2f4-f79b3c6f32c4/judgeme-775/assets/loader.js",
+            "GET https://cdn.shopify.com/extensions/01a0e6d8-55ac-7532-811a-4502935d7ece/my-wishlist-share-remind-327/assets/hulkapps-wishlist-collection.js",
+            "GET https://cdn.shopify.com/extensions/01a0acae-48ed-764e-9b04-878137b134ab/cartbite-83/assets/cartbite-embed.js",
+            "GET https://cdn.shopify.com/extensions/019dbe41-333e-7edd-a4ce-2128c404ca9a/bucks-currency-converter-29/assets/widgetLoader.js",
+            "GET https://www.aachho.com/cdn/shopifycloud/perf-kit/shopify-perf-kit-3.10.1.min.js",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=2&apvc=1&auid=1827189612.1791595363&dt=Bestseller%20Products%20Last%20100%20Days%20-%20Top%20Picks%20%7C%",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595371319&cv=11&fst=1791595371319&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595371658&cv=11&fst=1791595371658&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 2.21,
+              "load": 5.79,
+              "lcp": 2.54
+            },
+            {
+              "url": "/collections/bestseller-100-days?filter.v.availability=1&rts_redirect_done=1",
+              "ttfb": 0.11,
+              "dcl": 1.98,
+              "load": 3.71,
+              "lcp": 1.82
+            },
+            {
+              "url": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta?_pos=1&_fid=d87a3be0a",
+              "ttfb": 0.0,
+              "dcl": 1.84,
+              "load": 3.71,
+              "lcp": 0.47
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.4s",
+              "error": null,
+              "secs": 6.81,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Online - Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "18885 chars, 47 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/bestseller-100-days (28 products)",
+              "error": null,
+              "secs": 6.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/bestseller-100-days ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/bestseller-100-days",
+                  "actual": "/collections/bestseller-100-days",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 40 candidates \u2192 /collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta",
+              "error": null,
+              "secs": 6.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta?_pos=1&_fid=d87a3be0a&_ss=c ('Kavya Purple Embroidered Crepe Kurta AACHHO from $\u2026",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/kavya-purple-embroidered-crepe-kurta",
+                  "actual": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Kavya Purple Embroidered Crepe Kurta', selected variant 45208973148226 at \u20b93,287.15",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/kavya-purple-embroidered-crepe-kurta.js with variants",
+                  "actual": "'Kavya Purple Embroidered Crepe Kurta', 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b93,287.15, got not on page",
+              "secs": 2.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Kavya Purple Embroidered Crepe Kurta",
+                  "actual": "'KAVYA PURPLE EMBROIDERED CREPE KURTA' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b93,287.15",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b93,287.15, got not on page",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 29.63,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://app.shopgracias.com/widgets/videos_api/?widget_type=floating_pop&shop=www-aachho-com.myshopify.com&wizup_sid=c5x3t52x2n&templatename"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Unable to parse JSON-LD tag. Malformed JSON found: ' '.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=1058701710.1791595396&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595396259&cv=11&fst=1791595396259&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=dpqPJ0e2VQb1QwEZEdlx4tJPFfGOxbr_VA&auid=1058701710.1791595396&gtm=45be6a72h1v9178981703za208zd917898170",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595396362&cv=11&fst=1791595396362&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=2&apvc=1&auid=1133350134.1791595396&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1133350134.1791595396&gtm=45be6a80h2v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595395937&_gaz=1&gcd=13l3l3l3l1",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1133350134.1791595396&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zb9178981703zd9178981703xf1&_p=1791595395299&_gaz=1&gcs=G111&g",
+            "GET https://www.aachho.com/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/vendor-scripts-v11.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/theme.js?v=22554912860141883171791365199",
+            "GET https://cdn.shopify.com/extensions/01a1205b-2d60-7e58-a81f-9220beb5713d/powerful-form-builder-363/assets/globo.formbuilder.index.js",
+            "GET https://cdn.shopify.com/extensions/019dbe41-333e-7edd-a4ce-2128c404ca9a/bucks-currency-converter-29/assets/widgetLoader.js",
+            "GET https://cdn.shopify.com/extensions/01a11b30-98d5-7ae3-b2f4-f79b3c6f32c4/judgeme-775/assets/loader.js",
+            "GET https://cdn.shopify.com/extensions/01a0acae-48ed-764e-9b04-878137b134ab/cartbite-83/assets/cartbite-embed.js",
+            "GET https://cdn.shopify.com/extensions/01a0e6d8-55ac-7532-811a-4502935d7ece/my-wishlist-share-remind-327/assets/hulkapps-wishlist-collection.js",
+            "GET https://www.aachho.com/cdn/shopifycloud/perf-kit/shopify-perf-kit-3.10.1.min.js",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=1&auid=1133350134.1791595396&dt=Bestseller%20Products%20Last%20100%20Days%20-%20Top%20Picks%20%7C%",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595404903&cv=11&fst=1791595404903&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=1133350134.1791595396&dt=Bestseller%20Products%20Last%20100%20Days%20-%20Top%20Picks%20%7C%",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595404994&cv=11&fst=1791595404994&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.14,
+              "dcl": 2.03,
+              "load": 5.36,
+              "lcp": 2.22
+            },
+            {
+              "url": "/collections/bestseller-100-days?filter.v.availability=1&rts_redirect_done=1",
+              "ttfb": 0.15,
+              "dcl": 2.07,
+              "load": 3.42,
+              "lcp": 1.88
+            },
+            {
+              "url": "/collections/bestseller-100-days/products/kavya-purple-embroidered-crepe-kurta?_pos=1&_fid=d87a3be0a",
+              "ttfb": 0.0,
+              "dcl": 1.64,
+              "load": 3.3,
+              "lcp": 0.44
+            }
+          ]
+        }
+      ],
+      "incident_signature": "aachho.com|journey.shopper|shows_title_price_image|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "popup_or_overlay",
+        "reason": "A chat/support overlay is covering the area where the selected-variant price would appear, so the robot likely couldn't read the price instead of the store missing it.",
+        "evidence": "Visible page text shows product prices as $33.95 and $46.08 (sale and regular) and the page contains a chat widget overlay at the bottom right covering part of the viewport (Support@Aachho chat bubble visible). The robot expected \u20b93,287.15 but that price/text is not present in the visible page text."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.41s",
+              "error": null,
+              "secs": 6.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Online - Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "18885 chars, 47 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.41s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.41s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 10",
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "10",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.56,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-28016706@3/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=615929145.1791595426&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=615929145.1791595426&gtm=45be6a72v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595426004&cv=11&fst=1791595426004&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=1848265233.1791595426&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595426155&cv=11&fst=1791595426155&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1848265233.1791595426&gtm=45be6a72v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1848265233.1791595426&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9178981703zd9178981703xf1&_p=1791595424875&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zb9178981703zd9178981703xf1&_p=1791595424875&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595425717&_gaz=1&gcd=13l3l3l3l1"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.02,
+              "load": 5.33,
+              "lcp": 2.42
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/new-arrivals",
+              "status": "pass",
+              "detail": "HTTP 200 in 5.5s",
+              "error": null,
+              "secs": 7.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy New Arrivals Handblock Suit Set Online - Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9638 chars, 31 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/sos-sale",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.23s",
+              "error": null,
+              "secs": 6.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tyohar Sale \u2013 Festive Ethnic Wear at Best Prices | Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7538 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/bestseller-100-days",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.63s",
+              "error": null,
+              "secs": 5.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bestseller Products Last 100 Days - Top Picks | Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7530 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/womens-wear",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.48s",
+              "error": null,
+              "secs": 7.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Designer Women's Wear Online | Ethnic & Contemporary Outfits | Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "10792 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 26.26,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/collections/new-arrivals?filter.v.availability=1&rts_redirect_done=1"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-28016706@3/sandbox/modern/collections/new-arrivals?fi"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Unable to parse JSON-LD tag. Malformed JSON found: ' '.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            }
+          ],
+          "failed_requests": [
+            "GET https://www.aachho.com/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/vendor-scripts-v11.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/theme.js?v=22554912860141883171791365199",
+            "GET https://cdn.shopify.com/extensions/01a1205b-2d60-7e58-a81f-9220beb5713d/powerful-form-builder-363/assets/globo.formbuilder.index.js",
+            "GET https://cdn.shopify.com/extensions/01a11b30-98d5-7ae3-b2f4-f79b3c6f32c4/judgeme-775/assets/loader.js",
+            "GET https://cdn.shopify.com/extensions/019dbe41-333e-7edd-a4ce-2128c404ca9a/bucks-currency-converter-29/assets/widgetLoader.js",
+            "GET https://cdn.shopify.com/extensions/01a0e6d8-55ac-7532-811a-4502935d7ece/my-wishlist-share-remind-327/assets/hulkapps-wishlist-collection.js",
+            "GET https://cdn.shopify.com/extensions/01a0acae-48ed-764e-9b04-878137b134ab/cartbite-83/assets/cartbite-embed.js",
+            "GET https://www.aachho.com/cdn/shopifycloud/perf-kit/shopify-perf-kit-3.10.1.min.js",
+            "GET https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1074561090@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/collect",
+            "GET https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-8618050@2/sandbox/modern/collections/new-arrivals",
+            "GET https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-28016706@3/sandbox/modern/collections/new-arrivals",
+            "GET https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-123011138@1/sandbox/modern/collections/new-arrivals",
+            "GET https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-129466434@1/sandbox/modern/collections/new-arrivals",
+            "GET https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-shopify-custom-pixel@0530/sandbox/modern/collections/new-arriva",
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.aachho.com/api/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1900478032.1791595436&gtm=45be6a72v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1900478032.1791595436&dt=Buy%20New%20Arrivals%20Handblock%20Suit%20Set%20Online%20-%20Aachh",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1965224082.1791595437&gtm=45be6a72v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=1&auid=1965224082.1791595437&dt=Buy%20New%20Arrivals%20Handblock%20Suit%20Set%20Online%20-%20Aachh",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595437096&cv=11&fst=1791595437096&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=2&apvc=1&auid=108052418.1791595437&dt=Buy%20New%20Arrivals%20Handblock%20Suit%20Set%20Online%20-%20Aachh",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595437192&cv=11&fst=1791595437192&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6"
+          ],
+          "loads": [
+            {
+              "url": "/collections/new-arrivals?filter.v.availability=1&rts_redirect_done=1",
+              "ttfb": 0.36,
+              "dcl": 3.77,
+              "load": 5.89,
+              "lcp": 2.89
+            },
+            {
+              "url": "/collections/sos-sale?filter.v.availability=1&rts_redirect_done=1",
+              "ttfb": 0.11,
+              "dcl": 2.29,
+              "load": 4.5,
+              "lcp": 2.06
+            },
+            {
+              "url": "/collections/bestseller-100-days?filter.v.availability=1&rts_redirect_done=1",
+              "ttfb": 0.08,
+              "dcl": 1.91,
+              "load": 3.17,
+              "lcp": 1.78
+            },
+            {
+              "url": "/collections/womens-wear?filter.v.availability=1&rts_redirect_done=1",
+              "ttfb": 0.29,
+              "dcl": 3.11,
+              "load": 5.15,
+              "lcp": 2.76
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.bestseller-100-days",
+      "suite": "catalog",
+      "title": "Collection 'Bestseller Top 100' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.67s",
+              "error": null,
+              "secs": 7.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bestseller Products Last 100 Days - Top Picks | Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7530 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "28 products listed",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 10",
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "10",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.63,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/collections/bestseller-100-days?filter.v.availability=1&rts_redirect_done=1"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-129466434@1/sandbox/modern/collections/bestseller-100"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Unable to parse JSON-LD tag. Malformed JSON found: ' '.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://www.aachho.com/cdn/shopifycloud/storefront/assets/storefront/load_feature-1bd60354.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/vendor-scripts-v11.js",
+            "GET https://www.aachho.com/cdn/shop/t/519/assets/theme.js?v=22554912860141883171791365199",
+            "GET https://cdn.shopify.com/extensions/01a1205b-2d60-7e58-a81f-9220beb5713d/powerful-form-builder-363/assets/globo.formbuilder.index.js",
+            "GET https://cdn.shopify.com/extensions/01a0e6d8-55ac-7532-811a-4502935d7ece/my-wishlist-share-remind-327/assets/hulkapps-wishlist-collection.js",
+            "GET https://cdn.shopify.com/extensions/019dbe41-333e-7edd-a4ce-2128c404ca9a/bucks-currency-converter-29/assets/widgetLoader.js",
+            "GET https://cdn.shopify.com/extensions/01a0acae-48ed-764e-9b04-878137b134ab/cartbite-83/assets/cartbite-embed.js",
+            "GET https://cdn.shopify.com/extensions/01a11b30-98d5-7ae3-b2f4-f79b3c6f32c4/judgeme-775/assets/loader.js",
+            "GET https://www.aachho.com/cdn/shopifycloud/perf-kit/shopify-perf-kit-3.10.1.min.js",
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.aachho.com/api/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=1&auid=525567150.1791595461&dt=Bestseller%20Products%20Last%20100%20Days%20-%20Top%20Picks%20%7C%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=525567150.1791595461&gtm=45be6a72v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595461141&cv=11&fst=1791595461141&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=2&apvc=1&auid=1375307508.1791595461&dt=Bestseller%20Products%20Last%20100%20Days%20-%20Top%20Picks%20%7C%",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595461253&cv=11&fst=1791595461253&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1375307508.1791595461&gtm=45be6a72v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1375307508.1791595461&dt=Bestseller%20Products%20Last%20100%20Days%20-%20Top%20Picks%20%7C%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zd9112364914xf1&_p=1791595459635&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9112364914zd9112364914xf1&_p=1791595459635&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595460642&_gaz=1&gcd=13l3l3l3l1"
+          ],
+          "loads": [
+            {
+              "url": "/collections/bestseller-100-days?filter.v.availability=1&rts_redirect_done=1",
+              "ttfb": 0.23,
+              "dcl": 2.5,
+              "load": 5.22,
+              "lcp": 2.27
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.shehnaz-dark-multi-color-leheriya-chiffo",
+      "suite": "product",
+      "title": "PDP 'Shehnaz Dark Multi Color Leheriya Chiffon Saree'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.35s",
+              "error": null,
+              "secs": 6.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Shehnaz Dark Multi Color Leheriya Chiffon Saree for Womenswear Online in India at Baijilal \u2013 Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6439 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "actual": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Shehnaz Dark Multi Color Leheriya Chiffon Saree', selected variant 45499665743938 at \u20b918,125.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree.js with variants",
+                  "actual": "'Shehnaz Dark Multi Color Leheriya Chiffon Saree', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b918,125.00, got not on page",
+              "secs": 2.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Shehnaz Dark Multi Color Leheriya Chiffon Saree",
+                  "actual": "'SHEHNAZ DARK MULTI COLOR LEHERIYA CHIFFON SAREE' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b918,125.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b918,125.00, got not on page",
+          "screenshot": "product.pdp.shehnaz-dark-multi-color-leheriya-chiffo.a1.png",
+          "trace": "product.pdp.shehnaz-dark-multi-color-leheriya-chiffo.a1_trace.zip",
+          "secs": 11.73,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/products/shehnaz-dark-multi-color-leheriya-chiffon-saree?variant=45499665743938"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-28016706@3/sandbox/modern/products/shehnaz-dark-multi"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://app.shopgracias.com/widgets/videos_api/?widget_type=floating_pop&shop=www-aachho-com.myshopify.com&wizup_sid=gqmhb8qd3vu&product_id="
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=1080615095.1791595469&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Saree",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595468909&cv=11&fst=1791595468909&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1080615095.1791595469&gtm=45be6a72v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=1&auid=341458640.1791595469&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Saree%",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595469127&cv=11&fst=1791595469127&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=341458640.1791595469&gtm=45be6a80h2v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595468502&_gaz=1&gcd=13l3l3l3l1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042z878551807za20gzb78551807zd78551807xf1&_p=1791595468502&gcd=13l3l3l",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=341458640.1791595469&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Saree%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72h1v9112364914za200zd9112364914xf1&_p=1791595468155&_gaz=1&gcs=G111&gcd=13t3t3t",
+            "GET https://app.sagepilot.ai/mixkit-message-pop-alert-2354.mp3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20gzb78551807zd78551807xf1&_p=1791595468502&gcd=13l3l3l3l1l1&npa=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72h1v9112364914za200zd9112364914xf1&_p=1791595468155&gcs=G111&gcd=13t3t3t3t5l1&n",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a80h2v9169985042za200zb9112364914zd9112364914xf1&_p=1791595468155&gcs=G111&gcd=13"
+          ],
+          "loads": [
+            {
+              "url": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree?variant=45499665743938",
+              "ttfb": 0.04,
+              "dcl": 2.16,
+              "load": 4.85,
+              "lcp": 0.38
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.31s",
+              "error": null,
+              "secs": 5.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Shehnaz Dark Multi Color Leheriya Chiffon Saree for Womenswear Online in India at Baijilal \u2013 Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6439 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "actual": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Shehnaz Dark Multi Color Leheriya Chiffon Saree', selected variant 45499665743938 at \u20b918,125.00",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree.js with variants",
+                  "actual": "'Shehnaz Dark Multi Color Leheriya Chiffon Saree', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b918,125.00, got not on page",
+              "secs": 3.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Shehnaz Dark Multi Color Leheriya Chiffon Saree",
+                  "actual": "'SHEHNAZ DARK MULTI COLOR LEHERIYA CHIFFON SAREE' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b918,125.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b918,125.00, got not on page",
+          "screenshot": "product.pdp.shehnaz-dark-multi-color-leheriya-chiffo.a2.png",
+          "trace": "product.pdp.shehnaz-dark-multi-color-leheriya-chiffo.a2_trace.zip",
+          "secs": 11.89,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/products/shehnaz-dark-multi-color-leheriya-chiffon-saree?variant=45499665743938"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-8618050@2/sandbox/modern/products/shehnaz-dark-multi-"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://app.shopgracias.com/widgets/videos_api/?widget_type=floating_pop&shop=www-aachho-com.myshopify.com&wizup_sid=tz66w23f48&product_id=8"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=1&auid=637402533.1791595481&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Saree",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=637402533.1791595481&gtm=45be6a72v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595481005&cv=11&fst=1791595481005&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=1&auid=1262213403.1791595481&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Sare",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1262213403.1791595481&gtm=45be6a72v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595481121&cv=11&fst=1791595481121&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=1262213403.1791595481&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Saree",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595480285&_gaz=1&gcd=13l3l3l3l1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9178981703zd9178981703xf1&_p=1791595479668&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zb9178981703zd9178981703xf1&_p=1791595479668&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042z878551807za20gzb78551807zd78551807xf1&_p=1791595480285&gcd=13l3l3l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zb9178981703zd9178981703xf1&_p=1791595479668&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9178981703zd9178981703xf1&_p=1791595479668&gcs=G111&gcd=13t3",
+            "POST https://app.sagepilot.ai/chat-widget/ca3c74dd-1882-4faa-be73-59d27e4cd1c1/conversations?wid=42fa26c7-0720-4f7d-ab95-44e8a0537275&showImageCards=true&s",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20gzb78551807zd78551807xf1&_p=1791595480285&gcd=13l3l3l3l1l1&npa="
+          ],
+          "loads": [
+            {
+              "url": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree?variant=45499665743938",
+              "ttfb": 0.05,
+              "dcl": 2.61,
+              "load": 4.63,
+              "lcp": 0.44
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.6s",
+              "error": null,
+              "secs": 6.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Shehnaz Dark Multi Color Leheriya Chiffon Saree for Womenswear Online in India at Baijilal \u2013 Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6422 chars, 40 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "actual": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Shehnaz Dark Multi Color Leheriya Chiffon Saree', selected variant 45499665743938 at \u20b918,125.00",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree.js with variants",
+                  "actual": "'Shehnaz Dark Multi Color Leheriya Chiffon Saree', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b918,125.00, got not on page",
+              "secs": 3.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Shehnaz Dark Multi Color Leheriya Chiffon Saree",
+                  "actual": "'SHEHNAZ DARK MULTI COLOR LEHERIYA CHIFFON SAREE' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b918,125.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b918,125.00, got not on page",
+          "screenshot": "product.pdp.shehnaz-dark-multi-color-leheriya-chiffo.a3.png",
+          "trace": "product.pdp.shehnaz-dark-multi-color-leheriya-chiffo.a3_trace.zip",
+          "secs": 11.21,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/products/shehnaz-dark-multi-color-leheriya-chiffon-saree?variant=45499665743938"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-129466434@1/sandbox/modern/products/shehnaz-dark-mult"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://app.shopgracias.com/widgets/videos_api/?widget_type=floating_pop&shop=www-aachho-com.myshopify.com&wizup_sid=2ojscuwh5sh&product_id="
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=1&auid=909787479.1791595495&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Saree%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=909787479.1791595495&gtm=45be6a72v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595495435&cv=11&fst=1791595495435&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1463130996.1791595496&gtm=45be6a72v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=1&auid=1463130996.1791595496&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Sare",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595495786&cv=11&fst=1791595495786&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1463130996.1791595496&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Saree",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595495148&_gaz=1&gcd=13l3l3l3l1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zd9112364914xf1&_p=1791595494516&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9112364914zd9112364914xf1&_p=1791595494516&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042z878551807za20gzb78551807zd78551807xf1&_p=1791595495148&gcd=13l3l3l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9112364914zd9112364914xf1&_p=1791595494516&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zd9112364914xf1&_p=1791595494516&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://app.sagepilot.ai/chat-widget/ca3c74dd-1882-4faa-be73-59d27e4cd1c1/conversations?wid=42fa26c7-0720-4f7d-ab95-44e8a0537275&showImageCards=true&s",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20gzb78551807zd78551807xf1&_p=1791595495148&gcd=13l3l3l3l1l1&npa="
+          ],
+          "loads": [
+            {
+              "url": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree?variant=45499665743938",
+              "ttfb": 0.04,
+              "dcl": 2.4,
+              "load": 4.78,
+              "lcp": 0.44
+            }
+          ]
+        }
+      ],
+      "incident_signature": "aachho.com|product.pdp.shehnaz-dark-multi-color-leheriya-chiffo|shows_title_price_image|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The page clearly displays a different price format/value (USD amounts) so the robot looked for the INR variant price in the wrong place/format (locator) rather than a store error.",
+        "evidence": "Visible page text shows prices as $187.22 (Regular price) and $364.74 (Sale price) and a chat/support overlay partially covering the page; the expected \u20b918,125.00 is not present."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.shehnaz",
+      "suite": "search",
+      "title": "Search for 'shehnaz' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.17s",
+              "error": null,
+              "secs": 7.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Online - Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "18885 chars, 47 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 28 results, 1 mention 'shehnaz'",
+              "error": null,
+              "secs": 7.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "shehnaz \u2013 Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "456 chars, 41 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'shehnaz'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "1 of 28",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.6,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/cdn/wpm/s7ec887c8w14f9f074p854094e1m1370c602m.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, page, /search?q=shehnaz] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.aachho.com/search?q=shehnaz&type=product"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.aachho.com/search?q=shehnaz&type=product"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=1085775856.1791595507&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1085775856.1791595507&gtm=45be6a72v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595506991&cv=11&fst=1791595506991&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595507161&cv=11&fst=1791595507161&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=195551215.1791595507&gtm=45be6a72v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=1&auid=195551215.1791595507&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595506208&_gaz=1&gcd=13l3l3l3l1",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1085775856.1791595507&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zd9112364914xf1&_p=1791595505447&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=1&auid=195551215.1791595507&dt=Search%3A%20453%20results%20found%20for%20%22shehnaz%22%20%E2%80%9",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595514190&cv=11&fst=1791595514190&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=2&apvc=1&auid=195551215.1791595507&dt=Search%3A%20453%20results%20found%20for%20%22shehnaz%22%20%E2%80%93",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595514277&cv=11&fst=1791595514277&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20gzb78551807zd78551807xf1&_p=1791595513973&gcd=13l3l3l3l1l1&npa=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595513973&gcd=13l3l3l3l1l1&npa=",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=195551215.1791595507&dt=shehnaz%20%E2%80%93%20Aachho&tid=AW-814097346&en=page_view&dl=http",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zb9178981703zd9178981703xf1&_p=1791595513573&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9178981703zd9178981703xf1&_p=1791595513573&gcs=G111&gcd=13t3"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.7,
+              "load": 5.63,
+              "lcp": 2.02
+            },
+            {
+              "url": "/search?q=shehnaz",
+              "ttfb": 0.02,
+              "dcl": 2.2,
+              "load": 3.57,
+              "lcp": 3.74
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.42s",
+              "error": null,
+              "secs": 6.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Online - Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "18885 chars, 47 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Online - Aachho",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "70: 'Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Onlin'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 223: 'Ethnic Wear Online : Buy Designer Ethnic & Western Wear for '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "223: 'Ethnic Wear Online : Buy Designer Ethnic & Western Wear for '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.aachho.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.aachho.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Online - Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.aachho.com/cdn/shop/files/logo_220x_d70f72b2-7050-45d3-9a0d-1d938746d3e8.png?v=1739428570",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.98,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-28016706@3/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=1&auid=67689440.1791595522&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%2",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595521541&cv=11&fst=1791595521541&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=67689440.1791595522&gtm=45be6a72v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=67689440.1791595522&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%26",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=2&apvc=1&auid=909110889.1791595522&dt=Ethnic%20Wear%20-%20Buy%20Indian%20Ethnic%20Wear%20for%20Women%20%",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595522283&cv=11&fst=1791595522283&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=909110889.1791595522&gtm=45be6a72v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a80h2v9112364914za200zb9178981703zd9178981703xf1&_p=1791595520225&_gaz=1&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9178981703zd9178981703xf1&_p=1791595520225&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595521047&_gaz=1&gcd=13l3l3l3l1"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.07,
+              "load": 5.21,
+              "lcp": 2.22
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.96s",
+              "error": null,
+              "secs": 6.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Shehnaz Dark Multi Color Leheriya Chiffon Saree for Womenswear Online in India at Baijilal \u2013 Aachho",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6439 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 104: 'Shop Shehnaz Dark Multi Color Leheriya Chiffon Saree for Wom'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "104: 'Shop Shehnaz Dark Multi Color Leheriya Chiffon Saree for Wom'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 225: 'Buy Shehnaz Dark Multi Color Leheriya Chiffon Saree in India'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "225: 'Buy Shehnaz Dark Multi Color Leheriya Chiffon Saree in India'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.aachho.com/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.aachho.com/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Shehnaz Dark Multi Color Leheriya Chiffon Saree",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.aachho.com/cdn/shop/files/1_2a4e04e1-58b1-45e7-ac71-fd421c3eaeef.jpg?v=1791463297",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.33,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot destructure property 'searchtap' of '(intermediate value)(intermediate value)(intermediate value)' as it is undefined.",
+              "url": "https://www.aachho.com/products/shehnaz-dark-multi-color-leheriya-chiffon-saree"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.aachho.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-28016706@3/sandbox/modern/products/shehnaz-dark-multi"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1477108159.1791595529&gtm=45be6a72h1v9178981703za208zd9178981703xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595528684&cv=11&fst=1791595528684&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=1477108159.1791595529&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Sare",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=892392014.1791595529&gtm=45be6a80h2v9182204341za208zd9182204341xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=2&apvc=1&auid=892392014.1791595529&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Saree%",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595528823&cv=11&fst=1791595528823&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=892392014.1791595529&dt=Shop%20Shehnaz%20Dark%20Multi%20Color%20Leheriya%20Chiffon%20Saree%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za200zb9178981703zd9178981703xf1&_p=1791595527480&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zb9178981703zd9178981703xf1&_p=1791595527480&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595528277&_gaz=1&gcd=13l3l3l3l1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042z878551807za20gzb78551807zd78551807xf1&_p=1791595528277&gcd=13l3l3l"
+          ],
+          "loads": [
+            {
+              "url": "/products/shehnaz-dark-multi-color-leheriya-chiffon-saree",
+              "ttfb": 0.04,
+              "dcl": 2.76,
+              "load": 5.22,
+              "lcp": 0.66
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 4.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.31,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ils8pjlck\" host=\"https://hits.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ils8pjlck\" host=\"https://gkx.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.aachho.com/api/collect",
+            "POST https://www.aachho.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=tKHbJfAAhcLCHn7CsL2-3iWoYeVJAkeFSw&auid=1030671163.1791595534&gtm=45be6a72v9182204341za208zd9182204341x",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=1030671163.1791595534&dt=404%20Not%20Found%20%E2%80%93%20Aachho&tid=AW-16506878498&en=page_",
+            "POST https://www.google.com/rmkt/collect/16506878498/?random=1791595533703&cv=11&fst=1791595533703&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=2&apvc=1&auid=1090497768.1791595534&dt=404%20Not%20Found%20%E2%80%93%20Aachho&tid=AW-814097346&en=page_v",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=yVo-JqTg9BAf12Gz28RQ9zTD351bALxnjw&auid=1090497768.1791595534&gtm=45be6a72v9178981703za208zd9178981703x",
+            "POST https://www.google.com/rmkt/collect/814097346/?random=1791595533837&cv=11&fst=1791595533837&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042za20ozb78551807zd78551807xf1&_p=1791595533380&_gaz=1&gcd=13l3l3l3l1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-E45P50C04R&gtm=45je6a72v9169985042z878551807za20gzb78551807zd78551807xf1&_p=1791595533380&gcd=13l3l3l",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1090497768.1791595534&dt=404%20Not%20Found%20%E2%80%93%20Aachho&tid=AW-814097346&en=page_v",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3GDS13FHTP&gtm=45je6a72v9112364914za200zd9112364914xf1&_p=1791595532850&_gaz=1&gcs=G111&gcd=13t3t3t3t"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.13,
+              "dcl": 1.38,
+              "load": 3.33,
+              "lcp": 0.36
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 2,
+    "input_tokens": 8304,
+    "output_tokens": 240,
+    "est_usd": 0.002556,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Ethnic Wear - Buy Indian Ethnic Wear for Women & Girls Online - Aachho",
+    "theme": "Impulse (store copy: Filter and collection changes)",
+    "checkout_app": "GoKwik + Shiprocket Fastrr",
+    "access": "open",
+    "nav": 25,
+    "collections": 48,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "10 product(s) not listed in the browsed collections are tested last (e.g. ujjvika-mustard-embroidered-georgette-suit-set)"
+  ],
+  "perf": {
+    "pages": 10,
+    "median_load_secs": 4.96,
+    "slowest": {
+      "url": "/collections/new-arrivals?filter.v.availability=1&rts_redirect_done=1",
+      "load_secs": 5.89
+    },
+    "console_errors": 5,
+    "console_warnings": 3,
+    "failed_requests": 122
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 0,
+    "confirmed_fail": 2,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
