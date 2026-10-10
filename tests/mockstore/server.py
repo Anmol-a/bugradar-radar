@@ -180,8 +180,9 @@ Modes (to prove Radar catches and heals what it should):
                    /pages/terms-of-service, /pages/contact (+ an Instagram link) and a header account link
                    /account/login; robots.txt disallows /policies/ and /account (some stores do: Radar must skip them)
                    -> journey 28 opens shipping, privacy, terms, contact (refund skipped: robots.txt); no account test
-  (every mode)     an announcement bar links /pages/offers; a homepage banner links /pages/our-story and /collections/kitchen
-                   (already in the menu) -> journey 15 opens offers + our-story
+  healthy (+)      an announcement bar links /pages/offers; a homepage banner links /pages/our-story and /collections/kitchen
+                   (already in the menu) -> journey 15 opens offers + our-story (only in healthy and broken_section_link:
+                   the navigation modes must not get extra links)
   broken_section_link  /pages/our-story answers 404, /pages/offers redirects to the homepage (journey 15)
                    -> smoke.more_links FAILS naming both
   broken_policies  the footer's shipping page answers 404, the privacy page is a heading with no text, the contact page
@@ -254,6 +255,7 @@ EXTRA_DECOR = [{"id": 60 + i, "handle": f"clay-bowl-{i}", "title": f"Clay Bowl N
                 "variants": [{"id": 600 + i, "available": True, "price": "599.00"}], "collection": "home-decor"}
                for i in range(1, 5)]
 MORE_MODES = ("paginated", "pagination_broken", "load_more", "infinite_scroll", "more_hidden")
+J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepage banner (journey 15)
 CARTS: dict[str, list[dict]] = {}
 
 SVG = b'<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#c96"/></svg>'
@@ -270,7 +272,6 @@ def page(title: str, body: str, extra_head: str = "", shopify: bool = True) -> s
 {extra_head}</head><body>
 <header><div class="drawer" style="display:none"><nav><a href="/collections/all">Shop all</a></nav></div><nav><a href="/collections/home-decor">Home Decor</a> <a href="/collections/kitchen">Kitchen</a> <a href="/pages/about">About</a></nav><a class="cart-icon" href="/cart">Cart</a> <a class="account-icon" href="/account/login" aria-label="Log in">&#128100;</a>
 <form action="/search" method="get"><input name="q"></form></header>
-<div class="announcement-bar"><a href="/pages/offers">Festive offers: up to 20% off</a></div>
 <main>{body}</main><footer><img src="{img}" width="40" height="40" alt="logo"><div class="footer-menu">{FOOTER_LINKS}</div></footer></body></html>"""
 
 
@@ -420,6 +421,11 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
     const ps = (((await r.json()).resources || {}).results || {}).products || [];
     """ + render + """ }, 300); }); })();
 </script></body>""")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in J15_MODES:
+            # journey 15: an announcement bar above the page (only in these modes: other modes test the journey's
+            # navigation and must not get an extra link to follow)
+            body = body.replace("<main>", '<div class="announcement-bar"><a href="/pages/offers">Festive offers: up to 20% '
+                                'off</a></div><main>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "script_heavy":
             # journey 31: 26 app scripts, each from its own third-party host (*.localhost resolves to this machine)
             body = body.replace("</body>", "<script>for (let i = 1; i <= 26; i++) { const s = document.createElement('script'); "
@@ -733,8 +739,9 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
         if path == "/":
             return self._send(200, page("Mock Store | Handmade Home Goods",
                                         "<h1>Welcome</h1>" + "".join(card(p) for p in PRODUCTS if p["collection"])
-                                        + '<section class="story-banner"><a href="/pages/our-story">Read our story</a> '
-                                          '<a href="/collections/kitchen">Shop the kitchen</a></section>',
+                                        + ('<section class="story-banner"><a href="/pages/our-story">Read our story</a> '
+                                           '<a href="/collections/kitchen">Shop the kitchen</a></section>'
+                                           if self.mode in J15_MODES else ""),
                                         shopify=self.mode != "not_shopify"), set_cart=new)
         if path == "/pages/blank":       # HTTP 200 with a title but nothing on screen (JS crash style)
             return self._send(200, "<!doctype html><html><head><title>Blank | Mock Store</title></head><body><div id=app></div></body></html>")
