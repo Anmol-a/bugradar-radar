@@ -766,6 +766,13 @@ text, form) and any OTHER enabled buy button for the same product. Mock `disable
 button + enabled sticky `form=` button) fails on the old code ('got false'), passes on the new. Next: re-run both
 stores, then fix from the evidence (2 stores = fixable pattern).
 
+**Re-run 38007000986 (new code):** hairoriginals.com: the title fix works (all pages load); what remains is 'price not
+on page' + no clickable card, with the header showing "United States | USD $" → **location (US runner)**, not Radar.
+crossbeats.com mobile: Radar read a disabled `<button class="cf-checkout">ADD TO CART` inside the main product form
+while another buy button for the same product IS enabled → next fix: among this product's own buy buttons prefer an
+enabled add-to-cart one (not 'buy it now'). littleboxindia.com mobile: `MAIN_BUY_JS` finds nothing on mobile and the
+healer's button is disabled (a different path) → needs the healer to report what it found.
+
 **beyondsnack.in (watch, 1 store):** product pages show no price and no cart, only "Shop Now On:" (marketplace
 links): a catalog-only storefront, or prices hidden for US visitors. Radar says 'price not on page' (down). If a
 second catalog-only store appears: detect "no price + no cart + no buy control" → 'no online checkout' note, not down.
