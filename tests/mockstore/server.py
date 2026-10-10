@@ -167,6 +167,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> pages load (no 'down'); the SEO test 'title' warns
   annual_return_pdf  the footer's first link is 'Annual Return FY 2024-25', a PDF under /cdn/ (giva.co): a company-law
                    filing, not the returns policy -> never picked as an info page, info.policy_pages PASSES
+  marketplace_only product pages show no price and no cart, only 'Buy on Amazon / Flipkart' links (antesports, beyondsnack)
+                   -> product + journey BLOCKED "sells only on marketplaces", never DOWN
   cart_qty_broken  the cart page's + / − buttons and quantity box do nothing (theme script missing) -> cart.edit_and_checkout
                    WARNS (strict: FAILS) at change_quantity "cart quantity after pressing +: expected 2"
   cart_remove_broken  the cart page's Remove link reloads the cart without removing the line -> WARNS (strict: FAILS) at
@@ -936,6 +938,13 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
         return self._send(404, page("Page not found", "<h1>404</h1>"))
 
     def _pdp(self, p):
+        if self.mode == "marketplace_only":
+            # antesports.com (new30g) / beyondsnack.in (new30e): a brand catalog on Shopify, no price and no cart on the
+            # product page, only 'Buy on Amazon / Flipkart' links; products.json still carries prices
+            return page(f"{p['title']} | Mock Store", f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" '
+                        'width="400" height="400" alt=""><p>A compact, hand-finished piece for everyday use.</p>'
+                        '<div class="buy-links"><a href="https://www.amazon.in/dp/B0MOCK">Buy on Amazon</a> '
+                        '<a href="https://www.flipkart.com/mock/p/itm1">Buy on Flipkart</a></div>')
         price = "0" if (self.mode == "broken_price" and p["handle"] == "ceramic-vase") else p["price"]
         ld = json.dumps({"@context": "https://schema.org", "@type": "Product", "name": p["title"],
                          "image": [f"/cdn/shop/files/{p['handle']}.svg"],

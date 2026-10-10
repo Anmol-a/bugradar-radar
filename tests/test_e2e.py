@@ -1390,3 +1390,14 @@ def test_footer_annual_return_pdf_is_not_read_as_the_refund_page(tmp_path):
     c = _case(run, "info.policy_pages")
     assert c.verdict == "pass", c.attempts[-1].error
     assert "annual-return" not in json.dumps([s.detail for s in c.attempts[-1].steps], default=str)
+
+
+def test_marketplace_only_store_is_blocked_with_the_reason_never_down(tmp_path):
+    """antesports.com (new30g) + beyondsnack.in (new30e): product pages show no price and no cart, only 'Buy on Amazon /
+    Flipkart'. Until loop cycle 25 that was DOWN ('selected variant price shown: not on page') = a Radar false failure."""
+    run, _ = _scan("marketplace_only", tmp_path)
+    assert run.verdict != "down", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    for prefix in ("journey.", "product.pdp.", "cart.add_to_cart"):
+        c = _case(run, prefix)
+        assert c.verdict == "blocked" and "only links to marketplaces (Buy on Amazon, Buy on Flipkart)" in c.attempts[-1].error, \
+            (prefix, c.verdict, c.attempts[-1].error)

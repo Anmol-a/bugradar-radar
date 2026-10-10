@@ -970,6 +970,13 @@ stores → fix next), fixderma mobile (no buy control found for one product; des
 runner shows $497.04; Radar did not label it location: to check). nourishyou mobile: missing page → /collections/all
 (store finding).
 
+**T1 fix, marketplace-only catalog stores (2 stores: antesports.com new30g, beyondsnack.in new30e):** the product page
+shows no price and no buy button, only 'Buy on Amazon / Flipkart' (Myntra, Nykaa, Ajio, Blinkit, Zepto, … outside
+header/footer). Until now: DOWN 'selected variant price shown: not on page'. Now, only when the price is NOT on the page
+and the page has no buy control of its own, the product test, the journey and add-to-cart are BLOCKED with the reason
+('sells only on marketplaces'), never a failure (`CatalogOnly`, mock `marketplace_only`: DOWN on the old code, blocked
+on the new). A page with its own buy button is judged as before.
+
 Also: the bench table and both HTML reports list the `info` suite (journeys 28–30): their suite lists stopped at
 `health`, so the report never showed it.
 
@@ -1231,7 +1238,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
-- **v0.19 loop cycle 25 (11 Oct, 00:50 IST):** journeys 19–21 on the cart page (`cart.edit_and_checkout`: quantity +, checkout page renders, remove), warnings until benched; `/checkout` opened only inside the cart flow; new30g 2/19; reports list the `info` suite; mocks `cart_qty_broken`, `cart_remove_broken`, `checkout_broken` (4zd). Full 36 regression 38075087892 (before 28–30) = 62 healthy / 4 degraded (store findings) / 0 Radar false failures.
+- **v0.19 loop cycle 25 (11 Oct, 00:50 IST):** marketplace-only catalog stores BLOCKED with the reason, not DOWN (`marketplace_only`; antesports, beyondsnack); journeys 19–21 on the cart page (`cart.edit_and_checkout`: quantity +, checkout page renders, remove), warnings until benched; `/checkout` opened only inside the cart flow; new30g 2/19; reports list the `info` suite; mocks `cart_qty_broken`, `cart_remove_broken`, `checkout_broken` (4zd). Full 36 regression 38075087892 (before 28–30) = 62 healthy / 4 degraded (store findings) / 0 Radar false failures.
 - **v0.19 chat session (11 Oct, 00:45 IST):** journeys 27 (search no-results page + search-as-you-type), 26 (products past the first page), 14 (JS errors on collection pages), 17 (Core Web Vitals warnings); first real-store run of 28–30: giva.co PDF footer link fixed (the only new Radar false failure), late policy text, sign-in hand-off, layout noise threshold, popups apart (4zc-2).
 - **v0.19 chat session (11 Oct, 00:00 IST):** journeys 28–30: footer policy + contact pages (`info.policy_pages`), account login page (`info.account_page`), layout warnings on home / collection / product pages (sideways scroll, fixed bars covering > 35%); robots.txt-disallowed `/policies/` and `/account` noted, never opened; mocks `broken_policies`, `account_open`, `account_broken`, `sideways_scroll`, `tall_sticky_bar` (4zc).
 - **v0.19 loop cycle 11 (10 Oct, 09:46 IST):** product link opening a new tab is followed (mock `new_tab_cards`; fashor, tigc); one Shopify marker → homepage loaded again before 'not Shopify', evidence in the note (mock `stripped_first_home`; koskii); new30f final 4/21 (4z2).

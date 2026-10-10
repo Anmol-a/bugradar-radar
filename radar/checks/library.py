@@ -31,6 +31,32 @@ class PincodeGate(Exception):
     BLOCKED with the reason, never a store failure."""
 
 
+class CatalogOnly(Exception):
+    """The product page shows no price and no buy control, only links to marketplaces (antesports.com new30g,
+    beyondsnack.in new30e: 'Buy on Amazon / Flipkart'). The store is a catalog; its own checkout cannot be tested:
+    BLOCKED with the reason, never a store failure (Shopify's products.json still lists prices)."""
+
+
+MARKETPLACE_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const scope = [...document.querySelectorAll('a[href]')].filter(a => vis(a) && !a.closest('footer, header, nav'));
+  const mk = scope.filter(a => /(^|\.)(amazon\.(in|com)|amzn\.(in|to)|flipkart\.com|myntra\.com|nykaa\.com|ajio\.com|meesho\.com|jiomart\.com|tatacliq\.com|blinkit\.com|zeptonow\.com|swiggy\.com|bigbasket\.com)$/i
+                               .test((() => { try { return new URL(a.href).hostname; } catch (e) { return ''; } })()))
+                 .map(a => (a.innerText || a.getAttribute('aria-label') || new URL(a.href).hostname).trim().slice(0, 30));
+  const own = [...document.querySelectorAll('form[action*="/cart/add"] button, form[action*="/cart/add"] input[type=submit], button, [role=button]')]
+    .some(b => vis(b) && !b.closest('header, footer, nav') && /add to (cart|bag|basket)|buy (it )?now|^add$|^buy$/i.test((b.innerText || b.value || '').trim()));
+  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own}; }"""
+
+
+def _raise_if_catalog_only(ctx: Ctx) -> None:
+    """Called only when the product's price is NOT on its page: marketplace links and no buy control of its own =
+    a catalog store (CatalogOnly). A page with its own buy button is judged as usual."""
+    m = ctx.sess.evaluate(MARKETPLACE_JS) or {}
+    if m.get("marketplaces") and not m.get("own_buy"):
+        raise CatalogOnly("not tested: the product page shows no price and no buy button, only links to "
+                          f"marketplaces ({', '.join(m['marketplaces'])}): the store sells there, not on its own site")
+
+
 class StepFailed(Exception):
     def __init__(self, step: str, message: str, blocked: bool = False):
         self.step, self.blocked = step, blocked
@@ -73,7 +99,7 @@ class Steps:
             self.items.append(StepResult(name, "pass", out, None, round(time.time() - t0, 2), healed, self._checks,
                                          self._shot(name)))
             return out if out is not None else True
-        except (RobotsBlocked, AgeGate, RateLimited, PincodeGate) as e:
+        except (RobotsBlocked, AgeGate, RateLimited, PincodeGate, CatalogOnly) as e:
             self.items.append(StepResult(name, "skip", None, str(e), round(time.time() - t0, 2), None, self._checks))
             raise StepFailed(name, str(e), blocked=True) from e
         except Exception as e:  # noqa: BLE001
@@ -1040,6 +1066,8 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             nums = prices_in_text(text)
             ctx.sess.evaluate("() => scrollTo(0, 0)")
         ok, how = price_shown(want, nums)
+        if not ok:
+            _raise_if_catalog_only(ctx)
         where = "" if ok else _hidden_price(ctx, want)
         ctx.expect("selected variant price shown", rupees(v["price"]),
                    how if ok else f"not on page{where}", ok)
@@ -1189,6 +1217,8 @@ def add_to_cart(ctx: Ctx, url: str, variant_id: int | None = None, cart_path: st
         p = _product_js(ctx, ctx.sess.page.url)
         v = next((x for x in p["variants"] if variant_id and int(x["id"]) == int(variant_id)), None) or _selected_variant(ctx, p)
         state.update(p=p, v=v)
+        if not price_shown(round(int(v["price"]) / 100, 2), prices_in_text(ctx.sess.evaluate("() => document.body.innerText")))[0]:
+            _raise_if_catalog_only(ctx)
         return f"{p['title']!r}, variant {v['id']} at {rupees(v['price'])}"
     ctx.steps.run("product_identified", identify)
 
