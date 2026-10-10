@@ -177,6 +177,10 @@ Modes (to prove Radar catches and heals what it should):
   account_open     robots.txt allows /account; /account/login shows an email + password form (journey 29)
                    -> info.account_page PASSES, nothing typed
   account_broken   same, but /account/login answers 404 -> info.account_page FAILS
+  collection_js_error  collection pages throw an uncaught TypeError after load (journey 14) -> collection test WARNS
+                   'uncaught JavaScript errors', never fails
+  layout_shift     home + collection pages: a tall hero, then an offer banner pushes the page down 900 px 300 ms after
+                   load (journey 17) -> 'Core Web Vitals' WARNS with the CLS value; the store stays healthy
   sideways_scroll  every page carries a 1700 px promo strip (journey 30) -> home, collection and product pages WARN
                    'page scrolls sideways' naming div.promo-marquee; the store stays healthy
   paginated        'Home Decor' also holds 4 clay bowls (its products.json too), 3 products per page with a 'Next page'
@@ -398,6 +402,18 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
     const ps = (((await r.json()).resources || {}).results || {}).products || [];
     """ + render + """ }, 300); }); })();
 </script></body>""")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "collection_js_error" \
+                and "/collections/" in self.path:
+            # journey 14: the collection page's filter script throws (uncaught) after load
+            body = body.replace("</body>", "<script>setTimeout(() => { const f = undefined; f.map(x => x); }, 50);</script></body>")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "layout_shift" \
+                and "/products/" not in self.path:
+            # journey 17: a tall hero, then an offer banner pushes the whole page down 900 px, 300 ms after load
+            # (CLS well above 0.25 on both screen sizes)
+            body = body.replace("<main>", '<main><div class="hero" style="height:1500px;background:#eef">Festive collection</div>', 1)
+            body = body.replace("</body>", "<script>setTimeout(() => document.querySelector('main').insertAdjacentHTML("
+                                "'beforebegin', '<div class=\"offer-banner\" style=\"height:900px;background:#fd0\">"
+                                "Diwali offer</div>'), 300);</script></body>")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "sideways_scroll":
             # a promo strip wider than any screen (journey 30): the shopper can drag every page sideways
             body = body.replace("<main>", '<main><div class="promo-marquee" style="width:1700px;white-space:nowrap;'

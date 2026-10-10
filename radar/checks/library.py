@@ -796,6 +796,7 @@ def collection_page(ctx: Ctx, url: str):
     ctx.steps.run("lists_products", has_products)
     ctx.sess.page.wait_for_timeout(1000)
     ctx.steps.run("images_load", lambda: _images_ok(ctx), soft=True)
+    ctx.steps.run("no_js_errors", lambda: _js_errors(ctx), soft=True)       # journey 14: home, collection, product
     layout_steps(ctx)
 
 
@@ -1653,9 +1654,50 @@ def _layout(ctx: Ctx, which: int) -> str:
 
 def layout_steps(ctx: Ctx) -> None:
     """Journey 30, as WARNINGS on pages already open (no extra page loads): no sideways scrolling, and fixed bars /
-    overlays leave most of the screen visible."""
+    overlays leave most of the screen visible. Journey 17 rides along: Core Web Vitals of the same page."""
     ctx.steps.run("layout_fits_screen", lambda: _layout(ctx, 0), soft=True)
     ctx.steps.run("layout_not_covered", lambda: _layout(ctx, 1), soft=True)
+    ctx.steps.run("web_vitals", lambda: _vitals(ctx), soft=True)
+
+
+# Journey 17: Core Web Vitals of the page as Radar's browser saw it. LCP = the last largest-contentful-paint entry;
+# CLS = the largest session window of layout shifts without recent input (shifts < 1 s apart, window ≤ 5 s), as
+# web.dev defines it. Both read from buffered entries, so nothing has to be set up before the page loads.
+VITALS_JS = r"""() => new Promise(res => { const out = {lcp: null, cls: 0, shifts: 0, by: ''};
+  try { new PerformanceObserver(l => { const e = l.getEntries(); if (e.length) out.lcp = e[e.length - 1].startTime; })
+          .observe({type: 'largest-contentful-paint', buffered: true}); } catch (e) {}
+  try { new PerformanceObserver(l => { let win = 0, first = 0, last = 0, worst = null;
+      for (const e of l.getEntries()) { if (e.hadRecentInput) continue; out.shifts++;
+        if (win && e.startTime - last < 1000 && e.startTime - first < 5000) { win += e.value; } else { win = e.value; first = e.startTime; }
+        last = e.startTime; if (win > out.cls) out.cls = win;
+        if (!worst || e.value > worst.value) worst = e; }
+      if (worst && worst.sources && worst.sources[0] && worst.sources[0].node) { const n = worst.sources[0].node;
+        const cls = typeof n.className === 'string' ? n.className.trim().split(/\s+/).slice(0, 2).join('.') : '';
+        out.by = (n.tagName || '#text').toLowerCase() + (n.id ? '#' + n.id : '') + (cls ? '.' + cls : ''); }
+    }).observe({type: 'layout-shift', buffered: true}); } catch (e) {}
+  setTimeout(() => res(out), 300); })"""
+
+LCP_POOR_S, CLS_POOR = 4.0, 0.25      # web.dev 'poor' thresholds: only a poor page is a warning
+
+
+def vitals_verdict(v: dict) -> tuple[str, str, bool]:
+    """(expected, actual, ok) for one page's Core Web Vitals. Pure, unit-tested."""
+    lcp = v.get("lcp")
+    lcp_s = None if lcp is None else round(lcp / 1000, 2)
+    cls = round(float(v.get("cls") or 0), 3)
+    bad = []
+    if lcp_s is not None and lcp_s > LCP_POOR_S:
+        bad.append(f"LCP {lcp_s}s (poor > {LCP_POOR_S}s)")
+    if cls > CLS_POOR:
+        bad.append(f"CLS {cls} (poor > {CLS_POOR})" + (f", biggest shift: {v['by']}" if v.get("by") else ""))
+    actual = "; ".join(bad) if bad else f"LCP {f'{lcp_s}s' if lcp_s is not None else 'n/a'}, CLS {cls}"
+    return f"LCP ≤ {LCP_POOR_S}s and CLS ≤ {CLS_POOR} (from Radar's runner)", actual, not bad
+
+
+def _vitals(ctx: Ctx) -> str:
+    expected, actual, ok = vitals_verdict(ctx.sess.evaluate(VITALS_JS) or {})
+    ctx.expect("Core Web Vitals", expected, actual, ok)
+    return actual
 
 
 # ---------------- LLM assist (re-check after triage only; code verifies every answer) ----------------

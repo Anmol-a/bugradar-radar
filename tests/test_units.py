@@ -776,3 +776,12 @@ def test_no_results_message_is_found_in_the_ways_stores_say_it():
         assert no_results_message(t), t
     assert no_results_message("Bestsellers: Ceramic Vase ₹1,299 · Wooden Spoon Set ₹499") == ""
     assert no_results_message("Showing 20 results for vase") == ""
+
+
+def test_core_web_vitals_warn_only_when_poor():
+    from radar.checks.library import vitals_verdict
+    assert vitals_verdict({"lcp": 2300, "cls": 0.04})[1:] == ("LCP 2.3s, CLS 0.04", True)
+    assert vitals_verdict({"lcp": None, "cls": 0})[1:] == ("LCP n/a, CLS 0.0", True)
+    exp, act, ok = vitals_verdict({"lcp": 5200, "cls": 0.31, "by": "div.offer-banner"})
+    assert not ok and act == "LCP 5.2s (poor > 4.0s); CLS 0.31 (poor > 0.25), biggest shift: div.offer-banner"
+    assert vitals_verdict({"lcp": 4000, "cls": 0.25})[2]          # exactly at the threshold is not poor

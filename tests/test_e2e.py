@@ -1311,3 +1311,19 @@ def test_collection_pagination_broken_fails_hidden_products_warn_and_one_page_is
     run = _info("healthy", tmp_path, suites=("catalog",))
     st = _case(run, "catalog.more.home-decor").attempts[-1].steps
     assert [s.name for s in st if s.status == "info"] == ["more_products_not_judged"], [(s.name, s.status) for s in st]
+
+
+def test_uncaught_js_error_on_a_collection_page_warns_never_fails(tmp_path):
+    run = _info("collection_js_error", tmp_path, suites=("catalog",))
+    s = _steps(_case(run, "catalog.collection"))["no_js_errors"]
+    assert run.verdict == "healthy" and s.status == "warn" and "reading 'map'" in s.error, (run.verdict, s.status, s.error)
+
+
+def test_layout_shift_shows_as_a_poor_core_web_vitals_warning(tmp_path):
+    run = _info("layout_shift", tmp_path, suites=("smoke", "catalog", "product"))
+    assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
+    for prefix in ("smoke.home_health", "catalog.collection"):
+        s = _steps(_case(run, prefix))["web_vitals"]
+        assert s.status == "warn" and "CLS" in s.error and "poor > 0.25" in s.error, (prefix, s.error)
+    pdp = _steps(_case(run, "product.pdp"))["web_vitals"]
+    assert pdp.status == "pass" and pdp.detail.startswith("LCP "), pdp.detail
