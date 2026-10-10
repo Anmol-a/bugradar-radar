@@ -1,0 +1,3006 @@
+{
+  "run_id": "20261010T214157Z-m-c929",
+  "site_id": "theme-refresh-demo.myshopify.com",
+  "base_url": "https://theme-refresh-demo.myshopify.com",
+  "device": "mobile",
+  "started_at": "2026-10-10T21:41:57+00:00",
+  "finished_at": "2026-10-10T21:43:47+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product \u2192 add to cart \u2192 cart \u2192 checkout button",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.75s",
+              "error": null,
+              "secs": 1.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3291 chars, 19 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/body (7 products)",
+              "error": null,
+              "secs": 2.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/body ('Shop body')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/body",
+                  "actual": "/collections/body",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "7",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 7 candidates \u2192 /products/bar-soap-2-pack-2",
+              "error": null,
+              "secs": 2.79,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/bar-soap-2-pack-2 ('Bar Soap 2 Pack')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/bar-soap-2-pack-2",
+                  "actual": "/products/bar-soap-2-pack-2",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Bar Soap 2 Pack', selected variant 42961973739772 at \u20b915.00",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bar-soap-2-pack-2",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/bar-soap-2-pack-2.js with variants",
+                  "actual": "'Bar Soap 2 Pack', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Bar Soap 2 Pack",
+                  "actual": "'Bar Soap 2 Pack' (h1, 33px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b915.00",
+                  "actual": "\u20b915.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Bar Soap 2 Pack",
+                  "actual": "'Bar Soap 2 Pack' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Bar Soap 2 Pack",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "15.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 42961973739772 (Original) selected, in stock",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "2 of 2 available",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--16044338479356__main (variant 42961973739772, button 'Add to cart')",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "click_add_to_cart",
+              "status": "pass",
+              "detail": "clicked main product form #product-form-template--16044338479356__main (variant 42961973739772, button 'Add to cart')",
+              "error": null,
+              "secs": 0.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-click_add_to_cart.jpg"
+            },
+            {
+              "name": "cart_received_this_product",
+              "status": "pass",
+              "detail": "cart has 'Bar Soap 2 Pack' \u00d71 at \u20b915.00",
+              "error": null,
+              "secs": 1.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "variant the page sent to /cart/add",
+                  "expected": "42961973739772 (Bar Soap 2 Pack)",
+                  "actual": "42961973739772 (Bar Soap 2 Pack)",
+                  "ok": true
+                },
+                {
+                  "what": "cart item count",
+                  "expected": "0 \u2192 1",
+                  "actual": "0 \u2192 1",
+                  "ok": true
+                },
+                {
+                  "what": "product added to cart",
+                  "expected": "Bar Soap 2 Pack (variant 42961973739772)",
+                  "actual": "Bar Soap 2 Pack (variant 42961973739772)",
+                  "ok": true
+                },
+                {
+                  "what": "quantity added",
+                  "expected": "1",
+                  "actual": "1",
+                  "ok": true
+                },
+                {
+                  "what": "unit price in cart",
+                  "expected": "\u20b915.00",
+                  "actual": "\u20b915.00",
+                  "ok": true
+                },
+                {
+                  "what": "other paid products added",
+                  "expected": "none",
+                  "actual": "none",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-cart_received_this_product.jpg"
+            },
+            {
+              "name": "cart_total_increase",
+              "status": "pass",
+              "detail": "\u20b90.00 \u2192 \u20b915.00",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart total went up by",
+                  "expected": "\u20b915.00",
+                  "actual": "\u20b915.00",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-cart_received_this_product.jpg"
+            },
+            {
+              "name": "cart_shows_product",
+              "status": "pass",
+              "detail": "cart drawer opened after adding",
+              "error": null,
+              "secs": 0.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart shows the product",
+                  "expected": "Bar Soap 2 Pack",
+                  "actual": "listed",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-cart_received_this_product.jpg"
+            },
+            {
+              "name": "checkout_button_ready",
+              "status": "pass",
+              "detail": "checkout visible + enabled via hint (drawer); NOT clicked",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "checkout button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-cart_received_this_product.jpg"
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.86,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed parsing 'srcset' attribute value since its 'w' descriptor is invalid.",
+              "url": "https://theme-refresh-demo.myshopify.com/products/bar-soap-2-pack-2"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-refresh-demo.myshopify.com/cdn/shop/products/bar-soap-2pack-original-grey_c746bea9-089d-47a2-9a8f-5730367d2b8e.png?v=1650476098\"",
+              "url": "https://theme-refresh-demo.myshopify.com/products/bar-soap-2-pack-2"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.63,
+              "load": 1.04,
+              "lcp": 0.65
+            },
+            {
+              "url": "/collections/body",
+              "ttfb": 0.02,
+              "dcl": 0.69,
+              "load": 1.08,
+              "lcp": 0.76
+            },
+            {
+              "url": "/products/bar-soap-2-pack-2",
+              "ttfb": 0.14,
+              "dcl": 0.99,
+              "load": 1.04,
+              "lcp": 0.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.14s",
+              "error": null,
+              "secs": 2.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3291 chars, 19 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.14s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.14s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.65s, CLS 0.0",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.65s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "121 scripts, at least 953 KB of JavaScript, 0 third-party script hosts",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "121 scripts, at least 953 KB of JavaScript, 0 third-party script hosts",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.58,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.79,
+              "load": 1.56,
+              "lcp": 0.65
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/hair",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.6s",
+              "error": null,
+              "secs": 2.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1213 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/body",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.9s",
+              "error": null,
+              "secs": 2.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Body \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1261 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/face",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.33s",
+              "error": null,
+              "secs": 2.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Face \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1171 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/kits",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 2.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Kits \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1248 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.43,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://theme-refresh-demo.myshopify.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/collections/hair",
+              "ttfb": 0.04,
+              "dcl": 1.06,
+              "load": 1.83,
+              "lcp": 1.11
+            },
+            {
+              "url": "/collections/body",
+              "ttfb": 0.02,
+              "dcl": 0.65,
+              "load": 0.99,
+              "lcp": 0.72
+            },
+            {
+              "url": "/collections/face",
+              "ttfb": 0.02,
+              "dcl": 1.16,
+              "load": 1.43,
+              "lcp": 1.22
+            },
+            {
+              "url": "/collections/kits",
+              "ttfb": 0.18,
+              "dcl": 0.79,
+              "load": 1.13,
+              "lcp": 0.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.13s",
+              "error": null,
+              "secs": 2.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3291 chars, 19 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "tapped the menu button ('Menu'): 9 links shown, e.g. Hair, Body, Face",
+              "error": null,
+              "secs": 2.43,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.27,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.98,
+              "load": 1.48,
+              "lcp": 0.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /blogs/news/certified-cruelty-free-huron",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.91s",
+              "error": null,
+              "secs": 1.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Certified cruelty-free: we've joined Leaping Bunny \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3651 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Certified cruelty-free: we've joined Leaping Bunny \u2013 theme-r\", heading \"Certified cruelty-free: we've joined Leaping Bunny\"",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/blogs/news/certified-cruelty-free-huron-joins-the-leaping-bunny-program",
+                  "actual": "/blogs/news/certified-cruelty-free-huron-joins-the-leaping-bunny-program",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /blogs/news/everything-you-need-to-know-",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.63s",
+              "error": null,
+              "secs": 1.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Everything you need to know about Eye Stick 2.0 \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6916 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Everything you need to know about Eye Stick 2.0 \u2013 theme-refr', heading 'Everything you need to know about Eye Stick 2.0'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/blogs/news/everything-you-need-to-know-about-eye-stick-2-0",
+                  "actual": "/blogs/news/everything-you-need-to-know-about-eye-stick-2-0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "2 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.79,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/blogs/news/certified-cruelty-free-huron-joins-the-leaping-bunny-program",
+              "ttfb": 0.05,
+              "dcl": 0.7,
+              "load": 1.05,
+              "lcp": 0.74
+            },
+            {
+              "url": "/blogs/news/everything-you-need-to-know-about-eye-stick-2-0",
+              "ttfb": 0.15,
+              "dcl": 0.56,
+              "load": 0.81,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.body",
+      "suite": "catalog",
+      "title": "Collection 'Body' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.05s",
+              "error": null,
+              "secs": 2.21,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Body \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1261 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "7 products listed",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "7",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.75s, CLS 0.0",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.75s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "99 scripts, at least 897 KB of JavaScript, 0 third-party script hosts",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "99 scripts, at least 897 KB of JavaScript, 0 third-party script hosts",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.82,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/body",
+              "ttfb": 0.06,
+              "dcl": 0.82,
+              "load": 1.43,
+              "lcp": 0.75
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.body",
+      "suite": "catalog",
+      "title": "Collection 'Body' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.03s",
+              "error": null,
+              "secs": 2.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Body \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1261 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "7 products on the first page",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products on the first page",
+                  "expected": "\u2265 1",
+                  "actual": "7",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "more_products_not_judged",
+              "status": "info",
+              "detail": "the first page shows the collection (7 shown, 6 in stock in the store's data, 0 not shown)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.83,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/body",
+              "ttfb": 0.03,
+              "dcl": 0.82,
+              "load": 1.22,
+              "lcp": 0.82
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.body-duo",
+      "suite": "product",
+      "title": "PDP 'Body Duo'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.07s",
+              "error": null,
+              "secs": 2.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Body Duo - Original - Body Wash and Deodorant for Men | Huron \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2308 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/body-duo",
+                  "actual": "/products/body-duo",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Body Duo', selected variant 42961974460668 at \u20b926.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/body-duo",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/body-duo.js with variants",
+                  "actual": "'Body Duo', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Body Duo",
+                  "actual": "'Body Duo' (h1, 33px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b926.00",
+                  "actual": "\u20b926.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Body Duo",
+                  "actual": "'Body Duo' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Body Duo",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "26.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 42961974460668 (Original) selected, in stock",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "2 of 2 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--16044338479356__main (variant 42961974460668, button 'Add to cart')",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.56s, CLS 0.0",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.56s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "89 scripts, at least 953 KB of JavaScript, 0 third-party script hosts",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "89 scripts, at least 953 KB of JavaScript, 0 third-party script hosts",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.37,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed parsing 'srcset' attribute value since its 'w' descriptor is invalid.",
+              "url": "https://theme-refresh-demo.myshopify.com/products/body-duo?variant=42961974460668"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-refresh-demo.myshopify.com/cdn/shop/products/BodyDuo_Original_GreyBG_5e6a1453-eaa7-4f05-b368-7113ff6f8509.png?v=1650476126\"",
+              "url": "https://theme-refresh-demo.myshopify.com/products/body-duo?variant=42961974460668"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/body-duo?variant=42961974460668",
+              "ttfb": 0.05,
+              "dcl": 0.76,
+              "load": 1.39,
+              "lcp": 0.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "cart.add_to_cart",
+      "suite": "cart",
+      "title": "Add 'Body Duo' to cart",
+      "check": "add_to_cart",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.0s",
+              "error": null,
+              "secs": 2.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Body Duo - Original - Body Wash and Deodorant for Men | Huron \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2308 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Body Duo', variant 42961974460668 at \u20b926.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/body-duo",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/body-duo.js with variants",
+                  "actual": "'Body Duo', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 42961974460668 selected",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "2 of 2 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "click_add_to_cart",
+              "status": "pass",
+              "detail": "clicked main product form #product-form-template--16044338479356__main (variant 42961974460668, button 'Add to cart')",
+              "error": null,
+              "secs": 0.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_received_this_product",
+              "status": "pass",
+              "detail": "cart has 'Body Duo' \u00d71 at \u20b926.00",
+              "error": null,
+              "secs": 1.81,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "variant the page sent to /cart/add",
+                  "expected": "42961974460668 (Body Duo)",
+                  "actual": "42961974460668 (Body Duo)",
+                  "ok": true
+                },
+                {
+                  "what": "cart item count",
+                  "expected": "0 \u2192 1",
+                  "actual": "0 \u2192 1",
+                  "ok": true
+                },
+                {
+                  "what": "product added to cart",
+                  "expected": "Body Duo (variant 42961974460668)",
+                  "actual": "Body Duo (variant 42961974460668)",
+                  "ok": true
+                },
+                {
+                  "what": "quantity added",
+                  "expected": "1",
+                  "actual": "1",
+                  "ok": true
+                },
+                {
+                  "what": "unit price in cart",
+                  "expected": "\u20b926.00",
+                  "actual": "\u20b926.00",
+                  "ok": true
+                },
+                {
+                  "what": "other paid products added",
+                  "expected": "none",
+                  "actual": "none",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_total_increase",
+              "status": "pass",
+              "detail": "\u20b90.00 \u2192 \u20b926.00",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart total went up by",
+                  "expected": "\u20b926.00",
+                  "actual": "\u20b926.00",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_shows_product",
+              "status": "pass",
+              "detail": "cart drawer opened after adding",
+              "error": null,
+              "secs": 0.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart shows the product",
+                  "expected": "Body Duo",
+                  "actual": "listed",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "checkout_button_ready",
+              "status": "pass",
+              "detail": "checkout visible + enabled via cache (drawer); NOT clicked",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "checkout button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.0,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed parsing 'srcset' attribute value since its 'w' descriptor is invalid.",
+              "url": "https://theme-refresh-demo.myshopify.com/products/body-duo?variant=42961974460668"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-refresh-demo.myshopify.com/cdn/shop/products/BodyDuo_Original_GreyBG_5e6a1453-eaa7-4f05-b368-7113ff6f8509.png?v=1650476126\"",
+              "url": "https://theme-refresh-demo.myshopify.com/products/body-duo?variant=42961974460668"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/body-duo?variant=42961974460668",
+              "ttfb": 0.04,
+              "dcl": 0.88,
+              "load": 1.28,
+              "lcp": 0.51
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "cart.edit_and_checkout",
+      "suite": "cart",
+      "title": "Cart page: change quantity, checkout opens, remove item",
+      "check": "cart_edit",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.61s",
+              "error": null,
+              "secs": 1.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Body Duo - Original - Body Wash and Deodorant for Men | Huron \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2308 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "item_in_cart",
+              "status": "pass",
+              "detail": "'Body Duo' \u00d71 in Radar's own cart",
+              "error": null,
+              "secs": 0.84,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/body-duo",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/body-duo.js with variants",
+                  "actual": "'Body Duo', 2 variant(s)",
+                  "ok": true
+                },
+                {
+                  "what": "variant in the store's product data",
+                  "expected": "42961974460668",
+                  "actual": "42961974460668",
+                  "ok": true
+                },
+                {
+                  "what": "/cart/add.js answer",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "cart quantity of this product",
+                  "expected": "1",
+                  "actual": "1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "cart_page_line",
+              "status": "pass",
+              "detail": "cart page line: qty 1; + control: plus  quantity__button no-js-hidden  increase quantity for b; remove control:  remove body duo - original button button--tertiary  ",
+              "error": null,
+              "secs": 1.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Your Shopping Cart \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "969 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "cart page lists the product with a quantity box",
+                  "expected": "Body Duo line",
+                  "actual": "line found, qty 1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "change_quantity",
+              "status": "pass",
+              "detail": "pressed + ('plus  quantity__button no-js-h'): /cart.js quantity 1 \u2192 2, page shows \u20b952.00",
+              "error": null,
+              "secs": 1.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "cart quantity after pressing +",
+                  "expected": "2",
+                  "actual": "2",
+                  "ok": true
+                },
+                {
+                  "what": "quantity shown on the page",
+                  "expected": "2",
+                  "actual": "2",
+                  "ok": true
+                },
+                {
+                  "what": "line / subtotal shows 2 \u00d7 price",
+                  "expected": "\u20b952.00",
+                  "actual": "\u20b952.00",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "checkout_opens",
+              "status": "warn",
+              "detail": null,
+              "error": "checkout order summary names the product: expected Body Duo, got not found in the checkout page",
+              "secs": 20.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "checkout page HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "landed on the checkout",
+                  "expected": "/checkouts/\u2026 or /checkout",
+                  "actual": "/checkouts/cn/hWNHp7Cz6k4BXDChmggozgSP/en-us",
+                  "ok": true
+                },
+                {
+                  "what": "checkout shows a form a shopper would fill",
+                  "expected": "\u2265 1 field (NOT filled by Radar)",
+                  "actual": "18 fields",
+                  "ok": true
+                },
+                {
+                  "what": "checkout order summary names the product",
+                  "expected": "Body Duo",
+                  "actual": "not found in the checkout page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "remove_item",
+              "status": "pass",
+              "detail": "pressed ' remove body duo - original bu': /cart.js has 0 of it, the cart page no longer lists it",
+              "error": null,
+              "secs": 4.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Your Shopping Cart \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "970 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "remove control on the product's cart line",
+                  "expected": "found",
+                  "actual": " remove body duo - original button button--tertiary  ",
+                  "ok": true
+                },
+                {
+                  "what": "cart quantity of this product after remove",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                },
+                {
+                  "what": "cart page no longer lists the product",
+                  "expected": "gone (or 'cart is empty')",
+                  "actual": "gone, 'empty' message shown",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 29.95,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed parsing 'srcset' attribute value since its 'w' descriptor is invalid.",
+              "url": "https://theme-refresh-demo.myshopify.com/products/body-duo?variant=42961974460668"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-refresh-demo.myshopify.com/cdn/shop/products/BodyDuo_Original_GreyBG_5e6a1453-eaa7-4f05-b368-7113ff6f8509.png?v=1650476126\"",
+              "url": "https://theme-refresh-demo.myshopify.com/products/body-duo?variant=42961974460668"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://theme-refresh-demo.myshopify.com/private_access_tokens?id=4b73d306fde5e47c3a00ee14fb3c099e&checkout_type=c1"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-refresh-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/DateField.CFFsBmUK.css was preloaded using link preload but not used within a few seconds from the window's load event.",
+              "url": "https://theme-refresh-demo.myshopify.com/checkouts/cn/hWNHp7Cz6k4BXDChmggozgSP/en-us?_r=AQABlJIJhsl1R4iavVWWMnQQ2lN_akaJmkIZbNVdH1phaXFMMRAO"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-refresh-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/NumberField.CRpcZnVJ.css was preloaded using link preload but not used within a few seconds from the window's load even",
+              "url": "https://theme-refresh-demo.myshopify.com/checkouts/cn/hWNHp7Cz6k4BXDChmggozgSP/en-us?_r=AQABlJIJhsl1R4iavVWWMnQQ2lN_akaJmkIZbNVdH1phaXFMMRAO"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-refresh-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/AnnouncementRuntimeExtensions.DbBB6lBJ.css was preloaded using link preload but not used within a few seconds from the ",
+              "url": "https://theme-refresh-demo.myshopify.com/checkouts/cn/hWNHp7Cz6k4BXDChmggozgSP/en-us?_r=AQABlJIJhsl1R4iavVWWMnQQ2lN_akaJmkIZbNVdH1phaXFMMRAO"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-refresh-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/QRCode.BZ_m5G5a.css was preloaded using link preload but not used within a few seconds from the window's load event. Pl",
+              "url": "https://theme-refresh-demo.myshopify.com/checkouts/cn/hWNHp7Cz6k4BXDChmggozgSP/en-us?_r=AQABlJIJhsl1R4iavVWWMnQQ2lN_akaJmkIZbNVdH1phaXFMMRAO"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://theme-refresh-demo.myshopify.com/cdn/shopifycloud/checkout-web/assets/c1/assets/RuntimeExtension.DWkDBM73.css was preloaded using link preload but not used within a few seconds from the window's load",
+              "url": "https://theme-refresh-demo.myshopify.com/checkouts/cn/hWNHp7Cz6k4BXDChmggozgSP/en-us?_r=AQABlJIJhsl1R4iavVWWMnQQ2lN_akaJmkIZbNVdH1phaXFMMRAO"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://theme-refresh-demo.myshopify.com/private_access_tokens?id=4b73d306fde5e47c3a00ee14fb3c099e&checkout_type=c1"
+          ],
+          "loads": [
+            {
+              "url": "/products/body-duo?variant=42961974460668",
+              "ttfb": 0.03,
+              "dcl": 0.53,
+              "load": 0.87,
+              "lcp": 0.35
+            },
+            {
+              "url": "/cart",
+              "ttfb": 0.02,
+              "dcl": 0.53,
+              "load": 0.72,
+              "lcp": 0.55
+            },
+            {
+              "url": "/checkouts/cn/hWNHp7Cz6k4BXDChmggozgSP/en-us?_r=AQABlJIJhsl1R4iavVWWMnQQ2lN_akaJmkIZbNVdH1phaXFMMRAO",
+              "ttfb": 0.21,
+              "dcl": 1.51,
+              "load": 1.51,
+              "lcp": 0.4
+            },
+            {
+              "url": "/cart",
+              "ttfb": 0.02,
+              "dcl": 0.64,
+              "load": 1.03,
+              "lcp": 0.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.body",
+      "suite": "search",
+      "title": "Search for 'body' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.08s",
+              "error": null,
+              "secs": 2.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3291 chars, 19 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 12 results, 6 mention 'body'",
+              "error": null,
+              "secs": 4.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'body'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "6 of 12",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.03,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.93,
+              "load": 1.46,
+              "lcp": 0.96
+            },
+            {
+              "url": "/search?q=body&options%5Bprefix%5D=last",
+              "ttfb": 0.21,
+              "dcl": 0.64,
+              "load": 0.82,
+              "lcp": 0.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.74s",
+              "error": null,
+              "secs": 1.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\" \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "538 chars, 2 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "says 'Search results Search No results found for \u201cqzxvbugradar\u201d. Check the spe'",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "message 'Search results Search No results found for \u201cqzxvbugradar\u201d. Check the spe'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.04,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.26,
+              "dcl": 0.69,
+              "load": 1.07,
+              "lcp": 0.57
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'body' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.83s",
+              "error": null,
+              "secs": 1.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3291 chars, 19 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "4 product suggestion(s) while typing 'body', e.g. 'Jumbo Hair and Body Kit'",
+              "error": null,
+              "secs": 2.83,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.88,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.75,
+              "load": 1.15,
+              "lcp": 0.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.63s",
+              "error": null,
+              "secs": 1.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3291 chars, 19 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "theme-refresh-demo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "18: 'theme-refresh-demo'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-refresh-demo.myshopify.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-refresh-demo.myshopify.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 1.87,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.55,
+              "load": 1.03,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.89s",
+              "error": null,
+              "secs": 2.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Body Duo - Original - Body Wash and Deodorant for Men | Huron \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2308 chars, 10 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 86: 'The Body Duo - Original - Body Wash and Deodorant for Men | '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "86: 'The Body Duo - Original - Body Wash and Deodorant for Men | '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 301: 'Body Wash to condition skin, help fight body acne and offer '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "301: 'Body Wash to condition skin, help fight body acne and offer '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theme-refresh-demo.myshopify.com/products/body-duo",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theme-refresh-demo.myshopify.com/products/body-duo",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "The Body Duo - Original - Body Wash and Deodorant for Men | Huron",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theme-refresh-demo.myshopify.com/cdn/shop/products/BodyDuo_Original_GreyBG_5e6a1453-eaa7-4f05-b368-7113ff6f8509.png?v=1650476126",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.09,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed parsing 'srcset' attribute value since its 'w' descriptor is invalid.",
+              "url": "https://theme-refresh-demo.myshopify.com/products/body-duo"
+            },
+            {
+              "type": "warning",
+              "text": "Dropped srcset candidate \"//theme-refresh-demo.myshopify.com/cdn/shop/products/BodyDuo_Original_GreyBG_5e6a1453-eaa7-4f05-b368-7113ff6f8509.png?v=1650476126\"",
+              "url": "https://theme-refresh-demo.myshopify.com/products/body-duo"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/body-duo",
+              "ttfb": 0.03,
+              "dcl": 0.67,
+              "load": 1.26,
+              "lcp": 0.53
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 1.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 1.56,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.2,
+              "dcl": 0.45,
+              "load": 0.84,
+              "lcp": 0.4
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /pages/shipping-and-returns",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.53s",
+              "error": null,
+              "secs": 1.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping and returns \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "855 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping and returns \u2013 theme-refresh-demo', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/shipping-and-returns",
+                  "actual": "/pages/shipping-and-returns",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "1448 chars of policy text",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "1448 chars",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.5s",
+              "error": null,
+              "secs": 1.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact \u2013 theme-refresh-demo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "580 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact \u2013 theme-refresh-demo', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "2 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.93,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://theme-refresh-demo.myshopify.com/api/collect",
+            "POST https://theme-refresh-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/pages/shipping-and-returns",
+              "ttfb": 0.15,
+              "dcl": 0.46,
+              "load": 0.8,
+              "lcp": 0.52
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.18,
+              "dcl": 0.46,
+              "load": 0.61,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "theme-refresh-demo",
+    "theme": "Dawn (store copy: refresh/refresh-demo-store)",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 7,
+    "collections": 4,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "9 product(s) not listed in the browsed collections are tested last (e.g. conditioner-2)"
+  ],
+  "perf": {
+    "pages": 17,
+    "median_load_secs": 1.07,
+    "slowest": {
+      "url": "/collections/hair",
+      "load_secs": 1.83
+    },
+    "console_errors": 1,
+    "console_warnings": 8,
+    "failed_requests": 6
+  },
+  "counts": {
+    "pass": 17,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
