@@ -1,0 +1,1903 @@
+{
+  "run_id": "20261010T011733Z-d-f7f7",
+  "site_id": "rawpressery.com",
+  "base_url": "https://rawpressery.com",
+  "device": "desktop",
+  "started_at": "2026-10-10T01:17:33+00:00",
+  "finished_at": "2026-10-10T01:19:27+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.83s",
+              "error": null,
+              "secs": 2.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1908 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/juices (30 products)",
+              "error": null,
+              "secs": 7.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://wingreensworld.com/collections/juices ('BUY NOW')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/juices",
+                  "actual": "/collections/juices",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "30",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 55 candidates \u2192 /products/valencia-orange-250ml",
+              "error": null,
+              "secs": 9.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/valencia-orange-250ml ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/valencia-orange-250ml",
+                  "actual": "/products/valencia-orange-250ml",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Valencia Orange - 250ml', selected variant 51746348499247 at \u20b9112.00",
+              "error": null,
+              "secs": 0.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/valencia-orange-250ml",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/valencia-orange-250ml.js with variants",
+                  "actual": "'Valencia Orange - 250ml', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b9112.00, got not on page",
+              "secs": 3.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Valencia Orange - 250ml",
+                  "actual": "'Valencia Orange - 250ml' (h1, 28px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9112.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9112.00, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 30.02,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "An <input> tag was parsed within an open <select> tag which caused a </select> end tag to automatically be inserted. Please add the missing </select> end tag, since this behavior may change in future versions of this bro",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://emailnoticeapi.sealapps.com/api/v1/getCollectionButtonStyle' from origin 'https://wingreensworld.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is prese",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://emailnoticeapi.sealapps.com/api/v1/getCollectionButtonStyle"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://wingreensworld.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-77857071@1/sandbox/modern/collections/juices"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta pixel] 549591716105800 is unavailable on this website due to it's traffic permission settings. Go to https://www.facebook.com/business/help/572690630080597 to learn more.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Access to fetch at 'https://helper.openinapp.com/api/v1/link/parse-url-agent' from origin 'https://wingreensworld.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested ",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to fetch",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://emailnoticeapi.sealapps.com/api/v1/customer/getVariantBtStatus' from origin 'https://wingreensworld.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is pr",
+              "url": "https://wingreensworld.com/products/valencia-orange-250ml"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+              "url": "https://multilocation.enscommerce.in/review/getreviewithavgperpage/8215537418543?page=1"
+            },
+            {
+              "type": "error",
+              "text": "Error fetching reviews: SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+              "url": "https://wingreensworld.com/cdn/shop/t/254/assets/global.min.js?v=111895929608301012981768905040"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://wingreensworld.com/cdn/shop/files/valenciaorangejuice_768x.jpg?v=1756382289 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an",
+              "url": "https://wingreensworld.com/products/valencia-orange-250ml"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://emailnoticeapi.sealapps.com/api/v1/getCollectionButtonStyle",
+            "POST https://wingreensworld.com/api/collect",
+            "POST https://wingreensworld.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=57295813.1791595066&dt=Order%20Juices%20and%20Beverage%20Online%20at%20Best%20Price%20%7C%",
+            "POST https://www.google.com/rmkt/collect/10781125822/?random=1791595066179&cv=11&fst=1791595066179&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=57295813.1791595066&gtm=45be6a72v9109233156za208zd9109233156xecxf1&fmt=8",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=PageView&pi=shopify_wingreenindia.myshopify.com&ref=https%3A%2F%2Fwww.rawpressery.com%2F&hcl",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=CollectionViewed&pi=shopify_wingreenindia.myshopify.com&ref=https%3A%2F%2Fwww.rawpressery.com%2",
+            "POST https://www.google.com/rmkt/collect/10781125822/?random=1791595066854&cv=11&fst=1791595066854&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=1&auid=1654065219.1791595067&dt=Order%20Juices%20and%20Beverage%20Online%20at%20Best%20Price%20%7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1654065219.1791595067&gtm=45be6a72v9109233156za208zd9109233156xecxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791595067224&cv=11&tid=G-F3QRBS3096&fst=1791595067224&fmt=8&en=page_view&gtm=45je6a72v890087988z",
+            "POST https://www.google.com/measurement/conversion?random=1791595067224&cv=11&tid=G-F3QRBS3096&fst=1791595067224&fmt=8&en=first_visit&gtm=45je6a72v89008798",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-F3QRBS3096&gtm=45je6a72v890087988za200zb9109233156zd9109233156xf1&_p=1791595064006&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-F3QRBS3096&gtm=45je6a72v890087988za208zb9109233156zd9109233156xf1&_p=1791595064006&gcs=G111&gcd=13t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-F3QRBS3096&gtm=45je6a72v890087988za200zb9109233156zd9109233156xf1&_p=1791595064006&gcs=G111&gcd=13t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791595067264&cv=11&tid=G-F3QRBS3096&fst=1791595067264&fmt=8&en=page_view&gtm=45je6a72v890087988z",
+            "POST https://www.google.com/measurement/conversion?random=1791595067224&cv=11&tid=G-F3QRBS3096&fst=1791595067224&fmt=8&en=session_start&gtm=45je6a72v890087",
+            "POST https://www.google.com/measurement/conversion?random=1791595067274&cv=11&tid=G-F3QRBS3096&fst=1791595067274&fmt=8&en=tz_view_feed&gtm=45je6a72v8900879",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-F6ZPKG8TW9&gtm=45Pe6a80h2v9172169647za200zb9109233156zd9109233156xf1&_p=1791595064006",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-XVMWWESF15&gtm=45je6a72v9189486100za208zb9109233156zd9109233156xf1&_p=1791595064006&gcs=G111&gcd=",
+            "POST https://www.google.com/rmkt/collect/10781125822/?random=1791595068395&cv=11&fst=1791595068395&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9109233156z",
+            "POST https://www.google.com/rmkt/collect/10781125822/?random=1791595068430&cv=11&fst=1791595068430&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9109233156z"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 0.59,
+              "load": 1.55,
+              "lcp": 1.94
+            },
+            {
+              "url": "/collections/juices",
+              "ttfb": 0.2,
+              "dcl": 1.55,
+              "load": 4.42,
+              "lcp": 1.4
+            },
+            {
+              "url": "/products/valencia-orange-250ml",
+              "ttfb": 0.15,
+              "dcl": 1.52,
+              "load": 4.18,
+              "lcp": 4.21
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.91s",
+              "error": null,
+              "secs": 2.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1908 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/juices (30 products)",
+              "error": null,
+              "secs": 8.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://wingreensworld.com/collections/juices ('BUY NOW')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/juices",
+                  "actual": "/collections/juices",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "30",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 55 candidates \u2192 /products/valencia-orange-250ml",
+              "error": null,
+              "secs": 7.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/valencia-orange-250ml ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/valencia-orange-250ml",
+                  "actual": "/products/valencia-orange-250ml",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Valencia Orange - 250ml', selected variant 51746348499247 at \u20b9112.00",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/valencia-orange-250ml",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/valencia-orange-250ml.js with variants",
+                  "actual": "'Valencia Orange - 250ml', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b9112.00, got not on page",
+              "secs": 3.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Valencia Orange - 250ml",
+                  "actual": "'Valencia Orange - 250ml' (h1, 28px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9112.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9112.00, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 25.72,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "An <input> tag was parsed within an open <select> tag which caused a </select> end tag to automatically be inserted. Please add the missing </select> end tag, since this behavior may change in future versions of this bro",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://emailnoticeapi.sealapps.com/api/v1/getCollectionButtonStyle' from origin 'https://wingreensworld.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is prese",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://emailnoticeapi.sealapps.com/api/v1/getCollectionButtonStyle"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://wingreensworld.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-77857071@1/sandbox/modern/collections/juices"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta pixel] 549591716105800 is unavailable on this website due to it's traffic permission settings. Go to https://www.facebook.com/business/help/572690630080597 to learn more.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Access to fetch at 'https://helper.openinapp.com/api/v1/link/parse-url-agent' from origin 'https://wingreensworld.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested ",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to fetch",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://emailnoticeapi.sealapps.com/api/v1/customer/getVariantBtStatus' from origin 'https://wingreensworld.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is pr",
+              "url": "https://wingreensworld.com/products/valencia-orange-250ml"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+              "url": "https://multilocation.enscommerce.in/review/getreviewithavgperpage/8215537418543?page=1"
+            },
+            {
+              "type": "error",
+              "text": "Error fetching reviews: SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+              "url": "https://wingreensworld.com/cdn/shop/t/254/assets/global.min.js?v=111895929608301012981768905040"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://wingreensworld.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://emailnoticeapi.sealapps.com/api/v1/getCollectionButtonStyle",
+            "POST https://wingreensworld.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=855411350.1791595095&dt=Order%20Juices%20and%20Beverage%20Online%20at%20Best%20Price%20%7C",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=855411350.1791595095&gtm=45be6a72v9109233156za208zd9109233156xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/10781125822/?random=1791595095447&cv=11&fst=1791595095447&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=CollectionViewed&pi=shopify_wingreenindia.myshopify.com&ref=https%3A%2F%2Fwww.rawpressery.com%2",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=PageView&pi=shopify_wingreenindia.myshopify.com&ref=https%3A%2F%2Fwww.rawpressery.com%2F&hcl",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=1&auid=636921906.1791595096&dt=Order%20Juices%20and%20Beverage%20Online%20at%20Best%20Price%20%7C%",
+            "POST https://www.google.com/rmkt/collect/10781125822/?random=1791595096204&cv=11&fst=1791595096204&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=636921906.1791595096&gtm=45be6a80h2v9109233156za208zd9109233156xecxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791595096675&cv=11&tid=G-F3QRBS3096&fst=1791595096675&fmt=8&en=session_start&gtm=45je6a72v890087",
+            "POST https://www.google.com/measurement/conversion?random=1791595096675&cv=11&tid=G-F3QRBS3096&fst=1791595096675&fmt=8&en=page_view&gtm=45je6a72v890087988z",
+            "POST https://www.google.com/measurement/conversion?random=1791595096675&cv=11&tid=G-F3QRBS3096&fst=1791595096675&fmt=8&en=first_visit&gtm=45je6a72v89008798",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-F3QRBS3096&gtm=45je6a72v890087988za200zb9109233156zd9109233156xf1&_p=1791595093211&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-F3QRBS3096&gtm=45je6a72v890087988za208zb9109233156zd9109233156xf1&_p=1791595093211&gcs=G111&gcd=13t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-F3QRBS3096&gtm=45je6a72v890087988za200zb9109233156zd9109233156xf1&_p=1791595093211&gcs=G111&gcd=13t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791595096741&cv=11&tid=G-F3QRBS3096&fst=1791595096741&fmt=8&en=page_view&gtm=45je6a72v890087988z",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-F6ZPKG8TW9&gtm=45Pe6a72v9172169647za200zb9109233156zd9109233156xf1&_p=1791595093211&g",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-XVMWWESF15&gtm=45je6a72v9189486100za208zb9109233156zd9109233156xf1&_p=1791595093211&gcs=G111&gcd=",
+            "POST https://www.google.com/measurement/conversion?random=1791595097214&cv=11&tid=G-F3QRBS3096&fst=1791595097214&fmt=8&en=tz_view_feed&gtm=45je6a72v8900879",
+            "POST https://www.google.com/rmkt/collect/10781125822/?random=1791595098056&cv=11&fst=1791595098056&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v9109233156z",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=636921906.1791595096&dt=Order%20Juices%20and%20Beverage%20Online%20at%20Best%20Price%2"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.73,
+              "load": 1.34,
+              "lcp": 0.96
+            },
+            {
+              "url": "/collections/juices",
+              "ttfb": 0.05,
+              "dcl": 2.55,
+              "load": 4.75,
+              "lcp": 1.52
+            },
+            {
+              "url": "/products/valencia-orange-250ml",
+              "ttfb": 0.1,
+              "dcl": 1.45,
+              "load": 3.35,
+              "lcp": 2.84
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.84s",
+              "error": null,
+              "secs": 1.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1908 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/juices (30 products)",
+              "error": null,
+              "secs": 6.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://wingreensworld.com/collections/juices ('BUY NOW')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/juices",
+                  "actual": "/collections/juices",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "30",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 55 candidates \u2192 /products/valencia-orange-250ml",
+              "error": null,
+              "secs": 6.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/valencia-orange-250ml ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/valencia-orange-250ml",
+                  "actual": "/products/valencia-orange-250ml",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Valencia Orange - 250ml', selected variant 51746348499247 at \u20b9112.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/valencia-orange-250ml",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/valencia-orange-250ml.js with variants",
+                  "actual": "'Valencia Orange - 250ml', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b9112.00, got not on page",
+              "secs": 2.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Valencia Orange - 250ml",
+                  "actual": "'Valencia Orange - 250ml' (h1, 28px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9112.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b9112.00, got not on page",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 21.15,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "warning",
+              "text": "An <input> tag was parsed within an open <select> tag which caused a </select> end tag to automatically be inserted. Please add the missing </select> end tag, since this behavior may change in future versions of this bro",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://emailnoticeapi.sealapps.com/api/v1/getCollectionButtonStyle' from origin 'https://wingreensworld.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is prese",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://emailnoticeapi.sealapps.com/api/v1/getCollectionButtonStyle"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://wingreensworld.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-77857071@1/sandbox/modern/collections/juices"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta pixel] 549591716105800 is unavailable on this website due to it's traffic permission settings. Go to https://www.facebook.com/business/help/572690630080597 to learn more.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Access to fetch at 'https://helper.openinapp.com/api/v1/link/parse-url-agent' from origin 'https://wingreensworld.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the requested ",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to fetch",
+              "url": "https://wingreensworld.com/collections/juices"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://emailnoticeapi.sealapps.com/api/v1/customer/getVariantBtStatus' from origin 'https://wingreensworld.com' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is pr",
+              "url": "https://wingreensworld.com/products/valencia-orange-250ml"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 (Not Found)",
+              "url": "https://multilocation.enscommerce.in/review/getreviewithavgperpage/8215537418543?page=1"
+            },
+            {
+              "type": "error",
+              "text": "Error fetching reviews: SyntaxError: Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+              "url": "https://wingreensworld.com/cdn/shop/t/254/assets/global.min.js?v=111895929608301012981768905040"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://wingreensworld.com/cdn/shop/files/valenciaorangejuice_768x.jpg?v=1756382289 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an",
+              "url": "https://wingreensworld.com/products/valencia-orange-250ml"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://emailnoticeapi.sealapps.com/api/v1/getCollectionButtonStyle",
+            "POST https://wingreensworld.com/api/collect",
+            "POST https://wingreensworld.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1191600212.1791595122&dt=Order%20Juices%20and%20Beverage%20Online%20at%20Best%20Price%20%7",
+            "POST https://www.google.com/rmkt/collect/10781125822/?random=1791595122157&cv=11&fst=1791595122157&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1191600212.1791595122&gtm=45be6a72v9109233156za208zd9109233156xecxf1&fmt=8",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=PageView&pi=shopify_wingreenindia.myshopify.com&ref=https%3A%2F%2Fwww.rawpressery.com%2F&hcl",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=CollectionViewed&pi=shopify_wingreenindia.myshopify.com&ref=https%3A%2F%2Fwww.rawpressery.com%2",
+            "GET https://cdn.shopify.com/s/files/1/0724/7046/2767/files/tazoh_da2b026e-0cc1-439f-97de-8f1748dc2c5e_pr.mp4?v=1729067626",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1955953595.1791595123&gtm=45be6a80h2v9109233156za208zd9109233156xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=2&apvc=1&auid=1955953595.1791595123&dt=Order%20Juices%20and%20Beverage%20Online%20at%20Best%20Price%20%7C",
+            "POST https://www.google.com/rmkt/collect/10781125822/?random=1791595122720&cv=11&fst=1791595122720&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-F6ZPKG8TW9&gtm=45Pe6a72h1v9172169647za200zb9109233156zd9109233156xf1&_p=1791595120305",
+            "POST https://www.google.com/measurement/conversion?random=1791595123089&cv=11&tid=G-F3QRBS3096&fst=1791595123089&fmt=8&en=page_view&gtm=45je6a80h2v89008798",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-F3QRBS3096&gtm=45je6a80h2v890087988za208zb9109233156zd9109233156xf1&_p=1791595120305&gcs=G111&gcd=13t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-F3QRBS3096&gtm=45je6a80h2v890087988za200zb9109233156zd9109233156xf1&_p=1791595120305&_gaz=1&gcs=G111&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-F3QRBS3096&gtm=45je6a80h2v890087988za200zb9109233156zd9109233156xf1&_p=1791595120305&gcs=G111&gcd=13t",
+            "POST https://www.google.com/measurement/conversion?random=1791595123089&cv=11&tid=G-F3QRBS3096&fst=1791595123089&fmt=8&en=first_visit&gtm=45je6a80h2v890087",
+            "POST https://www.google.com/measurement/conversion?random=1791595123130&cv=11&tid=G-F3QRBS3096&fst=1791595123130&fmt=8&en=page_view&gtm=45je6a80h2v89008798",
+            "POST https://www.google.com/measurement/conversion?random=1791595123144&cv=11&tid=G-F3QRBS3096&fst=1791595123144&fmt=8&en=tz_view_feed&gtm=45je6a80h2v89008",
+            "POST https://www.google.com/measurement/conversion?random=1791595123089&cv=11&tid=G-F3QRBS3096&fst=1791595123089&fmt=8&en=session_start&gtm=45je6a80h2v8900",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-XVMWWESF15&gtm=45je6a72v9189486100za208zb9109233156zd9109233156xf1&_p=1791595120305&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=1955953595.1791595123&dt=Order%20Juices%20and%20Beverage%20Online%20at%20Best%20Price"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 0.61,
+              "load": 1.03,
+              "lcp": 1.48
+            },
+            {
+              "url": "/collections/juices",
+              "ttfb": 0.05,
+              "dcl": 1.32,
+              "load": 3.56,
+              "lcp": 0.95
+            },
+            {
+              "url": "/products/valencia-orange-250ml",
+              "ttfb": 0.11,
+              "dcl": 1.17,
+              "load": 3.22,
+              "lcp": 2.26
+            }
+          ]
+        }
+      ],
+      "incident_signature": "rawpressery.com|journey.shopper|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The page clearly displays prices and variant options but the check expected a specific variant price (\u20b9112.00) that is not present on this product page, so the robot looked for the price in the wrong place or expected the wrong product/variant.",
+        "evidence": "Visible page text includes pricing information: \"MRP: Regular price \u20b9840 Sale price \u20b9672 ... Old MRP - Rs.150 New MRP - Rs.140\" and the product shows \"Out of Stock\" and variant pack buttons (Pack of 6, Pack of 1, Pack of 12) on the page."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.61s",
+              "error": null,
+              "secs": 1.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1908 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.61s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.61s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.4,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.51,
+              "load": 0.95,
+              "lcp": 0.76
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/juices",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.8s",
+              "error": null,
+              "secs": 1.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Juices \u2013 rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2614 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/smoothies",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.57s",
+              "error": null,
+              "secs": 1.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Smoothies \u2013 rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "893 chars, 2 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/protein-milkshakes",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.66s",
+              "error": null,
+              "secs": 1.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Protein Milkshakes \u2013 rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1337 chars, 8 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/lactose-free-beverages",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.57s",
+              "error": null,
+              "secs": 1.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Lactose Free Beverages \u2013 rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1303 chars, 6 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.7,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/juices",
+              "ttfb": 0.2,
+              "dcl": 0.7,
+              "load": 1.19,
+              "lcp": 1.68
+            },
+            {
+              "url": "/collections/smoothies",
+              "ttfb": 0.18,
+              "dcl": 0.45,
+              "load": 0.72,
+              "lcp": 0.36
+            },
+            {
+              "url": "/collections/protein-milkshakes",
+              "ttfb": 0.22,
+              "dcl": 0.59,
+              "load": 0.83,
+              "lcp": 1.12
+            },
+            {
+              "url": "/collections/lactose-free-beverages",
+              "ttfb": 0.15,
+              "dcl": 0.46,
+              "load": 0.76,
+              "lcp": 0.63
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.juices",
+      "suite": "catalog",
+      "title": "Collection 'Juices' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 2.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Juices \u2013 rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2614 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "18 products listed",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "18",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.8,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/juices",
+              "ttfb": 0.16,
+              "dcl": 0.91,
+              "load": 1.61,
+              "lcp": 0.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.valencia-orange",
+      "suite": "product",
+      "title": "PDP 'Valencia Orange - 250ml'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.8s",
+              "error": null,
+              "secs": 2.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Valencia Orange - 250ml at Best Price - Wingreens World \u2013 rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3099 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/valencia-orange",
+                  "actual": "/products/valencia-orange",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Valencia Orange - 250ml', selected variant 45008608067878 at \u20b9140.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/valencia-orange",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/valencia-orange.js with variants",
+                  "actual": "'Valencia Orange - 250ml', 3 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Valencia Orange - 250ml",
+                  "actual": "'Valencia Orange - 250ml' (h1, 28px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9140.00",
+                  "actual": "\u20b9140.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Valencia Orange - 250ml",
+                  "actual": "'Valencia Orange - 250ml' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Valencia Orange - 250ml",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "140.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 45008608067878 (Pack of 1) selected, in stock",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "3 of 3 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--19012101079334__main--alt (variant 45008608067878, button 'Pack of 1\\nPack of 6\\nPack of 12')",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.79,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/valencia-orange?variant=45008608067878",
+              "ttfb": 0.2,
+              "dcl": 0.65,
+              "load": 1.4,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.valencia",
+      "suite": "search",
+      "title": "Search for 'valencia' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.66s",
+              "error": null,
+              "secs": 2.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1908 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 16 results, 2 mention 'valencia'",
+              "error": null,
+              "secs": 4.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'valencia'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "2 of 16",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.34,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.56,
+              "load": 1.13,
+              "lcp": 0.92
+            },
+            {
+              "url": "/search?q=valencia&type=product%2Carticle%2Cpage%2Ccollection&options%5Bprefix%5D=last",
+              "ttfb": 0.53,
+              "dcl": 0.96,
+              "load": 1.32,
+              "lcp": 0.9
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.64s",
+              "error": null,
+              "secs": 1.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1908 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "rawpressery",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "11: 'rawpressery'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.rawpressery.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.rawpressery.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.03,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.54,
+              "load": 1.06,
+              "lcp": 0.76
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.76s",
+              "error": null,
+              "secs": 2.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Valencia Orange - 250ml at Best Price - Wingreens World \u2013 rawpressery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3099 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 73: 'Buy Valencia Orange - 250ml at Best Price - Wingreens World '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "73: 'Buy Valencia Orange - 250ml at Best Price - Wingreens World '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 198: 'Buy Valencia Orange - 250ml Juice online at the best price i'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "198: 'Buy Valencia Orange - 250ml Juice online at the best price i'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.rawpressery.com/products/valencia-orange",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.rawpressery.com/products/valencia-orange",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Buy Valencia Orange - 250ml at Best Price - Wingreens World",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.rawpressery.com/cdn/shop/products/OJ250ml01.jpg?v=1685693115",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.22,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/valencia-orange",
+              "ttfb": 0.18,
+              "dcl": 0.69,
+              "load": 1.25,
+              "lcp": 0.48
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 1.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.0,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.rawpressery.com/api/collect",
+            "POST https://www.rawpressery.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.rawpressery.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.22,
+              "dcl": 0.61,
+              "load": 1.17,
+              "lcp": 0.47
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 1,
+    "input_tokens": 2685,
+    "output_tokens": 145,
+    "est_usd": 0.000961,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "rawpressery",
+    "theme": "Be Yours",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 6,
+    "collections": 5,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "2 product(s) not listed in the browsed collections are tested last (e.g. unsweetened-almond-milk-1l)"
+  ],
+  "perf": {
+    "pages": 10,
+    "median_load_secs": 1.21,
+    "slowest": {
+      "url": "/collections/juices",
+      "load_secs": 3.56
+    },
+    "console_errors": 7,
+    "console_warnings": 4,
+    "failed_requests": 26
+  },
+  "counts": {
+    "pass": 8,
+    "flaky": 0,
+    "confirmed_fail": 1,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
