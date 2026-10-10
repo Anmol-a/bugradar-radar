@@ -167,7 +167,7 @@ Modes (to prove Radar catches and heals what it should):
                    -> pages load (no 'down'); the SEO test 'title' warns
   no_title         product pages show no product name at all (snitch.co.in after its move)
                    -> product tests FAIL at shows_title_price_image with "none"
-  (every mode)     footer links to /pages/shipping-policy, /policies/refund-policy, /pages/privacy-policy,
+  (every mode)     footer links to an 'Annual Return FY 2024-25' PDF (downloads; giva.co), /pages/shipping-policy, /policies/refund-policy, /pages/privacy-policy,
                    /pages/terms-of-service, /pages/contact (+ an Instagram link) and a header account link
                    /account/login; robots.txt disallows /policies/ and /account like Shopify's default
                    -> journey 28 opens shipping, privacy, terms, contact (refund skipped: robots.txt); no account test
@@ -257,7 +257,8 @@ def page(title: str, body: str, extra_head: str = "", shopify: bool = True) -> s
 <main>{body}</main><footer><img src="{img}" width="40" height="40" alt="logo"><div class="footer-menu">{FOOTER_LINKS}</div></footer></body></html>"""
 
 
-FOOTER_LINKS = ('<a href="/pages/shipping-policy">Shipping Policy</a> <a href="/policies/refund-policy">Refund policy</a> '
+FOOTER_LINKS = ('<a href="/cdn/shop/t/1/assets/annual-return-fy-2024-25.pdf">Annual Return FY 2024-25</a> '   # giva.co
+                '<a href="/pages/shipping-policy">Shipping Policy</a> <a href="/policies/refund-policy">Refund policy</a> '
                 '<a href="/pages/privacy-policy">Privacy Policy</a> <a href="/pages/terms-of-service">Terms of Service</a> '
                 '<a href="/pages/contact">Contact us</a> <a href="https://instagram.com/mockstore">Instagram</a>')
 POLICY_TEXT = ("We ship every order within two working days from our studio in Jaipur. Delivery takes three to seven days "
@@ -690,6 +691,14 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             acct = "" if self.mode in ("account_open", "account_broken") else "Disallow: /account\n"
             return self._send(200, "User-agent: *\nDisallow: /checkout\nDisallow: /cart\n" + acct + "Disallow: /policies/\n"
                               + extra, "text/plain")
+        if path.endswith(".pdf"):     # a company filing linked from the footer: the browser downloads it (giva.co, 11 Oct)
+            self.send_response(200)
+            self.send_header("Content-Type", "application/pdf")
+            self.send_header("Content-Disposition", 'attachment; filename="annual-return.pdf"')
+            self.send_header("Content-Length", "8")
+            self.end_headers()
+            self.wfile.write(b"%PDF-1.4")
+            return
         if path.startswith("/cdn/shop/files/") or path.startswith("/static/"):
             return self._send(200, SVG, "image/svg+xml")
         if path == "/" and self.mode == "store_refuses":

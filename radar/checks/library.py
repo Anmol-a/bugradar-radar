@@ -1494,9 +1494,11 @@ def not_found(ctx: Ctx, url: str):
 INFO_TEXT_JS = r"""() => {
   const root = document.querySelector('main, [role="main"], #MainContent') || document.body;
   const skip = 'header, footer, nav, [role="navigation"], [role="dialog"], [aria-modal="true"], script, style, noscript, template';
-  let n = 0; const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
-  while (w.nextNode()) { const el = w.currentNode.parentElement; if (!el || el.closest(skip)) continue;
-    n += w.currentNode.textContent.replace(/\s+/g, ' ').trim().length; }
+  const count = r => { let n = 0; const w = document.createTreeWalker(r, NodeFilter.SHOW_TEXT);
+    while (w.nextNode()) { const el = w.currentNode.parentElement; if (!el || el.closest(skip)) continue;
+      const s = getComputedStyle(el); if (s.display === 'none' || s.visibility === 'hidden') continue;
+      n += w.currentNode.textContent.replace(/\s+/g, ' ').trim().length; } return n; };
+  const n = Math.max(count(root), root === document.body ? 0 : count(document.body));
   const txt = (root.innerText || '');
   const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   return {chars: n,
@@ -1524,7 +1526,12 @@ def _open_info_page(ctx: Ctx, url: str) -> str:
 
 
 def _info_content(ctx: Ctx, kind: str) -> str:
-    c = ctx.sess.evaluate(INFO_TEXT_JS) or {"chars": 0, "form": False, "reach": False, "heading": ""}
+    c = {"chars": 0, "form": False, "reach": False, "heading": ""}
+    for _ in range(9):     # policy apps render their text after the page loads: up to ~4 s
+        c = ctx.sess.evaluate(INFO_TEXT_JS) or c
+        if c["chars"] >= 200 or (kind == "contact" and (c["form"] or c["reach"])):
+            break
+        ctx.sess.page.wait_for_timeout(500)
     if kind == "contact":
         ok = c["form"] or c["reach"] or c["chars"] >= 150
         ctx.expect("a way to contact the store", "a contact form, an email address or a phone number",
@@ -1558,10 +1565,13 @@ ACCOUNT_JS = r"""() => {
   const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden'; };
   const outside = e => !e.closest('header, footer, [role="dialog"], [aria-modal="true"]');
-  const f = [...document.querySelectorAll('input[type="email"], input[name*="email" i], input[type="password"], input[type="tel"], input[name*="phone" i], input[autocomplete="username"]')]
+  const f = [...document.querySelectorAll('input[type="email"], input[name*="email" i], input[type="password"], input[type="tel"], ' +
+      'input[name*="phone" i], input[name*="mobile" i], input[placeholder*="mobile" i], input[placeholder*="phone" i], ' +
+      'input[placeholder*="email" i], input[autocomplete="username"], input[autocomplete="tel"]')]
     .filter(e => vis(e) && outside(e));
   const b = [...document.querySelectorAll('button, input[type="submit"], a')].filter(e => vis(e) && outside(e))
-    .map(e => (e.innerText || e.value || '').trim()).find(t => /^(sign ?in|log ?in|login|continue|send otp|get otp|request otp)$/i.test(t));
+    .map(e => (e.innerText || e.value || '').trim()).find(t => t.length <= 40 &&
+      /^(continue|verify)$|\b(sign ?in|log ?in|login|send otp|get otp|request otp|login with otp)\b/i.test(t));
   return {fields: f.map(e => e.type || e.name).slice(0, 4), button: b || ''};
 }"""
 
@@ -1571,7 +1581,15 @@ def account_page(ctx: Ctx, url: str):
     ctx.steps.run("loads", lambda: _open_info_page(ctx, url))
 
     def sign_in():
-        a = ctx.sess.evaluate(ACCOUNT_JS) or {"fields": [], "button": ""}
+        landed = ctx.sess.page.url
+        if landed.startswith("about:") or not same_site_url(landed, url):
+            return (f"not judged: the account link hands sign-in to "
+                    f"{'another app (the page went blank)' if landed.startswith('about:') else urlparse(landed).hostname}")
+        for _ in range(6):     # login apps render their form after load
+            a = ctx.sess.evaluate(ACCOUNT_JS) or {"fields": [], "button": ""}
+            if a["fields"] or a["button"]:
+                break
+            ctx.sess.page.wait_for_timeout(500)
         ok = bool(a["fields"]) or bool(a["button"])
         ctx.expect("sign-in form", "an email / phone / password field or a sign-in button (nothing typed)",
                    (f"fields: {', '.join(a['fields'])}" if a["fields"] else "") + (f" button {a['button']!r}" if a["button"] else "")
@@ -1591,9 +1609,10 @@ SIDEWAYS_JS = r"""() => {
   const moved = Math.round(scrollX);
   try { scrollTo({left: x0, top: y0, behavior: 'instant'}); } catch (e) { scrollTo(x0, y0); }
   const out = [];
-  if (moved > 4) {
-    const clips = e => { for (let a = e.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
-        const o = getComputedStyle(a).overflowX; if (o !== 'visible') return true; } return false; };
+  if (moved > 10) {
+    // fixed layers (closed side drawers) never make the page scroll: never named; nor are clipped elements
+    const clips = e => { for (let a = e; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
+        const s = getComputedStyle(a); if (s.position === 'fixed' || (a !== e && s.overflowX !== 'visible')) return true; } return false; };
     for (const e of document.querySelectorAll('body *')) {
       const r = e.getBoundingClientRect();
       if (r.width === 0 || r.height === 0 || r.right <= vw + 4 + x0) continue;
@@ -1614,9 +1633,16 @@ SIDEWAYS_JS = r"""() => {
 # holds the page's own content (an app shell with <main> inside, or one that scrolls itself) is not a covering bar.
 COVERED_JS = r"""() => {
   const vw = innerWidth, vh = innerHeight, cols = 8, rows = 12; let hit = 0; const by = new Map();
+  // a popup / modal Radar could not close is not a layout bar: counted apart (popup), never in the % judged
+  const POPUP = /popup|modal|overlay|newsletter|klaviyo|cookie|consent|dialog|lightbox|gls-|privy|omnisend|wheel|spin/i;
+  const isPopup = n => { for (let a = n; a && a !== document.body; a = a.parentElement) {
+      if (a.getAttribute('role') === 'dialog' || a.getAttribute('aria-modal') === 'true' || a.tagName === 'DIALOG' ||
+          POPUP.test((typeof a.className === 'string' ? a.className : '') + ' ' + (a.id || ''))) return true; } return false; };
+  let popup = 0;
   const fixedLayer = el => { for (let n = el; n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
       const s = getComputedStyle(n); if (s.position !== 'fixed') continue;
       if (n.querySelector('main, #MainContent') || (/(auto|scroll)/.test(s.overflowY) && n.scrollHeight > n.clientHeight + 20 && n.getBoundingClientRect().height > vh * 0.8)) return null;
+      if (isPopup(n)) { popup++; return null; }
       return n; } return null; };
   for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
     const el = document.elementFromPoint((i + 0.5) * vw / cols, (j + 0.5) * vh / rows);
@@ -1625,22 +1651,25 @@ COVERED_JS = r"""() => {
     const name = `${f.tagName.toLowerCase()}${f.id ? '#' + f.id : ''}${cls ? '.' + cls : ''}`;
     by.set(name, (by.get(name) || 0) + 1);
   }
-  return {pct: Math.round(100 * hit / (cols * rows)),
+  return {pct: Math.round(100 * hit / (cols * rows)), popup_pct: Math.round(100 * popup / (cols * rows)),
           by: [...by].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([n, k]) => `${n} ${Math.round(100 * k / (cols * rows))}%`)};
 }"""
 
 COVERED_MAX = 35      # % of the screen; a sticky header + a sticky buy bar + a chat bubble stay well under it
+SIDEWAYS_MAX = 10     # px: a few px of sideways play (boat-lifestyle, palmonas phones: 5 px, 36-store run 11 Oct) is noise
 
 
 def layout_verdicts(sideways: dict, covered: dict) -> list[tuple[str, str, str, bool]]:
     """(what, expected, actual, ok) for the two layout assertions. Pure, unit-tested."""
     moved, pct = int(sideways.get("moved") or 0), int(covered.get("pct") or 0)
     by = sideways.get("by") or []
-    return [("page scrolls sideways", "no, it fits the screen width",
-             f"yes, by {moved}px" + (f": {'; '.join(by)}" if by else "") if moved > 4 else f"fits ({sideways.get('vw')}px)",
-             moved <= 4),
-            ("screen covered by fixed bars or overlays", f"≤ {COVERED_MAX}%",
-             f"{pct}%" + (f": {', '.join(covered.get('by') or [])}" if pct > COVERED_MAX else ""), pct <= COVERED_MAX)]
+    return [("page scrolls sideways", f"no, it fits the screen width (≤ {SIDEWAYS_MAX}px of play)",
+             f"yes, by {moved}px" + (f": {'; '.join(by)}" if by else "") if moved > SIDEWAYS_MAX else f"fits ({sideways.get('vw')}px)",
+             moved <= SIDEWAYS_MAX),
+            ("screen covered by fixed bars", f"≤ {COVERED_MAX}%",
+             f"{pct}%" + (f": {', '.join(covered.get('by') or [])}" if pct > COVERED_MAX else "")
+             + (f" (a popup Radar could not close covered {covered['popup_pct']}%, not counted)" if covered.get("popup_pct") else ""),
+             pct <= COVERED_MAX)]
 
 
 def _layout(ctx: Ctx, which: int) -> str:

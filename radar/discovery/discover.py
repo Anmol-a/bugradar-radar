@@ -50,7 +50,8 @@ LINKS_JS = """(pattern) => [...new Set([...document.querySelectorAll('a[href]')]
 # Footer links (journey 28: policy + contact pages). textContent, not innerText: collapsed footer accordions on
 # phones hide their links until opened.
 FOOTER_JS = r"""() => {
-  const sel = 'footer a[href], [role=contentinfo] a[href], [id*="footer" i] a[href], .shopify-section-group-footer-group a[href]';
+  const sel = 'footer a[href], [role=contentinfo] a[href], [id*="footer" i] a[href], [class*="footer" i] a[href], ' +
+              '.shopify-section-group-footer-group a[href]';
   const seen = new Set(); const out = [];
   for (const a of document.querySelectorAll(sel)) {
     const href = a.href;
@@ -77,7 +78,10 @@ INFO_KINDS = (("refund", r"refund|return|exchange|cancell?ation"),
               ("privacy", r"privacy"),
               ("terms", r"terms|conditions|\btos\b"),
               ("contact", r"contact"))
-NOT_INFO = re.compile(r"/(products|collections|cart|account|search|checkout|blogs)(/|$)|/apps/", re.I)
+NOT_INFO = re.compile(r"/(products|collections|cart|account|search|checkout|blogs)(/|$)|/apps/|^/(cdn|files)/|"
+                      r"\.[a-z0-9]{2,5}$", re.I)       # files (giva.co links its 'Annual Return' PDF from the footer)
+# company filings Indian stores link next to their policies: 'Annual Return FY 2024-25' (MGT-7) is not a returns page
+NOT_INFO_TEXT = re.compile(r"annual|investor|\bcsr\b|mgt[- ]?7|financial|shareholder|grievance redressal", re.I)
 
 
 def info_pages(links: list[dict], base: str) -> list[dict]:
@@ -86,7 +90,7 @@ def info_pages(links: list[dict], base: str) -> list[dict]:
     out: dict[str, dict] = {}
     for link in links:
         url, text = link.get("url") or "", link.get("text") or ""
-        if not url or not _same_origin(url, base) or NOT_INFO.search(urlparse(url).path):
+        if not url or not _same_origin(url, base) or NOT_INFO.search(urlparse(url).path) or NOT_INFO_TEXT.search(text):
             continue
         hay = f"{text} {urlparse(url).path.replace('-', ' ').replace('_', ' ')}".lower()
         for kind, rx in INFO_KINDS:
@@ -169,6 +173,10 @@ def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
     are listed in the notes instead, so the report says what was not tested and why."""
     try:
         found = info_pages(sess.evaluate(FOOTER_JS) or [], base_url)
+        if not found:      # footers some themes render only when the shopper scrolls down to them
+            sess.evaluate("async () => { scrollTo({top: document.documentElement.scrollHeight, behavior: 'instant'}); "
+                          "await new Promise(r => setTimeout(r, 1500)); scrollTo({top: 0, behavior: 'instant'}); }")
+            found = info_pages(sess.evaluate(FOOTER_JS) or [], base_url)
         acct = sess.evaluate(ACCOUNT_JS)
     except Exception:  # noqa: BLE001  a page script error must not stop discovery
         return

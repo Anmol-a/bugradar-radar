@@ -726,7 +726,8 @@ def test_title_count_reads_shopifys_search_count():
 def test_footer_links_are_read_as_one_info_page_per_kind_same_store_only():
     from radar.discovery.discover import info_pages
     base = "https://shop.example.in"
-    links = [{"text": "Shipping & Returns", "url": base + "/pages/shipping-returns"},     # returns wins: one page, both
+    links = [{"text": "Annual Return FY 2024-25", "url": base + "/cdn/shop/t/234/assets/annual-return-fy-2024-25.pdf"},
+             {"text": "Shipping & Returns", "url": base + "/pages/shipping-returns"},     # returns wins: one page, both
              {"text": "Delivery Information", "url": base + "/pages/delivery"},
              {"text": "Return policy", "url": base + "/policies/refund-policy"},           # refund already taken
              {"text": "Privacy", "url": "https://www.shop.example.in/pages/privacy-policy#top"},
@@ -735,7 +736,9 @@ def test_footer_links_are_read_as_one_info_page_per_kind_same_store_only():
              {"text": "Contact on WhatsApp", "url": "https://wa.me/919999999999"},          # another site
              {"text": "Track order", "url": base + "/apps/track-order"},                    # app proxy, not a page
              {"text": "Returns portal", "url": "https://returns.otherapp.com/shop"},
-             {"text": "Shipping bags", "url": base + "/collections/shipping-bags"}]         # a collection, not info
+             {"text": "Shipping bags", "url": base + "/collections/shipping-bags"},         # a collection, not info
+             {"text": "Annual Return FY 2024-25", "url": base + "/pages/annual-return"},       # a company filing
+             {"text": "Return form", "url": base + "/cdn/shop/t/234/assets/returns.pdf"}]   # a file, not a page
     got = info_pages(links, base)
     assert [(p["kind"], p["url"]) for p in got] == [
         ("refund", base + "/pages/shipping-returns"), ("shipping", base + "/pages/delivery"),
@@ -785,3 +788,10 @@ def test_core_web_vitals_warn_only_when_poor():
     exp, act, ok = vitals_verdict({"lcp": 5200, "cls": 0.31, "by": "div.offer-banner"})
     assert not ok and act == "LCP 5.2s (poor > 4.0s); CLS 0.31 (poor > 0.25), biggest shift: div.offer-banner"
     assert vitals_verdict({"lcp": 4000, "cls": 0.25})[2]          # exactly at the threshold is not poor
+
+
+def test_a_popup_radar_could_not_close_is_not_counted_as_a_covering_bar():
+    from radar.checks.library import layout_verdicts
+    v = layout_verdicts({"moved": 0, "vw": 412}, {"pct": 0, "popup_pct": 92, "by": []})[1]
+    assert v[3] and v[2] == "0% (a popup Radar could not close covered 92%, not counted)"
+    assert layout_verdicts({"moved": 8, "vw": 412}, {"pct": 0})[0][3]          # 8 px of sideways play: noise, not judged
