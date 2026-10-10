@@ -810,6 +810,17 @@ Radar correctly does not click 'buy now' (checkout). The screenshot does not sho
 store disables ADD TO CART on mobile on purpose is not proven → **documented limit after 2 fix rounds** (1 store):
 'mobile: add to cart disabled, only buy now enabled'. Reopen only if a second store shows it.
 
+**new30f held-out (run 38012566834, run ONCE, no fixes in between), PARTIAL: 25 of 30 stores reported** (shard 1
+with doodlage, fashor, jusamazin, letsbeco, mylittlemoppet still running after 45 min; the next cycle adds it).
+Not scored (8): baggit, dailyobjects not Shopify; yoho.store parked (GoDaddy for sale); beybee robots.txt timeout;
+habbit + bombayshirtcompany: TLS connection dropped before the handshake on robots.txt (network-level block of the
+US runner, 2 stores: not fixable without evasion); miraggio robots.txt self-signed certificate; thebakersdozen bot
+challenge. **17 scored so far: 2 Radar false-failure stores** — rawpressery (journey read variant ₹112 'Pack of 1'
+while the page had 'Pack of 6' ₹672 selected and out of stock → price 'not on page'); koskii mobile 'not Shopify'
+(robots.txt 4xx on mobile) while desktop was healthy. Location (US runner, USD prices or price hidden): aachho,
+kisah, nappadori. Store finding: myborosil mobile missing page → / (200). Fully right: godesi, gullylabs,
+hammeronline, ikkivi, jokerandwitch, justherbs, powergummies, thewhitewillow, tistabene, tjori, zariin.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
