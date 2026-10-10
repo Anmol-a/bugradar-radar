@@ -304,7 +304,9 @@ MAIN_BUY_JS = r"""([ids, quick]) => {
                      + (typeof b.className === 'string' && b.className.trim() ? '.' + b.className.trim().split(/\s+/)[0] : '')});
     }
   }
-  out.sort((x, y) => y.main - x.main);
+  // add-to-cart wording before 'buy it now' (that one goes to checkout, which Radar never does)
+  const now = o => /buy\s*(it\s*)?now|checkout/i.test(o.text) && !/add|cart|bag/i.test(o.text) ? 1 : 0;
+  out.sort((x, y) => (y.main - x.main) || (now(x) - now(y)));
   if (!out.length) return null;
   // The first pick is disabled but another ADD-TO-CART button for THIS product is enabled: a shopper uses the
   // enabled one (crossbeats.com mobile, new30e: disabled <button.cf-checkout> in the main form + an enabled one;
@@ -319,7 +321,8 @@ MAIN_BUY_JS = r"""([ids, quick]) => {
   // is enabled (littleboxindia.com mobile, new30c + loop cycle 6: disabled pick, enabled sticky ADD TO CART on screen)
   return {form: out[0].form, variant: out[0].variant, text: out[0].text, candidates: out.length, tag: out[0].tag,
           skipped_disabled: out[0].skipped || '',
-          enabled_others: out.slice(1).filter(o => !o.off).map(o => o.tag + ' ' + JSON.stringify(o.text)).slice(0, 3)};
+          enabled_others: out.slice(1).filter(o => !o.off).map(o => o.tag + ' ' + JSON.stringify(o.text)
+                          + (o.main ? '' : ' (form ' + String(o.form).slice(-20) + ')')).slice(0, 3)};
 }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
 
 
@@ -536,9 +539,11 @@ def _main_buy_button(ctx: Ctx, product: dict):
         found = ctx.sess.evaluate(MAIN_BUY_JS, [ids, QUICK_SEL])
     if found:
         loc = page.locator('[data-radar-target="buy"]').first
-        ctx.buy_evidence = (f"read <{found.get('tag') or 'button'}> {found['text']!r} in form #{found['form']}"
-                            + (f"; other buy button(s) for this product ARE enabled: {', '.join(found['enabled_others'])}"
-                               if found.get("enabled_others") else ""))
+        # enabled others FIRST: the evidence is clipped to 160 chars in run.json (crossbeats.com, loop cycle 8: the
+        # enabled button's text was cut off behind a 47-char form id)
+        ctx.buy_evidence = ((f"enabled for this product but not add-to-cart wording: {', '.join(found['enabled_others'])}; "
+                             if found.get("enabled_others") else "")
+                            + f"read <{found.get('tag') or 'button'}> {found['text']!r} in form #{found['form'][-24:]}")
         return loc, (f"main product form #{found['form']} (variant {found['variant']}, button {found['text']!r})"
                      + (" — shown only after scrolling (sticky bar)" if scrolled else "")
                      + (f"; skipped disabled {found['skipped_disabled']} (an enabled one for this product exists)"

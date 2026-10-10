@@ -1116,6 +1116,23 @@ def test_disabled_buy_button_with_an_enabled_duplicate_uses_the_enabled_one(tmp_
     assert clicks and all("skipped disabled" in d and "btn-mobile-atc" in d for d in clicks), clicks
 
 
+def test_disabled_add_to_cart_with_only_buy_it_now_enabled_fails_and_names_it(tmp_path):
+    """Never click 'buy it now' (it goes to checkout). crossbeats.com mobile, loop cycle 8: the enabled button's name was
+    clipped off the end of the evidence, so the enabled one now comes FIRST in the failure."""
+    run, _ = _scan("disabled_buy_now_only", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    errs = [s.error or "" for c in run.cases if c.case_id.startswith("product.pdp.")
+            for s in c.attempts[-1].steps if s.name == "buy_button_ready" and s.status == "fail"]
+    assert errs and all("enabled for this product" in e and "Buy it now" in e for e in errs), errs
+
+
+def test_buy_it_now_before_add_to_cart_is_never_clicked(tmp_path):
+    """'Buy it now' goes to checkout (Radar never checks out): when it comes first in the product form, Radar
+    still clicks the add-to-cart button."""
+    run, _ = _scan("buy_now_first", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict in ("confirmed_fail", "flaky")]
+    assert not bad, bad
+
+
 def test_healer_found_disabled_button_but_an_enabled_sticky_add_to_cart_is_used(tmp_path):
     """littleboxindia.com mobile (new30c/d/e): no visible button in the product's form, the healer found a DISABLED
     'Add to cart', an enabled sticky ADD TO CART bar was on screen -> Radar uses the enabled one, PASSES."""

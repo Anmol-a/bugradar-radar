@@ -794,6 +794,16 @@ disabled → 'buy button enabled: false' → product + cart + journey failed. A 
   message ('got False (button found by the healer)'), passes on the new.
 - Safety: the cart check after the click is unchanged, so a wrong button still fails on what /cart.js received.
 
+**Re-run 38009721448 (round 1):** littleboxindia.com ✔ healthy on both devices (enabled sticky ADD TO CART used).
+crossbeats.com desktop ✔; mobile still 'buy button enabled: false': the enabled button's name was clipped off the end
+of the 160-char evidence, and its text is not add-to-cart wording (so round 1 did not take it).
+**Round 2:** (a) the evidence now lists the ENABLED buttons first and shortens the form id; (b) `MAIN_BUY_JS` ranks
+'buy it now' / checkout wording after add-to-cart wording, so Radar can never click a checkout button that happens to
+come first in the product form. Mocks `disabled_buy_now_only` (only 'Buy it now' enabled → fails, names it first)
+and `buy_now_first` (enabled 'Buy it now' before 'Add to cart' → clicks add to cart, passes); both fail on the old
+code. If crossbeats' enabled button turns out to be 'buy it now' only, the failure is right (no enabled add to cart
+on mobile) and gets proven from the screenshot, not fixed.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -1052,7 +1062,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
-- **v0.19 loop cycle 8 (10 Oct, 05:46 IST):** prefer an enabled add-to-cart over a disabled one for the same product (form path `MAIN_BUY_JS` and healer path `ENABLED_ADD_JS`); mocks `disabled_dup_button` (now passes), `healer_disabled_sticky`; full 36 regression run (4z).
+- **v0.19 loop cycle 8 (10 Oct, 05:46 IST):** prefer an enabled add-to-cart over a disabled one for the same product (form path `MAIN_BUY_JS` and healer path `ENABLED_ADD_JS`); mocks `disabled_dup_button` (now passes), `healer_disabled_sticky`, `disabled_buy_now_only`, `buy_now_first` ('buy it now' ranked after add-to-cart, never clicked); full 36 regression 38008403059 = 0 Radar false failures; littleboxindia mobile verified (4z).
 - **v0.19 loop cycle 5 (10 Oct, 01:47 IST):** no code change. Full 36 regression after the cycle-4 search change (run 37985975688): 62 healthy / 4 degraded (foxtale + plum hidden catalog products = store finding) / 0 Radar false failures, no store's search turned into the new warning. Held-out `stores/new30d.txt` run once (37988362552): 22 stores scored, **3 Radar false-failure stores** (bombaysweetshop: variant was right, buy button disabled by a 'PLEASE ENTER YOUR PINCODE' gate, the error hid 'disabled'; happilo: search results rendered but `Locator.press` timed out; kirobeauty: no buy control on one product page, not proven a store bug). Location (US runner): houseofchikankari (USD prices + US import-duty popup), skinkraft ('Visiting from United States?' popup over cards), okhai (USD market, product → /). Store finding: thedecorkart mobile nav links `/collections/crystal-decorative-candle-standss` (typo, 404). Not scored: gynoveda, theloom, virgio not Shopify; rarerabbit → thehouseofrare.com, fastandup → in.fastandup.com (list errors); tribeconcepts connection closed; theayurvedaco robots.txt disallows; truke robots.txt timeout.
 - **v0.19 loop cycle 3 (10 Oct, 00:00 IST):** no code change. Full 36 regression clean (0 Radar false failures); held-out `stores/new30c.txt` run once: 6/28 Radar false-failure stores (4v).
 - **v0.19 loop cycle 2 (9 Oct, 20:45 IST):** emulated devices report a matching `navigator.platform` (desktop = Windows Chrome, mobile = Pixel 7 Android) instead of the runner's 'Linux x86_64', which PageSpeed-bot snippets on bonkerscorner / bellavita / baccabucci treat as a bot; mock `pagespeed_gate`. GoKwik KwikPass login iframe closed inside the frame; mock `kwikpass_popup` (4v).

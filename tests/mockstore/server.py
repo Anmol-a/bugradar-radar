@@ -83,6 +83,8 @@ Modes (to prove Radar catches and heals what it should):
                    same product is on screen (crossbeats.com mobile, new30e) -> Radar clicks the ENABLED one, PASSES
   healer_disabled_sticky  the form's own button is hidden, the healer finds a DISABLED 'Add to cart' by the title,
                    an enabled sticky ADD TO CART bar (no form link) is on screen (littleboxindia.com mobile) -> PASSES
+  disabled_buy_now_only  add-to-cart disabled, only an enabled 'Buy it now' -> never clicked; the failure names it
+  buy_now_first    an enabled 'Buy it now' sits before the add-to-cart in the form -> Radar clicks add to cart, PASSES
   search_misses    searching the first product's word returns only unrelated products (the word came from a
                    product the store hides: foxtale.in 'purify', bench 3) -> a second word is tried; the miss is a
                    WARNING, the search test PASSES on the second word
@@ -831,6 +833,20 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" class="btn-mobile-atc" disabled>Add to cart</button>')
             body += ('<div class="sticky-bar" style="position:fixed;left:0;right:0;bottom:0;background:#fff;padding:8px;z-index:20">'
                      '<button type="submit" form="product-form-template__main" class="sticky-atc">ADD TO CART</button></div>')
+        if self.mode == "disabled_buy_now_only" and available:
+            # crossbeats.com-like: the form's native submit is hidden, the visible ADD TO CART is disabled and the only
+            # enabled control is 'Buy it now' (checkout) -> Radar must NOT click it; the failure names it first
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" style="display:none">Add to cart</button>'
+                                '<button type="button" class="cf-checkout" disabled>ADD TO CART</button>'
+                                '<button type="button" class="shopify-payment-button__button" '
+                                'onclick="location.href=\'/checkouts/c/mock\'">Buy it now</button>')
+        if self.mode == "buy_now_first" and available:
+            # an enabled 'Buy it now' (checkout) comes BEFORE the add-to-cart in the product form -> click add to cart
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="button" class="shopify-payment-button__button" '
+                                'onclick="location.href=\'/checkouts/c/mock\'">Buy it now</button>'
+                                '<button type="submit" name="add">Add to cart</button>')
         if self.mode == "healer_disabled_sticky" and available:
             # littleboxindia.com mobile (new30c/d/e): the form's own button is not shown, the healer finds a DISABLED
             # 'Add to cart' near the title, and an ENABLED sticky ADD TO CART (no form attribute) is on screen.
