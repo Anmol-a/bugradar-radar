@@ -1264,3 +1264,25 @@ def test_fixed_bar_covering_much_of_a_phone_screen_warns(tmp_path):
     assert pdp.status == "warn" and "div.sticky-info 42%" in pdp.error, pdp.error
     home = _steps(_case(run, "smoke.home_health"))
     assert home["layout_not_covered"].status == "pass" and home["layout_fits_screen"].status == "pass"
+
+
+def test_search_for_a_word_no_store_sells_shows_no_results_and_a_crashing_one_fails(tmp_path):
+    run = _info("healthy", tmp_path, suites=("search",))
+    c = _case(run, "search.no_results")
+    assert c.verdict == "pass" and _steps(c)["says_no_results"].detail == "says 'No results'", _steps(c)
+    s = _steps(_case(run, "search.suggestions"))["suggestions_while_typing"]
+    assert s.status == "pass" and s.detail.startswith("not judged: this store's search box has no search-as-you-type")
+    run = _info("search_error_empty", tmp_path, suites=("search",))
+    c = _case(run, "search.no_results")
+    assert c.verdict == "confirmed_fail" and "500" in c.attempts[-1].error, c.attempts[-1].error
+    assert _case(run, "search.ceramic").verdict == "pass"     # the normal search still works
+
+
+def test_search_as_you_type_suggestions_pass_and_a_silent_dropdown_warns(tmp_path):
+    run = _info("predictive_search", tmp_path, suites=("search",))
+    s = _steps(_case(run, "search.suggestions"))["suggestions_while_typing"]
+    assert s.status == "pass" and "e.g. 'Ceramic Flower Vase'" in s.detail, (s.status, s.error, s.detail)
+    run = _info("predictive_broken", tmp_path, suites=("search",))
+    c = _case(run, "search.suggestions")
+    s = _steps(c)["suggestions_while_typing"]
+    assert c.verdict == "pass" and s.status == "warn" and "Shopify's own search finds 1" in s.error, (s.status, s.error)

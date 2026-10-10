@@ -766,3 +766,13 @@ def test_info_suite_is_built_only_from_pages_discovery_could_open():
         ("info.policy_pages", "info_pages", "minor"), ("info.account_page", "account_page", "minor")]
     sm.info_pages, sm.account_url = [], ""
     assert not any(s.id == "info" for s in build_suites(sm, Settings()))
+
+
+def test_no_results_message_is_found_in_the_ways_stores_say_it():
+    from radar.checks.library import no_results_message
+    for t in ("Search: 0 results found for “qzxvbugradar”", "No results found for qzxvbugradar. Check the spelling",
+              "Sorry, we couldn't find anything matching qzxvbugradar", "Your search for qzxvbugradar did not match any products",
+              "We found 0 results", "Nothing found. Try a different search term"):
+        assert no_results_message(t), t
+    assert no_results_message("Bestsellers: Ceramic Vase ₹1,299 · Wooden Spoon Set ₹499") == ""
+    assert no_results_message("Showing 20 results for vase") == ""

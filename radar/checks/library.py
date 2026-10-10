@@ -1158,6 +1158,32 @@ def _settled_search_links(ctx: Ctx, term: str, cap: float = 10.0) -> tuple[list[
     return links, (waited if waited >= 1 else 0.0)
 
 
+def _open_search_box(ctx: Ctx):
+    """The store's visible search field on the current page, opening it first when it hides behind a search icon /
+    drawer like most themes on phones. None when there is none."""
+    page = ctx.sess.page
+    box = ctx.sess.evaluate("""() => { const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+        return !!([...document.querySelectorAll('input[type="search"], input[name="q"]')].find(vis)); }""")
+    if not box:
+        opener = page.locator("a[href$='/search'], [aria-label*='search' i]:not(input), summary[aria-label*='search' i], "
+                              "button[class*='search' i], details-modal summary")
+        for i in range(min(opener.count(), 4)):
+            try:
+                if opener.nth(i).is_visible():
+                    _click(ctx, opener.nth(i))
+                    break
+            except Exception:  # noqa: BLE001
+                continue
+    cand = page.locator('input[type="search"], input[name="q"]')
+    for i in range(min(cand.count(), 6)):
+        try:
+            if cand.nth(i).is_visible():
+                return cand.nth(i)
+        except Exception:  # noqa: BLE001
+            continue
+    return None
+
+
 def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
     term = (re.search(r"[?&]q=([^&]+)", url) or [None, ""])[1].lower()
     home = _base(url) + "/"
@@ -1169,24 +1195,7 @@ def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
     def search():
         page = ctx.sess.page
         _dismiss(ctx)
-        box = ctx.sess.evaluate("""() => { const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
-            return !!([...document.querySelectorAll('input[type="search"], input[name="q"]')].find(vis)); }""")
-        if not box:
-            opener = page.locator("a[href$='/search'], [aria-label*='search' i]:not(input), summary[aria-label*='search' i], "
-                                  "button[class*='search' i], details-modal summary")
-            for i in range(min(opener.count(), 4)):
-                try:
-                    if opener.nth(i).is_visible():
-                        _click(ctx, opener.nth(i))
-                        break
-                except Exception:  # noqa: BLE001
-                    continue
-        field = None
-        cand = page.locator('input[type="search"], input[name="q"]')
-        for i in range(min(cand.count(), 6)):
-            if cand.nth(i).is_visible():
-                field = cand.nth(i)
-                break
+        field = _open_search_box(ctx)
         if field is not None:
             field.fill(term)
             field.press("Enter")
@@ -1236,6 +1245,97 @@ def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
         ctx.steps.items.append(StepResult(step.replace("returns_relevant_products", "search_app_rendered"), "warn",
                                           None, state["app_blank"]))
     return out
+
+
+# ---------------- journey 27: a search that finds nothing, and suggestions while typing ----------------
+
+NO_RESULTS_RX = re.compile(r"no results|\b0 results|no products?( were| was)? found|nothing (was )?found|no matches|"
+                           r"did ?n.?t match|did not match|could ?n.?t find|could not find|no items found|did ?n.?t find|"
+                           r"did not find|try (a different|another|again)|check (the|your) spelling|0 items|no product matches|"
+                           r"returned no|no search results|we found 0", re.I)
+
+MAIN_TEXT_JS = """() => { const r = document.querySelector('main, [role="main"], #MainContent') || document.body;
+  return (r.innerText || '').replace(/\\s+/g, ' ').slice(0, 4000); }"""
+
+
+def no_results_message(text: str) -> str:
+    """The 'nothing matched' sentence a search page shows, or ''. Pure, unit-tested."""
+    m = NO_RESULTS_RX.search(text or "")
+    if not m:
+        return ""
+    a = max(0, m.start() - 30)
+    return (text[a:m.end() + 40]).strip()
+
+
+def search_no_results(ctx: Ctx, url: str):
+    """A word no store sells: the search page must still open and work (hard: HTTP < 400, not blank), and tell the
+    shopper nothing matched (soft: search apps often show 'popular products' instead)."""
+    ctx.steps.run("loads", lambda: _load(ctx, url))
+
+    def says():
+        import time
+        t0, msg, links = time.monotonic(), "", []
+        while True:            # search apps render their 'no results' text after the page loads (up to ~6 s)
+            msg = no_results_message(ctx.sess.evaluate(MAIN_TEXT_JS) or "")
+            links = _product_links(ctx.sess) or []
+            if msg or time.monotonic() - t0 >= 6:
+                break
+            ctx.sess.page.wait_for_timeout(500)
+        ctx.expect("shopper is told nothing matched", "a 'no results' message, or no products listed",
+                   f"message {msg[:90]!r}" if msg else f"no message, {len(links)} products listed", bool(msg) or not links)
+        return f"says {msg[:90]!r}" if msg else "no products listed"
+    ctx.steps.run("says_no_results", says, soft=True)
+
+
+# Search-as-you-type: Shopify's Dawn-family <predictive-search>, theme data attributes and the common search apps.
+PREDICTIVE_JS = r"""() => !!document.querySelector('predictive-search, [data-predictive-search], [data-predictive-search-url], ' +
+  'form[action*="search"] [class*="predictive" i], [class*="predictive-search" i], [id*="predictive" i], [class*="search-autocomplete" i], ' +
+  '[class*="instant-search" i], [class*="boost-sd" i], [class*="searchanise" i], [id*="searchanise" i], [class*="searchtap" i], ' +
+  '[class*="klevu" i], [class*="algolia" i], [class*="search-suggest" i]')"""
+
+# Product links on screen that were NOT there before typing: every link present before is marked first (a suggestion
+# can be a product the homepage already shows as a card, so handles alone cannot tell them apart).
+MARK_PRODUCTS_JS = r"""() => { document.querySelectorAll('a[href*="/products/"]').forEach(a => a.setAttribute('data-radar-before', '1')); }"""
+NEW_PRODUCTS_JS = r"""() => [...document.querySelectorAll('a[href*="/products/"]:not([data-radar-before])')]
+  .filter(a => { const r = a.getBoundingClientRect(), s = getComputedStyle(a);
+                 return r.width > 0 && r.height > 0 && r.bottom > 0 && r.top < innerHeight && s.visibility !== 'hidden'; })
+  .map(a => ((a.pathname.match(/\/products\/([^/?#]+)/) || [])[1] || '') + '|' + (a.innerText || a.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 60))"""
+
+
+def search_suggestions(ctx: Ctx, home: str, term: str):
+    """Type a real product word into the store's search box (never press Enter) and watch for product suggestions.
+    Judged only where the store HAS search-as-you-type (a predictive-search element or search app on the page) and
+    Shopify's own /search/suggest.json finds the word: then no suggestion is a WARNING. Never a failure."""
+    ctx.steps.run("open_homepage", lambda: _load(ctx, home))
+
+    def suggest():
+        page = ctx.sess.page
+        _dismiss(ctx)
+        field = _open_search_box(ctx)
+        if field is None:
+            return "not judged: no visible search box on the homepage"
+        field.click()
+        page.wait_for_timeout(300)
+        ctx.sess.evaluate(MARK_PRODUCTS_JS)               # after the box opened: its own 'popular products' are not suggestions
+        field.press_sequentially(term, delay=90)          # like a shopper typing; Enter is never pressed
+        import time
+        t0, new = time.monotonic(), []
+        while time.monotonic() - t0 < 6:
+            page.wait_for_timeout(400)
+            new = ctx.sess.evaluate(NEW_PRODUCTS_JS) or []
+            if new:
+                break
+        has_predictive = bool(ctx.sess.evaluate(PREDICTIVE_JS))
+        if new:
+            first = new[0].split("|")
+            return f"{len(new)} product suggestion(s) while typing '{term}', e.g. {(first[1] or first[0])[:60]!r}"
+        shop = _shopify_search(ctx, term)
+        if not has_predictive or not shop["n"]:
+            return ("not judged: this store's search box has no search-as-you-type" if not has_predictive else
+                    f"not judged: no suggestions for '{term}' and Shopify's own search finds none either")
+        ctx.expect(f"product suggestions while typing '{term}'", "≥ 1 (the store has search-as-you-type)",
+                   f"none after 6 s; Shopify's own search finds {shop['n']}, e.g. {shop['first']!r}", False)
+    ctx.steps.run("suggestions_while_typing", suggest, soft=True)
 
 
 def _title_count(title: str) -> int | None:
@@ -2047,4 +2147,5 @@ REGISTRY: dict[str, Callable] = {
     "product_page": product_page, "add_to_cart": add_to_cart, "search_results": search_results,
     "meta_tags": meta_tags, "not_found": not_found, "shopper_journey": shopper_journey,
     "info_pages": info_pages, "account_page": account_page,
+    "search_no_results": search_no_results, "search_suggestions": search_suggestions,
 }

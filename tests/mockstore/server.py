@@ -179,6 +179,12 @@ Modes (to prove Radar catches and heals what it should):
   account_broken   same, but /account/login answers 404 -> info.account_page FAILS
   sideways_scroll  every page carries a 1700 px promo strip (journey 30) -> home, collection and product pages WARN
                    'page scrolls sideways' naming div.promo-marquee; the store stays healthy
+  search_error_empty  /search answers HTTP 500 when nothing matches (journey 27) -> search.no_results FAILS
+  predictive_search  the header search box sits in a Dawn-style <predictive-search> fed by /search/suggest.json
+                   (journey 27) -> search.suggestions PASSES with the suggested product; healthy (no such element)
+                   -> 'not judged: no search-as-you-type'
+  predictive_broken  same element, but its script never renders suggestions while Shopify's endpoint finds the word
+                   -> search.suggestions WARNS, never fails
   tall_sticky_bar  on phones, product pages carry a fixed info bar over the bottom 42% of the screen (journey 30)
                    -> product pages WARN 'screen covered by fixed bars' naming div.sticky-info; the store stays healthy
 
@@ -363,6 +369,23 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             # (3 attempts, both devices). Suspected: product links open in a NEW TAB (target=_blank / window.open);
             # the shopper is on the product in that tab, Radar kept looking at the old one.
             body = body.replace("</body>", """<script>document.querySelectorAll('a[href*="/products/"]').forEach(a => a.target = '_blank');</script></body>""")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("predictive_search", "predictive_broken"):
+            # journey 27: Dawn-style <predictive-search> around the header's search box, fed by /search/suggest.json.
+            # predictive_broken: the element is there but its script never renders anything (Shopify's endpoint works).
+            render = "" if self.mode == "predictive_broken" else (
+                "box.innerHTML = ps.map(p => `<a href=\"${p.url}\" style=\"display:block;padding:6px\">${p.title}</a>`).join('');")
+            body = body.replace('<form action="/search" method="get"><input name="q"></form>',
+                                '<predictive-search><form action="/search" method="get"><input name="q" autocomplete="off">'
+                                '</form><div class="predictive-search__results" style="position:absolute;background:#fff;z-index:30">'
+                                '</div></predictive-search>', 1)
+            body = body.replace("</body>", """<script>
+(() => { const inp = document.querySelector('predictive-search input[name="q"]'); if (!inp) return;
+  const box = document.querySelector('.predictive-search__results'); let t;
+  inp.addEventListener('input', () => { clearTimeout(t); t = setTimeout(async () => {
+    const r = await fetch('/search/suggest.json?q=' + encodeURIComponent(inp.value) + '&resources[type]=product');
+    const ps = (((await r.json()).resources || {}).results || {}).products || [];
+    """ + render + """ }, 300); }); })();
+</script></body>""")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "sideways_scroll":
             # a promo strip wider than any screen (journey 30): the shopper can drag every page sideways
             body = body.replace("<main>", '<main><div class="promo-marquee" style="width:1700px;white-space:nowrap;'
@@ -778,6 +801,8 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             hits = [p for p in PRODUCTS if term and term in p["title"].lower()]
             if self.mode == "search_misses" and term == "ceramic":
                 hits = [p for p in PRODUCTS if p["handle"] == "wooden-spoon-set"]
+            if self.mode == "search_error_empty" and not hits:      # journey 27: a search that finds nothing crashes
+                return self._send(500, page("Internal Server Error | Mock Store", "<h1>500 Internal Server Error</h1>"))
             found = "".join(card(p) for p in hits) or "<p>No results</p>"
             if self.mode in ("delayed_scripts", "pagespeed_gate"):   # the search app renders from a (delayed) theme script
                 return self._send(200, page("Custom Search | Mock Store", f'<div id="app-results"></div>'

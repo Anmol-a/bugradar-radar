@@ -34,6 +34,9 @@ GENERIC = {"with", "pack", "size", "combo", "free", "mens", "women", "womens", "
            "hamper", "limited", "edition", "exclusive", "special", "value", "saver", "deal", "deals", "full", "half"}
 
 
+NO_MATCH_TERM = "qzxvbugradar"    # a word no store sells (journey 27)
+
+
 def _stems(w: str) -> set[str]:
     """'plums' -> {'plums', 'plum'}; 'berries' -> {'berries', 'berry'}; 'glasses' -> {'glasses', 'glass'}."""
     out = {w}
@@ -138,7 +141,14 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
         q = lambda t: f"{base}{sm.search_path}?q={t}&type=product"
         suites.append(Suite("search", "Search", "Search returns real products", [TestCase(
             f"search.{_slug(terms[0])}", "search", f"Search for '{terms[0]}' returns products", "search_results",
-            {"url": q(terms[0]), "alt_urls": [q(t) for t in terms[1:]]}, "major")]))
+            {"url": q(terms[0]), "alt_urls": [q(t) for t in terms[1:]]}, "major"),
+            # journey 27: a word no store sells still gives a working 'no results' page; search-as-you-type suggests
+            TestCase("search.no_results", "search", "Search for a word no store sells shows a 'no results' page",
+                     "search_no_results", {"url": q(NO_MATCH_TERM)}, "minor",
+                     "The search page opens (not an error or blank page) and tells the shopper nothing matched"),
+            TestCase("search.suggestions", "search", f"Typing '{terms[0]}' in the search box suggests products",
+                     "search_suggestions", {"home": base + "/", "term": terms[0]}, "minor",
+                     "Judged only when the store has search-as-you-type; Enter is never pressed")]))
 
     health = Suite("health", "Health & SEO", "Basics that cost traffic when missing")
     health.cases.append(TestCase("health.meta.home", "health", "Homepage meta tags", "meta_tags",
