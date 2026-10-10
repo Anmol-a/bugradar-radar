@@ -3,7 +3,7 @@
 Rule for this file: it says what works, what is proven, what is not, and what hurts. No bluff.
 It is updated with every change.
 
-Last updated: 7 Oct 2026 · Framework v0.18 (**desktop + mobile in every run**, section 4r). **First honest score (held-out run, 30 never-seen stores, v0.16, run once): 23 Shopify stores tested; 21 judged correctly, 2 stores with Radar false failures (nicobar, true-elements: buy control not recognised) = 2/30, target was ≤ 1/30, MISSED.** Both are one pattern, fixed in v0.17 (4q). 5 of 30 stores are not Shopify themes (custom/headless) and are not covered by Radar v1 at all.
+Last updated: 11 Oct 2026 · Framework v0.19 (207 tests: 91 unit, 116 e2e). Journeys from the URL alone: sections 4, 4zc–4zd; regression on 36 stores at 0 Radar false failures; never-seen score 2/19 (new30g, run once). Earlier: 7 Oct 2026 · v0.18 (**desktop + mobile in every run**, section 4r). **First honest score (held-out run, 30 never-seen stores, v0.16, run once): 23 Shopify stores tested; 21 judged correctly, 2 stores with Radar false failures (nicobar, true-elements: buy control not recognised) = 2/30, target was ≤ 1/30, MISSED.** Both are one pattern, fixed in v0.17 (4q). 5 of 30 stores are not Shopify themes (custom/headless) and are not covered by Radar v1 at all.
 
 ---
 

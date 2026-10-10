@@ -11,8 +11,8 @@ python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env               # then paste your OPENAI_API_KEY into .env (never into chat or git)
-python3 -m pytest -q                 # 137 tests, about 25 minutes (includes real-browser runs)
-python3 -m pytest -q -m "not e2e"    # 73 fast unit tests only
+python3 -m pytest -q                 # 207 tests (91 unit + 116 real-browser), ~20 min split in 4 parallel chunks
+python3 -m pytest -q -m "not e2e"    # 91 fast unit tests only
 ```
 
 ## Use
@@ -28,7 +28,13 @@ python3 -m radar open moxiebeauty.in                   # site history page
 ```
 Results: `data/sites/<site_id>/` (see ARCHITECTURE.md, section 7).
 
-Status (7 Oct, v0.18: every run tests desktop and mobile; console + page-load evidence in reports; ARCHITECTURE.md 4r). Held-out score (v0.16→v0.17): first honest score on 30 never-seen stores (v0.16, run once): 21 of 23 testable
+Status (11 Oct, v0.19): every run tests desktop and mobile, hourly in the cloud (GitHub Actions, no Mac needed). Journeys
+from the URL alone: shopper click-through, collections + page 2 / load more, product pages, cart (add, quantity, remove,
+checkout page opens, never filled), search (results, 'no results' page, search-as-you-type), footer policy + contact
+pages, account page, links beyond the menu, phone menu, layout (sideways scroll, covering bars), Core Web Vitals, JS
+errors, script weight (ARCHITECTURE.md 4zc-4zd). Regression on 36 stores: 0 Radar false failures. Never-seen score
+(30-store lists, run once each): 12/30 → 6/26 → 3/22 → 3/18 → 4/21 → 2/19 wrong.
+Earlier (7 Oct, v0.18: every run tests desktop and mobile; console + page-load evidence in reports; ARCHITECTURE.md 4r). Held-out score (v0.16→v0.17): first honest score on 30 never-seen stores (v0.16, run once): 21 of 23 testable
 stores judged right; 2 false-failure stores (nicobar, true-elements: buy control) = 2/30, target ≤ 1/30 missed;
 fixed in v0.17 (ARCHITECTURE.md 4q). 5 of 30 stores are custom/headless, not covered by v1. Store findings:
 supplysix desktop price, thefunclab dead image link, foxtale hidden product, libas products with no images,
