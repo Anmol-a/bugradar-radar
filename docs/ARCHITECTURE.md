@@ -97,6 +97,7 @@ data/                     everything Radar writes (git-ignored)
 | cart | critical | add_to_cart | Click add to cart → `/cart.js` contains that exact variant → cart page → checkout button visible. **Checkout is never clicked.** |
 | search | major | search_results | Searching a word from a real product title returns products |
 | health | minor | meta_tags, not_found | Title/description/canonical/og tags (soft); a missing page returns real 404 |
+| info | minor | info_pages, account_page | Footer policy / contact pages open with real content; the header's account link opens a sign-in page (links robots.txt disallows are noted, never opened). Layout warnings (sideways scroll, fixed bars covering > 35%) ride on home, collection and product pages (4zc) |
 
 **Every page load must show content:** a page with under 40 characters of visible text and no images fails as "rendered blank" (a 200 status alone is not enough).
 
@@ -878,6 +879,34 @@ the homepage once more; if that load is Shopify it goes on (note 'homepage showe
 again'). The 'not Shopify' note now carries the evidence (title, HTML size, markers found), so it is visible whether
 other 'not Shopify' stores (thewholetruthfoods, snitch, mylittlemoppet) are the same case.
 
+## 4zc. Journeys 28–30 (chat session, 11 Oct 2026, 00:00 IST): footer info pages, account page, layout
+
+Built from the bottom of the status doc's Journey coverage table while the hourly loop builds from the top (#19 on),
+so the two never build the same journey. All three work from the URL alone (discovery reads the homepage already
+open; no per-store config) and never add a hard failure Radar is not sure of.
+
+| Journey | What Radar does | Pass / fail / warn | Mock (fails on the old code) |
+|---|---|---|---|
+| **28 Footer policy + contact pages** | Discovery reads the footer links (`FOOTER_JS`: footer, role=contentinfo, `*footer*` ids, Shopify's footer group) and keeps one per kind with `info_pages()`: refund (refund/return/exchange/cancellation), shipping (shipping/delivery), privacy, terms, contact; same store only; never product / collection / cart / account / app-proxy (`/apps/`) links. Case `info.policy_pages` (suite `info`, minor) opens each like a shopper | **Fail:** a page answers ≥ 400, renders blank, is the store's 'page not found' page served with 200, or redirects to the homepage. **Warn:** a policy page with < 200 chars of its own text (header/footer/menus/dialogs not counted); a contact page with no form, no email/phone and < 150 chars | `broken_policies` (shipping 404 → FAIL; privacy heading only, contact empty → WARN) |
+| **29 Account login page** | Discovery reads the header's account link (`ACCOUNT_JS`: `/account`, `/account/login`, any locale prefix, or `account.<domain>`). Case `info.account_page` (minor) opens it | **Fail:** the page does not open (≥ 400, blank, 'not found', homepage redirect). **Warn:** no email / phone / password field and no sign-in button. Nothing is ever typed | `account_open` (PASS), `account_broken` (404 → FAIL) |
+| **30 Layout** | Two soft steps on pages Radar already opens (home, each collection, each product page; desktop and mobile), no extra page loads: `layout_fits_screen` asks the window to scroll right (`behavior: 'instant'`, then back) and names the outermost elements sticking out; `layout_not_covered` samples an 8 × 12 grid with `elementFromPoint` and counts points whose top element sits in a `position: fixed` layer (a fixed app shell holding `<main>` or scrolling itself is not counted) | **Warn only:** page scrolls sideways by > 4 px; fixed bars / overlays cover > 35% of the screen (a sticky header + sticky buy bar + chat bubble is ~15–20%) | `sideways_scroll` (1700 px promo strip → WARN on every page type), `tall_sticky_bar` (42% fixed bar on phone product pages → WARN) |
+
+**robots.txt (unchanged rule):** Shopify's default robots.txt disallows `/policies/` and `/account`. Radar does not
+open them: discovery lists them in the run notes ('footer info page(s) not opened, robots.txt disallows them …',
+'account page /account/login not opened: robots.txt …') and no case is generated for them, so a store is never
+marked blocked or failing for it. On a default Shopify robots.txt, journey 29 is therefore mostly a note, and journey
+28 tests only `/pages/*` footer links (most Indian D2C stores link their own pages). Whether a shopper clicking the
+footer policy link or the header account icon should count as shopper flow (like `/cart` and the search box) is a rule
+change for Anmol, not built.
+
+**Shopify-hosted customer accounts** (link to `shopify.com/<id>/account` or `account.<domain>`): not opened, noted.
+
+**Proof:** 5 e2e tests + 3 unit tests (`test_footer_info_pages_open_…`, `test_broken_footer_page_fails_…`,
+`test_account_login_page_opens_…`, `test_page_that_scrolls_sideways_…`, `test_fixed_bar_covering_…`); with the engine
+changes stashed all 5 e2e tests fail, with them all pass. The mock store's footer, header account link and robots.txt
+now look like a default Shopify store in every mode. Real-store proof: the next full 36 run (both devices) must show 0
+Radar false failures from `info.*` and no layout warning that the screenshot does not confirm.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -1136,6 +1165,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 chat session (11 Oct, 00:00 IST):** journeys 28–30: footer policy + contact pages (`info.policy_pages`), account login page (`info.account_page`), layout warnings on home / collection / product pages (sideways scroll, fixed bars covering > 35%); robots.txt-disallowed `/policies/` and `/account` noted, never opened; mocks `broken_policies`, `account_open`, `account_broken`, `sideways_scroll`, `tall_sticky_bar` (4zc).
 - **v0.19 loop cycle 11 (10 Oct, 09:46 IST):** product link opening a new tab is followed (mock `new_tab_cards`; fashor, tigc); one Shopify marker → homepage loaded again before 'not Shopify', evidence in the note (mock `stripped_first_home`; koskii); new30f final 4/21 (4z2).
 - **v0.19 loop cycle 9 (10 Oct, 07:47 IST):** bench time limit per store and device (`device_budget_s`, 25 min): an over-time store's process group (browser included) is killed, row verdict `stopped`, other stores unaffected; mock `frozen_product_page` (4z1).
 - **v0.19 loop cycle 8 (10 Oct, 05:46 IST):** prefer an enabled add-to-cart over a disabled one for the same product (form path `MAIN_BUY_JS` and healer path `ENABLED_ADD_JS`); mocks `disabled_dup_button` (now passes), `healer_disabled_sticky`, `disabled_buy_now_only`, `buy_now_first` ('buy it now' ranked after add-to-cart, never clicked); full 36 regression 38008403059 = 0 Radar false failures; littleboxindia mobile verified (4z).
