@@ -1286,3 +1286,28 @@ def test_search_as_you_type_suggestions_pass_and_a_silent_dropdown_warns(tmp_pat
     c = _case(run, "search.suggestions")
     s = _steps(c)["suggestions_while_typing"]
     assert c.verdict == "pass" and s.status == "warn" and "Shopify's own search finds 1" in s.error, (s.status, s.error)
+
+
+@pytest.mark.parametrize("mode,step,detail", [
+    ("paginated", "page_2_shows_more", "page 2 shows 3 more products"),
+    ("load_more", "shows_more_products", "clicked 'Load more': 4 more products"),
+    ("infinite_scroll", "shows_more_products", "scrolled to the bottom: 4 more products"),
+])
+def test_products_past_the_first_page_are_reached_the_stores_own_way(tmp_path, mode, step, detail):
+    run = _info(mode, tmp_path, suites=("catalog",))
+    c = _case(run, "catalog.more.home-decor")
+    s = _steps(c)[step]
+    assert c.verdict == "pass" and s.status == "pass" and s.detail == detail, (s.status, s.error, s.detail)
+
+
+def test_collection_pagination_broken_fails_hidden_products_warn_and_one_page_is_not_judged(tmp_path):
+    run = _info("pagination_broken", tmp_path, suites=("catalog",))
+    c = _case(run, "catalog.more.home-decor")
+    assert c.verdict == "confirmed_fail" and "500" in c.attempts[-1].error, c.attempts[-1].error
+    run = _info("more_hidden", tmp_path, suites=("catalog",))
+    c = _case(run, "catalog.more.home-decor")
+    s = _steps(c)["shows_more_products"]
+    assert c.verdict == "pass" and s.status == "warn" and "the store's data has 4 more in stock" in s.error, s.error
+    run = _info("healthy", tmp_path, suites=("catalog",))
+    st = _case(run, "catalog.more.home-decor").attempts[-1].steps
+    assert [s.name for s in st if s.status == "info"] == ["more_products_not_judged"], [(s.name, s.status) for s in st]

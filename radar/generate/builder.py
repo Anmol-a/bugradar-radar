@@ -107,6 +107,15 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
         catalog.cases.append(TestCase(f"catalog.collection.{_slug(c.handle)}", "catalog",
                                       f"Collection '{c.title}' lists products", "collection_page",
                                       {"url": c.url}, "major"))
+    # journey 26: the biggest collection must let a shopper see past its first page (judged only when it holds more
+    # in-stock products than the first page shows)
+    big = max(sm.collections[:10], key=lambda c: c.product_count or 0, default=None)
+    if big is not None and (big.product_count or 0) >= 2:
+        catalog.cases.append(TestCase(f"catalog.more.{_slug(big.handle)}", "catalog",
+                                      f"Collection '{big.title}' shows products past the first page", "collection_more",
+                                      {"url": big.url, "products_json": f"{big.url}/products.json?limit=250"}, "minor",
+                                      "Page 2 / 'Load more' / infinite scroll brings NEW products; judged only when the "
+                                      "collection has more in-stock products than its first page shows"))
     suites.append(catalog)
 
     picks = [p for p in priced if p.available][: s.max_products] or priced[: s.max_products]

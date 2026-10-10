@@ -799,6 +799,91 @@ def collection_page(ctx: Ctx, url: str):
     layout_steps(ctx)
 
 
+# ---------------- journey 26: more products beyond the first page (pagination / load more / infinite scroll) ----------------
+
+NEXT_PAGE_JS = r"""() => { const here = location.pathname.replace(/\/$/, '');
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const links = [...document.querySelectorAll('a[href*="page=2"], link[rel="next"], a[rel="next"]')].filter(a => {
+    try { const u = new URL(a.href, location.href); return u.pathname.replace(/\/$/, '') === here && u.searchParams.get('page') === '2'; }
+    catch (e) { return false; } });
+  const a = links.find(l => l.tagName === 'A' && vis(l)) || links[0];
+  return a ? {href: a.href, shown: a.tagName === 'A' && vis(a)} : null; }"""
+
+LOAD_MORE_JS = r"""() => { document.querySelectorAll('[data-radar-more]').forEach(e => e.removeAttribute('data-radar-more'));
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && !e.disabled && e.getAttribute('aria-disabled') !== 'true'; };
+  const b = [...document.querySelectorAll('button, a, [role="button"]')].filter(vis)
+    .find(e => /^(load|show|view|see) more( products| items)?\b|^more products$/i.test((e.innerText || e.value || '').trim()));
+  if (!b) return null; b.setAttribute('data-radar-more', '1'); return (b.innerText || '').trim().slice(0, 40); }"""
+
+
+def _handles(ctx: Ctx) -> set[str]:
+    return {l["handle"] for l in (_product_links(ctx.sess) or [])}
+
+
+def collection_more(ctx: Ctx, url: str, products_json: str):
+    """Journey 26. A shopper must be able to see the products past the first page. Radar finds the store's own way:
+    a page-2 link, a 'Load more' button, or infinite scroll, and checks that NEW products appear. Judged only when the
+    collection holds more in-stock products than the first page shows (from the store's own products.json).
+    Hard: a page-2 link that answers an error or a blank page. Soft: no new products / no way to see more."""
+    ctx.steps.run("loads", lambda: _load(ctx, url))
+    first = set()
+
+    def shown():
+        nonlocal first
+        first = _handles(ctx)
+        ctx.expect("products on the first page", "≥ 1", len(first), len(first) >= 1)
+        return f"{len(first)} products on the first page"
+    ctx.steps.run("lists_products", shown)
+    try:
+        data = ctx.sess.get_json(products_json)
+        avail = [p.get("handle") for p in (data or {}).get("products", [])
+                 if any(v.get("available") for v in p.get("variants", []))]
+    except Exception:  # noqa: BLE001  data unavailable: judge only by what the page offers
+        avail = []
+    nxt = ctx.sess.evaluate(NEXT_PAGE_JS)
+    more = ctx.sess.evaluate(LOAD_MORE_JS)
+    hidden = [h for h in avail if h not in first]
+    if not nxt and not more and len(hidden) <= 2:
+        ctx.steps.info("more_products_not_judged", f"every in-stock product of this collection fits on the first page "
+                                                   f"({len(first)} shown, {len(avail)} in stock in the store's data)")
+        return
+    if nxt:
+        ctx.steps.run("page_2_opens", lambda: _load(ctx, nxt["href"]))
+
+        def page2_new():
+            new = _handles(ctx) - first
+            ctx.expect("new products on page 2", "≥ 1 product not on page 1", f"{len(new)}", len(new) >= 1)
+            return f"page 2 shows {len(new)} more products" + ("" if nxt["shown"] else " (page-2 link found in the page head)")
+        ctx.steps.run("page_2_shows_more", page2_new, soft=True)
+        return
+
+    def load_more():
+        page = ctx.sess.page
+        how = ""
+        if more:
+            _click(ctx, page.locator('[data-radar-more="1"]').first)
+            how = f"clicked {more!r}"
+        else:   # infinite scroll: products appear as the shopper reaches the bottom
+            for _ in range(4):
+                ctx.sess.evaluate("() => scrollTo({top: document.documentElement.scrollHeight, behavior: 'instant'})")
+                page.wait_for_timeout(1200)
+                if _handles(ctx) - first:
+                    break
+            how = "scrolled to the bottom"
+        import time
+        t0 = time.monotonic()
+        new = _handles(ctx) - first
+        while not new and time.monotonic() - t0 < 6:
+            page.wait_for_timeout(500)
+            new = _handles(ctx) - first
+        ctx.expect("more products after " + ("'" + more + "'" if more else "scrolling"),
+                   "≥ 1 product not shown before",
+                   f"{len(new)}" + ("" if new else f"; the store's data has {len(hidden)} more in stock"), len(new) >= 1)
+        return f"{how}: {len(new)} more products"
+    ctx.steps.run("shows_more_products", load_more, soft=True)
+
+
 # Where is the product's name on its own page? Themes differ wildly (h1, an h2 rich-text block, a div in
 # the theme's own <header>, a 12px span), so: score every visible text that matches the catalog
 # title, prefer headings and big type. Excluded: the SITE header/footer/nav, drawers and dialogs,
@@ -2148,4 +2233,5 @@ REGISTRY: dict[str, Callable] = {
     "meta_tags": meta_tags, "not_found": not_found, "shopper_journey": shopper_journey,
     "info_pages": info_pages, "account_page": account_page,
     "search_no_results": search_no_results, "search_suggestions": search_suggestions,
+    "collection_more": collection_more,
 }

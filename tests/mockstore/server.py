@@ -179,6 +179,13 @@ Modes (to prove Radar catches and heals what it should):
   account_broken   same, but /account/login answers 404 -> info.account_page FAILS
   sideways_scroll  every page carries a 1700 px promo strip (journey 30) -> home, collection and product pages WARN
                    'page scrolls sideways' naming div.promo-marquee; the store stays healthy
+  paginated        'Home Decor' also holds 4 clay bowls (its products.json too), 3 products per page with a 'Next page'
+                   link (journey 26) -> catalog.more PASSES: page 2 shows new products. healthy (all fit on one page)
+                   -> 'not judged'
+  pagination_broken  same, but ?page=2 answers HTTP 500 -> catalog.more FAILS
+  load_more        first 3 shown, a 'Load more' button appends the bowls -> PASSES after the click
+  infinite_scroll  first 3 shown, the bowls are appended when the shopper reaches the bottom -> PASSES after scrolling
+  more_hidden      first 3 shown, no page 2, no button, no scroll loading, while the data has 4 more in stock -> WARNS
   search_error_empty  /search answers HTTP 500 when nothing matches (journey 27) -> search.no_results FAILS
   predictive_search  the header search box sits in a Dawn-style <predictive-search> fed by /search/suggest.json
                    (journey 27) -> search.suggestions PASSES with the suggested product; healthy (no such element)
@@ -222,6 +229,11 @@ PRODUCTS.append({"id": 5, "handle": "gift-pouch", "title": "Travel Pouch (gift)"
                  "variants": [{"id": 501, "available": True, "price": "1.00"}], "collection": None,
                  "unavailable_page": True})   # like plumgoodness.com's Rs 1 freebie: not in any collection
 COLLECTIONS = [{"handle": "home-decor", "title": "Home Decor"}, {"handle": "kitchen", "title": "Kitchen"}]
+# journey 26: in the pagination modes 'Home Decor' also lists 4 clay bowls (collection pages + its products.json only)
+EXTRA_DECOR = [{"id": 60 + i, "handle": f"clay-bowl-{i}", "title": f"Clay Bowl No. {i}", "price": "599.00",
+                "variants": [{"id": 600 + i, "available": True, "price": "599.00"}], "collection": "home-decor"}
+               for i in range(1, 5)]
+MORE_MODES = ("paginated", "pagination_broken", "load_more", "infinite_scroll", "more_hidden")
 CARTS: dict[str, list[dict]] = {}
 
 SVG = b'<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#c96"/></svg>'
@@ -707,10 +719,34 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
         if path.startswith("/collections/"):
             h = path.split("/")[2]
             items = [p for p in PRODUCTS if (h == "all" and p["collection"]) or p["collection"] == h]
+            if self.mode in MORE_MODES and h == "home-decor":
+                items = items + EXTRA_DECOR
             if path.endswith("products.json"):
                 return self._json({"products": [{"handle": p["handle"], "title": p["title"], "variants": p["variants"]} for p in items]})
             if not items:
                 return self._send(404, page("Not found", "404"))
+            if self.mode in MORE_MODES and h == "home-decor":
+                # 3 products per page: page 1 = lamp, vase, sampler; the clay bowls come after (journey 26)
+                pg = int((q.get("page") or ["1"])[0] or 1)
+                if self.mode == "pagination_broken" and pg > 1:
+                    return self._send(500, page("Internal Server Error | Mock Store", "<h1>500 Internal Server Error</h1>"))
+                shown = items[(pg - 1) * 3: pg * 3] if self.mode in ("paginated", "pagination_broken") else items[:3]
+                rest = "".join(card(p) for p in items[3:])
+                extra = ""
+                if self.mode in ("paginated", "pagination_broken") and pg * 3 < len(items):
+                    extra = f'<nav class="pagination"><a href="/collections/home-decor?page={pg + 1}">Next page</a></nav>'
+                elif self.mode == "load_more":
+                    extra = (f'<template id="more">{rest}</template><button type="button" class="load-more" onclick="'
+                             "this.insertAdjacentHTML('beforebegin', document.getElementById('more').innerHTML); this.remove()"
+                             '">Load more</button>')
+                elif self.mode == "infinite_scroll":
+                    extra = (f'<template id="more">{rest}</template><div id="sentinel" style="height:3200px"></div><script>'
+                             "addEventListener('scroll', () => { const t = document.getElementById('more'); if (t && "
+                             "innerHeight + scrollY > document.documentElement.scrollHeight - 300) { "
+                             "document.getElementById('sentinel').insertAdjacentHTML('beforebegin', t.innerHTML); t.remove(); } });"
+                             "</script>")
+                return self._send(200, page(f"{h.title()} Collection | Mock Store",
+                                            "".join(card(p) for p in shown) + extra), set_cart=new)
             if self.mode == "shift_after_scroll":
                 cards = "".join(card(p).replace('class="card"', 'class="card" style="display:block;height:200px;border:1px solid #ccc"')
                                 for p in items)
