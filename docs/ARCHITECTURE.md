@@ -777,6 +777,23 @@ healer's button is disabled (a different path) → needs the healer to report wh
 links): a catalog-only storefront, or prices hidden for US visitors. Radar says 'price not on page' (down). If a
 second catalog-only store appears: detect "no price + no cart + no buy control" → 'no online checkout' note, not down.
 
+## 4z. Loop cycle 8 (10 Oct 2026, 05:46 IST, automated): a disabled buy button while an enabled one exists
+
+**Pattern on 2 stores** (crossbeats.com mobile, new30e; littleboxindia.com mobile, new30c/d/e): the screen shows a
+buyable product with an enabled ADD TO CART (sticky bar on littlebox, screenshot), but the button Radar read was
+disabled → 'buy button enabled: false' → product + cart + journey failed. A shopper simply uses the enabled button.
+
+- **`MAIN_BUY_JS` (form path, crossbeats):** when the first pick among this product's own buy buttons is disabled and
+  another one for the same product is enabled with add/cart/bag wording (never 'buy it now': that goes to checkout),
+  Radar clicks the enabled one; the step detail says "skipped disabled <tag> '<text>'". Mock `disabled_dup_button`
+  (cycle 7's evidence mock) now must PASS: fails on the old code ('got False … ARE enabled'), passes on the new.
+- **`ENABLED_ADD_JS` (healer path, littlebox):** when the healer's control is disabled, Radar looks for a visible,
+  enabled button reading exactly 'add to cart/bag/basket', not in header/nav/footer/cart drawer, not on another
+  product's card, preferring a fixed/sticky bar. Disabled healer pick + nothing enabled = the same failure as before,
+  now naming the healer's selector. Mock `healer_disabled_sticky`: fails on the old code with littlebox's exact
+  message ('got False (button found by the healer)'), passes on the new.
+- Safety: the cart check after the click is unchanged, so a wrong button still fails on what /cart.js received.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -1035,6 +1052,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 loop cycle 8 (10 Oct, 05:46 IST):** prefer an enabled add-to-cart over a disabled one for the same product (form path `MAIN_BUY_JS` and healer path `ENABLED_ADD_JS`); mocks `disabled_dup_button` (now passes), `healer_disabled_sticky`; full 36 regression run (4z).
 - **v0.19 loop cycle 5 (10 Oct, 01:47 IST):** no code change. Full 36 regression after the cycle-4 search change (run 37985975688): 62 healthy / 4 degraded (foxtale + plum hidden catalog products = store finding) / 0 Radar false failures, no store's search turned into the new warning. Held-out `stores/new30d.txt` run once (37988362552): 22 stores scored, **3 Radar false-failure stores** (bombaysweetshop: variant was right, buy button disabled by a 'PLEASE ENTER YOUR PINCODE' gate, the error hid 'disabled'; happilo: search results rendered but `Locator.press` timed out; kirobeauty: no buy control on one product page, not proven a store bug). Location (US runner): houseofchikankari (USD prices + US import-duty popup), skinkraft ('Visiting from United States?' popup over cards), okhai (USD market, product → /). Store finding: thedecorkart mobile nav links `/collections/crystal-decorative-candle-standss` (typo, 404). Not scored: gynoveda, theloom, virgio not Shopify; rarerabbit → thehouseofrare.com, fastandup → in.fastandup.com (list errors); tribeconcepts connection closed; theayurvedaco robots.txt disallows; truke robots.txt timeout.
 - **v0.19 loop cycle 3 (10 Oct, 00:00 IST):** no code change. Full 36 regression clean (0 Radar false failures); held-out `stores/new30c.txt` run once: 6/28 Radar false-failure stores (4v).
 - **v0.19 loop cycle 2 (9 Oct, 20:45 IST):** emulated devices report a matching `navigator.platform` (desktop = Windows Chrome, mobile = Pixel 7 Android) instead of the runner's 'Linux x86_64', which PageSpeed-bot snippets on bonkerscorner / bellavita / baccabucci treat as a bot; mock `pagespeed_gate`. GoKwik KwikPass login iframe closed inside the frame; mock `kwikpass_popup` (4v).

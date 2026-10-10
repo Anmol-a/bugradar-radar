@@ -1104,14 +1104,26 @@ def test_pincode_gate_is_a_warning_and_the_cart_is_blocked_not_failed(tmp_path):
         assert c.verdict == "blocked" and "pincode" in c.attempts[-1].error, (prefix, c.verdict, c.attempts[-1].error)
 
 
-def test_disabled_buy_button_failure_names_the_button_and_the_enabled_one(tmp_path):
-    """littleboxindia.com mobile (new30c + loop cycle 6): 'buy button enabled: false' while an enabled ADD TO CART for the
-    same product was on screen. One store = watch, so no behaviour change: the failure must NAME the button Radar read
-    and the enabled one, so the next store with this layout is diagnosable from run.json alone."""
+def test_disabled_buy_button_with_an_enabled_duplicate_uses_the_enabled_one(tmp_path):
+    """crossbeats.com mobile (new30e, loop cycle 7 evidence): the main form's visible <button.cf-checkout> was disabled
+    while another ADD TO CART for the same product was enabled; 2 stores (with littleboxindia) = fix: a shopper uses
+    the enabled one, so Radar clicks it and the cart check proves it added the right product."""
     run, _ = _scan("disabled_dup_button", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
-    errs = [s.error or "" for c in run.cases if c.case_id.startswith("product.pdp.")
-            for s in c.attempts[-1].steps if s.name == "buy_button_ready"]
-    assert errs and all("btn-mobile-atc" in e and "ARE enabled" in e and "sticky-atc" in e for e in errs), errs
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict in ("confirmed_fail", "flaky")]
+    assert not bad, bad
+    clicks = [s.detail or "" for c in run.cases if c.case_id.startswith("product.pdp.")
+              for s in c.attempts[-1].steps if s.name == "buy_button_ready"]
+    assert clicks and all("skipped disabled" in d and "btn-mobile-atc" in d for d in clicks), clicks
+
+
+def test_healer_found_disabled_button_but_an_enabled_sticky_add_to_cart_is_used(tmp_path):
+    """littleboxindia.com mobile (new30c/d/e): no visible button in the product's form, the healer found a DISABLED
+    'Add to cart', an enabled sticky ADD TO CART bar was on screen -> Radar uses the enabled one, PASSES."""
+    run, _ = _scan("healer_disabled_sticky", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict in ("confirmed_fail", "flaky")]
+    assert not bad, bad
+    c = _case(run, "cart.")
+    assert c.verdict == "pass", (c.verdict, c.attempts[-1].error)
 
 
 def test_empty_document_title_on_a_rendered_page_is_an_seo_warning_not_down(tmp_path):

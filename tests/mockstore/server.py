@@ -79,6 +79,10 @@ Modes (to prove Radar catches and heals what it should):
                    variant WAS selected, Radar failed 'variant selected like a shopper') -> Radar never types a pincode
                    (no form but add-to-cart is ever submitted): product test PASSES with a 'pincode gate' WARNING, the cart
                    test is BLOCKED (cannot add without a pincode), never a failure
+  disabled_dup_button  the main form's visible buy button is DISABLED, an enabled sticky ADD TO CART (form=) for the
+                   same product is on screen (crossbeats.com mobile, new30e) -> Radar clicks the ENABLED one, PASSES
+  healer_disabled_sticky  the form's own button is hidden, the healer finds a DISABLED 'Add to cart' by the title,
+                   an enabled sticky ADD TO CART bar (no form link) is on screen (littleboxindia.com mobile) -> PASSES
   search_misses    searching the first product's word returns only unrelated products (the word came from a
                    product the store hides: foxtale.in 'purify', bench 3) -> a second word is tried; the miss is a
                    WARNING, the search test PASSES on the second word
@@ -827,6 +831,15 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" class="btn-mobile-atc" disabled>Add to cart</button>')
             body += ('<div class="sticky-bar" style="position:fixed;left:0;right:0;bottom:0;background:#fff;padding:8px;z-index:20">'
                      '<button type="submit" form="product-form-template__main" class="sticky-atc">ADD TO CART</button></div>')
+        if self.mode == "healer_disabled_sticky" and available:
+            # littleboxindia.com mobile (new30c/d/e): the form's own button is not shown, the healer finds a DISABLED
+            # 'Add to cart' near the title, and an ENABLED sticky ADD TO CART (no form attribute) is on screen.
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" style="display:none">Add to cart</button>')
+            body = body.replace('</h1>', '</h1><button type="button" class="pdp-atc" disabled>Add to cart</button>', 1)
+            body += ('<div class="sticky-bar" style="position:fixed;left:0;right:0;bottom:0;background:#fff;padding:8px;z-index:20">'
+                     '<button type="button" class="sticky-atc" onclick="document.getElementById(\'product-form-template__main\')'
+                     '.requestSubmit()">ADD TO CART</button></div>')
         if self.mode == "free_gift":
             script += "<script>window.GIFT_MODE = true;</script>"
         if p.get("redirect"):

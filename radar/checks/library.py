@@ -306,10 +306,19 @@ MAIN_BUY_JS = r"""([ids, quick]) => {
   }
   out.sort((x, y) => y.main - x.main);
   if (!out.length) return null;
+  // The first pick is disabled but another ADD-TO-CART button for THIS product is enabled: a shopper uses the
+  // enabled one (crossbeats.com mobile, new30e: disabled <button.cf-checkout> in the main form + an enabled one;
+  // littleboxindia.com mobile: enabled sticky ADD TO CART). Never a 'buy it now' (that goes to checkout).
+  if (out[0].off) {
+    const alt = out.find(o => !o.off && /add|cart|bag/i.test(o.text) && !/buy\s*(it\s*)?now/i.test(o.text));
+    if (alt) { const was = out[0]; out.splice(out.indexOf(alt), 1); out.unshift(alt);
+               alt.skipped = was.tag + ' ' + JSON.stringify(was.text); }
+  }
   out[0].b.setAttribute('data-radar-target', 'buy');
   // evidence for a 'buy button disabled' failure: which button was read, and whether another one for THIS product
   // is enabled (littleboxindia.com mobile, new30c + loop cycle 6: disabled pick, enabled sticky ADD TO CART on screen)
   return {form: out[0].form, variant: out[0].variant, text: out[0].text, candidates: out.length, tag: out[0].tag,
+          skipped_disabled: out[0].skipped || '',
           enabled_others: out.slice(1).filter(o => !o.off).map(o => o.tag + ' ' + JSON.stringify(o.text)).slice(0, 3)};
 }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
 
@@ -353,6 +362,31 @@ OWN_CONTROL_JS = r"""([handle, ids, pid, quick]) => {
             text: txt(e).slice(0, 30), why: by};
   }
   return null; }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
+
+
+# The healer found a DISABLED buy control, but the page also shows an ENABLED add-to-cart for this product
+# (littleboxindia.com mobile, new30c/d/e: a disabled button read by the healer, an enabled sticky ADD TO CART bar
+# at the bottom of the screen). Only exact add-to-cart wording, visible, not in header/nav/footer/cart drawer, not
+# on another product's card; never 'buy it now' (checkout). The cart check then proves what it really added.
+ENABLED_ADD_JS = r"""([quick]) => {
+  const otherCard = __OTHER_CARD__;
+  const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
+  const vis = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const fixed = e => { for (let a = e; a && a !== document.body; a = a.parentElement) {
+      const p = getComputedStyle(a).position; if (p === 'fixed' || p === 'sticky') return 1; } return 0; };
+  const c = [...document.querySelectorAll('button, input[type=submit], [role="button"]')]
+    .filter(e => /^add to (cart|bag|basket)$/i.test(txt(e)) && vis(e)
+      && !(e.disabled || e.getAttribute('aria-disabled') === 'true')
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !otherCard(e, quick))
+    .sort((x, y) => fixed(y) - fixed(x));
+  if (!c.length) return null;
+  document.querySelectorAll('[data-radar-target="buy"]').forEach(e => e.removeAttribute('data-radar-target'));
+  const t = c[0]; t.setAttribute('data-radar-target', 'buy');
+  return {tag: t.tagName.toLowerCase() + (typeof t.className === 'string' && t.className.trim() ? '.' + t.className.trim().split(/\s+/)[0] : ''),
+          text: txt(t).slice(0, 30), sticky: !!fixed(t), count: c.length};
+}""".replace("__OTHER_CARD__", OTHER_CARD_FN)
 
 
 FORM_STATE_JS = r"""([ids, quick]) => { const s = new Set(ids.map(String)); const otherCard = __OTHER_CARD__;
@@ -506,7 +540,9 @@ def _main_buy_button(ctx: Ctx, product: dict):
                             + (f"; other buy button(s) for this product ARE enabled: {', '.join(found['enabled_others'])}"
                                if found.get("enabled_others") else ""))
         return loc, (f"main product form #{found['form']} (variant {found['variant']}, button {found['text']!r})"
-                     + (" — shown only after scrolling (sticky bar)" if scrolled else "")), None
+                     + (" — shown only after scrolling (sticky bar)" if scrolled else "")
+                     + (f"; skipped disabled {found['skipped_disabled']} (an enabled one for this product exists)"
+                        if found.get("skipped_disabled") else "")), None
     if own:
         loc = page.locator('[data-radar-target="buy"]').first
         return loc, (f"the page's own buy control <{own['tag']}> {own['text']!r} ({own['why']}; no Shopify cart form,"
@@ -526,6 +562,19 @@ def _main_buy_button(ctx: Ctx, product: dict):
                        + "; no other buy control found" + ("; LLM healing disabled" if "LLM healing disabled" in str(e) else ""),
                        False)
         raise
+    try:
+        healed_on = f.locator.is_enabled()
+    except Exception:  # noqa: BLE001  detached
+        healed_on = True
+    if not healed_on:
+        alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+        ctx.buy_evidence = f"healer found a disabled control ({f.method}: {f.selector[:60]}); no enabled add-to-cart for this product on the page"
+        if alt:
+            return (page.locator('[data-radar-target="buy"]').first,
+                    f"enabled <{alt['tag']}> {alt['text']!r}" + (" (sticky bar)" if alt["sticky"] else "")
+                    + f"; the healer's pick ({f.selector[:50]}) is disabled — the cart check verifies what it adds", None)
+    else:
+        ctx.buy_evidence = f"healer: {f.method}: {f.selector[:60]}"
     return f.locator, f"{f.method}: {f.selector[:70]}", f.healed
 
 
