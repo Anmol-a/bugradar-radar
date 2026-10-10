@@ -611,6 +611,15 @@ Keygen: `python3 -m radar.core.webbotauth keygen`. Mock `signed_only` (429 unles
 healthy, unsigned Radar BLOCKED. Not yet proven on real Shopify: Shopify may also need the signed agent registered
 (Cloudflare signed-agents / Shopify higher-access form); the Oracle test decides.
 
+**Shopify's own registration (11 Oct 2026, chat session):** Shopify's changelog ('bots and agents should identify
+themselves via Web Bot Auth') says signed bots get higher storefront limits, Cloudflare enrollment is **not** needed, and
+operators who need more use its form 'Web Bot Auth registration for Shopify' (https://forms.gle/V88RD31uAVirqE4e9:
+organization, contact email, bot name, Signature-Agent value, key directory URL, User-Agent, category, use case, docs
+URL, optional IP ranges). Ready-to-paste answers: project doc `claude/shopify-wba-registration-form_11oct.md`
+(written; sent to Anmol 11 Oct 00:05 IST; he submits it: no money, no account). This replaces the 'Shopify higher-access
+form text' open item. A crawler blocked from Oracle Cloud in the same way was unblocked about a week after submitting
+(community.shopify.dev thread 36440).
+
 ## 4u. Loop cycle 1 (9 Oct 2026, 16:45 IST, automated): new30b fixes, re-runs 37924565102 + 37927492715
 
 | Issue (new30b held-out) | Stores | Owner | Status |
