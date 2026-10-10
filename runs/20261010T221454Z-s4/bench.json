@@ -1,0 +1,149 @@
+{
+  "stamp": "20261010T221454Z",
+  "rows": [
+    {
+      "site_id": "foxtale.in",
+      "url": "https://foxtale.in",
+      "verdict": "degraded",
+      "platform": "shopify",
+      "theme": null,
+      "checkout": "GoKwik",
+      "access": "open",
+      "suites": {
+        "journey": "pass",
+        "smoke": "pass",
+        "catalog": "pass",
+        "product": "confirmed_fail",
+        "search": "pass",
+        "health": "confirmed_fail",
+        "info": "pass"
+      },
+      "failures": [
+        {
+          "case": "product.pdp.purify-glow-cleanser-mask",
+          "verdict": "confirmed_fail",
+          "step": "product_identified",
+          "error": "URL is a product page: expected /products/<handle>, got /",
+          "llm": "radar problem: The robot landed on the site homepage (no /products/<handle> URL and page text shows homepage content), so it looked in the wrong place rather than the store being broken.",
+          "device": "desktop"
+        },
+        {
+          "case": "health.not_found",
+          "verdict": "confirmed_fail",
+          "step": "returns_404",
+          "error": "HTTP status for a page that does not exist: expected 404, got 200",
+          "llm": "",
+          "device": "desktop"
+        },
+        {
+          "case": "product.pdp.purify-glow-cleanser-mask",
+          "verdict": "confirmed_fail",
+          "step": "loads_next_catalog_product_2",
+          "error": "catalog product page reachable: expected /products/heart-charm shows the product, got page shows other content, not 'Heart Charm' (no buy form, no product data, name not on the page) (in the store's catalog but hidden from shoppers)",
+          "llm": "radar problem: The robot landed on the store homepage (/) instead of a /products/<handle> product page, so the check looked in the wrong place rather than the store having a shopper-facing error.",
+          "device": "mobile"
+        },
+        {
+          "case": "health.not_found",
+          "verdict": "confirmed_fail",
+          "step": "returns_404",
+          "error": "HTTP status for a page that does not exist: expected 404, got 200",
+          "llm": "",
+          "device": "mobile"
+        }
+      ],
+      "warnings": 13,
+      "healed": 0,
+      "radar_suspect": 2,
+      "notes": [
+        "2 product(s) priced like a free gift next to the store's other prices (e.g. brightening-moisturizer-10-ml-one at 1.00) are not used for tests",
+        "16 product(s) not listed in the browsed collections are tested last (e.g. heart-charm-zero)",
+        "1 product(s) priced 0 (free samples/gifts, e.g. heart-charm-zero) are not used for product or cart tests",
+        "no search form found on homepage; assuming Shopify default /search"
+      ],
+      "report": "data/sites/foxtale.in/runs/20261010T221454Z-d-6f1c/report.html",
+      "secs": 367,
+      "suites_by_device": {
+        "desktop": {
+          "journey": "pass",
+          "smoke": "pass",
+          "catalog": "pass",
+          "product": "confirmed_fail",
+          "search": "pass",
+          "health": "confirmed_fail",
+          "info": "pass"
+        },
+        "mobile": {
+          "journey": "pass",
+          "smoke": "pass",
+          "catalog": "pass",
+          "product": "confirmed_fail",
+          "search": "pass",
+          "health": "confirmed_fail",
+          "info": "pass"
+        }
+      },
+      "device_only": {
+        "desktop": [],
+        "mobile": []
+      },
+      "devices": {
+        "desktop": {
+          "verdict": "degraded",
+          "report": "data/sites/foxtale.in/runs/20261010T221454Z-d-6f1c/report.html",
+          "secs": 207,
+          "perf": {
+            "pages": 17,
+            "median_load_secs": 2.48,
+            "slowest": {
+              "url": "/collections/affiliate-secret-sale",
+              "load_secs": 8.49
+            },
+            "console_errors": 4,
+            "console_warnings": 3,
+            "failed_requests": 178
+          },
+          "failures": 2,
+          "warnings": 7,
+          "report_rel": "../../sites/foxtale.in/runs/20261010T221454Z-d-6f1c/report.html"
+        },
+        "mobile": {
+          "verdict": "degraded",
+          "report": "data/sites/foxtale.in/runs/20261010T221821Z-m-c26c/report.html",
+          "secs": 160,
+          "perf": {
+            "pages": 18,
+            "median_load_secs": 1.67,
+            "slowest": {
+              "url": "/collections/affiliate-secret-sale",
+              "load_secs": 3.03
+            },
+            "console_errors": 3,
+            "console_warnings": 3,
+            "failed_requests": 164
+          },
+          "failures": 2,
+          "warnings": 6,
+          "report_rel": "../../sites/foxtale.in/runs/20261010T221821Z-m-c26c/report.html"
+        }
+      },
+      "cart": false,
+      "input": "https://foxtale.in",
+      "report_rel": "../../sites/foxtale.in/runs/20261010T221454Z-d-6f1c/report.html"
+    }
+  ],
+  "totals": {
+    "stores": 1,
+    "degraded": 1,
+    "tested": 1
+  },
+  "devices": [
+    "desktop",
+    "mobile"
+  ],
+  "browser": {
+    "ua_style": "browser",
+    "identity": "BugRadar/0.1 (+bugradar.in)",
+    "headless": true
+  }
+}
