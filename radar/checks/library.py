@@ -823,9 +823,13 @@ def collection_page(ctx: Ctx, url: str):
     ctx.steps.run("loads", lambda: _load(ctx, url))
 
     def has_products():
-        n = len(_product_links(ctx.sess))
+        n, waited = len(_product_links(ctx.sess)), 0.0
+        while not n and waited < 6:     # grids a script renders after load (thehouseofrare phone, 11 Oct): up to 6 s
+            ctx.sess.page.wait_for_timeout(500)
+            waited += 0.5
+            n = len(_product_links(ctx.sess))
         ctx.expect("products listed", "≥ 1", n, n >= 1)
-        return f"{n} products listed"
+        return f"{n} products listed" + (f" (rendered {waited:.1f}s after the page loaded)" if waited else "")
     ctx.steps.run("lists_products", has_products)
     ctx.sess.page.wait_for_timeout(1000)
     ctx.steps.run("images_load", lambda: _images_ok(ctx), soft=True)
@@ -864,14 +868,19 @@ def collection_more(ctx: Ctx, url: str, products_json: str):
     collection holds more in-stock products than the first page shows (from the store's own products.json).
     Hard: a page-2 link that answers an error or a blank page. Soft: no new products / no way to see more."""
     ctx.steps.run("loads", lambda: _load(ctx, url))
-    first = set()
-
-    def shown():
-        nonlocal first
+    first = _handles(ctx)
+    for i in range(12):        # cards that render late or on the first scroll (thehouseofrare phone: 0, then 20 on retry)
+        if first:
+            break
+        if i == 2:
+            ctx.sess.evaluate("() => scrollBy({top: Math.round(innerHeight * 0.6), behavior: 'instant'})")
+        ctx.sess.page.wait_for_timeout(500)
         first = _handles(ctx)
-        ctx.expect("products on the first page", "≥ 1", len(first), len(first) >= 1)
-        return f"{len(first)} products on the first page"
-    ctx.steps.run("lists_products", shown)
+    if not first:              # listing itself is judged by the collection test (journey 4), not here
+        ctx.steps.info("more_products_not_judged", "no product cards on the first page after 6 s (the collection test "
+                                                   "judges the listing)")
+        return
+    ctx.steps.info("lists_products", f"{len(first)} products on the first page")
     try:
         data = ctx.sess.get_json(products_json)
         avail = [p.get("handle") for p in (data or {}).get("products", [])

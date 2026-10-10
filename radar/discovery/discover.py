@@ -84,7 +84,9 @@ MORE_LINKS_JS = r"""() => { const out = [], seen = new Set();
   document.querySelectorAll('footer a[href], [role=contentinfo] a[href], [id*="footer" i] a[href], [class*="footer" i] a[href]')
     .forEach(a => add(a, 'footer'));
   return out.slice(0, 300); }"""
-NOT_MORE = re.compile(r"/(products|cart|account|search|checkout|policies)(/|$)|/apps/|^/(cdn|files)/|\.[a-z0-9]{2,5}$", re.I)
+# /cdn-cgi/: Cloudflare's own paths ('Email' footer links become /cdn-cgi/l/email-protection: beminimalist.co, 11 Oct)
+NOT_MORE = re.compile(r"/(products|cart|account|search|checkout|policies)(/|$)|/apps/|^/(cdn|files|cdn-cgi)/|\.[a-z0-9]{2,5}$",
+                      re.I)
 
 
 def _norm_url(u: str) -> str:
@@ -119,7 +121,7 @@ INFO_KINDS = (("refund", r"refund|return|exchange|cancell?ation"),
               ("privacy", r"privacy"),
               ("terms", r"terms|conditions|\btos\b"),
               ("contact", r"contact"))
-NOT_INFO = re.compile(r"/(products|collections|cart|account|search|checkout|blogs)(/|$)|/apps/|^/(cdn|files)/|"
+NOT_INFO = re.compile(r"/(products|collections|cart|account|search|checkout|blogs)(/|$)|/apps/|^/(cdn|files|cdn-cgi)/|"
                       r"\.[a-z0-9]{2,5}$", re.I)       # files (giva.co links its 'Annual Return' PDF from the footer)
 # company filings Indian stores link next to their policies: 'Annual Return FY 2024-25' (MGT-7) is not a returns page
 NOT_INFO_TEXT = re.compile(r"annual|investor|\bcsr\b|mgt[- ]?7|financial|shareholder|grievance redressal", re.I)

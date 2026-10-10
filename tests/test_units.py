@@ -832,7 +832,8 @@ def test_links_beyond_the_menu_skip_menu_info_product_and_file_links():
              {"where": "footer", "text": "Annual Return", "url": b + "/pages/annual-return"},
              {"where": "footer", "text": "Brochure", "url": b + "/cdn/shop/files/brochure.pdf"},
              {"where": "footer", "text": "Blog", "url": b + "/blogs/news"},
-             {"where": "footer", "text": "Insta", "url": "https://instagram.com/shop"}]
+             {"where": "footer", "text": "Insta", "url": "https://instagram.com/shop"},
+             {"where": "footer", "text": "Email", "url": b + "/cdn-cgi/l/email-protection#5a3f"}]   # Cloudflare's email link
     got = more_links(links, b, [b + "/collections/men", b + "/pages/shipping"])
     assert [(x["where"], x["url"]) for x in got] == [
         ("announcement bar", b + "/collections/sale"), ("homepage section", b + "/collections/new"),

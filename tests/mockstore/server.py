@@ -176,7 +176,8 @@ Modes (to prove Radar catches and heals what it should):
   checkout_broken  GET /checkout answers HTTP 500 -> WARNS (strict: FAILS) at checkout_opens (checkout never filled)
   no_title         product pages show no product name at all (snitch.co.in after its move)
                    -> product tests FAIL at shows_title_price_image with "none"
-  (every mode)     footer links to an 'Annual Return FY 2024-25' PDF (downloads; giva.co), /pages/shipping-policy, /policies/refund-policy, /pages/privacy-policy,
+  (every mode)     footer links to an 'Annual Return FY 2024-25' PDF (downloads; giva.co), Cloudflare's /cdn-cgi/l/email-protection
+                   'Email' link (beminimalist.co), /pages/shipping-policy, /policies/refund-policy, /pages/privacy-policy,
                    /pages/terms-of-service, /pages/contact (+ an Instagram link) and a header account link
                    /account/login; robots.txt disallows /policies/ and /account (some stores do: Radar must skip them)
                    -> journey 28 opens shipping, privacy, terms, contact (refund skipped: robots.txt); no account test
@@ -194,6 +195,8 @@ Modes (to prove Radar catches and heals what it should):
   hamburger_menu   phones only: the header menu hides behind a ☰ button (aria-label Menu) opening a drawer (journey 16)
                    -> smoke.mobile_menu PASSES 'tapped the menu button'; desktop / healthy -> not judged / links shown
   hamburger_broken same, but the button's script throws and the drawer never opens -> smoke.mobile_menu WARNS
+  late_cards       collection grids are rendered by a script 1.5 s after the page loads -> the collection test and
+                   catalog.more wait for the cards and PASS (they failed at once on the old code)
   search_icon_only the header search form is hidden behind a bare icon link (title="Search", svg icon; no aria-label, not a
                    button, not a /search link) -> Radar opens it and TYPES the search like a shopper (old opener: 'no visible
                    search box; opened /search')
@@ -284,7 +287,8 @@ def page(title: str, body: str, extra_head: str = "", shopify: bool = True) -> s
 FOOTER_LINKS = ('<a href="/cdn/shop/t/1/assets/annual-return-fy-2024-25.pdf">Annual Return FY 2024-25</a> '   # giva.co
                 '<a href="/pages/shipping-policy">Shipping Policy</a> <a href="/policies/refund-policy">Refund policy</a> '
                 '<a href="/pages/privacy-policy">Privacy Policy</a> <a href="/pages/terms-of-service">Terms of Service</a> '
-                '<a href="/pages/contact">Contact us</a> <a href="https://instagram.com/mockstore">Instagram</a>')
+                '<a href="/pages/contact">Contact us</a> <a href="https://instagram.com/mockstore">Instagram</a> '
+                '<a href="/cdn-cgi/l/email-protection#7a19">Email</a>')        # Cloudflare's email link (beminimalist.co)
 POLICY_TEXT = ("We ship every order within two working days from our studio in Jaipur. Delivery takes three to seven days "
                "across India; remote pin codes can take up to ten days. Shipping is free above Rs 999; below that a flat "
                "Rs 79 applies. You will get a tracking link by SMS and email as soon as the parcel leaves us. ")
@@ -451,6 +455,11 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                                 '<svg class="icon icon-search" width="20" height="20"><circle cx="9" cy="9" r="6" stroke="#000" '
                                 'fill="none"/></svg></a><form id="hdr-search" action="/search" method="get" style="display:none">'
                                 '<input name="q"></form>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "late_cards" and "/collections/" in self.path:
+            # the collection grid is rendered by a script 1.5 s after load (thehouseofrare.com phone, 11 Oct)
+            body = re.sub(r'(<main>)(.*?)(</main>)', lambda m: m.group(1) + '<div id="grid"></div><template id="cards">'
+                          + m.group(2) + '</template><script>setTimeout(() => { document.getElementById("grid").innerHTML = '
+                          'document.getElementById("cards").innerHTML; }, 1500);</script>' + m.group(3), body, count=1, flags=re.S)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "script_heavy":
             # journey 31: 26 app scripts, each from its own third-party host (*.localhost resolves to this machine)
             body = body.replace("</body>", "<script>for (let i = 1; i <= 26; i++) { const s = document.createElement('script'); "

@@ -1447,3 +1447,10 @@ def test_phone_menu_behind_a_button_opens_and_a_dead_button_warns(tmp_path):
     assert c.verdict == "pass" and s.status == "warn" and "none after tapping 'Menu'" in s.error, (s.status, s.error)
     run = _info("hamburger_menu", tmp_path, device="desktop", suites=("smoke",))
     assert _steps(_case(run, "smoke.mobile_menu"))["menu_opens"].detail.startswith("not judged: desktop-sized screen")
+
+
+def test_collection_grid_rendered_after_load_is_waited_for(tmp_path):
+    run = _info("late_cards", tmp_path, suites=("catalog",))
+    c = _case(run, "catalog.collection.home-decor")
+    assert c.verdict == "pass" and "rendered" in _steps(c)["lists_products"].detail, (c.verdict, c.attempts[-1].error)
+    assert _case(run, "catalog.more").verdict == "pass"
