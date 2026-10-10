@@ -1,0 +1,2217 @@
+{
+  "run_id": "20261010T041830Z-d-a10c",
+  "site_id": "doodlage.in",
+  "base_url": "https://doodlage.in",
+  "device": "desktop",
+  "started_at": "2026-10-10T04:18:30+00:00",
+  "finished_at": "2026-10-10T04:20:22+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.86s",
+              "error": null,
+              "secs": 2.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Doodlage | Made From Waste",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2456 chars, 22 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/new-in-styles (50 products)",
+              "error": null,
+              "secs": 2.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/new-in-styles ('EXPLORE THE NEW COLLECTION')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/new-in-styles",
+                  "actual": "/collections/new-in-styles",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "50",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /products/dl26-dr-071-sora-green-woollen-dress",
+              "error": null,
+              "secs": 4.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'SORA GREEN WOOLLEN  DRESS', selected variant 43781376573501 at \u20b932,200.00",
+              "error": null,
+              "secs": 0.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress.js with variants",
+                  "actual": "'SORA GREEN WOOLLEN  DRESS', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+              "secs": 3.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "SORA GREEN WOOLLEN  DRESS",
+                  "actual": "'SORA GREEN WOOLLEN DRESS' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b932,200.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 16.13,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x1eec02a13c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://doodlage.in/api/collect",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/0064581447754e5fb1611fa134f607fa/0064581447754e5fb1611fa134f607fa.HD-1080p-7.2Mbps-87945228.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/6886de1d4e7e4f39b7647c729b0f4443/6886de1d4e7e4f39b7647c729b0f4443.HD-1080p-7.2Mbps-87945869.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zd9218637497xf1&_p=1791605916116&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1906594477.1791605917&dt=Doodlage%20%7C%20Made%20From%20Waste&tid=AW-738573432&en=page_view",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=uqdnYB2o-2f1llwG51I2JQsSApDdou1raA&auid=1906594477.1791605917&gtm=45be6a72v889223983za208zb9218637497zd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72h1v9123333738za200zb9218637497zd9218637497xf1&_p=1791605916116&_gaz=1&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72h1v9135212099za200zb9218637497zd9218637497xf1&_p=1791605916116&_gaz=1&gcs=G111",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zd9123333738xf1&_p=1791605919585&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1906594477.1791605917&dt=Zero%20Waste%2C%20Sustainable%20Upcycled%20Designer%20Clothing%20",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/b3b38a1aa68149b5b29225e48b60db23/b3b38a1aa68149b5b29225e48b60db23.HD-1080p-3.3Mbps-92034398.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/02324cc2cec6475699f34881e3b230b2/02324cc2cec6475699f34881e3b230b2.HD-1080p-7.2Mbps-92021609.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/cbd28963e1ea44eb876e57b9432b152d/cbd28963e1ea44eb876e57b9432b152d.HD-1080p-7.2Mbps-92036547.mp4?v=0",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/e4b29e9871fd4c6394dfa31a30189a14/e4b29e9871fd4c6394dfa31a30189a14.HD-1080p-7.2Mbps-71949920.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/395a70625a77404c85fa90ecbdd0d46a/395a70625a77404c85fa90ecbdd0d46a.HD-1080p-7.2Mbps-92037716.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/14175d1476bc4c179d5d01eafb788409/14175d1476bc4c179d5d01eafb788409.HD-1080p-7.2Mbps-92021738.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/97d4a71460464f7b9f3965be52a1b050/97d4a71460464f7b9f3965be52a1b050.HD-1080p-7.2Mbps-92038391.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/a55cc5d1c5d84bef9dca3c8a53cdcca9/a55cc5d1c5d84bef9dca3c8a53cdcca9.HD-1080p-7.2Mbps-92037710.mp4?v=0",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zd9123333738xf1&_p=1791605923728&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1906594477.1791605917&dt=SORA%20GREEN%20WOOLLEN%20DRESS&tid=AW-738573432&en=page_view&dl=h"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.68,
+              "load": 2.02,
+              "lcp": 0.58
+            },
+            {
+              "url": "/collections/new-in-styles",
+              "ttfb": 0.19,
+              "dcl": 0.88,
+              "load": 1.71,
+              "lcp": 0.79
+            },
+            {
+              "url": "/products/dl26-dr-071-sora-green-woollen-dress",
+              "ttfb": 0.0,
+              "dcl": 1.23,
+              "load": 2.41,
+              "lcp": 1.06
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.71s",
+              "error": null,
+              "secs": 2.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Doodlage | Made From Waste",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2456 chars, 22 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/new-in-styles (50 products)",
+              "error": null,
+              "secs": 2.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/new-in-styles ('EXPLORE THE NEW COLLECTION')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/new-in-styles",
+                  "actual": "/collections/new-in-styles",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "50",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /products/dl26-dr-071-sora-green-woollen-dress",
+              "error": null,
+              "secs": 3.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'SORA GREEN WOOLLEN  DRESS', selected variant 43781376573501 at \u20b932,200.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress.js with variants",
+                  "actual": "'SORA GREEN WOOLLEN  DRESS', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+              "secs": 3.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "SORA GREEN WOOLLEN  DRESS",
+                  "actual": "'SORA GREEN WOOLLEN DRESS' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b932,200.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 15.03,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x1eec01f15a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            }
+          ],
+          "failed_requests": [
+            "POST https://doodlage.in/api/collect",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/6886de1d4e7e4f39b7647c729b0f4443/6886de1d4e7e4f39b7647c729b0f4443.HD-1080p-7.2Mbps-87945869.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/0064581447754e5fb1611fa134f607fa/0064581447754e5fb1611fa134f607fa.HD-1080p-7.2Mbps-87945228.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=582039686.1791605933&dt=Doodlage%20%7C%20Made%20From%20Waste&tid=AW-738573432&en=page_view",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=582039686.1791605933&gtm=45be6a72v889223983za208zd889223983xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zb889223983zd889223983xf1&_p=1791605932087&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zb889223983zd889223983xf1&_p=1791605932087&_gaz=1&gcs=G111&gcd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zb889223983zd889223983xf1&_p=1791605932087&_gaz=1&gcs=G111&gcd",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a80h2v9123333738za200zd9123333738xf1&_p=1791605935145&gcs=G111&gcd=13t3t3t3t5l1&n",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=582039686.1791605933&dt=Zero%20Waste%2C%20Sustainable%20Upcycled%20Designer%20Clothing%20%",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/02324cc2cec6475699f34881e3b230b2/02324cc2cec6475699f34881e3b230b2.HD-1080p-7.2Mbps-92021609.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/b3b38a1aa68149b5b29225e48b60db23/b3b38a1aa68149b5b29225e48b60db23.HD-1080p-3.3Mbps-92034398.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/cbd28963e1ea44eb876e57b9432b152d/cbd28963e1ea44eb876e57b9432b152d.HD-1080p-7.2Mbps-92036547.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/97d4a71460464f7b9f3965be52a1b050/97d4a71460464f7b9f3965be52a1b050.HD-1080p-7.2Mbps-92038391.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/e4b29e9871fd4c6394dfa31a30189a14/e4b29e9871fd4c6394dfa31a30189a14.HD-1080p-7.2Mbps-71949920.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/a55cc5d1c5d84bef9dca3c8a53cdcca9/a55cc5d1c5d84bef9dca3c8a53cdcca9.HD-1080p-7.2Mbps-92037710.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/14175d1476bc4c179d5d01eafb788409/14175d1476bc4c179d5d01eafb788409.HD-1080p-7.2Mbps-92021738.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/395a70625a77404c85fa90ecbdd0d46a/395a70625a77404c85fa90ecbdd0d46a.HD-1080p-7.2Mbps-92037716.mp4?v=0",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72h1v9123333738za200zd9123333738xf1&_p=1791605939087&gcs=G111&gcd=13t3t3t3t5l1&n",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=582039686.1791605933&dt=SORA%20GREEN%20WOOLLEN%20DRESS&tid=AW-738573432&en=page_view&dl=htt"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.59,
+              "load": 1.77,
+              "lcp": 0.53
+            },
+            {
+              "url": "/collections/new-in-styles",
+              "ttfb": 0.14,
+              "dcl": 0.52,
+              "load": 1.41,
+              "lcp": 0.45
+            },
+            {
+              "url": "/products/dl26-dr-071-sora-green-woollen-dress",
+              "ttfb": 0.01,
+              "dcl": 1.09,
+              "load": 2.21,
+              "lcp": 0.92
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.56s",
+              "error": null,
+              "secs": 2.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Doodlage | Made From Waste",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2456 chars, 22 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/new-in-styles (50 products)",
+              "error": null,
+              "secs": 2.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/new-in-styles ('EXPLORE THE NEW COLLECTION')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/new-in-styles",
+                  "actual": "/collections/new-in-styles",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "50",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /products/dl26-dr-071-sora-green-woollen-dress",
+              "error": null,
+              "secs": 3.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'SORA GREEN WOOLLEN  DRESS', selected variant 43781376573501 at \u20b932,200.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress.js with variants",
+                  "actual": "'SORA GREEN WOOLLEN  DRESS', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+              "secs": 3.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "SORA GREEN WOOLLEN  DRESS",
+                  "actual": "'SORA GREEN WOOLLEN DRESS' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b932,200.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 14.78,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x1eec0114ec00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://doodlage.in/api/collect",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/0064581447754e5fb1611fa134f607fa/0064581447754e5fb1611fa134f607fa.HD-1080p-7.2Mbps-87945228.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/6886de1d4e7e4f39b7647c729b0f4443/6886de1d4e7e4f39b7647c729b0f4443.HD-1080p-7.2Mbps-87945869.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zd9123333738xf1&_p=1791605950100&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1464249134.1791605951&dt=Doodlage%20%7C%20Made%20From%20Waste&tid=AW-738573432&en=page_vie",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1464249134.1791605951&gtm=45be6a72v889223983za208zb9123333738zd9123333738xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zb9123333738zd9123333738xf1&_p=1791605950100&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zb9123333738zd9123333738xf1&_p=1791605950100&_gaz=1&gcs=G111&g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zd9123333738xf1&_p=1791605952900&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1464249134.1791605951&dt=Zero%20Waste%2C%20Sustainable%20Upcycled%20Designer%20Clothing%20%",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/b3b38a1aa68149b5b29225e48b60db23/b3b38a1aa68149b5b29225e48b60db23.HD-1080p-3.3Mbps-92034398.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/e4b29e9871fd4c6394dfa31a30189a14/e4b29e9871fd4c6394dfa31a30189a14.HD-1080p-7.2Mbps-71949920.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/02324cc2cec6475699f34881e3b230b2/02324cc2cec6475699f34881e3b230b2.HD-1080p-7.2Mbps-92021609.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/cbd28963e1ea44eb876e57b9432b152d/cbd28963e1ea44eb876e57b9432b152d.HD-1080p-7.2Mbps-92036547.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/14175d1476bc4c179d5d01eafb788409/14175d1476bc4c179d5d01eafb788409.HD-1080p-7.2Mbps-92021738.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/a55cc5d1c5d84bef9dca3c8a53cdcca9/a55cc5d1c5d84bef9dca3c8a53cdcca9.HD-1080p-7.2Mbps-92037710.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/97d4a71460464f7b9f3965be52a1b050/97d4a71460464f7b9f3965be52a1b050.HD-1080p-7.2Mbps-92038391.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/395a70625a77404c85fa90ecbdd0d46a/395a70625a77404c85fa90ecbdd0d46a.HD-1080p-7.2Mbps-92037716.mp4?v=0",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zd9123333738xf1&_p=1791605956581&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1464249134.1791605951&dt=SORA%20GREEN%20WOOLLEN%20DRESS&tid=AW-738573432&en=page_view&dl=h"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.47,
+              "load": 1.71,
+              "lcp": 0.38
+            },
+            {
+              "url": "/collections/new-in-styles",
+              "ttfb": 0.17,
+              "dcl": 0.58,
+              "load": 1.45,
+              "lcp": 0.52
+            },
+            {
+              "url": "/products/dl26-dr-071-sora-green-woollen-dress",
+              "ttfb": 0.0,
+              "dcl": 0.8,
+              "load": 1.98,
+              "lcp": 0.63
+            }
+          ]
+        }
+      ],
+      "incident_signature": "doodlage.in|journey.shopper|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product page clearly shows a price ($332.60) but not the expected \u20b932,200.00, so the robot likely checked the wrong currency/price format or looked for the INR price text in the wrong place rather than a store bug.",
+        "evidence": "Visible page text (product area):\nSORA GREEN WOOLLEN DRESS\nSALE PRICE\n$332.60\nMRP included of all taxes.\n... Size: S-L XL-3XL\nADD TO CART\nBUY IT NOW\n\n(The page shows price as $332.60; the expected price \u20b932,200.00 is not on the page.)"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.64s",
+              "error": null,
+              "secs": 2.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Doodlage | Made From Waste",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2456 chars, 22 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.64s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.64s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.07,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://doodlage.in/api/collect",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/0064581447754e5fb1611fa134f607fa/0064581447754e5fb1611fa134f607fa.HD-1080p-7.2Mbps-87945228.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/6886de1d4e7e4f39b7647c729b0f4443/6886de1d4e7e4f39b7647c729b0f4443.HD-1080p-7.2Mbps-87945869.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zd9135212099xf1&_p=1791605964609&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zb9135212099zd9135212099xf1&_p=1791605964609&g",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1162840414.1791605965&dt=Doodlage%20%7C%20Made%20From%20Waste&tid=AW-738573432&en=page_vie",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1162840414.1791605965&gtm=45be6a72v889223983za208zb9135212099zd9135212099xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72h1v9123333738za200zb9135212099zd9135212099xf1&_p=1791605964609&_gaz=1&gcs=G111",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 0.53,
+              "load": 1.61,
+              "lcp": 0.43
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.62s",
+              "error": null,
+              "secs": 2.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Doodlage | Made From Waste",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2456 chars, 22 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/new-in-styles",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.8s",
+              "error": null,
+              "secs": 2.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zero Waste, Sustainable Upcycled Designer Clothing | Doodlage New In",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3664 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/designer-dresses-tunics-for",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.79s",
+              "error": null,
+              "secs": 2.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy best designer dresses online for women | sustainable all-day dresses | Plus Size Wrap Dresses",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2944 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/designer-tops-womens-ethica",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 2.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Sustainable Designer Tops for Women Online | Doodlage",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2580 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.67,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://doodlage.in/api/collect",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/6886de1d4e7e4f39b7647c729b0f4443/6886de1d4e7e4f39b7647c729b0f4443.HD-1080p-7.2Mbps-87945869.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/0064581447754e5fb1611fa134f607fa/0064581447754e5fb1611fa134f607fa.HD-1080p-7.2Mbps-87945228.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=705979295.1791605969&dt=Doodlage%20%7C%20Made%20From%20Waste&tid=AW-738573432&en=page_view",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=705979295.1791605969&gtm=45be6a72v889223983za208zd889223983xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a80h2v9218637497za200zb889223983zd889223983xf1&_p=1791605968661&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zb889223983zd889223983xf1&_p=1791605968661&_gaz=1&gcs=G111&gcd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zb889223983zd889223983xf1&_p=1791605968661&_gaz=1&gcs=G111&gcd",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a80h2v9123333738za200zd9123333738xf1&_p=1791605971250&gcs=G111&gcd=13t3t3t3t5l1&n",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=705979295.1791605969&dt=Zero%20Waste%2C%20Sustainable%20Upcycled%20Designer%20Clothing%20%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a80h2v9123333738za200zd9123333738xf1&_p=1791605973649&gcs=G111&gcd=13t3t3t3t5l1&n",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=705979295.1791605969&dt=Buy%20best%20designer%20dresses%20online%20for%20women%20%7C%20sus",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zd9123333738xf1&_p=1791605976150&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=705979295.1791605969&dt=Shop%20Sustainable%20Designer%20Tops%20for%20Women%20Online%20%7C%2"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.48,
+              "load": 1.64,
+              "lcp": 0.38
+            },
+            {
+              "url": "/collections/new-in-styles",
+              "ttfb": 0.28,
+              "dcl": 0.65,
+              "load": 1.54,
+              "lcp": 0.65
+            },
+            {
+              "url": "/collections/designer-dresses-tunics-for-women",
+              "ttfb": 0.22,
+              "dcl": 0.67,
+              "load": 1.55,
+              "lcp": 0.57
+            },
+            {
+              "url": "/collections/designer-tops-womens-ethical-clothing",
+              "ttfb": 0.46,
+              "dcl": 0.83,
+              "load": 1.67,
+              "lcp": 0.78
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.designer-dresses-tunics-for-women",
+      "suite": "catalog",
+      "title": "Collection '..' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.91s",
+              "error": null,
+              "secs": 2.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy best designer dresses online for women | sustainable all-day dresses | Plus Size Wrap Dresses",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2944 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "36 products listed",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "36",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.86,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://doodlage.in/api/collect",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zd9218637497xf1&_p=1791605978601&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1623315258.1791605979&dt=Buy%20best%20designer%20dresses%20online%20for%20women%20%7C%20sus",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zb9218637497zd9218637497xf1&_p=1791605978601&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a80h2v9123333738za200zb9218637497zd9218637497xf1&_p=1791605978601&_gaz=1&gcs=G111",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a80h2v9123333738za200zb9218637497zd9218637497xf1&_p=1791605978601&gcs=G111&gcd=13",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1623315258.1791605979&gtm=45be6a80h2v889223983za208zb9218637497zd9218637497xecxf1&fmt=8",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/collections/designer-dresses-tunics-for-women",
+              "ttfb": 0.21,
+              "dcl": 0.76,
+              "load": 1.89,
+              "lcp": 0.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.dl26-dr-071-sora-green-woollen-dress",
+      "suite": "product",
+      "title": "PDP 'SORA GREEN WOOLLEN  DRESS'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.13s",
+              "error": null,
+              "secs": 3.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "SORA GREEN WOOLLEN DRESS",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3123 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'SORA GREEN WOOLLEN  DRESS', selected variant 43781376573501 at \u20b932,200.00",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress.js with variants",
+                  "actual": "'SORA GREEN WOOLLEN  DRESS', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+              "secs": 3.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "SORA GREEN WOOLLEN  DRESS",
+                  "actual": "'SORA GREEN WOOLLEN DRESS' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b932,200.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+          "screenshot": "product.pdp.dl26-dr-071-sora-green-woollen-dress.a1.png",
+          "trace": "product.pdp.dl26-dr-071-sora-green-woollen-dress.a1_trace.zip",
+          "secs": 7.96,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://doodlage.in/api/collect",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/b3b38a1aa68149b5b29225e48b60db23/b3b38a1aa68149b5b29225e48b60db23.HD-1080p-3.3Mbps-92034398.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/cbd28963e1ea44eb876e57b9432b152d/cbd28963e1ea44eb876e57b9432b152d.HD-1080p-7.2Mbps-92036547.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/e4b29e9871fd4c6394dfa31a30189a14/e4b29e9871fd4c6394dfa31a30189a14.HD-1080p-7.2Mbps-71949920.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/14175d1476bc4c179d5d01eafb788409/14175d1476bc4c179d5d01eafb788409.HD-1080p-7.2Mbps-92021738.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/a55cc5d1c5d84bef9dca3c8a53cdcca9/a55cc5d1c5d84bef9dca3c8a53cdcca9.HD-1080p-7.2Mbps-92037710.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/97d4a71460464f7b9f3965be52a1b050/97d4a71460464f7b9f3965be52a1b050.HD-1080p-7.2Mbps-92038391.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/395a70625a77404c85fa90ecbdd0d46a/395a70625a77404c85fa90ecbdd0d46a.HD-1080p-7.2Mbps-92037716.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1590966009.1791605983&dt=SORA%20GREEN%20WOOLLEN%20DRESS&tid=AW-738573432&en=page_view&dl=h",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1590966009.1791605983&gtm=45be6a72v889223983za208zd889223983xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zb889223983zd889223983xf1&_p=1791605982726&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zb889223983zd889223983xf1&_p=1791605982726&_gaz=1&gcs=G111&gcd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zb889223983zd889223983xf1&_p=1791605982726&_gaz=1&gcs=G111&gcd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zb889223983zd889223983xf1&_p=1791605982726&gcs=G111&gcd=13t3t3",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/02324cc2cec6475699f34881e3b230b2/02324cc2cec6475699f34881e3b230b2.HD-1080p-7.2Mbps-92021609.mp4?v=0"
+          ],
+          "loads": [
+            {
+              "url": "/products/dl26-dr-071-sora-green-woollen-dress?variant=43781376573501",
+              "ttfb": 0.06,
+              "dcl": 0.87,
+              "load": 2.41,
+              "lcp": 0.62
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.11s",
+              "error": null,
+              "secs": 3.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "SORA GREEN WOOLLEN DRESS",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3123 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'SORA GREEN WOOLLEN  DRESS', selected variant 43781376573501 at \u20b932,200.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress.js with variants",
+                  "actual": "'SORA GREEN WOOLLEN  DRESS', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+              "secs": 3.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "SORA GREEN WOOLLEN  DRESS",
+                  "actual": "'SORA GREEN WOOLLEN DRESS' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b932,200.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+          "screenshot": "product.pdp.dl26-dr-071-sora-green-woollen-dress.a2.png",
+          "trace": "product.pdp.dl26-dr-071-sora-green-woollen-dress.a2_trace.zip",
+          "secs": 8.08,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://doodlage.in/api/collect",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/e4b29e9871fd4c6394dfa31a30189a14/e4b29e9871fd4c6394dfa31a30189a14.HD-1080p-7.2Mbps-71949920.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/b3b38a1aa68149b5b29225e48b60db23/b3b38a1aa68149b5b29225e48b60db23.HD-1080p-3.3Mbps-92034398.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/cbd28963e1ea44eb876e57b9432b152d/cbd28963e1ea44eb876e57b9432b152d.HD-1080p-7.2Mbps-92036547.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/14175d1476bc4c179d5d01eafb788409/14175d1476bc4c179d5d01eafb788409.HD-1080p-7.2Mbps-92021738.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/a55cc5d1c5d84bef9dca3c8a53cdcca9/a55cc5d1c5d84bef9dca3c8a53cdcca9.HD-1080p-7.2Mbps-92037710.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/395a70625a77404c85fa90ecbdd0d46a/395a70625a77404c85fa90ecbdd0d46a.HD-1080p-7.2Mbps-92037716.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/97d4a71460464f7b9f3965be52a1b050/97d4a71460464f7b9f3965be52a1b050.HD-1080p-7.2Mbps-92038391.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zd9135212099xf1&_p=1791605990770&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=910281933.1791605991&dt=SORA%20GREEN%20WOOLLEN%20DRESS&tid=AW-738573432&en=page_view&dl=ht",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=910281933.1791605991&gtm=45be6a72v889223983za208zb9135212099zd9135212099xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a80h2v9123333738za200zb9135212099zd9135212099xf1&_p=1791605990770&gcs=G111&gcd=13",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a80h2v9123333738za200zb9135212099zd9135212099xf1&_p=1791605990770&_gaz=1&gcs=G111",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zb9135212099zd9135212099xf1&_p=1791605990770&g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/02324cc2cec6475699f34881e3b230b2/02324cc2cec6475699f34881e3b230b2.HD-1080p-7.2Mbps-92021609.mp4?v=0"
+          ],
+          "loads": [
+            {
+              "url": "/products/dl26-dr-071-sora-green-woollen-dress?variant=43781376573501",
+              "ttfb": 0.04,
+              "dcl": 0.89,
+              "load": 2.4,
+              "lcp": 0.67
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.05s",
+              "error": null,
+              "secs": 3.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "SORA GREEN WOOLLEN DRESS",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3123 chars, 41 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'SORA GREEN WOOLLEN  DRESS', selected variant 43781376573501 at \u20b932,200.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/dl26-dr-071-sora-green-woollen-dress.js with variants",
+                  "actual": "'SORA GREEN WOOLLEN  DRESS', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+              "secs": 3.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "SORA GREEN WOOLLEN  DRESS",
+                  "actual": "'SORA GREEN WOOLLEN DRESS' (h1, 18px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b932,200.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b932,200.00, got not on page",
+          "screenshot": "product.pdp.dl26-dr-071-sora-green-woollen-dress.a3.png",
+          "trace": "product.pdp.dl26-dr-071-sora-green-woollen-dress.a3_trace.zip",
+          "secs": 7.93,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://doodlage.in/api/collect",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/14175d1476bc4c179d5d01eafb788409/14175d1476bc4c179d5d01eafb788409.HD-1080p-7.2Mbps-92021738.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/b3b38a1aa68149b5b29225e48b60db23/b3b38a1aa68149b5b29225e48b60db23.HD-1080p-3.3Mbps-92034398.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/395a70625a77404c85fa90ecbdd0d46a/395a70625a77404c85fa90ecbdd0d46a.HD-1080p-7.2Mbps-92037716.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/e4b29e9871fd4c6394dfa31a30189a14/e4b29e9871fd4c6394dfa31a30189a14.HD-1080p-7.2Mbps-71949920.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/cbd28963e1ea44eb876e57b9432b152d/cbd28963e1ea44eb876e57b9432b152d.HD-1080p-7.2Mbps-92036547.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/97d4a71460464f7b9f3965be52a1b050/97d4a71460464f7b9f3965be52a1b050.HD-1080p-7.2Mbps-92038391.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/a55cc5d1c5d84bef9dca3c8a53cdcca9/a55cc5d1c5d84bef9dca3c8a53cdcca9.HD-1080p-7.2Mbps-92037710.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=586297890.1791606001&dt=SORA%20GREEN%20WOOLLEN%20DRESS&tid=AW-738573432&en=page_view&dl=ht",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=586297890.1791606001&gtm=45be6a72v889223983za208zd889223983xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zb889223983zd889223983xf1&_p=1791606000563&_gaz=1&gcs=G111&gcd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zb889223983zd889223983xf1&_p=1791606000563&gcs=G111&gcd=13t3t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zb889223983zd889223983xf1&_p=1791606000563&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zb889223983zd889223983xf1&_p=1791606000563&_gaz=1&gcs=G111&gcd",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/02324cc2cec6475699f34881e3b230b2/02324cc2cec6475699f34881e3b230b2.HD-1080p-7.2Mbps-92021609.mp4?v=0"
+          ],
+          "loads": [
+            {
+              "url": "/products/dl26-dr-071-sora-green-woollen-dress?variant=43781376573501",
+              "ttfb": 0.04,
+              "dcl": 0.8,
+              "load": 2.34,
+              "lcp": 0.68
+            }
+          ]
+        }
+      ],
+      "incident_signature": "doodlage.in|product.pdp.dl26-dr-071-sora-green-woollen-dress|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product page clearly displays a price but in a different currency/format than the robot expected, so the check looked for the wrong price text (locator mismatch).",
+        "evidence": "Visible page text includes a price shown as \"$332.60\" next to the product title (SORA GREEN WOOLLEN DRESS); the robot expected \u201c\u20b932,200.00\u201d but the page shows a USD price instead."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.sora",
+      "suite": "search",
+      "title": "Search for 'sora' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.76s",
+              "error": null,
+              "secs": 2.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Doodlage | Made From Waste",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2456 chars, 22 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 48 results, 6 mention 'sora'",
+              "error": null,
+              "secs": 4.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "48",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'sora'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "6 of 48",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.91,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://doodlage.in/api/collect",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/6886de1d4e7e4f39b7647c729b0f4443/6886de1d4e7e4f39b7647c729b0f4443.HD-1080p-7.2Mbps-87945869.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/0064581447754e5fb1611fa134f607fa/0064581447754e5fb1611fa134f607fa.HD-1080p-7.2Mbps-87945228.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1724858975.1791606009&dt=Doodlage%20%7C%20Made%20From%20Waste&tid=AW-738573432&en=page_view",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1724858975.1791606009&gtm=45be6a80h2v889223983za208zd889223983xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zb889223983zd889223983xf1&_p=1791606008120&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zb889223983zd889223983xf1&_p=1791606008120&_gaz=1&gcs=G111&gcd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a80h2v9123333738za200zb889223983zd889223983xf1&_p=1791606008120&_gaz=1&gcs=G111&g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zd9123333738xf1&_p=1791606011812&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1724858975.1791606009&dt=Search%3A%20160%20results%20found%20for%20%22sora%22&tid=AW-738573"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.61,
+              "load": 1.73,
+              "lcp": 0.52
+            },
+            {
+              "url": "/search?q=sora",
+              "ttfb": 0.02,
+              "dcl": 0.79,
+              "load": 1.68,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.54s",
+              "error": null,
+              "secs": 2.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Doodlage | Made From Waste",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2456 chars, 22 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Doodlage | Made From Waste",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "26: 'Doodlage | Made From Waste'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 181: \"India's most loved eco-fashion label. Upcycled, recycled & z\"",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "181: \"India's most loved eco-fashion label. Upcycled, recycled & z\"",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://doodlage.in/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://doodlage.in/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Doodlage | Made From Waste",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.49,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://doodlage.in/api/collect",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/0064581447754e5fb1611fa134f607fa/0064581447754e5fb1611fa134f607fa.HD-1080p-7.2Mbps-87945228.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/6886de1d4e7e4f39b7647c729b0f4443/6886de1d4e7e4f39b7647c729b0f4443.HD-1080p-7.2Mbps-87945869.mp4?v=0",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zd9123333738xf1&_p=1791606014907&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1071364378.1791606015&dt=Doodlage%20%7C%20Made%20From%20Waste&tid=AW-738573432&en=page_vie",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1071364378.1791606015&gtm=45be6a80h2v889223983za208zb9123333738zd9123333738xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zb9123333738zd9123333738xf1&_p=1791606014907&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zb9123333738zd9123333738xf1&_p=1791606014907&_gaz=1&gcs=G111&g",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.44,
+              "load": 1.56,
+              "lcp": 0.4
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.88s",
+              "error": null,
+              "secs": 3.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "SORA GREEN WOOLLEN DRESS",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3123 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "SORA GREEN WOOLLEN DRESS",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "24: 'SORA GREEN WOOLLEN DRESS'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Elevate your everyday style with this effortless green shift'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Elevate your everyday style with this effortless green shift'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://doodlage.in/products/dl26-dr-071-sora-green-woollen-dress",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://doodlage.in/products/dl26-dr-071-sora-green-woollen-dress",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "SORA GREEN WOOLLEN  DRESS",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://doodlage.in/cdn/shop/files/DL26-DR-071_1.jpg?v=1791450977&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.27,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/14175d1476bc4c179d5d01eafb788409/14175d1476bc4c179d5d01eafb788409.HD-1080p-7.2Mbps-92021738.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/e4b29e9871fd4c6394dfa31a30189a14/e4b29e9871fd4c6394dfa31a30189a14.HD-1080p-7.2Mbps-71949920.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/a55cc5d1c5d84bef9dca3c8a53cdcca9/a55cc5d1c5d84bef9dca3c8a53cdcca9.HD-1080p-7.2Mbps-92037710.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/b3b38a1aa68149b5b29225e48b60db23/b3b38a1aa68149b5b29225e48b60db23.HD-1080p-3.3Mbps-92034398.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/cbd28963e1ea44eb876e57b9432b152d/cbd28963e1ea44eb876e57b9432b152d.HD-1080p-7.2Mbps-92036547.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/395a70625a77404c85fa90ecbdd0d46a/395a70625a77404c85fa90ecbdd0d46a.HD-1080p-7.2Mbps-92037716.mp4?v=0",
+            "GET https://doodlage.in/cdn/shop/videos/c/vp/97d4a71460464f7b9f3965be52a1b050/97d4a71460464f7b9f3965be52a1b050.HD-1080p-7.2Mbps-92038391.mp4?v=0",
+            "POST https://doodlage.in/api/collect",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zd9135212099xf1&_p=1791606017704&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zb9135212099zd9135212099xf1&_p=1791606017704&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zb9135212099zd9135212099xf1&_p=1791606017704&gcs=G111&gcd=13t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zb9135212099zd9135212099xf1&_p=1791606017704&g",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=175668013.1791606019&dt=SORA%20GREEN%20WOOLLEN%20DRESS&tid=AW-738573432&en=page_view&dl=htt",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=175668013.1791606019&gtm=45be6a72v889223983za208zb9135212099zd9135212099xecxf1&fmt=8",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/products/dl26-dr-071-sora-green-woollen-dress",
+              "ttfb": 0.04,
+              "dcl": 0.68,
+              "load": 2.13,
+              "lcp": 0.46
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 2.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.36,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 401 ()",
+              "url": "https://cachefront.nector.io/api/v2/merchant/aggreegateddetails?tier=null"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "AdRoll Pixel: Request to /products/bugradar-check-does-not-exist.js failed: \"\"",
+              "url": "https://s.adroll.com/j/LHHSSJUJIFGNBCDLXJ66N2/roundtrip.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://doodlage.in/api/collect",
+            "POST https://doodlage.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XNSQKZ1B51&gtm=45Pe6a72v9218637497za200zd9218637497xf1&_p=1791606020711&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-FC8E87ZTMR&gtm=45je6a72v9135212099za200zb9218637497zd9218637497xf1&_p=1791606020711&_gaz=1&gcs=G111&g",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=2082117404.1791606021&dt=404%20Not%20Found&tid=AW-738573432&en=page_view&dl=https%3A%2F%2Fd",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2082117404.1791606021&gtm=45be6a72v889223983za208zb9218637497zd9218637497xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-99KL08SESC&gtm=45je6a72v9123333738za200zb9218637497zd9218637497xf1&_p=1791606020711&_gaz=1&gcs=G111&g",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.23,
+              "dcl": 0.66,
+              "load": 1.58,
+              "lcp": 0.49
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 2,
+    "input_tokens": 5662,
+    "output_tokens": 264,
+    "est_usd": 0.001944,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Doodlage | Made From Waste",
+    "theme": "Prestige (store copy: Updated Latest Theme - Staging | Black)",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 17,
+    "collections": 49,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "16 product(s) not listed in the browsed collections are tested last (e.g. earo-shirt)"
+  ],
+  "perf": {
+    "pages": 8,
+    "median_load_secs": 1.71,
+    "slowest": {
+      "url": "/products/dl26-dr-071-sora-green-woollen-dress?variant=43781376573501",
+      "load_secs": 2.34
+    },
+    "console_errors": 2,
+    "console_warnings": 3,
+    "failed_requests": 75
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 0,
+    "confirmed_fail": 2,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
