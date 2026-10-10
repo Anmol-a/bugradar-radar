@@ -289,6 +289,8 @@ class Session:
         path = urlparse(url).path
         if path.startswith("/cart") and self.s.allow_cart_flow:
             return True   # shopper-flow exemption, see ARCHITECTURE.md
+        if (path.rstrip("/") == "/checkout" or path.startswith("/checkouts/")) and self.s.allow_cart_flow:
+            return True   # opening the checkout page to see it renders (Anmol, 10 Oct): one GET, never filled or paid
         if path.rstrip("/") == "/search" and self.s.search_is_shopper_flow:
             return True   # a shopper typing in the store's own search box; see ARCHITECTURE.md
         return self.robots.allowed(url)

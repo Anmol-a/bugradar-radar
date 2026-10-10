@@ -12,7 +12,7 @@ const $ = s => document.querySelector(s);
 const h = (t,a={},...k)=>{const e=document.createElement(t);for(const[x,v]of Object.entries(a)){if(x==='class')e.className=v;
   else if(x.startsWith('on'))e.addEventListener(x.slice(2),v);else if(v!=null)e.setAttribute(x,v)}
   for(const c of k.flat())if(c!=null)e.append(c.nodeType?c:document.createTextNode(String(c)));return e};
-const SUITES = ['journey','smoke','catalog','product','cart','search','health'];
+const SUITES = ['journey','smoke','catalog','product','cart','search','health','info'];
 const CELL = {pass:['✓','s-pass'], flaky:['~','s-flaky'], confirmed_fail:['✕','s-confirmed_fail'], blocked:['–','s-blocked'], skipped:['–','s-skip']};
 const DEV = D.devices || ['desktop'];
 const mark = (r, dev, s) => { const sd = (r.suites_by_device||{})[dev]; const v = sd ? sd[s] : undefined; const c = CELL[v] || ['·','meta'];

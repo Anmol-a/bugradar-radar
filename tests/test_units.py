@@ -94,6 +94,9 @@ def test_builder_generates_all_suites():
     assert j.check == "shopper_journey" and j.params["product_handles"] == ["vase"] and j.params["allow_cart"]
     cart = next(s for s in suites if s.id == "cart").cases[0]
     assert cart.params["variant_id"] == 2 and cart.severity == "critical"
+    edit = next(s for s in suites if s.id == "cart").cases[1]       # journeys #19-#21: warnings until a bench measures them
+    assert edit.check == "cart_edit" and edit.params["variant_id"] == 2 and edit.params["strict"] is False
+    assert edit.severity == "major"
     search = next(s for s in suites if s.id == "search").cases[0]
     assert "q=vase" in search.params["url"]
     assert all(c.id.startswith(s.id + ".") for s in suites for c in s.cases)   # stable ids
@@ -745,6 +748,12 @@ def test_footer_links_are_read_as_one_info_page_per_kind_same_store_only():
         ("privacy", "https://www.shop.example.in/pages/privacy-policy"), ("terms", base + "/pages/terms-conditions"),
         ("contact", base + "/pages/contact")]
     assert info_pages([], base) == []
+    # a company-law filing is not the refund page (giva.co, run 38077075618), nor any file under /cdn/
+    filing = [{"text": "Annual Return FY 2024-25", "url": base + "/cdn/shop/t/234/assets/annual-return-fy-2024-25.pdf"},
+              {"text": "Annual Return", "url": base + "/pages/annual-return"},
+              {"text": "Returns", "url": base + "/pages/returns.pdf"},
+              {"text": "Return & Exchange", "url": base + "/pages/return-exchange"}]
+    assert [(p["kind"], p["url"]) for p in info_pages(filing, base)] == [("refund", base + "/pages/return-exchange")]
 
 
 def test_layout_verdicts_say_what_sticks_out_and_what_covers_the_screen():
@@ -795,3 +804,15 @@ def test_a_popup_radar_could_not_close_is_not_counted_as_a_covering_bar():
     v = layout_verdicts({"moved": 0, "vw": 412}, {"pct": 0, "popup_pct": 92, "by": []})[1]
     assert v[3] and v[2] == "0% (a popup Radar could not close covered 92%, not counted)"
     assert layout_verdicts({"moved": 8, "vw": 412}, {"pct": 0})[0][3]          # 8 px of sideways play: noise, not judged
+def test_checkout_page_is_opened_only_inside_the_cart_flow():
+    """robots.txt disallows /checkout on every Shopify store; Radar opens it (to see it renders, never filled) only when
+    the cart flow is on, like /cart. Everything else under robots.txt is unchanged."""
+    from radar.core.browser import Session
+    from radar.core.robots import Robots
+    rob = Robots("User-agent: *\nDisallow: /checkout\nDisallow: /checkouts/\nDisallow: /admin\n", "BugRadar")
+    for cart, want in ((True, True), (False, False)):
+        sess = Session.__new__(Session)
+        sess.s, sess.robots = replace(Settings(), allow_cart_flow=cart), rob
+        assert sess.allowed("https://x.in/checkout") is want
+        assert sess.allowed("https://x.in/checkouts/cn/abc123") is want
+        assert sess.allowed("https://x.in/admin") is False

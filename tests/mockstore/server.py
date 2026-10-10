@@ -165,6 +165,13 @@ Modes (to prove Radar catches and heals what it should):
    the connectivity probe at a dead port (Radar offline) or at a live server (Radar online, store died).)
   empty_doc_title  every page renders normally but its <title> is empty (hairoriginals.com, new30e held-out)
                    -> pages load (no 'down'); the SEO test 'title' warns
+  annual_return_pdf  the footer's first link is 'Annual Return FY 2024-25', a PDF under /cdn/ (giva.co): a company-law
+                   filing, not the returns policy -> never picked as an info page, info.policy_pages PASSES
+  cart_qty_broken  the cart page's + / − buttons and quantity box do nothing (theme script missing) -> cart.edit_and_checkout
+                   WARNS (strict: FAILS) at change_quantity "cart quantity after pressing +: expected 2"
+  cart_remove_broken  the cart page's Remove link reloads the cart without removing the line -> WARNS (strict: FAILS) at
+                   remove_item
+  checkout_broken  GET /checkout answers HTTP 500 -> WARNS (strict: FAILS) at checkout_opens (checkout never filled)
   no_title         product pages show no product name at all (snitch.co.in after its move)
                    -> product tests FAIL at shows_title_price_image with "none"
   (every mode)     footer links to an 'Annual Return FY 2024-25' PDF (downloads; giva.co), /pages/shipping-policy, /policies/refund-policy, /pages/privacy-policy,
@@ -208,6 +215,7 @@ Run by hand to look at it:  python3 -m tests.mockstore.server healthy 8765
 from __future__ import annotations
 
 import json
+from radar.discovery.shopify_data import rupees
 import re
 import sys
 import threading
@@ -427,6 +435,9 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             body = body.replace("</body>", '<div class="sticky-info" style="position:fixed;left:0;right:0;bottom:0;'
                                 'height:42vh;background:#222;color:#fff;z-index:20">Free delivery above Rs 999 · '
                                 'Easy 7-day returns · Cash on delivery</div></body>')
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "annual_return_pdf":
+            body = body.replace('<div class="footer-menu">', '<div class="footer-menu"><a href="/cdn/shop/t/234/assets/'
+                                'annual-return-fy-2024-25.pdf">Annual Return FY 2024-25</a> ')
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "empty_doc_title":
             body = re.sub(r"<title>.*?</title>", "<title></title>", body, count=1, flags=re.S)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode in self.OVERLAYS:
@@ -835,11 +846,53 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             items = CARTS[cid]
             return self._json({"items": items, "item_count": sum(i["quantity"] for i in items),
                                "total_price": sum(i.get("price", 0) * i["quantity"] for i in items)}, set_cart=new)
+        if path == "/cart/change":            # Shopify: GET /cart/change?line=N&quantity=Q, then back to the cart page
+            if self.mode != "cart_remove_broken":
+                self._change(cid, int((q.get("line") or ["0"])[0]), int((q.get("quantity") or ["0"])[0]))
+            self.send_response(302)
+            self.send_header("Location", "/cart")
+            self.end_headers()
+            return
+        if path in ("/checkout", "/checkouts/cn/mock"):
+            items = CARTS[cid]
+            if not items:                          # Shopify sends an empty cart back to the cart page
+                self.send_response(302)
+                self.send_header("Location", "/cart")
+                self.end_headers()
+                return
+            if self.mode == "checkout_broken":
+                return self._send(500, page("Checkout error", "<h1>There was a problem with our checkout</h1>"))
+            summary = "".join(f'<div class="summary-line">{i["title"]} × {i["quantity"]} {rupees(i["price"] * i["quantity"])}</div>'
+                              for i in items)
+            return self._send(200, page("Checkout - Mock Store", '<h2>Contact</h2><input type="email" name="email" '
+                                        'placeholder="Email or mobile phone number" autocomplete="shipping email"><h2>Delivery</h2>'
+                                        '<input name="firstName" placeholder="First name"><h2>Payment</h2>'
+                                        f'<button type="submit" id="checkout-pay-button">Pay now</button><aside>{summary}</aside>',
+                                        shopify=True))
         if path == "/cart":
             items = CARTS[cid]
-            rows = "".join(f'<div class="cart-item">{i["title"]} x{i["quantity"]}</div>' for i in items) or "<p>Your cart is empty</p>"
+            # Dawn-like cart rows: − / quantity / + controls, a remove link, the line price, a subtotal
+            rows = "".join(
+                f'<div class="cart-item" data-line="{n}">{i["title"]} x{i["quantity"]} '
+                f'<span class="line-price">{rupees(i["price"] * i["quantity"])}</span>'
+                f'<quantity-input><button type="button" name="minus" aria-label="Decrease quantity for {i["title"]}">−</button>'
+                f'<input class="quantity__input" type="number" name="updates[]" value="{i["quantity"]}" data-line="{n}" '
+                f'aria-label="Quantity for {i["title"]}"><button type="button" name="plus" '
+                f'aria-label="Increase quantity for {i["title"]}">+</button></quantity-input>'
+                f'<cart-remove-button><a href="/cart/change?line={n}&quantity=0" aria-label="Remove {i["title"]}">Remove</a>'
+                f'</cart-remove-button></div>' for n, i in enumerate(items, 1)) or "<p>Your cart is empty</p>"
+            total = sum(i["price"] * i["quantity"] for i in items)
+            js = "" if self.mode == "cart_qty_broken" else """<script>
+document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySelector('input');
+  const set = v => fetch('/cart/change.js', {method: 'POST', headers: {'content-type': 'application/json'},
+    body: JSON.stringify({line: +inp.dataset.line, quantity: v})}).then(() => location.reload());
+  q.querySelector('[name=plus]').onclick = () => set(+inp.value + 1);
+  q.querySelector('[name=minus]').onclick = () => set(Math.max(0, +inp.value - 1));
+  inp.onchange = () => set(+inp.value); });
+</script>"""
             return self._send(200, page("Your Cart | Mock Store",
-                                        f'{rows}<form action="/checkout" method="post"><button type="submit" name="checkout">Check out</button></form>'),
+                                        f'{rows}<p class="totals">Subtotal {rupees(total)}</p>'
+                                        f'<form action="/checkout" method="post"><button type="submit" name="checkout">Check out</button></form>{js}'),
                               set_cart=new)
         if path == "/search/suggest.json":
             term = (q.get("q") or [""])[0].lower()
@@ -1027,11 +1080,25 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             script += f"<script>setTimeout(() => location.replace('{p['redirect']}'), 150)</script>"
         return page(f"{p['title']} | Mock Store", body, f'<script type="application/ld+json">{ld}</script>{script}')
 
+    @staticmethod
+    def _change(cid, line: int, qty: int):
+        items = CARTS.get(cid, [])
+        if 1 <= line <= len(items):
+            if qty <= 0:
+                items.pop(line - 1)
+            else:
+                items[line - 1]["quantity"] = qty
+
     def do_POST(self):
         if self.mode == "signed_only" and not self._signed_ok():
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         cid, new = self._cart()
+        if u.path == "/cart/change.js":
+            body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+            self._change(cid, int(body.get("line") or 0), int(body.get("quantity") or 0))
+            items = CARTS[cid]
+            return self._json({"items": items, "item_count": sum(i["quantity"] for i in items)}, set_cart=new)
         if u.path == "/cart/add.js":
             if self.mode == "cart_broken":
                 return self._json({"status": 500, "description": "cart service down"}, 500)

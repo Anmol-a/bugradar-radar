@@ -29,7 +29,7 @@ from pathlib import Path
 from radar.core.browser import DEFAULT_DEVICES
 from radar.core.config import Settings, site_id_from_url
 
-SUITES = ["journey", "smoke", "catalog", "product", "cart", "search", "health"]
+SUITES = ["journey", "smoke", "catalog", "product", "cart", "search", "health", "info"]
 RANK = {"pass": 0, "skipped": 0, "blocked": 1, "flaky": 2, "confirmed_fail": 3}
 # worst-of for a store's verdict across devices. 'no_network' is highest on purpose: the row then says "run again"
 # (the device that did run is still shown under `devices`).

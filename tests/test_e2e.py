@@ -1327,3 +1327,66 @@ def test_layout_shift_shows_as_a_poor_core_web_vitals_warning(tmp_path):
         assert s.status == "warn" and "CLS" in s.error and "poor > 0.25" in s.error, (prefix, s.error)
     pdp = _steps(_case(run, "product.pdp"))["web_vitals"]
     assert pdp.status == "pass" and pdp.detail.startswith("LCP "), pdp.detail
+def _cart_edit_only(mode, tmp_path, strict=False, **kw):
+    """Only the cart suite's cart.edit_and_checkout case. strict=True flips the builder's strict=False."""
+    import radar.runner.executor as ex
+    orig = ex.build_suites
+
+    def built(sm, s):
+        suites = orig(sm, s)
+        for x in suites:
+            if x.id == "cart":
+                x.cases = [c for c in x.cases if c.check == "cart_edit"]
+                for c in x.cases:
+                    c.params["strict"] = strict
+        return suites
+    ex.build_suites = built
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, **kw), only_suites=["cart"])[0]
+    finally:
+        srv.shutdown()
+        ex.build_suites = orig
+
+
+def test_cart_page_quantity_checkout_and_remove_work_on_a_healthy_store(tmp_path):
+    """Journeys #19-#21: on the cart PAGE, + raises the quantity (cart.js 1 → 2, page shows 2 × price), the checkout page
+    renders (fields shown, none filled; robots.txt's /checkout opened only inside the cart flow), remove empties it."""
+    run = _cart_edit_only("healthy", tmp_path)
+    c = _case(run, "cart.edit_and_checkout")
+    st = _steps(c)
+    assert c.verdict == "pass" and all(s.status == "pass" for s in st.values()), [(s.name, s.status, s.error) for s in st.values()]
+    assert "pressed +" in st["change_quantity"].detail and "1 → 2" in st["change_quantity"].detail
+    assert "₹2,598.00" in st["change_quantity"].detail                         # 2 × ₹1,299 vase
+    assert "none filled" in st["checkout_opens"].detail and "/checkout" in st["checkout_opens"].detail
+    assert "no longer lists it" in st["remove_item"].detail
+    assert run.verdict == "healthy"
+
+
+@pytest.mark.parametrize("mode,step,words", [
+    ("cart_qty_broken", "change_quantity", "cart quantity after pressing +: expected 2"),
+    ("cart_remove_broken", "remove_item", "cart quantity of this product after remove: expected 0"),
+    ("checkout_broken", "checkout_opens", "checkout page HTTP status: expected < 400, got 500"),
+])
+def test_broken_cart_page_or_checkout_warns_now_and_fails_when_strict(tmp_path, mode, step, words):
+    c = _case(_cart_edit_only(mode, tmp_path), "cart.edit_and_checkout")
+    st = _steps(c)[step]
+    assert c.verdict == "pass" and st.status == "warn" and words in st.error, (c.verdict, st.status, st.error)
+    strict = _case(_cart_edit_only(mode, tmp_path / "strict", strict=True), "cart.edit_and_checkout")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == step, (strict.verdict, strict.attempts[-1].error)
+    assert words in strict.attempts[-1].error
+
+
+def test_checkout_page_is_not_opened_without_the_cart_flow(tmp_path):
+    """--no-cart: no cart suite at all, so neither /cart nor /checkout is ever requested."""
+    run, _ = _scan("healthy", tmp_path, allow_cart_flow=False)
+    assert not any(c.case_id.startswith("cart.") for c in run.cases)
+
+
+def test_footer_annual_return_pdf_is_not_read_as_the_refund_page(tmp_path):
+    """giva.co (run 38077075618, both devices): the footer's 'Annual Return FY 2024-25' PDF under /cdn/ was opened as
+    the refund page and failed info.policy_pages = a Radar false failure. Files and company-law filings are skipped."""
+    run = _info("annual_return_pdf", tmp_path)
+    c = _case(run, "info.policy_pages")
+    assert c.verdict == "pass", c.attempts[-1].error
+    assert "annual-return" not in json.dumps([s.detail for s in c.attempts[-1].steps], default=str)

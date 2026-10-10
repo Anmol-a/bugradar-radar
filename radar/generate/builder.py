@@ -137,7 +137,11 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
             "cart.add_to_cart", "cart", f"Add '{buyable.title[:40]}' to cart", "add_to_cart",
             {"url": f"{buyable.url}?variant={buyable.variant_id}", "variant_id": buyable.variant_id,
              "cart_path": sm.cart_path}, "critical",
-            "Click add to cart, /cart.js contains the variant, checkout button visible (never clicked)")]))
+            "Click add to cart, /cart.js contains the variant, checkout button visible (never clicked)"),
+            TestCase("cart.edit_and_checkout", "cart", "Cart page: change quantity, checkout opens, remove item", "cart_edit",
+                     {"url": f"{buyable.url}?variant={buyable.variant_id}", "variant_id": buyable.variant_id,
+                      "cart_path": sm.cart_path, "strict": False}, "major",
+                     "Quantity + updates line and subtotal; checkout page renders (never filled); remove empties the cart")]))
 
     terms = []
     for p in picks + spare:

@@ -116,7 +116,7 @@ const h = (tag, attrs={}, ...kids) => { const e = document.createElement(tag);
   for (const k of kids.flat()) if (k!==null && k!==undefined) e.append(k.nodeType ? k : document.createTextNode(String(k)));
   return e; };
 const ICON = {pass:'✓',fail:'✕',warn:'!',info:'i',skip:'–'};
-const SUITES = ['journey','smoke','catalog','product','cart','search','health'];
+const SUITES = ['journey','smoke','catalog','product','cart','search','health','info'];
 const caseStatus = c => c.verdict;
 const hasWarn = c => c.attempts.some(a => a.steps.some(s => s.status==='warn'));
 const hasHeal = c => c.attempts.some(a => a.steps.some(s => s.healed));

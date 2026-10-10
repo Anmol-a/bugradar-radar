@@ -2298,6 +2298,169 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
     _cart_view_and_checkout(ctx, p, cart_path)
 
 
+# ---------------- cart edit + checkout page (journeys #19, #20, #21) ----------------
+
+# The cart line of one variant and its controls, the way themes build them: a quantity box (name="updates[]",
+# type=number, Dawn's .quantity__input), + / − buttons (name="plus", aria-label "Increase quantity"), a remove control
+# (/cart/change?...quantity=0 link, <cart-remove-button>, "Remove" / trash icon). Marks what it found for the locators.
+CART_LINE_JS = r"""([vid, title]) => {
+  document.querySelectorAll('[data-radar-cart]').forEach(e => e.removeAttribute('data-radar-cart'));
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const norm = t => (t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const qtySel = 'input[name="updates[]"], input[name^="updates"], input.quantity__input, input[name="quantity"], ' +
+                 'input[type="number"], input[data-quantity-input], input[class*="qty" i], input[class*="quantity" i]';
+  const inputs = [...document.querySelectorAll(qtySel)].filter(i => vis(i) && !i.closest('form[action*="/cart/add"]'));
+  let best = null;
+  for (const inp of inputs) {                 // the line: the input's nearest ancestor that names this product / variant
+    let row = inp;
+    for (let k = 0; k < 7 && row.parentElement; k++) {
+      row = row.parentElement;
+      const html = row.outerHTML.slice(0, 20000);
+      if ((vid && html.includes(String(vid))) || norm(row.innerText).includes(norm(title))) { best = {inp, row}; break; }
+    }
+    if (best) break;
+  }
+  if (!best) return null;
+  const {inp, row} = best;
+  inp.setAttribute('data-radar-cart', 'qty');
+  const btns = [...row.querySelectorAll('button, a, [role="button"], span[class*="plus" i], span[class*="minus" i]')].filter(vis);
+  const label = b => ((b.getAttribute('name') || '') + ' ' + (b.getAttribute('aria-label') || '') + ' ' + (b.className || '') +
+                      ' ' + (b.getAttribute('data-action') || '') + ' ' + (b.innerText || '').trim()).toLowerCase();
+  const plus = btns.find(b => /\bplus\b|increase|increment|\binc\b|add one|qty-up|\bup\b/.test(label(b)) ||
+                              /^\+$/.test((b.innerText || '').trim()));
+  if (plus) plus.setAttribute('data-radar-cart', 'plus');
+  const rem = [...row.querySelectorAll('a[href*="/cart/change"][href*="quantity=0"], cart-remove-button a, cart-remove-button button, ' +
+                                       'button, a, [role="button"]')].filter(vis)
+    .find(b => /cart\/change.*quantity=0/.test(b.getAttribute('href') || '') || b.closest('cart-remove-button') ||
+               /remove|delete|trash|bin\b/.test(label(b)));
+  if (rem) rem.setAttribute('data-radar-cart', 'remove');
+  return {qty: inp.value, plus: plus ? label(plus).slice(0, 60) : null, remove: rem ? label(rem).slice(0, 60) : null};
+}"""
+
+EMPTY_CART_RX = re.compile(r"cart is empty|bag is empty|basket is empty|no items|nothing in your (cart|bag)|"
+                           r"haven.t added|cart is currently empty|empty cart|your cart is empty", re.I)
+
+
+def _cart_qty(ctx: Ctx, base: str, vid: int) -> int:
+    c = ctx.sess.get_json(f"{base}/cart.js")
+    return sum(int(i.get("quantity") or 0) for i in c.get("items", []) if int(i.get("variant_id") or i.get("id") or 0) == vid)
+
+
+def _wait_qty(ctx: Ctx, base: str, vid: int, want: int, secs: float = 8) -> int:
+    got = -1
+    for _ in range(int(secs / 0.6)):
+        got = _cart_qty(ctx, base, vid)
+        if got == want:
+            break
+        ctx.sess.page.wait_for_timeout(600)
+    return got
+
+
+def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", strict: bool = False):
+    """Journeys #19-#21 in one session, on the store's own cart PAGE: raise the quantity (the line and the subtotal
+    update), open the checkout page (it must render; NEVER filled, nothing typed, no payment), remove the item (the cart
+    is empty). The item is put in Radar's own cart by the same request the store's buy button sends (/cart/add.js);
+    the buy-button click itself is the cart suite's add_to_cart test. Warnings unless strict (not yet measured on a
+    bench). Only cart actions in Radar's own browser session; no order, no form that sends data to the store."""
+    base, page, vid = _base(url), ctx.sess.page, int(variant_id)
+    soft = not strict
+    state: dict = {}
+    ctx.steps.run("product_loads", lambda: _load(ctx, url))
+
+    def put_in_cart():
+        p = _product_js(ctx, page.url)
+        v = next((x for x in p["variants"] if int(x["id"]) == vid), None)
+        ctx.expect("variant in the store's product data", vid, v and v["id"], v is not None)
+        state.update(p=p, v=v)
+        r = ctx.sess.evaluate("""async (id) => { const r = await fetch('/cart/add.js', {method: 'POST',
+            headers: {'content-type': 'application/json', 'accept': 'application/json'},
+            body: JSON.stringify({id, quantity: 1})}); return r.status; }""", vid)
+        ctx.expect("/cart/add.js answer", "< 400", r, (r or 999) < 400)
+        q = _wait_qty(ctx, base, vid, 1, 5)
+        ctx.expect("cart quantity of this product", 1, q)
+        return f"{p['title']!r} ×1 in Radar's own cart"
+    # soft like the rest: a cart that cannot take the item at all is cart.add_to_cart's (critical) finding, not a second
+    # incident from this case (mock cart_broken: one incident for the journey, one for add_to_cart)
+    if ctx.steps.run("item_in_cart", put_in_cart, soft=soft) is None:
+        return
+    title, price = state["p"]["title"], int(state["v"]["price"])
+
+    def open_cart():
+        _load(ctx, base + cart_path)
+        _dismiss(ctx)
+        found = ctx.sess.evaluate(CART_LINE_JS, [vid, title])
+        ctx.expect("cart page lists the product with a quantity box", f"{title} line", found and f"line found, qty {found['qty']}",
+                   bool(found))
+        state["line"] = found
+        return (f"cart page line: qty {found['qty']}; + control: {found['plus'] or 'none (quantity box)'}; "
+                f"remove control: {found['remove'] or 'none found'}")
+    if ctx.steps.run("cart_page_line", open_cart, soft=soft) is None:
+        return
+
+    def change_qty():
+        line = state["line"]
+        if line["plus"]:
+            page.locator('[data-radar-cart="plus"]').first.click(timeout=8000)
+            how = f"pressed + ({line['plus'][:30]!r})"
+        else:
+            box = page.locator('[data-radar-cart="qty"]').first
+            box.fill("2")
+            box.dispatch_event("change")
+            box.press("Tab")
+            how = "typed 2 in the quantity box"
+            upd = page.locator('button[name="update"], input[name="update"]')
+            if upd.count() and upd.first.is_visible():
+                upd.first.click(timeout=5000)
+                how += ", pressed Update"
+        q = _wait_qty(ctx, base, vid, 2)
+        ctx.expect("cart quantity after " + ("pressing +" if line["plus"] else "setting 2"), 2, q)
+        ctx.sess.settle()
+        found = ctx.sess.evaluate(CART_LINE_JS, [vid, title])
+        text = ctx.sess.evaluate("() => document.body.innerText")
+        ok, shown = price_shown(price * 2 / 100, prices_in_text(text))
+        # soft inside: a theme may show the line price only at unit price; the quantity box must show 2
+        ctx.expect("quantity shown on the page", "2", found and found["qty"], bool(found) and str(found["qty"]).strip() == "2")
+        ctx.expect("line / subtotal shows 2 × price", rupees(price * 2), shown or "not on page", ok)
+        return f"{how}: /cart.js quantity 1 → 2, page shows {shown}"
+    ctx.steps.run("change_quantity", change_qty, soft=soft)
+
+    def checkout_opens():
+        resp, _ = ctx.sess.goto(base + "/checkout")
+        ctx.sess.settle()
+        status, final = (resp.status if resp else None), page.url
+        ctx.expect("checkout page HTTP status", "< 400", status, status is None or status < 400)
+        ctx.expect("landed on the checkout", "/checkouts/… or /checkout", _path(final),
+                   bool(re.search(r"/checkouts?(/|$)", urlparse(final).path)) or "checkout" in (urlparse(final).hostname or ""))
+        page.wait_for_timeout(1500)                       # checkout is a single-page app
+        info = ctx.sess.evaluate("""() => ({text: (document.body.textContent || '').replace(/\\s+/g, ' ').slice(0, 20000),
+            fields: [...document.querySelectorAll('input')].filter(i => { const r = i.getBoundingClientRect();
+              return r.width > 0 && r.height > 0 && !/hidden|checkbox|radio/.test(i.type); }).length})""")
+        ctx.expect("checkout shows a form a shopper would fill", "≥ 1 field (NOT filled by Radar)", f"{info['fields']} fields",
+                   info["fields"] >= 1)
+        ctx.expect("checkout order summary names the product", title, "named" if norm_text(title) in norm_text(info["text"])
+                   else "not found in the checkout page", norm_text(title) in norm_text(info["text"]))
+        return f"checkout rendered at {_path(final)} ({info['fields']} fields shown, none filled; nothing submitted)"
+    ctx.steps.run("checkout_opens", checkout_opens, soft=soft)
+
+    def remove():
+        _load(ctx, base + cart_path)
+        _dismiss(ctx)
+        found = ctx.sess.evaluate(CART_LINE_JS, [vid, title])
+        ctx.expect("remove control on the product's cart line", "found", found and (found["remove"] or "none"),
+                   bool(found and found["remove"]))
+        page.locator('[data-radar-cart="remove"]').first.click(timeout=8000)
+        q = _wait_qty(ctx, base, vid, 0)
+        ctx.expect("cart quantity of this product after remove", 0, q)
+        ctx.sess.settle()
+        text = ctx.sess.evaluate("() => document.body.innerText")
+        gone = not ctx.sess.evaluate(CART_LINE_JS, [vid, title])
+        ctx.expect("cart page no longer lists the product", "gone (or 'cart is empty')",
+                   "gone" + (", 'empty' message shown" if EMPTY_CART_RX.search(text) else "") if gone else "still listed", gone)
+        return f"pressed {found['remove'][:30]!r}: /cart.js has 0 of it, the cart page no longer lists it"
+    ctx.steps.run("remove_item", remove, soft=soft)
+
+
 REGISTRY: dict[str, Callable] = {
     "page_health": page_health, "links_resolve": links_resolve, "collection_page": collection_page,
     "product_page": product_page, "add_to_cart": add_to_cart, "search_results": search_results,
@@ -2305,4 +2468,5 @@ REGISTRY: dict[str, Callable] = {
     "info_pages": info_pages, "account_page": account_page,
     "search_no_results": search_no_results, "search_suggestions": search_suggestions,
     "collection_more": collection_more,
+    "cart_edit": cart_edit,
 }

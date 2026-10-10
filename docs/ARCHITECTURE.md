@@ -938,6 +938,41 @@ soulflower desktop PDP 51 px (tab buttons), boat-lifestyle phone PDP 12 px.
 and multi-filter URLs (to check per store, as the /account result above shows defaults vary). Sorting therefore cannot be tested without a rule change (the same question as `/policies/` and `/account`); a
 single filter (`?filter.v.availability=1`) is allowed. Not built yet.
 
+## 4zd. Journeys 19–21 (loop cycle 25, 11 Oct 2026, 00:50 IST): cart page quantity, checkout page opens, remove
+
+New case `cart.edit_and_checkout` (check `cart_edit`, suite `cart`, severity major, `strict: false` = warnings until a
+bench measures it). Generated only where the cart flow runs (`cart` in the bench list: Shopify's 12 theme demos and
+stores that agreed; real merchants stay read-only). One session:
+
+| Step | What Radar does | Judged |
+|---|---|---|
+| `item_in_cart` | puts the product in Radar's OWN cart with the same request the buy button sends (`/cart/add.js`); the click itself is `cart.add_to_cart`'s job | `/cart.js` has it ×1 |
+| `cart_page_line` | opens the cart PAGE and finds this product's line by its variant id / title, its quantity box (`updates[]`, `.quantity__input`, number input), + button (`name=plus`, 'Increase quantity', '+') and remove control (`/cart/change?…quantity=0`, `<cart-remove-button>`, 'Remove' / trash) | the line exists |
+| `change_quantity` (#19) | presses + (else types 2 in the box, presses Update if the theme has one) | `/cart.js` quantity 1 → 2, box shows 2, the page shows 2 × price |
+| `checkout_opens` (#21) | GET `/checkout` (what the button does), never typed into, never submitted | HTTP < 400, lands on `/checkouts/…`, ≥ 1 form field shown, the order summary names the product |
+| `remove_item` (#20) | back on the cart page, presses remove | `/cart.js` has 0 of it, the page no longer lists it ('cart is empty' noted) |
+
+**robots.txt:** `/checkout` and `/checkouts/` are opened only inside the cart flow, like `/cart` (Anmol, 10 Oct 23:15:
+"checkout page may be opened to confirm it loads, never filled, never paid"). Without the cart flow neither is ever
+requested (unit + e2e tests).
+
+**Mocks** (the mock cart page is now Dawn-like: − / box / +, Remove link, line price, subtotal; `/cart/change(.js)`,
+`/checkout`): `healthy` passes every step; `cart_qty_broken` (+ does nothing), `cart_remove_broken` (remove reloads
+without removing), `checkout_broken` (HTTP 500) each WARN with strict=false and FAIL with strict=true at that step.
+
+**giva.co 'Annual Return' PDF** (run 38077075618): fixed by the chat session in parallel (4zc-2); this cycle's mock
+`annual_return_pdf` + test stay as a second proof.
+
+**new30g never-seen (run 38078363377, run once, code with journeys 28–30):** 19 scored (4 not Shopify; 6 blocked = dead
+domains / DNS / wrong certificate / robots.txt Disallow (soulfull); kalkifashion parked). **2/19 Radar false-failure
+stores:** antesports (catalog-only: 'Buy on Amazon / Flipkart', no price, no cart: same pattern as beyondsnack, now 2
+stores → fix next), fixderma mobile (no buy control found for one product; desktop healthy). tilfi = location (US
+runner shows $497.04; Radar did not label it location: to check). nourishyou mobile: missing page → /collections/all
+(store finding).
+
+Also: the bench table and both HTML reports list the `info` suite (journeys 28–30): their suite lists stopped at
+`health`, so the report never showed it.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
@@ -1196,6 +1231,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 loop cycle 25 (11 Oct, 00:50 IST):** journeys 19–21 on the cart page (`cart.edit_and_checkout`: quantity +, checkout page renders, remove), warnings until benched; `/checkout` opened only inside the cart flow; new30g 2/19; reports list the `info` suite; mocks `cart_qty_broken`, `cart_remove_broken`, `checkout_broken` (4zd). Full 36 regression 38075087892 (before 28–30) = 62 healthy / 4 degraded (store findings) / 0 Radar false failures.
 - **v0.19 chat session (11 Oct, 00:45 IST):** journeys 27 (search no-results page + search-as-you-type), 26 (products past the first page), 14 (JS errors on collection pages), 17 (Core Web Vitals warnings); first real-store run of 28–30: giva.co PDF footer link fixed (the only new Radar false failure), late policy text, sign-in hand-off, layout noise threshold, popups apart (4zc-2).
 - **v0.19 chat session (11 Oct, 00:00 IST):** journeys 28–30: footer policy + contact pages (`info.policy_pages`), account login page (`info.account_page`), layout warnings on home / collection / product pages (sideways scroll, fixed bars covering > 35%); robots.txt-disallowed `/policies/` and `/account` noted, never opened; mocks `broken_policies`, `account_open`, `account_broken`, `sideways_scroll`, `tall_sticky_bar` (4zc).
 - **v0.19 loop cycle 11 (10 Oct, 09:46 IST):** product link opening a new tab is followed (mock `new_tab_cards`; fashor, tigc); one Shopify marker → homepage loaded again before 'not Shopify', evidence in the note (mock `stripped_first_home`; koskii); new30f final 4/21 (4z2).
