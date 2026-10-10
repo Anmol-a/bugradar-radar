@@ -1,0 +1,2456 @@
+{
+  "run_id": "20261010T011729Z-d-31c5",
+  "site_id": "nappadori.com",
+  "base_url": "https://nappadori.com",
+  "device": "desktop",
+  "started_at": "2026-10-10T01:17:29+00:00",
+  "finished_at": "2026-10-10T01:20:23+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.07s",
+              "error": null,
+              "secs": 7.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5281 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/accessories (17 products)",
+              "error": null,
+              "secs": 5.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/accessories ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/accessories",
+                  "actual": "/collections/accessories",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "17",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 33 candidates \u2192 /products/two-slot-watch-case-02",
+              "error": null,
+              "secs": 4.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/two-slot-watch-case-02 ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/two-slot-watch-case-02",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Two-Slot Watch Case 02', selected variant 50705006231609 at \u20b913,500.00",
+              "error": null,
+              "secs": 0.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/two-slot-watch-case-02.js with variants",
+                  "actual": "'Two-Slot Watch Case 02', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+              "secs": 1.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Two-Slot Watch Case 02",
+                  "actual": "'TWO-SLOT WATCH CASE 02' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b913,500.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 22.92,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Allow attribute will take precedence over 'allowfullscreen'.",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5542393&shop=nappadori-di.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x3c9401112400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "warning",
+              "text": "No available adapters.",
+              "url": "https://www.youtube.com/embed/O5gpNfJ830I?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=O5gpNfJ830I&rel=0&modestbranding=1"
+            },
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '...'",
+              "url": "https://www.nappadori.com/products/two-slot-watch-case-02"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595058154&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&ae=g&auid=1950492467.1791595060&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1950492467.1791595060&gtm=45He6a72h1v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zd880157618xf1&_p=1791595058154&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595061673&cv=11&fst=1791595061673&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=1950492467.1791595060&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%20N",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb880157618zd880157618xf1&_p=1791595058154&gcs",
+            "POST https://www.youtube.com/api/stats/qoe?cpn=NgKv0SHbnGQkL156&el=embedded&ns=yt&fexp=v1%2C100673025%2C627%2C-76669008%2C27058999%2C34656%2C124674%2C11768",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1950492467.1791595060&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595062714&cv=11&fst=1791595062714&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a80h2v886193829z8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=1950492467.1791595060&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20b",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&ae=g&auid=1950492467.1791595060&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zb858637672zd858637672xf1&_p=1791595066850&gcd=13l3l3l3l1l1&npa",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zb858637672zd858637672xf1&_p=1791595066850&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595068943&cv=11&fst=1791595068943&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=1950492467.1791595060&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore%20Na",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=1950492467.1791595060&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=1950492467.1791595060&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595069550&cv=11&fst=1791595069550&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 1.6,
+              "load": 5.0,
+              "lcp": 1.47
+            },
+            {
+              "url": "/collections/accessories",
+              "ttfb": 0.01,
+              "dcl": 1.7,
+              "load": 3.12,
+              "lcp": 2.06
+            },
+            {
+              "url": "/products/two-slot-watch-case-02",
+              "ttfb": 0.21,
+              "dcl": 1.03,
+              "load": 2.9,
+              "lcp": 2.52
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.15s",
+              "error": null,
+              "secs": 6.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5281 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/accessories (17 products)",
+              "error": null,
+              "secs": 4.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/accessories ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/accessories",
+                  "actual": "/collections/accessories",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "17",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 33 candidates \u2192 /products/two-slot-watch-case-02",
+              "error": null,
+              "secs": 5.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/two-slot-watch-case-02 ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/two-slot-watch-case-02",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Two-Slot Watch Case 02', selected variant 50705006231609 at \u20b913,500.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/two-slot-watch-case-02.js with variants",
+                  "actual": "'Two-Slot Watch Case 02', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+              "secs": 1.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Two-Slot Watch Case 02",
+                  "actual": "'TWO-SLOT WATCH CASE 02' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b913,500.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 21.94,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Allow attribute will take precedence over 'allowfullscreen'.",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5542393&shop=nappadori-di.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x3c94001ab400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "No available adapters.",
+              "url": "https://www.youtube.com/embed/O5gpNfJ830I?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=O5gpNfJ830I&rel=0&modestbranding=1"
+            },
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '...'",
+              "url": "https://www.nappadori.com/products/two-slot-watch-case-02"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za208zd880157618xf1&_p=1791595081061&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za200zd880157618xf1&_p=1791595081061&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&ae=g&auid=1982997737.1791595083&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=oBIsXDxPSgXffeJKBKYBeBVKjEZU_MlHWA&auid=1982997737.1791595083&gtm=45He6a72v858637672za200zd858637672xea",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595083857&cv=11&fst=1791595083857&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=1982997737.1791595083&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%20N",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb880157618zd880157618xf1&_p=1791595081061&gcs",
+            "POST https://www.youtube.com/api/stats/qoe?cpn=DB3njAPcr_UsAl2t&el=embedded&ns=yt&fexp=v1%2C100673025%2C627%2C-76669008%2C27058999%2C34656%2C124674%2C11768",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=1982997737.1791595083&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20b",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=1982997737.1791595083&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595085253&cv=11&fst=1791595085253&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a80h2v886193829z8",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&ae=g&auid=1982997737.1791595083&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explor",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za208zb858637672zd858637672xf1&_p=1791595088957&gcd=13l3l3l3l1l1&n",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za200zb858637672zd858637672xf1&_p=1791595088957&gcs=G111&gcd=13t3t",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=1982997737.1791595083&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore%20N",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595090943&cv=11&fst=1791595090943&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=1982997737.1791595083&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explor",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=1982997737.1791595083&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explor",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595091573&cv=11&fst=1791595091573&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a80h2v886193829z8"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 1.82,
+              "load": 4.58,
+              "lcp": 1.73
+            },
+            {
+              "url": "/collections/accessories",
+              "ttfb": 0.0,
+              "dcl": 1.71,
+              "load": 2.95,
+              "lcp": 2.04
+            },
+            {
+              "url": "/products/two-slot-watch-case-02",
+              "ttfb": 0.15,
+              "dcl": 0.96,
+              "load": 2.85,
+              "lcp": 2.34
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.52s",
+              "error": null,
+              "secs": 7.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5281 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/accessories (17 products)",
+              "error": null,
+              "secs": 5.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/accessories ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/accessories",
+                  "actual": "/collections/accessories",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "17",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 33 candidates \u2192 /products/two-slot-watch-case-02",
+              "error": null,
+              "secs": 5.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/two-slot-watch-case-02 ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/two-slot-watch-case-02",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Two-Slot Watch Case 02', selected variant 50705006231609 at \u20b913,500.00",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/two-slot-watch-case-02.js with variants",
+                  "actual": "'Two-Slot Watch Case 02', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+              "secs": 1.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Two-Slot Watch Case 02",
+                  "actual": "'TWO-SLOT WATCH CASE 02' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b913,500.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 22.6,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "warning",
+              "text": "Allow attribute will take precedence over 'allowfullscreen'.",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=81977&shop=nappadori-di.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x3c9404187600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "No available adapters.",
+              "url": "https://www.youtube.com/embed/O5gpNfJ830I?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=O5gpNfJ830I&rel=0&modestbranding=1"
+            },
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '...'",
+              "url": "https://www.nappadori.com/products/two-slot-watch-case-02"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595104773&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&ae=g&auid=1995770890.1791595107&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1995770890.1791595107&gtm=45He6a72v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zd880157618xf1&_p=1791595104773&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb880157618zd880157618xf1&_p=1791595104773&gcs",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=1995770890.1791595107&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%20N",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595108380&cv=11&fst=1791595108380&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.youtube.com/api/stats/qoe?cpn=Ly-tQthdkchTeslS&el=embedded&ns=yt&fexp=v1%2C100673025%2C627%2C-76669008%2C494890%2C26564109%2C34656%2C12467",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=1995770890.1791595107&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20b",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1995770890.1791595107&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595109116&cv=11&fst=1791595109116&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&ae=g&auid=1995770890.1791595107&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za208zb858637672zd858637672xf1&_p=1791595113001&gcd=13l3l3l3l1l1&n",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za200zb858637672zd858637672xf1&_p=1791595113001&gcs=G111&gcd=13t3t",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&auid=1995770890.1791595107&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore%20Na",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595115354&cv=11&fst=1791595115354&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=1995770890.1791595107&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=1995770890.1791595107&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595116136&cv=11&fst=1791595116136&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 1.93,
+              "load": 4.75,
+              "lcp": 1.78
+            },
+            {
+              "url": "/collections/accessories",
+              "ttfb": 0.01,
+              "dcl": 1.61,
+              "load": 3.56,
+              "lcp": 2.02
+            },
+            {
+              "url": "/products/two-slot-watch-case-02",
+              "ttfb": 0.2,
+              "dcl": 1.12,
+              "load": 3.25,
+              "lcp": 2.66
+            }
+          ]
+        }
+      ],
+      "incident_signature": "nappadori.com|journey.shopper|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The page shows a price but in USD ($139.44); the robot expected the INR price \u20b913,500.00 so it looked for the wrong text/locale rather than a shopper-facing error.",
+        "evidence": "Visible page text includes the price in USD: \"$139.44 (Inclusive of all taxes)\" and the product page shows product name and images; the expected INR price \"\u20b913,500.00\" is not present on the visible page."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.66s",
+              "error": null,
+              "secs": 6.84,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5281 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.66s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.66s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 10",
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "10",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of undefined (reading 'INR')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of undefined (reading 'INR')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.57,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Allow attribute will take precedence over 'allowfullscreen'.",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=81977&shop=nappadori-di.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "No available adapters.",
+              "url": "https://www.youtube.com/embed/O5gpNfJ830I?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=O5gpNfJ830I&rel=0&modestbranding=1"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za200zd880157618xf1&_p=1791595127444&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za208zd880157618xf1&_p=1791595127444&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=724137.1791595129&gtm=45He6a72v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&ae=g&auid=724137.1791595129&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%20",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=724137.1791595129&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%20Napp",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595130413&cv=11&fst=1791595130413&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb880157618zd880157618xf1&_p=1791595127444&gcs",
+            "POST https://www.youtube.com/api/stats/qoe?cpn=ZGEQBRsRK0VZacmD&el=embedded&ns=yt&fexp=v1%2C100673025%2C627%2C-76669008%2C27058999%2C34656%2C124674%2C11768",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=724137.1791595129&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%20",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=724137.1791595129&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%2",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595131520&cv=11&fst=1791595131520&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.24,
+              "load": 4.44,
+              "lcp": 2.08
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/bestsellers",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.99s",
+              "error": null,
+              "secs": 6.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bestsellers | Handcrafted Leather Bags, Luggage & Accessories | Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2817 chars, 28 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/new-arrivals",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.31s",
+              "error": null,
+              "secs": 4.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "New Arrivals \u2013 Buy New Bags, Accessories & Objects | Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2993 chars, 22 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.5s",
+              "error": null,
+              "secs": 4.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5072 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/men",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.83s",
+              "error": null,
+              "secs": 3.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop a Curated Range of Men's Leather Bags, Accessories, and More by Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8170 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.97,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5542393&shop=nappadori-di.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/collections/bestsellers"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "Allow attribute will take precedence over 'allowfullscreen'.",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "No available adapters.",
+              "url": "https://www.youtube.com/embed/O5gpNfJ830I?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=O5gpNfJ830I&rel=0&modestbranding=1"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&ae=g&auid=467648130.1791595136&dt=Bestsellers%20%7C%20Handcrafted%20Leather%20Bags%2C%20Luggage%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=467648130.1791595136&gtm=45He6a72v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zb858637672zd858637672xf1&_p=1791595136079&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zb858637672zd858637672xf1&_p=1791595136079&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595138661&cv=11&fst=1791595138661&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=467648130.1791595136&dt=Bestsellers%20%7C%20Handcrafted%20Leather%20Bags%2C%20Luggage%20%26",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb858637672zd858637672xf1&_p=1791595136079&gcs",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=467648130.1791595136&dt=Bestsellers%20%7C%20Handcrafted%20Leather%20Bags%2C%20Luggage%",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=467648130.1791595136&dt=Bestsellers%20%7C%20Handcrafted%20Leather%20Bags%2C%20Luggage%",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595139713&cv=11&fst=1791595139713&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&ae=g&auid=467648130.1791595136&dt=New%20Arrivals%20%E2%80%93%20Buy%20New%20Bags%2C%20Accessories",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zb858637672zd858637672xf1&_p=1791595142207&gcd=13l3l3l3l1l1&npa",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zb858637672zd858637672xf1&_p=1791595142207&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595144317&cv=11&fst=1791595144317&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=467648130.1791595136&dt=New%20Arrivals%20%E2%80%93%20Buy%20New%20Bags%2C%20Accessories%20%",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=467648130.1791595136&dt=New%20Arrivals%20%E2%80%93%20Buy%20New%20Bags%2C%20Accessorie",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=467648130.1791595136&dt=New%20Arrivals%20%E2%80%93%20Buy%20New%20Bags%2C%20Accessories",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595145153&cv=11&fst=1791595145153&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595146430&gcd=13l3l3l3l1l1&npa=0&dma=0&gd"
+          ],
+          "loads": [
+            {
+              "url": "/collections/bestsellers",
+              "ttfb": 0.04,
+              "dcl": 2.59,
+              "load": 4.22,
+              "lcp": 3.22
+            },
+            {
+              "url": "/collections/new-arrivals",
+              "ttfb": 0.02,
+              "dcl": 1.85,
+              "load": 3.44,
+              "lcp": 3.11
+            },
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 1.06,
+              "load": 3.16,
+              "lcp": 1.03
+            },
+            {
+              "url": "/collections/men",
+              "ttfb": 0.03,
+              "dcl": 1.42,
+              "load": 2.87,
+              "lcp": 1.82
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.accessories",
+      "suite": "catalog",
+      "title": "Collection 'ACCESSORIES' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.36s",
+              "error": null,
+              "secs": 6.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "From Wallets to Travel & Tech Gear, Explore Nappa Dori's Range of Handcrafted Accessories",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4057 chars, 32 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "17 products listed",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "17",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 10",
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "10",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.32,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5542393&shop=nappadori-di.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/collections/accessories"
+            }
+          ],
+          "failed_requests": [
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1873224086.1791595155&gtm=45He6a80h2v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&ae=g&auid=1873224086.1791595155&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore",
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zb858637672zd858637672xf1&_p=1791595154872&_gaz=1&gcd=13l3l3l3l",
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zb858637672zd858637672xf1&_p=1791595154872&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595157247&cv=11&fst=1791595157247&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=1873224086.1791595155&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore%20Na",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb858637672zd858637672xf1&_p=1791595154872&gcs",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=1873224086.1791595155&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=1873224086.1791595155&dt=From%20Wallets%20to%20Travel%20%26%20Tech%20Gear%2C%20Explore",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595158643&cv=11&fst=1791595158643&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a80h2v886193829z8",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/collections/accessories",
+              "ttfb": 0.03,
+              "dcl": 1.88,
+              "load": 4.13,
+              "lcp": 2.32
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.two-slot-watch-case-02",
+      "suite": "product",
+      "title": "PDP 'Two-Slot Watch Case 02'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.4s",
+              "error": null,
+              "secs": 5.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Multi Watch Case 02 | Wrist Watch Case Online \u2013 Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3284 chars, 29 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/two-slot-watch-case-02",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Two-Slot Watch Case 02', selected variant 50705006231609 at \u20b913,500.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/two-slot-watch-case-02.js with variants",
+                  "actual": "'Two-Slot Watch Case 02', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+              "secs": 1.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Two-Slot Watch Case 02",
+                  "actual": "'TWO-SLOT WATCH CASE 02' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b913,500.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+          "screenshot": "product.pdp.two-slot-watch-case-02.a1.png",
+          "trace": "product.pdp.two-slot-watch-case-02.a1_trace.zip",
+          "secs": 8.87,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '...'",
+              "url": "https://www.nappadori.com/products/two-slot-watch-case-02?variant=50705006231609"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://browser.sentry-cdn.com/7.2.0/bundle.min.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/products/two-slot-watch-case-02?variant=50705006231609"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za208zd880157618xf1&_p=1791595162077&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a80h2v880157618za200zd880157618xf1&_p=1791595162077&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&ae=g&auid=1912891406.1791595164&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1912891406.1791595164&gtm=45He6a72v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595164586&cv=11&fst=1791595164586&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1912891406.1791595164&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%20On",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=1912891406.1791595164&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595164644&cv=11&fst=1791595164644&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a80h2v9121764821za200zb880157618zd880157618xf1&_p=1791595162077&g",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1912891406.1791595164&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/two-slot-watch-case-02?variant=50705006231609",
+              "ttfb": 0.28,
+              "dcl": 1.11,
+              "load": 3.55,
+              "lcp": 2.4
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.64s",
+              "error": null,
+              "secs": 5.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Multi Watch Case 02 | Wrist Watch Case Online \u2013 Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3357 chars, 28 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/two-slot-watch-case-02",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Two-Slot Watch Case 02', selected variant 50705006231609 at \u20b913,500.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/two-slot-watch-case-02.js with variants",
+                  "actual": "'Two-Slot Watch Case 02', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+              "secs": 1.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Two-Slot Watch Case 02",
+                  "actual": "'TWO-SLOT WATCH CASE 02' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b913,500.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+          "screenshot": "product.pdp.two-slot-watch-case-02.a2.png",
+          "trace": "product.pdp.two-slot-watch-case-02.a2_trace.zip",
+          "secs": 8.92,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '...'",
+              "url": "https://www.nappadori.com/products/two-slot-watch-case-02?variant=50705006231609"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://browser.sentry-cdn.com/7.2.0/bundle.min.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595171088&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1723947030.1791595173&gtm=45He6a72v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&ae=g&auid=1723947030.1791595173&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zd880157618xf1&_p=1791595171088&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1723947030.1791595173&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%20On",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595173647&cv=11&fst=1791595173647&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=1723947030.1791595173&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595173707&cv=11&fst=1791595173707&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb880157618zd880157618xf1&_p=1791595171088&gcs",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=1723947030.1791595173&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/two-slot-watch-case-02?variant=50705006231609",
+              "ttfb": 0.04,
+              "dcl": 1.39,
+              "load": 3.66,
+              "lcp": 2.84
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.54s",
+              "error": null,
+              "secs": 5.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Multi Watch Case 02 | Wrist Watch Case Online \u2013 Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3379 chars, 29 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/two-slot-watch-case-02",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Two-Slot Watch Case 02', selected variant 50705006231609 at \u20b913,500.00",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/two-slot-watch-case-02",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/two-slot-watch-case-02.js with variants",
+                  "actual": "'Two-Slot Watch Case 02', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+              "secs": 1.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Two-Slot Watch Case 02",
+                  "actual": "'TWO-SLOT WATCH CASE 02' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b913,500.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b913,500.00, got not on page",
+          "screenshot": "product.pdp.two-slot-watch-case-02.a3.png",
+          "trace": "product.pdp.two-slot-watch-case-02.a3_trace.zip",
+          "secs": 8.69,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '...'",
+              "url": "https://www.nappadori.com/products/two-slot-watch-case-02?variant=50705006231609"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://browser.sentry-cdn.com/7.2.0/bundle.min.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595181952&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zd880157618xf1&_p=1791595181952&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&ae=g&auid=459790629.1791595184&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=459790629.1791595184&gtm=45He6a72v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595184230&cv=11&fst=1791595184230&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595184268&cv=11&fst=1791595184268&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=459790629.1791595184&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%20Onl",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=459790629.1791595184&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb880157618zd880157618xf1&_p=1791595181952&gcs",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=459790629.1791595184&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%2",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/two-slot-watch-case-02?variant=50705006231609",
+              "ttfb": 0.04,
+              "dcl": 1.38,
+              "load": 3.41,
+              "lcp": 2.43
+            }
+          ]
+        }
+      ],
+      "incident_signature": "nappadori.com|product.pdp.two-slot-watch-case-02|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The page clearly shows a price (USD $139.44) but the robot expected a different currency/format (\u20b913,500.00), so the check looked for the wrong text/format rather than the store missing a price.",
+        "evidence": "Visible page text includes: \"$139.44 (Inclusive of all taxes)\" and the product name shown as \"TWO-SLOT WATCH CASE 02\"; the expected price \u20b913,500.00 is not present on the page."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.slot",
+      "suite": "search",
+      "title": "Search for 'slot' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.8s",
+              "error": null,
+              "secs": 5.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5281 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 5 results, 4 mention 'slot'",
+              "error": null,
+              "secs": 9.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 4 results found for \"slot\" \u2013 Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1866 chars, 11 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "5",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'slot'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "4 of 5",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.29,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Allow attribute will take precedence over 'allowfullscreen'.",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5542393&shop=nappadori-di.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "No available adapters.",
+              "url": "https://www.youtube.com/embed/O5gpNfJ830I?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=O5gpNfJ830I&rel=0&modestbranding=1"
+            },
+            {
+              "type": "pageerror",
+              "text": "$(...).slick is not a function",
+              "url": "https://www.nappadori.com/search?q=slot&type=product"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595190494&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1466847871.1791595192&gtm=45He6a80h2v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&ae=g&auid=1466847871.1791595192&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zd880157618xf1&_p=1791595190494&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.youtube.com/api/stats/qoe?cpn=6aqUV3llFrZe5cqo&el=embedded&ns=yt&fexp=v1%2C100673025%2C627%2C-76669008%2C27058999%2C34656%2C124674%2C11768",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1466847871.1791595192&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%20",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595193516&cv=11&fst=1791595193516&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb880157618zd880157618xf1&_p=1791595190494&gcs",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=1466847871.1791595192&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595193985&cv=11&fst=1791595193985&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=1466847871.1791595192&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72h1v880157618za208zd880157618xf1&_p=1791595197419&gcd=13l3l3l3l1l1&npa=0&dma=0&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72h1v880157618za200zd880157618xf1&_p=1791595197419&gcd=13l3l3l3l1l1&npa=0&dma=0&",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&ae=g&auid=1466847871.1791595192&dt=Search%3A%20341%20results%20found%20for%20%22slot%22%20%E2%80",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72h1v880157618za200zd880157618xf1&_p=1791595197419&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1466847871.1791595192&dt=Search%3A%20341%20results%20found%20for%20%22slot%22%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595200401&cv=11&fst=1791595200401&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zd880157618xf1&_p=1791595201134&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595201134&gcd=13l3l3l3l1l1&npa=0&dma=0&gd"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.28,
+              "load": 3.66,
+              "lcp": 1.18
+            },
+            {
+              "url": "/search?q=handle%3Atime-travel-watch-winder-case-6-slot+OR+handle%3Atime-travel-watch-winder-case-3-",
+              "ttfb": 0.03,
+              "dcl": 0.93,
+              "load": 2.52,
+              "lcp": 1.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.53s",
+              "error": null,
+              "secs": 5.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5345 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "55: 'Handcrafted Goods for Travel, Work & Life by Nappa Dori'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 197: 'Explore the world of Nappa Dori. Elevate your style with han'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "197: 'Explore the world of Nappa Dori. Elevate your style with han'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.nappadori.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.nappadori.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "https://cdn.shopify.com/s/files/1/0593/5706/9369/files/nd_logo_png.png?height=628&pad_color=ffffff&v=1659519528&width=1200",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.77,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Allow attribute will take precedence over 'allowfullscreen'.",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "No available adapters.",
+              "url": "https://www.youtube.com/embed/O5gpNfJ830I?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=O5gpNfJ830I&rel=0&modestbranding=1"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5542393&shop=nappadori-di.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595205732&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zd880157618xf1&_p=1791595205732&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&ae=g&auid=207531989.1791595208&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=207531989.1791595208&gtm=45He6a72v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.youtube.com/api/stats/qoe?cpn=_pVfSFXTMj4H46Et&el=embedded&ns=yt&fexp=v1%2C100673025%2C627%2C-76669008%2C494890%2C26564109%2C34656%2C12467",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595208486&cv=11&fst=1791595208486&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=207531989.1791595208&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%20N",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb880157618zd880157618xf1&_p=1791595205732&gcs",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595209095&cv=11&fst=1791595209095&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a80h2v886193829z8",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=207531989.1791595208&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=207531989.1791595208&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20b",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.98,
+              "load": 3.5,
+              "lcp": 0.98
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.8s",
+              "error": null,
+              "secs": 5.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Multi Watch Case 02 | Wrist Watch Case Online \u2013 Nappa Dori",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3292 chars, 30 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked '\u00d7' on: '\u00d7 welcome to nappa dori which country would you like to ship'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Buy Multi Watch Case 02 | Wrist Watch Case Online \u2013 Nappa Dori",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "62: 'Buy Multi Watch Case 02 | Wrist Watch Case Online \u2013 Nappa Do'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Keep your precious timepieces secure in our Multi Watch Case 02, an el",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "156: 'Keep your precious timepieces secure in our Multi Watch Case'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.nappadori.com/products/two-slot-watch-case-02",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.nappadori.com/products/two-slot-watch-case-02",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Two-Slot Watch Case 02",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.nappadori.com/cdn/shop/files/2-SLOT-CROC-WATCH-CASE-1.jpg?v=1791458958",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.89,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '...'",
+              "url": "https://www.nappadori.com/products/two-slot-watch-case-02"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://browser.sentry-cdn.com/7.2.0/bundle.min.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/products/two-slot-watch-case-02"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595211626&_gaz=1&gcs=G111&gcd=13t3t3t3t5l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zd880157618xf1&_p=1791595211626&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=179974762.1791595213&gtm=45He6a72v858637672za200zd858637672xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&ae=g&auid=179974762.1791595213&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%2",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595214447&cv=11&fst=1791595214447&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=179974762.1791595213&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%20Onli",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595214512&cv=11&fst=1791595214512&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72v886193829z885",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=179974762.1791595213&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a80h2v9121764821za200zb880157618zd880157618xf1&_p=1791595211626&g",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=179974762.1791595213&dt=Buy%20Multi%20Watch%20Case%2002%20%7C%20Wrist%20Watch%20Case%2",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://lumberjack.razorpay.com/v1/track"
+          ],
+          "loads": [
+            {
+              "url": "/products/two-slot-watch-case-02",
+              "ttfb": 0.03,
+              "dcl": 1.57,
+              "load": 3.87,
+              "lcp": 3.09
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 5.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404 (redirected to /)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.64,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Allow attribute will take precedence over 'allowfullscreen'.",
+              "url": "https://www.nappadori.com/"
+            },
+            {
+              "type": "warning",
+              "text": "No available adapters.",
+              "url": "https://www.youtube.com/embed/O5gpNfJ830I?autoplay=1&mute=1&controls=0&playsinline=1&loop=1&playlist=O5gpNfJ830I&rel=0&modestbranding=1"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5542393&shop=nappadori-di.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'INR')",
+              "url": "https://www.nappadori.com/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://www.nappadori.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-shopify-custom-pixel@0530/sandbox/modern/products/bugradar-c",
+            "POST https://www.nappadori.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za208zd880157618xf1&_p=1791595218272&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.nappadori.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&ae=g&auid=1775711905.1791595218&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20b",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-6FVCP1M13C&gtm=45je6a72v880157618za200zd880157618xf1&_p=1791595218272&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.youtube.com/api/stats/qoe?cpn=lee_4WezgwwqTFAQ&el=embedded&ns=yt&fexp=v1%2C100673025%2C627%2C-76669008%2C27058999%2C34656%2C124674%2C11768",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1775711905.1791595218&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20by%20N",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595220862&cv=11&fst=1791595220862&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-CE7MFJD0WJ&gtm=45Pe6a72v9121764821za200zb880157618zd880157618xf1&_p=1791595218272&gcs",
+            "POST https://fh-118116076e9a4c2a96a99fbb70bea2a0.ecs.us-west-2.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://www.google.com/rmkt/collect/966289273/?random=1791595221466&cv=11&fst=1791595221466&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a72h1v886193829z8",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=1775711905.1791595218&dt=Handcrafted%20Goods%20for%20Travel%2C%20Work%20%26%20Life%20b",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.3,
+              "load": 3.57,
+              "lcp": 1.19
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 2,
+    "input_tokens": 5493,
+    "output_tokens": 254,
+    "est_usd": 0.001881,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Handcrafted Goods for Travel, Work & Life by Nappa Dori",
+    "theme": "Prestige (store copy: After sale theme)",
+    "checkout_app": "Razorpay Magic Checkout",
+    "access": "open",
+    "nav": 25,
+    "collections": 49,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "19 product(s) not listed in the browsed collections are tested last (e.g. grooming-essentials-gift-set)"
+  ],
+  "perf": {
+    "pages": 8,
+    "median_load_secs": 3.66,
+    "slowest": {
+      "url": "/",
+      "load_secs": 4.75
+    },
+    "console_errors": 4,
+    "console_warnings": 4,
+    "failed_requests": 126
+  },
+  "counts": {
+    "pass": 7,
+    "flaky": 0,
+    "confirmed_fail": 2,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
