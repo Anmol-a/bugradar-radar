@@ -804,6 +804,12 @@ and `buy_now_first` (enabled 'Buy it now' before 'Add to cart' → clicks add to
 code. If crossbeats' enabled button turns out to be 'buy it now' only, the failure is right (no enabled add to cart
 on mobile) and gets proven from the screenshot, not fixed.
 
+**Re-run 38012050352 (round 2), crossbeats.com:** desktop ✔ healthy. Mobile: the only enabled control for the
+product is `button.cf-checkout` "BUY NOW · Extra ₹100 Off on Prepaid Order"; the visible ADD TO CART is disabled.
+Radar correctly does not click 'buy now' (checkout). The screenshot does not show the button row, so whether the
+store disables ADD TO CART on mobile on purpose is not proven → **documented limit after 2 fix rounds** (1 store):
+'mobile: add to cart disabled, only buy now enabled'. Reopen only if a second store shows it.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
