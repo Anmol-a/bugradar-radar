@@ -185,6 +185,29 @@ def _handle(url: str, kind: str) -> str | None:
     return h or None
 
 
+def dead_domain_reason(err: str) -> str:
+    """Why a store's address does not lead to a working site, read from the network error of the robots.txt request;
+    '' when the error may be temporary (timeout, 5xx, TLS reset). new30g (11 Oct): 6 of 30 never-seen addresses were dead
+    (DNS, a domain pointing at 127.0.0.1, another site's certificate) and were reported as 'blocked … usually a temporary
+    server problem'. Pure, unit-tested."""
+    e = err or ""
+    if re.search(r"ENOTFOUND|ERR_NAME_NOT_RESOLVED|NXDOMAIN", e):
+        return "the domain does not resolve (DNS: no such host)"
+    if "EAI_AGAIN" in e:
+        return "the domain did not resolve (DNS lookup failed)"
+    m = re.search(r"ECONNREFUSED (127\.0\.0\.1|::1|0\.0\.0\.0)", e)
+    if m:
+        return f"the domain points to {m.group(1)} (no server there), not to a store"
+    m = re.search(r"does not match certificate's altnames.*?DNS:(?:\*\.)?([^,\s]+)", e)
+    if m:
+        return f"its HTTPS certificate belongs to another site ({m.group(1)}): the domain does not point at the store"
+    if re.search(r"self[- ]signed certificate", e):
+        return "its HTTPS certificate is self-signed: not a public store"
+    if re.search(r"certificate has expired|CERT_DATE_INVALID", e):
+        return "its HTTPS certificate has expired"
+    return ""
+
+
 def load_robots(sess: Session, base: str, s: Settings) -> Robots:
     """RFC 9309: 200 = rules; 4xx = unavailable (allow all); 5xx or no answer = unreachable (disallow all).
     Three tries, 2 s and 5 s apart, longer timeout each time, before calling it unreachable (bench 11: soulflower.in
@@ -263,6 +286,12 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
             sm.notes.append(NO_NETWORK_NOTE.format(where=" before the store could be checked"))
             return sm
         code = getattr(sess.robots, "status", None)
+        dead = dead_domain_reason(getattr(sess.robots, "error", ""))
+        if dead and not code:
+            sm.access = "unreachable"
+            sm.notes.append(f"{urlparse(base_url).hostname}: {dead}. Nothing was tested; check the store's address "
+                            f"(robots.txt request: {getattr(sess.robots, 'error', '')[:140]})")
+            return sm
         sm.access = "robots_unreachable"
         why = f"HTTP {code}" if code else ("no answer: " + getattr(sess.robots, "error", "") if getattr(sess.robots, "error", "") else "no answer")
         sm.notes.append(f"robots.txt could not be fetched ({why}, tried 3 times); "
