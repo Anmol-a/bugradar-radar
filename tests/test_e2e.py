@@ -1359,6 +1359,9 @@ def test_cart_page_quantity_checkout_and_remove_work_on_a_healthy_store(tmp_path
     assert "pressed +" in st["change_quantity"].detail and "1 → 2" in st["change_quantity"].detail
     assert "₹2,598.00" in st["change_quantity"].detail                         # 2 × ₹1,299 vase
     assert "none filled" in st["checkout_opens"].detail and "/checkout" in st["checkout_opens"].detail
+    # the summary renders 2.5 s after the checkout page (like Shopify's checkout app); the remove link sits beside
+    # <quantity-input>, whose box carries the variant id (Dawn): both missed on the 12 theme demos, run 38083178824
+    assert all(c["ok"] for c in st["checkout_opens"].checks), st["checkout_opens"].checks
     assert "no longer lists it" in st["remove_item"].detail
     assert run.verdict == "healthy"
 
@@ -1397,10 +1400,12 @@ def test_marketplace_only_store_is_blocked_with_the_reason_never_down(tmp_path):
     Flipkart'. Until loop cycle 25 that was DOWN ('selected variant price shown: not on page') = a Radar false failure."""
     run, _ = _scan("marketplace_only", tmp_path)
     assert run.verdict != "down", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
-    for prefix in ("journey.", "product.pdp.", "cart.add_to_cart"):
+    for prefix in ("journey.", "product.pdp.ceramic", "cart.add_to_cart"):
         c = _case(run, prefix)
         assert c.verdict == "blocked" and "only links to marketplaces (Buy on Amazon, Buy on Flipkart)" in c.attempts[-1].error, \
             (prefix, c.verdict, c.attempts[-1].error)
+    spoons = _case(run, "product.pdp.wooden")         # beyondsnack 'Diwali Box': only a 'Shop Now On:' heading, no links
+    assert spoons.verdict == "blocked" and "'Shop Now On:'" in spoons.attempts[-1].error, (spoons.verdict, spoons.attempts[-1].error)
 
 
 def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_path):

@@ -978,6 +978,14 @@ and the page has no buy control of its own, the product test, the journey and ad
 ('sells only on marketplaces'), never a failure (`CatalogOnly`, mock `marketplace_only`: DOWN on the old code, blocked
 on the new). A page with its own buy button is judged as before.
 
+**First real run (targeted, 12 cart demos × 2 devices, run 38083178824):** quantity + passed 22/24 (Studio theme: + did
+not change cart.js: limit for now); the checkout page opened on all 24 (status, /checkouts/, fields) but the order
+summary was read before it rendered, and no remove control was found on any theme (Dawn puts the variant id on the
+quantity box itself, so the 'line' stopped at `<quantity-input>`; the remove link is its sibling). Round 1: the line is
+the box's highest ancestor holding only that box and no cart-level control; the checkout summary is polled up to 15 s;
+the mock now carries both traits (old code fails on `healthy`). beyondsnack 'Diwali Box' shows only a 'Shop Now On:'
+heading (no links): also catalog-only now.
+
 Also: the bench table and both HTML reports list the `info` suite (journeys 28–30): their suite lists stopped at
 `health`, so the report never showed it.
 ### 4zc-3. Journeys 15 and 31 (chat session, 11 Oct 2026, 01:10 IST)

@@ -927,7 +927,10 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(200, page("Checkout - Mock Store", '<h2>Contact</h2><input type="email" name="email" '
                                         'placeholder="Email or mobile phone number" autocomplete="shipping email"><h2>Delivery</h2>'
                                         '<input name="firstName" placeholder="First name"><h2>Payment</h2>'
-                                        f'<button type="submit" id="checkout-pay-button">Pay now</button><aside>{summary}</aside>',
+                                        f'<button type="submit" id="checkout-pay-button">Pay now</button><aside id="summary"></aside>'
+                                        # Shopify's checkout is an app: the order summary renders seconds after the page
+                                        f'<template id="sum">{summary}</template><script>setTimeout(() => document.getElementById'
+                                        f'("summary").innerHTML = document.getElementById("sum").innerHTML, 2500);</script>',
                                         shopify=True))
         if path == "/cart":
             items = CARTS[cid]
@@ -937,6 +940,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                 f'<span class="line-price">{rupees(i["price"] * i["quantity"])}</span>'
                 f'<quantity-input><button type="button" name="minus" aria-label="Decrease quantity for {i["title"]}">−</button>'
                 f'<input class="quantity__input" type="number" name="updates[]" value="{i["quantity"]}" data-line="{n}" '
+                f'data-quantity-variant-id="{i["id"]}" '
                 f'aria-label="Quantity for {i["title"]}"><button type="button" name="plus" '
                 f'aria-label="Increase quantity for {i["title"]}">+</button></quantity-input>'
                 f'<cart-remove-button><a href="/cart/change?line={n}&quantity=0" aria-label="Remove {i["title"]}">Remove</a>'
@@ -1002,7 +1006,10 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
             return page(f"{p['title']} | Mock Store", f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" '
                         'width="400" height="400" alt=""><p>A compact, hand-finished piece for everyday use.</p>'
                         '<div class="buy-links"><a href="https://www.amazon.in/dp/B0MOCK">Buy on Amazon</a> '
-                        '<a href="https://www.flipkart.com/mock/p/itm1">Buy on Flipkart</a></div>')
+                        '<a href="https://www.flipkart.com/mock/p/itm1">Buy on Flipkart</a></div>'
+                        if p["handle"] != "wooden-spoon-set" else   # beyondsnack 'Diwali Box': the heading, no links at all
+                        f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
+                        '<h2>Shop Now On:</h2><p>A festive assortment, made to share.</p>')
         price = "0" if (self.mode == "broken_price" and p["handle"] == "ceramic-vase") else p["price"]
         ld = json.dumps({"@context": "https://schema.org", "@type": "Product", "name": p["title"],
                          "image": [f"/cdn/shop/files/{p['handle']}.svg"],

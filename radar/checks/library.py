@@ -45,16 +45,23 @@ MARKETPLACE_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRec
                  .map(a => (a.innerText || a.getAttribute('aria-label') || new URL(a.href).hostname).trim().slice(0, 30));
   const own = [...document.querySelectorAll('form[action*="/cart/add"] button, form[action*="/cart/add"] input[type=submit], button, [role=button]')]
     .some(b => vis(b) && !b.closest('header, footer, nav') && /add to (cart|bag|basket)|buy (it )?now|^add$|^buy$/i.test((b.innerText || b.value || '').trim()));
-  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own}; }"""
+  const main = document.querySelector('main, [role=main], #MainContent') || document.body;
+  const so = ((main.innerText || '').match(/\b(shop (now )?on|available on|buy (it )?on|also available on)\s*:/i) || [])[0];
+  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, shop_on: so || null}; }"""
 
 
 def _raise_if_catalog_only(ctx: Ctx) -> None:
     """Called only when the product's price is NOT on its page: marketplace links and no buy control of its own =
     a catalog store (CatalogOnly). A page with its own buy button is judged as usual."""
     m = ctx.sess.evaluate(MARKETPLACE_JS) or {}
-    if m.get("marketplaces") and not m.get("own_buy"):
+    if m.get("own_buy"):
+        return
+    if m.get("marketplaces"):
         raise CatalogOnly("not tested: the product page shows no price and no buy button, only links to "
                           f"marketplaces ({', '.join(m['marketplaces'])}): the store sells there, not on its own site")
+    if m.get("shop_on"):         # beyondsnack 'Diwali Box': the 'Shop Now On:' heading with no marketplace listed yet
+        raise CatalogOnly(f"not tested: the product page shows no price and no buy button, only {m['shop_on']!r}: "
+                          "the store sells elsewhere, not on its own site")
 
 
 class StepFailed(Exception):
@@ -2503,15 +2510,18 @@ CART_LINE_JS = r"""([vid, title]) => {
   const qtySel = 'input[name="updates[]"], input[name^="updates"], input.quantity__input, input[name="quantity"], ' +
                  'input[type="number"], input[data-quantity-input], input[class*="qty" i], input[class*="quantity" i]';
   const inputs = [...document.querySelectorAll(qtySel)].filter(i => vis(i) && !i.closest('form[action*="/cart/add"]'));
+  // The LINE is the input's highest ancestor that still holds only this one quantity box and no cart-level control
+  // (checkout button, the cart form/page itself). Dawn puts the variant id on the input itself and the remove link in a
+  // sibling of <quantity-input>, so the nearest ancestor naming the variant is too small (12 theme demos, run 38083178824).
+  const cartLevel = e => e === document.body || /^(FORM|MAIN|BODY)$/.test(e.tagName) || e.matches('cart-items, cart-drawer, [role=dialog]') ||
+    !!e.querySelector('[name="checkout"], a[href$="/checkout"], button[onclick*="checkout"]');
   let best = null;
-  for (const inp of inputs) {                 // the line: the input's nearest ancestor that names this product / variant
+  for (const inp of inputs) {
     let row = inp;
-    for (let k = 0; k < 7 && row.parentElement; k++) {
-      row = row.parentElement;
-      const html = row.outerHTML.slice(0, 20000);
-      if ((vid && html.includes(String(vid))) || norm(row.innerText).includes(norm(title))) { best = {inp, row}; break; }
-    }
-    if (best) break;
+    while (row.parentElement && !cartLevel(row.parentElement) &&
+           [...row.parentElement.querySelectorAll(qtySel)].filter(vis).length <= 1) row = row.parentElement;
+    const html = row.outerHTML.slice(0, 40000);
+    if ((vid && html.includes(String(vid))) || norm(row.innerText).includes(norm(title))) { best = {inp, row}; break; }
   }
   if (!best) return null;
   const {inp, row} = best;
@@ -2624,10 +2634,14 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
         ctx.expect("checkout page HTTP status", "< 400", status, status is None or status < 400)
         ctx.expect("landed on the checkout", "/checkouts/… or /checkout", _path(final),
                    bool(re.search(r"/checkouts?(/|$)", urlparse(final).path)) or "checkout" in (urlparse(final).hostname or ""))
-        page.wait_for_timeout(1500)                       # checkout is a single-page app
-        info = ctx.sess.evaluate("""() => ({text: (document.body.textContent || '').replace(/\\s+/g, ' ').slice(0, 20000),
-            fields: [...document.querySelectorAll('input')].filter(i => { const r = i.getBoundingClientRect();
-              return r.width > 0 && r.height > 0 && !/hidden|checkbox|radio/.test(i.type); }).length})""")
+        info: dict = {}
+        for _ in range(20):                              # checkout is an app: fields first, the order summary seconds later
+            page.wait_for_timeout(750)
+            info = ctx.sess.evaluate("""() => ({text: (document.body.textContent || '').replace(/\\s+/g, ' ').slice(0, 40000),
+                fields: [...document.querySelectorAll('input')].filter(i => { const r = i.getBoundingClientRect();
+                  return r.width > 0 && r.height > 0 && !/hidden|checkbox|radio/.test(i.type); }).length})""")
+            if info["fields"] and norm_text(title) in norm_text(info["text"]):
+                break
         ctx.expect("checkout shows a form a shopper would fill", "≥ 1 field (NOT filled by Radar)", f"{info['fields']} fields",
                    info["fields"] >= 1)
         ctx.expect("checkout order summary names the product", title, "named" if norm_text(title) in norm_text(info["text"])
