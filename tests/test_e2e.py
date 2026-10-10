@@ -1459,7 +1459,9 @@ def test_collection_grid_rendered_after_load_is_waited_for(tmp_path):
 
 
 def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path):
-    # new30g (11 Oct): bombae.in and pahadilocal.com resolve to 127.0.0.1 and were 'blocked … temporary server problem'
-    run, _ = scan("http://127.0.0.1:9", _settings(tmp_path))
+    # new30g (11 Oct): bombae.in and pahadilocal.com resolve to 127.0.0.1 and were 'blocked … temporary server problem'.
+    # A *.localhost name resolves to 127.0.0.1 (or not at all, depending on the machine): both are a dead address.
+    run, _ = scan("http://dead-store.localhost:9", _settings(tmp_path))
     assert run.verdict == "unreachable", (run.verdict, run.notes)
-    assert any("points to 127.0.0.1 (no server there)" in n and "check the store's address" in n for n in run.notes), run.notes
+    assert any(("points to 127.0.0.1" in n or "does not resolve" in n) and "check the store's address" in n
+               for n in run.notes), run.notes

@@ -185,7 +185,7 @@ def _handle(url: str, kind: str) -> str | None:
     return h or None
 
 
-def dead_domain_reason(err: str) -> str:
+def dead_domain_reason(err: str, host: str = "") -> str:
     """Why a store's address does not lead to a working site, read from the network error of the robots.txt request;
     '' when the error may be temporary (timeout, 5xx, TLS reset). new30g (11 Oct): 6 of 30 never-seen addresses were dead
     (DNS, a domain pointing at 127.0.0.1, another site's certificate) and were reported as 'blocked … usually a temporary
@@ -196,7 +196,7 @@ def dead_domain_reason(err: str) -> str:
     if "EAI_AGAIN" in e:
         return "the domain did not resolve (DNS lookup failed)"
     m = re.search(r"ECONNREFUSED (127\.0\.0\.1|::1|0\.0\.0\.0)", e)
-    if m:
+    if m and not re.fullmatch(r"[\d.]+|\[?[0-9a-f:]+\]?|localhost", (host or "").lower()):   # a NAME that resolves to it
         return f"the domain points to {m.group(1)} (no server there), not to a store"
     m = re.search(r"does not match certificate's altnames.*?DNS:(?:\*\.)?([^,\s]+)", e)
     if m:
@@ -286,7 +286,7 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
             sm.notes.append(NO_NETWORK_NOTE.format(where=" before the store could be checked"))
             return sm
         code = getattr(sess.robots, "status", None)
-        dead = dead_domain_reason(getattr(sess.robots, "error", ""))
+        dead = dead_domain_reason(getattr(sess.robots, "error", ""), urlparse(base_url).hostname or "")
         if dead and not code:
             sm.access = "unreachable"
             sm.notes.append(f"{urlparse(base_url).hostname}: {dead}. Nothing was tested; check the store's address "

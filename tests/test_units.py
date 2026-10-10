@@ -853,8 +853,9 @@ def test_dead_store_addresses_are_told_apart_from_temporary_problems():
     from radar.discovery.discover import dead_domain_reason as why
     assert why("APIRequestContext.get: getaddrinfo ENOTFOUND skinq.in").startswith("the domain does not resolve")
     assert why("APIRequestContext.get: getaddrinfo EAI_AGAIN wishcare.co").startswith("the domain did not resolve")
-    assert why("APIRequestContext.get: connect ECONNREFUSED 127.0.0.1:443") == \
+    assert why("APIRequestContext.get: connect ECONNREFUSED 127.0.0.1:443", "bombae.in") == \
         "the domain points to 127.0.0.1 (no server there), not to a store"
+    assert why("connect ECONNREFUSED 127.0.0.1:9", "127.0.0.1") == ""      # a server address that is simply silent
     assert "(websitewelcome.com)" in why("APIRequestContext.get: Hostname/IP does not match certificate's altnames: "
                                         "Host: brewhouse.in. is not in the cert's altnames: DNS:*.websitewelcome.com, DNS:websi")
     assert why("APIRequestContext.get: self-signed certificate; if the root CA is installed locally").startswith("its HTTPS")
