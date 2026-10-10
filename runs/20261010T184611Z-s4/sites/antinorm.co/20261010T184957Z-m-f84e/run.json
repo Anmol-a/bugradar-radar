@@ -1,0 +1,2379 @@
+{
+  "run_id": "20261010T184957Z-m-f84e",
+  "site_id": "antinorm.co",
+  "base_url": "https://antinorm.co",
+  "device": "mobile",
+  "started_at": "2026-10-10T18:49:57+00:00",
+  "finished_at": "2026-10-10T18:54:10+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.08s",
+              "error": null,
+              "secs": 16.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Antinorm",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7639 chars, 65 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/all (29 products)",
+              "error": null,
+              "secs": 10.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/all ('EXPLORE PRODUCTS')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "29",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 58 candidates \u2192 /products/face-the-day",
+              "error": null,
+              "secs": 10.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/face-the-day ('NEW COMBO')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/face-the-day",
+                  "actual": "/products/face-the-day",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Face the Day', selected variant 50361513509002 at \u20b92,499.00",
+              "error": null,
+              "secs": 0.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/face-the-day",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/face-the-day.js with variants",
+                  "actual": "'Face the Day', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Face the Day",
+                  "actual": "'Face the Day' (h1, 42px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,499.00",
+                  "actual": "\u20b92,499.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Face the Day",
+                  "actual": "'Face the Day' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Face the Day",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "2499.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.07-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 41.36,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://antinorm.co/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-94732426@2/sandbox/modern/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'title')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x3b8409551400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://antinorm.co/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'innerHTML')",
+              "url": "https://antinorm.co/products/face-the-day"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/api/collect",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/7716d84033fb4ffe94032d8826d00938/7716d84033fb4ffe94032d8826d00938.HD-1080p-2.5Mbps-66087888.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/52b2f3b9816943d5bbbd52267ce02893/52b2f3b9816943d5bbbd52267ce02893.HD-1080p-2.5Mbps-66087890.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/d2b9fc7d84d44ed5951c242270479984/d2b9fc7d84d44ed5951c242270479984.HD-1080p-7.2Mbps-66880408.mp4?v=0",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1542082332.1791658224&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinor",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1542082332.1791658224&gtm=45be6a80h2v9226406252za208zb9262194320zd9262194320xecxf1&fmt=8",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1176e09274c24df7973d8a4936bd5959/1176e09274c24df7973d8a4936bd5959.HD-1080p-7.2Mbps-66087885.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1832fbf812f34c29a59313f9cd69103d/1832fbf812f34c29a59313f9cd69103d.HD-1080p-7.2Mbps-66087883.mp4?v=0",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72h1v9223793767za200zb9262194320zd9262194320xf1&_p=1791658221291&_gaz=1&gcs=G111",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zd9262194320xf1&_p=1791658221291&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a72h1v9223793767za200zb9262194320zd9262194320xf1&_p=1791658221291",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/01be4856bc9144f5b46adfd8f63e5676/01be4856bc9144f5b46adfd8f63e5676.HD-720p-1.6Mbps-66377407.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/8983f921d4b04472977b912b55c38377/8983f921d4b04472977b912b55c38377.HD-1080p-4.8Mbps-66139032.mp4?v=0",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658229084&cv=11&fst=1791658229084&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=1&auid=716128611.1791658229&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658229144&cv=11&fst=1791658229144&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=716128611.1791658229&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=0&auid=716128611.1791658229&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/278a6e45562c4ab3a6a0714c85ba6a38/278a6e45562c4ab3a6a0714c85ba6a38.HD-1080p-4.8Mbps-66867957.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/d9a76edb58f14442a220421cfb7a6c33/d9a76edb58f14442a220421cfb7a6c33.HD-1080p-7.2Mbps-66867983.mp4?v=0",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658240248&cv=11&fst=1791658240248&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.09,
+              "dcl": 3.0,
+              "load": 10.12,
+              "lcp": 0.87
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.01,
+              "dcl": 1.21,
+              "load": 6.04,
+              "lcp": 5.02
+            },
+            {
+              "url": "/products/face-the-day",
+              "ttfb": 0.01,
+              "dcl": 1.14,
+              "load": 6.84,
+              "lcp": 0.94
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 5.76s",
+              "error": null,
+              "secs": 18.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Antinorm",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7639 chars, 65 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "5.76s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "5.76s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 2: Cannot read properties of undefined (reading 'classList')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "2: Cannot read properties of undefined (reading 'classList')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars or overlays",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 20.56,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://antinorm.co/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-94732426@2/sandbox/modern/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'title')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x3b840911f800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4508131579002880.ingest.us.sentry.io/api/4508131592241152/envelope/?sentry_version=7&sentry_key=d97a825a449bcf2e640608e705016d56&se"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://antinorm.co/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1540929888.1791658264&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=kJbyTjQtRZ-2oqtQnkMnvOuDK8vkEkT6vw&auid=1540929888.1791658264&gtm=45be6a72v9226406252za208zb9262194320z",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/7716d84033fb4ffe94032d8826d00938/7716d84033fb4ffe94032d8826d00938.HD-1080p-2.5Mbps-66087888.mp4?v=0",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658260089&_gaz=1&gcs=G111&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zd9262194320xf1&_p=1791658260089&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658260089&g",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/d2b9fc7d84d44ed5951c242270479984/d2b9fc7d84d44ed5951c242270479984.HD-1080p-7.2Mbps-66880408.mp4?v=0",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/52b2f3b9816943d5bbbd52267ce02893/52b2f3b9816943d5bbbd52267ce02893.HD-1080p-2.5Mbps-66087890.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/01be4856bc9144f5b46adfd8f63e5676/01be4856bc9144f5b46adfd8f63e5676.HD-720p-1.6Mbps-66377407.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/8983f921d4b04472977b912b55c38377/8983f921d4b04472977b912b55c38377.HD-1080p-4.8Mbps-66139032.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1176e09274c24df7973d8a4936bd5959/1176e09274c24df7973d8a4936bd5959.HD-1080p-7.2Mbps-66087885.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1832fbf812f34c29a59313f9cd69103d/1832fbf812f34c29a59313f9cd69103d.HD-1080p-7.2Mbps-66087883.mp4?v=0",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658268829&cv=11&fst=1791658268829&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1435450412.1791658269&gtm=45be6a80h2v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658268960&cv=11&fst=1791658268960&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=0&auid=1435450412.1791658269&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=1&auid=1435450412.1791658269&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.08,
+              "dcl": 3.21,
+              "load": 10.62,
+              "lcp": 0.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.71s",
+              "error": null,
+              "secs": 17.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Antinorm",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7639 chars, 65 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/all",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.33s",
+              "error": null,
+              "secs": 7.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4079 chars, 30 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/about-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.03s",
+              "error": null,
+              "secs": 6.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About us",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3064 chars, 35 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/media",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.55s",
+              "error": null,
+              "secs": 7.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Media",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2631 chars, 42 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 38.78,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://antinorm.co/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-94732426@2/sandbox/modern/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'title')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x3b840b4d5a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://antinorm.co/collections/all"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://antinorm.co/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=311178618.1791658284&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm.",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=311178618.1791658284&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zb9226406252zd9226406252xf1&_p=1791658282028&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9226406252zd9226406252xf1&_p=1791658282028&_gaz=1&gcs=G111&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a72v9223793767za200zb9226406252zd9226406252xf1&_p=1791658282028&g",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/7716d84033fb4ffe94032d8826d00938/7716d84033fb4ffe94032d8826d00938.HD-1080p-2.5Mbps-66087888.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/d2b9fc7d84d44ed5951c242270479984/d2b9fc7d84d44ed5951c242270479984.HD-1080p-7.2Mbps-66880408.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1176e09274c24df7973d8a4936bd5959/1176e09274c24df7973d8a4936bd5959.HD-1080p-7.2Mbps-66087885.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/52b2f3b9816943d5bbbd52267ce02893/52b2f3b9816943d5bbbd52267ce02893.HD-1080p-2.5Mbps-66087890.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/01be4856bc9144f5b46adfd8f63e5676/01be4856bc9144f5b46adfd8f63e5676.HD-720p-1.6Mbps-66377407.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/8983f921d4b04472977b912b55c38377/8983f921d4b04472977b912b55c38377.HD-1080p-4.8Mbps-66139032.mp4?v=0",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1832fbf812f34c29a59313f9cd69103d/1832fbf812f34c29a59313f9cd69103d.HD-1080p-7.2Mbps-66087883.mp4?v=0",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=2&apvc=1&auid=1360921330.1791658291&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1360921330.1791658291&gtm=45be6a80h2v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658291012&cv=11&fst=1791658291012&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658291129&cv=11&fst=1791658291129&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=2&apvc=0&auid=1360921330.1791658291&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a80h2v9223793767za200zb9262194320zd9262194320xf1&_p=1791658298567&gcs=G111&gcd=13",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1360921330.1791658291&dt=All&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm.co%2",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=2&apvc=1&auid=1360921330.1791658291&dt=All&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm.co%2"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 2.33,
+              "load": 9.82,
+              "lcp": 0.72
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.03,
+              "dcl": 1.02,
+              "load": 6.03,
+              "lcp": 3.42
+            },
+            {
+              "url": "/pages/about-us",
+              "ttfb": 0.04,
+              "dcl": 0.81,
+              "load": 4.9,
+              "lcp": 1.37
+            },
+            {
+              "url": "/pages/media",
+              "ttfb": 0.07,
+              "dcl": 1.2,
+              "load": 4.36,
+              "lcp": 1.46
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.all",
+      "suite": "catalog",
+      "title": "Collection 'All' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.67s",
+              "error": null,
+              "secs": 10.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4079 chars, 30 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "29 products listed",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "29",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars or overlays",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.83,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://antinorm.co/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://antinorm.co/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'title')",
+              "url": "https://antinorm.co/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://antinorm.co/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-94732426@2/sandbox/modern/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/api/collect",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658321529&cv=11&fst=1791658321529&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=1&auid=1246950668.1791658322&dt=All&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm.co%2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1246950668.1791658322&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658321618&cv=11&fst=1791658321618&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=0&auid=1246950668.1791658322&dt=All&tid=AW-17055092464&en=view_item_list&dl=https%3A%2F%2Fantinorm",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1246950668.1791658322&dt=All&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm.co%",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zd9262194320xf1&_p=1791658320381&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658320381&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658320381&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658320381&_gaz=1&gcs=G111&g",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.07,
+              "dcl": 1.27,
+              "load": 7.78,
+              "lcp": 5.13
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.face-the-day",
+      "suite": "product",
+      "title": "PDP 'Face the Day'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.29s",
+              "error": null,
+              "secs": 13.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Face the Day",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5863 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/face-the-day",
+                  "actual": "/products/face-the-day",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Face the Day', selected variant 50361513509002 at \u20b92,499.00",
+              "error": null,
+              "secs": 0.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/face-the-day",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/face-the-day.js with variants",
+                  "actual": "'Face the Day', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Face the Day",
+                  "actual": "'Face the Day' (h1, 42px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,499.00",
+                  "actual": "\u20b92,499.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Face the Day",
+                  "actual": "'Face the Day' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Face the Day",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "2499.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 50361513509002 (Default Title) selected, in stock",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-9347214835850-template--22723499982986__main (variant 50361513509002, button 'ADD TO CART')",
+              "error": null,
+              "secs": 0.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 3: Cannot read properties of undefined (reading 'classList')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "3: Cannot read properties of undefined (reading 'classList')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars or overlays",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.64,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://antinorm.co/products/face-the-day?variant=50361513509002"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'innerHTML')",
+              "url": "https://antinorm.co/products/face-the-day?variant=50361513509002"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://antinorm.co/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-94732426@2/sandbox/modern/products/face-the-day?variant="
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'title')",
+              "url": "https://antinorm.co/products/face-the-day?variant=50361513509002"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4508131579002880.ingest.us.sentry.io/api/4508131592241152/envelope/?sentry_version=7&sentry_key=d97a825a449bcf2e640608e705016d56&se"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/api/collect",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1602789640.1791658334&dt=Face%20the%20Day&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2F",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1602789640.1791658334&gtm=45be6a72v9226406252za208zb9262194320zd9262194320xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zd9262194320xf1&_p=1791658332598&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658332598&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658332598&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658332598&gcs=G111&gcd=13t3",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=1&auid=1621617761.1791658337&dt=Face%20the%20Day&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658336662&cv=11&fst=1791658336662&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1621617761.1791658337&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658337484&cv=11&fst=1791658337484&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=0&auid=1621617761.1791658337&dt=Face%20the%20Day&tid=AW-17055092464&en=view_item&dl=https%3A%2F%2"
+          ],
+          "loads": [
+            {
+              "url": "/products/face-the-day?variant=50361513509002",
+              "ttfb": 0.06,
+              "dcl": 0.91,
+              "load": 6.75,
+              "lcp": 0.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.face",
+      "suite": "search",
+      "title": "Search for 'face' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.65s",
+              "error": null,
+              "secs": 16.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Antinorm",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7639 chars, 65 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 24 results, 1 mention 'face'",
+              "error": null,
+              "secs": 10.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 19 results found for \"face\"",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3227 chars, 36 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'face'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "1 of 24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 27.91,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://antinorm.co/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-94732426@2/sandbox/modern/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'title')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://antinorm.co/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://antinorm.co/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1822457684.1791658351&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinor",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1822457684.1791658351&gtm=45be6a72v9226406252za208zb9262194320zd9262194320xecxf1&fmt=8",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/7716d84033fb4ffe94032d8826d00938/7716d84033fb4ffe94032d8826d00938.HD-1080p-2.5Mbps-66087888.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/d2b9fc7d84d44ed5951c242270479984/d2b9fc7d84d44ed5951c242270479984.HD-1080p-7.2Mbps-66880408.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1176e09274c24df7973d8a4936bd5959/1176e09274c24df7973d8a4936bd5959.HD-1080p-7.2Mbps-66087885.mp4?v=0",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658347234&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zd9262194320xf1&_p=1791658347234&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658347234&_gaz=1&gcs=G111&g",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/52b2f3b9816943d5bbbd52267ce02893/52b2f3b9816943d5bbbd52267ce02893.HD-1080p-2.5Mbps-66087890.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1832fbf812f34c29a59313f9cd69103d/1832fbf812f34c29a59313f9cd69103d.HD-1080p-7.2Mbps-66087883.mp4?v=0",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/01be4856bc9144f5b46adfd8f63e5676/01be4856bc9144f5b46adfd8f63e5676.HD-720p-1.6Mbps-66377407.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/8983f921d4b04472977b912b55c38377/8983f921d4b04472977b912b55c38377.HD-1080p-4.8Mbps-66139032.mp4?v=0",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658355238&cv=11&fst=1791658355238&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658355200&cv=11&fst=1791658355200&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=1&auid=3429138.1791658355&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm.c",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=3429138.1791658355&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=0&auid=3429138.1791658355&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm.c",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658366574&cv=11&fst=1791658366574&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=1&auid=3429138.1791658355&dt=Search%3A%2019%20results%20found%20for%20%22face%22&tid=AW-170550924",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=0&auid=3429138.1791658355&dt=Search%3A%2019%20results%20found%20for%20%22face%22&tid=AW-170550924"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.79,
+              "load": 9.15,
+              "lcp": 0.56
+            },
+            {
+              "url": "/search?q=face&type=product",
+              "ttfb": 0.24,
+              "dcl": 1.36,
+              "load": 7.01,
+              "lcp": 4.04
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.6s",
+              "error": null,
+              "secs": 16.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Antinorm",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7639 chars, 65 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 8: 'Antinorm'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "8: 'Antinorm'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://antinorm.co/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://antinorm.co/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Antinorm",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://antinorm.co/cdn/shop/files/Antinorm_logo_2_e7dbb843-a41f-4ebd-829d-d8c4f9e8f28d.jpg?v=1775119656&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 17.21,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://antinorm.co/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-94732426@2/sandbox/modern/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'title')",
+              "url": "https://antinorm.co/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://antinorm.co/api/collect",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/7716d84033fb4ffe94032d8826d00938/7716d84033fb4ffe94032d8826d00938.HD-1080p-2.5Mbps-66087888.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/52b2f3b9816943d5bbbd52267ce02893/52b2f3b9816943d5bbbd52267ce02893.HD-1080p-2.5Mbps-66087890.mp4?v=0",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=984513635.1791658378&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinorm.",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=984513635.1791658378&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1832fbf812f34c29a59313f9cd69103d/1832fbf812f34c29a59313f9cd69103d.HD-1080p-7.2Mbps-66087883.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/1176e09274c24df7973d8a4936bd5959/1176e09274c24df7973d8a4936bd5959.HD-1080p-7.2Mbps-66087885.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/d2b9fc7d84d44ed5951c242270479984/d2b9fc7d84d44ed5951c242270479984.HD-1080p-7.2Mbps-66880408.mp4?v=0",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zb9226406252zd9226406252xf1&_p=1791658376287&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a72v9223793767za200zb9226406252zd9226406252xf1&_p=1791658376287&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9226406252zd9226406252xf1&_p=1791658376287&_gaz=1&gcs=G111&g",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/01be4856bc9144f5b46adfd8f63e5676/01be4856bc9144f5b46adfd8f63e5676.HD-720p-1.6Mbps-66377407.mp4?v=0",
+            "GET https://antinorm.co/cdn/shop/videos/c/vp/8983f921d4b04472977b912b55c38377/8983f921d4b04472977b912b55c38377.HD-1080p-4.8Mbps-66139032.mp4?v=0",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658384568&cv=11&fst=1791658384568&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=2&apvc=1&auid=2080200508.1791658385&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinor",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2080200508.1791658385&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=2&apvc=0&auid=2080200508.1791658385&dt=Antinorm&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fantinor",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658384669&cv=11&fst=1791658384669&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6a7"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 2.35,
+              "load": 9.11,
+              "lcp": 0.51
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.42s",
+              "error": null,
+              "secs": 11.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Face the Day",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5863 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Face the Day",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "12: 'Face the Day'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Your skincare just got a whole lot easier. Meet the Antinorm'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Your skincare just got a whole lot easier. Meet the Antinorm'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://antinorm.co/products/face-the-day",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://antinorm.co/products/face-the-day",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Face the Day",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://antinorm.co/cdn/shop/files/FTDPDP01.png?v=1791383748&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.25,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://antinorm.co/products/face-the-day"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'innerHTML')",
+              "url": "https://antinorm.co/products/face-the-day"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://antinorm.co/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-94732426@2/sandbox/modern/products/face-the-day"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'title')",
+              "url": "https://antinorm.co/products/face-the-day"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to fetch",
+              "url": "https://antinorm.co/products/face-the-day"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/api/collect",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=654324989.1791658395&dt=Face%20the%20Day&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2F",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=654324989.1791658395&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zb9226406252zd9226406252xf1&_p=1791658393362&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a80h2v9223793767za200zb9226406252zd9226406252xf1&_p=1791658393362&gcs=G111&gcd=13",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a80h2v9223793767za200zb9226406252zd9226406252xf1&_p=1791658393362&_gaz=1&gcs=G111",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a80h2v9223793767za200zb9226406252zd9226406252xf1&_p=1791658393362",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1191345359.1791658397&gtm=45be6a72h1v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=2&apvc=1&auid=1191345359.1791658397&dt=Face%20the%20Day&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658397314&cv=11&fst=1791658397314&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658397692&cv=11&fst=1791658397692&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=2&apvc=0&auid=1191345359.1791658397&dt=Face%20the%20Day&tid=AW-17055092464&en=view_item&dl=https%3A%2F%2"
+          ],
+          "loads": [
+            {
+              "url": "/products/face-the-day",
+              "ttfb": 0.07,
+              "dcl": 1.66,
+              "load": 6.12,
+              "lcp": 0.77
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 8.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.89,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Error: Failed to fetch: at https://bridge.shopflo.com/js/shopflo.bundle.js:2:462696 at Generator.<anonymous> (https://bridge.shopflo.com/js/shopflo.bundle.js:2:410464) at Generator.next (https://bridge.shopflo.com/js/sho",
+              "url": "https://bridge.shopflo.com/js/shopflo.bundle.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/api/collect",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658405258&cv=11&fst=1791658405258&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=1&auid=1671228070.1791658405&dt=404%20Not%20Found&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1671228070.1791658405&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=1671228070.1791658405&dt=404%20Not%20Found&tid=AW-17055092464&en=page_view&dl=https%3A%2F%",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zb9226406252zd9226406252xf1&_p=1791658404051&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a72v9223793767za200zb9226406252zd9226406252xf1&_p=1791658404051&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9226406252zd9226406252xf1&_p=1791658404051&_gaz=1&gcs=G111&g",
+            "GET https://antinorm.co/products/bugradar-check-does-not-exist.json",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.15,
+              "dcl": 0.53,
+              "load": 7.0,
+              "lcp": 0.6
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /policies/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.19s",
+              "error": null,
+              "secs": 9.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4544 chars, 21 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Refund policy', heading 'Refund policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/refund-policy",
+                  "actual": "/policies/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "3456 chars of policy text",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "3456 chars under 'Refund policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /policies/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.21s",
+              "error": null,
+              "secs": 7.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7115 chars, 21 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping policy', heading 'Shipping policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/shipping-policy",
+                  "actual": "/policies/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "5963 chars of policy text",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "5963 chars under 'Shipping policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /policies/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.76s",
+              "error": null,
+              "secs": 6.93,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17165 chars, 20 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy', heading 'Privacy policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/privacy-policy",
+                  "actual": "/policies/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "16017 chars of policy text",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "16017 chars under 'Privacy policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /policies/terms-of-service",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.19s",
+              "error": null,
+              "secs": 6.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms of service",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "20682 chars, 20 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms of service', heading 'Terms of service'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/terms-of-service",
+                  "actual": "/policies/terms-of-service",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "19474 chars of policy text",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "19474 chars under 'Terms of service'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.08s",
+              "error": null,
+              "secs": 7.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1443 chars, 21 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 38.01,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://antinorm.co/policies/refund-policy"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://antinorm.co/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-94732426@2/sandbox/modern/policies/refund-policy"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'title')",
+              "url": "https://antinorm.co/policies/refund-policy"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4508131579002880.ingest.us.sentry.io/api/4508131592241152/envelope/?sentry_version=7&sentry_key=d97a825a449bcf2e640608e705016d56&se"
+            }
+          ],
+          "failed_requests": [
+            "GET https://checkout-merchant.snapmint.com/js/v1/8240",
+            "POST https://antinorm.co/api/collect",
+            "POST https://antinorm.co/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=268369910.1791658416&dt=Refund%20policy&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=268369910.1791658416&gtm=45be6a72v9226406252za208zb9262194320zd9262194320xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-GVRB2BTN0L&gtm=45Pe6a72v9262194320za200zd9262194320xf1&_p=1791658414695&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-BWLDEL3R9K&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658414695&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658414695&_gaz=1&gcs=G111&g",
+            "POST https://xd-f1cf3d4fdb19408ea770fc6f80817dcb.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=1&auid=810526984.1791658417&dt=Refund%20policy&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fan",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658417384&cv=11&fst=1791658417384&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=810526984.1791658417&gtm=45be6a72v9226406252za208zd9226406252xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=810526984.1791658417&dt=Shipping%20policy&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2F",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658424385&cv=11&fst=1791658424385&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=810526984.1791658417&dt=Shipping%20policy&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2F",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658423491&gcs=G111&gcd=13t3",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658431830&cv=11&fst=1791658431830&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=2&apvc=1&auid=810526984.1791658417&dt=Privacy%20policy&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2Fa",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658430709&gcs=G111&gcd=13t3",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=810526984.1791658417&dt=Privacy%20policy&tid=AW-17055092464&en=page_view&dl=https%3A%2F%2F",
+            "POST https://www.google.com/rmkt/collect/17055092464/?random=1791658438464&cv=11&fst=1791658438464&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=1&auid=810526984.1791658417&dt=Terms%20of%20service&tid=AW-17055092464&en=page_view&dl=https%3A%2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-ZK2Y0S2EM6&gtm=45Pe6a72v9223793767za200zb9262194320zd9262194320xf1&_p=1791658437475&gcs=G111&gcd=13t3",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=810526984.1791658417&dt=Terms%20of%20service&tid=AW-17055092464&en=page_view&dl=https%3A%2"
+          ],
+          "loads": [
+            {
+              "url": "/policies/refund-policy",
+              "ttfb": 0.06,
+              "dcl": 1.15,
+              "load": 5.51,
+              "lcp": 0.8
+            },
+            {
+              "url": "/policies/shipping-policy",
+              "ttfb": 0.06,
+              "dcl": 0.95,
+              "load": 4.91,
+              "lcp": 0.68
+            },
+            {
+              "url": "/policies/privacy-policy",
+              "ttfb": 0.04,
+              "dcl": 1.07,
+              "load": 5.3,
+              "lcp": 0.9
+            },
+            {
+              "url": "/policies/terms-of-service",
+              "ttfb": 0.07,
+              "dcl": 0.95,
+              "load": 5.05,
+              "lcp": 0.69
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.14,
+              "dcl": 0.68,
+              "load": 5.21,
+              "lcp": 1.2
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Antinorm",
+    "theme": "Impact (store copy: AntiNorm | Live - After Monsoon Sale)",
+    "checkout_app": "Shopflo",
+    "access": "open",
+    "nav": 5,
+    "collections": 8,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [],
+  "perf": {
+    "pages": 13,
+    "median_load_secs": 5.51,
+    "slowest": {
+      "url": "/",
+      "load_secs": 10.62
+    },
+    "console_errors": 8,
+    "console_warnings": 6,
+    "failed_requests": 131
+  },
+  "counts": {
+    "pass": 10,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
