@@ -844,6 +844,9 @@ LOAD_MORE_JS = r"""() => { document.querySelectorAll('[data-radar-more]').forEac
   if (!b) return null; b.setAttribute('data-radar-more', '1'); return (b.innerText || '').trim().slice(0, 40); }"""
 
 
+MORE_MIN_HIDDEN = 8      # in-stock products missing from page 1 before 'past the first page' is judged
+
+
 def _handles(ctx: Ctx) -> set[str]:
     return {l["handle"] for l in (_product_links(ctx.sess) or [])}
 
@@ -871,9 +874,11 @@ def collection_more(ctx: Ctx, url: str, products_json: str):
     nxt = ctx.sess.evaluate(NEXT_PAGE_JS)
     more = ctx.sess.evaluate(LOAD_MORE_JS)
     hidden = [h for h in avail if h not in first]
-    if not nxt and not more and len(hidden) <= 2:
-        ctx.steps.info("more_products_not_judged", f"every in-stock product of this collection fits on the first page "
-                                                   f"({len(first)} shown, {len(avail)} in stock in the store's data)")
+    if not nxt and not more and len(hidden) < max(MORE_MIN_HIDDEN, 0.25 * len(avail)):
+        # a few in-stock products missing from page 1 is not 'pagination broken': themes hide some products, and on
+        # GitHub's US machines Shopify Markets hides products not sold to the US (peepbeauty, supplysix: 6-8, 11 Oct)
+        ctx.steps.info("more_products_not_judged", f"the first page shows the collection ({len(first)} shown, "
+                                                   f"{len(avail)} in stock in the store's data, {len(hidden)} not shown)")
         return
     if nxt:
         ctx.steps.run("page_2_opens", lambda: _load(ctx, nxt["href"]))
@@ -891,13 +896,24 @@ def collection_more(ctx: Ctx, url: str, products_json: str):
         if more:
             _click(ctx, page.locator('[data-radar-more="1"]').first)
             how = f"clicked {more!r}"
-        else:   # infinite scroll: products appear as the shopper reaches the bottom
-            for _ in range(4):
-                ctx.sess.evaluate("() => scrollTo({top: document.documentElement.scrollHeight, behavior: 'instant'})")
-                page.wait_for_timeout(1200)
+        else:   # infinite scroll: scroll down like a shopper, a screen at a time (a jump to the bottom can skip the
+                # loader's sentinel: giva.co, 226 in-stock products past the first page, 11 Oct), then once more at the end
+            for i in range(30):
+                at_end = ctx.sess.evaluate("() => { scrollBy({top: Math.round(innerHeight * 0.8), behavior: 'instant'}); "
+                                           "return innerHeight + scrollY >= document.documentElement.scrollHeight - 4; }")
+                page.wait_for_timeout(350)
                 if _handles(ctx) - first:
                     break
-            how = "scrolled to the bottom"
+                if at_end:
+                    page.wait_for_timeout(1500)
+                    if _handles(ctx) - first or i > 25:
+                        break
+                    later = ctx.sess.evaluate(LOAD_MORE_JS)       # a 'Load more' that appears only near the end
+                    if later:
+                        _click(ctx, page.locator('[data-radar-more="1"]').first)
+                        page.wait_for_timeout(1500)
+                        break
+            how = "scrolled down the page"
         import time
         t0 = time.monotonic()
         new = _handles(ctx) - first
@@ -1274,30 +1290,75 @@ def _settled_search_links(ctx: Ctx, term: str, cap: float = 10.0) -> tuple[list[
     return links, (waited if waited >= 1 else 0.0)
 
 
+SEARCH_FIELD = 'input[type="search"], input[name="q"], input[placeholder*="search" i], input[aria-label*="search" i]'
+
+# The control that opens a hidden search box: any visible clickable thing in the page's top part whose label, title,
+# class, id, data attributes, link or icon says 'search' (themes: an <a class="js-search-toggle" title="Search"> with an
+# svg icon, a <span class="search-icon" role="button">, a details summary, an icon button with no label at all). The
+# best one is marked for the click; never a submit button of a form with text typed into it (nothing is typed yet).
+SEARCH_OPENER_JS = r"""() => { document.querySelectorAll('[data-radar-search-open]').forEach(e => e.removeAttribute('data-radar-search-open'));
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 4 && r.height > 4 && r.top < Math.max(260, innerHeight * 0.35) && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const says = e => { const a = [e.getAttribute('aria-label'), e.getAttribute('title'), typeof e.className === 'string' ? e.className : '',
+      e.id, e.getAttribute('href'), e.getAttribute('aria-controls'), e.getAttribute('data-action'), e.getAttribute('data-target'),
+      e.getAttribute('data-toggle'), (e.innerText || '').trim().slice(0, 20)].join(' ');
+    const icon = e.querySelector('svg[class*="search" i], svg[id*="search" i], use[href*="search" i], use[*|href*="search" i], [class*="icon-search" i], img[alt*="search" i]');
+    return /search/i.test(a) || !!icon; };
+  const cands = [...document.querySelectorAll('a, button, summary, [role="button"], span[class*="search" i], div[class*="search" i][onclick], label[for*="search" i]')]
+    .filter(e => !e.closest('form') || e.tagName === 'SUMMARY' || !e.closest('form').querySelector('input:not([type="hidden"])') ||
+                 !vis(e.closest('form').querySelector('input:not([type="hidden"])')))
+    .filter(e => vis(e) && says(e));
+  const rank = e => (e.tagName === 'BUTTON' || e.getAttribute('role') === 'button' || e.tagName === 'SUMMARY' ? 0 : 1) + (e.closest('header, [id*="header" i], [class*="header" i]') ? 0 : 2);
+  cands.sort((a, b) => rank(a) - rank(b));
+  if (!cands.length) return false; cands[0].setAttribute('data-radar-search-open', '1'); return true; }"""
+
+
 def _open_search_box(ctx: Ctx):
     """The store's visible search field on the current page, opening it first when it hides behind a search icon /
     drawer like most themes on phones. None when there is none."""
     page = ctx.sess.page
-    box = ctx.sess.evaluate("""() => { const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
-        return !!([...document.querySelectorAll('input[type="search"], input[name="q"]')].find(vis)); }""")
-    if not box:
-        opener = page.locator("a[href$='/search'], [aria-label*='search' i]:not(input), summary[aria-label*='search' i], "
-                              "button[class*='search' i], details-modal summary")
-        for i in range(min(opener.count(), 4)):
+
+    def field():
+        cand = page.locator(SEARCH_FIELD)
+        for i in range(min(cand.count(), 8)):
             try:
-                if opener.nth(i).is_visible():
-                    _click(ctx, opener.nth(i))
-                    break
+                if cand.nth(i).is_visible() and cand.nth(i).is_editable():
+                    return cand.nth(i)
             except Exception:  # noqa: BLE001
                 continue
-    cand = page.locator('input[type="search"], input[name="q"]')
-    for i in range(min(cand.count(), 6)):
+        return None
+    got = field()
+    if got is not None:
+        return got
+    opener = page.locator("a[href$='/search'], [aria-label*='search' i]:not(input), summary[aria-label*='search' i], "
+                          "button[class*='search' i], details-modal summary")
+    tried = False
+    for i in range(min(opener.count(), 4)):
         try:
-            if cand.nth(i).is_visible():
-                return cand.nth(i)
+            if opener.nth(i).is_visible():
+                _click(ctx, opener.nth(i))
+                tried = True
+                break
         except Exception:  # noqa: BLE001
             continue
-    return None
+    for _ in range(4):                     # drawers slide in: give the field a moment
+        got = field()
+        if got is not None or not tried:
+            break
+        page.wait_for_timeout(400)
+    if got is None and ctx.sess.evaluate(SEARCH_OPENER_JS):
+        # wider net (11 Oct, 36-store run: 7 of 22 real stores' search boxes stayed closed: antinorm, cava, dotandkey,
+        # mcaffeine, plum, soulflower, supplysix): any control near the top that says 'search' in its label / class / icon
+        try:
+            _click(ctx, page.locator('[data-radar-search-open="1"]').first)
+        except Exception:  # noqa: BLE001
+            return None
+        for _ in range(5):
+            got = field()
+            if got is not None:
+                break
+            page.wait_for_timeout(400)
+    return got
 
 
 def _search_once(ctx: Ctx, url: str, step: str, soft: bool):

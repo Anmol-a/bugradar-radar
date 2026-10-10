@@ -1290,8 +1290,8 @@ def test_search_as_you_type_suggestions_pass_and_a_silent_dropdown_warns(tmp_pat
 
 @pytest.mark.parametrize("mode,step,detail", [
     ("paginated", "page_2_shows_more", "page 2 shows 3 more products"),
-    ("load_more", "shows_more_products", "clicked 'Load more': 4 more products"),
-    ("infinite_scroll", "shows_more_products", "scrolled to the bottom: 4 more products"),
+    ("load_more", "shows_more_products", "clicked 'Load more': 10 more products"),
+    ("infinite_scroll", "shows_more_products", "scrolled down the page: 10 more products"),
 ])
 def test_products_past_the_first_page_are_reached_the_stores_own_way(tmp_path, mode, step, detail):
     run = _info(mode, tmp_path, suites=("catalog",))
@@ -1307,7 +1307,7 @@ def test_collection_pagination_broken_fails_hidden_products_warn_and_one_page_is
     run = _info("more_hidden", tmp_path, suites=("catalog",))
     c = _case(run, "catalog.more.home-decor")
     s = _steps(c)["shows_more_products"]
-    assert c.verdict == "pass" and s.status == "warn" and "the store's data has 4 more in stock" in s.error, s.error
+    assert c.verdict == "pass" and s.status == "warn" and "the store's data has 10 more in stock" in s.error, s.error
     run = _info("healthy", tmp_path, suites=("catalog",))
     st = _case(run, "catalog.more.home-decor").attempts[-1].steps
     assert [s.name for s in st if s.status == "info"] == ["more_products_not_judged"], [(s.name, s.status) for s in st]
@@ -1422,3 +1422,11 @@ def test_too_many_third_party_scripts_warn_with_the_hosts_named(tmp_path):
     for prefix in ("smoke.home_health", "catalog.collection", "product.pdp"):
         s = _steps(_case(run, prefix))["scripts_weight"]
         assert s.status == "warn" and "26 third-party script hosts" in s.error and "app1.localhost" in s.error, (prefix, s.error)
+
+
+def test_search_box_behind_a_bare_icon_link_is_opened_and_typed_into(tmp_path):
+    run = _info("search_icon_only", tmp_path, suites=("search",))
+    s = _steps(_case(run, "search.ceramic"))["returns_relevant_products"]
+    assert s.status == "pass" and s.detail.startswith("typed into the store's search box"), s.detail
+    sug = _steps(_case(run, "search.suggestions"))["suggestions_while_typing"]
+    assert sug.detail == "not judged: this store's search box has no search-as-you-type", sug.detail

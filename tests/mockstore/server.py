@@ -191,6 +191,9 @@ Modes (to prove Radar catches and heals what it should):
   account_open     robots.txt allows /account; /account/login shows an email + password form (journey 29)
                    -> info.account_page PASSES, nothing typed
   account_broken   same, but /account/login answers 404 -> info.account_page FAILS
+  search_icon_only the header search form is hidden behind a bare icon link (title="Search", svg icon; no aria-label, not a
+                   button, not a /search link) -> Radar opens it and TYPES the search like a shopper (old opener: 'no visible
+                   search box; opened /search')
   script_heavy     every page loads 26 app scripts from 26 different third-party hosts (journey 31) -> 'scripts the page
                    loads' WARNS on home, collection and product pages; healthy -> passes with the counts
   collection_js_error  collection pages throw an uncaught TypeError after load (journey 14) -> collection test WARNS
@@ -199,13 +202,13 @@ Modes (to prove Radar catches and heals what it should):
                    load (journey 17) -> 'Core Web Vitals' WARNS with the CLS value; the store stays healthy
   sideways_scroll  every page carries a 1700 px promo strip (journey 30) -> home, collection and product pages WARN
                    'page scrolls sideways' naming div.promo-marquee; the store stays healthy
-  paginated        'Home Decor' also holds 4 clay bowls (its products.json too), 3 products per page with a 'Next page'
+  paginated        'Home Decor' also holds 10 clay bowls (its products.json too), 3 products per page with a 'Next page'
                    link (journey 26) -> catalog.more PASSES: page 2 shows new products. healthy (all fit on one page)
                    -> 'not judged'
   pagination_broken  same, but ?page=2 answers HTTP 500 -> catalog.more FAILS
   load_more        first 3 shown, a 'Load more' button appends the bowls -> PASSES after the click
   infinite_scroll  first 3 shown, the bowls are appended when the shopper reaches the bottom -> PASSES after scrolling
-  more_hidden      first 3 shown, no page 2, no button, no scroll loading, while the data has 4 more in stock -> WARNS
+  more_hidden      first 3 shown, no page 2, no button, no scroll loading, while the data has 10 more in stock -> WARNS
   search_error_empty  /search answers HTTP 500 when nothing matches (journey 27) -> search.no_results FAILS
   predictive_search  the header search box sits in a Dawn-style <predictive-search> fed by /search/suggest.json
                    (journey 27) -> search.suggestions PASSES with the suggested product; healthy (no such element)
@@ -250,10 +253,10 @@ PRODUCTS.append({"id": 5, "handle": "gift-pouch", "title": "Travel Pouch (gift)"
                  "variants": [{"id": 501, "available": True, "price": "1.00"}], "collection": None,
                  "unavailable_page": True})   # like plumgoodness.com's Rs 1 freebie: not in any collection
 COLLECTIONS = [{"handle": "home-decor", "title": "Home Decor"}, {"handle": "kitchen", "title": "Kitchen"}]
-# journey 26: in the pagination modes 'Home Decor' also lists 4 clay bowls (collection pages + its products.json only)
+# journey 26: in the pagination modes 'Home Decor' also lists 10 clay bowls (collection pages + its products.json only)
 EXTRA_DECOR = [{"id": 60 + i, "handle": f"clay-bowl-{i}", "title": f"Clay Bowl No. {i}", "price": "599.00",
                 "variants": [{"id": 600 + i, "available": True, "price": "599.00"}], "collection": "home-decor"}
-               for i in range(1, 5)]
+               for i in range(1, 11)]
 MORE_MODES = ("paginated", "pagination_broken", "load_more", "infinite_scroll", "more_hidden")
 J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepage banner (journey 15)
 CARTS: dict[str, list[dict]] = {}
@@ -426,6 +429,15 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             # navigation and must not get an extra link to follow)
             body = body.replace("<main>", '<div class="announcement-bar"><a href="/pages/offers">Festive offers: up to 20% '
                                 'off</a></div><main>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "search_icon_only":
+            # the header's search form stays hidden until a bare icon link is clicked: no aria-label, not a button, not a
+            # /search link, only title="Search" and an svg icon (antinorm, plum, soulflower... 36-store run 11 Oct)
+            body = body.replace('<form action="/search" method="get"><input name="q"></form>',
+                                '<a href="javascript:void(0)" class="header-icon js-drawer-open-top" title="Search" '
+                                'onclick="document.getElementById(\'hdr-search\').style.display=\'block\'">'
+                                '<svg class="icon icon-search" width="20" height="20"><circle cx="9" cy="9" r="6" stroke="#000" '
+                                'fill="none"/></svg></a><form id="hdr-search" action="/search" method="get" style="display:none">'
+                                '<input name="q"></form>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "script_heavy":
             # journey 31: 26 app scripts, each from its own third-party host (*.localhost resolves to this machine)
             body = body.replace("</body>", "<script>for (let i = 1; i <= 26; i++) { const s = document.createElement('script'); "

@@ -100,6 +100,7 @@ data/                     everything Radar writes (git-ignored)
 | info | minor | info_pages, account_page | Footer policy / contact pages open with real content; the header's account link opens a sign-in page (links robots.txt disallows are noted, never opened). Layout warnings (sideways scroll, fixed bars covering > 35%) ride on home, collection and product pages (4zc) |
 | search (+) | minor | search_no_results, search_suggestions | A word no store sells gives a working 'no results' page; typing suggests products where the store has search-as-you-type (27) |
 | catalog (+) | minor | collection_more | Page 2 / load more / infinite scroll brings new products (26) |
+| smoke (+) | minor | more_links_resolve | Announcement bar, homepage-section and footer links open (15). Scripts and third-party hosts per key page ride on home / collection / product pages as a warning at the extreme (31) |
 
 **Every page load must show content:** a page with under 40 characters of visible text and no images fails as "rendered blank" (a 200 status alone is not enough).
 
@@ -979,6 +980,15 @@ on the new). A page with its own buy button is judged as before.
 
 Also: the bench table and both HTML reports list the `info` suite (journeys 28–30): their suite lists stopped at
 `health`, so the report never showed it.
+### 4zc-3. Journeys 15 and 31 (chat session, 11 Oct 2026, 01:10 IST)
+
+| Journey | What Radar does | Pass / fail / warn | Mocks |
+|---|---|---|---|
+| **15 Links beyond the menu** | Discovery reads the announcement bar (`*announcement*`), homepage-section links (inside `main`, outside header / footer / menus / dialogs) and footer links; `more_links()` keeps same-store pages only (no product, cart, account, search, policy, file, app-proxy or company-filing links), skips menu links and the footer info pages already tested, one per address, ≤ 2 per place, ≤ 6 in all. Case `smoke.more_links` (minor) | **Fail:** a link answers ≥ 400, renders blank, is the store's 'page not found' page served with 200, or redirects to the homepage (a deleted page / ended offer) | every mode: announcement bar → /pages/offers, homepage banner → /pages/our-story (+ a menu link, skipped); `broken_section_link` (404 + redirect home) FAILS naming both |
+| **31 Scripts per page** (Revenue Shield's 'script size') | `scripts_weight` soft step on home, collection and product pages: scripts loaded, JavaScript bytes from resource timing (a floor: cross-origin scripts without Timing-Allow-Origin report 0), third-party script hosts (store domain and Shopify's hosts excluded), the 5 busiest named | **Warn** only at the extreme: ≥ 4 MB of JavaScript or ≥ 25 third-party script hosts; otherwise the counts are report evidence | `script_heavy` (26 app scripts from 26 `*.localhost` hosts) |
+
+**Gaps vs Revenue Shield still open** (rows added to the status doc): 'Buy it now' flow opening the checkout (not
+filled), and storefront app changes between runs (needs run history: store profile, ARCHITECTURE 12).
 
 ## 5. Self-healing locators
 
@@ -1239,6 +1249,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 ## Change log
 
 - **v0.19 loop cycle 25 (11 Oct, 00:50 IST):** marketplace-only catalog stores BLOCKED with the reason, not DOWN (`marketplace_only`; antesports, beyondsnack); journeys 19–21 on the cart page (`cart.edit_and_checkout`: quantity +, checkout page renders, remove), warnings until benched; `/checkout` opened only inside the cart flow; new30g 2/19; reports list the `info` suite; mocks `cart_qty_broken`, `cart_remove_broken`, `checkout_broken` (4zd). Full 36 regression 38075087892 (before 28–30) = 62 healthy / 4 degraded (store findings) / 0 Radar false failures.
+- **v0.19 chat session (11 Oct, 01:10 IST):** journey 15 (links beyond the menu: announcement bar, homepage sections, footer; `smoke.more_links`), journey 31 (scripts and third-party script hosts per key page, Revenue Shield's 'script size'); mocks `broken_section_link`, `script_heavy` (4zc-3).
 - **v0.19 chat session (11 Oct, 00:45 IST):** journeys 27 (search no-results page + search-as-you-type), 26 (products past the first page), 14 (JS errors on collection pages), 17 (Core Web Vitals warnings); first real-store run of 28–30: giva.co PDF footer link fixed (the only new Radar false failure), late policy text, sign-in hand-off, layout noise threshold, popups apart (4zc-2).
 - **v0.19 chat session (11 Oct, 00:00 IST):** journeys 28–30: footer policy + contact pages (`info.policy_pages`), account login page (`info.account_page`), layout warnings on home / collection / product pages (sideways scroll, fixed bars covering > 35%); robots.txt-disallowed `/policies/` and `/account` noted, never opened; mocks `broken_policies`, `account_open`, `account_broken`, `sideways_scroll`, `tall_sticky_bar` (4zc).
 - **v0.19 loop cycle 11 (10 Oct, 09:46 IST):** product link opening a new tab is followed (mock `new_tab_cards`; fashor, tigc); one Shopify marker → homepage loaded again before 'not Shopify', evidence in the note (mock `stripped_first_home`; koskii); new30f final 4/21 (4z2).
