@@ -1,0 +1,2579 @@
+{
+  "run_id": "20261010T190632Z-d-efd2",
+  "site_id": "tilfi.com",
+  "base_url": "https://tilfi.com",
+  "device": "desktop",
+  "started_at": "2026-10-10T19:06:32+00:00",
+  "finished_at": "2026-10-10T19:10:17+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.29s",
+              "error": null,
+              "secs": 5.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3264 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/tilfi-weddings (50 products)",
+              "error": null,
+              "secs": 4.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/tilfi-weddings ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/tilfi-weddings",
+                  "actual": "/collections/tilfi-weddings",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "50",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree (its first link did nothing; the product name opened it)",
+              "error": null,
+              "secs": 26.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree",
+                  "actual": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "every_product_link_opens_the_product",
+              "status": "warn",
+              "detail": null,
+              "error": "product link opens the product when clicked: expected opens the product, got the product IMAGE link <a> on /collections/tilfi-weddings did nothing when clicked (twice); the product's other link (\"'Pride of Lions' Brown Pure Katan Silk B\u2026",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product link opens the product when clicked",
+                  "expected": "opens the product",
+                  "actual": "the product IMAGE link <a> on /collections/tilfi-weddings did nothing when clicked (twice); the product's other link (\"'Pride of Lions' Brown Pure Katan Silk B\u2026",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "\"'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree\", selected variant 47283014074530 at \u20b942,000.00",
+              "error": null,
+              "secs": 0.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree.js with variants",
+                  "actual": "\"'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree\", 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b942,000.00, got not on page",
+              "secs": 1.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree",
+                  "actual": "\"'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree\" (h1, 25px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b942,000.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b942,000.00, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 40.32,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "GET https://cdn.shopify.com/videos/c/o/v/8cc25cb3ea344643a0b4438280618a81.mp4",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659203638&cv=11&fst=1791659203638&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1129123752.1791659204&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1129123752.1791659204&gtm=45be6a72v869813302za208zb831847876zd831847876xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659203778&cv=11&fst=1791659203778&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=1&auid=1960958090.1791659204&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1960958090.1791659204&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659202099&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659202099&gcs",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659209022&cv=11&fst=1791659209022&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1960958090.1791659204&dt=Tilfi%20Weddings%20-%20Banarasi%20Wedding%20Sarees%2C%20Dupattas%2",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659209108&cv=11&fst=1791659209108&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=1&auid=1960958090.1791659204&dt=Tilfi%20Weddings%20-%20Banarasi%20Wedding%20Sarees%2C%20Dupattas%2",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=0&auid=1960958090.1791659204&dt=Tilfi%20Weddings%20-%20Banarasi%20Wedding%20Sarees%2C%20Dupattas%2",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659209128&cv=11&fst=1791659209128&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb869813302zd869813302xf1&_p=1791659207885&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za200zb869813302zd869813302xf1&_p=1791659207885&gcs=G111&gcd=13t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb869813302zd869813302xf1&_p=1791659207885&gcs",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zd871033485xf1&_p=1791659234528&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1960958090.1791659204&dt=%27Pride%20of%20Lions%27%20Brown%20Pure%20Katan%20Silk%20Banarasi%"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.13,
+              "load": 3.66,
+              "lcp": 2.81
+            },
+            {
+              "url": "/collections/tilfi-weddings",
+              "ttfb": 0.0,
+              "dcl": 0.38,
+              "load": 1.84,
+              "lcp": 0.73
+            },
+            {
+              "url": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloo",
+              "ttfb": 0.39,
+              "dcl": 0.75,
+              "load": 2.09,
+              "lcp": 1.25
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.88s",
+              "error": null,
+              "secs": 5.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3264 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/tilfi-weddings (50 products)",
+              "error": null,
+              "secs": 3.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/tilfi-weddings ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/tilfi-weddings",
+                  "actual": "/collections/tilfi-weddings",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "50",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree (its first link did nothing; the product name opened it)",
+              "error": null,
+              "secs": 26.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree",
+                  "actual": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "every_product_link_opens_the_product",
+              "status": "warn",
+              "detail": null,
+              "error": "product link opens the product when clicked: expected opens the product, got the product IMAGE link <a> on /collections/tilfi-weddings did nothing when clicked (twice); the product's other link (\"'Pride of Lions' Brown Pure Katan Silk B\u2026",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product link opens the product when clicked",
+                  "expected": "opens the product",
+                  "actual": "the product IMAGE link <a> on /collections/tilfi-weddings did nothing when clicked (twice); the product's other link (\"'Pride of Lions' Brown Pure Katan Silk B\u2026",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "\"'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree\", selected variant 47283014074530 at \u20b942,000.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree.js with variants",
+                  "actual": "\"'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree\", 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b942,000.00, got not on page",
+              "secs": 1.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree",
+                  "actual": "\"'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree\" (h1, 25px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b942,000.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b942,000.00, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 38.44,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "GET https://cdn.shopify.com/videos/c/o/v/8cc25cb3ea344643a0b4438280618a81.mp4",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1114121910.1791659244&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the%",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659243586&cv=11&fst=1791659243586&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1114121910.1791659244&gtm=45be6a80h2v869813302za208zb831847876zd831847876xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=1769290691.1791659244&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the%",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659243718&cv=11&fst=1791659243718&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=FZryD7WB_UdU2ctWqyUTO2zoRiy6f_JzGw&auid=1769290691.1791659244&gtm=45be6a72v869813302za208zd869813302xec",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659242426&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659242426&gcs",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zd871033485xf1&_p=1791659247836&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1769290691.1791659244&dt=Tilfi%20Weddings%20-%20Banarasi%20Wedding%20Sarees%2C%20Dupattas%2",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659248725&cv=11&fst=1791659248725&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659248789&cv=11&fst=1791659248789&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=0&auid=1769290691.1791659244&dt=Tilfi%20Weddings%20-%20Banarasi%20Wedding%20Sarees%2C%20Dupattas%",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=1&auid=1769290691.1791659244&dt=Tilfi%20Weddings%20-%20Banarasi%20Wedding%20Sarees%2C%20Dupattas%",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659248798&cv=11&fst=1791659248798&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za200zd871033485xf1&_p=1791659247836&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb871033485zd871033485xf1&_p=1791659247836&gcs",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1769290691.1791659244&dt=%27Pride%20of%20Lions%27%20Brown%20Pure%20Katan%20Silk%20Banarasi",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659274775&cv=11&fst=1791659274775&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 0.73,
+              "load": 3.33,
+              "lcp": 2.21
+            },
+            {
+              "url": "/collections/tilfi-weddings",
+              "ttfb": 0.0,
+              "dcl": 0.4,
+              "load": 1.42,
+              "lcp": 0.55
+            },
+            {
+              "url": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloo",
+              "ttfb": 0.34,
+              "dcl": 0.7,
+              "load": 1.79,
+              "lcp": 1.25
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.77s",
+              "error": null,
+              "secs": 4.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3264 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/tilfi-weddings (50 products)",
+              "error": null,
+              "secs": 3.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/tilfi-weddings ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/tilfi-weddings",
+                  "actual": "/collections/tilfi-weddings",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "50",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree (its first link did nothing; the product name opened it)",
+              "error": null,
+              "secs": 26.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree",
+                  "actual": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "every_product_link_opens_the_product",
+              "status": "warn",
+              "detail": null,
+              "error": "product link opens the product when clicked: expected opens the product, got the product IMAGE link <a> on /collections/tilfi-weddings did nothing when clicked (twice); the product's other link (\"'Pride of Lions' Brown Pure Katan Silk B\u2026",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product link opens the product when clicked",
+                  "expected": "opens the product",
+                  "actual": "the product IMAGE link <a> on /collections/tilfi-weddings did nothing when clicked (twice); the product's other link (\"'Pride of Lions' Brown Pure Katan Silk B\u2026",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "\"'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree\", selected variant 47283014074530 at \u20b942,000.00",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloom-saree.js with variants",
+                  "actual": "\"'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree\", 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b942,000.00, got not on page",
+              "secs": 1.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree",
+                  "actual": "\"'Pride of Lions' Brown Pure Katan Silk Banarasi Shikargah Handloom Saree\" (h1, 25px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b942,000.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b942,000.00, got not on page",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 37.5,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "GET https://cdn.shopify.com/videos/c/o/v/8cc25cb3ea344643a0b4438280618a81.mp4",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659283114&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1017155661.1791659284&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659284356&cv=11&fst=1791659284356&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1017155661.1791659284&gtm=45be6a72h1v869813302za208zb831847876zd831847876xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659284565&cv=11&fst=1791659284565&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=2&apvc=1&auid=1179439155.1791659285&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1179439155.1791659285&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659283114&gcs",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=1179439155.1791659285&dt=Tilfi%20Weddings%20-%20Banarasi%20Wedding%20Sarees%2C%20Dupattas%",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659288532&cv=11&fst=1791659288532&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659287783&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=0&auid=1179439155.1791659285&dt=Tilfi%20Weddings%20-%20Banarasi%20Wedding%20Sarees%2C%20Dupattas%",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=1&auid=1179439155.1791659285&dt=Tilfi%20Weddings%20-%20Banarasi%20Wedding%20Sarees%2C%20Dupattas%",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659288761&cv=11&fst=1791659288761&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659288770&cv=11&fst=1791659288770&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za200zb831847876zd831847876xf1&_p=1791659287783&gcs=G111&gcd=13t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659287783&gcs",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1179439155.1791659285&dt=%27Pride%20of%20Lions%27%20Brown%20Pure%20Katan%20Silk%20Banarasi",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.65,
+              "load": 2.42,
+              "lcp": 2.12
+            },
+            {
+              "url": "/collections/tilfi-weddings",
+              "ttfb": 0.0,
+              "dcl": 0.43,
+              "load": 1.34,
+              "lcp": 0.66
+            },
+            {
+              "url": "/collections/tilfi-weddings/products/pride-of-lions-brown-pure-katan-silk-banarasi-shikargah-handloo",
+              "ttfb": 0.34,
+              "dcl": 0.67,
+              "load": 1.83,
+              "lcp": 1.13
+            }
+          ]
+        }
+      ],
+      "incident_signature": "tilfi.com|journey.shopper|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The page displays a price (in USD) but not the expected INR price \u2014 the robot looked for the INR price in the visible text whereas the store is showing USD, so the check looked in the wrong place.",
+        "evidence": "Visible page text includes product title and a price in USD: \"$434.91\"; the expected INR price \"\u20b942,000.00\" is not present on the page."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.79s",
+              "error": null,
+              "secs": 5.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3264 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.79s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.79s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "warn",
+              "detail": null,
+              "error": "page scrolls sideways: expected no, it fits the screen width, got yes, by 8px: span.header-cart__caption.icon-caption (45px wide, 8px past the edge)",
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width",
+                  "actual": "yes, by 8px: span.header-cart__caption.icon-caption (45px wide, 8px past the edge)",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars or overlays",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.78,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://cdn.shopify.com/videos/c/o/v/8cc25cb3ea344643a0b4438280618a81.mp4",
+            "POST https://tilfi.com/api/collect",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=893924287.1791659322&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the%",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659321705&cv=11&fst=1791659321705&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=893924287.1791659322&gtm=45be6a72v869813302za208zb831847876zd831847876xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=1688623534.1791659322&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659321849&cv=11&fst=1791659321849&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1688623534.1791659322&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659320651&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a80h2v9205887732za200zb831847876zd831847876xf1&_p=1791659320651&g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za200zb831847876zd831847876xf1&_p=1791659320651&gcs=G111&gcd=13t3t3t"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.67,
+              "load": 3.25,
+              "lcp": 2.0
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.96s",
+              "error": null,
+              "secs": 5.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3264 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /customer_authentication/redirect",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.85s, redirected to /authentication/12242138/login",
+              "error": null,
+              "secs": 3.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sign in - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "188 chars, 1 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/sarees",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.53s",
+              "error": null,
+              "secs": 4.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Pure Handwoven Banarasi Sarees - Shop Online - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5491 chars, 101 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/sarees",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.88s",
+              "error": null,
+              "secs": 7.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Pure Handwoven Banarasi Sarees - Shop Online - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5491 chars, 101 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.38,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Unsafe attempt to load URL https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg from frame with URL https://shopify.com/authentication/12242138/login?analytics_trace_id=95884d6f-7",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/index.CClZ7wPK.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/ShopLoginButtonInner.qiI6tYBv.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_QUIC_PROTOCOL_ERROR",
+              "url": "https://www.googletagmanager.com/gtm.js?id=GTM-MK3BS8B"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "GET https://cdn.shopify.com/videos/c/o/v/8cc25cb3ea344643a0b4438280618a81.mp4",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=686418408.1791659329&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the%2",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659328811&cv=11&fst=1791659328811&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=686418408.1791659329&gtm=45be6a80h2v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=1&auid=230468828.1791659329&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the%2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=230468828.1791659329&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659329022&cv=11&fst=1791659329022&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72h1v871033485za208zb869813302zd869813302xf1&_p=1791659327768&_gaz=1&gcs=G111&gc",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72h1v9205887732za200zb869813302zd869813302xf1&_p=1791659327768&g",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72h1v871033485za200zb869813302zd869813302xf1&_p=1791659327768&gcs=G111&gcd=13t3t",
+            "GET https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://shopify.com/api/collect",
+            "POST https://shopify.com/authentication/12242138/sign_in_preferences",
+            "GET https://tilfi.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=95884d6f-7ec3-437e-bdd4-5c3dc4c13fec&clie",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72h1v871033485za208zd871033485xf1&_p=1791659336914&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=0&auid=230468828.1791659329&dt=Pure%20Handwoven%20Banarasi%20Sarees%20-%20Shop%20Online%20-%20Tilf",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=1&auid=230468828.1791659329&dt=Pure%20Handwoven%20Banarasi%20Sarees%20-%20Shop%20Online%20-%20Tilf",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659338084&cv=11&fst=1791659338084&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659338105&cv=11&fst=1791659338105&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.9,
+              "load": 3.5,
+              "lcp": 2.43
+            },
+            {
+              "url": "/authentication/12242138/login?analytics_trace_id=95884d6f-7ec3-437e-bdd4-5c3dc4c13fec&client_id=dae",
+              "ttfb": 1.6,
+              "dcl": 1.75,
+              "load": 1.75,
+              "lcp": 1.9
+            },
+            {
+              "url": "/collections/sarees",
+              "ttfb": 0.77,
+              "dcl": 1.42,
+              "load": 2.63,
+              "lcp": 1.68
+            },
+            {
+              "url": "/collections/sarees",
+              "ttfb": 0.45,
+              "dcl": 0.78,
+              "load": 5.66,
+              "lcp": 0.95
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.apparel",
+      "suite": "catalog",
+      "title": "Collection 'Apparel' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.22s",
+              "error": null,
+              "secs": 5.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Apparel - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4007 chars, 101 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "50 products listed",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "50",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "warn",
+              "detail": null,
+              "error": "page scrolls sideways: expected no, it fits the screen width, got yes, by 8px: span.header-cart__caption.icon-caption (45px wide, 8px past the edge)",
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width",
+                  "actual": "yes, by 8px: span.header-cart__caption.icon-caption (45px wide, 8px past the edge)",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars or overlays",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.03,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/co"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=643135721.1791659350&dt=Apparel%20-%20Tilfi&tid=AW-835203453&en=page_view&dl=https%3A%2F%2",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659350378&cv=11&fst=1791659350378&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=643135721.1791659350&gtm=45be6a72v869813302za208zb831847876zd831847876xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=2&apvc=1&auid=1565620864.1791659351&dt=Apparel%20-%20Tilfi&tid=AW-835203453&en=page_view&dl=https%3A%2F%2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1565620864.1791659351&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659350498&cv=11&fst=1791659350498&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=2&apvc=0&auid=1565620864.1791659351&dt=Apparel%20-%20Tilfi&tid=AW-835203453&en=view_item_list&dl=https%3A",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659350527&cv=11&fst=1791659350527&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659349285&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659349285&gcs",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://chimpstatic.com/pixel/v1/track"
+          ],
+          "loads": [
+            {
+              "url": "/collections/apparel",
+              "ttfb": 0.64,
+              "dcl": 1.06,
+              "load": 3.69,
+              "lcp": 1.36
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.indu-red-maroon-pure-katan-silk-banarasi",
+      "suite": "product",
+      "title": "PDP ''Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.92s",
+              "error": null,
+              "secs": 5.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3728 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree",
+                  "actual": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "\"'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree\", selected variant 45885844226210 at \u20b948,000.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree.js with variants",
+                  "actual": "\"'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree\", 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b948,000.00, got not on page",
+              "secs": 1.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree",
+                  "actual": "\"'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree\" (h1, 25px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b948,000.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b948,000.00, got not on page",
+          "screenshot": "product.pdp.indu-red-maroon-pure-katan-silk-banarasi.a1.png",
+          "trace": "product.pdp.indu-red-maroon-pure-katan-silk-banarasi.a1_trace.zip",
+          "secs": 7.86,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/pr"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1242664701.1791659357&dt=%27Indu%27%20Red-Maroon%20Pure%20Katan%20Silk%20Banarasi%20Kadiyal",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659357166&cv=11&fst=1791659357166&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1242664701.1791659357&gtm=45be6a72v869813302za208zb831847876zd831847876xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=1&auid=42543963.1791659357&dt=%27Indu%27%20Red-Maroon%20Pure%20Katan%20Silk%20Banarasi%20Kadiyal%2",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659357290&cv=11&fst=1791659357290&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a72h",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=0&auid=42543963.1791659357&dt=%27Indu%27%20Red-Maroon%20Pure%20Katan%20Silk%20Banarasi%20Kadiyal%2",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659357272&cv=11&fst=1791659357272&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=42543963.1791659357&gtm=45be6a72h1v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659356003&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659356003&gcs",
+            "POST https://ct.pinterest.com/stats/",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za200zb831847876zd831847876xf1&_p=1791659356003&gcs=G111&gcd=13t3t3t"
+          ],
+          "loads": [
+            {
+              "url": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree?variant=45885844226210",
+              "ttfb": 0.33,
+              "dcl": 0.81,
+              "load": 3.4,
+              "lcp": 1.35
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.75s",
+              "error": null,
+              "secs": 5.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3728 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree",
+                  "actual": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "\"'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree\", selected variant 45885844226210 at \u20b948,000.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree.js with variants",
+                  "actual": "\"'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree\", 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b948,000.00, got not on page",
+              "secs": 1.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree",
+                  "actual": "\"'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree\" (h1, 25px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b948,000.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b948,000.00, got not on page",
+          "screenshot": "product.pdp.indu-red-maroon-pure-katan-silk-banarasi.a2.png",
+          "trace": "product.pdp.indu-red-maroon-pure-katan-silk-banarasi.a2_trace.zip",
+          "secs": 7.51,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/pr"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659363802&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=2&apvc=1&auid=768414428.1791659365&dt=%27Indu%27%20Red-Maroon%20Pure%20Katan%20Silk%20Banarasi%20Kadiyal",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=2&apvc=0&auid=768414428.1791659365&dt=%27Indu%27%20Red-Maroon%20Pure%20Katan%20Silk%20Banarasi%20Kadiyal",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659365072&cv=11&fst=1791659365072&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659365092&cv=11&fst=1791659365092&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a72v",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=768414428.1791659365&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=768414428.1791659365&dt=%27Indu%27%20Red-Maroon%20Pure%20Katan%20Silk%20Banarasi%20Kadiyal",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659365159&cv=11&fst=1791659365159&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659363802&gcs",
+            "POST https://ct.pinterest.com/stats/",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za200zb831847876zd831847876xf1&_p=1791659363802&gcs=G111&gcd=13t3t3t"
+          ],
+          "loads": [
+            {
+              "url": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree?variant=45885844226210",
+              "ttfb": 0.27,
+              "dcl": 0.68,
+              "load": 3.32,
+              "lcp": 1.25
+            }
+          ]
+        }
+      ],
+      "incident_signature": "tilfi.com|product.pdp.indu-red-maroon-pure-katan-silk-banarasi|shows_title_price_image",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The page displays a price ($497.04) but not the expected INR price \u20b948,000.00, so the shopper-facing price is different/missing and the store content is inconsistent with the expected variant price.",
+        "evidence": "$497.04 shown on page text where the robot expected \u20b948,000.00"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.indu",
+      "suite": "search",
+      "title": "Search for 'indu' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.72s",
+              "error": null,
+              "secs": 5.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3264 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 15 results, 4 mention 'indu'",
+              "error": null,
+              "secs": 4.96,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "indu - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4036 chars, 31 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "15",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'indu'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "4 of 15",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.12,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "GET https://cdn.shopify.com/videos/c/o/v/8cc25cb3ea344643a0b4438280618a81.mp4",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=833731066.1791659375&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the%2",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659374652&cv=11&fst=1791659374652&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=833731066.1791659375&gtm=45be6a72v869813302za208zb831847876zd831847876xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=1960755575.1791659375&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659374784&cv=11&fst=1791659374784&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1960755575.1791659375&gtm=45be6a72h1v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659373485&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659373485&gcs",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1960755575.1791659375&dt=Search%20Results%20-%20Tilfi&tid=AW-835203453&en=page_view&dl=htt",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659379652&cv=11&fst=1791659379652&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za200zb869813302zd869813302xf1&_p=1791659378922&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb869813302zd869813302xf1&_p=1791659378922&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=1&auid=1960755575.1791659375&dt=Search%20Results%20-%20Tilfi&tid=AW-835203453&en=page_view&dl=htt",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659379875&cv=11&fst=1791659379875&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.57,
+              "load": 3.24,
+              "lcp": 2.09
+            },
+            {
+              "url": "/pages/search-results-page?q=indu&type=product",
+              "ttfb": 0.33,
+              "dcl": 0.67,
+              "load": 1.83,
+              "lcp": 1.88
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.79s",
+              "error": null,
+              "secs": 5.21,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3264 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "66: 'Tilfi: Luxurious, handloom only clothing from the heart of B'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "The makers of the finest Banarasi handloom saris, dupattas and lehenga",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "151: 'The makers of the finest Banarasi handloom saris, dupattas a'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://tilfi.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://tilfi.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "https://tilfi.com/cdn/shop/files/tilfi_logo_wout_bg_small_457b9ca9-9f28-4d04-ae02-710e4961a5b5_1200x.png?v=1613712104",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.29,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://cdn.shopify.com/videos/c/o/v/8cc25cb3ea344643a0b4438280618a81.mp4",
+            "POST https://tilfi.com/api/collect",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=1255787274.1791659385&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the%",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659384645&cv=11&fst=1791659384645&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=WYdivvxXF16Fgws5MMvRh_kaCVPDqZ6Bpw&auid=1255787274.1791659385&gtm=45be6a72v869813302za208zb831847876zd8",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=2&apvc=1&auid=1923934242.1791659385&dt=Tilfi%3A%20Luxurious%2C%20handloom%20only%20clothing%20from%20the",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659384815&cv=11&fst=1791659384815&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1923934242.1791659385&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659383612&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659383612&gcs",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://chimpstatic.com/pixel/v1/track"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.69,
+              "load": 3.27,
+              "lcp": 1.98
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.9s",
+              "error": null,
+              "secs": 4.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3728 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 73: \"'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom \"",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "73: \"'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom \"",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'In the Banarasi Kadhua weave, a symphony of colour and form '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'In the Banarasi Kadhua weave, a symphony of colour and form '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://tilfi.com/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://tilfi.com/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "'Indu' Red-Maroon Pure Katan Silk Banarasi Kadiyal Handloom Saree",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://tilfi.com/cdn/shop/files/SKAKDRD12459Red-Maroon_Pure_Katan_Silk_Banarasi_Kadiyal_Handloom_Saree_3_600x.jpg?v=1762751883",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.88,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/pr"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://tilfi.com/api/collect",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=847266911.1791659390&dt=%27Indu%27%20Red-Maroon%20Pure%20Katan%20Silk%20Banarasi%20Kadiyal",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659390088&cv=11&fst=1791659390088&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=847266911.1791659390&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=1&auid=840228068.1791659390&dt=%27Indu%27%20Red-Maroon%20Pure%20Katan%20Silk%20Banarasi%20Kadiyal%",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=0&auid=840228068.1791659390&dt=%27Indu%27%20Red-Maroon%20Pure%20Katan%20Silk%20Banarasi%20Kadiyal%",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659390230&cv=11&fst=1791659390230&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6a72h",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=840228068.1791659390&gtm=45be6a72h1v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659390213&cv=11&fst=1791659390213&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb869813302zd869813302xf1&_p=1791659389033&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb869813302zd869813302xf1&_p=1791659389033&gcs",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://chimpstatic.com/pixel/v1/track"
+          ],
+          "loads": [
+            {
+              "url": "/products/indu-red-maroon-pure-katan-silk-banarasi-kadiyal-handloom-saree?variant=45885844226210",
+              "ttfb": 0.28,
+              "dcl": 0.8,
+              "load": 2.32,
+              "lcp": 1.41
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 3.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.92,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1937532728.1791659395&dt=404%20Not%20Found%20-%20Tilfi&tid=AW-835203453&en=page_view&dl=ht",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659394819&cv=11&fst=1791659394819&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1937532728.1791659395&gtm=45be6a72v869813302za208zb831847876zd831847876xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb831847876zd831847876xf1&_p=1791659393936&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=1&auid=1572334715.1791659395&dt=404%20Not%20Found%20-%20Tilfi&tid=AW-835203453&en=page_view&dl=ht",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659395076&cv=11&fst=1791659395076&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1572334715.1791659395&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb831847876zd831847876xf1&_p=1791659393936&gcs",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://chimpstatic.com/pixel/v1/track"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.31,
+              "dcl": 1.36,
+              "load": 2.11,
+              "lcp": 1.46
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /pages/returns-and-cancellation",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.9s",
+              "error": null,
+              "secs": 5.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Returns and Cancellation - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5171 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Returns and Cancellation - Tilfi', heading 'Returns and Cancellation'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/returns-and-cancellation",
+                  "actual": "/pages/returns-and-cancellation",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "8099 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "8099 chars under 'Returns and Cancellation'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /pages/delivery-and-shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.78s",
+              "error": null,
+              "secs": 3.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Delivery and Shipping policy - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3561 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Delivery and Shipping policy - Tilfi', heading 'Delivery and Shipping policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/delivery-and-shipping-policy",
+                  "actual": "/pages/delivery-and-shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "2446 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "2446 chars under 'Delivery and Shipping policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /pages/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.77s",
+              "error": null,
+              "secs": 3.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5468 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy - Tilfi', heading 'Privacy policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/privacy-policy",
+                  "actual": "/pages/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "8405 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "8405 chars under 'Privacy policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /pages/terms-and-conditions",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.81s",
+              "error": null,
+              "secs": 3.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms and Conditions - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6490 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms and Conditions - Tilfi', heading 'Terms and Conditions'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/terms-and-conditions",
+                  "actual": "/pages/terms-and-conditions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "9409 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "9409 chars under 'Terms and Conditions'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.73s",
+              "error": null,
+              "secs": 3.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact us - Tilfi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2108 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact us - Tilfi', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact-us",
+                  "actual": "/pages/contact-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.79,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://ipapi.co/json/?key=nZTPUlZSZvjAdrVzdSe61RH2oT8mngSl1sH0s4XhOYDaZPMpCZ"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://tilfi.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/app/web-pixel-1256521890@dbf16afd37d7bda963909dd4e886232e/sandbox/modern/pa"
+            }
+          ],
+          "failed_requests": [
+            "POST https://tilfi.com/api/collect",
+            "POST https://tilfi.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1427323208.1791659399&dt=Returns%20and%20Cancellation%20-%20Tilfi&tid=AW-835203453&en=page",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659398809&cv=11&fst=1791659398809&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1427323208.1791659399&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a80h2v871033485za208zb869813302zd869813302xf1&_p=1791659397934&_gaz=1&gcs=G111&gc",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=1&auid=472468067.1791659399&dt=Returns%20and%20Cancellation%20-%20Tilfi&tid=AW-835203453&en=page_",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659399025&cv=11&fst=1791659399025&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=472468067.1791659399&gtm=45be6a72v869813302za208zd869813302xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-X11BK4732W&gtm=45Pe6a72v9205887732za200zb869813302zd869813302xf1&_p=1791659397934&gcs",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "HEAD https://tilfi.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=tilfi",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zd871033485xf1&_p=1791659403088&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=472468067.1791659399&dt=Delivery%20and%20Shipping%20policy%20-%20Tilfi&tid=AW-835203453&en=",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659403929&cv=11&fst=1791659403929&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=472468067.1791659399&dt=Delivery%20and%20Shipping%20policy%20-%20Tilfi&tid=AW-835203453&en=",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659404080&cv=11&fst=1791659404080&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=472468067.1791659399&dt=Privacy%20policy%20-%20Tilfi&tid=AW-835203453&en=page_view&dl=http",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659407355&cv=11&fst=1791659407355&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-1ZM7J2JLKG&gtm=45je6a72v871033485za208zb869813302zd869813302xf1&_p=1791659406750&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=1&auid=472468067.1791659399&dt=Privacy%20policy%20-%20Tilfi&tid=AW-835203453&en=page_view&dl=http",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659407729&cv=11&fst=1791659407729&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=472468067.1791659399&dt=Terms%20and%20Conditions%20-%20Tilfi&tid=AW-835203453&en=page_view",
+            "POST https://www.google.com/rmkt/collect/835203453/?random=1791659411010&cv=11&fst=1791659411010&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7"
+          ],
+          "loads": [
+            {
+              "url": "/pages/returns-and-cancellation",
+              "ttfb": 0.39,
+              "dcl": 0.76,
+              "load": 3.28,
+              "lcp": 0.66
+            },
+            {
+              "url": "/pages/delivery-and-shipping-policy",
+              "ttfb": 0.39,
+              "dcl": 0.72,
+              "load": 1.66,
+              "lcp": 0.69
+            },
+            {
+              "url": "/pages/privacy-policy",
+              "ttfb": 0.38,
+              "dcl": 0.69,
+              "load": 1.63,
+              "lcp": 0.64
+            },
+            {
+              "url": "/pages/terms-and-conditions",
+              "ttfb": 0.44,
+              "dcl": 0.75,
+              "load": 1.67,
+              "lcp": 0.69
+            },
+            {
+              "url": "/pages/contact-us",
+              "ttfb": 0.27,
+              "dcl": 0.64,
+              "load": 1.68,
+              "lcp": 0.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 2,
+    "input_tokens": 5327,
+    "output_tokens": 209,
+    "est_usd": 0.00175,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Tilfi: Luxurious, handloom only clothing from the heart of Banaras",
+    "theme": "Flex (store copy: Becoming: 11th June)",
+    "checkout_app": "Razorpay Magic Checkout",
+    "access": "open",
+    "nav": 25,
+    "collections": 47,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/pages/search-results-page",
+    "robots_loaded": true
+  },
+  "notes": [],
+  "perf": {
+    "pages": 14,
+    "median_load_secs": 1.83,
+    "slowest": {
+      "url": "/collections/sarees",
+      "load_secs": 5.66
+    },
+    "console_errors": 3,
+    "console_warnings": 2,
+    "failed_requests": 133
+  },
+  "counts": {
+    "pass": 8,
+    "flaky": 0,
+    "confirmed_fail": 2,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
