@@ -1310,7 +1310,7 @@ def test_collection_pagination_broken_fails_hidden_products_warn_and_one_page_is
     assert c.verdict == "pass" and s.status == "warn" and "the store's data has 10 more in stock" in s.error, s.error
     run = _info("healthy", tmp_path, suites=("catalog",))
     st = _case(run, "catalog.more.home-decor").attempts[-1].steps
-    assert [s.name for s in st if s.status == "info"] == ["more_products_not_judged"], [(s.name, s.status) for s in st]
+    assert [s.name for s in st if s.status == "info"] == ["lists_products", "more_products_not_judged"], [(s.name, s.status) for s in st]
 
 
 def test_uncaught_js_error_on_a_collection_page_warns_never_fails(tmp_path):
@@ -1419,6 +1419,8 @@ def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_p
     err = c.attempts[-1].error
     assert c.verdict == "confirmed_fail" and "homepage section /pages/our-story" in err and "announcement bar /pages/offers" in err, err
     assert "sent to the homepage" in _steps(c)["announcement bar: opens /pages/offers"].error
+    assert "homepage section malformed link 'Sale'" in err, err
+    assert "starts with '/http'" in _steps(c)["homepage section: malformed link"].detail
 
 
 def test_too_many_third_party_scripts_warn_with_the_hosts_named(tmp_path):

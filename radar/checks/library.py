@@ -1678,7 +1678,13 @@ def more_links_resolve(ctx: Ctx, links: list[dict]):
             continue
         opened += 1
         if ctx.steps.run(f"{link['where']}: opens {_path(url)[:40]}", lambda u=url: _open_info_page(ctx, u), soft=True) is None:
-            bad.append(f"{link['where']} {_path(url)}" + (f" ('{link['text'][:30]}')" if link.get("text") else ""))
+            # a theme-editor slip seen on beyondsnack.in (11 Oct): href="/https://www.store.in/collections/…" -> 404
+            if re.match(r"^/https?:/", urlparse(url).path):
+                ctx.steps.info(f"{link['where']}: malformed link", f"'{link.get('text', '')[:30]}' points to {_path(url)[:90]}: "
+                               "the address in the page starts with '/http' (a typo in the theme settings), so it 404s")
+                bad.append(f"{link['where']} malformed link '{link.get('text', '')[:20]}'")
+            else:
+                bad.append(f"{link['where']} {_path(url)[:50]}" + (f" ('{link['text'][:25]}')" if link.get("text") else ""))
     ctx.steps.run("all_links_ok", lambda: ctx.expect(
         "links beyond the menu that fail to open", 0, f"{len(bad)}" + (f": {', '.join(bad[:5])}" if bad else ""), not bad)
         and f"{opened} pages open")

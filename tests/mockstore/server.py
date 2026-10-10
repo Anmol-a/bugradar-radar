@@ -184,8 +184,9 @@ Modes (to prove Radar catches and heals what it should):
   healthy (+)      an announcement bar links /pages/offers; a homepage banner links /pages/our-story and /collections/kitchen
                    (already in the menu) -> journey 15 opens offers + our-story (only in healthy and broken_section_link:
                    the navigation modes must not get extra links)
-  broken_section_link  /pages/our-story answers 404, /pages/offers redirects to the homepage (journey 15)
-                   -> smoke.more_links FAILS naming both
+  broken_section_link  /pages/our-story answers 404, /pages/offers redirects to the homepage, a banner link's href is
+                   '/https://www.mockstore.in/collections/sale' (beyondsnack.in) (journey 15) -> smoke.more_links FAILS naming
+                   them, the last as a malformed address
   broken_policies  the footer's shipping page answers 404, the privacy page is a heading with no text, the contact page
                    has no form, email or phone (journey 28) -> info.policy_pages FAILS naming shipping; privacy and
                    contact WARN
@@ -774,7 +775,9 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(200, page("Mock Store | Handmade Home Goods",
                                         "<h1>Welcome</h1>" + "".join(card(p) for p in PRODUCTS if p["collection"])
                                         + ('<section class="story-banner"><a href="/pages/our-story">Read our story</a> '
-                                           '<a href="/collections/kitchen">Shop the kitchen</a></section>'
+                                           '<a href="/collections/kitchen">Shop the kitchen</a>'
+                                           + (' <a href="/https://www.mockstore.in/collections/sale">Sale</a>'   # beyondsnack.in
+                                              if self.mode == "broken_section_link" else "") + '</section>'
                                            if self.mode in J15_MODES else ""),
                                         shopify=self.mode != "not_shopify"), set_cart=new)
         if path == "/pages/blank":       # HTTP 200 with a title but nothing on screen (JS crash style)
