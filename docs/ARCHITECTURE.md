@@ -1031,6 +1031,18 @@ homepage banner links `/https://www.beyondsnack.in/collections/kerala-banana-chi
 typo, 404 for shoppers); Radar now names such links 'malformed link' with an info step explaining it (mock
 `broken_section_link`).
 
+**Dead store addresses** (loop queue T1 #4; chat session 11 Oct 04:00 IST): new30g / new30e had 7 addresses that do not
+lead to any site, reported 'blocked: robots.txt could not be fetched … usually a temporary server problem'.
+`dead_domain_reason()` reads the robots.txt request's network error: no such host (ENOTFOUND), DNS lookup failed
+(EAI_AGAIN), a store NAME resolving to 127.0.0.1 / ::1 (ECONNREFUSED there; an IP address that is simply silent keeps
+RFC 9309 'blocked', bench-8 test), another site's certificate (altnames), self-signed or expired certificate. Then
+discovery stops with access **unreachable** and the note '<host>: <reason>. Nothing was tested; check the store's
+address'. Timeouts, 5xx and TLS resets stay 'robots_unreachable' (may be temporary or the US runner). Re-run
+38093858946: bombae, pahadilocal (→ 127.0.0.1), brewhouse, agaro (another site's certificate), skinq (no such host),
+wishcare (DNS failed), miraggio (self-signed) → all 7 **unreachable** with their reason. Loop cycle 26's full 36
+(cadf39f, journeys 15/16/31 included): 61 healthy / 5 degraded = foxtale + plum store findings + palmonas phone flaky
+(products.js empty body 4×, known) → 0 Radar false failures.
+
 **Gaps vs Revenue Shield still open** (rows added to the status doc): 'Buy it now' flow opening the checkout (not
 filled), and storefront app changes between runs (needs run history: store profile, ARCHITECTURE 12).
 
@@ -1292,6 +1304,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 chat session (11 Oct, 04:40 IST):** dead store addresses (DNS, name → 127.0.0.1, wrong / self-signed certificate) are 'unreachable' with the reason, not 'blocked … temporary' (re-run 38093858946: 7/7) (4zc-3).
 - **v0.19 chat session (11 Oct, 04:00 IST):** journeys 15/16/31 proven on the 36 (run 38086122556 + re-run 38090661291); Cloudflare email links skipped, late collection grids waited for (journey 4 too), malformed '/https://' links named (beyondsnack store finding) (4zc-3).
 - **v0.19 loop cycle 25 (11 Oct, 00:50 IST):** marketplace-only catalog stores BLOCKED with the reason, not DOWN (`marketplace_only`; antesports, beyondsnack); journeys 19–21 on the cart page (`cart.edit_and_checkout`: quantity +, checkout page renders, remove), warnings until benched; `/checkout` opened only inside the cart flow; new30g 2/19; reports list the `info` suite; mocks `cart_qty_broken`, `cart_remove_broken`, `checkout_broken` (4zd). Full 36 regression 38075087892 (before 28–30) = 62 healthy / 4 degraded (store findings) / 0 Radar false failures.
 - **v0.19 chat session (11 Oct, 01:45 IST):** journey 16 (phone menu opens, `smoke.mobile_menu`); search box opener widened (icon-only toggles; mock `search_icon_only`); journey 26 judged from ≥ 8 / 25% missing, stepwise infinite scroll (4zc-3).
