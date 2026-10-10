@@ -816,3 +816,24 @@ def test_checkout_page_is_opened_only_inside_the_cart_flow():
         assert sess.allowed("https://x.in/checkout") is want
         assert sess.allowed("https://x.in/checkouts/cn/abc123") is want
         assert sess.allowed("https://x.in/admin") is False
+
+
+def test_links_beyond_the_menu_skip_menu_info_product_and_file_links():
+    from radar.discovery.discover import more_links
+    b = "https://shop.example.in"
+    links = [{"where": "announcement bar", "text": "Sale", "url": b + "/collections/sale"},
+             {"where": "announcement bar", "text": "Shop", "url": b + "/collections/sale/"},          # same page again
+             {"where": "homepage section", "text": "Bestseller", "url": b + "/products/lamp"},       # product: own tests
+             {"where": "homepage section", "text": "New in", "url": b + "/collections/new"},
+             {"where": "homepage section", "text": "Story", "url": b + "/pages/story"},
+             {"where": "homepage section", "text": "Gifts", "url": b + "/collections/gifts"},          # 3rd: over the cap
+             {"where": "homepage section", "text": "Men", "url": b + "/collections/men"},              # in the menu
+             {"where": "footer", "text": "Shipping", "url": b + "/pages/shipping"},                     # info page, tested
+             {"where": "footer", "text": "Annual Return", "url": b + "/pages/annual-return"},
+             {"where": "footer", "text": "Brochure", "url": b + "/cdn/shop/files/brochure.pdf"},
+             {"where": "footer", "text": "Blog", "url": b + "/blogs/news"},
+             {"where": "footer", "text": "Insta", "url": "https://instagram.com/shop"}]
+    got = more_links(links, b, [b + "/collections/men", b + "/pages/shipping"])
+    assert [(x["where"], x["url"]) for x in got] == [
+        ("announcement bar", b + "/collections/sale"), ("homepage section", b + "/collections/new"),
+        ("homepage section", b + "/pages/story"), ("footer", b + "/blogs/news")]

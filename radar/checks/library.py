@@ -1591,6 +1591,22 @@ def info_pages(ctx: Ctx, pages: list[dict]):
         and f"{opened} pages open")
 
 
+def more_links_resolve(ctx: Ctx, links: list[dict]):
+    """Journey 15: links a shopper meets beyond the menu open like the menu's do (hard: a broken banner or footer link
+    is a store finding), judged like footer info pages ('page not found' served with 200 and homepage redirects count)."""
+    bad, opened = [], 0
+    for link in links:
+        url = link["url"]
+        if not ctx.sess.allowed(url):
+            continue
+        opened += 1
+        if ctx.steps.run(f"{link['where']}: opens {_path(url)[:40]}", lambda u=url: _open_info_page(ctx, u), soft=True) is None:
+            bad.append(f"{link['where']} {_path(url)}" + (f" ('{link['text'][:30]}')" if link.get("text") else ""))
+    ctx.steps.run("all_links_ok", lambda: ctx.expect(
+        "links beyond the menu that fail to open", 0, f"{len(bad)}" + (f": {', '.join(bad[:5])}" if bad else ""), not bad)
+        and f"{opened} pages open")
+
+
 ACCOUNT_JS = r"""() => {
   const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden'; };
@@ -2497,6 +2513,6 @@ REGISTRY: dict[str, Callable] = {
     "meta_tags": meta_tags, "not_found": not_found, "shopper_journey": shopper_journey,
     "info_pages": info_pages, "account_page": account_page,
     "search_no_results": search_no_results, "search_suggestions": search_suggestions,
-    "collection_more": collection_more,
+    "collection_more": collection_more, "more_links_resolve": more_links_resolve,
     "cart_edit": cart_edit,
 }

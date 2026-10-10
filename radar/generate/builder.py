@@ -100,6 +100,10 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
         smoke.cases.append(TestCase("smoke.nav_links", "smoke", "Navigation links resolve", "links_resolve",
                                     {"urls": [n["url"] for n in sm.nav[:15]], "max_links": s.max_nav_links}, "major",
                                     "Each menu page opens in the browser and shows content"))
+    if sm.more_links:      # journey 15: links beyond the menu (announcement bar, homepage sections, footer)
+        smoke.cases.append(TestCase("smoke.more_links", "smoke", "Links beyond the menu open (announcement bar, homepage, footer)",
+                                    "more_links_resolve", {"links": sm.more_links}, "minor",
+                                    "Each opens in the browser, is not an error / 'page not found' page and not the homepage"))
     suites.append(smoke)
 
     catalog = Suite("catalog", "Catalog", "Collections load and list products")

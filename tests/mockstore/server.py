@@ -180,6 +180,10 @@ Modes (to prove Radar catches and heals what it should):
                    /pages/terms-of-service, /pages/contact (+ an Instagram link) and a header account link
                    /account/login; robots.txt disallows /policies/ and /account (some stores do: Radar must skip them)
                    -> journey 28 opens shipping, privacy, terms, contact (refund skipped: robots.txt); no account test
+  (every mode)     an announcement bar links /pages/offers; a homepage banner links /pages/our-story and /collections/kitchen
+                   (already in the menu) -> journey 15 opens offers + our-story
+  broken_section_link  /pages/our-story answers 404, /pages/offers redirects to the homepage (journey 15)
+                   -> smoke.more_links FAILS naming both
   broken_policies  the footer's shipping page answers 404, the privacy page is a heading with no text, the contact page
                    has no form, email or phone (journey 28) -> info.policy_pages FAILS naming shipping; privacy and
                    contact WARN
@@ -264,6 +268,7 @@ def page(title: str, body: str, extra_head: str = "", shopify: bool = True) -> s
 {extra_head}</head><body>
 <header><div class="drawer" style="display:none"><nav><a href="/collections/all">Shop all</a></nav></div><nav><a href="/collections/home-decor">Home Decor</a> <a href="/collections/kitchen">Kitchen</a> <a href="/pages/about">About</a></nav><a class="cart-icon" href="/cart">Cart</a> <a class="account-icon" href="/account/login" aria-label="Log in">&#128100;</a>
 <form action="/search" method="get"><input name="q"></form></header>
+<div class="announcement-bar"><a href="/pages/offers">Festive offers: up to 20% off</a></div>
 <main>{body}</main><footer><img src="{img}" width="40" height="40" alt="logo"><div class="footer-menu">{FOOTER_LINKS}</div></footer></body></html>"""
 
 
@@ -718,12 +723,24 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(423, page("This store is unavailable", "<h1>This store is unavailable</h1>"))
         if path == "/":
             return self._send(200, page("Mock Store | Handmade Home Goods",
-                                        "<h1>Welcome</h1>" + "".join(card(p) for p in PRODUCTS if p["collection"]),
+                                        "<h1>Welcome</h1>" + "".join(card(p) for p in PRODUCTS if p["collection"])
+                                        + '<section class="story-banner"><a href="/pages/our-story">Read our story</a> '
+                                          '<a href="/collections/kitchen">Shop the kitchen</a></section>',
                                         shopify=self.mode != "not_shopify"), set_cart=new)
         if path == "/pages/blank":       # HTTP 200 with a title but nothing on screen (JS crash style)
             return self._send(200, "<!doctype html><html><head><title>Blank | Mock Store</title></head><body><div id=app></div></body></html>")
         if path == "/pages/about":
             return self._send(200, page("About Mock Store", "<p>About us</p>"))
+        if path in ("/pages/our-story", "/pages/offers"):      # journey 15: a homepage banner, the announcement bar
+            if self.mode == "broken_section_link" and path == "/pages/our-story":     # the banner points at a deleted page
+                return self._send(404, page("404 Not Found | Mock Store", "<h1>404 Page not found</h1>"))
+            if self.mode == "broken_section_link" and path == "/pages/offers":        # an ended offer redirects home
+                self.send_response(302)
+                self.send_header("Location", "/")
+                self.end_headers()
+                return
+            name = "Our story" if path.endswith("story") else "Festive offers"
+            return self._send(200, page(f"{name} | Mock Store", f"<h1>{name}</h1><p>{POLICY_TEXT}</p>"))
         if path in INFO_PAGES:
             name = INFO_PAGES[path]
             if self.mode == "broken_policies" and path == "/pages/shipping-policy":   # a deleted page the footer still links

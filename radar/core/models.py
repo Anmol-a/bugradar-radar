@@ -48,6 +48,7 @@ class SiteMap:
     cart_path: str = "/cart"
     info_pages: list[dict] = field(default_factory=list)     # footer policy / contact pages: [{kind, text, url}]
     account_url: str = ""                                     # header account link, when robots.txt allows it
+    more_links: list[dict] = field(default_factory=list)      # announcement bar / homepage section / footer links: [{where, text, url}]
     discovered_at: str = ""
     notes: list[str] = field(default_factory=list)           # honest record of what discovery could NOT do
 

@@ -1401,3 +1401,16 @@ def test_marketplace_only_store_is_blocked_with_the_reason_never_down(tmp_path):
         c = _case(run, prefix)
         assert c.verdict == "blocked" and "only links to marketplaces (Buy on Amazon, Buy on Flipkart)" in c.attempts[-1].error, \
             (prefix, c.verdict, c.attempts[-1].error)
+
+
+def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_path):
+    run = _info("healthy", tmp_path, suites=("smoke",))
+    c = _case(run, "smoke.more_links")
+    st = _steps(c)
+    assert c.verdict == "pass" and set(st) == {"announcement bar: opens /pages/offers", "homepage section: opens /pages/our-story",
+                                               "all_links_ok"}, [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    run = _info("broken_section_link", tmp_path, suites=("smoke",))
+    c = _case(run, "smoke.more_links")
+    err = c.attempts[-1].error
+    assert c.verdict == "confirmed_fail" and "homepage section /pages/our-story" in err and "announcement bar /pages/offers" in err, err
+    assert "sent to the homepage" in _steps(c)["announcement bar: opens /pages/offers"].error

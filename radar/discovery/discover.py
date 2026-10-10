@@ -72,6 +72,47 @@ ACCOUNT_JS = r"""() => {
   return a ? a.href : null;
 }"""
 
+# Journey 15: links a shopper meets beyond the menu: the announcement bar, homepage sections (banners, 'shop now'
+# tiles, 'read our story'), and the footer. Menu links and footer info pages have their own tests.
+MORE_LINKS_JS = r"""() => { const out = [], seen = new Set();
+  const add = (a, where) => { const h = a.href;
+    if (!h || seen.has(h) || /^(javascript|mailto|tel):/i.test(h)) return; seen.add(h);
+    out.push({where, text: (a.textContent || a.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim().slice(0, 60), url: h}); };
+  document.querySelectorAll('[class*="announcement" i] a[href], [id*="announcement" i] a[href]').forEach(a => add(a, 'announcement bar'));
+  document.querySelectorAll('main a[href], [role="main"] a[href], #MainContent a[href]').forEach(a => {
+    if (!a.closest('header, footer, nav, [role="navigation"], [role="dialog"]')) add(a, 'homepage section'); });
+  document.querySelectorAll('footer a[href], [role=contentinfo] a[href], [id*="footer" i] a[href], [class*="footer" i] a[href]')
+    .forEach(a => add(a, 'footer'));
+  return out.slice(0, 300); }"""
+NOT_MORE = re.compile(r"/(products|cart|account|search|checkout|policies)(/|$)|/apps/|^/(cdn|files)/|\.[a-z0-9]{2,5}$", re.I)
+
+
+def _norm_url(u: str) -> str:
+    p = urlparse(u)
+    return ((p.hostname or "").lower().removeprefix("www.") + (p.path.rstrip("/") or "/")).lower()
+
+
+def more_links(links: list[dict], base: str, known: list[str], per_place: int = 2, total: int = 6) -> list[dict]:
+    """Links beyond the menu worth opening (journey 15): same store, a page (not a product / cart / account / search /
+    policy / file / app link), not a menu link or a footer info page already tested, one per address; at most
+    per_place from each of the announcement bar, homepage sections and footer, in that order. Pure, unit-tested."""
+    seen = {_norm_url(k) for k in known} | {_norm_url(base + "/")}
+    by: dict[str, list[dict]] = {}
+    for link in links:
+        url = (link.get("url") or "").split("#")[0]
+        if not url or not _same_origin(url, base) or NOT_MORE.search(urlparse(url).path) \
+                or NOT_INFO_TEXT.search(link.get("text") or ""):
+            continue
+        key = _norm_url(url)
+        if key in seen:
+            continue
+        seen.add(key)
+        place = by.setdefault(link.get("where") or "page", [])
+        if len(place) < per_place:
+            place.append({"where": link.get("where") or "page", "text": (link.get("text") or "")[:60], "url": url})
+    return [x for w in ("announcement bar", "homepage section", "footer") for x in by.get(w, [])][:total]
+
+
 # Which footer link is which info page. Order matters: 'Shipping & Returns' is read as the returns page.
 INFO_KINDS = (("refund", r"refund|return|exchange|cancell?ation"),
               ("shipping", r"shipping|delivery"),
@@ -187,6 +228,16 @@ def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
                         + ", ".join(f"{p['kind']} {urlparse(p['url']).path}" for p in skipped))
     if not found:
         sm.notes.append("no policy or contact links found in the footer")
+    try:
+        extra = more_links(sess.evaluate(MORE_LINKS_JS) or [], base_url,
+                           [n["url"] for n in sm.nav] + [p["url"] for p in found])
+        blocked = [x for x in extra if not sess.allowed(x["url"])]
+        sm.more_links = [x for x in extra if x not in blocked]
+        if blocked:
+            sm.notes.append("links beyond the menu not opened, robots.txt disallows them: "
+                            + ", ".join(urlparse(x["url"]).path for x in blocked))
+    except Exception:  # noqa: BLE001
+        pass
     if acct:
         if not _same_origin(acct, base_url):
             sm.notes.append(f"account login is hosted elsewhere ({urlparse(acct).hostname}, Shopify customer accounts): "
