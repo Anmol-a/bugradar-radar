@@ -168,9 +168,9 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
 
 
 def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
-    """Footer policy / contact pages and the header account link, read from the homepage already open. Links that
-    robots.txt disallows (Shopify's default robots.txt disallows /policies/ and /account) are never opened: they
-    are listed in the notes instead, so the report says what was not tested and why."""
+    """Footer policy / contact pages and the header account link, read from the homepage already open. Links the
+    store's robots.txt disallows (some disallow /policies/ or /account) are never opened: they are listed in the notes
+    instead, so the report says what was not tested and why."""
     try:
         found = info_pages(sess.evaluate(FOOTER_JS) or [], base_url)
         if not found:      # footers some themes render only when the shopper scrolls down to them
@@ -183,7 +183,7 @@ def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
     skipped = [p for p in found if not sess.allowed(p["url"])]
     sm.info_pages = [p for p in found if p not in skipped]
     if skipped:
-        sm.notes.append("footer info page(s) not opened, robots.txt disallows them (Shopify's default for /policies/): "
+        sm.notes.append("footer info page(s) not opened, the store's robots.txt disallows them: "
                         + ", ".join(f"{p['kind']} {urlparse(p['url']).path}" for p in skipped))
     if not found:
         sm.notes.append("no policy or contact links found in the footer")
@@ -192,8 +192,7 @@ def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
             sm.notes.append(f"account login is hosted elsewhere ({urlparse(acct).hostname}, Shopify customer accounts): "
                             "not opened")
         elif not sess.allowed(acct):
-            sm.notes.append(f"account page {urlparse(acct).path} not opened: robots.txt disallows it "
-                            "(Shopify's default robots.txt disallows /account)")
+            sm.notes.append(f"account page {urlparse(acct).path} not opened: robots.txt disallows it")
         else:
             sm.account_url = acct.split("#")[0]
 

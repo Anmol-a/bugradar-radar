@@ -169,7 +169,7 @@ Modes (to prove Radar catches and heals what it should):
                    -> product tests FAIL at shows_title_price_image with "none"
   (every mode)     footer links to an 'Annual Return FY 2024-25' PDF (downloads; giva.co), /pages/shipping-policy, /policies/refund-policy, /pages/privacy-policy,
                    /pages/terms-of-service, /pages/contact (+ an Instagram link) and a header account link
-                   /account/login; robots.txt disallows /policies/ and /account like Shopify's default
+                   /account/login; robots.txt disallows /policies/ and /account (some stores do: Radar must skip them)
                    -> journey 28 opens shipping, privacy, terms, contact (refund skipped: robots.txt); no account test
   broken_policies  the footer's shipping page answers 404, the privacy page is a heading with no text, the contact page
                    has no form, email or phone (journey 28) -> info.policy_pages FAILS naming shipping; privacy and
@@ -687,7 +687,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(404, "Not Found", "text/plain")
         if path == "/robots.txt":
             extra = "Disallow: /search\n" if self.mode == "hostile" else ""
-            # like Shopify's default robots.txt: /account and /policies/ are disallowed (journeys 28 + 29 must skip them)
+            # /account and /policies/ disallowed, as some stores do (journeys 28 + 29 must skip them)
             acct = "" if self.mode in ("account_open", "account_broken") else "Disallow: /account\n"
             return self._send(200, "User-agent: *\nDisallow: /checkout\nDisallow: /cart\n" + acct + "Disallow: /policies/\n"
                               + extra, "text/plain")

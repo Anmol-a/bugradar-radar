@@ -98,6 +98,8 @@ data/                     everything Radar writes (git-ignored)
 | search | major | search_results | Searching a word from a real product title returns products |
 | health | minor | meta_tags, not_found | Title/description/canonical/og tags (soft); a missing page returns real 404 |
 | info | minor | info_pages, account_page | Footer policy / contact pages open with real content; the header's account link opens a sign-in page (links robots.txt disallows are noted, never opened). Layout warnings (sideways scroll, fixed bars covering > 35%) ride on home, collection and product pages (4zc) |
+| search (+) | minor | search_no_results, search_suggestions | A word no store sells gives a working 'no results' page; typing suggests products where the store has search-as-you-type (27) |
+| catalog (+) | minor | collection_more | Page 2 / load more / infinite scroll brings new products (26) |
 
 **Every page load must show content:** a page with under 40 characters of visible text and no images fails as "rendered blank" (a 200 status alone is not enough).
 
@@ -891,13 +893,11 @@ open; no per-store config) and never add a hard failure Radar is not sure of.
 | **29 Account login page** | Discovery reads the header's account link (`ACCOUNT_JS`: `/account`, `/account/login`, any locale prefix, or `account.<domain>`). Case `info.account_page` (minor) opens it | **Fail:** the page does not open (≥ 400, blank, 'not found', homepage redirect). **Warn:** no email / phone / password field and no sign-in button. Nothing is ever typed | `account_open` (PASS), `account_broken` (404 → FAIL) |
 | **30 Layout** | Two soft steps on pages Radar already opens (home, each collection, each product page; desktop and mobile), no extra page loads: `layout_fits_screen` asks the window to scroll right (`behavior: 'instant'`, then back) and names the outermost elements sticking out; `layout_not_covered` samples an 8 × 12 grid with `elementFromPoint` and counts points whose top element sits in a `position: fixed` layer (a fixed app shell holding `<main>` or scrolling itself is not counted) | **Warn only:** page scrolls sideways by > 4 px; fixed bars / overlays cover > 35% of the screen (a sticky header + sticky buy bar + chat bubble is ~15–20%) | `sideways_scroll` (1700 px promo strip → WARN on every page type), `tall_sticky_bar` (42% fixed bar on phone product pages → WARN) |
 
-**robots.txt (unchanged rule):** Shopify's default robots.txt disallows `/policies/` and `/account`. Radar does not
-open them: discovery lists them in the run notes ('footer info page(s) not opened, robots.txt disallows them …',
-'account page /account/login not opened: robots.txt …') and no case is generated for them, so a store is never
-marked blocked or failing for it. On a default Shopify robots.txt, journey 29 is therefore mostly a note, and journey
-28 tests only `/pages/*` footer links (most Indian D2C stores link their own pages). Whether a shopper clicking the
-footer policy link or the header account icon should count as shopper flow (like `/cart` and the search box) is a rule
-change for Anmol, not built.
+**robots.txt (unchanged rule):** pages the store's robots.txt disallows are never opened: discovery lists them in
+the run notes ('footer info page(s) not opened, the store's robots.txt disallows them …', 'account page … not opened:
+robots.txt disallows it') and no case is generated for them, so a store is never marked blocked or failing for it. In the
+first 36-store run only 4 stores disallowed /account and 1 (supplysix) /policies/; the mock store disallows both, to
+prove the skip.
 
 **Shopify-hosted customer accounts** (link to `shopify.com/<id>/account` or `account.<domain>`): not opened, noted.
 
@@ -906,6 +906,37 @@ change for Anmol, not built.
 changes stashed all 5 e2e tests fail, with them all pass. The mock store's footer, header account link and robots.txt
 now look like a default Shopify store in every mode. Real-store proof: the next full 36 run (both devices) must show 0
 Radar false failures from `info.*` and no layout warning that the screenshot does not confirm.
+
+### 4zc-2. Journeys 26, 27, 14, 17 and the first real-store run of 28–30 (chat session, 11 Oct 2026, 00:15–00:45 IST)
+
+**Real-store run of 28–30** (full 36, both devices, run 38077075618, cloud-runs b599eb7): 60 healthy / 6 degraded / 2
+unsupported / 1 blocked. Five degraded rows are the known store findings (foxtale, plum). **One new Radar false failure:
+giva.co, both devices**: its footer links 'Annual Return FY 2024-25' (`/cdn/shop/t/234/assets/annual-return-fy-2024-25.pdf`,
+the company's MGT-7 filing); `info_pages()` read it as the returns page and opening it started a download. Fixed:
+files (`/cdn/`, `/files/`, any `.ext`) and company filings (annual / investor / CSR / MGT-7 / financial) are never info
+pages; the mock footer now carries that PDF first (old code FAILS the healthy footer test). Elsewhere on the 36:
+info.policy_pages passed on 25 stores × 2 devices (1–5 pages each: /pages/* and, where robots.txt allows it, /policies/*);
+account pages opened on 8 stores (peepbeauty → Shopify's /authentication/… login, giva, …), robots.txt kept /account
+closed on dotandkey, mcaffeine, palmonas mobile, wellbeingnutrition; beminimalist hands sign-in to shopify.com (noted).
+Other changes from the evidence: policy text is read again for ~4 s and counted on the body when `<main>` is thin (giva's
+policy pages showed 0 chars: blank between header and footer in the screenshot, kept as a warning); footer links are
+read again after a scroll when none were found (mcaffeine, suta, 9 theme demos had none: demos have no policy links);
+sign-in handed to another site / a blank page = not judged (moxiebeauty → about:blank); sideways play ≤ 10 px is noise
+(boat-lifestyle and palmonas phones: 5 px), fixed layers (closed drawers) are never named as the cause; a popup Radar could
+not close (suta: gls-overlay-popup, 100%) is reported apart, not as a covering bar. Real layout findings kept as
+warnings: moxiebeauty desktop PDP scrolls sideways 707 px (before/after slider), peepbeauty desktop collection 275 px,
+soulflower desktop PDP 51 px (tab buttons), boat-lifestyle phone PDP 12 px.
+
+| Journey | What Radar does | Pass / fail / warn | Mocks |
+|---|---|---|---|
+| **27 Search: nothing found + suggestions** | `search.no_results` opens `/search?q=qzxvbugradar` (shopper-flow search exemption); `search.suggestions` types a real product word into the store's box with `press_sequentially` (Enter never pressed) after marking every product link already on the page, and watches for new visible product links for 6 s | no_results: **fail** if the page answers ≥ 400 / blank; **warn** if no 'no results' message (`NO_RESULTS_RX`, 6 s for apps) and products listed. suggestions: **warn** only when the page HAS search-as-you-type (`PREDICTIVE_JS`: predictive-search element, Boost, Searchanise, SearchTap, Klevu, Algolia…) AND Shopify's `/search/suggest.json` finds the word; else 'not judged' | `search_error_empty` (FAIL), `predictive_search` (PASS), `predictive_broken` (WARN); healthy = not judged |
+| **26 Past the first page** | `catalog.more.<biggest collection>` (by `products_count`): the store's own way — a page-2 link (`?page=2` on the same path, also `<link rel=next>`), a 'Load more / Show more / View more' button, else infinite scroll (scroll to the bottom ×4) | judged only when `products.json?limit=250` holds > 2 in-stock products the first page does not show, or a page-2 link / more button exists. **Fail:** page 2 answers ≥ 400 / blank. **Warn:** no new products after page 2 / the button / scrolling | `paginated`, `load_more`, `infinite_scroll` (PASS), `pagination_broken` (FAIL), `more_hidden` (WARN), healthy = not judged |
+| **14 Console JS errors** | collection pages now run the soft `no_js_errors` step (uncaught errors only, `pageerror`), like home and product pages | **warn** only | `collection_js_error` |
+| **17 Core Web Vitals** | `web_vitals` soft step on home, collection and product pages: LCP (buffered largest-contentful-paint) and CLS (largest session window, web.dev definition), with the node of the biggest shift | **warn** only when poor: LCP > 4 s, CLS > 0.25 ('from Radar's runner': US machines are far from Indian stores, so LCP is pessimistic) | `layout_shift` (900 px banner after load: CLS 0.4–0.6) |
+
+**Robots.txt and sorting (journey 25):** Shopify's long-standing default robots.txt disallows `/collections/*sort_by*`
+and multi-filter URLs (to check per store, as the /account result above shows defaults vary). Sorting therefore cannot be tested without a rule change (the same question as `/policies/` and `/account`); a
+single filter (`?filter.v.availability=1`) is allowed. Not built yet.
 
 ## 5. Self-healing locators
 
@@ -1165,6 +1196,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.19 chat session (11 Oct, 00:45 IST):** journeys 27 (search no-results page + search-as-you-type), 26 (products past the first page), 14 (JS errors on collection pages), 17 (Core Web Vitals warnings); first real-store run of 28–30: giva.co PDF footer link fixed (the only new Radar false failure), late policy text, sign-in hand-off, layout noise threshold, popups apart (4zc-2).
 - **v0.19 chat session (11 Oct, 00:00 IST):** journeys 28–30: footer policy + contact pages (`info.policy_pages`), account login page (`info.account_page`), layout warnings on home / collection / product pages (sideways scroll, fixed bars covering > 35%); robots.txt-disallowed `/policies/` and `/account` noted, never opened; mocks `broken_policies`, `account_open`, `account_broken`, `sideways_scroll`, `tall_sticky_bar` (4zc).
 - **v0.19 loop cycle 11 (10 Oct, 09:46 IST):** product link opening a new tab is followed (mock `new_tab_cards`; fashor, tigc); one Shopify marker → homepage loaded again before 'not Shopify', evidence in the note (mock `stripped_first_home`; koskii); new30f final 4/21 (4z2).
 - **v0.19 loop cycle 9 (10 Oct, 07:47 IST):** bench time limit per store and device (`device_budget_s`, 25 min): an over-time store's process group (browser included) is killed, row verdict `stopped`, other stores unaffected; mock `frozen_product_page` (4z1).
