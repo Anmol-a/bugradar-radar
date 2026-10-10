@@ -987,6 +987,23 @@ Also: the bench table and both HTML reports list the `info` suite (journeys 28�
 | **15 Links beyond the menu** | Discovery reads the announcement bar (`*announcement*`), homepage-section links (inside `main`, outside header / footer / menus / dialogs) and footer links; `more_links()` keeps same-store pages only (no product, cart, account, search, policy, file, app-proxy or company-filing links), skips menu links and the footer info pages already tested, one per address, ≤ 2 per place, ≤ 6 in all. Case `smoke.more_links` (minor) | **Fail:** a link answers ≥ 400, renders blank, is the store's 'page not found' page served with 200, or redirects to the homepage (a deleted page / ended offer) | every mode: announcement bar → /pages/offers, homepage banner → /pages/our-story (+ a menu link, skipped); `broken_section_link` (404 + redirect home) FAILS naming both |
 | **31 Scripts per page** (Revenue Shield's 'script size') | `scripts_weight` soft step on home, collection and product pages: scripts loaded, JavaScript bytes from resource timing (a floor: cross-origin scripts without Timing-Allow-Origin report 0), third-party script hosts (store domain and Shopify's hosts excluded), the 5 busiest named | **Warn** only at the extreme: ≥ 4 MB of JavaScript or ≥ 25 third-party script hosts; otherwise the counts are report evidence | `script_heavy` (26 app scripts from 26 `*.localhost` hosts) |
 
+**Journey 16, phone menu** (`smoke.mobile_menu`, minor): on phone-sized screens (`min(innerWidth, screen.width) < 900`)
+Radar taps the menu button (aria-label 'menu', menu-drawer summaries, hamburger / burger classes, aria-controls menu or
+drawer) and expects ≥ 3 links that were not on screen before. Links already shown = pass; desktop or no button = not
+judged; a button that shows nothing = **warning** (the journey's critical click-through already fails when no collection
+can be reached). Mocks `hamburger_menu`, `hamburger_broken` (phones only).
+
+**Round 2 from run 38080268940** (the 36 with journeys 27/26/14/17: 0 Radar false failures; warnings read one by one):
+the search box opener got a wider net (7 of 22 real stores' boxes stayed closed: antinorm, cava, dotandkey, mcaffeine,
+plum, soulflower, supplysix; the main search then opened /search by URL and search-as-you-type was 'not judged'): any
+visible control near the top whose label / title / class / id / data attributes / link / svg icon says 'search', with a
+wait for drawers; mock `search_icon_only`. Journey 26 is judged only when ≥ 8 and ≥ 25% of the in-stock products are
+missing from page 1 (peepbeauty, supplysix: 6–8, themes and Shopify Markets on US machines hide some) and follows
+infinite scroll a screen at a time (giva: 226 in stock past page 1; the jump to the bottom found none). Kept as real
+warnings: 'no results' message missing while 8–24 products are listed for a nonsense word (bummer, cava, plum,
+soulflower, supplysix), LCP > 4 s from the US runner (cava, mcaffeine, plum 9.6 s), CLS 0.34–0.6 on mcaffeine
+collections, uncaught JS errors on 18 stores (mostly third-party: gtag, clarity, snaptr, jdgm).
+
 **Gaps vs Revenue Shield still open** (rows added to the status doc): 'Buy it now' flow opening the checkout (not
 filled), and storefront app changes between runs (needs run history: store profile, ARCHITECTURE 12).
 
@@ -1249,6 +1266,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 ## Change log
 
 - **v0.19 loop cycle 25 (11 Oct, 00:50 IST):** marketplace-only catalog stores BLOCKED with the reason, not DOWN (`marketplace_only`; antesports, beyondsnack); journeys 19–21 on the cart page (`cart.edit_and_checkout`: quantity +, checkout page renders, remove), warnings until benched; `/checkout` opened only inside the cart flow; new30g 2/19; reports list the `info` suite; mocks `cart_qty_broken`, `cart_remove_broken`, `checkout_broken` (4zd). Full 36 regression 38075087892 (before 28–30) = 62 healthy / 4 degraded (store findings) / 0 Radar false failures.
+- **v0.19 chat session (11 Oct, 01:45 IST):** journey 16 (phone menu opens, `smoke.mobile_menu`); search box opener widened (icon-only toggles; mock `search_icon_only`); journey 26 judged from ≥ 8 / 25% missing, stepwise infinite scroll (4zc-3).
 - **v0.19 chat session (11 Oct, 01:10 IST):** journey 15 (links beyond the menu: announcement bar, homepage sections, footer; `smoke.more_links`), journey 31 (scripts and third-party script hosts per key page, Revenue Shield's 'script size'); mocks `broken_section_link`, `script_heavy` (4zc-3).
 - **v0.19 chat session (11 Oct, 00:45 IST):** journeys 27 (search no-results page + search-as-you-type), 26 (products past the first page), 14 (JS errors on collection pages), 17 (Core Web Vitals warnings); first real-store run of 28–30: giva.co PDF footer link fixed (the only new Radar false failure), late policy text, sign-in hand-off, layout noise threshold, popups apart (4zc-2).
 - **v0.19 chat session (11 Oct, 00:00 IST):** journeys 28–30: footer policy + contact pages (`info.policy_pages`), account login page (`info.account_page`), layout warnings on home / collection / product pages (sideways scroll, fixed bars covering > 35%); robots.txt-disallowed `/policies/` and `/account` noted, never opened; mocks `broken_policies`, `account_open`, `account_broken`, `sideways_scroll`, `tall_sticky_bar` (4zc).
