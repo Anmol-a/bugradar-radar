@@ -167,6 +167,20 @@ Modes (to prove Radar catches and heals what it should):
                    -> pages load (no 'down'); the SEO test 'title' warns
   no_title         product pages show no product name at all (snitch.co.in after its move)
                    -> product tests FAIL at shows_title_price_image with "none"
+  (every mode)     footer links to /pages/shipping-policy, /policies/refund-policy, /pages/privacy-policy,
+                   /pages/terms-of-service, /pages/contact (+ an Instagram link) and a header account link
+                   /account/login; robots.txt disallows /policies/ and /account like Shopify's default
+                   -> journey 28 opens shipping, privacy, terms, contact (refund skipped: robots.txt); no account test
+  broken_policies  the footer's shipping page answers 404, the privacy page is a heading with no text, the contact page
+                   has no form, email or phone (journey 28) -> info.policy_pages FAILS naming shipping; privacy and
+                   contact WARN
+  account_open     robots.txt allows /account; /account/login shows an email + password form (journey 29)
+                   -> info.account_page PASSES, nothing typed
+  account_broken   same, but /account/login answers 404 -> info.account_page FAILS
+  sideways_scroll  every page carries a 1700 px promo strip (journey 30) -> home, collection and product pages WARN
+                   'page scrolls sideways' naming div.promo-marquee; the store stays healthy
+  tall_sticky_bar  on phones, product pages carry a fixed info bar over the bottom 42% of the screen (journey 30)
+                   -> product pages WARN 'screen covered by fixed bars' naming div.sticky-info; the store stays healthy
 
 Every product page also carries a quick-add product card BEFORE the main buy button in the DOM
 and a cart drawer that opens over the page after adding (both copied from moxiebeauty.in's
@@ -216,9 +230,19 @@ def page(title: str, body: str, extra_head: str = "", shopify: bool = True) -> s
 <link rel="canonical" href="/"><meta property="og:title" content="{title}"><meta property="og:image" content="/cdn/shop/files/og.svg">
 {marks}
 {extra_head}</head><body>
-<header><div class="drawer" style="display:none"><nav><a href="/collections/all">Shop all</a></nav></div><nav><a href="/collections/home-decor">Home Decor</a> <a href="/collections/kitchen">Kitchen</a> <a href="/pages/about">About</a></nav><a class="cart-icon" href="/cart">Cart</a>
+<header><div class="drawer" style="display:none"><nav><a href="/collections/all">Shop all</a></nav></div><nav><a href="/collections/home-decor">Home Decor</a> <a href="/collections/kitchen">Kitchen</a> <a href="/pages/about">About</a></nav><a class="cart-icon" href="/cart">Cart</a> <a class="account-icon" href="/account/login" aria-label="Log in">&#128100;</a>
 <form action="/search" method="get"><input name="q"></form></header>
-<main>{body}</main><footer><img src="{img}" width="40" height="40" alt="logo"></footer></body></html>"""
+<main>{body}</main><footer><img src="{img}" width="40" height="40" alt="logo"><div class="footer-menu">{FOOTER_LINKS}</div></footer></body></html>"""
+
+
+FOOTER_LINKS = ('<a href="/pages/shipping-policy">Shipping Policy</a> <a href="/policies/refund-policy">Refund policy</a> '
+                '<a href="/pages/privacy-policy">Privacy Policy</a> <a href="/pages/terms-of-service">Terms of Service</a> '
+                '<a href="/pages/contact">Contact us</a> <a href="https://instagram.com/mockstore">Instagram</a>')
+POLICY_TEXT = ("We ship every order within two working days from our studio in Jaipur. Delivery takes three to seven days "
+               "across India; remote pin codes can take up to ten days. Shipping is free above Rs 999; below that a flat "
+               "Rs 79 applies. You will get a tracking link by SMS and email as soon as the parcel leaves us. ")
+INFO_PAGES = {"/pages/shipping-policy": "Shipping Policy", "/pages/privacy-policy": "Privacy Policy",
+              "/pages/terms-of-service": "Terms of Service", "/policies/refund-policy": "Refund policy"}
 
 
 def card(p):
@@ -339,6 +363,18 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             # (3 attempts, both devices). Suspected: product links open in a NEW TAB (target=_blank / window.open);
             # the shopper is on the product in that tab, Radar kept looking at the old one.
             body = body.replace("</body>", """<script>document.querySelectorAll('a[href*="/products/"]').forEach(a => a.target = '_blank');</script></body>""")
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "sideways_scroll":
+            # a promo strip wider than any screen (journey 30): the shopper can drag every page sideways
+            body = body.replace("<main>", '<main><div class="promo-marquee" style="width:1700px;white-space:nowrap;'
+                                'background:#fde">Festive sale: flat 20% off on everything, free shipping above Rs 999</div>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "tall_sticky_bar" \
+                and "/products/" in self.path and "Mobile" in (self.headers.get("User-Agent") or ""):
+            # phones only: a fixed bar over the bottom 42% of product pages, no button in it (journey 30: content
+            # covered). On a desktop-sized page the same bar would sit on the buy button: Radar then FAILS the cart
+            # ('<div class="sticky-info"> intercepts pointer events'), which is right, but not what this mode proves.
+            body = body.replace("</body>", '<div class="sticky-info" style="position:fixed;left:0;right:0;bottom:0;'
+                                'height:42vh;background:#222;color:#fff;z-index:20">Free delivery above Rs 999 · '
+                                'Easy 7-day returns · Cash on delivery</div></body>')
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "empty_doc_title":
             body = re.sub(r"<title>.*?</title>", "<title></title>", body, count=1, flags=re.S)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode in self.OVERLAYS:
@@ -599,8 +635,10 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(404, "Not Found", "text/plain")
         if path == "/robots.txt":
             extra = "Disallow: /search\n" if self.mode == "hostile" else ""
-            return self._send(200, "User-agent: *\nDisallow: /checkout\nDisallow: /cart\nDisallow: /account\n" + extra,
-                              "text/plain")
+            # like Shopify's default robots.txt: /account and /policies/ are disallowed (journeys 28 + 29 must skip them)
+            acct = "" if self.mode in ("account_open", "account_broken") else "Disallow: /account\n"
+            return self._send(200, "User-agent: *\nDisallow: /checkout\nDisallow: /cart\n" + acct + "Disallow: /policies/\n"
+                              + extra, "text/plain")
         if path.startswith("/cdn/shop/files/") or path.startswith("/static/"):
             return self._send(200, SVG, "image/svg+xml")
         if path == "/" and self.mode == "store_refuses":
@@ -613,6 +651,25 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(200, "<!doctype html><html><head><title>Blank | Mock Store</title></head><body><div id=app></div></body></html>")
         if path == "/pages/about":
             return self._send(200, page("About Mock Store", "<p>About us</p>"))
+        if path in INFO_PAGES:
+            name = INFO_PAGES[path]
+            if self.mode == "broken_policies" and path == "/pages/shipping-policy":   # a deleted page the footer still links
+                return self._send(404, page("404 Not Found | Mock Store", "<h1>404 Page not found</h1>"))
+            text = "" if (self.mode == "broken_policies" and path == "/pages/privacy-policy") else POLICY_TEXT
+            return self._send(200, page(f"{name} | Mock Store", f"<h1>{name}</h1><p>{text}</p>"))
+        if path == "/pages/contact":
+            if self.mode == "broken_policies":      # a contact page with a heading and nothing else
+                return self._send(200, page("Contact | Mock Store", "<h1>Contact</h1>"))
+            return self._send(200, page("Contact | Mock Store", '<h1>Contact</h1><form action="/contact" method="post">'
+                                        '<input type="hidden" name="form_type" value="contact"><input name="contact[name]" '
+                                        'type="text"> <input name="contact[email]" type="email"> <textarea '
+                                        'name="contact[body]"></textarea><button>Send</button></form>'))
+        if path in ("/account/login", "/account"):
+            if self.mode == "account_broken":
+                return self._send(404, page("404 Not Found | Mock Store", "<h1>404 Page not found</h1>"))
+            return self._send(200, page("Account | Mock Store", '<h1>Login</h1><form action="/account/login" method="post">'
+                                        '<input type="email" name="customer[email]"> <input type="password" '
+                                        'name="customer[password]"><button>Sign in</button></form>'))
         if path == "/pages/shop":          # brand landing page (brand_landing mode)
             return self._send(200, page("Shop | Mock Store", '<h1>Our brands</h1><a class="tile" href="/collections/home-decor" '
                                         'style="display:block;width:300px;height:200px">Home Decor</a>'), set_cart=new)

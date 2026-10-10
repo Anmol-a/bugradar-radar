@@ -11,6 +11,7 @@ Suites and why they exist:
   cart     critical  Can shoppers buy? Add to cart -> cart has it -> checkout button visible.
   search   major     Can shoppers find? A search for a real product returns results.
   health   minor     SEO/meta basics and a correct 404.
+  info     minor     Footer policy + contact pages have real content; the account login page opens.
 """
 from __future__ import annotations
 
@@ -148,4 +149,19 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
     health.cases.append(TestCase("health.not_found", "health", "Missing page returns 404", "not_found",
                                  {"url": base + "/products/bugradar-check-does-not-exist"}, "seo"))
     suites.append(health)
+
+    # Journeys 28 + 29: the pages a shopper checks before trusting a store with money. Only links robots.txt
+    # allows reach here (discovery lists the rest in the notes).
+    info = Suite("info", "Store info pages", "Policy, contact and account pages a shopper checks before buying")
+    if sm.info_pages:
+        kinds = ", ".join(p["kind"] for p in sm.info_pages)
+        info.cases.append(TestCase("info.policy_pages", "info", f"Footer info pages load with real content ({kinds})",
+                                   "info_pages", {"pages": sm.info_pages[:6]}, "minor",
+                                   "Each footer policy / contact link opens, is not an error page or the homepage, and "
+                                   "shows real text (contact: a form, an email or a phone number)"))
+    if sm.account_url:
+        info.cases.append(TestCase("info.account_page", "info", "Account login page loads", "account_page",
+                                   {"url": sm.account_url}, "minor",
+                                   "The header's account link opens a sign-in page. Nothing is typed or submitted"))
+    suites.append(info)
     return [x for x in suites if x.cases]

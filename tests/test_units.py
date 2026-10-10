@@ -719,3 +719,50 @@ def test_title_count_reads_shopifys_search_count():
     assert _title_count('Search: 513 results found for "sonor" - pTron India') == 513
     assert _title_count('Search: 1,000 results found for "zircon"') == 1000
     assert _title_count("Search: ceramic | Mock Store") is None
+
+
+# ---------------- journeys 28-30 (10 Oct 2026) ----------------
+
+def test_footer_links_are_read_as_one_info_page_per_kind_same_store_only():
+    from radar.discovery.discover import info_pages
+    base = "https://shop.example.in"
+    links = [{"text": "Shipping & Returns", "url": base + "/pages/shipping-returns"},     # returns wins: one page, both
+             {"text": "Delivery Information", "url": base + "/pages/delivery"},
+             {"text": "Return policy", "url": base + "/policies/refund-policy"},           # refund already taken
+             {"text": "Privacy", "url": "https://www.shop.example.in/pages/privacy-policy#top"},
+             {"text": "T&C", "url": base + "/pages/terms-conditions"},                    # matched by the path
+             {"text": "Contact Us", "url": base + "/pages/contact"},
+             {"text": "Contact on WhatsApp", "url": "https://wa.me/919999999999"},          # another site
+             {"text": "Track order", "url": base + "/apps/track-order"},                    # app proxy, not a page
+             {"text": "Returns portal", "url": "https://returns.otherapp.com/shop"},
+             {"text": "Shipping bags", "url": base + "/collections/shipping-bags"}]         # a collection, not info
+    got = info_pages(links, base)
+    assert [(p["kind"], p["url"]) for p in got] == [
+        ("refund", base + "/pages/shipping-returns"), ("shipping", base + "/pages/delivery"),
+        ("privacy", "https://www.shop.example.in/pages/privacy-policy"), ("terms", base + "/pages/terms-conditions"),
+        ("contact", base + "/pages/contact")]
+    assert info_pages([], base) == []
+
+
+def test_layout_verdicts_say_what_sticks_out_and_what_covers_the_screen():
+    from radar.checks.library import layout_verdicts, COVERED_MAX
+    ok = layout_verdicts({"moved": 2, "vw": 412, "by": []}, {"pct": 20, "by": ["div.sticky-atc 9%"]})
+    assert [v[3] for v in ok] == [True, True] and ok[0][2] == "fits (412px)" and ok[1][2] == "20%"
+    bad = layout_verdicts({"moved": 60, "vw": 412, "by": ["div.marquee (900px wide, 488px past the edge)"]},
+                          {"pct": COVERED_MAX + 7, "by": ["div#chat 30%", "div.bar 12%"]})
+    assert [v[3] for v in bad] == [False, False]
+    assert bad[0][2] == "yes, by 60px: div.marquee (900px wide, 488px past the edge)"
+    assert bad[1][2] == f"{COVERED_MAX + 7}%: div#chat 30%, div.bar 12%"
+
+
+def test_info_suite_is_built_only_from_pages_discovery_could_open():
+    sm = SiteMap(site_id="x.in", base_url="https://x.in", platform="shopify",
+                 collections=[Collection("all", "All", "https://x.in/collections/all")],
+                 products=[Product("a", "Alpha Lamp", "https://x.in/products/a", 11, "499.00", True)],
+                 info_pages=[{"kind": "shipping", "text": "Shipping", "url": "https://x.in/pages/shipping"}],
+                 account_url="https://x.in/account/login")
+    info = next(s for s in build_suites(sm, Settings()) if s.id == "info")
+    assert [(c.id, c.check, c.severity) for c in info.cases] == [
+        ("info.policy_pages", "info_pages", "minor"), ("info.account_page", "account_page", "minor")]
+    sm.info_pages, sm.account_url = [], ""
+    assert not any(s.id == "info" for s in build_suites(sm, Settings()))

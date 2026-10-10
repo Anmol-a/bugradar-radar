@@ -36,7 +36,7 @@ def _case(run, prefix):
 def test_healthy_store_all_pass_and_artifacts(tmp_path):
     run, d = _scan("healthy", tmp_path)
     assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
-    assert {c.suite for c in run.cases} == {"journey", "smoke", "catalog", "product", "cart", "search", "health"}
+    assert {c.suite for c in run.cases} == {"journey", "smoke", "catalog", "product", "cart", "search", "health", "info"}
     j = {s.name: s for s in _case(run, "journey.").attempts[-1].steps}
     assert all(s.status in ("pass", "info") for s in j.values()), [(s.name, s.error) for s in j.values()]
     checks = {c["what"]: c for s in j.values() for c in s.checks}
@@ -1195,3 +1195,72 @@ def test_empty_document_title_on_a_rendered_page_is_an_seo_warning_not_down(tmp_
     meta = _case(run, "health.meta.home")
     t = [s for s in meta.attempts[-1].steps if s.name == "title"]
     assert t and t[0].status == "warn" and "missing" in (t[0].error or ""), [(s.name, s.status, s.error) for s in t]
+
+
+# ---------------- journeys 28-30: footer info pages, account page, layout (10 Oct 2026) ----------------
+
+def _info(mode, tmp_path, device="desktop", suites=("info",), **kw):
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=2, **kw), device=device,
+                    only_suites=list(suites))[0]
+    finally:
+        srv.shutdown()
+
+
+def _steps(case):
+    return {s.name: s for s in case.attempts[-1].steps}
+
+
+def test_footer_info_pages_open_with_real_content_and_robots_disallowed_ones_are_skipped(tmp_path):
+    run = _info("healthy", tmp_path)
+    c = _case(run, "info.policy_pages")
+    assert c.verdict == "pass", (c.attempts[-1].error, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
+    st = _steps(c)
+    assert {k for k in st if k.endswith("has real content")} == {f"{k}: has real content" for k in ("shipping", "privacy", "terms", "contact")}
+    assert st["contact: has real content"].detail == "contact form shown"
+    assert st["all_info_pages_open"].detail == "4 pages open"
+    # Shopify's default robots.txt disallows /policies/ and /account: never opened, said so in the notes
+    assert not any("refund" in k for k in st)
+    assert any("refund /policies/refund-policy" in n and "robots.txt" in n for n in run.notes), run.notes
+    assert not any(x.case_id == "info.account_page" for x in run.cases)
+    assert any("/account/login not opened: robots.txt" in n for n in run.notes), run.notes
+    assert run.verdict == "healthy"
+
+
+def test_broken_footer_page_fails_and_empty_policy_or_contact_pages_warn(tmp_path):
+    run = _info("broken_policies", tmp_path)
+    c = _case(run, "info.policy_pages")
+    assert c.verdict == "confirmed_fail" and "shipping (/pages/shipping-policy)" in c.attempts[-1].error, c.attempts[-1].error
+    st = _steps(c)
+    assert st["shipping: opens /pages/shipping-policy"].status == "warn" and "404" in st["shipping: opens /pages/shipping-policy"].error
+    assert st["privacy: has real content"].status == "warn" and "≥ 200 chars" in st["privacy: has real content"].error
+    assert st["contact: has real content"].status == "warn" and "no form" in st["contact: has real content"].error
+    assert st["terms: has real content"].status == "pass"
+    assert run.verdict == "degraded"          # minor severity: a broken footer page never makes the store 'down'
+
+
+def test_account_login_page_opens_when_robots_txt_allows_it_and_nothing_is_typed(tmp_path):
+    run = _info("account_open", tmp_path)
+    c = _case(run, "info.account_page")
+    assert c.verdict == "pass" and _steps(c)["shows_sign_in"].detail == "sign-in form shown (nothing typed)"
+    run = _info("account_broken", tmp_path)
+    c = _case(run, "info.account_page")
+    assert c.verdict == "confirmed_fail" and "404" in c.attempts[-1].error, c.attempts[-1].error
+
+
+def test_page_that_scrolls_sideways_warns_on_every_page_type_never_fails(tmp_path):
+    run = _info("sideways_scroll", tmp_path, suites=("smoke", "catalog", "product"))
+    assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
+    for prefix in ("smoke.home_health", "catalog.collection", "product.pdp"):
+        s = _steps(_case(run, prefix))["layout_fits_screen"]
+        assert s.status == "warn" and "div.promo-marquee" in s.error and "scrolls sideways" in s.error, (prefix, s.error)
+
+
+def test_fixed_bar_covering_much_of_a_phone_screen_warns(tmp_path):
+    run = _info("tall_sticky_bar", tmp_path, device="mobile", suites=("smoke", "product"))
+    assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
+    pdp = _steps(_case(run, "product.pdp"))["layout_not_covered"]
+    assert pdp.status == "warn" and "div.sticky-info 42%" in pdp.error, pdp.error
+    home = _steps(_case(run, "smoke.home_health"))
+    assert home["layout_not_covered"].status == "pass" and home["layout_fits_screen"].status == "pass"

@@ -99,6 +99,7 @@ class Ctx:
     sent_add_requests: list[str] = field(default_factory=list)
     llm_assist: bool = False     # True only in the re-check after triage blamed Radar (see healing/triage.py)
     buy_evidence: str = ""       # which buy button _main_buy_button read (shown when it is disabled)
+    layout_cache: tuple | None = None   # (url, layout verdicts): both layout steps read one measurement
 
     def expect(self, what, expected, actual, ok=None):
         return self.steps.expect(what, expected, actual, ok)
@@ -767,6 +768,7 @@ def page_health(ctx: Ctx, url: str, max_load_secs: float = 8):
     ctx.sess.page.wait_for_timeout(1500)   # let lazy images and scripts settle
     ctx.steps.run("images_load", lambda: _images_ok(ctx), soft=True)
     ctx.steps.run("no_js_errors", lambda: _js_errors(ctx), soft=True)
+    layout_steps(ctx)
 
 
 def links_resolve(ctx: Ctx, urls: list[str], max_links: int = 10):
@@ -794,6 +796,7 @@ def collection_page(ctx: Ctx, url: str):
     ctx.steps.run("lists_products", has_products)
     ctx.sess.page.wait_for_timeout(1000)
     ctx.steps.run("images_load", lambda: _images_ok(ctx), soft=True)
+    layout_steps(ctx)
 
 
 # Where is the product's name on its own page? Themes differ wildly (h1, an h2 rich-text block, a div in
@@ -1088,6 +1091,7 @@ def product_page(ctx: Ctx, url: str, expect_buyable: bool = True, fallbacks: lis
                                                    not ctx.redirected_to) and "no redirect", soft=True)
     _pdp_assertions(ctx, url, expect_buyable)
     ctx.steps.run("no_js_errors", lambda: _js_errors(ctx), soft=True)
+    layout_steps(ctx)
 
 
 def add_to_cart(ctx: Ctx, url: str, variant_id: int | None = None, cart_path: str = "/cart"):
@@ -1294,6 +1298,179 @@ def not_found(ctx: Ctx, url: str):
         ctx.expect("HTTP status for a page that does not exist", 404, actual, bool(resp) and resp.status == 404)
         return "HTTP 404"
     ctx.steps.run("returns_404", status)
+
+
+# ---------------- store info pages (journeys 28 + 29) ----------------
+
+# Text of the page's own content: <main> (or the body), never the site header / footer / menus / dialogs, which
+# every page repeats. A contact page counts as real when it has a form with a text field, a mailto: / tel: link, or
+# an email address / phone number in its text.
+INFO_TEXT_JS = r"""() => {
+  const root = document.querySelector('main, [role="main"], #MainContent') || document.body;
+  const skip = 'header, footer, nav, [role="navigation"], [role="dialog"], [aria-modal="true"], script, style, noscript, template';
+  let n = 0; const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  while (w.nextNode()) { const el = w.currentNode.parentElement; if (!el || el.closest(skip)) continue;
+    n += w.currentNode.textContent.replace(/\s+/g, ' ').trim().length; }
+  const txt = (root.innerText || '');
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  return {chars: n,
+          form: [...document.querySelectorAll('form textarea, form input[type="email"], form input[name*="email" i], form input[type="text"]')]
+                  .some(e => vis(e) && !e.closest('header, footer, [role="dialog"], [aria-modal="true"]')),
+          reach: !!document.querySelector('main a[href^="mailto:"], main a[href^="tel:"], [role="main"] a[href^="mailto:"], [role="main"] a[href^="tel:"]')
+                 || /[\w.+-]+@[\w-]+\.[\w.]+|(\+91[\s-]?)?[6-9]\d{4}[\s-]?\d{5}|\b1800[\s-]?\d{3}[\s-]?\d{4}\b/.test(txt),
+          heading: ((document.querySelector('main h1, h1') || {}).innerText || '').trim().slice(0, 80)};
+}"""
+
+SOFT_404 = re.compile(r"\b404\b|page not found|not be found|doesn.t exist|does not exist", re.I)
+
+
+def _open_info_page(ctx: Ctx, url: str) -> str:
+    """Opens like a shopper clicking the footer link: HTTP < 400 and not blank (_load), and NOT the store's
+    'page not found' page served with 200, and not a redirect to the homepage (a deleted page)."""
+    out = _load(ctx, url)
+    title = (ctx.sess.evaluate("() => document.title") or "").strip()
+    h1 = (ctx.sess.evaluate("() => ((document.querySelector('main h1, h1') || {}).innerText || '').trim()") or "")[:80]
+    ctx.expect("not the store's 'page not found' page", "the page itself", f"title {title[:60]!r}, heading {h1!r}",
+               not (SOFT_404.search(title) or SOFT_404.search(h1)))
+    ctx.expect("stays on the page (not sent to the homepage)", _path(url), ctx.redirected_to or _path(url),
+               ctx.redirected_to != "/")
+    return out
+
+
+def _info_content(ctx: Ctx, kind: str) -> str:
+    c = ctx.sess.evaluate(INFO_TEXT_JS) or {"chars": 0, "form": False, "reach": False, "heading": ""}
+    if kind == "contact":
+        ok = c["form"] or c["reach"] or c["chars"] >= 150
+        ctx.expect("a way to contact the store", "a contact form, an email address or a phone number",
+                   ("contact form" if c["form"] else "email / phone shown" if c["reach"] else
+                    f"{c['chars']} chars of text" if ok else f"none: no form, no email or phone, {c['chars']} chars of text"), ok)
+        return "contact form shown" if c["form"] else "email / phone shown" if c["reach"] else f"{c['chars']} chars of text"
+    ctx.expect("policy text on the page", "≥ 200 chars (not an empty page)", f"{c['chars']} chars"
+               + (f" under {c['heading']!r}" if c["heading"] else ""), c["chars"] >= 200)
+    return f"{c['chars']} chars of policy text"
+
+
+def info_pages(ctx: Ctx, pages: list[dict]):
+    """Journey 28: every footer policy / contact page opens (hard: a broken link is a store finding) and shows real
+    content (soft: apps sometimes render policy text in a frame Radar does not read)."""
+    bad, opened = [], 0
+    for p in pages:
+        url, kind = p["url"], p["kind"]
+        if not ctx.sess.allowed(url):
+            continue
+        opened += 1
+        if ctx.steps.run(f"{kind}: opens {_path(url)[:40]}", lambda u=url: _open_info_page(ctx, u), soft=True) is None:
+            bad.append(f"{kind} ({_path(url)})")
+            continue
+        ctx.steps.run(f"{kind}: has real content", lambda k=kind: _info_content(ctx, k), soft=True)
+    ctx.steps.run("all_info_pages_open", lambda: ctx.expect(
+        "footer info pages that fail to open", 0, f"{len(bad)}" + (f": {', '.join(bad)}" if bad else ""), not bad)
+        and f"{opened} pages open")
+
+
+ACCOUNT_JS = r"""() => {
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden'; };
+  const outside = e => !e.closest('header, footer, [role="dialog"], [aria-modal="true"]');
+  const f = [...document.querySelectorAll('input[type="email"], input[name*="email" i], input[type="password"], input[type="tel"], input[name*="phone" i], input[autocomplete="username"]')]
+    .filter(e => vis(e) && outside(e));
+  const b = [...document.querySelectorAll('button, input[type="submit"], a')].filter(e => vis(e) && outside(e))
+    .map(e => (e.innerText || e.value || '').trim()).find(t => /^(sign ?in|log ?in|login|continue|send otp|get otp|request otp)$/i.test(t));
+  return {fields: f.map(e => e.type || e.name).slice(0, 4), button: b || ''};
+}"""
+
+
+def account_page(ctx: Ctx, url: str):
+    """Journey 29: the header's account link opens a sign-in page. Radar never types or submits anything."""
+    ctx.steps.run("loads", lambda: _open_info_page(ctx, url))
+
+    def sign_in():
+        a = ctx.sess.evaluate(ACCOUNT_JS) or {"fields": [], "button": ""}
+        ok = bool(a["fields"]) or bool(a["button"])
+        ctx.expect("sign-in form", "an email / phone / password field or a sign-in button (nothing typed)",
+                   (f"fields: {', '.join(a['fields'])}" if a["fields"] else "") + (f" button {a['button']!r}" if a["button"] else "")
+                   or "none on the page", ok)
+        return "sign-in form shown (nothing typed)"
+    ctx.steps.run("shows_sign_in", sign_in, soft=True)
+
+
+# ---------------- layout (journey 30): judged on every page Radar already opens, both devices ----------------
+
+# Can the shopper scroll the page sideways? Measured by asking the window to scroll right ('instant': themes set
+# scroll-behavior: smooth), then put back. The elements sticking out past the right edge are evidence only.
+SIDEWAYS_JS = r"""() => {
+  const vw = innerWidth, x0 = scrollX, y0 = scrollY;
+  const sw = Math.max(document.documentElement.scrollWidth, document.body ? document.body.scrollWidth : 0);
+  try { scrollTo({left: sw, top: y0, behavior: 'instant'}); } catch (e) { scrollTo(sw, y0); }
+  const moved = Math.round(scrollX);
+  try { scrollTo({left: x0, top: y0, behavior: 'instant'}); } catch (e) { scrollTo(x0, y0); }
+  const out = [];
+  if (moved > 4) {
+    const clips = e => { for (let a = e.parentElement; a && a !== document.body && a !== document.documentElement; a = a.parentElement) {
+        const o = getComputedStyle(a).overflowX; if (o !== 'visible') return true; } return false; };
+    for (const e of document.querySelectorAll('body *')) {
+      const r = e.getBoundingClientRect();
+      if (r.width === 0 || r.height === 0 || r.right <= vw + 4 + x0) continue;
+      const p = e.parentElement && e.parentElement.getBoundingClientRect();
+      if (p && p.right > vw + 4 + x0 && e.parentElement !== document.body) continue;   // report the outermost only
+      if (clips(e)) continue;
+      const cls = typeof e.className === 'string' ? e.className.trim().split(/\s+/).slice(0, 2).join('.') : '';
+      out.push(`${e.tagName.toLowerCase()}${e.id ? '#' + e.id : ''}${cls ? '.' + cls : ''} (${Math.round(r.width)}px wide, ` +
+               `${Math.round(r.right - vw - x0)}px past the edge)`);
+      if (out.length >= 3) break;
+    }
+  }
+  return {vw, sw, moved, by: out};
+}"""
+
+# How much of the screen is under fixed layers (sticky bars, chat widgets, banners, popups Radar could not close)?
+# A grid of points; a point counts when the topmost element there sits in a position:fixed layer. A fixed layer that
+# holds the page's own content (an app shell with <main> inside, or one that scrolls itself) is not a covering bar.
+COVERED_JS = r"""() => {
+  const vw = innerWidth, vh = innerHeight, cols = 8, rows = 12; let hit = 0; const by = new Map();
+  const fixedLayer = el => { for (let n = el; n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
+      const s = getComputedStyle(n); if (s.position !== 'fixed') continue;
+      if (n.querySelector('main, #MainContent') || (/(auto|scroll)/.test(s.overflowY) && n.scrollHeight > n.clientHeight + 20 && n.getBoundingClientRect().height > vh * 0.8)) return null;
+      return n; } return null; };
+  for (let i = 0; i < cols; i++) for (let j = 0; j < rows; j++) {
+    const el = document.elementFromPoint((i + 0.5) * vw / cols, (j + 0.5) * vh / rows);
+    const f = el && fixedLayer(el); if (!f) continue; hit++;
+    const cls = typeof f.className === 'string' ? f.className.trim().split(/\s+/).slice(0, 2).join('.') : '';
+    const name = `${f.tagName.toLowerCase()}${f.id ? '#' + f.id : ''}${cls ? '.' + cls : ''}`;
+    by.set(name, (by.get(name) || 0) + 1);
+  }
+  return {pct: Math.round(100 * hit / (cols * rows)),
+          by: [...by].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([n, k]) => `${n} ${Math.round(100 * k / (cols * rows))}%`)};
+}"""
+
+COVERED_MAX = 35      # % of the screen; a sticky header + a sticky buy bar + a chat bubble stay well under it
+
+
+def layout_verdicts(sideways: dict, covered: dict) -> list[tuple[str, str, str, bool]]:
+    """(what, expected, actual, ok) for the two layout assertions. Pure, unit-tested."""
+    moved, pct = int(sideways.get("moved") or 0), int(covered.get("pct") or 0)
+    by = sideways.get("by") or []
+    return [("page scrolls sideways", "no, it fits the screen width",
+             f"yes, by {moved}px" + (f": {'; '.join(by)}" if by else "") if moved > 4 else f"fits ({sideways.get('vw')}px)",
+             moved <= 4),
+            ("screen covered by fixed bars or overlays", f"≤ {COVERED_MAX}%",
+             f"{pct}%" + (f": {', '.join(covered.get('by') or [])}" if pct > COVERED_MAX else ""), pct <= COVERED_MAX)]
+
+
+def _layout(ctx: Ctx, which: int) -> str:
+    if ctx.layout_cache is None or ctx.layout_cache[0] != ctx.sess.page.url or which == 0:
+        ctx.layout_cache = (ctx.sess.page.url, layout_verdicts(ctx.sess.evaluate(SIDEWAYS_JS) or {},
+                                                               ctx.sess.evaluate(COVERED_JS) or {}))
+    what, expected, actual, ok = ctx.layout_cache[1][which]
+    ctx.expect(what, expected, actual, ok)
+    return actual
+
+
+def layout_steps(ctx: Ctx) -> None:
+    """Journey 30, as WARNINGS on pages already open (no extra page loads): no sideways scrolling, and fixed bars /
+    overlays leave most of the screen visible."""
+    ctx.steps.run("layout_fits_screen", lambda: _layout(ctx, 0), soft=True)
+    ctx.steps.run("layout_not_covered", lambda: _layout(ctx, 1), soft=True)
 
 
 # ---------------- LLM assist (re-check after triage only; code verifies every answer) ----------------
@@ -1869,4 +2046,5 @@ REGISTRY: dict[str, Callable] = {
     "page_health": page_health, "links_resolve": links_resolve, "collection_page": collection_page,
     "product_page": product_page, "add_to_cart": add_to_cart, "search_results": search_results,
     "meta_tags": meta_tags, "not_found": not_found, "shopper_journey": shopper_journey,
+    "info_pages": info_pages, "account_page": account_page,
 }

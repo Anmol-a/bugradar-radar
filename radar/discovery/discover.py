@@ -47,6 +47,54 @@ NAV_JS = r"""() => {
 LINKS_JS = """(pattern) => [...new Set([...document.querySelectorAll('a[href]')]
   .map(a => a.href).filter(h => h.includes(pattern)))]"""
 
+# Footer links (journey 28: policy + contact pages). textContent, not innerText: collapsed footer accordions on
+# phones hide their links until opened.
+FOOTER_JS = r"""() => {
+  const sel = 'footer a[href], [role=contentinfo] a[href], [id*="footer" i] a[href], .shopify-section-group-footer-group a[href]';
+  const seen = new Set(); const out = [];
+  for (const a of document.querySelectorAll(sel)) {
+    const href = a.href;
+    if (!href || seen.has(href) || /^(javascript|mailto|tel):/i.test(href)) continue;
+    seen.add(href);
+    out.push({text: (a.textContent || a.getAttribute('aria-label') || a.title || '').replace(/\s+/g, ' ').trim().slice(0, 60), url: href});
+  }
+  return out.slice(0, 120);
+}"""
+
+# The header's account / login link (journey 29). Old customer accounts: /account or /account/login on the store;
+# new customer accounts: Shopify-hosted (shopify.com/<id>/account or account.<store domain>).
+ACCOUNT_JS = r"""() => {
+  const cands = [...document.querySelectorAll('header a[href], [id*="header" i] a[href], nav a[href], a[href*="/account"]')]
+    .filter(a => /\/account(\/login)?\/?$/.test(a.pathname) || /^account\./.test(a.hostname));
+  const vis = a => { const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const a = cands.find(vis) || cands[0];
+  return a ? a.href : null;
+}"""
+
+# Which footer link is which info page. Order matters: 'Shipping & Returns' is read as the returns page.
+INFO_KINDS = (("refund", r"refund|return|exchange|cancell?ation"),
+              ("shipping", r"shipping|delivery"),
+              ("privacy", r"privacy"),
+              ("terms", r"terms|conditions|\btos\b"),
+              ("contact", r"contact"))
+NOT_INFO = re.compile(r"/(products|collections|cart|account|search|checkout|blogs)(/|$)|/apps/", re.I)
+
+
+def info_pages(links: list[dict], base: str) -> list[dict]:
+    """Footer links -> the store's info pages, at most one per kind (refund, shipping, privacy, terms, contact),
+    same store only, never product / collection / cart / account / app links. Pure, unit-tested."""
+    out: dict[str, dict] = {}
+    for link in links:
+        url, text = link.get("url") or "", link.get("text") or ""
+        if not url or not _same_origin(url, base) or NOT_INFO.search(urlparse(url).path):
+            continue
+        hay = f"{text} {urlparse(url).path.replace('-', ' ').replace('_', ' ')}".lower()
+        for kind, rx in INFO_KINDS:
+            if kind not in out and re.search(rx, hay):
+                out[kind] = {"kind": kind, "text": text[:60], "url": url.split("#")[0]}
+                break
+    return [out[k] for k, _ in INFO_KINDS if k in out]
+
 
 def _same_origin(url: str, base: str) -> bool:
     a, b = urlparse(url), urlparse(base)
@@ -113,6 +161,33 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
     rb.status = status
     rb.error = "" if status else err
     return rb
+
+
+def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
+    """Footer policy / contact pages and the header account link, read from the homepage already open. Links that
+    robots.txt disallows (Shopify's default robots.txt disallows /policies/ and /account) are never opened: they
+    are listed in the notes instead, so the report says what was not tested and why."""
+    try:
+        found = info_pages(sess.evaluate(FOOTER_JS) or [], base_url)
+        acct = sess.evaluate(ACCOUNT_JS)
+    except Exception:  # noqa: BLE001  a page script error must not stop discovery
+        return
+    skipped = [p for p in found if not sess.allowed(p["url"])]
+    sm.info_pages = [p for p in found if p not in skipped]
+    if skipped:
+        sm.notes.append("footer info page(s) not opened, robots.txt disallows them (Shopify's default for /policies/): "
+                        + ", ".join(f"{p['kind']} {urlparse(p['url']).path}" for p in skipped))
+    if not found:
+        sm.notes.append("no policy or contact links found in the footer")
+    if acct:
+        if not _same_origin(acct, base_url):
+            sm.notes.append(f"account login is hosted elsewhere ({urlparse(acct).hostname}, Shopify customer accounts): "
+                            "not opened")
+        elif not sess.allowed(acct):
+            sm.notes.append(f"account page {urlparse(acct).path} not opened: robots.txt disallows it "
+                            "(Shopify's default robots.txt disallows /account)")
+        else:
+            sm.account_url = acct.split("#")[0]
 
 
 def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
@@ -235,6 +310,7 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
     sm.nav = nav[:25]
     if not sm.nav:
         sm.notes.append("no header/nav links found")
+    _discover_info_pages(sess, sm, base_url)
 
     # 4. collections
     try:
