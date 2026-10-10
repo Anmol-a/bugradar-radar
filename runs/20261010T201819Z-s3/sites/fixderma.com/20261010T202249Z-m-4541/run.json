@@ -1,0 +1,2983 @@
+{
+  "run_id": "20261010T202249Z-m-4541",
+  "site_id": "fixderma.com",
+  "base_url": "https://fixderma.com",
+  "device": "mobile",
+  "started_at": "2026-10-10T20:22:49+00:00",
+  "finished_at": "2026-10-10T20:26:21+00:00",
+  "verdict": "degraded",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.99s",
+              "error": null,
+              "secs": 5.55,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "\u27285% on prepaid order offer on prepaid\u2728 \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4492 chars, 62 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/body-care (74 products)",
+              "error": null,
+              "secs": 8.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/body-care ('Shop Now')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/body-care",
+                  "actual": "/collections/body-care",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "74",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /products/moisturizing-bar",
+              "error": null,
+              "secs": 6.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/moisturizing-bar ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/moisturizing-bar",
+                  "actual": "/products/moisturizing-bar",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Moisturizing Bar', selected variant 40289253425346 at \u20b9190.00",
+              "error": null,
+              "secs": 0.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/moisturizing-bar",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/moisturizing-bar.js with variants",
+                  "actual": "'Moisturizing Bar', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Moisturizing Bar",
+                  "actual": "'Moisturizing Bar | A Non-Drying Moisturizing Bar For Various Skin Concerns' (h1, 18px, main heading, name differs from catalog)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9190.00",
+                  "actual": "\u20b9190.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Moisturizing Bar",
+                  "actual": "'Moisturizing Bar | A Non-Drying Moisturizing Bar For Various Skin Concerns' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Fixderma Moisturizing Bar for Dry Skin | Soap-Free Gentle Cleansing Bar",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "190",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.07-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 23.37,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-164593890@12/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x1140ab6d400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'querySelectorAll')",
+              "url": "https://www.fixderma.com/collections/body-care"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://floaters.popclub.co.in/?brand=fixderma-skincare&shop=fixderma-skincare.myshopify.com&key=undefined&url=https://www.fixderma.com/coll"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://www.fixderma.com/products/moisturizing-bar"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1331874335.1791663781&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1331874335.1791663781&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663781024&cv=11&fst=1791663781024&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1331874335.1791663781&gtm=45be6a72v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791663781873&cv=11&tid=G-QBVRNM9CT6&fst=1791663781873&fmt=8&en=homepage&gtm=45je6a72v894984495za",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663779539&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663779539&gcs=G111&gcd=13t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663779539&gcs",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663782370&cv=11&fst=1791663782370&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663783215&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663783216&ec=2",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663785006&cv=11&fst=1791663785006&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "GET https://floaters.popclub.co.in/?brand=fixderma-skincare&shop=fixderma-skincare.myshopify.com&key=undefined&url=https://www.fixderma.com/&source=index",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1331874335.1791663781&dt=Buy%20Body%20Care%20Products%20Online%20%E2%80%93%20Fixderma%20Sk",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=1331874335.1791663781&dt=Buy%20Body%20Care%20Products%20Online%20%E2%80%93%20Fixderma%20Sk",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663788566&cv=11&fst=1791663788566&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663787375&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791663789394&cv=11&tid=G-QBVRNM9CT6&fst=1791663789394&fmt=8&en=collection_pages&gtm=45je6a72v894",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663789873&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663789874&ec=2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663787375&gcs"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.66,
+              "load": 4.2,
+              "lcp": 0.68
+            },
+            {
+              "url": "/collections/body-care",
+              "ttfb": 0.17,
+              "dcl": 2.85,
+              "load": 5.39,
+              "lcp": 1.67
+            },
+            {
+              "url": "/products/moisturizing-bar",
+              "ttfb": 0.0,
+              "dcl": 1.8,
+              "load": 2.97,
+              "lcp": 1.32
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.02s",
+              "error": null,
+              "secs": 6.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "\u27285% on prepaid order offer on prepaid\u2728 \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4492 chars, 62 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.02s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.02s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 10",
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "10",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "17%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "17%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.65s, CLS 0.04",
+              "error": null,
+              "secs": 0.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.65s, CLS 0.04",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.74,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181698786@11/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x11409fa3800]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=960506824.1791663805&gtm=45be6a72h1v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=960506824.1791663805&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%A",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663804855&cv=11&fst=1791663804855&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=960506824.1791663805&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%A",
+            "POST https://www.google.com/measurement/conversion?random=1791663805323&cv=11&tid=G-QBVRNM9CT6&fst=1791663805323&fmt=8&en=homepage&gtm=45je6a72v894984495za",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663802911&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663802911&gcs=G111&gcd=13t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663802911&gcs",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663805732&cv=11&fst=1791663805732&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663806403&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663806402&ec=2",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663808244&cv=11&fst=1791663808244&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.66,
+              "load": 5.09,
+              "lcp": 0.65
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/retinol",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.06s",
+              "error": null,
+              "secs": 6.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Retinol Collection for Effective anti-Ageing Treatment | Fixderma \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "40460 chars, 13 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/anti-ageing",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.84s",
+              "error": null,
+              "secs": 3.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Antiageing Products online in India \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "33662 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/dry-skin",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.45s",
+              "error": null,
+              "secs": 4.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Dry Skin Care Lotion, Cream & Foot gel \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "62155 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/lactic-acid",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.51s",
+              "error": null,
+              "secs": 4.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Lactic acid \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "59405 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.85,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181698786@11/sandbox/modern/collections/retinol"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'querySelectorAll')",
+              "url": "https://www.fixderma.com/collections/retinol"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x11404482400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/collections/retinol"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=1189451481.1791663814&dt=Retinol%20Collection%20for%20Effective%20anti-Ageing%20Treatment%2",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&auid=1189451481.1791663814&dt=Retinol%20Collection%20for%20Effective%20anti-Ageing%20Treatment%2",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663813623&cv=11&fst=1791663813623&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1189451481.1791663814&gtm=45be6a72v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791663814480&cv=11&tid=G-QBVRNM9CT6&fst=1791663814480&fmt=8&en=collection_pages&gtm=45je6a72v894",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663811955&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663811955&_gaz=1&gcs=G111&gcd=",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663811955&gcs",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663814821&cv=11&fst=1791663814821&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663815217&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663815218&ec=2",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1189451481.1791663814&dt=Antiageing%20Products%20online%20in%20India%20%E2%80%93%20Fixderm",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=1189451481.1791663814&dt=Antiageing%20Products%20online%20in%20India%20%E2%80%93%20Fixderm",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663819437&cv=11&fst=1791663819437&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663818089&gcs=G111&gcd=13t3t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791663819646&cv=11&tid=G-QBVRNM9CT6&fst=1791663819646&fmt=8&en=collection_pages&gtm=45je6a72v894",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663820612&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663820753&ec=2",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1189451481.1791663814&dt=Best%20Dry%20Skin%20Care%20Lotion%2C%20Cream%20%26%20Foot%20gel%20",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663823436&cv=11&fst=1791663823436&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1189451481.1791663814&dt=Best%20Dry%20Skin%20Care%20Lotion%2C%20Cream%20%26%20Foot%20gel%20"
+          ],
+          "loads": [
+            {
+              "url": "/collections/retinol",
+              "ttfb": 0.23,
+              "dcl": 1.66,
+              "load": 5.02,
+              "lcp": 1.3
+            },
+            {
+              "url": "/collections/anti-ageing",
+              "ttfb": 0.22,
+              "dcl": 1.6,
+              "load": 2.77,
+              "lcp": 1.08
+            },
+            {
+              "url": "/collections/dry-skin",
+              "ttfb": 0.22,
+              "dcl": 2.02,
+              "load": 3.56,
+              "lcp": 1.3
+            },
+            {
+              "url": "/collections/lactic-acid",
+              "ttfb": 0.2,
+              "dcl": 1.94,
+              "load": 3.24,
+              "lcp": 1.16
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.body-care",
+      "suite": "catalog",
+      "title": "Collection 'Body Care Products Collection' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.66s",
+              "error": null,
+              "secs": 9.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Body Care Products Online \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "125418 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "74 products listed",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "74",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 10",
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "10",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 2: Cannot read properties of null (reading 'querySelectorAll')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "2: Cannot read properties of null (reading 'querySelectorAll')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "10%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "10%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.66s, CLS 0.0",
+              "error": null,
+              "secs": 0.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.66s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.46,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-164593890@12/sandbox/modern/collections/body-care"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'querySelectorAll')",
+              "url": "https://www.fixderma.com/collections/body-care"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/collections/body-care"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=184441742.1791663833&dt=Buy%20Body%20Care%20Products%20Online%20%E2%80%93%20Fixderma%20Skin",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=184441742.1791663833&dt=Buy%20Body%20Care%20Products%20Online%20%E2%80%93%20Fixderma%20Skin",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663833200&cv=11&fst=1791663833200&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=amjqdtWAcZy4P9ZilwhcYwdVtmISCY9R2g&auid=184441742.1791663833&gtm=45be6a72v878181023za208zd878181023xecx",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a80h2v894984495za200zb878181023zd878181023xf1&_p=1791663832058&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a80h2v894984495za200zb878181023zd878181023xf1&_p=1791663832058&gcs=G111&gcd=13t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791663834328&cv=11&tid=G-QBVRNM9CT6&fst=1791663834328&fmt=8&en=collection_pages&gtm=45je6a80h2v8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663832058&gcs",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663835291&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663835293&ec=2",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663836302&cv=11&fst=1791663836302&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://www.fixderma.com/api/event/collect",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/collections/body-care",
+              "ttfb": 0.24,
+              "dcl": 3.1,
+              "load": 7.05,
+              "lcp": 1.66
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.all-products",
+      "suite": "catalog",
+      "title": "Collection 'All products' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.09s",
+              "error": null,
+              "secs": 9.96,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All products \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "150502 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "73 products on the first page",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products on the first page",
+                  "expected": "\u2265 1",
+                  "actual": "73",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.74s",
+              "error": null,
+              "secs": 7.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All products \u2013 Page 2 \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "130901 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 57 more products",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "57",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.22,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-164593890@12/sandbox/modern/collections/all-product"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'querySelectorAll')",
+              "url": "https://www.fixderma.com/collections/all-products"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/collections/all-products"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1814342604.1791663845&dt=All%20products%20%E2%80%93%20Fixderma%20Skincare&tid=AW-452187193&",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1814342604.1791663845&dt=All%20products%20%E2%80%93%20Fixderma%20Skincare&tid=AW-452187193&",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663844861&cv=11&fst=1791663844861&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1814342604.1791663845&gtm=45be6a80h2v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/measurement/conversion?random=1791663846030&cv=11&tid=G-QBVRNM9CT6&fst=1791663846030&fmt=8&en=collection_pages&gtm=45je6a72v894",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663843663&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663843663&gcs=G111&gcd=13t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663843663&gcs",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663847154&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663847156&ec=2",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663848078&cv=11&fst=1791663848078&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663856116&cv=11&fst=1791663856116&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1814342604.1791663845&dt=All%20products%20%E2%80%93%20Page%202%20%E2%80%93%20Fixderma%20Sk",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1814342604.1791663845&dt=All%20products%20%E2%80%93%20Page%202%20%E2%80%93%20Fixderma%20Sk",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a80h2v894984495za200zb878181023zd878181023xf1&_p=1791663854885&gcs=G111&gcd=13t3t",
+            "POST https://www.google.com/measurement/conversion?random=1791663858098&cv=11&tid=G-QBVRNM9CT6&fst=1791663858098&fmt=8&en=collection_pages&gtm=45je6a80h2v8",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663858135&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663858134&ec=2"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all-products",
+              "ttfb": 0.06,
+              "dcl": 3.39,
+              "load": 7.76,
+              "lcp": 3.04
+            },
+            {
+              "url": "/collections/all-products?page=2",
+              "ttfb": 0.03,
+              "dcl": 3.31,
+              "load": 5.8,
+              "lcp": 3.43
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.moisturizing-bar",
+      "suite": "product",
+      "title": "PDP 'Moisturizing Bar'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.33s",
+              "error": null,
+              "secs": 7.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fixderma Moisturizing Bar for Dry Skin | Soap-Free Gentle Cleansing Bar \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2477 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/moisturizing-bar",
+                  "actual": "/products/moisturizing-bar",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Moisturizing Bar', selected variant 40289253425346 at \u20b9190.00",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/moisturizing-bar",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/moisturizing-bar.js with variants",
+                  "actual": "'Moisturizing Bar', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.21,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Moisturizing Bar",
+                  "actual": "'Moisturizing Bar | A Non-Drying Moisturizing Bar For Various Skin Concerns' (h1, 18px, main heading, name differs from catalog)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9190.00",
+                  "actual": "\u20b9190.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Moisturizing Bar",
+                  "actual": "'Moisturizing Bar | A Non-Drying Moisturizing Bar For Various Skin Concerns' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Fixderma Moisturizing Bar for Dry Skin | Soap-Free Gentle Cleansing Bar",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "190",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 40289253425346 (100g) selected, in stock",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant readable from page",
+                  "expected": "product form",
+                  "actual": "no product form; cart check will verify",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "fail",
+              "detail": null,
+              "error": "add-to-cart control for THIS product on its page: expected present, got none: no add-to-cart form for this product (57 such forms belong to other products' cards); no other buy control found",
+              "secs": 10.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "add-to-cart control for THIS product on its page",
+                  "expected": "present",
+                  "actual": "none: no add-to-cart form for this product (57 such forms belong to other products' cards); no other buy control found",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "buy_button_ready",
+          "error": "add-to-cart control for THIS product on its page: expected present, got none: no add-to-cart form for this product (57 such forms belong to other products' cards); no other buy control found",
+          "screenshot": "product.pdp.moisturizing-bar.a1.png",
+          "trace": "product.pdp.moisturizing-bar.a1_trace.zip",
+          "secs": 19.99,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://www.fixderma.com/products/moisturizing-bar?variant=40289253425346"
+            },
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181698786@11/sandbox/modern/products/moisturizing-b"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/products/moisturizing-bar?variant=40289253425346"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1774584271.1791663865&dt=Fixderma%20Moisturizing%20Bar%20for%20Dry%20Skin%20%7C%20Soap-Free",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1774584271.1791663865&dt=Fixderma%20Moisturizing%20Bar%20for%20Dry%20Skin%20%7C%20Soap-Free",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663864512&cv=11&fst=1791663864512&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1774584271.1791663865&gtm=45be6a72v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663864814&cv=11&fst=1791663864814&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://www.google.com/measurement/conversion?random=1791663864998&cv=11&tid=G-QBVRNM9CT6&fst=1791663864998&fmt=8&en=product_pages&gtm=45je6a80h2v8949",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a80h2v894984495za200zb878181023zd878181023xf1&_p=1791663862981&_gaz=1&gcs=G111&gc",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a80h2v894984495za200zb878181023zd878181023xf1&_p=1791663862981&gcs=G111&gcd=13t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663862981&gcs",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663865765&ec=3",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663865769&ec=2",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663869952&cv=11&fst=1791663869952&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye"
+          ],
+          "loads": [
+            {
+              "url": "/products/moisturizing-bar?variant=40289253425346",
+              "ttfb": 0.05,
+              "dcl": 2.13,
+              "load": 6.27,
+              "lcp": 1.58
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.3s",
+              "error": null,
+              "secs": 5.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fixderma Moisturizing Bar for Dry Skin | Soap-Free Gentle Cleansing Bar \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2483 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/moisturizing-bar",
+                  "actual": "/products/moisturizing-bar",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Moisturizing Bar', selected variant 40289253425346 at \u20b9190.00",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/moisturizing-bar",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/moisturizing-bar.js with variants",
+                  "actual": "'Moisturizing Bar', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Moisturizing Bar",
+                  "actual": "'Moisturizing Bar | A Non-Drying Moisturizing Bar For Various Skin Concerns' (h1, 18px, main heading, name differs from catalog)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9190.00",
+                  "actual": "\u20b9190.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Moisturizing Bar",
+                  "actual": "'Moisturizing Bar | A Non-Drying Moisturizing Bar For Various Skin Concerns' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Fixderma Moisturizing Bar for Dry Skin | Soap-Free Gentle Cleansing Bar",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "190",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 40289253425346 (100g) selected, in stock",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant readable from page",
+                  "expected": "product form",
+                  "actual": "no product form; cart check will verify",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "fail",
+              "detail": null,
+              "error": "add-to-cart control for THIS product on its page: expected present, got none: no add-to-cart form for this product (57 such forms belong to other products' cards); no other buy control found",
+              "secs": 9.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "add-to-cart control for THIS product on its page",
+                  "expected": "present",
+                  "actual": "none: no add-to-cart form for this product (57 such forms belong to other products' cards); no other buy control found",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "buy_button_ready",
+          "error": "add-to-cart control for THIS product on its page: expected present, got none: no add-to-cart form for this product (57 such forms belong to other products' cards); no other buy control found",
+          "screenshot": "product.pdp.moisturizing-bar.a2.png",
+          "trace": "product.pdp.moisturizing-bar.a2_trace.zip",
+          "secs": 17.63,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://www.fixderma.com/products/moisturizing-bar?variant=40289253425346"
+            },
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-164626658@13/sandbox/modern/products/moisturizing-b"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/products/moisturizing-bar?variant=40289253425346"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=44118780.1791663885&dt=Fixderma%20Moisturizing%20Bar%20for%20Dry%20Skin%20%7C%20Soap-Free%",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=44118780.1791663885&dt=Fixderma%20Moisturizing%20Bar%20for%20Dry%20Skin%20%7C%20Soap-Free%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=44118780.1791663885&gtm=45be6a72v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663884543&cv=11&fst=1791663884543&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663884957&cv=11&fst=1791663884957&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663883109&gcs",
+            "POST https://www.google.com/measurement/conversion?random=1791663885595&cv=11&tid=G-QBVRNM9CT6&fst=1791663885595&fmt=8&en=product_pages&gtm=45je6a72v894984",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663883109&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663883109&gcs=G111&gcd=13t3t3t",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663886288&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663886541&ec=3",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663888535&cv=11&fst=1791663888535&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye"
+          ],
+          "loads": [
+            {
+              "url": "/products/moisturizing-bar?variant=40289253425346",
+              "ttfb": 0.04,
+              "dcl": 2.0,
+              "load": 4.36,
+              "lcp": 1.65
+            }
+          ]
+        }
+      ],
+      "incident_signature": "fixderma.com|product.pdp.moisturizing-bar|buy_button_ready|mobile",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The product page displays title and price but contains no visible or recognized buy/add-to-cart control for this specific product, so a shopper cannot purchase it from its own page.",
+        "evidence": "Visible page text (excerpt):\n- Product title, price and description are present: \"Moisturizing Bar | A Non-Drying Moisturizing Bar...\" \"Rs. 190\"\n- No add-to-cart form or buy button text is present in the visible text; radar found 57 add-to-cart forms belonging to other product cards but none for THI"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.moisturizing",
+      "suite": "search",
+      "title": "Search for 'moisturizing' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.02s",
+              "error": null,
+              "secs": 10.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "\u27285% on prepaid order offer on prepaid\u2728 \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4492 chars, 63 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 34 results, 8 mention 'moisturizing'",
+              "error": null,
+              "secs": 7.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 229 results found for \"moisturizing\" \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "34494 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "34",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'moisturizing'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "8 of 34",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 17.57,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181698786@11/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1019922464.1791663906&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1019922464.1791663906&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663905719&cv=11&fst=1791663905719&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1019922464.1791663906&gtm=45be6a72v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791663906355&cv=11&tid=G-QBVRNM9CT6&fst=1791663906355&fmt=8&en=homepage&gtm=45je6a72v894984495za",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663903901&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663903901&_gaz=1&gcs=G111&gcd=",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663906376&ec=2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663903901&gcs",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663906970&cv=11&fst=1791663906970&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663907615&ec=2",
+            "GET https://firebasestorage.googleapis.com/v0/b/bikayi-chat.appspot.com/o/openai%2F1PyRd2bWVWdNLHHZmBTQNtEdXyv2%2F1PyRd2bWVWdNLHHZmBTQNtEdXyv2_customAvata",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663909369&cv=11&fst=1791663909369&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663910862&ec=1",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1019922464.1791663906&dt=Search%3A%20229%20results%20found%20for%20%22moisturizing%22%20%E2",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663915556&cv=11&fst=1791663915556&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=1019922464.1791663906&dt=Search%3A%20229%20results%20found%20for%20%22moisturizing%22%20%E2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72h1v894984495za200zb878181023zd878181023xf1&_p=1791663913879&gcs=G111&gcd=13t3t",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663916992&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663916990&ec=2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663913879&gcs"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.7,
+              "load": 8.72,
+              "lcp": 1.74
+            },
+            {
+              "url": "/search?q=moisturizing&type=product",
+              "ttfb": 0.28,
+              "dcl": 1.9,
+              "load": 4.35,
+              "lcp": 2.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.56s",
+              "error": null,
+              "secs": 5.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\" \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1489 chars, 6 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "says '0 RESULTS FOUND FOR \u201cQZXVBUGRADAR\u201d No results fou'",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "message '0 RESULTS FOUND FOR \u201cQZXVBUGRADAR\u201d No results fou'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.36,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-164593890@12/sandbox/modern/search?q=qzxvbugradar&t"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1435880088.1791663922&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22%20%E2%8",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663921976&cv=11&fst=1791663921976&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=1435880088.1791663922&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22%20%E2%8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1435880088.1791663922&gtm=45be6a72v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663922386&cv=11&fst=1791663922386&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663920629&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663920629&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663920629&gcs",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663923678&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663923681&ec=2",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.29,
+              "dcl": 1.27,
+              "load": 4.18,
+              "lcp": 1.38
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'moisturizing' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.07s",
+              "error": null,
+              "secs": 6.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "\u27285% on prepaid order offer on prepaid\u2728 \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4492 chars, 62 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "not judged: no visible search box on the homepage",
+              "error": null,
+              "secs": 0.69,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.48,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181698786@11/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=123473347.1791663928&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%A",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=123473347.1791663928&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%A",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663927770&cv=11&fst=1791663927770&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=123473347.1791663928&gtm=45be6a72v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663925764&gcs",
+            "POST https://www.google.com/measurement/conversion?random=1791663928207&cv=11&tid=G-QBVRNM9CT6&fst=1791663928207&fmt=8&en=homepage&gtm=45je6a72v894984495za",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663925764&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663925764&gcs=G111&gcd=13t3t3t",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663928437&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663928389&ec=2",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663928644&cv=11&fst=1791663928644&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663931355&cv=11&fst=1791663931355&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.74,
+              "load": 5.21,
+              "lcp": 0.67
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.43s",
+              "error": null,
+              "secs": 7.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "\u27285% on prepaid order offer on prepaid\u2728 \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4492 chars, 62 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "\u27285% on prepaid order offer on prepaid\u2728 \u2013 Fixderma Skincare",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "58: '\u27285% on prepaid order offer on prepaid\u2728 \u2013 Fixderma Skincare'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Don\u2019t miss the Offer \u27285% on prepaid order offer on prepaid\u2728 Shop today",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "71: 'Don\u2019t miss the Offer \u27285% on prepaid order offer on prepaid\u2728 '",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.fixderma.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.fixderma.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "\u27285% on prepaid order offer on prepaid\u2728",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.fixderma.com/cdn/shop/files/fixderma_logo_down.svg?v=1755774927",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.27,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-164593890@12/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=2084663306.1791663935&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=2084663306.1791663935&dt=%E2%9C%A85%25%20on%20prepaid%20order%20offer%20on%20prepaid%E2%9C%",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663935231&cv=11&fst=1791663935231&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2084663306.1791663935&gtm=45be6a72h1v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/measurement/conversion?random=1791663936206&cv=11&tid=G-QBVRNM9CT6&fst=1791663936206&fmt=8&en=homepage&gtm=45je6a72v894984495za",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663933786&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663933786&gcs=G111&gcd=13t3t3t",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663936665&cv=11&fst=1791663936665&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663933786&gcs",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663937314&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663937688&ec=2",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663939266&cv=11&fst=1791663939266&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.11,
+              "load": 5.71,
+              "lcp": 1.18
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.15s",
+              "error": null,
+              "secs": 5.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fixderma Moisturizing Bar for Dry Skin | Soap-Free Gentle Cleansing Bar \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2477 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 91: 'Fixderma Moisturizing Bar for Dry Skin | Soap-Free Gentle Cl'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "91: 'Fixderma Moisturizing Bar for Dry Skin | Soap-Free Gentle Cl'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Soap-free moisturizing bar for dry & sensitive skin. Cleanses gently, ",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "123: 'Soap-free moisturizing bar for dry & sensitive skin. Cleanse'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.fixderma.com/products/moisturizing-bar",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.fixderma.com/products/moisturizing-bar",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Fixderma Moisturizing Bar for Dry Skin | Soap-Free Gentle Cleansing Bar",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.fixderma.com/cdn/shop/files/Moisturizing_Bar.webp?v=1758027563",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.35,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://www.fixderma.com/products/moisturizing-bar"
+            },
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-181698786@11/sandbox/modern/products/moisturizing-b"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=571845132.1791663943&dt=Fixderma%20Moisturizing%20Bar%20for%20Dry%20Skin%20%7C%20Soap-Free%",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=571845132.1791663943&dt=Fixderma%20Moisturizing%20Bar%20for%20Dry%20Skin%20%7C%20Soap-Free%",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663942646&cv=11&fst=1791663942646&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=571845132.1791663943&gtm=45be6a72v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663943120&cv=11&fst=1791663943120&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://www.google.com/measurement/conversion?random=1791663943483&cv=11&tid=G-QBVRNM9CT6&fst=1791663943483&fmt=8&en=product_pages&gtm=45je6a72v894984",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663941256&gcs=G111&gcd=13t3t3t",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663941256&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663941256&gcs",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663944525&ec=3",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663944523&ec=2"
+          ],
+          "loads": [
+            {
+              "url": "/products/moisturizing-bar",
+              "ttfb": 0.05,
+              "dcl": 1.85,
+              "load": 4.03,
+              "lcp": 1.4
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 9.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404 (redirected to /collections/all)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.69,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-164593890@12/sandbox/modern/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'querySelectorAll')",
+              "url": "https://www.fixderma.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=437819119.1791663948&dt=Shop%20Dermatologist%20Recommended%20Skincare%20Products%20Online%",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=437819119.1791663948&dt=Shop%20Dermatologist%20Recommended%20Skincare%20Products%20Online%",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663948195&cv=11&fst=1791663948195&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=437819119.1791663948&gtm=45be6a80h2v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.google.com/measurement/conversion?random=1791663950504&cv=11&tid=G-QBVRNM9CT6&fst=1791663950504&fmt=8&en=collection_pages&gtm=45je6a72v894",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663947083&_gaz=1&gcs=G111&gcd=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663947083&gcs=G111&gcd=13t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663947083&gcs",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663950595&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663950630&ec=2",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663951527&cv=11&fst=1791663951527&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "GET https://app.wigzo.com/wigzo.compressed.js"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.02,
+              "dcl": 3.12,
+              "load": 7.28,
+              "lcp": 1.44
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /pages/returns-refunds-cancellations-and",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.53s",
+              "error": null,
+              "secs": 5.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Returns, Refunds, Cancellations and Exchanges \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7221 chars, 5 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Returns, Refunds, Cancellations and Exchanges \u2013 Fixderma Ski', heading 'RETURNS, REFUNDS, CANCELLATIONS AND EXCHANGES'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/returns-refunds-cancellations-and-exchanges",
+                  "actual": "/pages/returns-refunds-cancellations-and-exchanges",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "6808 chars of policy text",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "6808 chars under 'RETURNS, REFUNDS, CANCELLATIONS AND EXCHANGES'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /pages/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.5s",
+              "error": null,
+              "secs": 4.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "SHIPPING POLICY \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2149 chars, 6 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'SHIPPING POLICY \u2013 Fixderma Skincare', heading 'SHIPPING POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/shipping-policy",
+                  "actual": "/pages/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "1810 chars of policy text",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "1810 chars under 'SHIPPING POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /pages/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.68s",
+              "error": null,
+              "secs": 5.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "PRIVACY POLICY \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "10403 chars, 5 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'PRIVACY POLICY \u2013 Fixderma Skincare', heading 'PRIVACY POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/privacy-policy",
+                  "actual": "/pages/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "9987 chars of policy text",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "9987 chars under 'PRIVACY POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /pages/terms-conditions",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.47s",
+              "error": null,
+              "secs": 4.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "TERMS & CONDITIONS \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8175 chars, 5 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'TERMS & CONDITIONS \u2013 Fixderma Skincare', heading 'TERMS & CONDITIONS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/terms-conditions",
+                  "actual": "/pages/terms-conditions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "7777 chars of policy text",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "7777 chars under 'TERMS & CONDITIONS'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.33s",
+              "error": null,
+              "secs": 4.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Get In Touch With Fixderma | Contact Us To Get Help & Support \u2013 Fixderma Skincare",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1863 chars, 5 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Get In Touch With Fixderma | Contact Us To Get Help & Suppor', heading 'CONTACT US'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact-us",
+                  "actual": "/pages/contact-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 25.59,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Blocked script execution in 'about:blank' because the document's frame is sandboxed and the 'allow-scripts' permission is not set.",
+              "url": "about:blank"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.fixderma.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-164593890@12/sandbox/modern/pages/returns-refunds-c"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_BLOCKED_BY_RESPONSE.NotSameOrigin",
+              "url": "https://app.wigzo.com/wigzo.compressed.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.fixderma.com/pages/shipping-policy"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.fixderma.com/api/collect",
+            "POST https://www.fixderma.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=434250721.1791663957&dt=Returns%2C%20Refunds%2C%20Cancellations%20and%20Exchanges%20%E2%80",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=434250721.1791663957&dt=Returns%2C%20Refunds%2C%20Cancellations%20and%20Exchanges%20%E2%80",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663957110&cv=11&fst=1791663957110&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=434250721.1791663957&gtm=45be6a80h2v878181023za208zd878181023xecxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663957314&cv=11&fst=1791663957314&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663955694&_gaz=1&gcs=G111&gcd=",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-XS0TS59CGN&gtm=45Pe6a72v9202821538za200zb878181023zd878181023xf1&_p=1791663955694&gcs",
+            "POST https://mpc-prod-23-s6uit34pua-ue.a.run.app/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663958710&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663958706&ec=2",
+            "GET https://app.wigzo.com/wigzo.compressed.js",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663959905&cv=11&fst=1791663959905&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displaye",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=434250721.1791663957&dt=SHIPPING%20POLICY%20%E2%80%93%20Fixderma%20Skincare&tid=AW-45218719",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=434250721.1791663957&dt=SHIPPING%20POLICY%20%E2%80%93%20Fixderma%20Skincare&tid=AW-45218719",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663962169&cv=11&fst=1791663962169&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663960902&gcs=G111&gcd=13t3t3t",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663963248&ec=2",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663963249&ec=2",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=434250721.1791663957&dt=PRIVACY%20POLICY%20%E2%80%93%20Fixderma%20Skincare&tid=AW-45218719",
+            "POST https://www.google.com/rmkt/collect/452187193/?random=1791663966821&cv=11&fst=1791663966821&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=434250721.1791663957&dt=PRIVACY%20POLICY%20%E2%80%93%20Fixderma%20Skincare&tid=AW-45218719",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-QBVRNM9CT6&gtm=45je6a72v894984495za200zb878181023zd878181023xf1&_p=1791663965580&gcs=G111&gcd=13t3t3t",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XR8YpChNpnK1gp9H3JNJhG&st=oaiq-web&sv=0.1.41&t=1791663967809&ec=2"
+          ],
+          "loads": [
+            {
+              "url": "/pages/returns-refunds-cancellations-and-exchanges",
+              "ttfb": 0.23,
+              "dcl": 0.95,
+              "load": 3.98,
+              "lcp": 0.8
+            },
+            {
+              "url": "/pages/shipping-policy",
+              "ttfb": 0.21,
+              "dcl": 1.29,
+              "load": 3.45,
+              "lcp": 0.76
+            },
+            {
+              "url": "/pages/privacy-policy",
+              "ttfb": 0.2,
+              "dcl": 1.26,
+              "load": 4.7,
+              "lcp": 0.72
+            },
+            {
+              "url": "/pages/terms-conditions",
+              "ttfb": 0.23,
+              "dcl": 1.23,
+              "load": 3.53,
+              "lcp": 0.72
+            },
+            {
+              "url": "/pages/contact-us",
+              "ttfb": 0.21,
+              "dcl": 1.03,
+              "load": 3.35,
+              "lcp": 0.79
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 3,
+    "input_tokens": 5829,
+    "output_tokens": 370,
+    "est_usd": 0.002197,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "\u27285% on prepaid order offer on prepaid\u2728 \u2013 Fixderma Skincare",
+    "theme": "Ella (store copy: Changes on theme)",
+    "checkout_app": "GoKwik + Shiprocket Fastrr",
+    "access": "open",
+    "nav": 25,
+    "collections": 49,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "account login is hosted elsewhere (shopify.com, Shopify customer accounts): not opened",
+    "19 product(s) not listed in the browsed collections are tested last (e.g. fcl-de-tan-face-pack)"
+  ],
+  "perf": {
+    "pages": 18,
+    "median_load_secs": 4.26,
+    "slowest": {
+      "url": "/",
+      "load_secs": 8.72
+    },
+    "console_errors": 6,
+    "console_warnings": 4,
+    "failed_requests": 198
+  },
+  "counts": {
+    "pass": 12,
+    "flaky": 0,
+    "confirmed_fail": 1,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
