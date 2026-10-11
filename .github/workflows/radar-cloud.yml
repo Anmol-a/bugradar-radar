@@ -44,13 +44,14 @@ jobs:
     # variable is ignored on purpose.
     runs-on: ubuntu-latest
     timeout-minutes: 180
-    # 6 machines in parallel, each takes every 6th store of the list: full 36 x 2 devices in ~30 min, not 2 h 15 m
+    # 12 machines in parallel (11 Oct, was 6), each takes every 12th store: each store is still visited by ONE machine,
+    # so per-store volume is unchanged; a full 36 x 2 devices finishes in about half the time
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     env:
-      SHARDS: "6"
+      SHARDS: "12"
     steps:
       - name: Note the start time
         id: t0
@@ -128,9 +129,9 @@ jobs:
           cd "$OUT"
           git add -A
           git commit -qm "cloud ${{ github.event_name }}: $(cat LATEST) (run ${{ github.run_id }}, ${{ runner.name }})" || exit 0
-          # 6 machines push at about the same time: retry with a random pause; LATEST conflicts keep this shard's
+          # 12 machines push at about the same time: retry with a random pause; LATEST conflicts keep this shard's
           # line (9 Oct: shard 1 of run 37927492715 lost its results on a LATEST conflict)
-          for i in 1 2 3 4 5 6 7 8; do git push -q origin cloud-results && break; sleep $((RANDOM % 10 + 2)); git pull -q --rebase -X theirs origin cloud-results || { git checkout --theirs LATEST 2>/dev/null; git add -A; GIT_EDITOR=true git rebase --continue || git rebase --abort; }; done
+          for i in $(seq 1 16); do git push -q origin cloud-results && break; sleep $((RANDOM % 10 + 2)); git pull -q --rebase -X theirs origin cloud-results || { git checkout --theirs LATEST 2>/dev/null; git add -A; GIT_EDITOR=true git rebase --continue || git rebase --abort; }; done
           cd - >/dev/null; git worktree remove --force "$OUT" || true
 
       - name: Keep the full data folder for 7 days (GitHub machines only)
