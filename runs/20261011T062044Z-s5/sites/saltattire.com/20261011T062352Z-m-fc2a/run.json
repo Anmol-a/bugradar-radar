@@ -1,0 +1,3826 @@
+{
+  "run_id": "20261011T062352Z-m-fc2a",
+  "site_id": "saltattire.com",
+  "base_url": "https://saltattire.com",
+  "device": "mobile",
+  "started_at": "2026-10-11T06:23:52+00:00",
+  "finished_at": "2026-10-11T06:27:49+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.61s",
+              "error": null,
+              "secs": 5.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9860 chars, 71 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/new-arrivals (13 products)",
+              "error": null,
+              "secs": 4.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/new-arrivals ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/new-arrivals",
+                  "actual": "/collections/new-arrivals",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "13",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 25 candidates \u2192 /products/mireya-pleated-peplum-waistcoat-brown-color",
+              "error": null,
+              "secs": 6.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/mireya-pleated-peplum-waistcoat-brown-color ('Mireya Pleated Peplum Waistcoat-Brown')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+                  "actual": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Mireya Pleated Peplum Waistcoat-Brown', selected variant 67627420713252 at \u20b92,517.00",
+              "error": null,
+              "secs": 0.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/mireya-pleated-peplum-waistcoat-brown-color.js with variants",
+                  "actual": "'Mireya Pleated Peplum Waistcoat-Brown', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,517.00, got not on page",
+              "secs": 3.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Mireya Pleated Peplum Waistcoat-Brown",
+                  "actual": "'Mireya Pleated Peplum Waistcoat-Brown' (h1, 16px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,517.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,517.00, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 26.07,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://saltattire.com/apps/fit-quiz/track-pageview?shop=salt-attire.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 402 ()",
+              "url": "https://saltattire.com/apps/withlooksy-api/storefront-config?shopId=85942173988"
+            },
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+              "url": "https://saltattire.com/products/mireya-pleated-peplum-waistcoat-brown-color"
+            },
+            {
+              "type": "pageerror",
+              "text": "Unexpected token 'A', \"Accepted\" is not valid JSON",
+              "url": "https://saltattire.com/products/mireya-pleated-peplum-waistcoat-brown-color"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=624815b6-4aba-4025-8eda-c5b915b41baa&analytics_trace_id=47a5bd3b-9d6a-45ee-b32d-0e32742775c7&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=910721838.1791699842&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C%",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=910721838.1791699842&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C%",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699841866&cv=11&fst=1791699841866&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=910721838.1791699842&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=910721838.1791699842&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699840090&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699840090&gcs=G111&gcd=13t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791699840090&g",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://fonts.googleapis.com/css?family=Helvetica+Neue&display=swap",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699844192&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=6152988f-1683-410d-b057-82cfe5e298b3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=325c646d-b16e-4895-b96f-d56a28bb1e0d",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=910721838.1791699842&dt=New%20Arrivals%20-%20Explore%20the%20Latest%20Trends%20and%20Styles",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699846954&cv=11&fst=1791699846954&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=910721838.1791699842&dt=New%20Arrivals%20-%20Explore%20the%20Latest%20Trends%20and%20S",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699846852&gcd=13l3l3l3l1l1&",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=910721838.1791699842&dt=New%20Arrivals%20-%20Explore%20the%20Latest%20Trends%20and%20Styles",
+            "HEAD https://saltattire.com/collections/new-arrivals",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699846852&gcd=13l3l3l3l1l1&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699846852&gcs=G111&gcd=13t3"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.34,
+              "load": 3.73,
+              "lcp": 1.77
+            },
+            {
+              "url": "/collections/new-arrivals",
+              "ttfb": 0.0,
+              "dcl": 0.94,
+              "load": 2.34,
+              "lcp": 1.85
+            },
+            {
+              "url": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+              "ttfb": 0.11,
+              "dcl": 1.71,
+              "load": 3.89,
+              "lcp": 2.2
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.76s",
+              "error": null,
+              "secs": 5.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "10061 chars, 71 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/new-arrivals (13 products)",
+              "error": null,
+              "secs": 4.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/new-arrivals ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/new-arrivals",
+                  "actual": "/collections/new-arrivals",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "13",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 25 candidates \u2192 /products/mireya-pleated-peplum-waistcoat-brown-color",
+              "error": null,
+              "secs": 5.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/mireya-pleated-peplum-waistcoat-brown-color ('Mireya Pleated Peplum Waistcoat-Brown')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+                  "actual": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Mireya Pleated Peplum Waistcoat-Brown', selected variant 67627420713252 at \u20b92,517.00",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/mireya-pleated-peplum-waistcoat-brown-color.js with variants",
+                  "actual": "'Mireya Pleated Peplum Waistcoat-Brown', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,517.00, got not on page",
+              "secs": 3.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Mireya Pleated Peplum Waistcoat-Brown",
+                  "actual": "'Mireya Pleated Peplum Waistcoat-Brown' (h1, 16px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,517.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,517.00, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 25.68,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://saltattire.com/apps/fit-quiz/track-pageview?shop=salt-attire.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 402 ()",
+              "url": "https://saltattire.com/apps/withlooksy-api/storefront-config?shopId=85942173988"
+            },
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+              "url": "https://saltattire.com/products/mireya-pleated-peplum-waistcoat-brown-color"
+            },
+            {
+              "type": "pageerror",
+              "text": "Unexpected token 'A', \"Accepted\" is not valid JSON",
+              "url": "https://saltattire.com/products/mireya-pleated-peplum-waistcoat-brown-color"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=624815b6-4aba-4025-8eda-c5b915b41baa&analytics_trace_id=a6f809d2-6dc0-4bf9-ba6f-da1df7443d95&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&ae=g&auid=1165655342.1791699868&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=5RxXxKQVx23-94NEZENBumvIEDOcqEEVaA&auid=1165655342.1791699868&gtm=45He6a72v77291640za200zd77291640xeaxf",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1165655342.1791699868&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699868111&cv=11&fst=1791699868111&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za20gzb77291640zd77291640xf1&_p=1791699866180&gcs=G111&gcd=13t3t3t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za20ozb77291640zd77291640xf1&_p=1791699866180&_gaz=1&gcs=G111&gcd=1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb77291640zd77291640xf1&_p=1791699866180&gcs=G",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://fonts.googleapis.com/css?family=Helvetica+Neue&display=swap",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699870314&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=0f2b3bef-aef4-4256-8896-e06ab4dedb62",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=337cfa50-339b-48fa-9f48-c9132c6e9f2d",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1165655342.1791699868&dt=New%20Arrivals%20-%20Explore%20the%20Latest%20Trends%20and%20Style",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699873070&cv=11&fst=1791699873070&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=1165655342.1791699868&dt=New%20Arrivals%20-%20Explore%20the%20Latest%20Trends%20and%20",
+            "HEAD https://saltattire.com/collections/new-arrivals",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=1165655342.1791699868&dt=New%20Arrivals%20-%20Explore%20the%20Latest%20Trends%20and%20Style",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699872962&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699872962&gcs=G111&gcd=13t3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=671e5773-aa28-4e27-85a1-b38c3f9bcc59",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=b32a8fb9-fdb6-4725-b77c-421c70ce1b21"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.47,
+              "load": 3.76,
+              "lcp": 1.88
+            },
+            {
+              "url": "/collections/new-arrivals",
+              "ttfb": 0.01,
+              "dcl": 0.98,
+              "load": 2.37,
+              "lcp": 1.94
+            },
+            {
+              "url": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+              "ttfb": 0.0,
+              "dcl": 1.01,
+              "load": 3.29,
+              "lcp": 1.29
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.72s",
+              "error": null,
+              "secs": 5.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9860 chars, 71 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/new-arrivals (13 products)",
+              "error": null,
+              "secs": 4.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/new-arrivals ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/new-arrivals",
+                  "actual": "/collections/new-arrivals",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "13",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 25 candidates \u2192 /products/mireya-pleated-peplum-waistcoat-brown-color",
+              "error": null,
+              "secs": 5.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/mireya-pleated-peplum-waistcoat-brown-color ('Mireya Pleated Peplum Waistcoat-Brown')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+                  "actual": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Mireya Pleated Peplum Waistcoat-Brown', selected variant 67627420713252 at \u20b92,517.00",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/mireya-pleated-peplum-waistcoat-brown-color.js with variants",
+                  "actual": "'Mireya Pleated Peplum Waistcoat-Brown', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,517.00, got not on page",
+              "secs": 3.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Mireya Pleated Peplum Waistcoat-Brown",
+                  "actual": "'Mireya Pleated Peplum Waistcoat-Brown' (h1, 16px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,517.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,517.00, got not on page",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 25.86,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "https://saltattire.com/apps/fit-quiz/track-pageview?shop=salt-attire.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+              "url": "https://saltattire.com/products/mireya-pleated-peplum-waistcoat-brown-color"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 402 ()",
+              "url": "https://saltattire.com/apps/withlooksy-api/storefront-config?shopId=85942173988"
+            },
+            {
+              "type": "pageerror",
+              "text": "Unexpected token 'A', \"Accepted\" is not valid JSON",
+              "url": "https://saltattire.com/products/mireya-pleated-peplum-waistcoat-brown-color"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=624815b6-4aba-4025-8eda-c5b915b41baa&analytics_trace_id=7b132a47-0b04-48b0-b675-0bffb92f16aa&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1575013014.1791699896&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&auid=1575013014.1791699896&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699896059&cv=11&fst=1791699896059&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1575013014.1791699896&gtm=45be6a72v9112898046za208zb9109406807zd9109406807xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=1575013014.1791699896&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zd9109406807xf1&_p=1791699894163&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zd9109406807xf1&_p=1791699894163&_gaz=1&gcs=G111&gcd=13t3t3t3t",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a80h2v9203513439za200zb9109406807zd9109406807xf1&_p=1791699894163",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://fonts.googleapis.com/css?family=Helvetica+Neue&display=swap",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699898321&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=9ec024e7-7b1e-4fa7-8661-c1610b7ee152",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=18703d34-4b5e-4e0b-86df-74034a79b2db",
+            "HEAD https://saltattire.com/collections/new-arrivals",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699902275&cv=11&fst=1791699902275&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=1575013014.1791699896&dt=New%20Arrivals%20-%20Explore%20the%20Latest%20Trends%20and%20Styl",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=1575013014.1791699896&dt=New%20Arrivals%20-%20Explore%20the%20Latest%20Trends%20and%20Styl",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=1575013014.1791699896&dt=New%20Arrivals%20-%20Explore%20the%20Latest%20Trends%20and%2",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699900912&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699900912&gcs=G111&gcd=13t3",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699903442&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=714401a0-929d-4bd5-b52e-7905fed1de0b"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.42,
+              "load": 3.72,
+              "lcp": 1.87
+            },
+            {
+              "url": "/collections/new-arrivals",
+              "ttfb": 0.0,
+              "dcl": 0.88,
+              "load": 2.31,
+              "lcp": 1.84
+            },
+            {
+              "url": "/products/mireya-pleated-peplum-waistcoat-brown-color",
+              "ttfb": 0.0,
+              "dcl": 0.92,
+              "load": 3.07,
+              "lcp": 1.3
+            }
+          ]
+        }
+      ],
+      "incident_signature": "saltattire.com|journey.shopper|shows_title_price_image|mobile",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The page clearly shows a price (in USD) but not the expected INR price \u2014 the check looked for \u20b92,517.00 in the wrong place/format (currency or localization mismatch), so the monitor searched for the wrong value rather than the store missing a price.",
+        "evidence": "Visible page text includes: \"Regular price $27.44 Sale price $26.06 5% OFF\" and \"Variant sold out or unavailable\" for sizes; the expected price \u20b92,517.00 is not present on the page."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.99s",
+              "error": null,
+              "secs": 5.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "10061 chars, 71 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.99s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.99s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 10",
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "10",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Identifier 'token' has already been declared",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Identifier 'token' has already been declared",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 2.15s, CLS 0.015",
+              "error": null,
+              "secs": 0.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 2.15s, CLS 0.015",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "221 scripts, at least 2.1 MB of JavaScript, 17 third-party script hosts: cdn-shoppable.avada.io (25), www.googletagmanager.com (7), pdp.gokwik.co (4), googrev.bestfreecdn.com (2), connect.facebook.net (2)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "221 scripts, at least 2.1 MB of JavaScript, 17 third-party script hosts: cdn-shoppable.avada.io (25), www.googletagmanager.com (7), pdp.gokwik.co (4), googrev.\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.78,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&ae=g&auid=676723201.1791699922&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=676723201.1791699922&gtm=45He6a72v77291640za200zd77291640xeaxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699922070&cv=11&fst=1791699922070&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=676723201.1791699922&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za20ozb77291640zd77291640xf1&_p=1791699920118&_gaz=1&gcs=G111&gcd=1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za20gzb77291640zd77291640xf1&_p=1791699920118&gcs=G111&gcd=13t3t3t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb77291640zd77291640xf1&_p=1791699920118&gcs=G",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://fonts.googleapis.com/css?family=Helvetica+Neue&display=swap",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699924395&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=575fec47-b5e9-4996-9b80-da3aaa1cb323",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=39646583-433b-4dff-9589-5dda62e66ddc",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.77,
+              "load": 3.91,
+              "lcp": 2.15
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.73s",
+              "error": null,
+              "secs": 5.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9860 chars, 71 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.4s",
+              "error": null,
+              "secs": 4.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9860 chars, 71 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/new-arrivals",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.38s",
+              "error": null,
+              "secs": 3.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "New Arrivals - Explore the Latest Trends and Styles Today! \u2013 SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3893 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/sale",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.52s",
+              "error": null,
+              "secs": 4.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Special Prices - SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3890 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 17.25,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/#"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1938158070.1791699930&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=1938158070.1791699930&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699929614&cv=11&fst=1791699929614&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1938158070.1791699930&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1938158070.1791699930&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699927839&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699927839&_gaz=1&gcs=G111&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791699927839&g",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://fonts.googleapis.com/css?family=Helvetica+Neue&display=swap",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699931895&ec=3",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699934448&cv=11&fst=1791699934448&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1938158070.1791699930&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=1938158070.1791699930&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=1938158070.1791699930&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a80h2v9109406807za208zb9112898046zd9112898046xf1&_p=1791699932951&gcs=G111&gcd=13",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a80h2v9109406807za200zb9112898046zd9112898046xf1&_p=1791699932951&gcs=G111&gcd=13",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699936178&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=051e54e3-2a2d-45f5-8bbc-764ebac902d3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=29ed72ac-3cdb-4529-8e9b-f3d5af579b0a",
+            "HEAD https://saltattire.com/collections/new-arrivals",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699938789&cv=11&fst=1791699938789&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a8"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.52,
+              "load": 3.71,
+              "lcp": 1.86
+            },
+            {
+              "url": "/",
+              "ttfb": 0.02,
+              "dcl": 1.15,
+              "load": 2.85,
+              "lcp": 1.62
+            },
+            {
+              "url": "/collections/new-arrivals",
+              "ttfb": 0.02,
+              "dcl": 1.04,
+              "load": 2.34,
+              "lcp": 2.06
+            },
+            {
+              "url": "/collections/sale",
+              "ttfb": 0.04,
+              "dcl": 1.17,
+              "load": 2.35,
+              "lcp": 2.11
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.66s",
+              "error": null,
+              "secs": 5.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "10061 chars, 71 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "tapped the menu button ('Menu'): 15 links shown, e.g. NEW IN, SPECIAL PRICES, BESTSELLER",
+              "error": null,
+              "secs": 2.93,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.2,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=358569116.1791699947&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=358569116.1791699947&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699946877&cv=11&fst=1791699946877&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=358569116.1791699947&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=358569116.1791699947&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699945075&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699945075&gcs=G111&gcd=13t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791699945075&g",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://fonts.googleapis.com/css?family=Helvetica+Neue&display=swap",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699949130&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=6920d9e0-c5b9-4175-876e-ea7400b24ce8",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=101555c9-8232-42db-9167-170f7529f0ed",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.42,
+              "load": 3.59,
+              "lcp": 1.82
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "announcement bar: opens /collections/all",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.36s",
+              "error": null,
+              "secs": 4.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products - SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3955 chars, 15 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'All Products - SALT Attire', heading 'COLLECTION:\\nALL PRODUCTS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections/womens-blazers",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.37s",
+              "error": null,
+              "secs": 3.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Women's Blazers - Stylish and Elegant Options for Office wear \u2013 SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3852 chars, 16 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Women's Blazers - Stylish and Elegant Options for Office wea\", heading \"COLLECTION:\\nWOMEN'S BLAZERS\"",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/womens-blazers",
+                  "actual": "/collections/womens-blazers",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections/everyday-icons-core",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.45s",
+              "error": null,
+              "secs": 4.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "EVERYDAY ICONS - SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3813 chars, 16 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'EVERYDAY ICONS - SALT Attire', heading 'COLLECTION:\\nEVERYDAY ICONS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/everyday-icons-core",
+                  "actual": "/collections/everyday-icons-core",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/about-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.1s",
+              "error": null,
+              "secs": 3.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About us \u2013 SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4751 chars, 10 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'About us \u2013 SALT Attire', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/about-us",
+                  "actual": "/pages/about-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/customer-reviews",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.07s",
+              "error": null,
+              "secs": 4.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Customer Reviews \u2013 SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6403 chars, 36 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Customer Reviews \u2013 SALT Attire', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/customer-reviews",
+                  "actual": "/pages/customer-reviews",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 20.36,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/collections/all",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&ae=g&auid=840573574.1791699955&dt=All%20Products%20-%20SALT%20Attire&en=page_view&dl=https%3A%2F",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=840573574.1791699955&gtm=45He6a72v77291640za200zd77291640xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=840573574.1791699955&dt=All%20Products%20-%20SALT%20Attire&tid=AW-845601509&en=page_view&dl",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699954875&cv=11&fst=1791699954875&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za20gzb77291640zd77291640xf1&_p=1791699953286&gcs=G111&gcd=13t3t3t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za20ozb77291640zd77291640xf1&_p=1791699953286&_gaz=1&gcs=G111&gcd=1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a80h2v9203513439za200zb77291640zd77291640xf1&_p=1791699953286&gcs",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699956706&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=127d05e4-668d-483a-9801-bb7cb766ca21",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=b89d0745-2007-46f4-959a-d68c92fdf50b",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=840573574.1791699955&dt=Women%27s%20Blazers%20-%20Stylish%20and%20Elegant%20Options%20for%",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699958028&cv=11&fst=1791699958028&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=840573574.1791699955&dt=Women%27s%20Blazers%20-%20Stylish%20and%20Elegant%20Options%2",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=840573574.1791699955&dt=Women%27s%20Blazers%20-%20Stylish%20and%20Elegant%20Options%20for%",
+            "HEAD https://saltattire.com/collections/womens-blazers",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699957924&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699957924&gcs=G111&gcd=13t3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=76d94a73-266c-4b9b-8443-7c1c3106c89d",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=0afec25a-f338-4595-9502-d76e907a2178"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.05,
+              "dcl": 1.1,
+              "load": 3.07,
+              "lcp": 2.27
+            },
+            {
+              "url": "/collections/womens-blazers",
+              "ttfb": 0.15,
+              "dcl": 1.14,
+              "load": 2.32,
+              "lcp": 1.96
+            },
+            {
+              "url": "/collections/everyday-icons-core",
+              "ttfb": 0.14,
+              "dcl": 1.08,
+              "load": 2.49,
+              "lcp": 1.0
+            },
+            {
+              "url": "/pages/about-us",
+              "ttfb": 0.02,
+              "dcl": 0.82,
+              "load": 2.07,
+              "lcp": 0.72
+            },
+            {
+              "url": "/pages/customer-reviews",
+              "ttfb": 0.02,
+              "dcl": 0.84,
+              "load": 2.51,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.abstract-tops-shirts",
+      "suite": "catalog",
+      "title": "Collection 'Abstract Tops & Shirts' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.96s",
+              "error": null,
+              "secs": 5.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Abstract Tops & Shirts - SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5353 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "25 products listed",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "25",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 10",
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "10",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Identifier 'token' has already been declared",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Identifier 'token' has already been declared",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "8%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "8%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 2.51s, CLS 0.0",
+              "error": null,
+              "secs": 0.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 2.51s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "188 scripts, at least 1.9 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (6), pdp.gokwik.co (4), cdn-shoppable.avada.io (4), googrev.bestfreecdn.com (2), connect.facebook.net (2)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "188 scripts, at least 1.9 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (6), pdp.gokwik.co (4), cdn-shoppable.avada.io (4), googrev.b\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.92,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/collections/abstract-tops-shirts"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/collections/abstract-tops-"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699973859&cv=11&fst=1791699973859&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=537808554.1791699974&gtm=45be6a72h1v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=537808554.1791699974&dt=Abstract%20Tops%20%26%20Shirts%20-%20SALT%20Attire&en=page_vie",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699973696&_gaz=1&gcd=13l3l3",
+            "POST https://saltattire.com/api/collect",
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=537808554.1791699974&dt=Abstract%20Tops%20%26%20Shirts%20-%20SALT%20Attire&tid=AW-84560150",
+            "HEAD https://saltattire.com/collections/abstract-tops-shirts",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699973696&gcd=13l3l3l3l1l1&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699973696&gcs=G111&gcd=13t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791699973696&g",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699977294&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=84b97d84-cea5-4057-8327-0d04aa43faa7",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=f2319589-6f47-4362-90ca-0afd722d47da",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/"
+          ],
+          "loads": [
+            {
+              "url": "/collections/abstract-tops-shirts",
+              "ttfb": 0.05,
+              "dcl": 1.59,
+              "load": 3.37,
+              "lcp": 2.51
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.all",
+      "suite": "catalog",
+      "title": "Collection 'ALL PRODUCTS' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.61s",
+              "error": null,
+              "secs": 4.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products - SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3955 chars, 15 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "13 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.38s",
+              "error": null,
+              "secs": 3.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products - SALT Attire \u2013 Page 2",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3881 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 12 more products (page-2 link found in the page head)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.13,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1140314532.1791699981&dt=All%20Products%20-%20SALT%20Attire&tid=AW-845601509&en=page_view&",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699980754&cv=11&fst=1791699980754&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1140314532.1791699981&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=1140314532.1791699981&dt=All%20Products%20-%20SALT%20Attire&en=page_view&dl=https%3A%",
+            "POST https://saltattire.com/api/collect",
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=1140314532.1791699981&dt=All%20Products%20-%20SALT%20Attire&tid=AW-845601509&en=page_view&",
+            "HEAD https://saltattire.com/collections/all",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699980584&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699980584&gcs=G111&gcd=13t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791699980584&g",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699983900&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=e84f41a3-9a9c-49c0-a3bd-a7b43573263c",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=06477129-ce8d-4fea-bc2b-357805f0a577",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699985861&cv=11&fst=1791699985861&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1140314532.1791699981&dt=All%20Products%20-%20SALT%20Attire%20%E2%80%93%20Page%202&tid=AW-",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1140314532.1791699981&dt=All%20Products%20-%20SALT%20Attire%20%E2%80%93%20Page%202&en",
+            "HEAD https://saltattire.com/collections/all?page=2",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=1140314532.1791699981&dt=All%20Products%20-%20SALT%20Attire%20%E2%80%93%20Page%202&tid=AW-",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791699985789&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791699985789&gcs=G111&gcd=13t3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=6094ee6f-f969-4761-aaa9-24928ad115b9"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.05,
+              "dcl": 1.35,
+              "load": 3.0,
+              "lcp": 2.36
+            },
+            {
+              "url": "/collections/all?page=2",
+              "ttfb": 0.02,
+              "dcl": 1.07,
+              "load": 2.23,
+              "lcp": 2.01
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.martine-tie-detail-top-light-beige-color",
+      "suite": "product",
+      "title": "PDP 'Martine Tie Detail Top -Light Beige'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.67s",
+              "error": null,
+              "secs": 5.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Martine Tie Detail Top -Light Beige Color | Top for Women | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4972 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/martine-tie-detail-top-light-beige-color",
+                  "actual": "/products/martine-tie-detail-top-light-beige-color",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Martine Tie Detail Top -Light Beige', selected variant 52205148995876 at \u20b92,340.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/martine-tie-detail-top-light-beige-color",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/martine-tie-detail-top-light-beige-color.js with variants",
+                  "actual": "'Martine Tie Detail Top -Light Beige', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,340.00, got not on page",
+              "secs": 2.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Martine Tie Detail Top -Light Beige",
+                  "actual": "'Martine Tie Detail Top -Light Beige' (h1, 28px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,340.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,340.00, got not on page",
+          "screenshot": "product.pdp.martine-tie-detail-top-light-beige-color.a1.png",
+          "trace": "product.pdp.martine-tie-detail-top-light-beige-color.a1_trace.zip",
+          "secs": 10.11,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/products/martine-tie-detail-top-light-beige-color?variant=52205148995876"
+            },
+            {
+              "type": "warning",
+              "text": "Size chart data is not available",
+              "url": "https://cdn.shopify.com/extensions/01a11b8c-d292-7347-9477-0b687f899390/v5.4.7/assets/sizechart.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/products/martine-tie-detai"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=624815b6-4aba-4025-8eda-c5b915b41baa&analytics_trace_id=013fef33-963e-4cdf-83b3-e09fadf61158&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/api/collect",
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "HEAD https://saltattire.com/products/martine-tie-detail-top-light-beige-color?variant=52205148995876",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&ae=g&auid=1683437910.1791699991&dt=Buy%20Martine%20Tie%20Detail%20Top%20-Light%20Beige%20Color%2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1683437910.1791699991&gtm=45He6a72h1v77291640za200zd77291640xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1683437910.1791699991&dt=Buy%20Martine%20Tie%20Detail%20Top%20-Light%20Beige%20Color%20%7C",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791699991653&cv=11&fst=1791699991653&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a80h2v9109406807za20gzb77291640zd77291640xf1&_p=1791699989723&gcs=G111&gcd=13t3t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a80h2v9109406807za20ozb77291640zd77291640xf1&_p=1791699989723&_gaz=1&gcs=G111&gcd",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a80h2v9203513439za200zb77291640zd77291640xf1&_p=1791699989723&gcs",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "POST https://saltattire.com/api/event/collect",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791699993615&ec=4",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=013fef33-963e-4cdf-83b3-e09fadf61158",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=5964978e-a3ac-4902-b757-0e8c58e1ce3a",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a80h2v9109406807z877291640za20gzb77291640zd77291640xf1&_p=1791699989723&gcs=G111&"
+          ],
+          "loads": [
+            {
+              "url": "/products/martine-tie-detail-top-light-beige-color?variant=52205148995876",
+              "ttfb": 0.05,
+              "dcl": 1.39,
+              "load": 3.6,
+              "lcp": 1.82
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.59s",
+              "error": null,
+              "secs": 4.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Martine Tie Detail Top -Light Beige Color | Top for Women | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4972 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/martine-tie-detail-top-light-beige-color",
+                  "actual": "/products/martine-tie-detail-top-light-beige-color",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Martine Tie Detail Top -Light Beige', selected variant 52205148995876 at \u20b92,340.00",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/martine-tie-detail-top-light-beige-color",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/martine-tie-detail-top-light-beige-color.js with variants",
+                  "actual": "'Martine Tie Detail Top -Light Beige', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,340.00, got not on page",
+              "secs": 2.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Martine Tie Detail Top -Light Beige",
+                  "actual": "'Martine Tie Detail Top -Light Beige' (h1, 28px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,340.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,340.00, got not on page",
+          "screenshot": "product.pdp.martine-tie-detail-top-light-beige-color.a2.png",
+          "trace": "product.pdp.martine-tie-detail-top-light-beige-color.a2_trace.zip",
+          "secs": 9.41,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/products/martine-tie-detail-top-light-beige-color?variant=52205148995876"
+            },
+            {
+              "type": "warning",
+              "text": "Size chart data is not available",
+              "url": "https://cdn.shopify.com/extensions/01a11b8c-d292-7347-9477-0b687f899390/v5.4.7/assets/sizechart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/products/martine-tie-detai"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=624815b6-4aba-4025-8eda-c5b915b41baa&analytics_trace_id=d375e308-91c6-4897-b6d6-b35850bdac28&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/products/martine-tie-detail-top-light-beige-color?variant=52205148995876",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&ae=g&auid=1105239706.1791700001&dt=Buy%20Martine%20Tie%20Detail%20Top%20-Light%20Beige%20Color%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1105239706.1791700001&gtm=45He6a72v77291640za200zd77291640xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1105239706.1791700001&dt=Buy%20Martine%20Tie%20Detail%20Top%20-Light%20Beige%20Color%20%7C%",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700001502&cv=11&fst=1791700001502&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za20gzb77291640zd77291640xf1&_p=1791699999822&gcs=G111&gcd=13t3t3t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za20ozb77291640zd77291640xf1&_p=1791699999822&_gaz=1&gcs=G111&gcd=1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb77291640zd77291640xf1&_p=1791699999822&gcs=G",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "POST https://saltattire.com/api/event/collect",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=d375e308-91c6-4897-b6d6-b35850bdac28",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=1a2a3ef7-1960-4b74-8441-7a77b155478e",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791700003754&ec=4",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807z877291640za20gzb77291640zd77291640xf1&_p=1791699999822&gcs=G111&gc"
+          ],
+          "loads": [
+            {
+              "url": "/products/martine-tie-detail-top-light-beige-color?variant=52205148995876",
+              "ttfb": 0.06,
+              "dcl": 1.27,
+              "load": 3.26,
+              "lcp": 1.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": "saltattire.com|product.pdp.martine-tie-detail-top-light-beige-color|shows_title_price_image|mobile",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The product page displays a different currency/price (USD prices shown) than the expected INR price for the selected variant, so shoppers will not see the expected \u20b92,340.00 price.",
+        "evidence": "Visible page text includes product name 'Martine Tie Detail Top -Light Beige' and price area showing 'Regular price $26.91' and 'Sale price $24.23' (no rupee price '\u20b92,340.00' is present). The robot expected the selected variant price \u20b92,340.00 but the page shows prices in USD ($26.91 / $24.23)."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.martine",
+      "suite": "search",
+      "title": "Search for 'martine' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.76s",
+              "error": null,
+              "secs": 4.93,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9860 chars, 70 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 13 results, 1 mention 'martine'",
+              "error": null,
+              "secs": 6.93,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "13",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'martine'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "1 of 13",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.0,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'PredictiveSearch' has already been declared",
+              "url": "https://saltattire.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=404382256.1791700012&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C%",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700011501&cv=11&fst=1791700011501&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=404382256.1791700012&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=404382256.1791700012&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C%",
+            "HEAD https://saltattire.com/",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791700011016&_gaz=1&gcs=G111&g",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=404382256.1791700012&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791700011016&gcs=G111&gcd=13t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a80h2v9203513439za200zb9112898046zd9112898046xf1&_p=1791700011016",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://fonts.googleapis.com/css?family=Helvetica+Neue&display=swap",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791700014934&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=a383d310-d1eb-4009-b397-4cdbd17e53a6",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=ef5db5ea-70af-4f70-929c-1deb88a453a5",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700018507&cv=11&fst=1791700018507&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a72",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700018547&cv=11&fst=1791700018547&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=404382256.1791700012&dt=Search%3A%2041%20results%20found%20for%20%22martine%22%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700018999&cv=11&fst=1791700018999&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=404382256.1791700012&dt=Search%3A%2041%20results%20found%20for%20%22martine%22%20%E2%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a80h2v9109406807za200zb9112898046zd9112898046xf1&_p=1791700018924&gcd=13l3l3l3l1l",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a80h2v9109406807za208zb9112898046zd9112898046xf1&_p=1791700018924&gcd=13l3l3l3l1l",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=404382256.1791700012&dt=Search%3A%2041%20results%20found%20for%20%22martine%22%20%E2%80%93%"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.5,
+              "load": 3.51,
+              "lcp": 2.03
+            },
+            {
+              "url": "/search?q=martine&type=product%2Carticle%2Cpage&options%5Bprefix%5D=last",
+              "ttfb": 0.02,
+              "dcl": 1.22,
+              "load": 2.24,
+              "lcp": 1.93
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.6s",
+              "error": null,
+              "secs": 4.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\" \u2013 SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2322 chars, 2 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "says 'EARCH RESULTS Search our site No results found for \u201cqzxvbugradar\u201d Check the spel'",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "message 'EARCH RESULTS Search our site No results found for \u201cqzxvbugradar\u201d Check the spel'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.31,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/search?q=qzxvbugradar&type"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=901642885.1791700023&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22%20%E2%80",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700023285&cv=11&fst=1791700023285&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=901642885.1791700023&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=901642885.1791700023&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22%20",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72h1v9109406807za200zb9112898046zd9112898046xf1&_p=1791700023115&_gaz=1&gcd=13l3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72h1v9109406807za208zb9112898046zd9112898046xf1&_p=1791700023115&gcd=13l3l3l3l1l",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/search?q=qzxvbugradar&type=product",
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=901642885.1791700023&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22%20%E2%80",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72h1v9109406807za200zb9112898046zd9112898046xf1&_p=1791700023115&gcs=G111&gcd=13",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72h1v9109406807za200zb9112898046zd9112898046xf1&_p=1791700023115&gcd=13l3l3l3l1l",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791700023115&g",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=c32208e0-5982-41ad-b697-fc890f3ad2d4",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=9866e553-d55a-49d5-9b9f-1a3f0803cec7",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791700026185&ec=3",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.06,
+              "dcl": 1.32,
+              "load": 2.97,
+              "lcp": 0.84
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'martine' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.75s",
+              "error": null,
+              "secs": 4.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9860 chars, 71 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "4 product suggestion(s) while typing 'martine', e.g. 'Martine Tie Detail Top -Light Beige Regular price \u20b9 2,599 Sa'",
+              "error": null,
+              "secs": 5.26,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.28,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'PredictiveSearch' has already been declared",
+              "url": "https://saltattire.com/"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=795160571.1791700029&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C%",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=795160571.1791700029&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C%",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700028984&cv=11&fst=1791700028984&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=795160571.1791700029&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=795160571.1791700029&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791700027321&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791700027321&gcs=G111&gcd=13t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791700027321&g",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://fonts.googleapis.com/css?family=Helvetica+Neue&display=swap",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791700031274&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=36278353-f0b0-4e57-bb7c-d66c31933468",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=f37f77ed-ea5f-4d3a-ad35-7e3df1da02a1",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.41,
+              "load": 3.62,
+              "lcp": 2.05
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.57s",
+              "error": null,
+              "secs": 5.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "10061 chars, 71 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "56: \"Shop Women's Tops, Dresses, Pants and more | SALT Attire\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Shop premium workwear & office wear for women \u2014 dresses, blazers, tops",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "140: 'Shop premium workwear & office wear for women \u2014 dresses, bla'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://saltattire.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://saltattire.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://saltattire.com/cdn/shop/files/353840534_570573415287874_206574888670957853_n.png?v=1719257741",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.33,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&ae=g&auid=2017476183.1791700039&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2017476183.1791700039&gtm=45He6a72v77291640za200zd77291640xeaxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=2017476183.1791700039&dt=Shop%20Women%27s%20Tops%2C%20Dresses%2C%20Pants%20and%20more%20%7C",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700039474&cv=11&fst=1791700039474&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72h1v9109406807za20ozb77291640zd77291640xf1&_p=1791700037605&_gaz=1&gcs=G111&gcd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72h1v9109406807za20gzb77291640zd77291640xf1&_p=1791700037605&gcs=G111&gcd=13t3t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb77291640zd77291640xf1&_p=1791700037605&gcs=G",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://fonts.googleapis.com/css?family=Helvetica+Neue&display=swap",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791700041556&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=c17af33e-b1d5-4e1d-bfc2-be38504a5f66",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=c80f2765-6e41-4035-a04e-309efb2853b0",
+            "GET https://shop.app/accounts/pre_auth?client_id=624815b6-4aba-4025-8eda-c5b915b41baa&analytics_trace_id=c80f2765-6e41-4035-a04e-309efb2853b0&flow=embed&f",
+            "GET https://shop.app/accounts/pre_auth?client_id=624815b6-4aba-4025-8eda-c5b915b41baa&analytics_trace_id=c17af33e-b1d5-4e1d-bfc2-be38504a5f66&flow=embed&f"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.34,
+              "load": 3.59,
+              "lcp": 1.75
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.63s",
+              "error": null,
+              "secs": 4.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Martine Tie Detail Top -Light Beige Color | Top for Women | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4972 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 75: 'Buy Martine Tie Detail Top -Light Beige Color | Top for Wome'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "75: 'Buy Martine Tie Detail Top -Light Beige Color | Top for Wome'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Buy Martine Tie Detail Top -Light Beige Color Top for Women With COD a",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "120: 'Buy Martine Tie Detail Top -Light Beige Color Top for Women '",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://saltattire.com/products/martine-tie-detail-top-light-beige-color",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://saltattire.com/products/martine-tie-detail-top-light-beige-color",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Buy Martine Tie Detail Top -Light Beige Color | Top for Women | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://saltattire.com/cdn/shop/files/1-3TOP-05-1187-2_d576d9dc-6940-4127-928c-c8d8f8224ca8.jpg?v=1773310912",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.96,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/products/martine-tie-detail-top-light-beige-color"
+            },
+            {
+              "type": "warning",
+              "text": "Size chart data is not available",
+              "url": "https://cdn.shopify.com/extensions/01a11b8c-d292-7347-9477-0b687f899390/v5.4.7/assets/sizechart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/products/martine-tie-detai"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1781886160.1791700043&dt=Buy%20Martine%20Tie%20Detail%20Top%20-Light%20Beige%20Color%20%7C%",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700043099&cv=11&fst=1791700043099&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1781886160.1791700043&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=1781886160.1791700043&dt=Buy%20Martine%20Tie%20Detail%20Top%20-Light%20Beige%20Color%",
+            "POST https://saltattire.com/api/collect",
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=1781886160.1791700043&dt=Buy%20Martine%20Tie%20Detail%20Top%20-Light%20Beige%20Color%20%7C%",
+            "HEAD https://saltattire.com/products/martine-tie-detail-top-light-beige-color",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72h1v9109406807za200zb9112898046zd9112898046xf1&_p=1791700042932&gcs=G111&gcd=13",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72h1v9109406807za208zb9112898046zd9112898046xf1&_p=1791700042932&_gaz=1&gcs=G111",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791700042932&g",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791700046599&ec=4",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=f7531b6b-ca07-4856-870e-989725764392",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=dd62e54e-4164-4340-9859-7d710ef1b276"
+          ],
+          "loads": [
+            {
+              "url": "/products/martine-tie-detail-top-light-beige-color",
+              "ttfb": 0.04,
+              "dcl": 1.39,
+              "load": 3.4,
+              "lcp": 2.28
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 4.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.13,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=409441409.1791700048&dt=404%20Not%20Found%20%E2%80%93%20SALT%20Attire&tid=AW-845601509&en=",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700048051&cv=11&fst=1791700048051&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=409441409.1791700048&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=409441409.1791700048&dt=404%20Not%20Found%20%E2%80%93%20SALT%20Attire&en=page_view&dl",
+            "POST https://saltattire.com/api/collect",
+            "HEAD https://saltattire.com/products/bugradar-check-does-not-exist",
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=409441409.1791700048&dt=404%20Not%20Found%20%E2%80%93%20SALT%20Attire&tid=AW-845601509&en=",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791700047885&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791700047885&gcs=G111&gcd=13t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791700047885&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791700050773&ec=3",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=72150fb1-f2a8-4721-9b9d-3fd7460dce3e",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=452f7341-bcca-4612-8ed0-a434f7aa3a6a"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.15,
+              "dcl": 1.06,
+              "load": 3.04,
+              "lcp": 2.18
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /pages/returns-refunds-exchanges-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.33s",
+              "error": null,
+              "secs": 3.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Returns / Refunds / Exchanges Policy \u2013 SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2678 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Returns / Refunds / Exchanges Policy \u2013 SALT Attire', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/returns-refunds-exchanges-policy",
+                  "actual": "/pages/returns-refunds-exchanges-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "8619 chars of policy text",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "8619 chars",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /pages/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.01s",
+              "error": null,
+              "secs": 3.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping Policy \u2013 SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2523 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping Policy \u2013 SALT Attire', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/shipping-policy",
+                  "actual": "/pages/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "5163 chars of policy text",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "5163 chars",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /pages/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 3.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy Policy - Your Guide to Understanding Our Privacy Practices \u2013 SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6704 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy Policy - Your Guide to Understanding Our Privacy Pra', heading 'PRIVACY POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/privacy-policy",
+                  "actual": "/pages/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "7110 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "7110 chars under 'PRIVACY POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /pages/terms-and-conditions",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.93s",
+              "error": null,
+              "secs": 3.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms and Conditions - saltattire.com \u2013 SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "13302 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms and Conditions - saltattire.com \u2013 SALT Attire', heading 'TERMS AND CONDITIONS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/terms-and-conditions",
+                  "actual": "/pages/terms-and-conditions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "13630 chars of policy text",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "13630 chars under 'TERMS AND CONDITIONS'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.02s",
+              "error": null,
+              "secs": 3.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact Us for Support and Inquiries | SALT Attire",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3705 chars, 5 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact Us for Support and Inquiries | SALT Attire', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 16.78,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'token' has already been declared",
+              "url": "https://saltattire.com/pages/returns-refunds-exchanges-policy"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://saltattire.com/web-pixels@7ec887c8w14f9f074p854094e1m1370c602/custom/web-pixel-234062116@2/sandbox/modern/pages/returns-refunds-exch"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1801113146.1791700052&dt=Returns%20%2F%20Refunds%20%2F%20Exchanges%20Policy%20%E2%80%93%20S",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700052184&cv=11&fst=1791700052184&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1801113146.1791700052&gtm=45be6a72v9112898046za208zd9112898046xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=1801113146.1791700052&dt=Returns%20%2F%20Refunds%20%2F%20Exchanges%20Policy%20%E2%80%9",
+            "POST https://saltattire.com/api/collect",
+            "POST https://saltattire.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1801113146.1791700052&dt=Returns%20%2F%20Refunds%20%2F%20Exchanges%20Policy%20%E2%80%93%20S",
+            "HEAD https://saltattire.com/pages/returns-refunds-exchanges-policy",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791700052018&_gaz=1&gcs=G111&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791700052018&gcs=G111&gcd=13t3",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-0V4H1PW0XZ&gtm=45Pe6a72v9203513439za200zb9112898046zd9112898046xf1&_p=1791700052018&g",
+            "POST https://mpc2-prod-21-is5qnl632q-uc.a.run.app/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791700055080&ec=3",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=1b1bb82e-78a9-4157-b733-71b7ec35f5df",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=54747599-90fb-4982-bb5e-7a736a602599",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1801113146.1791700052&dt=Shipping%20Policy%20%E2%80%93%20SALT%20Attire&tid=AW-845601509&en",
+            "POST https://www.google.com/rmkt/collect/845601509/?random=1791700056058&cv=11&fst=1791700056058&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6a7",
+            "HEAD https://saltattire.com/pages/shipping-policy",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=1801113146.1791700052&dt=Shipping%20Policy%20%E2%80%93%20SALT%20Attire&tid=AW-845601509&en",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za208zb9112898046zd9112898046xf1&_p=1791700055982&gcs=G111&gcd=13t3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-3R0BLV2YGE&gtm=45je6a72v9109406807za200zb9112898046zd9112898046xf1&_p=1791700055982&gcs=G111&gcd=13t3",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=1801113146.1791700052&dt=Shipping%20Policy%20%E2%80%93%20SALT%20Attire&en=page_view&dl",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=da557bee-d926-45f4-b2f8-c29f53e730f6",
+            "GET https://saltattire.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=074dccf4-1393-4a95-95cd-678b694365a9",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=EWt7WpUmQDfP8ee3BeoBJA&st=oaiq-web&sv=0.1.41&t=1791700058494&ec=3"
+          ],
+          "loads": [
+            {
+              "url": "/pages/returns-refunds-exchanges-policy",
+              "ttfb": 0.04,
+              "dcl": 1.16,
+              "load": 2.76,
+              "lcp": 0.81
+            },
+            {
+              "url": "/pages/shipping-policy",
+              "ttfb": 0.02,
+              "dcl": 0.74,
+              "load": 1.92,
+              "lcp": 0.56
+            },
+            {
+              "url": "/pages/privacy-policy",
+              "ttfb": 0.03,
+              "dcl": 0.86,
+              "load": 1.89,
+              "lcp": 0.58
+            },
+            {
+              "url": "/pages/terms-and-conditions",
+              "ttfb": 0.02,
+              "dcl": 0.75,
+              "load": 1.97,
+              "lcp": 0.61
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.03,
+              "dcl": 0.75,
+              "load": 1.85,
+              "lcp": 0.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 2,
+    "input_tokens": 7487,
+    "output_tokens": 283,
+    "est_usd": 0.002438,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Shop Women's Tops, Dresses, Pants and more | SALT Attire",
+    "theme": "Be Yours (store copy: New Launch 30th Sep 2026)",
+    "checkout_app": "GoKwik",
+    "access": "open",
+    "nav": 25,
+    "collections": 47,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "18 product(s) not listed in the browsed collections are tested last (e.g. navyline-poise)"
+  ],
+  "perf": {
+    "pages": 21,
+    "median_load_secs": 2.49,
+    "slowest": {
+      "url": "/",
+      "load_secs": 3.91
+    },
+    "console_errors": 7,
+    "console_warnings": 6,
+    "failed_requests": 233
+  },
+  "counts": {
+    "pass": 13,
+    "flaky": 0,
+    "confirmed_fail": 2,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
