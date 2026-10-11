@@ -123,6 +123,15 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
                                       {"url": big.url, "products_json": f"{big.url}/products.json?limit=250"}, "minor",
                                       "Page 2 / 'Load more' / infinite scroll brings NEW products; judged only when the "
                                       "collection has more in-stock products than its first page shows"))
+    # journey 25: a filter narrows the biggest collection (ONE filter: Shopify's default robots.txt disallows two, and
+    # sort_by; sorting is checked only where robots.txt allows it). No filters on the page = information only.
+    if big is not None and (big.product_count or 0) >= 2:
+        catalog.cases.append(TestCase(f"catalog.filter.{_slug(big.handle)}", "catalog",
+                                      f"Filtering collection '{big.title}' narrows its products", "collection_filter",
+                                      {"url": big.url, "products_json": f"{big.url}/products.json?limit=250",
+                                       "strict": False}, "minor",
+                                      "One filter ('In stock' first) applied like a shopper: the address carries exactly "
+                                      "that filter and every listed product matches it in the store's data"))
     suites.append(catalog)
 
     picks = [p for p in priced if p.available][: s.max_products] or priced[: s.max_products]

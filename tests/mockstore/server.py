@@ -224,6 +224,19 @@ Modes (to prove Radar catches and heals what it should):
                    -> search.suggestions WARNS, never fails
   tall_sticky_bar  on phones, product pages carry a fixed info bar over the bottom 42% of the screen (journey 30)
                    -> product pages WARN 'screen covered by fixed bars' naming div.sticky-info; the store stays healthy
+  facets           collection pages carry Dawn-like storefront filters (journey 25): an 'Availability' group (In stock /
+                   Out of stock) in a GET form that applies itself on change (fetch + grid swap + pushState), behind a
+                   'Filter' button on phones; ?filter.v.availability=1 lists only in-stock products -> catalog.filter
+                   PASSES by clicking 'In stock'; healthy (no filters) -> 'this collection offers no filters' (info)
+  facets_sort      same, plus a sort_by select inside the filter form, and Shopify's default robots.txt (no sort_by) ->
+                   the theme's request would carry sort_by, so Radar opens ?filter.v.availability=1 directly; sorting
+                   'not checked: robots.txt disallows'
+  facets_sort_allowed  same, but robots.txt allows sort_by and ?sort_by=price-ascending sorts by price -> Radar clicks
+                   the filter and chooses 'Price, low to high'; both PASS
+  filter_broken    the filters are shown, but ?filter.v.availability=1 still lists everything, the sold-out lamp too
+                   -> catalog.filter WARNS (strict: FAILS) 'not matching: sold-out-lamp'
+  (every mode)     robots.txt carries Shopify's default collection lines: /collections/*sort_by*,
+                   /collections/*filter*&*filter*, /collections/*+* (facets_sort_allowed: without the sort_by lines)
 
 Every product page also carries a quick-add product card BEFORE the main buy button in the DOM
 and a cart drawer that opens over the page after adding (both copied from moxiebeauty.in's
@@ -266,6 +279,46 @@ EXTRA_DECOR = [{"id": 60 + i, "handle": f"clay-bowl-{i}", "title": f"Clay Bowl N
                for i in range(1, 11)]
 MORE_MODES = ("paginated", "pagination_broken", "load_more", "infinite_scroll", "more_hidden")
 J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepage banner (journey 15)
+FACET_MODES = ("facets", "facets_sort", "facets_sort_allowed", "filter_broken")     # storefront filters (journey 25)
+# Shopify's default robots.txt lines for collections (every mode): no sort_by, no two filters, no '+' tag joins
+SHOPIFY_COLLECTION_RULES = ("Disallow: /collections/*sort_by*\nDisallow: /*/collections/*sort_by*\n"
+                            "Disallow: /collections/*filter*&*filter*\nDisallow: /*/collections/*filter*&*filter*\n"
+                            "Disallow: /collections/*+*\nDisallow: /collections/*%2B*\nDisallow: /collections/*%2b*\n")
+
+
+def facets_page(h: str, items: list[dict], q: dict, mode: str) -> str:
+    """A collection page with Dawn-like storefront filters (journey 25): an 'Availability' group (In stock / Out of
+    stock) inside a GET form that applies itself on change (fetches the filtered page, swaps the grid, pushState),
+    behind a 'Filter' button on phones. filter.v.availability=1 lists only in-stock products, except in filter_broken
+    (the same unfiltered list, sold-out lamp included). facets_sort*: a sort_by select in the same form."""
+    avail = (q.get("filter.v.availability") or [""])[0]
+    instock = lambda p: any(v["available"] for v in p["variants"])
+    shown = items
+    if avail in ("0", "1") and mode != "filter_broken":
+        shown = [p for p in items if instock(p) == (avail == "1")]
+    sort = (q.get("sort_by") or [""])[0]
+    if sort == "price-ascending" and mode == "facets_sort_allowed":
+        shown = sorted(shown, key=lambda p: min(float(v["price"]) for v in p["variants"]))
+    n_in = sum(instock(p) for p in items)
+    box = lambda v, text, n: (f'<li><label for="Filter-availability-{v}"><input type="checkbox" name="filter.v.availability" '
+                              f'value="{v}" id="Filter-availability-{v}"{" checked" if avail == v else ""}> {text} ({n})</label></li>')
+    sort_sel = ('<label>Sort by <select name="sort_by"><option value="manual">Featured</option>'
+                '<option value="price-ascending">Price, low to high</option>'
+                '<option value="price-descending">Price, high to low</option></select></label>'
+                if mode in ("facets_sort", "facets_sort_allowed") else "")
+    return (f'<button type="button" class="facets-open" onclick="document.getElementById(\'FacetsWrap\').classList.toggle(\'open\')">'
+            f'Filter</button><div id="FacetsWrap" class="facets-wrap"><form id="FacetFiltersForm" action="/collections/{h}" '
+            f'method="get"><details class="facet"><summary>Availability</summary><ul>{box("1", "In stock", n_in)}'
+            f'{box("0", "Out of stock", len(items) - n_in)}</ul></details>{sort_sel}'
+            '<noscript><button type="submit">Apply</button></noscript></form></div>'
+            '<style>@media (max-width: 749px) { .facets-wrap { display: none } .facets-wrap.open { display: block } } '
+            '@media (min-width: 750px) { .facets-open { display: none } }</style>'
+            f'<div id="product-grid">{"".join(card(p) for p in shown)}</div>'
+            """<script>const ff = document.getElementById('FacetFiltersForm');
+ff.addEventListener('change', () => { const url = ff.action.split('?')[0] + '?' + new URLSearchParams(new FormData(ff));
+  history.pushState({}, '', url);
+  fetch(url).then(r => r.text()).then(t => { const d = new DOMParser().parseFromString(t, 'text/html');
+    document.getElementById('product-grid').innerHTML = d.getElementById('product-grid').innerHTML; }); });</script>""")
 CARTS: dict[str, list[dict]] = {}
 
 SVG = b'<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#c96"/></svg>'
@@ -755,8 +808,11 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             extra = "Disallow: /search\n" if self.mode == "hostile" else ""
             # /account and /policies/ disallowed, as some stores do (journeys 28 + 29 must skip them)
             acct = "" if self.mode in ("account_open", "account_broken") else "Disallow: /account\n"
+            coll = SHOPIFY_COLLECTION_RULES
+            if self.mode == "facets_sort_allowed":           # a store whose robots.txt lets sorting through (journey 25)
+                coll = "".join(l + "\n" for l in coll.splitlines() if "sort_by" not in l)
             return self._send(200, "User-agent: *\nDisallow: /checkout\nDisallow: /cart\n" + acct + "Disallow: /policies/\n"
-                              + extra, "text/plain")
+                              + extra + coll, "text/plain")
         if path.endswith(".pdf"):     # a company filing linked from the footer: the browser downloads it (giva.co, 11 Oct)
             self.send_response(200)
             self.send_header("Content-Type", "application/pdf")
@@ -833,6 +889,10 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                 return self._json({"products": [{"handle": p["handle"], "title": p["title"], "variants": p["variants"]} for p in items]})
             if not items:
                 return self._send(404, page("Not found", "404"))
+            if self.mode in FACET_MODES:
+                return self._send(200, page(f"{h.title()} Collection | Mock Store", facets_page(h, items, q, self.mode),
+                                            '<meta name="viewport" content="width=device-width, initial-scale=1">'),
+                                  set_cart=new)
             if self.mode in MORE_MODES and h == "home-decor":
                 # 3 products per page: page 1 = lamp, vase, sampler; the clay bowls come after (journey 26)
                 pg = int((q.get("page") or ["1"])[0] or 1)

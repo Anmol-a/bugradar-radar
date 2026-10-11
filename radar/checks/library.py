@@ -943,6 +943,335 @@ def collection_more(ctx: Ctx, url: str, products_json: str):
     ctx.steps.run("shows_more_products", load_more, soft=True)
 
 
+
+# ---------------- journey 25: a collection filter narrows the products (sort only where robots.txt allows it) ----------------
+# Shopify's storefront filtering (Online Store 2.0) names its inputs filter.v.availability, filter.v.price.gte/lte,
+# filter.p.vendor, filter.p.product_type, filter.p.tag, filter.v.option.<name>. Shopify's default robots.txt disallows
+# /collections/*sort_by*, /collections/*filter*&*filter* (two filters) and /collections/*+*, so Radar applies ONE filter,
+# checks robots.txt for the exact address first, and sorts only on stores whose robots.txt allows it.
+
+# On screen: has a size, and is not inside a closed <details> (Chrome keeps a size for the hidden content of a closed
+# group, so the size alone says 'shown' for every option of Dawn's closed 'Availability' group)
+FILTER_VIS_JS = r"""e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && !e.closest('details:not([open]) > :not(summary)')
+      && (!e.checkVisibility || e.checkVisibility({visibilityProperty: true})); }"""
+
+FILTER_OPTIONS_JS = r"""() => {
+  document.querySelectorAll('[data-radar-filter]').forEach(e => e.removeAttribute('data-radar-filter'));
+  const vis = FILTER_VIS;
+  const out = []; let n = 0;
+  for (const i of document.querySelectorAll('input[name^="filter."]')) {
+    if (!/^(checkbox|radio)$/i.test(i.type) || i.disabled || i.checked) continue;
+    const l = (i.id && document.querySelector('label[for="' + CSS.escape(i.id) + '"]')) || i.closest('label');
+    i.setAttribute('data-radar-filter', String(n));
+    out.push({i: n++, kind: 'input', name: i.name, value: i.value, shown: vis(i) || !!(l && vis(l)),
+              label: ((l && (l.innerText || l.textContent)) || i.getAttribute('aria-label') || i.value || '').replace(/\s+/g, ' ').trim().slice(0, 60)});
+  }
+  for (const a of document.querySelectorAll('a[href*="filter."]')) {     // themes that render filters as links
+    let u; try { u = new URL(a.href, location.href); } catch (e) { continue; }
+    if (u.origin !== location.origin || u.pathname.replace(/\/$/, '') !== location.pathname.replace(/\/$/, '')) continue;
+    const ps = [...u.searchParams].filter(([k, v]) => k.startsWith('filter.') && v);
+    if (ps.length !== 1) continue;
+    a.setAttribute('data-radar-filter', String(n));
+    out.push({i: n++, kind: 'link', name: ps[0][0], value: ps[0][1], href: u.href, shown: vis(a),
+              label: (a.innerText || a.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim().slice(0, 60)});
+  }
+  return out; }"""
+
+# The address the theme would ask for if the shopper made this choice: the control's own GET form, and (Dawn on
+# desktop sends them together) every facet / sort form on the page. The control is set only for the moment it takes
+# to read the forms, then set back; no event fires, so nothing is sent.
+PREDICT_JS = r"""([sel, value]) => { const el = document.querySelector(sel); if (!el) return null;
+  if (el.tagName === 'A') return {own: el.href, all: el.href};
+  const isGet = f => (f.getAttribute('method') || 'get').toLowerCase() === 'get';
+  const was = el.tagName === 'SELECT' ? el.value : el.checked;
+  if (el.tagName === 'SELECT') el.value = value; else el.checked = true;
+  const q = forms => { const p = new URLSearchParams();
+    for (const f of forms) for (const [k, v] of new FormData(f)) if (typeof v === 'string') p.append(k, v);
+    return p.toString(); };
+  const own = el.form ? [el.form] : [];
+  const all = [...new Set([...own, ...[...document.querySelectorAll('form')].filter(f => isGet(f) &&
+                f.querySelector('[name^="filter."], [name="sort_by"]'))])];
+  const qo = q(own), qa = q(all);
+  if (el.tagName === 'SELECT') el.value = was; else el.checked = was;
+  let path = location.pathname;
+  if (el.form && el.form.getAttribute('action')) { try { path = new URL(el.form.action, location.href).pathname; } catch (e) {} }
+  const one = encodeURIComponent(el.name) + '=' + encodeURIComponent(value || el.value);
+  const at = s => location.origin + path + '?' + (s || one);
+  return {own: at(qo), all: at(qa)}; }"""
+
+REVEAL_JS = r"""(sel) => { document.querySelectorAll('[data-radar-open]').forEach(e => e.removeAttribute('data-radar-open'));
+  const vis = FILTER_VIS;
+  const el = document.querySelector(sel); if (!el) return {gone: true};
+  const l = el.tagName === 'INPUT' ? ((el.id && document.querySelector('label[for="' + CSS.escape(el.id) + '"]')) || el.closest('label')) : null;
+  if (vis(el) || (l && vis(l))) return {shown: true};
+  const closed = []; for (let d = el.parentElement; d; d = d.parentElement) if (d.tagName === 'DETAILS' && !d.open) closed.unshift(d);
+  for (const d of closed) { const s = d.querySelector(':scope > summary');      // the outermost closed group on screen
+    if (s && vis(s)) { s.setAttribute('data-radar-open', '1'); return {opener: (s.innerText || '').replace(/\s+/g, ' ').trim().slice(0, 40)}; } }
+  const b = [...document.querySelectorAll('button, summary, a, [role="button"]')].filter(e => vis(e) && !e.hasAttribute('data-radar-tried'))
+    .find(e => /^(filter|filters|filter (and|&) sort|filter by|sort (and|&) filter|refine|show filters)\b/i
+                 .test((e.innerText || e.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim()));
+  if (!b) return {};
+  b.setAttribute('data-radar-open', '1'); b.setAttribute('data-radar-tried', '1');      // a phone's 'Filter' drawer button
+  return {opener: (b.innerText || b.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim().slice(0, 40)}; }"""
+
+CLICK_TARGET_JS = r"""(sel) => { document.querySelectorAll('[data-radar-pick]').forEach(e => e.removeAttribute('data-radar-pick'));
+  const vis = FILTER_VIS;
+  const el = document.querySelector(sel); if (!el) return false;
+  const l = el.tagName === 'INPUT' ? ((el.id && document.querySelector('label[for="' + CSS.escape(el.id) + '"]')) || el.closest('label')) : null;
+  (l && vis(l) ? l : el).setAttribute('data-radar-pick', '1'); return true; }"""
+
+# 'Apply' of the facet form only: a GET form on a collection page (it changes the address of Radar's own page;
+# nothing is sent to the store). Any other form is never submitted.
+APPLY_JS = r"""(sel) => { const vis = FILTER_VIS;
+  const el = document.querySelector(sel); const f = el && el.form;
+  if (!f || (f.getAttribute('method') || 'get').toLowerCase() !== 'get') return null;
+  try { if (!new URL(f.action || location.href, location.href).pathname.startsWith('/collections/')) return null; } catch (e) { return null; }
+  const btns = [...f.querySelectorAll('button[type=submit], button:not([type]), input[type=submit]'),
+                ...(f.id ? [...document.querySelectorAll('[form="' + CSS.escape(f.id) + '"]')] : [])];
+  const b = btns.filter(vis).find(b => /apply|show|view|see|done|filter|result|update/i.test(b.innerText || b.value || b.getAttribute('aria-label') || ''));
+  if (!b) return null; b.setAttribute('data-radar-apply', '1'); return (b.innerText || b.value || '').trim().slice(0, 30); }"""
+
+SORT_JS = r"""() => { const s = [...document.querySelectorAll('select[name="sort_by"]')];
+  document.querySelectorAll('[data-radar-sort]').forEach(e => e.removeAttribute('data-radar-sort'));
+  const vis = FILTER_VIS;
+  const ok = s.filter(e => [...e.options].some(o => o.value === 'price-ascending'));
+  const el = ok.find(vis) || ok[0]; if (!el) return s.length ? {no_price: true} : null;
+  el.setAttribute('data-radar-sort', '1'); return {label: [...el.options].find(o => o.value === 'price-ascending').text.trim()}; }"""
+FILTER_OPTIONS_JS, REVEAL_JS, CLICK_TARGET_JS, APPLY_JS, SORT_JS = (
+    js.replace("FILTER_VIS", FILTER_VIS_JS) for js in (FILTER_OPTIONS_JS, REVEAL_JS, CLICK_TARGET_JS, APPLY_JS, SORT_JS))
+
+
+def applied_filters(url: str) -> list[tuple[str, str]]:
+    """The storefront filters an address applies: its non-empty filter.* parameters (Dawn also sends the empty price
+    boxes 'filter.v.price.gte=': not a filter). Pure, unit-tested."""
+    from urllib.parse import parse_qsl
+    return [(k, v) for k, v in parse_qsl(urlparse(url).query) if k.startswith("filter.") and v.strip()]
+
+
+def one_filter_url(url: str, name: str, value: str) -> str:
+    """The collection address with exactly one choice and nothing else (no sort_by, no empty fields). Pure."""
+    from urllib.parse import urlencode
+    return urlparse(url)._replace(query=urlencode({name: value}), fragment="").geturl()
+
+
+def pick_filter(options: list[dict]) -> dict | None:
+    """Which filter a shopper-like test applies: 'In stock' first (the store's data says what is in stock), then a
+    vendor / type / option / tag value (also in the data), else any other option. Never a price box, never an option
+    the theme shows with a zero count. Pure, unit-tested."""
+    def rank(o):
+        n, v = o.get("name", ""), str(o.get("value", ""))
+        if ".price." in n or re.search(r"\(0\)\s*$", o.get("label") or ""):
+            return None
+        if n == "filter.v.availability":
+            return 0 if v == "1" else 9
+        if n in ("filter.p.vendor", "filter.p.product_type", "filter.p.tag") or n.startswith("filter.v.option."):
+            return 1
+        return 2
+    ranked = sorted((r, k) for k, o in enumerate(options) if (r := rank(o)) is not None)
+    return options[ranked[0][1]] if ranked else None
+
+
+def filter_matches(product: dict, name: str, value: str) -> bool | None:
+    """Does a product from the store's products.json match one storefront filter? None: the data cannot tell (a
+    metafield, a price range, 'Out of stock'). Pure, unit-tested."""
+    vs = product.get("variants") or []
+    want = norm_text(value)
+    if name == "filter.v.availability":
+        return any(v.get("available") for v in vs) if str(value) == "1" else None
+    if name.startswith("filter.v.option."):
+        return any(want == norm_text(str(v.get(k) or "")) for v in vs for k in ("option1", "option2", "option3"))
+    if name in ("filter.p.vendor", "filter.p.product_type"):
+        key = name.rsplit(".", 1)[1]
+        return norm_text(str(product[key])) == want if key in product else None
+    if name == "filter.p.tag" and "tags" in product:
+        tags = product["tags"] if isinstance(product["tags"], list) else str(product["tags"]).split(",")
+        return want in {norm_text(t) for t in tags}
+    return None
+
+
+def price_order_ok(handles: list[str], prices: dict[str, float]) -> tuple[bool, str]:
+    """'Price, low to high': the listed products (those the data knows) never get cheaper further down. Pure."""
+    seq = [(h, prices[h]) for h in handles if h in prices]
+    bad = next(((a, b) for a, b in zip(seq, seq[1:]) if b[1] < a[1] - 0.005), None)
+    if bad:
+        return False, f"{bad[1][0]} (₹{bad[1][1]:,.2f}) listed after {bad[0][0]} (₹{bad[0][1]:,.2f})"
+    return (True, f"{len(seq)} products from ₹{seq[0][1]:,.2f} to ₹{seq[-1][1]:,.2f}") if seq else (False, "no known products listed")
+
+
+def _listed(ctx: Ctx) -> list[str]:
+    return [l["handle"] for l in (_product_links(ctx.sess) or [])]
+
+
+def _has_param(name: str, value: str) -> Callable[[str], bool]:
+    from urllib.parse import parse_qsl
+    return lambda u: (name, value) in parse_qsl(urlparse(u).query)
+
+
+def _reveal(ctx: Ctx, sel: str) -> tuple[bool, list[str]]:
+    """Open what hides a control, like a shopper: a closed group ('Availability') or a phone's 'Filter' drawer button."""
+    how: list[str] = []
+    r: dict = {}
+    for _ in range(6):
+        r = ctx.sess.evaluate(REVEAL_JS, sel) or {}
+        if r.get("shown") or r.get("gone") or not r.get("opener"):
+            break
+        _click(ctx, ctx.sess.page.locator('[data-radar-open="1"]').first)
+        ctx.sess.page.wait_for_timeout(400)
+        how.append(f"opened {r['opener']!r}")
+    return bool(r.get("shown")), how
+
+
+def _settle_grid(ctx: Ctx, has: Callable[[str], bool], secs: float = 8) -> bool:
+    """Wait for the address to carry the choice, then for the grid to stop changing (themes swap it in by script)."""
+    page, t0 = ctx.sess.page, time.monotonic()
+    while not has(page.url) and time.monotonic() - t0 < secs:
+        page.wait_for_timeout(300)
+    if not has(page.url):
+        return False
+    try:
+        page.wait_for_load_state("networkidle", timeout=4000)
+    except Exception:  # noqa: BLE001  (a chat widget keeps the network busy: the steady grid below decides)
+        pass
+    last, same, t1 = None, 0, time.monotonic()
+    while same < 3 and time.monotonic() - t1 < 6:
+        now = _listed(ctx)
+        same, last = (same + 1 if now == last else 0), now
+        page.wait_for_timeout(500)
+    return True
+
+
+def _choose(ctx: Ctx, sel: str, name: str, value: str, label: str, is_select: bool = False) -> str:
+    """Make one choice (a filter option or a sort order) the store's own way, or open its one-choice address directly
+    when the theme's request would carry something robots.txt disallows (Dawn adds sort_by and empty price boxes).
+    Raises RobotsBlocked when the one-choice address is disallowed too."""
+    page = ctx.sess.page
+    has = _has_param(name, value)
+    pred = ctx.sess.evaluate(PREDICT_JS, [sel, value]) or {}
+    direct = one_filter_url(page.url, name, value)
+    if pred and ctx.sess.allowed(pred["all"]) and ctx.sess.allowed(pred["own"]):
+        shown, how = _reveal(ctx, sel)
+        if shown:
+            if is_select:
+                page.locator(sel).first.select_option(value, timeout=6000)
+                what = f"chose {label!r}"
+            else:
+                ctx.sess.evaluate(CLICK_TARGET_JS, sel)
+                _click(ctx, page.locator('[data-radar-pick="1"]').first)
+                what = f"clicked {label!r}"
+            if not _settle_grid(ctx, has, 5):
+                btn = None if is_select else ctx.sess.evaluate(APPLY_JS, sel)
+                if btn:
+                    _click(ctx, page.locator('[data-radar-apply="1"]').first)
+                    what += f", pressed {btn!r}"
+                    _settle_grid(ctx, has, 8)
+            return ", ".join(how + [what])
+        why = f"{label!r} could not be brought on screen" + (f" ({', '.join(how)})" if how else "")
+    else:
+        why = (f"the theme's own request (?{_short(pred.get('all', '').split('?', 1)[-1], 90)}) is disallowed by robots.txt"
+               if pred else "the control left the page")
+    if not ctx.sess.allowed(direct):
+        raise RobotsBlocked(f"robots.txt disallows {direct}")
+    _load(ctx, direct)
+    _settle_grid(ctx, has, 4)
+    return f"opened {_path(direct)}?{urlparse(direct).query} directly: {why}"
+
+
+def collection_filter(ctx: Ctx, url: str, products_json: str, strict: bool = False):
+    """Journey 25. Can a shopper narrow a collection? Radar finds the theme's filters (Shopify storefront filtering:
+    filter.* inputs, often in a closed group or behind a phone's 'Filter' button), applies ONE option like a shopper
+    ('In stock' first), and checks that the address carries exactly that filter and that the listed products match it
+    in the store's own products.json. Sorting is checked only where robots.txt allows sort_by (Shopify's default
+    robots.txt does not). No filters at all is information, not a failure. Warnings unless strict (not yet measured
+    on a bench). Read-only: only the facet GET form, which changes the address of Radar's own page."""
+    soft = not strict
+    ctx.steps.run("loads", lambda: _load(ctx, url))
+    first = _listed(ctx)
+    for _ in range(8):                       # grids a script renders after load
+        if first:
+            break
+        ctx.sess.page.wait_for_timeout(500)
+        first = _listed(ctx)
+    if not first:
+        ctx.steps.info("filter_not_judged", "no product cards on the collection page (the collection test judges the listing)")
+        return
+    try:
+        data = {p.get("handle"): p for p in (ctx.sess.get_json(products_json) or {}).get("products", [])}
+    except Exception:  # noqa: BLE001  data unavailable: judged by the page alone
+        data = {}
+    known = lambda hs: [h for h in hs if h in data] if data else list(hs)
+    before = known(first)
+    opts = ctx.sess.evaluate(FILTER_OPTIONS_JS) or []
+    if not opts:                             # filters a script adds after the grid
+        ctx.sess.page.wait_for_timeout(1500)
+        opts = ctx.sess.evaluate(FILTER_OPTIONS_JS) or []
+    pick = pick_filter(opts)
+    if not pick:
+        ctx.steps.info("filter_not_judged", "this collection offers no filters (no storefront filter options on the page)"
+                       if not opts else f"only price filters or empty options offered ({len(opts)} options)")
+    else:
+        name, value, label = pick["name"], str(pick["value"]), pick.get("label") or str(pick["value"])
+        names = list(dict.fromkeys(o["label"] or o["value"] for o in opts if o["name"] == name))
+        ctx.steps.info("filters_offered", f"{len(opts)} filter options (e.g. {', '.join(names[:4])}); applying {label!r} "
+                                          f"= {name}={value}")
+        same = [o for o in opts if o["name"] == name and str(o["value"]) == value]
+        sel = f'[data-radar-filter="{(next((o for o in same if o.get("shown")), same[0]))["i"]}"]'
+
+        def apply():
+            how = _choose(ctx, sel, name, value, label)
+            got = applied_filters(ctx.sess.page.url)
+            ctx.expect("filters in the page address", f"exactly one: {name}={value}",
+                       ", ".join(f"{k}={v}" for k, v in got) or "none (the address did not change)", got == [(name, value)])
+            return how
+        if ctx.steps.run("applies_filter", apply, soft=soft) is not None:
+            def narrows():
+                after = known(_listed(ctx))
+                ctx.expect("products listed with the filter on", "≥ 1", len(after), len(after) >= 1)
+                ctx.expect("products listed: filtered vs unfiltered", f"≤ {len(before)}", len(after), len(after) <= len(before))
+                verdicts = {h: filter_matches(data[h], name, value) for h in after if h in data}
+                wrong = [h for h, ok in verdicts.items() if ok is False]
+                told = [h for h, ok in verdicts.items() if ok is not None]
+                if told:
+                    ctx.expect(f"listed products matching {label!r} (store's data)", f"all {len(told)}",
+                               f"{len(told) - len(wrong)} of {len(told)}" + (f"; not matching: {', '.join(wrong[:4])}" if wrong else ""),
+                               not wrong)
+                return (f"{label!r}: {len(after)} products listed ({len(before)} without the filter)"
+                        + (", all match it in the store's data" if told else ", the store's data cannot tell which match"))
+            ctx.steps.run("filter_narrows_results", narrows, soft=soft)
+    _collection_sort(ctx, url, data, soft)
+
+
+def _collection_sort(ctx: Ctx, url: str, data: dict, soft: bool) -> None:
+    """'Price, low to high', checked only where robots.txt allows sort_by (never on Shopify's default robots.txt)."""
+    if _path(ctx.sess.page.url) != _path(url) or urlparse(ctx.sess.page.url).query:
+        try:                                 # back to the unfiltered collection (robots-checked like every page)
+            ctx.sess.goto(url)
+            _dismiss(ctx)
+        except Exception as e:  # noqa: BLE001
+            ctx.steps.info("sort_not_judged", f"the collection did not open again: {_short(str(e), 120)}")
+            return
+    s = ctx.sess.evaluate(SORT_JS)
+    if not s or s.get("no_price"):
+        ctx.steps.info("sort_not_judged", "no sort control with 'price, low to high'" if s else "no sort control on the page")
+        return
+    direct = one_filter_url(url, "sort_by", "price-ascending")
+    pred = ctx.sess.evaluate(PREDICT_JS, ['[data-radar-sort="1"]', "price-ascending"]) or {}
+    if not ctx.sess.allowed(direct) and not (pred and ctx.sess.allowed(pred["all"]) and ctx.sess.allowed(pred["own"])):
+        ctx.steps.info("sort_not_judged", f"sorting not checked: the store's robots.txt disallows {_path(direct)}?sort_by=… "
+                                          "(Shopify's default) and Radar always respects robots.txt")
+        return
+    prices = {h: min(float(v.get("price") or 0) for v in p["variants"]) for h, p in data.items() if p.get("variants")}
+
+    def sort():
+        how = _choose(ctx, '[data-radar-sort="1"]', "sort_by", "price-ascending", s["label"], is_select=True)
+        q = urlparse(ctx.sess.page.url).query
+        ctx.expect("sort in the page address", "sort_by=price-ascending", q or "none", _has_param("sort_by", "price-ascending")(ctx.sess.page.url))
+        ok, detail = price_order_ok(_listed(ctx), prices)
+        ctx.expect("products ordered by price, low to high (store's data)", "never cheaper further down", detail, ok)
+        return f"{how}: {detail}"
+    ctx.steps.run("sorts_by_price", sort, soft=soft)
+
+
 # Where is the product's name on its own page? Themes differ wildly (h1, an h2 rich-text block, a div in
 # the theme's own <header>, a 12px span), so: score every visible text that matches the catalog
 # title, prefer headings and big type. Excluded: the SITE header/footer/nav, drawers and dialogs,
@@ -2691,4 +3020,5 @@ REGISTRY: dict[str, Callable] = {
     "search_no_results": search_no_results, "search_suggestions": search_suggestions,
     "collection_more": collection_more, "more_links_resolve": more_links_resolve, "mobile_menu": mobile_menu,
     "cart_edit": cart_edit,
+    "collection_filter": collection_filter,
 }
