@@ -3190,10 +3190,13 @@ BUY_STATE_JS = r"""([ids, quick]) => { const s = new Set(ids.map(String)); const
   const vis = e => { const r = e.getBoundingClientRect(); const st = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && st.visibility !== 'hidden' && st.display !== 'none'; };
   const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
-  const rows = [], seen = new Set();
+  const rows = [], seen = new Set(), all = [];
   for (const i of document.querySelectorAll('input[name="id"], select[name="id"]')) {
+    if ((i.type === 'radio' || i.type === 'checkbox') && !i.checked) continue;   // per-variant radios: only the picked one
     const f = i.closest('form') || i.parentElement;
-    if (!f || seen.has(f) || !s.has(String(i.value || '')) || otherCard(f, quick)) continue; seen.add(f);
+    if (!f || !s.has(String(i.value || '')) || otherCard(f, quick)) continue;
+    all.push(String(i.value));
+    if (seen.has(f)) continue; seen.add(f);
     const fid = f.getAttribute('id') || '';
     const btns = [...f.querySelectorAll('button, input[type=submit]'), ...(fid ? document.querySelectorAll('[form="' + CSS.escape(fid) + '"]') : [])]
       .filter(b => vis(b) && (b.type === 'submit' || /add|cart|bag|buy|sold|unavailable|stock|notify/i.test(txt(b))))
@@ -3202,7 +3205,7 @@ BUY_STATE_JS = r"""([ids, quick]) => { const s = new Set(ids.map(String)); const
                main: /main|product-form|product_form/i.test(fid + ' ' + f.getAttribute('class')) ? 1 : 0});
   }
   rows.sort((x, y) => (y.vis - x.vis) || (y.main - x.main));
-  return rows[0] || null; }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
+  return rows[0] ? Object.assign(rows[0], {all}) : null; }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
 
 SOLD_OUT_RX = re.compile(r"sold\s*out|out\s*of\s*stock|unavailable|not\s+available|notify\s+me|coming\s+soon", re.I)
 
@@ -3246,33 +3249,88 @@ def _pick_variant(ctx: Ctx, product: dict, target: dict, current: dict) -> dict:
     return out
 
 
-def _wait_marked(ctx: Ctx, product: dict, target: dict, secs: float = 3.0) -> dict:
-    """Poll until the page marks target as selected: the product form's id (authoritative when the page has one),
-    else ?variant= in the address, else the options the page shows as chosen (headless themes)."""
+def marks_values(chosen, values) -> bool:
+    """Does the page mark every one of these option values as chosen? chosen = texts of the controls the page marks
+    (checked radios and their labels, aria-checked, active swatches). A label may carry more than the value
+    ('2 Pack Rs. 2,099 Save 12%' for '2 Pack'). Pure."""
+    marks = [norm_text(c) for c in chosen or [] if c]
+    vals = [norm_text(v) for v in values or [] if norm_text(v)]
+    return bool(vals) and all(any(m == v or m.startswith(v + " ") for m in marks) for v in vals)
+
+
+def switch_verdict(target_id, before_vid, form: dict | None, url_vid, marks_target: bool, price_new: bool,
+                   page_vid=None) -> tuple[str, str | None, str]:
+    """After picking a variant: did the page select it? -> (ok | bad | unjudged, the id the page holds, where/why).
+    form = the product's own buy form ({variant, all: every id field's value}); before_vid = ?variant= in the address
+    BEFORE the pick. Radar opens product links with ?variant=<first available> itself, so an address that still says
+    that id is NOT the page keeping the old variant: many themes never push ?variant= (antinorm.co, veirdo.in, 11 Oct).
+    A form holding the target in ANY id field counts (themes keep a no-js <select name=id> copy, sticky bars a 2nd
+    form). A form that stays old while the page shows the pick (address pushed, or the new price appeared) is
+    contradictory: some themes set the id only when the shopper adds to cart, which this journey never does. Pure."""
+    t = str(target_id)
+    url_new = str(url_vid) if url_vid and str(url_vid) != str(before_vid or "") else None
+    if form:
+        if form.get("variant") == t or t in (form.get("all") or []):
+            return "ok", t, "the product form's variant id"
+        if url_new == t or (marks_target and price_new):
+            shown = ("the address now says ?variant=" + t) if url_new == t else "its option is marked chosen and its price appeared"
+            return "unjudged", form.get("variant"), (f"the page shows the picked variant ({shown}) but the buy form's id "
+                                                     f"stayed {form.get('variant')}; the theme may set it only on add to "
+                                                     "cart, which this check never clicks")
+        return "bad", form.get("variant"), "the product form's variant id"
+    if url_new:
+        return ("ok" if url_new == t else "bad"), url_new, "?variant= in the address (no product form)"
+    if marks_target:
+        return "ok", t, "the options the page marks as chosen (no product form)"
+    if page_vid and str(page_vid) != t:
+        return "bad", str(page_vid), "the options the page marks as chosen (no product form)"
+    return "unjudged", None, ("no product form to read, the address keeps the ?variant= Radar opened the page with "
+                              "(the theme does not push it), and the page marks no option as chosen")
+
+
+def _price_here(ctx: Ctx) -> set:
+    return set(prices_in_text(ctx.sess.evaluate("() => document.body.innerText") or ""))
+
+
+def _wait_marked(ctx: Ctx, product: dict, target: dict, current: dict, before_url: str, before_prices: set,
+                 secs: float = 6.0) -> dict:
+    """Poll (themes re-render the product section over the network, often 1-4 s) until the page selects target:
+    see switch_verdict. Re-reads the page every time (a re-rendered form is a new element)."""
     ids = [int(v["id"]) for v in product["variants"]]
-    st, url_vid, marked = None, None, None
+    want = round(int(target["price"]) / 100, 2)
+    m0 = re.search(r"[?&]variant=(\d+)", before_url or "")
+    before_vid = m0.group(1) if m0 else None
+    vals = changed_options(target, current)
+    res: dict = {}
     for _ in range(max(1, int(secs / 0.3))):
         st = ctx.sess.evaluate(BUY_STATE_JS, [ids, QUICK_SEL])
         m = re.search(r"[?&]variant=(\d+)", ctx.sess.page.url)
         url_vid = m.group(1) if m else None
-        if st:
-            if st["variant"] == str(target["id"]):
-                break
-        elif url_vid == str(target["id"]):
-            break
-        else:
+        marks = marks_values(ctx.sess.evaluate(SELECTED_OPTIONS_JS) or [], vals)
+        price_new = (int(target["price"]) != int(current["price"]) and price_shown(want, _price_here(ctx))[0]
+                     and not price_shown(want, before_prices)[0])
+        page_vid = None
+        if not st and not marks and not (url_vid and url_vid != before_vid):
             pm = _page_marked_variant(ctx, product)
-            marked = str(pm["id"]) if pm else None
-            if marked == str(target["id"]):
-                break
+            page_vid = str(pm["id"]) if pm else None
+        verdict, got, where = switch_verdict(target["id"], before_vid, st, url_vid, marks, price_new, page_vid)
+        res = {"verdict": verdict, "ok": verdict == "ok", "got": got, "where": where, "state": st, "url_vid": url_vid}
+        if verdict == "ok":
+            break
         ctx.sess.page.wait_for_timeout(300)
-    if st:
-        got, where = st["variant"], "the product form's variant id"
-    elif url_vid:
-        got, where = url_vid, "?variant= in the address (no product form)"
-    else:
-        got, where = marked, "the options the page marks as chosen (no product form)"
-    return {"ok": got == str(target["id"]), "got": got, "where": where, "state": st, "url_vid": url_vid}
+    return res
+
+
+def _wait_price(ctx: Ctx, want: float, secs: float = 4.0) -> tuple[bool, str]:
+    """The new price may arrive after the variant id (Dawn-family themes set the id at once, then fetch the
+    re-rendered price section: theme-taste-demo, 11 Oct). Poll for it."""
+    ok, how = False, ""
+    for _ in range(max(1, int(secs / 0.3))):
+        ok, how = price_shown(want, _price_here(ctx))
+        if ok:
+            break
+        ctx.sess.page.wait_for_timeout(300)
+    return ok, how
 
 
 def variant_switch(ctx: Ctx, url: str, strict: bool = False):
@@ -3280,7 +3338,8 @@ def variant_switch(ctx: Ctx, url: str, strict: bool = False):
     select THAT variant (its id in the buy form, or ?variant= in the address) and show its price; a sold-out variant,
     once picked, must not be buyable (buy button disabled or saying sold out). Options are clicked like a shopper (radio
     label, swatch, button, dropdown); the buy button is NEVER clicked, nothing is submitted. A page with no clickable
-    option control is 'not judged'. Warnings unless strict (not yet measured on a bench)."""
+    option control, or whose signals cannot be read or contradict each other, is 'not judged'. Warnings unless strict
+    (not yet measured on a bench)."""
     soft = not strict
     state: dict = {}
     ctx.steps.run("product_loads", lambda: _load(ctx, url))
@@ -3306,35 +3365,43 @@ def variant_switch(ctx: Ctx, url: str, strict: bool = False):
                                                         "(the theme may pick variants another way)")
         else:
             def switch():
-                before_url = ctx.sess.page.url
+                before_url, before_prices = ctx.sess.page.url, _price_here(ctx)
                 picked = _pick_variant(ctx, p, target, cur)
                 ctx.expect("option control for the other variant", " / ".join(variant_options(target)),
                            ", ".join(picked["how"]) or f"none for {picked['missing']!r}", not picked["missing"])
-                got = _wait_marked(ctx, p, target)
+                got = _wait_marked(ctx, p, target, cur, before_url, before_prices)
+                if got["verdict"] == "unjudged":
+                    state["unjudged"] = f"chose {', '.join(picked['how'])}: {got['where']}"
+                    return state["unjudged"]
                 ctx.expect("page selects the picked variant", _variant_label(target),
                            f"{got['got'] or 'nothing readable'} ({got['where']}) after choosing {', '.join(picked['how'])}", got["ok"])
                 bits = [f"chose {', '.join(picked['how'])}: page selects {_variant_label(target)}"]
                 if got["url_vid"] == str(target["id"]) and got["url_vid"] not in before_url:
                     bits.append(f"address now ?variant={target['id']}")
                 if int(target["price"]) != int(cur["price"]):
-                    want = round(int(target["price"]) / 100, 2)
-                    ok, how = price_shown(want, prices_in_text(ctx.sess.evaluate("() => document.body.innerText") or ""))
+                    ok, how = _wait_price(ctx, round(int(target["price"]) / 100, 2))
                     ctx.expect("new variant's price shown", rupees(target["price"]), how or "not on page", ok)
                     bits.append(f"price {rupees(cur['price'])} → {how}")
                 return "; ".join(bits)
             ctx.steps.run("variant_switch", switch, soft=soft)
+            if state.get("unjudged") and ctx.steps.items and ctx.steps.items[-1].name == "variant_switch":
+                ctx.steps.items.pop()           # unreadable or contradictory signals: 'not judged', never a warning
+                ctx.steps.info("variant_switch_not_judged", state["unjudged"])
 
     if sold:
         now = _selected_variant(ctx, p)
 
         def sold_out():
+            before_url, before_prices = ctx.sess.page.url, _price_here(ctx)
             picked = _pick_variant(ctx, p, sold, now)
             if picked["missing"]:
                 return f"not judged: no visible option control for {picked['missing']!r}"
             if picked["disabled"]:
                 ctx.expect("sold-out variant cannot be bought", "blocked", f"its option is disabled: {', '.join(picked['how'])}", True)
                 return f"{_variant_label(sold)} is sold out: its option cannot be picked ({', '.join(picked['how'])})"
-            got = _wait_marked(ctx, p, sold)
+            got = _wait_marked(ctx, p, sold, now, before_url, before_prices)
+            if got["verdict"] == "unjudged":
+                return f"chose {', '.join(picked['how'])}; not judged: {got['where']}"
             ctx.expect("page selects the sold-out variant", _variant_label(sold),
                        f"{got['got'] or 'nothing readable'} ({got['where']}) after choosing {', '.join(picked['how'])}", got["ok"])
             st = got["state"]

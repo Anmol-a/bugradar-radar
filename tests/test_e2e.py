@@ -1550,6 +1550,38 @@ def test_variant_switch_is_not_judged_without_a_clickable_option(tmp_path):
     assert "no visible option control for 'Large'" in st["variant_switch_not_judged"].detail
 
 
+def test_variant_switch_without_a_form_or_address_push_reads_the_marked_pill(tmp_path):
+    """Round 2 (antinorm.co, veirdo.in, 11 Oct): an app-built buy box (no form, no id field) and a theme that never
+    pushes ?variant=. The address keeps the ?variant=201 Radar opened it with: that is not 'kept the old variant'.
+    The page marks the Large pill chosen and shows ₹1,399 -> pass."""
+    c = _case(_variant_only("variant_no_url_push", tmp_path), "product.variant_switch")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["variant_switch"].status == "pass", [(s.name, s.status, s.error) for s in st.values()]
+    d = st["variant_switch"].detail
+    assert "202 (Large, ₹1,399.00)" in d and "₹1,299.00 → ₹1,399.00" in d and "address now" not in d, d
+
+
+def test_variant_switch_waits_for_a_late_price_and_a_late_re_rendered_form(tmp_path):
+    """Round 2 (theme-taste-demo): the id changes at once and the price 1.5 s later; a slow section render swaps in a
+    new product form with the picked id 4 s after the click. Both pass (the old 3 s / no-wait reads warned)."""
+    for mode in ("variant_price_late", "variant_form_late"):
+        c = _case(_variant_only(mode, tmp_path / mode), "product.variant_switch")
+        st = _steps(c)
+        assert c.verdict == "pass" and st["variant_switch"].status == "pass", (mode, [(s.name, s.status, s.error) for s in st.values()])
+        assert "₹1,299.00 → ₹1,399.00" in st["variant_switch"].detail, (mode, st["variant_switch"].detail)
+
+
+def test_variant_switch_with_an_id_set_only_on_add_to_cart_is_not_judged(tmp_path):
+    """The page shows Large picked (pill, price, ?variant=202) but the hidden id field stays Small's until the shopper
+    adds to cart, which this journey never clicks: contradictory -> 'not judged' (info), never a warning; even strict."""
+    for strict in (False, True):
+        c = _case(_variant_only("variant_id_on_submit", tmp_path / str(strict), strict=strict), "product.variant_switch")
+        st = _steps(c)
+        assert c.verdict == "pass" and "variant_switch" not in st and st["variant_switch_not_judged"].status == "info", \
+            [(s.name, s.status, s.error) for s in st.values()]
+        assert "buy form's id stayed 201" in st["variant_switch_not_judged"].detail, st["variant_switch_not_judged"].detail
+
+
 
 def _price_only(mode, tmp_path, strict=False, **kw):
     """Only the cart suite's cart.price_consistency case (journey 23). strict=True flips the builder's strict=False."""

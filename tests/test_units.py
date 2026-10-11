@@ -884,6 +884,28 @@ def test_variant_switch_targets_prefer_in_stock_other_price_then_fewest_changes(
     assert variant_options({"title": "Default Title"}) == [] and variant_options({"title": "50 ml / Rose"}) == ["50 ml", "Rose"]
 
 
+def test_switch_verdict_ignores_the_address_radar_opened_with():
+    """Journey 22 round 2: ?variant= that was already in the address before the pick is no evidence (antinorm.co,
+    veirdo.in); any id field of the product form counts; form stale while the page shows the pick = not judged."""
+    from radar.checks.library import switch_verdict, marks_values
+    form = lambda v, *more: {"variant": v, "all": [v, *more]}
+    # no form, address unchanged, page marks the picked pill -> ok; marks nothing -> not judged, never 'kept old'
+    assert switch_verdict(2, "1", None, "1", True, False)[0] == "ok"
+    assert switch_verdict(2, "1", None, "1", False, False)[0] == "unjudged"
+    assert switch_verdict(2, "1", None, "1", False, False, page_vid="1")[:2] == ("bad", "1")
+    # no form, the theme pushed an address: it decides
+    assert switch_verdict(2, "1", None, "2", False, False)[0] == "ok"
+    assert switch_verdict(2, "1", None, "3", False, False)[:2] == ("bad", "3")
+    # a product form: authoritative; a second id field (no-js select / sticky form) holding the pick counts
+    assert switch_verdict(2, "1", form("2"), "1", False, False)[0] == "ok"
+    assert switch_verdict(2, "1", form("1", "2"), "1", False, False)[0] == "ok"
+    assert switch_verdict(2, "1", form("1"), "1", True, False)[:2] == ("bad", "1")     # pill checked, nothing else: broken
+    assert switch_verdict(2, "1", form("1"), "2", False, False)[0] == "unjudged"      # address pushed, id not
+    assert switch_verdict(2, "1", form("1"), "1", True, True)[0] == "unjudged"        # pill + new price, id not
+    assert marks_values(["2 Pack", "2 Pack\nRs. 2,099\nSave 12%"], ["2 Pack"]) and marks_values(["M"], ["M"])
+    assert not marks_values(["1 Pack Rs. 1,199"], ["2 Pack"]) and not marks_values(["Small"], ["S"]) and not marks_values([], ["M"])
+
+
 def test_sold_out_variant_blocks_buy_only_when_no_enabled_buy_button_is_left():
     from radar.checks.library import sold_out_blocks
     assert sold_out_blocks([{"text": "Sold out", "off": True}])[0]

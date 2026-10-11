@@ -249,6 +249,12 @@ Modes (to prove Radar catches and heals what it should):
                    makes it say 'Sold out' -> variant_switch and sold_out_blocks_buy PASS
   variant_sold_out_buyable  same, but the buy button stays enabled 'Add to cart' on the sold-out size -> WARNS (strict:
                    FAILS) at sold_out_blocks_buy (the buy button is never clicked)
+  variant_no_url_push  (journey 22 round 2: antinorm.co, veirdo.in) an app-built buy box with no form/id field, pill
+                   labels carry their price, the theme never pushes ?variant= -> variant_switch PASSES on the pill the
+                   page marks as chosen (it used to warn: the address kept the ?variant= Radar opened it with)
+  variant_price_late  (theme-taste-demo) the form's id changes at once, the price 1.5 s later -> PASSES
+  variant_form_late  section rendering swaps in a NEW product form with the picked id 4 s after the click -> PASSES
+  variant_id_on_submit  price, pill and ?variant= change, the id field is set only on add to cart -> 'not judged' (info)
   card_price_stale collection cards show prices (as in healthy: the vase on sale, MRP ₹1,599 struck, 'Save' badge), but
                    the vase's card shows an OLD sale price ₹999 from a stale cached section while its product page and
                    the cart line say ₹1,299 (journey 23) -> cart.price_consistency WARNS (strict: FAILS) at
@@ -316,7 +322,8 @@ EXTRA_DECOR = [{"id": 60 + i, "handle": f"clay-bowl-{i}", "title": f"Clay Bowl N
 MORE_MODES = ("paginated", "pagination_broken", "load_more", "infinite_scroll", "more_hidden")
 J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepage banner (journey 15)
 # journey 22: size pills on multi-variant product pages (only in these modes: other modes test their own pickers)
-VARIANT_MODES = ("healthy", "variant_switch_broken", "variant_sold_out", "variant_sold_out_buyable")
+VARIANT_MODES = ("healthy", "variant_switch_broken", "variant_sold_out", "variant_sold_out_buyable",
+                 "variant_no_url_push", "variant_price_late", "variant_form_late", "variant_id_on_submit")
 SOLD_OUT_SIZE = {"id": 203, "available": False, "price": "1499.00", "option1": "Extra Large", "title": "Extra Large"}
 FACET_MODES = ("facets", "facets_sort", "facets_sort_allowed", "filter_broken")     # storefront filters (journey 25)
 # Shopify's default robots.txt lines for collections (every mode): no sort_by, no two filters, no '+' tag joins
@@ -1192,6 +1199,8 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
             + '</fieldset></variant-radios>')
         if self.mode == "variant_switch_broken":
             return pills
+        if self.mode in ("variant_no_url_push", "variant_price_late", "variant_form_late", "variant_id_on_submit"):
+            return self._theme_pills(vs, vid)
         data = json.dumps([{"id": v["id"], "option1": v["option1"], "available": v["available"],
                             "price": f'₹{float(v["price"]):,.2f}'} for v in vs])
         block = "false" if self.mode == "variant_sold_out_buyable" else "true"
@@ -1203,6 +1212,39 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         "  const b = f.querySelector('[name=add]'); const no = BLOCK && !v.available;\n"
                         "  b.disabled = no; b.textContent = no ? 'Sold out' : 'Add to cart';\n"
                         "  history.replaceState(null, '', location.pathname + '?variant=' + v.id); })); })();</script>")
+
+    def _theme_pills(self, vs, vid):
+        """Journey 22 round 2: real themes whose variant switch WORKS but that the first variant_switch misread.
+        variant_no_url_push (antinorm.co, veirdo.in): an app-built buy box with no <form>/id field (its button adds the
+          picked variant from a script); pill labels carry the pack price ('Large ₹1,399.00'); the theme never pushes
+          ?variant=, so the address keeps the ?variant=201 Radar opened it with.
+        variant_price_late (theme-taste-demo): the form's id changes at once, the price ~1.5 s later (Dawn-family themes
+          fetch the re-rendered price section).
+        variant_form_late: section rendering replaces the whole product form (a NEW element) with the picked variant's
+          id ~4 s after the click (a slow store).
+        variant_id_on_submit: the price, the pill and ?variant= change at once, but the hidden id field is set only when
+          the shopper adds to cart (onsubmit) -> contradictory, so 'not judged'."""
+        price_in_label = self.mode == "variant_no_url_push"
+        pills = ('<variant-radios class="product-form__input"><fieldset><legend>Size</legend>' + "".join(
+            f'<input type="radio" id="size-{v["id"]}" name="Size" value="{v["option1"]}"{" checked" if v["id"] == vid else ""}>'
+            f'<label for="size-{v["id"]}">{v["option1"]}'
+            + (f'<br><small>₹{float(v["price"]):,.2f}</small>' if price_in_label else "") + '</label>' for v in vs)
+            + '</fieldset></variant-radios>')
+        data = json.dumps([{"id": v["id"], "option1": v["option1"], "price": f'₹{float(v["price"]):,.2f}'} for v in vs])
+        act = {
+            "variant_no_url_push": "window.__vid = v.id; price(v);",
+            "variant_price_late": "f().querySelector('[name=id]').value = v.id; push(v); setTimeout(() => price(v), 1500);",
+            "variant_form_late": "setTimeout(() => { const o = f().closest('product-form'); const n = o.cloneNode(true);"
+                                 " n.querySelector('[name=id]').value = v.id; o.replaceWith(n); price(v); push(v); }, 4000);",
+            "variant_id_on_submit": "price(v); push(v);",
+        }[self.mode]
+        return pills + ("<script>(() => { const V = " + data + ";\n"
+                        "const f = () => document.getElementById('product-form-template__main');\n"
+                        "const price = v => { document.querySelector('main .price').textContent = v.price; };\n"
+                        "const push = v => history.replaceState(null, '', location.pathname + '?variant=' + v.id);\n"
+                        "window.__vid = " + str(vid) + ";\n"
+                        "document.querySelectorAll('variant-radios input[type=radio]').forEach(r => r.addEventListener('change', () => {\n"
+                        "  const v = V.find(x => x.option1 === r.value); if (!v) return;\n  " + act + " })); })();</script>")
 
     def _pdp(self, p):
         if self.mode == "marketplace_only":
@@ -1278,7 +1320,17 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
         body = (f'{quick}<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="300" height="300" alt="">'
                 f'<div class="price">₹{float(p["price"]):,.2f}</div>{buy}')
         if self.mode in VARIANT_MODES and available and len(self._variants(p)) > 1 and 'id="product-form-template__main"' in buy:
-            body = body.replace(buy, self._size_pills(p, vid) + buy, 1)       # journey 22
+            pills = self._size_pills(p, vid)
+            if self.mode == "variant_no_url_push":        # an app-built buy box: no form, no id field
+                body = body.replace(buy, pills + '<div class="app-buy-box"><button type="button" class="app-atc" '
+                                    'onclick="addToCart(window.__vid)">Add to cart</button></div>', 1)
+            elif self.mode == "variant_id_on_submit":     # the theme sets the id from the picked pill on add to cart
+                live = buy.replace(f"addToCart({vid})", "const o = document.querySelector('variant-radios input:checked'); "
+                                   "this.querySelector('[name=id]').value = document.getElementById(o.id).id.slice(5); "
+                                   "addToCart(this.querySelector('[name=id]').value)", 1)
+                body = body.replace(buy, pills + live, 1)
+            else:
+                body = body.replace(buy, pills + buy, 1)       # journey 22
         if self.mode == "sticky_buy_only":
             sticky = buy.replace('id="product-form-template__main"', 'id="sticky-form"')
             body += ('<div style="height:2400px"></div><div id="sticky-atc" style="display:none;position:fixed;left:0;right:0;'
