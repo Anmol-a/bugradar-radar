@@ -1,0 +1,3255 @@
+{
+  "run_id": "20261011T212533Z-m-ed26",
+  "site_id": "bombaytrooper.com",
+  "base_url": "https://bombaytrooper.com",
+  "device": "mobile",
+  "started_at": "2026-10-11T21:25:33+00:00",
+  "finished_at": "2026-10-11T21:27:55+00:00",
+  "verdict": "degraded",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.41s",
+              "error": null,
+              "secs": 4.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bombay Trooper",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5583 chars, 27 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/hoppers (12 products)",
+              "error": null,
+              "secs": 3.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/hoppers ('VIEW ALL')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/hoppers",
+                  "actual": "/collections/hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 24 candidates \u2192 /products/olive-green-grey-unisex-knit-hoppers",
+              "error": null,
+              "secs": 3.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/olive-green-grey-unisex-knit-hoppers ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/olive-green-grey-unisex-knit-hoppers",
+                  "actual": "/products/olive-green-grey-unisex-knit-hoppers",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Olive Green & Grey - Unisex Knit Hoppers', selected variant 46634837737707 at \u20b91,675.00",
+              "error": null,
+              "secs": 0.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/olive-green-grey-unisex-knit-hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/olive-green-grey-unisex-knit-hoppers.js with variants",
+                  "actual": "'Olive Green & Grey - Unisex Knit Hoppers', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "actual": "'OLIVE GREEN & GREY - UNISEX KNIT HOPPERS' (h1, 29px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,675.00",
+                  "actual": "\u20b91,675.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 412x549)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "actual": "'OLIVE GREEN & GREY - UNISEX KNIT HOPPERS' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1675.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.15,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1789910486.1791753942&dt=Bombay%20Trooper&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fb",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753941593&cv=11&fst=1791753941593&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a8",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1789910486.1791753942&gtm=45je6a80h2v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a80h2v882768572za208xf1&_p=1791753939507&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&d",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a80h2v882768572za200xf1&_p=1791753939507&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gd",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791753939507&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=6a4b416d-88e6-4433-960e-556f082ca",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=95388a91-dd40-4500-8464-fd3738b42",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1789910486.1791753942&dt=Hoppers&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbombaytroop",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753945159&cv=11&fst=1791753945159&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791753944790&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791753944790&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=48bc9350-539d-4bb9-91c0-8829e62cf",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=fa59bc9e-8ab7-4169-998e-f770fb53b",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1789910486.1791753942&dt=Olive%20Green%20%26%20Grey%20-%20Unisex%20Knit%20Hoppers&tid=AW-9",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753950413&cv=11&fst=1791753950413&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791753949392&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791753949392&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=c4f063f9-bf34-4b72-afef-70fba82bd",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=a86b076d-bf91-4f1d-ba47-5fd8a6bbc",
+            "POST https://g86t03bsah.us-east-1.aws.clickhouse.cloud:8443/"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.99,
+              "load": 3.0,
+              "lcp": 0.48
+            },
+            {
+              "url": "/collections/hoppers",
+              "ttfb": 0.11,
+              "dcl": 0.75,
+              "load": 2.13,
+              "lcp": 0.82
+            },
+            {
+              "url": "/products/olive-green-grey-unisex-knit-hoppers",
+              "ttfb": 0.15,
+              "dcl": 0.55,
+              "load": 1.63,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.15s",
+              "error": null,
+              "secs": 3.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bombay Trooper",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5583 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.15s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.15s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "4%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "4%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.5s, CLS 0.0",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.5s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "151 scripts, at least 1.6 MB of JavaScript, 10 third-party script hosts: www.googletagmanager.com (4), pdp.gokwik.co (2), connect.facebook.net (2), www.gstatic.com (1), static.ads-twitter.com (1)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "151 scripts, at least 1.6 MB of JavaScript, 10 third-party script hosts: www.googletagmanager.com (4), pdp.gokwik.co (2), connect.facebook.net (2), www.gstatic\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.48,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1250372755.1791753955&dt=Bombay%20Trooper&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbo",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753955090&cv=11&fst=1791753955090&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1250372755.1791753955&gtm=45je6a72v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791753953734&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791753953734&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72h1v9245712461za200xf1&_p=1791753953734&gcs=G111&gcd=13t3t3t3t5",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=2e439cbf-6a27-4192-90dc-03c84b299",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=20aee945-89a6-4641-8327-7c31f9e5f"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.12,
+              "dcl": 0.89,
+              "load": 2.25,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.27s",
+              "error": null,
+              "secs": 3.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bombay Trooper",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5583 chars, 27 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/summer-shades",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.88s",
+              "error": null,
+              "secs": 2.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Summer Shades",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5501 chars, 46 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/active-mesh-t-shirts",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.9s",
+              "error": null,
+              "secs": 2.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Active Mesh T-shirts",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3364 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/rider-jerseys",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.66s",
+              "error": null,
+              "secs": 2.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Full Sleeve Rider Jerseys by Bombay Trooper",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3183 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.13,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1073182186.1791753961&dt=Bombay%20Trooper&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fb",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753961074&cv=11&fst=1791753961074&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1073182186.1791753961&gtm=45je6a72h1v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za200xf1&_p=1791753959185&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za208xf1&_p=1791753959185&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&d",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791753959185&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=fac5186d-b84a-4871-a1a7-13219bc1d",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=528eafa9-39a3-46c6-a1d7-ccd8237ee",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1073182186.1791753961&dt=Summer%20Shades&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbom",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753963894&cv=11&fst=1791753963894&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791753962911&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791753962911&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=91afe6c1-9f6d-495d-b9bb-12c911ced",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=ebe400eb-d629-4d47-be68-f526ca5c7",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1073182186.1791753961&dt=Active%20Mesh%20T-shirts&tid=AW-993920369&en=page_view&dl=https%3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791753965628&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791753965628&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753966518&cv=11&fst=1791753966518&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=fed43ae9-82d6-45e9-80f4-6048a0fa6",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=d7c3a0e3-a4eb-4e38-99bb-cca859100",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791753967850&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1073182186.1791753961&dt=Full%20Sleeve%20Rider%20Jerseys%20by%20Bombay%20Trooper&tid=AW-99"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.04,
+              "load": 2.67,
+              "lcp": 0.46
+            },
+            {
+              "url": "/collections/summer-shades",
+              "ttfb": 0.2,
+              "dcl": 0.72,
+              "load": 1.71,
+              "lcp": 0.58
+            },
+            {
+              "url": "/collections/active-mesh-t-shirts",
+              "ttfb": 0.21,
+              "dcl": 0.77,
+              "load": 1.6,
+              "lcp": 0.61
+            },
+            {
+              "url": "/collections/rider-jerseys",
+              "ttfb": 0.14,
+              "dcl": 0.56,
+              "load": 1.37,
+              "lcp": 0.61
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.6s",
+              "error": null,
+              "secs": 3.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bombay Trooper",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5583 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "tapped the menu button ('SEARCH'): 7 links shown, e.g. HOPPERS, TRAVEL PANTS, DENIM JACKET",
+              "error": null,
+              "secs": 2.78,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.86,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753972020&cv=11&fst=1791753972020&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=1141533262.1791753972&dt=Bombay%20Trooper&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fb",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=F98D8Mwn7py__ogrBV_Vl-e23NmGx2acnQ&auid=1141533262.1791753972&gtm=45je6a72v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791753970303&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791753970303&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791753970303&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=cacd456f-01d8-4549-a77f-99e188eb6",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=3a4b9889-a09a-4cec-95b1-8f72a7797"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.08,
+              "dcl": 1.36,
+              "load": 2.94,
+              "lcp": 0.63
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/bags",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.25s",
+              "error": null,
+              "secs": 3.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bags",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2626 chars, 20 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Bags', heading 'BAGS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/bags",
+                  "actual": "/collections/bags",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/faq",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.67s",
+              "error": null,
+              "secs": 2.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "FaQs",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9362 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'FaQs', heading 'FAQS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/faq",
+                  "actual": "/pages/faq",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /collections",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.84s",
+              "error": null,
+              "secs": 2.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Collections",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1682 chars, 49 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Collections', heading 'ALL COLLECTIONS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections",
+                  "actual": "/collections",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "3 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.67,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=356091838.1791753977&dt=Bags&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbombaytrooper.c",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753977376&cv=11&fst=1791753977376&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=356091838.1791753977&gtm=45je6a72v882768572za208zd882768572xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791753977151&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=356091838.1791753977&dt=Bags&tid=AW-993920369&en=source_update&dl=https%3A%2F%2Fbombaytroop",
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791753977151&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791753977151&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200zb882768572zd882768572xf1&_p=1791753977151&gcs",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=b680080e-7a30-49bc-958f-3a6f5bdae",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=6405f862-eb9d-485e-8ed4-ba7b8843b",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=356091838.1791753977&dt=FaQs&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbombaytrooper.",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753981925&cv=11&fst=1791753981925&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791753981025&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791753981025&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=a8fd7124-8cd1-45cb-a058-7860a3e7e",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=cfefd09c-0bd3-4804-bd5b-adb887ea3",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791753983319&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=356091838.1791753977&dt=Collections&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbombayt",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753983441&cv=11&fst=1791753983441&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791753983319&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791753983319&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=1857049c-6770-4d4e-be16-f5afc2882"
+          ],
+          "loads": [
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.18,
+              "dcl": 0.88,
+              "load": 2.81,
+              "lcp": 1.0
+            },
+            {
+              "url": "/pages/faq",
+              "ttfb": 0.23,
+              "dcl": 0.59,
+              "load": 1.58,
+              "lcp": 0.45
+            },
+            {
+              "url": "/collections",
+              "ttfb": 0.13,
+              "dcl": 0.7,
+              "load": 1.59,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.hoppers",
+      "suite": "catalog",
+      "title": "Collection 'Hoppers' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.91s",
+              "error": null,
+              "secs": 2.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1867 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "12 products listed",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "8%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "8%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.71s, CLS 0.0",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.71s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "153 scripts, at least 1.6 MB of JavaScript, 10 third-party script hosts: www.googletagmanager.com (6), pdp.gokwik.co (2), connect.facebook.net (2), googleads.g.doubleclick.net (1), www.gstatic.com (1)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "153 scripts, at least 1.6 MB of JavaScript, 10 third-party script hosts: www.googletagmanager.com (6), pdp.gokwik.co (2), connect.facebook.net (2), googleads.g\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.24,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=168364078.1791753986&dt=Hoppers&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbombaytroop",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753986059&cv=11&fst=1791753986059&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a80h2v882768572za208zd882768572xf1&_p=1791753985843&_gaz=1&gcd=13l3l3l3l1l1&npa=0",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=168364078.1791753986&gtm=45je6a80h2v882768572za208zd882768572xecxf1&fmt=8",
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a80h2v882768572za200zd882768572xf1&_p=1791753985843&gcd=13l3l3l3l1l1&npa=0&dma=0&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a80h2v882768572za200zd882768572xf1&_p=1791753985843&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a80h2v9245712461za200zb882768572zd882768572xf1&_p=1791753985843&g",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=4957aef9-469d-477b-b372-7cd9dfef7",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=5e4b2b69-2a37-4580-ae9e-d7604dde2"
+          ],
+          "loads": [
+            {
+              "url": "/collections/hoppers",
+              "ttfb": 0.21,
+              "dcl": 0.79,
+              "load": 1.97,
+              "lcp": 0.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.men-tshirts",
+      "suite": "catalog",
+      "title": "Collection 'Men's T-shirts' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.91s",
+              "error": null,
+              "secs": 3.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Men's T-shirts",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3602 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "36 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.92s",
+              "error": null,
+              "secs": 2.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Men's T-shirts \u2013 Page 2",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1889 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 11 more products",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "11",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.01,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791753990025&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=532096869.1791753990&dt=Men%27s%20T-shirts&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fb",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753990233&cv=11&fst=1791753990233&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=532096869.1791753990&gtm=45je6a72v882768572za208zd882768572xecxf1&fmt=8",
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791753990025&gcd=13l3l3l3l1l1&npa=0&dma=0&ec",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791753990025&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200zb882768572zd882768572xf1&_p=1791753990025&gcs",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=ec1de64c-d7b8-4bac-b19a-5e458696f",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=9a735b27-6cef-483f-ad0c-9e19622e2",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=532096869.1791753990&dt=Men%27s%20T-shirts%20%E2%80%93%20Page%202&tid=AW-993920369&en=page_",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753995275&cv=11&fst=1791753995275&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za208xf1&_p=1791753994142&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za200xf1&_p=1791753994142&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gd",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=47e96b1e-52f2-4560-8e52-0b41de216",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=cd0a764f-497f-4031-a559-09f7f6256",
+            "GET https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=cd0a764f-497f-4031-a559-09f7f62564f8&flow=embed&f",
+            "GET https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=47e96b1e-52f2-4560-8e52-0b41de216167&flow=embed&f"
+          ],
+          "loads": [
+            {
+              "url": "/collections/men-tshirts",
+              "ttfb": 0.04,
+              "dcl": 0.76,
+              "load": 2.6,
+              "lcp": 1.51
+            },
+            {
+              "url": "/collections/men-tshirts?page=2",
+              "ttfb": 0.02,
+              "dcl": 0.69,
+              "load": 2.0,
+              "lcp": 1.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.men-tshirts",
+      "suite": "catalog",
+      "title": "Filtering collection 'Men's T-shirts' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.08s",
+              "error": null,
+              "secs": 3.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Men's T-shirts",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3602 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "1 filter options (e.g. In stock only); applying 'In stock only' = filter.v.availability=1",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "pass",
+              "detail": "opened /collections/men-tshirts?filter.v.availability=1 directly: the theme's own request (?page=&sort_by=manual&filter.v.availability=1&filter.v.price.gte=&filter.v.price.lte=) is disallowed by robots.txt",
+              "error": null,
+              "secs": 9.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Men's T-shirts",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1037 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "filters in the page address",
+                  "expected": "exactly one: filter.v.availability=1",
+                  "actual": "filter.v.availability=1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_narrows_results",
+              "status": "warn",
+              "detail": null,
+              "error": "products listed with the filter on: expected \u2265 1, got 0",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed with the filter on",
+                  "expected": "\u2265 1",
+                  "actual": "0",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.86,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=d41a8b86-f58a-463b-bae7-9c71ef2d1396&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=888962163.1791753997&dt=Men%27s%20T-shirts&tid=AW-993920369&en=page_view&dl=https%3A%2F%2F",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791753997284&cv=11&fst=1791753997284&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=888962163.1791753997&gtm=45je6a72v882768572za208zd882768572xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791753997053&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791753997053&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791753997053&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a80h2v9245712461za200zb882768572zd882768572xf1&_p=1791753997053&g",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=c3da9c07-c484-4265-a65e-356c9b054",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=1c91b9cb-0b79-4974-8021-1955d35f9",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=888962163.1791753997&dt=Men%27s%20T-shirts&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fb",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754000932&cv=11&fst=1791754000932&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za208zd882768572xf1&_p=1791754000708&gcd=13l3l3l3l1l1&npa=0&dma=0&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za200zd882768572xf1&_p=1791754000708&gcd=13l3l3l3l1l1&npa=0&dma=0&",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za200zd882768572xf1&_p=1791754000708&gcs=G111&gcd=13t3t3t3t5l1&npa",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=d41a8b86-f58a-463b-bae7-9c71ef2d1",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=7d5ee20e-1e1f-4c4c-9062-39ac53084",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200zb882768572zd882768572xf1&_p=1791754000708&gcs",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754012977&cv=11&fst=1791754012977&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791754012849&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791754012849&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791754012849&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=27ce84df-abe9-463f-a5e0-29815c74a"
+          ],
+          "loads": [
+            {
+              "url": "/collections/men-tshirts",
+              "ttfb": 0.04,
+              "dcl": 0.95,
+              "load": 2.2,
+              "lcp": 1.76
+            },
+            {
+              "url": "/collections/men-tshirts?filter.v.availability=1",
+              "ttfb": 0.04,
+              "dcl": 0.88,
+              "load": 1.95,
+              "lcp": 0.88
+            },
+            {
+              "url": "/collections/men-tshirts",
+              "ttfb": 0.02,
+              "dcl": 0.74,
+              "load": 1.78,
+              "lcp": 1.44
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.olive-green-grey-unisex-knit-hoppers",
+      "suite": "product",
+      "title": "PDP 'Olive Green & Grey - Unisex Knit Hoppers'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.39s",
+              "error": null,
+              "secs": 3.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1995 chars, 7 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/olive-green-grey-unisex-knit-hoppers",
+                  "actual": "/products/olive-green-grey-unisex-knit-hoppers",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Olive Green & Grey - Unisex Knit Hoppers', selected variant 46634837737707 at \u20b91,675.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/olive-green-grey-unisex-knit-hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/olive-green-grey-unisex-knit-hoppers.js with variants",
+                  "actual": "'Olive Green & Grey - Unisex Knit Hoppers', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "actual": "'OLIVE GREEN & GREY - UNISEX KNIT HOPPERS' (h1, 29px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,675.00",
+                  "actual": "\u20b91,675.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 412x549)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "actual": "'OLIVE GREEN & GREY - UNISEX KNIT HOPPERS' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1675.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "fail",
+              "detail": null,
+              "error": "an in-stock variant exists: expected \u2265 1 available variant, got none available",
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "none available",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "variant_ready",
+          "error": "an in-stock variant exists: expected \u2265 1 available variant, got none available",
+          "screenshot": "product.pdp.olive-green-grey-unisex-knit-hoppers.a1.png",
+          "trace": "product.pdp.olive-green-grey-unisex-knit-hoppers.a1_trace.zip",
+          "secs": 5.48,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=461722477.1791754018&dt=Olive%20Green%20%26%20Grey%20-%20Unisex%20Knit%20Hoppers&tid=AW-993",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754017775&cv=11&fst=1791754017775&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=461722477.1791754018&gtm=45je6a72v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791754015977&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791754015977&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791754015977&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "POST https://bombaytrooper.com/api/event/collect",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=479cf514-6512-4a7d-b5b9-e8c6c8716",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=279d4e0e-4b2c-45bb-8048-d1cd55d5e",
+            "POST https://g86t03bsah.us-east-1.aws.clickhouse.cloud:8443/"
+          ],
+          "loads": [
+            {
+              "url": "/products/olive-green-grey-unisex-knit-hoppers?variant=46634837737707",
+              "ttfb": 0.17,
+              "dcl": 1.17,
+              "load": 2.53,
+              "lcp": 0.46
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.79s",
+              "error": null,
+              "secs": 2.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1995 chars, 7 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/olive-green-grey-unisex-knit-hoppers",
+                  "actual": "/products/olive-green-grey-unisex-knit-hoppers",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Olive Green & Grey - Unisex Knit Hoppers', selected variant 46634837737707 at \u20b91,675.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/olive-green-grey-unisex-knit-hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/olive-green-grey-unisex-knit-hoppers.js with variants",
+                  "actual": "'Olive Green & Grey - Unisex Knit Hoppers', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "actual": "'OLIVE GREEN & GREY - UNISEX KNIT HOPPERS' (h1, 29px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,675.00",
+                  "actual": "\u20b91,675.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 412x549)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "actual": "'OLIVE GREEN & GREY - UNISEX KNIT HOPPERS' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1675.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "fail",
+              "detail": null,
+              "error": "an in-stock variant exists: expected \u2265 1 available variant, got none available",
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "none available",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "variant_ready",
+          "error": "an in-stock variant exists: expected \u2265 1 available variant, got none available",
+          "screenshot": "product.pdp.olive-green-grey-unisex-knit-hoppers.a2.png",
+          "trace": "product.pdp.olive-green-grey-unisex-knit-hoppers.a2_trace.zip",
+          "secs": 4.09,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "[RR] Error in fetch hijack: TypeError: Failed to fetch at fetch (event-observer-collector.js:2:837) at window2.fetch (https://bombaytrooper.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js:1:7379) ",
+              "url": "https://cdn.shopify.com/extensions/01a12c5f-c69b-73a3-9079-7146d38d74b0/restockrocket-1-604/assets/restockrocket-product.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1107265551.1791754023&dt=Olive%20Green%20%26%20Grey%20-%20Unisex%20Knit%20Hoppers&tid=AW-9",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754022716&cv=11&fst=1791754022716&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=sUCq8UGDRX0qZJyGzqiS5kdmOJ19bj4yiA&auid=1107265551.1791754023&gtm=45je6a72v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791754021402&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791754021402&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72h1v9245712461za200xf1&_p=1791754021402&gcs=G111&gcd=13t3t3t3t5",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "POST https://bombaytrooper.com/api/event/collect",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=2c135dd3-8003-4c08-913a-816650f4a",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=4ce7b990-01eb-41eb-8837-75d328d3f",
+            "POST https://g86t03bsah.us-east-1.aws.clickhouse.cloud:8443/"
+          ],
+          "loads": [
+            {
+              "url": "/products/olive-green-grey-unisex-knit-hoppers?variant=46634837737707",
+              "ttfb": 0.05,
+              "dcl": 0.54,
+              "load": 2.04,
+              "lcp": 0.43
+            }
+          ]
+        }
+      ],
+      "incident_signature": "bombaytrooper.com|product.pdp.olive-green-grey-unisex-knit-hoppers|variant_ready|mobile",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The product page clearly shows the item as sold out (no available variant) so the failure reflects an actual out-of-stock condition affecting shoppers.",
+        "evidence": "Visible page text includes the word \"SOLD OUT\" and a \"NOTIFY ME WHEN AVAILABLE\" button on the product page for \"OLIVE GREEN & GREY - UNISEX KNIT HOPPERS\", and the robot's assertion was that no in-stock variant was available."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'Arctic White Trackline Full Sleeve Jerse' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.15s",
+              "error": null,
+              "secs": 3.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Arctic White Trackline Full Sleeve Jersey",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1661 chars, 5 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "5 variants; selected 48146373542123 (S, \u20b91,675.00); switch to none (no other in-stock variant with other options); sold-out variant: 48146373574891 (M, \u20b91,675.00)",
+              "error": null,
+              "secs": 0.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/arctic-white-trackline-full-sleeve-jersey",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/arctic-white-trackline-full-sleeve-jersey.js with variants",
+                  "actual": "'Arctic White Trackline Full Sleeve Jersey', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sold_out_blocks_buy",
+              "status": "pass",
+              "detail": "chose option \"M\": 48146373574891 (M, \u20b91,675.00) selected, buy blocked ('SOLD OUT' (disabled), 'NOTIFY ME WHEN AVAILABLE', 'SOLD OUT'); buy never clicked",
+              "error": null,
+              "secs": 0.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page selects the sold-out variant",
+                  "expected": "48146373574891 (M, \u20b91,675.00)",
+                  "actual": "48146373574891 (the product form's variant id) after choosing option \"M\"",
+                  "ok": true
+                },
+                {
+                  "what": "sold-out variant cannot be bought",
+                  "expected": "buy button disabled or saying sold out",
+                  "actual": "'SOLD OUT' (disabled), 'NOTIFY ME WHEN AVAILABLE', 'SOLD OUT'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.51,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "[RR] Error in fetch hijack: TypeError: Failed to fetch at window2.fetch (https://bombaytrooper.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js:1:7379) at https://bombaytrooper.com/cdn/wpm/b7ec887c",
+              "url": "https://cdn.shopify.com/extensions/01a12c5f-c69b-73a3-9079-7146d38d74b0/restockrocket-1-604/assets/restockrocket-product.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754027782&cv=11&fst=1791754027782&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=48104342.1791754028&dt=Arctic%20White%20Trackline%20Full%20Sleeve%20Jersey&tid=AW-993920369",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=48104342.1791754028&gtm=45je6a72v882768572za208zd882768572xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791754027505&_gaz=1&gcd=13l3l3l3l1l1&npa=0&d",
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791754027505&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791754027505&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200zb882768572zd882768572xf1&_p=1791754027505&gcs",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=c5c41da5-03ab-4d38-a7f7-72b7d5f1d",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=91864c94-72de-4d49-8708-fddf8f709",
+            "POST https://g86t03bsah.us-east-1.aws.clickhouse.cloud:8443/",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754031482&cv=11&fst=1791754031482&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45je6a72",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754031520&cv=11&fst=1791754031520&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45je6a72"
+          ],
+          "loads": [
+            {
+              "url": "/products/arctic-white-trackline-full-sleeve-jersey?variant=48146373542123",
+              "ttfb": 0.21,
+              "dcl": 0.93,
+              "load": 2.73,
+              "lcp": 0.76
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.olive",
+      "suite": "search",
+      "title": "Search for 'olive' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.24s",
+              "error": null,
+              "secs": 4.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bombay Trooper",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5583 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 24 results, 2 mention 'olive'",
+              "error": null,
+              "secs": 5.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'olive'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "2 of 24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.23,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "[RR] Error in fetch hijack: AbortError: signal is aborted without reason at PredictiveSearch.onInputChanged_fn (https://bombaytrooper.com/cdn/shop/t/9/assets/theme.js?v=37381878579675919521777934002:68:5794) at https://b",
+              "url": "https://cdn.shopify.com/extensions/01a12c5f-c69b-73a3-9079-7146d38d74b0/restockrocket-1-604/assets/restockrocket-collection.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754033503&cv=11&fst=1791754033503&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1955478542.1791754034&dt=Bombay%20Trooper&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbo",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1955478542.1791754034&gtm=45je6a72v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791754031903&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791754031903&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791754031903&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=d1913ae4-f229-48f2-a003-690a8101c",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=6d683730-7240-4507-ad79-0b1e08eb9",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754038092&cv=11&fst=1791754038092&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45je6a7",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754038061&cv=11&fst=1791754038061&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45je6a72",
+            "GET https://bombaytrooper.com/search/suggest?q=olive&section_id=predictive-search&resources[limit]=10&resources[limit_scope]=each",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1955478542.1791754034&dt=Search%3A%2052%20results%20found%20for%20%22olive%22&tid=AW-993920",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754038645&cv=11&fst=1791754038645&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791754038496&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791754038496&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791754038496&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=9e1ad3db-c0aa-4938-8e6b-9b510205b",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=37be26fc-2654-44e7-a595-ba85e3c34"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.73,
+              "load": 3.06,
+              "lcp": 0.41
+            },
+            {
+              "url": "/search?q=olive",
+              "ttfb": 0.3,
+              "dcl": 0.76,
+              "load": 2.05,
+              "lcp": 2.38
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.01s",
+              "error": null,
+              "secs": 3.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\"",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "964 chars, 3 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "no products listed",
+              "error": null,
+              "secs": 6.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 0 products listed",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.34,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "[RR] Error in fetch hijack: TypeError: Failed to fetch at window2.fetch (https://bombaytrooper.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js:1:7379) at https://bombaytrooper.com/cdn/wpm/b7ec887c",
+              "url": "https://cdn.shopify.com/extensions/01a12c5f-c69b-73a3-9079-7146d38d74b0/restockrocket-1-604/assets/restockrocket-collection.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=6277779f-55e0-4054-85fa-aa1614baae59&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=524486132.1791754044&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22&tid=AW-",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754043800&cv=11&fst=1791754043800&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=524486132.1791754044&gtm=45je6a72v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791754042325&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791754042325&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791754042325&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791754042325&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=6ebaf90a-b231-48f1-857c-28a0162c6",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=6277779f-55e0-4054-85fa-aa1614baa"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.3,
+              "dcl": 0.77,
+              "load": 2.4,
+              "lcp": 0.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'olive' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.15s",
+              "error": null,
+              "secs": 3.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bombay Trooper",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5583 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "8 product suggestion(s) while typing 'olive', e.g. 'olive-green-grey-unisex-knit-hoppers'",
+              "error": null,
+              "secs": 4.13,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.48,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "[RR] Error in fetch hijack: AbortError: signal is aborted without reason at PredictiveSearch.onInputChanged_fn (https://bombaytrooper.com/cdn/shop/t/9/assets/theme.js?v=37381878579675919521777934002:68:5794) at https://b",
+              "url": "https://cdn.shopify.com/extensions/01a12c5f-c69b-73a3-9079-7146d38d74b0/restockrocket-1-604/assets/restockrocket-collection.js"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=83727d8f-1f1d-4774-af6d-ec35fbc3e0ae&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=336272203.1791754053&dt=Bombay%20Trooper&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbom",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754052908&cv=11&fst=1791754052908&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=336272203.1791754053&gtm=45je6a72h1v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za200xf1&_p=1791754051496&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za208xf1&_p=1791754051496&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&d",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791754051496&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=83727d8f-1f1d-4774-af6d-ec35fbc3e",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=a5264695-59c8-4f83-8fcc-20d49e154",
+            "GET https://bombaytrooper.com/search/suggest?q=olive&section_id=predictive-search&resources[limit]=10&resources[limit_scope]=each"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.98,
+              "load": 2.28,
+              "lcp": 0.46
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.2s",
+              "error": null,
+              "secs": 3.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bombay Trooper",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5583 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Bombay Trooper",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "14: 'Bombay Trooper'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Travel & outdoor gear for the adventurous soul. Buy trekking pants, hi",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "123: 'Travel & outdoor gear for the adventurous soul. Buy trekking'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://bombaytrooper.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://bombaytrooper.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Bombay Trooper",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://bombaytrooper.com/cdn/shop/files/outdoor-trekking-hiking-t-shirt-1536x1024-1_66112661-a2c3-4a0a-a05c-d98b32c2edac.webp?v=1752679312&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.36,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754060477&cv=11&fst=1791754060477&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=758936040.1791754060&dt=Bombay%20Trooper&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbom",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=758936040.1791754060&gtm=45je6a72h1v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za200xf1&_p=1791754059005&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72h1v882768572za208xf1&_p=1791754059005&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&d",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791754059005&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=3027aa43-d40e-4797-843c-f5f9a50f3",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=9e8c2745-6676-4a93-adee-73b891a59",
+            "GET https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=9e8c2745-6676-4a93-adee-73b891a598a7&flow=embed&f",
+            "GET https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=3027aa43-d40e-4797-843c-f5f9a50f3caf&flow=embed&f"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.0,
+              "load": 2.3,
+              "lcp": 0.45
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.74s",
+              "error": null,
+              "secs": 2.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1995 chars, 7 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Olive Green & Grey - Unisex Knit Hoppers",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "40: 'Olive Green & Grey - Unisex Knit Hoppers'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Hoppers by Bombay Trooper are all-in-one multi-purpose botto'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Hoppers by Bombay Trooper are all-in-one multi-purpose botto'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://bombaytrooper.com/products/olive-green-grey-unisex-knit-hoppers",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://bombaytrooper.com/products/olive-green-grey-unisex-knit-hoppers",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Olive Green & Grey - Unisex Knit Hoppers",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://bombaytrooper.com/cdn/shop/files/BTP2K04-A.jpg?v=1753454638&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.8,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1654397346.1791754064&dt=Olive%20Green%20%26%20Grey%20-%20Unisex%20Knit%20Hoppers&tid=AW-9",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754063505&cv=11&fst=1791754063505&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1654397346.1791754064&gtm=45je6a72v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791754062375&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791754062375&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791754062375&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=5ac3d690-3375-40b8-a10f-51e3f5778",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=f6725d30-7417-483e-bdc1-2aa487836",
+            "GET https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=f6725d30-7417-483e-bdc1-2aa48783637a&flow=embed&f",
+            "GET https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=5ac3d690-3375-40b8-a10f-51e3f5778132&flow=embed&f"
+          ],
+          "loads": [
+            {
+              "url": "/products/olive-green-grey-unisex-knit-hoppers",
+              "ttfb": 0.05,
+              "dcl": 0.53,
+              "load": 1.93,
+              "lcp": 0.42
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 2.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.89,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1909788999.1791754066&dt=404%20Not%20Found&tid=AW-993920369&en=page_view&dl=https%3A%2F%2F",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754066215&cv=11&fst=1791754066215&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1909788999.1791754066&gtm=45je6a72v882768572za208xecxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791754065243&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791754065243&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791754065243&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=6f09c415-a4b6-4684-b9c5-890d79bca",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=d42967f6-93be-405c-b871-b4ff14cac"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.19,
+              "dcl": 0.68,
+              "load": 2.05,
+              "lcp": 0.49
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, privacy, terms)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /pages/track-order",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.68s",
+              "error": null,
+              "secs": 2.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Track Order / Returns",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1212 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Track Order / Returns', heading 'TRACK ORDER / RETURNS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/track-order",
+                  "actual": "/pages/track-order",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "640 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "640 chars under 'TRACK ORDER / RETURNS'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /pages/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.65s",
+              "error": null,
+              "secs": 2.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy Policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6745 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy Policy', heading 'PRIVACY POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/privacy-policy",
+                  "actual": "/pages/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "6116 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "6116 chars under 'PRIVACY POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /pages/terms-conditions",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.74s",
+              "error": null,
+              "secs": 2.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms &#038; Conditions",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6818 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms &#038; Conditions', heading 'TERMS & CONDITIONS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/terms-conditions",
+                  "actual": "/pages/terms-conditions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "6179 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "6179 chars under 'TERMS & CONDITIONS'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "3 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.62,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://bombaytrooper.com/api/collect",
+            "POST https://bombaytrooper.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=939359624.1791754069&dt=Track%20Order%20%2F%20Returns&tid=AW-993920369&en=page_view&dl=http",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754068956&cv=11&fst=1791754068956&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791754068035&_gaz=1&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791754068035&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=939359624.1791754069&gtm=45je6a72v882768572za208xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-63CEN1WX0R&gtm=45Pe6a72v9245712461za200xf1&_p=1791754068035&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://mpc2-prod-26-is5qnl632q-uc.a.run.app/events?cee=no",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=04cc301e-91ec-4037-b36f-126f43d1f",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=58bc8d6a-11c9-4b37-989f-8eb8f6187",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=939359624.1791754069&dt=Privacy%20Policy&tid=AW-993920369&en=page_view&dl=https%3A%2F%2Fbom",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754070645&cv=11&fst=1791754070645&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208zd882768572xf1&_p=1791754070528&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791754070528&gcd=13l3l3l3l1l1&npa=0&dma=0&gd",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200zd882768572xf1&_p=1791754070528&gcs=G111&gcd=13t3t3t3t5l1&npa=0",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=91bc84d3-7e14-4de9-9280-8badd796c",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=57da4d13-75d2-4dac-b1d6-a602a3f7f",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=939359624.1791754069&dt=Terms%20%26%23038%3B%20Conditions&tid=AW-993920369&en=page_view&dl=",
+            "POST https://www.google.com/rmkt/collect/993920369/?random=1791754074291&cv=11&fst=1791754074291&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45je6a7",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za208xf1&_p=1791754073393&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-Z5V8VCHXXV&gtm=45je6a72v882768572za200xf1&_p=1791754073393&gcs=G111&gcd=13t3t3t3t5l1&npa=0&dma=0&gdid",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=df70ae00-e4d3-472e-9a65-598f97ddd",
+            "GET https://bombaytrooper.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=3bb718eb-5661-47fc-91b6-42594a27c",
+            "GET https://shop.app/accounts/pre_auth?client_id=fe75cfbc-7b7d-489d-8fee-5f621e97b1a8&analytics_trace_id=3bb718eb-5661-47fc-91b6-42594a27cb3e&flow=embed&f"
+          ],
+          "loads": [
+            {
+              "url": "/pages/track-order",
+              "ttfb": 0.17,
+              "dcl": 0.52,
+              "load": 1.69,
+              "lcp": 0.52
+            },
+            {
+              "url": "/pages/privacy-policy",
+              "ttfb": 0.13,
+              "dcl": 0.54,
+              "load": 1.81,
+              "lcp": 0.43
+            },
+            {
+              "url": "/pages/terms-conditions",
+              "ttfb": 0.18,
+              "dcl": 0.62,
+              "load": 1.53,
+              "lcp": 0.49
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 1,
+    "input_tokens": 3700,
+    "output_tokens": 114,
+    "est_usd": 0.001153,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Bombay Trooper",
+    "theme": "Stretch (store copy: Updated copy of Snow (Gokwik - 31st July)",
+    "checkout_app": "GoKwik",
+    "access": "open",
+    "nav": 25,
+    "collections": 47,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "account login is hosted elsewhere (account.bombaytrooper.com, Shopify customer accounts): not opened",
+    "18 product(s) not listed in the browsed collections are tested last (e.g. arctic-white-trackline-full-sleeve-jersey)"
+  ],
+  "perf": {
+    "pages": 20,
+    "median_load_secs": 1.98,
+    "slowest": {
+      "url": "/",
+      "load_secs": 3.06
+    },
+    "console_errors": 3,
+    "console_warnings": 3,
+    "failed_requests": 237
+  },
+  "counts": {
+    "pass": 16,
+    "flaky": 0,
+    "confirmed_fail": 1,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
