@@ -224,6 +224,14 @@ Modes (to prove Radar catches and heals what it should):
                    -> search.suggestions WARNS, never fails
   tall_sticky_bar  on phones, product pages carry a fixed info bar over the bottom 42% of the screen (journey 30)
                    -> product pages WARN 'screen covered by fixed bars' naming div.sticky-info; the store stays healthy
+  healthy (+)      the vase's page has Dawn-style size pills (radio + label) whose script updates the form's variant id,
+                   the price and ?variant= (journey 22) -> product.variant_switch PASSES (Small → Large, ₹1,299 → ₹1,399)
+  variant_switch_broken  same pills, but the theme's variant script is missing: clicking Large changes nothing (id, price
+                   and address stay Small's) -> product.variant_switch WARNS (strict: FAILS) at variant_switch
+  variant_sold_out the vase also has a sold-out 'Extra Large' size (data + page); picking it disables the buy button and
+                   makes it say 'Sold out' -> variant_switch and sold_out_blocks_buy PASS
+  variant_sold_out_buyable  same, but the buy button stays enabled 'Add to cart' on the sold-out size -> WARNS (strict:
+                   FAILS) at sold_out_blocks_buy (the buy button is never clicked)
 
 Every product page also carries a quick-add product card BEFORE the main buy button in the DOM
 and a cart drawer that opens over the page after adding (both copied from moxiebeauty.in's
@@ -266,6 +274,9 @@ EXTRA_DECOR = [{"id": 60 + i, "handle": f"clay-bowl-{i}", "title": f"Clay Bowl N
                for i in range(1, 11)]
 MORE_MODES = ("paginated", "pagination_broken", "load_more", "infinite_scroll", "more_hidden")
 J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepage banner (journey 15)
+# journey 22: size pills on multi-variant product pages (only in these modes: other modes test their own pickers)
+VARIANT_MODES = ("healthy", "variant_switch_broken", "variant_sold_out", "variant_sold_out_buyable")
+SOLD_OUT_SIZE = {"id": 203, "available": False, "price": "1499.00", "option1": "Extra Large", "title": "Extra Large"}
 CARTS: dict[str, list[dict]] = {}
 
 SVG = b'<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#c96"/></svg>'
@@ -823,7 +834,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                                for c in COLLECTIONS]})
         if path == "/products.json":
             return self._json({"products": [{"id": p["id"], "handle": p["handle"], "title": p["title"],
-                                             "variants": p["variants"]} for p in PRODUCTS]})
+                                             "variants": self._variants(p)} for p in PRODUCTS]})
         if path.startswith("/collections/"):
             h = path.split("/")[2]
             items = [p for p in PRODUCTS if (h == "all" and p["collection"]) or p["collection"] == h]
@@ -884,7 +895,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                         seen.add(h)
                         return self._send(200, "", "text/html")
                 return self._json({"id": p["id"], "handle": p["handle"], "title": p["title"],
-                                   "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in p["variants"]]})
+                                   "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in self._variants(p)]})
             p = next((x for x in PRODUCTS if x["handle"] == h), None)
             if not p:
                 return self._send(404, page("Page not found", "<h1>404</h1>"))
@@ -1011,6 +1022,35 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
             return self._send(200, page(f"Search: {term} | Mock Store", found))
         return self._send(404, page("Page not found", "<h1>404</h1>"))
 
+    def _variants(self, p):
+        """The product's variants as this mode serves them (journey 22: the vase gains a sold-out size)."""
+        if self.mode in ("variant_sold_out", "variant_sold_out_buyable") and p["handle"] == "ceramic-vase":
+            return p["variants"] + [SOLD_OUT_SIZE]
+        return p["variants"]
+
+    def _size_pills(self, p, vid):
+        """Dawn-style size pills: radio + label per variant. The theme script (left out in variant_switch_broken) puts
+        the picked variant's id in the form, shows its price, sets ?variant= and disables the buy button for a sold-out
+        size (variant_sold_out_buyable: the button stays enabled 'Add to cart')."""
+        vs = self._variants(p)
+        pills = ('<variant-radios class="product-form__input"><fieldset><legend>Size</legend>' + "".join(
+            f'<input type="radio" id="size-{v["id"]}" name="Size" value="{v["option1"]}"{" checked" if v["id"] == vid else ""}>'
+            f'<label for="size-{v["id"]}"{"" if v["available"] else " class=disabled"}>{v["option1"]}</label>' for v in vs)
+            + '</fieldset></variant-radios>')
+        if self.mode == "variant_switch_broken":
+            return pills
+        data = json.dumps([{"id": v["id"], "option1": v["option1"], "available": v["available"],
+                            "price": f'₹{float(v["price"]):,.2f}'} for v in vs])
+        block = "false" if self.mode == "variant_sold_out_buyable" else "true"
+        return pills + ("<script>(() => { const V = " + data + ", BLOCK = " + block + ";\n"
+                        "document.querySelectorAll('variant-radios input[type=radio]').forEach(r => r.addEventListener('change', () => {\n"
+                        "  const v = V.find(x => x.option1 === r.value); if (!v) return;\n"
+                        "  const f = document.getElementById('product-form-template__main'); f.querySelector('[name=id]').value = v.id;\n"
+                        "  document.querySelector('main .price').textContent = v.price;\n"
+                        "  const b = f.querySelector('[name=add]'); const no = BLOCK && !v.available;\n"
+                        "  b.disabled = no; b.textContent = no ? 'Sold out' : 'Add to cart';\n"
+                        "  history.replaceState(null, '', location.pathname + '?variant=' + v.id); })); })();</script>")
+
     def _pdp(self, p):
         if self.mode == "marketplace_only":
             # antesports.com (new30g) / beyondsnack.in (new30e): a brand catalog on Shopify, no price and no cart on the
@@ -1078,6 +1118,8 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
 </script>"""
         body = (f'{quick}<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="300" height="300" alt="">'
                 f'<div class="price">₹{float(p["price"]):,.2f}</div>{buy}')
+        if self.mode in VARIANT_MODES and available and len(self._variants(p)) > 1 and 'id="product-form-template__main"' in buy:
+            body = body.replace(buy, self._size_pills(p, vid) + buy, 1)       # journey 22
         if self.mode == "sticky_buy_only":
             sticky = buy.replace('id="product-form-template__main"', 'id="sticky-form"')
             body += ('<div style="height:2400px"></div><div id="sticky-atc" style="display:none;position:fixed;left:0;right:0;'

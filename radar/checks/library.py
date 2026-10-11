@@ -2683,6 +2683,243 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
     ctx.steps.run("remove_item", remove, soft=soft)
 
 
+# ---------------- journey 22: variant switch ----------------
+
+def variant_options(v: dict) -> list[str]:
+    """A variant's option values ('Large', 'Blue'): option1..3, else its title split on ' / '. Pure."""
+    vals = [str(v.get(k)).strip() for k in ("option1", "option2", "option3") if v.get(k)]
+    return vals or [s.strip() for s in str(v.get("title") or "").split(" / ") if s.strip() and s.strip() != "Default Title"]
+
+
+def changed_options(target: dict, current: dict) -> list[str]:
+    """The option values a shopper must pick to go from current to target (positions where they differ). Pure."""
+    mine = variant_options(current)
+    return [v for i, v in enumerate(variant_options(target)) if i >= len(mine) or mine[i].lower() != v.lower()]
+
+
+def variant_switch_targets(variants: list[dict], current_id) -> tuple[dict | None, dict | None]:
+    """Which variant a shopper switches to, and which sold-out variant proves 'sold out blocks buy'. Only variants
+    whose option values differ from the selected one count (same values = nothing to click). Switch target: in stock
+    first, then a DIFFERENT price (the price change is what the shopper must see), then the fewest options to change.
+    Sold-out: the one needing the fewest option changes. Pure, unit-tested."""
+    cur = next((v for v in variants if str(v.get("id")) == str(current_id)), variants[0] if variants else None)
+    if cur is None:
+        return None, None
+    diff = lambda v: len(changed_options(v, cur))
+    others = [v for v in variants if str(v.get("id")) != str(cur.get("id")) and variant_options(v) and diff(v) > 0]
+    price = lambda v: int(v.get("price") or 0)
+    avail = sorted((v for v in others if v.get("available")), key=lambda v: (price(v) == price(cur), diff(v)))
+    sold = sorted((v for v in others if not v.get("available")), key=diff)
+    return (avail[0] if avail else None), (sold[0] if sold else None)
+
+
+# The control a shopper clicks for one option value: a dropdown (not Shopify's hidden id <select>), a radio's label
+# (Dawn's pills), or a swatch / button / list item inside a variant / swatch / option picker. Exact text first, then
+# 'Large - Sold out' style labels. Never inside another product's card, the header, the footer or a cart drawer.
+OPTION_CONTROL_JS = r"""([value, quick]) => {
+  const otherCard = __OTHER_CARD__;
+  document.querySelectorAll('[data-radar-variant]').forEach(e => e.removeAttribute('data-radar-variant'));
+  const vis = e => { if (!e) return false; const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const norm = s => String(s || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const want = norm(value);
+  const same = t => norm(t) === want;
+  const near = t => { t = norm(t); return t.length > want.length && t.startsWith(want) && !/[a-z0-9]/.test(t[want.length]); };
+  const away = e => !!(e.closest(quick) || otherCard(e, quick) || e.closest('header, nav, footer, cart-drawer, ' +
+    '[id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i], [role="dialog"]'));
+  const off = e => !!(e && (e.disabled || e.getAttribute('aria-disabled') === 'true'));
+  const mark = (e, kind, how, extra) => { e.setAttribute('data-radar-variant', 'opt');
+    return Object.assign({kind, how, disabled: off(e)}, extra || {}); };
+  for (const match of [same, near]) {
+    for (const sel of document.querySelectorAll('select')) {
+      if (sel.name === 'id' || !vis(sel) || away(sel)) continue;
+      const o = [...sel.options].find(o => match(o.value) || match(o.text));
+      if (o) return mark(sel, 'select', 'dropdown option ' + JSON.stringify(o.text.trim()), {value: o.value, disabled: off(sel) || o.disabled});
+    }
+    for (const r of document.querySelectorAll('input[type="radio"]')) {
+      const lab = (r.id && document.querySelector('label[for="' + CSS.escape(r.id) + '"]')) || r.closest('label');
+      if (!(match(r.value) || (lab && match(lab.innerText))) || away(r)) continue;
+      const t = lab && vis(lab) ? lab : (vis(r) ? r : null);
+      if (t) return mark(t, 'click', (t === r ? 'radio ' : 'option ') + JSON.stringify((lab && lab.innerText.trim()) || r.value), {disabled: off(r)});
+    }
+    const picker = '[class*="variant" i], [class*="swatch" i], [class*="option" i], variant-selects, variant-radios, ' +
+                   '[role="radiogroup"], [role="listbox"], fieldset';
+    const hits = [...document.querySelectorAll('[data-value], [data-option-value], [role="radio"], [role="option"], button, li, a, span, div, label')]
+      .filter(e => vis(e) && e.closest(picker) && !away(e) &&
+        [e.getAttribute('data-value'), e.getAttribute('data-option-value'), e.getAttribute('aria-label'),
+         (e.innerText || '').length <= 40 ? e.innerText : ''].some(t => t && match(t)));
+    const inner = hits.filter(e => !hits.some(o => o !== e && e.contains(o)));
+    if (inner.length) {
+      const t = inner[0].closest('button, a, label, li, [role="radio"], [role="option"], [data-value], [data-option-value]') || inner[0];
+      const cls = typeof t.className === 'string' ? t.className : '';
+      return mark(t, 'click', t.tagName.toLowerCase() + ' ' + JSON.stringify((t.innerText || value).trim().slice(0, 30)),
+                  {disabled: off(t) || /\b(disabled|unavailable|sold-?out)\b/i.test(cls)});
+    }
+  }
+  return null; }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
+
+# What the product's own buy form says now: its variant id and its visible buy buttons (text, disabled). The form is
+# the one holding one of THIS product's variant ids (not a quick-add card); visible beats hidden, main-named beats not.
+BUY_STATE_JS = r"""([ids, quick]) => { const s = new Set(ids.map(String)); const otherCard = __OTHER_CARD__;
+  const vis = e => { const r = e.getBoundingClientRect(); const st = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && st.visibility !== 'hidden' && st.display !== 'none'; };
+  const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
+  const rows = [], seen = new Set();
+  for (const i of document.querySelectorAll('input[name="id"], select[name="id"]')) {
+    const f = i.closest('form') || i.parentElement;
+    if (!f || seen.has(f) || !s.has(String(i.value || '')) || otherCard(f, quick)) continue; seen.add(f);
+    const fid = f.getAttribute('id') || '';
+    const btns = [...f.querySelectorAll('button, input[type=submit]'), ...(fid ? document.querySelectorAll('[form="' + CSS.escape(fid) + '"]') : [])]
+      .filter(b => vis(b) && (b.type === 'submit' || /add|cart|bag|buy|sold|unavailable|stock|notify/i.test(txt(b))))
+      .map(b => ({text: txt(b).slice(0, 40), off: !!(b.disabled || b.getAttribute('aria-disabled') === 'true')}));
+    rows.push({variant: String(i.value), btns, vis: vis(f) || btns.length > 0 ? 1 : 0,
+               main: /main|product-form|product_form/i.test(fid + ' ' + f.getAttribute('class')) ? 1 : 0});
+  }
+  rows.sort((x, y) => (y.vis - x.vis) || (y.main - x.main));
+  return rows[0] || null; }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
+
+SOLD_OUT_RX = re.compile(r"sold\s*out|out\s*of\s*stock|unavailable|not\s+available|notify\s+me|coming\s+soon", re.I)
+
+
+def sold_out_blocks(btns: list[dict]) -> tuple[bool, str]:
+    """After a sold-out variant is picked: does the product's own form stop the shopper buying it? Blocked when no
+    visible buy button is left enabled with buy wording (disabled, or it says 'Sold out' / 'Notify me'). Pure."""
+    if not btns:
+        return True, "no buy button shown"
+    live = [b for b in btns if not b.get("off") and not SOLD_OUT_RX.search(b.get("text") or "")]
+    shown = ", ".join(f"{b.get('text')!r}" + (" (disabled)" if b.get("off") else "") for b in btns)
+    return (not live), shown
+
+
+def _variant_label(v: dict) -> str:
+    return f"{v['id']} ({' / '.join(variant_options(v)) or v.get('title')}, {rupees(v['price'])})"
+
+
+def _pick_variant(ctx: Ctx, product: dict, target: dict, current: dict) -> dict:
+    """Click (or choose in a dropdown) each option value where target differs from current, like a shopper.
+    Returns {how: [...], disabled: bool, missing: value or None}."""
+    page, out = ctx.sess.page, {"how": [], "disabled": False, "missing": None}
+    for val in changed_options(target, current):
+        _dismiss(ctx)
+        c = ctx.sess.evaluate(OPTION_CONTROL_JS, [val, QUICK_SEL])
+        if not c:
+            out["missing"] = val
+            return out
+        loc = page.locator('[data-radar-variant="opt"]').first
+        if c["kind"] == "select":
+            loc.select_option(c["value"], timeout=5000)
+        elif c.get("disabled"):
+            out["disabled"] = True              # the theme does not let a shopper pick it at all
+        else:
+            loc.evaluate("e => e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'})")
+            try:
+                loc.click(timeout=5000)
+            except Exception as e:  # noqa: BLE001
+                raise AssertionError(f"option {c['how']} could not be clicked: {str(e).splitlines()[0][:160]}") from e
+        out["how"].append(c["how"] + (" (disabled)" if c.get("disabled") else ""))
+    return out
+
+
+def _wait_marked(ctx: Ctx, product: dict, target: dict, secs: float = 3.0) -> dict:
+    """Poll until the page marks target as selected: the product form's id (authoritative when the page has one),
+    else ?variant= in the address, else the options the page shows as chosen (headless themes)."""
+    ids = [int(v["id"]) for v in product["variants"]]
+    st, url_vid, marked = None, None, None
+    for _ in range(max(1, int(secs / 0.3))):
+        st = ctx.sess.evaluate(BUY_STATE_JS, [ids, QUICK_SEL])
+        m = re.search(r"[?&]variant=(\d+)", ctx.sess.page.url)
+        url_vid = m.group(1) if m else None
+        if st:
+            if st["variant"] == str(target["id"]):
+                break
+        elif url_vid == str(target["id"]):
+            break
+        else:
+            pm = _page_marked_variant(ctx, product)
+            marked = str(pm["id"]) if pm else None
+            if marked == str(target["id"]):
+                break
+        ctx.sess.page.wait_for_timeout(300)
+    if st:
+        got, where = st["variant"], "the product form's variant id"
+    elif url_vid:
+        got, where = url_vid, "?variant= in the address (no product form)"
+    else:
+        got, where = marked, "the options the page marks as chosen (no product form)"
+    return {"ok": got == str(target["id"]), "got": got, "where": where, "state": st, "url_vid": url_vid}
+
+
+def variant_switch(ctx: Ctx, url: str, strict: bool = False):
+    """Journey 22. On a product with several variants a shopper picks another one (size, colour): the page must then
+    select THAT variant (its id in the buy form, or ?variant= in the address) and show its price; a sold-out variant,
+    once picked, must not be buyable (buy button disabled or saying sold out). Options are clicked like a shopper (radio
+    label, swatch, button, dropdown); the buy button is NEVER clicked, nothing is submitted. A page with no clickable
+    option control is 'not judged'. Warnings unless strict (not yet measured on a bench)."""
+    soft = not strict
+    state: dict = {}
+    ctx.steps.run("product_loads", lambda: _load(ctx, url))
+
+    def options():
+        p = _product_js(ctx, ctx.sess.page.url)
+        cur = _selected_variant(ctx, p)
+        target, sold = variant_switch_targets(p["variants"], cur["id"])
+        state.update(p=p, cur=cur, target=target, sold=sold)
+        return (f"{len(p['variants'])} variants; selected {_variant_label(cur)}; switch to "
+                + (_variant_label(target) if target else "none (no other in-stock variant with other options)")
+                + "; sold-out variant: " + (_variant_label(sold) if sold else "none"))
+    if ctx.steps.run("variant_options", options, soft=soft) is None:
+        return
+    p, cur, target, sold = state["p"], state["cur"], state["target"], state["sold"]
+    if not target and not sold:
+        ctx.steps.info("variant_switch_not_judged", "no other variant with different option values to pick")
+        return
+    if target:
+        c = ctx.sess.evaluate(OPTION_CONTROL_JS, [changed_options(target, cur)[0], QUICK_SEL])
+        if not c:
+            ctx.steps.info("variant_switch_not_judged", f"no visible option control for {' / '.join(variant_options(target))!r} "
+                                                        "(the theme may pick variants another way)")
+        else:
+            def switch():
+                before_url = ctx.sess.page.url
+                picked = _pick_variant(ctx, p, target, cur)
+                ctx.expect("option control for the other variant", " / ".join(variant_options(target)),
+                           ", ".join(picked["how"]) or f"none for {picked['missing']!r}", not picked["missing"])
+                got = _wait_marked(ctx, p, target)
+                ctx.expect("page selects the picked variant", _variant_label(target),
+                           f"{got['got'] or 'nothing readable'} ({got['where']}) after choosing {', '.join(picked['how'])}", got["ok"])
+                bits = [f"chose {', '.join(picked['how'])}: page selects {_variant_label(target)}"]
+                if got["url_vid"] == str(target["id"]) and got["url_vid"] not in before_url:
+                    bits.append(f"address now ?variant={target['id']}")
+                if int(target["price"]) != int(cur["price"]):
+                    want = round(int(target["price"]) / 100, 2)
+                    ok, how = price_shown(want, prices_in_text(ctx.sess.evaluate("() => document.body.innerText") or ""))
+                    ctx.expect("new variant's price shown", rupees(target["price"]), how or "not on page", ok)
+                    bits.append(f"price {rupees(cur['price'])} → {how}")
+                return "; ".join(bits)
+            ctx.steps.run("variant_switch", switch, soft=soft)
+
+    if sold:
+        now = _selected_variant(ctx, p)
+
+        def sold_out():
+            picked = _pick_variant(ctx, p, sold, now)
+            if picked["missing"]:
+                return f"not judged: no visible option control for {picked['missing']!r}"
+            if picked["disabled"]:
+                ctx.expect("sold-out variant cannot be bought", "blocked", f"its option is disabled: {', '.join(picked['how'])}", True)
+                return f"{_variant_label(sold)} is sold out: its option cannot be picked ({', '.join(picked['how'])})"
+            got = _wait_marked(ctx, p, sold)
+            ctx.expect("page selects the sold-out variant", _variant_label(sold),
+                       f"{got['got'] or 'nothing readable'} ({got['where']}) after choosing {', '.join(picked['how'])}", got["ok"])
+            st = got["state"]
+            if not st:
+                return f"chose {', '.join(picked['how'])}; not judged: no product form to read the buy button from"
+            blocked, shown = sold_out_blocks(st["btns"])
+            ctx.expect("sold-out variant cannot be bought", "buy button disabled or saying sold out", shown, blocked)
+            return f"chose {', '.join(picked['how'])}: {_variant_label(sold)} selected, buy blocked ({shown}); buy never clicked"
+        ctx.steps.run("sold_out_blocks_buy", sold_out, soft=soft)
+
+
 REGISTRY: dict[str, Callable] = {
     "page_health": page_health, "links_resolve": links_resolve, "collection_page": collection_page,
     "product_page": product_page, "add_to_cart": add_to_cart, "search_results": search_results,
@@ -2691,4 +2928,5 @@ REGISTRY: dict[str, Callable] = {
     "search_no_results": search_no_results, "search_suggestions": search_suggestions,
     "collection_more": collection_more, "more_links_resolve": more_links_resolve, "mobile_menu": mobile_menu,
     "cart_edit": cart_edit,
+    "variant_switch": variant_switch,      # journey 22
 }

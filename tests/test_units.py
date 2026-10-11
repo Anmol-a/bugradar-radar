@@ -862,3 +862,44 @@ def test_dead_store_addresses_are_told_apart_from_temporary_problems():
     for temporary in ("APIRequestContext.get: Timeout 20000ms exceeded.", "Client network socket disconnected before secure "
                       "TLS connection was established", "connect ECONNREFUSED 104.18.2.3:443", ""):
         assert why(temporary) == "", temporary
+
+
+# ---------- journey 22: variant switch ----------
+def test_variant_switch_targets_prefer_in_stock_other_price_then_fewest_changes():
+    from radar.checks.library import variant_switch_targets, changed_options, variant_options
+    vs = [{"id": 1, "available": True, "price": 1000, "option1": "S", "option2": "Red"},
+          {"id": 2, "available": True, "price": 1000, "option1": "M", "option2": "Red"},     # same price
+          {"id": 3, "available": True, "price": 1200, "option1": "L", "option2": "Blue"},    # other price, 2 changes
+          {"id": 4, "available": False, "price": 1500, "option1": "XL", "option2": "Red"},
+          {"id": 5, "available": False, "price": 1500, "option1": "XL", "option2": "Blue"}]
+    t, sold = variant_switch_targets(vs, 1)
+    assert t["id"] == 3 and sold["id"] == 4                 # a price change beats fewer clicks; sold-out: fewest changes
+    assert changed_options(vs[2], vs[0]) == ["L", "Blue"] and changed_options(vs[1], vs[0]) == ["M"]
+    assert variant_switch_targets(vs, "2")[0]["id"] == 3     # ids compared as text (page values are strings)
+    # nothing different to pick: a single variant, or variants with the same option values
+    assert variant_switch_targets([vs[0]], 1) == (None, None)
+    assert variant_switch_targets([vs[0], dict(vs[0], id=9)], 1) == (None, None)
+    # no other in-stock variant: only the sold-out one is used
+    assert variant_switch_targets([vs[0], vs[3]], 1) == (None, vs[3])
+    assert variant_options({"title": "Default Title"}) == [] and variant_options({"title": "50 ml / Rose"}) == ["50 ml", "Rose"]
+
+
+def test_sold_out_variant_blocks_buy_only_when_no_enabled_buy_button_is_left():
+    from radar.checks.library import sold_out_blocks
+    assert sold_out_blocks([{"text": "Sold out", "off": True}])[0]
+    assert sold_out_blocks([{"text": "Notify me when available", "off": False}])[0]
+    assert sold_out_blocks([])[0]
+    ok, shown = sold_out_blocks([{"text": "Add to cart", "off": False}])
+    assert not ok and shown == "'Add to cart'"
+    assert not sold_out_blocks([{"text": "Sold out", "off": True}, {"text": "Buy it now", "off": False}])[0]
+
+
+def test_variant_switch_case_is_generated_for_a_multi_variant_product_only():
+    sm = _sm(products=[Product("sold", "Sold Lamp", "https://x.in/products/sold", 1, "9", False),
+                       Product("vase", "Ceramic Vase", "https://x.in/products/vase", 2, "5", True, variants=3)])
+    prod = next(s for s in build_suites(sm, Settings()) if s.id == "product")
+    vs = [c for c in prod.cases if c.check == "variant_switch"]
+    assert [c.id for c in vs] == ["product.variant_switch"] and vs[0].severity == "minor"
+    assert vs[0].params == {"url": "https://x.in/products/vase?variant=2", "strict": False}
+    one = next(s for s in build_suites(_sm(), Settings()) if s.id == "product")
+    assert not any(c.check == "variant_switch" for c in one.cases)

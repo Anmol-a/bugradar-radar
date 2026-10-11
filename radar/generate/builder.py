@@ -135,6 +135,14 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
             {"url": vurl(p), "expect_buyable": p.available,
              "fallbacks": [vurl(x) for x in spare[i * 2:(i + 1) * 2]] if p.available else []}, "major",
             "Structured title/price/image present, price > 0, buy button visible when in stock"))
+    # journey 22: a product with several variants (size, colour), in stock first: picking another one updates the page
+    multi = next((p for p in priced if p.variants >= 2 and p.available), None) or next((p for p in priced if p.variants >= 2), None)
+    if multi and product.cases:
+        product.cases.append(TestCase(
+            "product.variant_switch", "product", f"Picking another variant of '{multi.title[:40]}' updates the page",
+            "variant_switch", {"url": vurl(multi), "strict": False}, "minor",
+            "Click another size/colour like a shopper: the page selects it and shows its price; a sold-out one cannot be "
+            "bought. The buy button is never clicked; judged only when the theme shows clickable options"))
     if product.cases:
         suites.append(product)
 

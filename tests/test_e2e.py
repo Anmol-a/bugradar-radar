@@ -1474,3 +1474,77 @@ def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path
     assert run.verdict == "unreachable", (run.verdict, run.notes)
     assert any("bombae.example: the domain points to 127.0.0.1" in n and "check the store's address" in n
                for n in run.notes), run.notes
+
+# ---------------- journey 22: variant switch (11 Oct 2026) ----------------
+
+def _variant_only(mode, tmp_path, strict=False, device="desktop"):
+    """Only the product suite's product.variant_switch case. strict=True flips the builder's strict=False."""
+    import radar.runner.executor as ex
+    orig = ex.build_suites
+
+    def built(sm, s):
+        suites = orig(sm, s)
+        for x in suites:
+            if x.id == "product":
+                x.cases = [c for c in x.cases if c.check == "variant_switch"]
+                for c in x.cases:
+                    c.params["strict"] = strict
+        return suites
+    ex.build_suites = built
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path), device=device, only_suites=["product"])[0]
+    finally:
+        srv.shutdown()
+        ex.build_suites = orig
+
+
+def test_variant_switch_selects_the_picked_size_and_shows_its_price(tmp_path):
+    """Journey 22 on a healthy store: clicking the vase's 'Large' pill like a shopper puts Large's id in the buy form,
+    shows ₹1,399 (Small was ₹1,299) and sets ?variant=. The vase has no sold-out size here: that step is not run."""
+    run = _variant_only("healthy", tmp_path)
+    c = _case(run, "product.variant_switch")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["variant_switch"].status == "pass", [(s.name, s.status, s.error) for s in st.values()]
+    d = st["variant_switch"].detail
+    assert 'option "Large"' in d and "202 (Large, ₹1,399.00)" in d and "address now ?variant=202" in d, d
+    assert "₹1,299.00 → ₹1,399.00" in d, d
+    assert "sold_out_blocks_buy" not in st and "sold-out variant: none" in st["variant_options"].detail
+    assert run.verdict == "healthy"
+
+
+def test_variant_switch_that_changes_nothing_warns_and_fails_when_strict(tmp_path):
+    """Theme script missing: the Large pill gets checked but the form keeps Small's id and price -> warning (strict: fail)."""
+    c = _case(_variant_only("variant_switch_broken", tmp_path), "product.variant_switch")
+    s = _steps(c)["variant_switch"]
+    assert c.verdict == "pass" and s.status == "warn", (c.verdict, s.status, s.error)
+    assert "page selects the picked variant: expected 202 (Large, ₹1,399.00), got 201" in s.error, s.error
+    strict = _case(_variant_only("variant_switch_broken", tmp_path / "strict", strict=True), "product.variant_switch")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "variant_switch", \
+        (strict.verdict, strict.attempts[-1].error)
+
+
+def test_sold_out_size_blocks_buy_and_a_buyable_sold_out_size_warns(tmp_path):
+    """The vase gains a sold-out 'Extra Large'. Picking it must leave no enabled add-to-cart (the button is never
+    clicked): disabled 'Sold out' passes; an enabled 'Add to cart' warns (strict: fails)."""
+    c = _case(_variant_only("variant_sold_out", tmp_path), "product.variant_switch")
+    st = _steps(c)
+    assert c.verdict == "pass" and all(s.status == "pass" for s in st.values()), [(s.name, s.status, s.error) for s in st.values()]
+    assert "203 (Extra Large, ₹1,499.00) selected, buy blocked ('Sold out' (disabled))" in st["sold_out_blocks_buy"].detail
+    assert "buy never clicked" in st["sold_out_blocks_buy"].detail
+    c = _case(_variant_only("variant_sold_out_buyable", tmp_path / "b"), "product.variant_switch")
+    s = _steps(c)["sold_out_blocks_buy"]
+    assert c.verdict == "pass" and s.status == "warn" and "sold-out variant cannot be bought" in s.error \
+        and "'Add to cart'" in s.error, (s.status, s.error)
+    assert _steps(c)["variant_switch"].status == "pass"
+    strict = _case(_variant_only("variant_sold_out_buyable", tmp_path / "s", strict=True), "product.variant_switch")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "sold_out_blocks_buy"
+
+
+def test_variant_switch_is_not_judged_without_a_clickable_option(tmp_path):
+    """A page with no visible option control for the other size (here: the plain vase page of another mode) is
+    'not judged' (info), never a warning or a failure."""
+    c = _case(_variant_only("robots_404", tmp_path), "product.variant_switch")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["variant_switch_not_judged"].status == "info", [(s.name, s.status, s.error) for s in st.values()]
+    assert "no visible option control for 'Large'" in st["variant_switch_not_judged"].detail
