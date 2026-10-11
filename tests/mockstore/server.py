@@ -276,7 +276,17 @@ Modes (to prove Radar catches and heals what it should):
   facets_sort_allowed  same, but robots.txt allows sort_by and ?sort_by=price-ascending sorts by price -> Radar clicks
                    the filter and chooses 'Price, low to high'; both PASS
   filter_broken    the filters are shown, but ?filter.v.availability=1 still lists everything, the sold-out lamp too
-                   -> catalog.filter WARNS (strict: FAILS) 'not matching: sold-out-lamp'
+                   -> catalog.filter WARNS (strict: FAILS) 'not matching: sold-out-lamp' (its .js and page: sold out)
+  filter_stock_differs  antinorm.co / beminimalist.co (11 Oct): 'In stock' lists the lamp, which the collection's
+                   products.json calls sold out, while Shopify's /products/<h>.js and its product page sell it (inventory
+                   policy 'continue' / untracked stock) -> catalog.filter PASSES: the storefront's own data decides
+  filter_big_collection  maspar.com (11 Oct): only a 'Size' filter; the collection's products.json (Radar reads 250 of a
+                   bigger collection) does not carry the vase, the one product ?filter.v.option.size=Small lists ->
+                   PASSES (1 listed, the data cannot tell), never '0 products listed with the filter on'
+  filter_empty     the 'Availability' filter says 'In stock (2)' but ?filter.v.availability=1 lists nothing ('No products
+                   found') -> catalog.filter WARNS (strict: FAILS), naming the store's own count
+  filter_app       Dawn's filter form is on the page, but a filter app (script /static/boost-sd-filter.js) owns the grid
+                   and empties it on addresses with filter.* -> 'not judged: filter app Boost' (info), not a warning
   (every mode)     robots.txt carries Shopify's default collection lines: /collections/*sort_by*,
                    /collections/*filter*&*filter*, /collections/*+* (facets_sort_allowed: without the sort_by lines)
 
@@ -325,7 +335,8 @@ J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepag
 VARIANT_MODES = ("healthy", "variant_switch_broken", "variant_sold_out", "variant_sold_out_buyable",
                  "variant_no_url_push", "variant_price_late", "variant_form_late", "variant_id_on_submit")
 SOLD_OUT_SIZE = {"id": 203, "available": False, "price": "1499.00", "option1": "Extra Large", "title": "Extra Large"}
-FACET_MODES = ("facets", "facets_sort", "facets_sort_allowed", "filter_broken")     # storefront filters (journey 25)
+FACET_MODES = ("facets", "facets_sort", "facets_sort_allowed", "filter_broken",     # storefront filters (journey 25)
+               "filter_stock_differs", "filter_big_collection", "filter_empty", "filter_app")
 # Shopify's default robots.txt lines for collections (every mode): no sort_by, no two filters, no '+' tag joins
 SHOPIFY_COLLECTION_RULES = ("Disallow: /collections/*sort_by*\nDisallow: /*/collections/*sort_by*\n"
                             "Disallow: /collections/*filter*&*filter*\nDisallow: /*/collections/*filter*&*filter*\n"
@@ -338,10 +349,24 @@ def facets_page(h: str, items: list[dict], q: dict, mode: str) -> str:
     behind a 'Filter' button on phones. filter.v.availability=1 lists only in-stock products, except in filter_broken
     (the same unfiltered list, sold-out lamp included). facets_sort*: a sort_by select in the same form."""
     avail = (q.get("filter.v.availability") or [""])[0]
-    instock = lambda p: any(v["available"] for v in p["variants"])
+    # the storefront's view of stock (filter_stock_differs: the lamp keeps selling while products.json says sold out)
+    instock = lambda p: any(v["available"] for v in p["variants"]) or (mode == "filter_stock_differs"
+                                                                        and p["handle"] == "sold-out-lamp")
     shown = items
     if avail in ("0", "1") and mode != "filter_broken":
         shown = [p for p in items if instock(p) == (avail == "1")]
+    if avail == "1" and mode == "filter_empty":          # the store's filter is broken: nothing comes back
+        shown = []
+    group = None
+    if mode == "filter_big_collection":                  # maspar.com: only a 'Size' filter (the variants' option values)
+        size = (q.get("filter.v.option.size") or [""])[0]
+        has = lambda p, z: any(v.get("option1") == z for v in p["variants"])
+        sizes = sorted({v["option1"] for p in items for v in p["variants"] if v.get("option1")})
+        shown = [p for p in items if has(p, size)] if size else items
+        group = ('<details class="facet"><summary>Size</summary><ul>' + "".join(
+            f'<li><label for="Filter-size-{z}"><input type="checkbox" name="filter.v.option.size" value="{z}" '
+            f'id="Filter-size-{z}"{" checked" if size == z else ""}> {z} ({sum(has(p, z) for p in items)})</label></li>'
+            for z in sizes) + '</ul></details>')
     sort = (q.get("sort_by") or [""])[0]
     if sort == "price-ascending" and mode == "facets_sort_allowed":
         shown = sorted(shown, key=lambda p: min(float(v["price"]) for v in p["variants"]))
@@ -354,13 +379,17 @@ def facets_page(h: str, items: list[dict], q: dict, mode: str) -> str:
                 if mode in ("facets_sort", "facets_sort_allowed") else "")
     return (f'<button type="button" class="facets-open" onclick="document.getElementById(\'FacetsWrap\').classList.toggle(\'open\')">'
             f'Filter</button><div id="FacetsWrap" class="facets-wrap"><form id="FacetFiltersForm" action="/collections/{h}" '
-            f'method="get"><details class="facet"><summary>Availability</summary><ul>{box("1", "In stock", n_in)}'
-            f'{box("0", "Out of stock", len(items) - n_in)}</ul></details>{sort_sel}'
+            f'method="get">' + (group or f'<details class="facet"><summary>Availability</summary><ul>{box("1", "In stock", n_in)}'
+                                         f'{box("0", "Out of stock", len(items) - n_in)}</ul></details>') + f'{sort_sel}'
             '<noscript><button type="submit">Apply</button></noscript></form></div>'
             '<style>@media (max-width: 749px) { .facets-wrap { display: none } .facets-wrap.open { display: block } } '
             '@media (min-width: 750px) { .facets-open { display: none } }</style>'
-            f'<div id="product-grid">{"".join(card(p) for p in shown)}</div>'
-            """<script>const ff = document.getElementById('FacetFiltersForm');
+            f'<div id="product-grid">{"".join(card(p) for p in shown) or "<p>No products found</p>"}</div>'
+            # filter_app: an app owns the grid and empties it whenever the address carries filter.* (its own params differ)
+            + ('<script src="/static/boost-sd-filter.js"></script><script>setInterval(() => { const g = document.'
+               "getElementById('product-grid'); if (/[?&]filter\\./.test(location.search) && !g.dataset.app) { g.dataset.app = 1; "
+               "g.innerHTML = '<div class=\"boost-sd__product-list\"></div>'; } }, 150);</script>" if mode == "filter_app" else "")
+            + """<script>const ff = document.getElementById('FacetFiltersForm');
 ff.addEventListener('change', () => { const url = ff.action.split('?')[0] + '?' + new URLSearchParams(new FormData(ff));
   history.pushState({}, '', url);
   fetch(url).then(r => r.text()).then(t => { const d = new DOMParser().parseFromString(t, 'text/html');
@@ -980,6 +1009,8 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             if self.mode in MORE_MODES and h == "home-decor":
                 items = items + EXTRA_DECOR
             if path.endswith("products.json"):
+                if self.mode == "filter_big_collection":     # Radar reads 250 of a bigger collection: the vase is not in them
+                    items = [p for p in items if p["handle"] != "ceramic-vase"]
                 return self._json({"products": [{"handle": p["handle"], "title": p["title"], "variants": p["variants"]} for p in items]})
             if not items:
                 return self._send(404, page("Not found", "404"))
@@ -1186,6 +1217,10 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
         """The product's variants as this mode serves them (journey 22: the vase gains a sold-out size)."""
         if self.mode in ("variant_sold_out", "variant_sold_out_buyable") and p["handle"] == "ceramic-vase":
             return p["variants"] + [SOLD_OUT_SIZE]
+        if self.mode == "filter_stock_differs" and p["handle"] == "sold-out-lamp":
+            # inventory policy 'continue': Shopify's own product data and page sell it; the collection's products.json
+            # (which reads p["variants"] directly) still says sold out (antinorm.co / beminimalist.co, 11 Oct)
+            return [dict(v, available=True) for v in p["variants"]]
         return p["variants"]
 
     def _size_pills(self, p, vid):
@@ -1262,8 +1297,8 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                          "image": [f"/cdn/shop/files/{p['handle']}.svg"],
                          "offers": {"@type": "Offer", "price": price, "priceCurrency": "INR",
                                     "availability": "https://schema.org/InStock"}})
-        available = any(v["available"] for v in p["variants"])
-        vid = next((v["id"] for v in p["variants"] if v["available"]), p["variants"][0]["id"])
+        available = any(v["available"] for v in self._variants(p))
+        vid = next((v["id"] for v in self._variants(p) if v["available"]), p["variants"][0]["id"])
         if not available and self.mode == "soldout_buyable":
             # journey 24: the theme forgot its sold-out state: an ENABLED 'Add to cart' for the sold-out variant, no
             # 'sold out' words anywhere (Shopify still refuses the add with 422)

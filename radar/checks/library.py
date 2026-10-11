@@ -1100,13 +1100,65 @@ def one_filter_url(url: str, name: str, value: str) -> str:
     return urlparse(url)._replace(query=urlencode({name: value}), fragment="").geturl()
 
 
+def facet_count(label: str) -> int | None:
+    """The product count a theme shows next to a filter option ('Small (43)', 'In stock (1,204)', with the invisible
+    direction marks some themes add: maspar.com 'Small (43)\\u200e'), or None. Pure, unit-tested."""
+    m = re.search(r"\(\s*(\d[\d,]*)\s*\)[\s‎‏​]*$", label or "")
+    return int(m.group(1).replace(",", "")) if m else None
+
+
+# Filter apps that draw a collection's grid themselves, from their own parameters rather than Shopify's filter.*
+# address: Radar cannot drive them, so an empty grid under them is not judged. Read from the page's script addresses.
+FILTER_APP_JS = r"""() => { const apps = [['Boost', /boost-?(sd|pfs)|bc-sf-filter|boostcommerce/i],
+    ['Globo Smart Product Filter', /globo[\w.-]*filter|filter[\w.-]*globo/i], ['Searchanise', /searchanise/i],
+    ['Klevu', /klevu/i], ['Algolia', /algolia/i], ['Fast Simon', /fastsimon|instantsearchplus/i],
+    ['SearchPie', /searchpie/i], ['Doofinder', /doofinder/i]];
+  const srcs = [...document.scripts].map(s => s.src || '').join(' ');
+  const hit = apps.find(([, re]) => re.test(srcs));
+  return hit ? hit[0] : null; }"""
+
+
+def _storefront_stock(ctx: Ctx, base: str, h: str) -> tuple[bool | None, str]:
+    """A product the 'In stock' filter lists while the collection's products.json calls it sold out: does the
+    storefront sell it? Shopify's filter counts products that keep selling (inventory policy 'continue', untracked
+    stock) as in stock, and products.json can lag or differ from this visitor's market (antinorm.co, beminimalist.co,
+    11 Oct). Asked like the store: its /products/<h>.js first, then its own page. True: sold; False: the page itself
+    says sold out (or its buy button is off); None: cannot tell (page hidden, redirected, no buy control found)."""
+    try:
+        p = ctx.sess.get_json(f"{base}/products/{h}.js") or {}
+    except Exception:  # noqa: BLE001  data unavailable: the page decides
+        p = {}
+    vs = p.get("variants") or []
+    if p.get("available") or any(v.get("available") for v in vs):
+        return True, f"/products/{h}.js says available"
+    url = f"{base}/products/{h}"
+    if not vs or not ctx.sess.allowed(url):
+        return None, "its product data and page could not be read"
+    try:
+        ctx.sess.goto(url)
+        _dismiss(ctx)
+        gone = _gone_product_page(ctx, url)
+        if gone:
+            return None, f"its page {gone}"
+        b = _sold_out_button(ctx, p)
+        words = sold_out_wording((ctx.sess.evaluate(SOLD_OUT_TEXT_JS, [QUICK_SEL]) or "") + " \n " + ((b or {}).get("text") or ""))
+    except Exception as e:  # noqa: BLE001  (robots, rate limit, a page that would not open: not judged)
+        return None, f"its page could not be read ({_short(str(e), 60)})"
+    if words or (b and not b.get("enabled")):
+        return False, (f"/products/{h}.js and its page say sold out"
+                       + (f" ({words!r})" if words else f" (buy button {(b.get('text') or '').strip()[:30]!r} disabled)"))
+    if b:
+        return True, f"its page sells it (buy button {(b.get('text') or '').strip()[:30]!r} enabled)"
+    return None, "its page shows no buy button and no sold-out words"
+
+
 def pick_filter(options: list[dict]) -> dict | None:
     """Which filter a shopper-like test applies: 'In stock' first (the store's data says what is in stock), then a
     vendor / type / option / tag value (also in the data), else any other option. Never a price box, never an option
     the theme shows with a zero count. Pure, unit-tested."""
     def rank(o):
         n, v = o.get("name", ""), str(o.get("value", ""))
-        if ".price." in n or re.search(r"\(0\)\s*$", o.get("label") or ""):
+        if ".price." in n or facet_count(o.get("label") or "") == 0:
             return None
         if n == "filter.v.availability":
             return 0 if v == "1" else 9
@@ -1245,7 +1297,6 @@ def collection_filter(ctx: Ctx, url: str, products_json: str, strict: bool = Fal
     except Exception:  # noqa: BLE001  data unavailable: judged by the page alone
         data = {}
     known = lambda hs: [h for h in hs if h in data] if data else list(hs)
-    before = known(first)
     opts = ctx.sess.evaluate(FILTER_OPTIONS_JS) or []
     if not opts:                             # filters a script adds after the grid
         ctx.sess.page.wait_for_timeout(1500)
@@ -1269,19 +1320,55 @@ def collection_filter(ctx: Ctx, url: str, products_json: str, strict: bool = Fal
                        ", ".join(f"{k}={v}" for k, v in got) or "none (the address did not change)", got == [(name, value)])
             return how
         if ctx.steps.run("applies_filter", apply, soft=soft) is not None:
+            listed = _listed(ctx)
+            for _ in range(6):               # a grid a script draws after the filtered page loads
+                if listed:
+                    break
+                ctx.sess.page.wait_for_timeout(500)
+                listed = _listed(ctx)
+            said = facet_count(label)
+            app = None if listed else ctx.sess.evaluate(FILTER_APP_JS)
+            if app:                          # the app draws the grid from its own parameters: Radar cannot drive it
+                ctx.steps.info("filter_not_judged", f"not judged: filter app {app} draws this collection's products and "
+                                                    f"listed none for Shopify's filter address {name}={value}"
+                                                    + (f" (the theme's own option says {said})" if said else ""))
+                _collection_sort(ctx, url, data, soft)
+                return
+
             def narrows():
-                after = known(_listed(ctx))
-                ctx.expect("products listed with the filter on", "≥ 1", len(after), len(after) >= 1)
-                ctx.expect("products listed: filtered vs unfiltered", f"≤ {len(before)}", len(after), len(after) <= len(before))
+                # counted from the page itself: a collection bigger than the 250 products Radar reads lists products
+                # the data does not carry (maspar.com, 11 Oct: '0 products' counted only the known ones)
+                after = known(listed)
+                unknown = len(listed) - len(after) if data else 0
+                ctx.expect("products listed with the filter on", "≥ 1" + (f" (the store's own filter says {said})" if said else ""),
+                           len(listed), len(listed) >= 1)
+                cap = max(len(first), len(data))    # never more than the collection holds
+                ctx.expect("products listed: filtered vs unfiltered", f"≤ {cap}", len(listed), len(listed) <= cap)
                 verdicts = {h: filter_matches(data[h], name, value) for h in after if h in data}
                 wrong = [h for h, ok in verdicts.items() if ok is False]
+                rechecked: list[str] = []
+                if wrong and name == "filter.v.availability":
+                    # products.json is not the storefront's view of stock: ask the store's own product data and page
+                    here = ctx.sess.page.url
+                    for h in wrong[:3]:
+                        verdicts[h], why = _storefront_stock(ctx, _base(here), h)
+                        rechecked.append(f"{h}: {why}")
+                    if _path(ctx.sess.page.url) != _path(here):
+                        try:                 # back to the filtered grid (the step's screenshot shows it)
+                            ctx.sess.goto(here)
+                        except Exception:  # noqa: BLE001
+                            pass
+                    wrong = [h for h, ok in verdicts.items() if ok is False]
                 told = [h for h, ok in verdicts.items() if ok is not None]
+                seen = f" (products.json says sold out; rechecked {'; '.join(rechecked)})" if rechecked else ""
                 if told:
                     ctx.expect(f"listed products matching {label!r} (store's data)", f"all {len(told)}",
-                               f"{len(told) - len(wrong)} of {len(told)}" + (f"; not matching: {', '.join(wrong[:4])}" if wrong else ""),
-                               not wrong)
-                return (f"{label!r}: {len(after)} products listed ({len(before)} without the filter)"
-                        + (", all match it in the store's data" if told else ", the store's data cannot tell which match"))
+                               f"{len(told) - len(wrong)} of {len(told)}" + (f"; not matching: {', '.join(wrong[:4])}" if wrong else "")
+                               + seen, not wrong)
+                return (f"{label!r}: {len(listed)} products listed ({len(first)} without the filter)"
+                        + (", all match it in the store's data" if told else ", the store's data cannot tell which match")
+                        + seen + (f"; {unknown} of them not in the store's data Radar read ({len(data)} products)"
+                                  if unknown else ""))
             ctx.steps.run("filter_narrows_results", narrows, soft=soft)
     _collection_sort(ctx, url, data, soft)
 

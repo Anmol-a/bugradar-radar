@@ -1051,6 +1051,14 @@ def test_filter_pick_prefers_in_stock_and_never_a_price_box_or_an_empty_option()
     assert pick_filter([o("filter.v.availability", "0"), o("filter.v.option.size", "M")])["value"] == "M"
     assert pick_filter([o("filter.p.m.custom.fabric", "Silk"), o("filter.p.tag", "new", "New (0)")])["value"] == "Silk"
     assert pick_filter([o("filter.v.price.lte", "500")]) is None and pick_filter([]) is None
+    assert pick_filter([o("filter.v.option.size", "S", "Small (0)‎"), o("filter.v.option.size", "M", "Medium (2)")])["value"] == "M"
+
+
+def test_facet_count_reads_the_themes_own_count_next_to_a_filter_option():
+    from radar.checks.library import facet_count
+    assert facet_count("Small (43)‎") == 43                     # maspar.com: an invisible direction mark after it
+    assert facet_count("In stock (1,204)") == 1204 and facet_count("Out of stock ( 0 )") == 0
+    assert facet_count("In stock only") is None and facet_count("") is None and facet_count("Size (S) Blue") is None
 
 
 def test_filter_truth_comes_from_the_stores_own_product_data():

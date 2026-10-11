@@ -1758,6 +1758,54 @@ def test_collection_filter_that_does_not_filter_warns_and_fails_when_strict(tmp_
     assert "not matching: sold-out-lamp" in strict.attempts[-1].error
 
 
+def test_collection_filter_in_stock_is_judged_by_the_storefronts_own_stock(tmp_path):
+    """antinorm.co + beminimalist.co (11 Oct 2026): 'In stock' listed one product the collection's products.json called
+    sold out, and Radar warned. Shopify's storefront filter counts products that keep selling (inventory policy
+    'continue', untracked stock) as in stock; the product's own /products/<h>.js and page sell it, so it matches."""
+    for device in ("desktop", "mobile"):
+        run = _filter_only("filter_stock_differs", tmp_path / device, device=device)
+        c = _case(run, "catalog.filter.home-decor")
+        s = _steps(c)["filter_narrows_results"]
+        assert c.verdict == "pass" and s.status == "pass", (device, s.status, s.error)
+        assert "sold-out-lamp" in s.detail and "/products/sold-out-lamp.js says available" in s.detail, (device, s.detail)
+        assert run.verdict == "healthy"
+
+
+def test_collection_filter_listing_products_beyond_the_data_radar_read_is_not_zero_results(tmp_path):
+    """maspar.com (11 Oct 2026): a 'Size' filter on a collection bigger than the 250 products Radar reads. The products it
+    listed were not in that data, and Radar counted only those it knew: '0 products listed with the filter on'. Here
+    ?filter.v.option.size=Large lists the vase, which the collection's products.json does not carry."""
+    run = _filter_only("filter_big_collection", tmp_path)
+    c = _case(run, "catalog.filter.home-decor")
+    st = _steps(c)
+    s = st["filter_narrows_results"]
+    assert "= filter.v.option.size=Large" in st["filters_offered"].detail, st["filters_offered"].detail
+    assert c.verdict == "pass" and s.status == "pass", (s.status, s.error)
+    assert s.detail.startswith("'Large (1)': 1 products listed"), s.detail
+    assert "not in the store's data Radar read" in s.detail, s.detail
+
+
+def test_collection_filter_that_lists_nothing_while_its_own_count_says_more_warns(tmp_path):
+    """A real store bug: the store's own 'In stock (2)' filter lists no products at all -> warning (strict: fail)."""
+    s = _steps(_case(_filter_only("filter_empty", tmp_path), "catalog.filter.home-decor"))["filter_narrows_results"]
+    assert s.status == "warn" and "products listed with the filter on" in s.error and "the store's own filter says 2" in s.error, \
+        (s.status, s.error)
+    strict = _case(_filter_only("filter_empty", tmp_path / "strict", strict=True), "catalog.filter.home-decor")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "filter_narrows_results"
+
+
+def test_collection_filter_driven_by_a_filter_app_is_not_judged(tmp_path):
+    """A filter app (Boost here) owns the grid and ignores Shopify's filter.* address: Radar cannot drive it, so the
+    empty grid is 'not judged: filter app Boost' (info), never a warning."""
+    run = _filter_only("filter_app", tmp_path)
+    c = _case(run, "catalog.filter.home-decor")
+    st = _steps(c)
+    assert c.verdict == "pass" and not any(s.status in ("warn", "fail") for s in st.values()), \
+        [(s.name, s.status, s.error) for s in st.values()]
+    assert st["filter_not_judged"].status == "info" and "filter app Boost" in st["filter_not_judged"].detail, \
+        st["filter_not_judged"].detail
+
+
 def test_collection_without_filters_is_information_not_a_warning(tmp_path):
     run = _filter_only("healthy", tmp_path)
     c = _case(run, "catalog.filter.home-decor")
