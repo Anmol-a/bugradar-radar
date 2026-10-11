@@ -2692,3 +2692,178 @@ REGISTRY: dict[str, Callable] = {
     "collection_more": collection_more, "more_links_resolve": more_links_resolve, "mobile_menu": mobile_menu,
     "cart_edit": cart_edit,
 }
+
+
+# ---------------- journey 24: a sold-out product says so, and its buy button is off ----------------
+
+# What a store shows on a sold-out product page instead of (or next to) its buy button. English only; the match is
+# read from the product's own area of the page (other products' cards excluded), never from a hidden template.
+SOLD_OUT_RX = re.compile(
+    r"\bsold[\s-]*out\b|\bout[\s-]+of[\s-]+stock\b|\bnotify\s+me\b|\bcoming\s+soon\b|\bunavailable\b|"
+    r"\b(currently|temporarily)\s+not\s+available\b|\bno\s+longer\s+available\b|\bback\s+in\s+stock\s+soon\b|"
+    r"\b(email|alert|tell|let)\s+me\s+(know\s+)?when\s+(it'?s\s+)?(back|available|in\s+stock)\b", re.I)
+
+
+def sold_out_wording(text: str) -> str:
+    """The 'sold out' words a page shows ('Sold out', 'Out of stock', 'Notify me when available', 'Coming soon',
+    'Unavailable'), as written on the page, or ''. Pure, unit-tested."""
+    m = SOLD_OUT_RX.search(text or "")
+    return re.sub(r"\s+", " ", m.group(0)).strip() if m else ""
+
+
+def sold_out_verdict(button: dict | None, wording: str) -> tuple[str, str, bool]:
+    """(expected, actual, ok) for 'the shopper is told the product is sold out'. button: the product's own add-to-cart
+    control ({text, enabled}) or None when the page has none. Only an ENABLED button with no sold-out wording anywhere
+    near it fails: the shopper can try to buy what the store cannot sell. Pure, unit-tested."""
+    exp = "buy button disabled or absent, or 'sold out' wording near it"
+    says = f"; page says {wording!r}" if wording else ""
+    if button is None:
+        return exp, ("no add-to-cart button for this product" + (says or "; no sold-out wording either")), True
+    t = (button.get("text") or "").strip()[:40] or "(no text)"
+    if not button.get("enabled"):
+        return exp, f"buy button {t!r} disabled{says}", True
+    if wording:
+        return exp, f"buy button {t!r} enabled, but the page says {wording!r}", True
+    return exp, (f"buy button {t!r} ENABLED and no sold-out wording: a shopper can try to buy a product the store "
+                 "cannot sell"), False
+
+
+# Visible text of the product's own part of the page: <main> (or the body) without the site header / nav / footer /
+# drawers / dialogs and without other products' cards or links (a 'Sold out' badge on a recommendation is about THAT
+# product). Button values and aria-labels are added (innerText misses <input type=submit value="Sold out">).
+SOLD_OUT_TEXT_JS = r"""([quick]) => {
+  const otherCard = __OTHER_CARD__;
+  const m = location.pathname.match(/\/products\/([^/?#]+)/), here = m ? decodeURIComponent(m[1]) : null;
+  const prodOf = a => { const x = (a.getAttribute('href') || '').match(/\/products\/([^/?#]+)/); return x ? decodeURIComponent(x[1]) : null; };
+  const CHROME = 'header, nav, footer, [role="dialog"], cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], ' +
+                 '[class*="mini-cart" i], script, style, noscript, template';
+  const shown = e => { const r = e.getBoundingClientRect(), st = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && st.visibility !== 'hidden' && st.display !== 'none' && parseFloat(st.opacity || 1) > 0.05; };
+  const other = e => { const a = e.closest('a[href*="/products/"]'); if (a && prodOf(a) && prodOf(a) !== here) return true;
+    return otherCard(e, quick); };
+  const root = document.querySelector('main, [role="main"], #MainContent') || document.body;
+  const parts = [];
+  const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+  while (w.nextNode() && parts.length < 1500) {
+    const t = w.currentNode.textContent.trim(), el = w.currentNode.parentElement;
+    if (t && el && !el.closest(CHROME) && shown(el) && !other(el)) parts.push(t);
+  }
+  for (const b of root.querySelectorAll('input[type=submit], input[type=button], button[aria-label], [role=button][aria-label]'))
+    if (shown(b) && !b.closest(CHROME) && !other(b)) parts.push(b.value || b.getAttribute('aria-label') || '');
+  return parts.join(' \n ').slice(0, 30000); }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
+
+
+def _gone_product_page(ctx: Ctx, url: str) -> str | None:
+    """Why the opened page is not the product at all (redirected away, 'Page not found', a hidden-product template), or
+    None. The same signs as _load_product, read without asserting: product_page() owns those findings."""
+    final = _path(ctx.sess.page.url)
+    if not final.startswith("/products/"):
+        return f"redirects to {final}"
+    has_product = ctx.sess.evaluate("""() => !!document.querySelector('form[action*="/cart/add"]') ||
+        [...document.querySelectorAll("script[type='application/ld+json']")].some(s => /"@type"\\s*:\\s*"Product"/.test(s.textContent))""")
+    head = (ctx.sess.evaluate("() => (document.title + ' ' + ((document.querySelector('h1') || {}).innerText || '')).slice(0, 300)") or "")
+    if not has_product and NOT_FOUND_RX.search(head):
+        return f"shows {head.strip()[:60]!r}"
+    if not _own_buy_holder(ctx, ctx.sess.page.url):
+        return _hidden_product_page(ctx, ctx.sess.page.url)
+    return None
+
+
+def _sold_out_button(ctx: Ctx, product: dict) -> dict | None:
+    """The product's OWN add-to-cart control as the page shows it now ({text, enabled, how}), or None. Never the healer:
+    on a sold-out page it would happily return another product's quick-add button. Read only, never clicked."""
+    page = ctx.sess.page
+    ids = [int(v["id"]) for v in product["variants"]]
+    found = ctx.sess.evaluate(MAIN_BUY_JS, [ids, QUICK_SEL])
+    how = f"product form #{found['form'][:40]}" if found else ""
+    if not found:
+        found = ctx.sess.evaluate(OWN_CONTROL_JS, [product.get("handle") or _handle(page.url) or "", ids,
+                                                   product.get("id") or 0, QUICK_SEL])
+        how = f"the page's own buy control ({found['why']})" if found else ""
+    if not found:
+        return None
+    loc = page.locator('[data-radar-target="buy"]').first
+    # aria-disabled / a 'disabled' class count as off too: themes grey out a div or link that has no disabled property
+    off = loc.evaluate("""e => !!(e.disabled || e.getAttribute('aria-disabled') === 'true' || e.closest('fieldset[disabled]')
+        || /(^|\\s)(disabled|is-disabled|btn--disabled|sold-?out)(\\s|$)/i.test(typeof e.className === 'string' ? e.className : ''))""")
+    return {"text": found.get("text") or "", "enabled": bool(loc.is_enabled() and not off), "how": how}
+
+
+def sold_out_page(ctx: Ctx, url: str, strict: bool = False, cart_probe: bool = True):
+    """Journey 24. A product the store's products.json lists as sold out: its page must TELL the shopper (the buy
+    button is disabled / absent / replaced, or the page says 'Sold out', 'Out of stock', 'Notify me', 'Coming soon',
+    'Unavailable' near it). An ENABLED add-to-cart with no such words is the finding: a shopper tries to buy what the
+    store cannot sell. Shopify's live /products/<h>.js is read again first: a product back in stock since discovery
+    is not judged. Hidden / redirected / 'not found' pages are not judged here (the product page test covers them).
+    Evidence (never a failure): /cart/add.js for the variant in Radar's own session, which Shopify should refuse
+    (HTTP 422); a store set to keep selling when out of stock adds it, which is the store's choice, and Radar removes
+    it again. Never clicks buy, never opens checkout, never submits a 'Notify me' form. Warnings unless strict."""
+    soft = not strict
+    page = ctx.sess.page
+    state: dict = {}
+
+    def load():
+        out = _load(ctx, url)
+        state["gone"] = _gone_product_page(ctx, url)
+        return out + (f"; not the product page: {state['gone']}" if state["gone"] else "")
+    if ctx.steps.run("loads", load, soft=soft) is None:
+        return
+    if state.get("gone"):
+        ctx.steps.info("sold_out_not_judged", f"not judged: {state['gone']} (the product page test covers hidden pages)")
+        return
+
+    def still_sold_out():
+        p = _product_js(ctx, page.url)
+        n = sum(bool(v.get("available")) for v in p["variants"])
+        state.update(p=p, back=n > 0)
+        return (f"{n} of {len(p['variants'])} variant(s) available now: back in stock since discovery" if n else
+                f"Shopify's product data: 0 of {len(p['variants'])} variant(s) available")
+    if ctx.steps.run("sold_out_in_store_data", still_sold_out, soft=soft) is None:
+        return
+    if state["back"]:
+        ctx.steps.info("back_in_stock", "not judged: the product is in stock again (products.json said sold out at "
+                                        "discovery); the product page test judges in-stock products")
+        return
+    p = state["p"]
+
+    def told():
+        _dismiss(ctx)
+        b = _sold_out_button(ctx, p)
+        text = (ctx.sess.evaluate(SOLD_OUT_TEXT_JS, [QUICK_SEL]) or "") + " \n " + ((b or {}).get("text") or "")
+        exp, actual, ok = sold_out_verdict(b, sold_out_wording(text))
+        ctx.expect("shopper is told the product is sold out", exp, actual + (f" ({b['how']})" if b else ""), ok)
+        return actual
+    ctx.steps.run("shows_sold_out", told, soft=soft)
+
+    if not cart_probe:
+        return
+    vid, base = int(p["variants"][0]["id"]), _base(page.url)
+
+    def refuses():
+        before = _cart_qty(ctx, base, vid)
+        r = ctx.sess.evaluate("""async (id) => { const r = await fetch('/cart/add.js', {method: 'POST',
+            headers: {'content-type': 'application/json', 'accept': 'application/json'}, body: JSON.stringify({id, quantity: 1})});
+            let d = ''; try { const j = await r.json(); d = j.description || j.message || ''; } catch (e) {}
+            return {status: r.status, said: String(d).slice(0, 120)}; }""", vid) or {}
+        st = int(r.get("status") or 0)
+        said = f": {r['said']!r}" if r.get("said") else ""
+        ctx.expect("/cart/add.js answer for the sold-out variant", "HTTP 422 (Shopify refuses), or added (store keeps selling)",
+                   f"HTTP {st}{said}", 0 < st < 500)
+        if st >= 400:
+            return f"Shopify refused to add it (HTTP {st}{said})"
+        added = _wait_qty(ctx, base, vid, before + 1, 4)
+        ctx.sess.evaluate("""async (id) => { await fetch('/cart/change.js', {method: 'POST',
+            headers: {'content-type': 'application/json', 'accept': 'application/json'},
+            body: JSON.stringify({id: String(id), quantity: 0})}); }""", vid)
+        left = _wait_qty(ctx, base, vid, 0, 5)
+        ctx.expect("Radar's own cart cleaned up", 0, left)
+        state["oversell"] = f"/cart/add.js ADDED the sold-out variant ({before} → {added} in Radar's own cart; removed again)"
+        return state["oversell"]
+    # evidence only (a warning at most, even when strict): the shopper-facing finding is shows_sold_out above
+    ctx.steps.run("store_refuses_sold_out_add", refuses, soft=True)
+    if state.get("oversell"):
+        ctx.steps.info("oversell_allowed", state["oversell"] + ": the store keeps selling this product when out of stock "
+                                           "(a Shopify setting, the store's choice), not a bug")
+
+
+REGISTRY["sold_out_page"] = sold_out_page

@@ -1474,3 +1474,60 @@ def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path
     assert run.verdict == "unreachable", (run.verdict, run.notes)
     assert any("bombae.example: the domain points to 127.0.0.1" in n and "check the store's address" in n
                for n in run.notes), run.notes
+
+
+# ---------------- journey 24: sold-out product shows sold out, buy disabled (11 Oct 2026) ----------------
+
+def _sold_out_only(mode, tmp_path, strict=False, **kw):
+    """Only the product suite's product.sold_out case. strict=True flips the builder's strict=False."""
+    import radar.runner.executor as ex
+    orig = ex.build_suites
+
+    def built(sm, s):
+        suites = orig(sm, s)
+        for x in suites:
+            if x.id == "product":
+                x.cases = [c for c in x.cases if c.check == "sold_out_page"]
+                for c in x.cases:
+                    c.params["strict"] = strict
+        return suites
+    ex.build_suites = built
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, **kw), only_suites=["product"])[0]
+    finally:
+        srv.shutdown()
+        ex.build_suites = orig
+
+
+def test_sold_out_product_says_so_and_shopify_refuses_the_add(tmp_path):
+    """The mock's sold-out lamp (products.json available: false) shows a disabled 'Sold out' button: PASS. Shopify's live
+    product data is re-read; /cart/add.js in Radar's own cart is refused with 422 (evidence)."""
+    run = _sold_out_only("healthy", tmp_path)
+    c = _case(run, "product.sold_out")
+    st = _steps(c)
+    assert c.verdict == "pass" and all(s.status == "pass" for s in st.values()), [(s.name, s.status, s.error) for s in st.values()]
+    assert "Brass Table Lamp" in c.title
+    assert st["sold_out_in_store_data"].detail == "Shopify's product data: 0 of 1 variant(s) available"
+    assert "page says 'Sold out'" in st["shows_sold_out"].detail, st["shows_sold_out"].detail
+    assert st["store_refuses_sold_out_add"].detail.startswith("Shopify refused to add it (HTTP 422"), st["store_refuses_sold_out_add"].detail
+
+
+def test_sold_out_product_with_an_enabled_buy_button_warns_and_fails_when_strict(tmp_path):
+    run = _sold_out_only("soldout_buyable", tmp_path)
+    c = _case(run, "product.sold_out")
+    s = _steps(c)["shows_sold_out"]
+    assert c.verdict == "pass" and s.status == "warn" and "'Add to cart' ENABLED and no sold-out wording" in s.error, (c.verdict, s.status, s.error)
+    assert run.verdict == "healthy"
+    strict = _case(_sold_out_only("soldout_buyable", tmp_path / "strict", strict=True), "product.sold_out")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "shows_sold_out", (strict.verdict, strict.attempts[-1].error)
+    assert "a shopper can try to buy a product the store cannot sell" in strict.attempts[-1].error
+
+
+def test_store_that_keeps_selling_when_out_of_stock_is_a_note_and_radar_cleans_its_cart(tmp_path):
+    run = _sold_out_only("soldout_oversell", tmp_path)
+    c = _case(run, "product.sold_out")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["store_refuses_sold_out_add"].status == "pass", [(s.name, s.status, s.error) for s in st.values()]
+    assert "ADDED the sold-out variant (0 → 1" in st["oversell_allowed"].detail and "not a bug" in st["oversell_allowed"].detail
+    assert st["oversell_allowed"].status == "info"
