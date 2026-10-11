@@ -173,6 +173,9 @@ Modes (to prove Radar catches and heals what it should):
                    WARNS (strict: FAILS) at change_quantity "cart quantity after pressing +: expected 2"
   cart_remove_broken  the cart page's Remove link reloads the cart without removing the line -> WARNS (strict: FAILS) at
                    remove_item
+  checkout_big_script  the checkout page carries ~100 kB of inline JSON <script> before the order summary (Shopify's
+                   checkout, 12 theme demos, run 38086965951) -> 'order summary names the product' PASSES (it warned on
+                   all 24 demo runs while Radar read only the first 40 000 chars of body.textContent)
   checkout_broken  GET /checkout answers HTTP 500 -> WARNS (strict: FAILS) at checkout_opens (checkout never filled)
   no_title         product pages show no product name at all (snitch.co.in after its move)
                    -> product tests FAIL at shows_title_price_image with "none"
@@ -1045,7 +1048,10 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(200, page("Checkout - Mock Store", '<h2>Contact</h2><input type="email" name="email" '
                                         'placeholder="Email or mobile phone number" autocomplete="shipping email"><h2>Delivery</h2>'
                                         '<input name="firstName" placeholder="First name"><h2>Payment</h2>'
-                                        f'<button type="submit" id="checkout-pay-button">Pay now</button><aside id="summary"></aside>'
+                                        f'<button type="submit" id="checkout-pay-button">Pay now</button>'
+                                        # checkout_big_script: Shopify's checkout inlines ~100 kB of JSON before the summary
+                                        + ('<script type="application/json" id="checkout-data">' + '{"k":"' + 'x' * 100000 + '"}</script>'
+                                           if self.mode == "checkout_big_script" else '') + '<aside id="summary"></aside>'
                                         # Shopify's checkout is an app: the order summary renders seconds after the page
                                         f'<template id="sum">{summary}</template><script>setTimeout(() => document.getElementById'
                                         f'("summary").innerHTML = document.getElementById("sum").innerHTML, 2500);</script>',

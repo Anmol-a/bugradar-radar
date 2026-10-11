@@ -1752,3 +1752,12 @@ def test_collection_sort_is_checked_only_where_robots_txt_allows_sort_by(tmp_pat
     assert st["applies_filter"].detail == "opened 'Availability', clicked 'In stock (2)'", st["applies_filter"].detail
     s = st["sorts_by_price"]
     assert s.status == "pass" and s.detail.startswith("chose 'Price, low to high': 3 products from ₹0.00 to ₹2,499.00"), (s.status, s.error, s.detail)
+
+
+def test_checkout_summary_is_read_past_a_big_inline_script(tmp_path):
+    """Journey 21 round 2: Shopify's checkout inlines ~100 kB of JSON in a <script> before the order summary. Radar read
+    body.textContent cut at 40 000 chars, so 'order summary names the product' warned on all 24 theme-demo runs
+    (run 38086965951). Script/style text is skipped now and the summary is found."""
+    c = _case(_cart_edit_only("checkout_big_script", tmp_path), "cart.edit_and_checkout")
+    st = _steps(c)["checkout_opens"]
+    assert st.status == "pass" and all(ch["ok"] for ch in st.checks), (st.status, st.error, st.checks)

@@ -2982,7 +2982,14 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
         info: dict = {}
         for _ in range(20):                              # checkout is an app: fields first, the order summary seconds later
             page.wait_for_timeout(750)
-            info = ctx.sess.evaluate("""() => ({text: (document.body.textContent || '').replace(/\\s+/g, ' ').slice(0, 40000),
+            # visible-or-collapsed TEXT only: Shopify's checkout puts ~100 kB of inline JSON <script> in the body before
+            # the order summary, so body.textContent cut at 40 000 chars never reached the product name (12 theme
+            # demos, run 38086965951: 24/24 'not found'). A collapsed mobile summary is still in the DOM text.
+            info = ctx.sess.evaluate("""() => ({text: (() => { const out = []; let n = 0;
+                const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {acceptNode: t =>
+                  /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/.test(t.parentNode.nodeName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
+                while (w.nextNode() && n < 200000) { const v = w.currentNode.nodeValue; if (v.trim()) { out.push(v); n += v.length; } }
+                return out.join(' ').replace(/\\s+/g, ' '); })(),
                 fields: [...document.querySelectorAll('input')].filter(i => { const r = i.getBoundingClientRect();
                   return r.width > 0 && r.height > 0 && !/hidden|checkbox|radio/.test(i.type); }).length})""")
             if info["fields"] and norm_text(title) in norm_text(info["text"]):
