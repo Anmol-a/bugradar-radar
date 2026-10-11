@@ -862,3 +862,40 @@ def test_dead_store_addresses_are_told_apart_from_temporary_problems():
     for temporary in ("APIRequestContext.get: Timeout 20000ms exceeded.", "Client network socket disconnected before secure "
                       "TLS connection was established", "connect ECONNREFUSED 104.18.2.3:443", ""):
         assert why(temporary) == "", temporary
+
+
+
+def test_card_price_reads_the_sale_price_not_the_mrp_or_a_save_badge():
+    from radar.checks.library import card_price
+    sale = [{"text": "₹1,599.00", "struck": True}, {"text": "Save ₹300", "struck": False}, {"text": "₹1,299.00", "struck": False}]
+    assert card_price(sale) == (1299.0, False)
+    # MRP not struck (plain label) but higher: the lowest price is what the shopper pays
+    assert card_price([{"text": "MRP Rs. 799", "struck": False}, {"text": "Rs. 649", "struck": False}]) == (649.0, False)
+    assert card_price([{"text": "From ₹499.00", "struck": False}]) == (499.0, True)
+    assert card_price([{"text": "20% off", "struck": False}, {"text": "1,099 INR", "struck": False}]) == (1099.0, False)
+    assert card_price([{"text": "₹15 / 100 ml", "struck": False}, {"text": "₹300", "struck": False}]) == (300.0, False)
+    assert card_price([{"text": "₹1,599.00", "struck": True}]) == (None, False)        # only the struck MRP: no price
+    assert card_price([]) == (None, False)
+
+
+def test_card_price_agrees_with_the_variant_or_the_lowest_price():
+    from radar.checks.library import card_price_agrees
+    assert card_price_agrees(1299.0, 129900, 129900)[0]
+    assert card_price_agrees(1300.0, 129950, 129950)[0]                # the card rounds to whole rupees
+    ok, how = card_price_agrees(1299.0, 139900, 129900)                 # 'From' / lowest variant
+    assert ok and "lowest" in how
+    ok, how = card_price_agrees(999.0, 129900, 129900)
+    assert not ok and how == "₹999.00"
+
+
+def test_price_consistency_case_only_with_the_cart_flow():
+    sm = SiteMap(site_id="x.com", base_url="https://x.com", platform="shopify",
+                 collections=[Collection("c", "C", "https://x.com/collections/c", 3)],
+                 products=[Product("a", "Alpha Vase", "https://x.com/products/a", 11, "499.00", True)])
+    cart = next(x for x in build_suites(sm, Settings()) if x.id == "cart")
+    c = next(c for c in cart.cases if c.check == "price_consistency")
+    assert c.id == "cart.price_consistency" and c.severity == "minor"
+    assert c.params["collection_url"] == "https://x.com/collections/c" and c.params["product_handles"] == ["a"]
+    assert c.params["strict"] is False
+    assert not any(c.check == "price_consistency" for x in build_suites(sm, replace(Settings(), allow_cart_flow=False))
+                   for c in x.cases)
