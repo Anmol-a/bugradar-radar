@@ -3635,8 +3635,9 @@ def sold_out_page(ctx: Ctx, url: str, strict: bool = False, cart_probe: bool = T
         out = _load(ctx, url)
         state["gone"] = _gone_product_page(ctx, url)
         return out + (f"; not the product page: {state['gone']}" if state["gone"] else "")
-    if ctx.steps.run("loads", load, soft=soft) is None:
-        return
+    # hard: a product page that does not open at all (HTTP 5xx) is an outage, not a sold-out finding (mock products_down:
+    # every product case must confirm it)
+    ctx.steps.run("loads", load)
     if state.get("gone"):
         ctx.steps.info("sold_out_not_judged", f"not judged: {state['gone']} (the product page test covers hidden pages)")
         return
