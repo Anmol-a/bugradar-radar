@@ -1763,7 +1763,7 @@ def test_checkout_summary_is_read_past_a_big_inline_script(tmp_path):
     assert st.status == "pass" and all(ch["ok"] for ch in st.checks), (st.status, st.error, st.checks)
 
 
-@pytest.mark.parametrize("mode", ["other_market", "other_market_norate"])
+@pytest.mark.parametrize("mode", ["other_market", "other_market_norate", "other_market_offer"])
 def test_prices_converted_for_another_country_are_location_never_down(tmp_path, mode):
     """theindianethnicco.com ($62.91) + saltattire.com ($24.23), new30h 11 Oct, and tilfi.com ($497), new30g: Shopify
     Markets shows a US visitor converted dollar prices, so the catalog's ₹ price is 'not on page' and Radar said DOWN.
@@ -1807,3 +1807,13 @@ def test_store_that_disallows_search_is_not_searched_unless_it_authorised_radar(
     run = _info("hostile", tmp_path, suites=("search",))           # authorised (cart flow on): searched like a shopper
     main = next(c for c in run.cases if c.case_id.startswith("search.") and c.check == "search_results")
     assert main.verdict == "pass", main.attempts[-1].error
+
+
+def test_dawn_cart_row_price_is_read_and_a_discount_code_is_not_a_mismatch(tmp_path):
+    """Journey 23 round 2: all 12 theme demos said 'line shows no price' (cycle 28 re-run 38128286009). Dawn's quantity
+    box carries hidden 'Decrease quantity for <title>' text, so the line was cut down to the quantity box; craft's line
+    showed the regular price struck and a FIRSTTIMER sale price. Both are read now: the line passes as discounted."""
+    c = _case(_price_only("cart_dawn_rows", tmp_path), "cart.price_consistency")
+    st = _steps(c)
+    assert st["cart_line_price"].status == "pass", (st["cart_line_price"].status, st["cart_line_price"].error)
+    assert "₹1,299.00 struck, discounted in the cart to ₹1,169.10" in st["cart_line_price"].detail, st["cart_line_price"].detail

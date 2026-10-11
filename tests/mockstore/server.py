@@ -176,6 +176,11 @@ Modes (to prove Radar catches and heals what it should):
                    new30h, tilfi.com new30g) -> product / journey / cart tests are BLOCKED 'location (US runner)', not DOWN
   other_market_norate  same dollar prices, but the page exposes no Shopify.currency (theindianethnicco.com $62.91 and
                    saltattire.com $24.23 kept failing on the rate test alone, cycle 28 re-run) -> BLOCKED 'location'
+  cart_dawn_rows   Dawn's real cart rows: hidden 'Decrease quantity for <title>' text inside the quantity box, the price in
+                   its own table cell, a discount code (regular price struck, sale price 10% lower) -> journey 23's
+                   cart line price PASSES ('discounted in the cart'), not 'line shows no price' (12 theme demos, cycle 28)
+  other_market_offer  dollar prices with no Shopify.currency, plus an offer block in ₹ ('Flat ₹250 off, min. order ₹2,500')
+                   lower on the product page (theindianethnicco.com, cycle 28 round 2 still DOWN) -> BLOCKED 'location'
   marketplace_only product pages show no price and no cart, only 'Buy on Amazon / Flipkart' links (antesports, beyondsnack)
                    -> product + journey BLOCKED "sells only on marketplaces", never DOWN
   cart_qty_broken  the cart page's + / − buttons and quantity box do nothing (theme script missing) -> cart.edit_and_checkout
@@ -619,9 +624,12 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                           r'<img class="gallery-slide" data-src="\1" width="300" height="300"', body, count=1)
             body = body.replace("</body>", "<script>setTimeout(() => document.querySelectorAll('img.gallery-slide').forEach("
                                 "i => i.src = i.dataset.src), 2000);</script></body>", 1)
-        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("other_market", "other_market_norate"):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("other_market", "other_market_norate", "other_market_offer"):
             body = re.sub(r"₹\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
             body = re.sub(r"Rs\.\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market_offer" and "/products/" in self.path:
+            body = body.replace("</body>", '<div class="offers">Flat ₹250 off | Use code FIRSTBUY. Valid on 1st order only, '
+                                'min. order value ₹2,500</div></body>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market":
             body = body.replace("</head>", "<script>window.Shopify = window.Shopify || {}; Shopify.country = 'US'; "
                                 "Shopify.currency = {active: 'USD', rate: '0.012'};</script></head>", 1)
@@ -1090,6 +1098,20 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             items = CARTS[cid]
             # Dawn-like cart rows: − / quantity / + controls, a remove link, the line price, a subtotal
             rows = "".join(
+                # Dawn's real cart (theme demos, cycle 28): a table row; the quantity box carries hidden
+                # 'Decrease quantity for <title>' text; the line price sits in its own cell, a discount code shows the
+                # regular price struck and a lower sale price
+                f'<table><tbody><tr class="cart-item"><td><a href="/products/{i.get("handle", "")}">{i["title"]}</a>'
+                f'<div class="price"><s>{rupees(i["price"])}</s> <span>{rupees(i["price"] * 9 // 10)}</span> WELCOME10</div></td>'
+                f'<td><quantity-popover><quantity-input><button type="button" name="minus"><span class="visually-hidden" '
+                f'style="position:absolute;clip:rect(0 0 0 0);width:1px;height:1px;overflow:hidden">Decrease quantity for {i["title"]}</span>−</button>'
+                f'<input class="quantity__input" type="number" name="updates[]" value="{i["quantity"]}" data-line="{n}" '
+                f'data-quantity-variant-id="{i["id"]}"><button type="button" name="plus"><span class="visually-hidden" '
+                f'style="position:absolute;clip:rect(0 0 0 0);width:1px;height:1px;overflow:hidden">Increase quantity for {i["title"]}</span>+</button>'
+                f'</quantity-input></quantity-popover><cart-remove-button><a href="/cart/change?line={n}&quantity=0" '
+                f'aria-label="Remove {i["title"]}">Remove</a></cart-remove-button></td>'
+                f'<td class="totals"><s>{rupees(i["price"] * i["quantity"])}</s> <span>{rupees(i["price"] * i["quantity"] * 9 // 10)}</span></td></tr></tbody></table>'
+                if self.mode == "cart_dawn_rows" else
                 f'<div class="cart-item" data-line="{n}">{i["title"]} x{i["quantity"]} '
                 f'<span class="line-price">{rupees(i["price"] * i["quantity"])}</span>'
                 f'<quantity-input><button type="button" name="minus" aria-label="Decrease quantity for {i["title"]}">−</button>'

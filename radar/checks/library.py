@@ -50,18 +50,25 @@ MARKETPLACE_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRec
   return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, shop_on: so || null}; }"""
 
 
-def _raise_if_catalog_only(ctx: Ctx) -> None:
+def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
     """Called only when the product's price is NOT on its page: prices converted for another country = location
     (OtherMarket); marketplace links and no buy control of its own = a catalog store (CatalogOnly). A page with its
     own buy button is judged as usual."""
     # Round 2 (cycle 28 re-run): theindianethnicco + saltattire still said 'not on page' with the rate test alone, so
     # foreign prices on the page itself count too: a $ / US$ / € / £ / AED price and no ₹ / Rs / INR price anywhere.
-    cur = ctx.sess.evaluate("""() => { const c = (window.Shopify || {}).currency || {};
+    # Round 3 (cycle 29 re-run): theindianethnicco shows '$62.91' under the product name while an offer block lower
+    # down says 'Flat ₹250 off | Min. order value ₹2,500', so 'no ₹ anywhere' never held. The price block right under
+    # the product name decides: a foreign price there and no ₹ price there = location.
+    cur = ctx.sess.evaluate(r"""(title) => { const c = (window.Shopify || {}).currency || {};
         const t = document.body.innerText || '';
-        const foreign = (t.match(/(?:US\$|CA\$|A\$|\$|€|£|AED|USD|EUR|GBP)\s?\d[\d,]*(?:\.\d\d)?/) || [])[0] || '';
-        const inr = /(?:₹|Rs\.?|INR)\s?\d/.test(t);
+        const fx = /(?:US\$|CA\$|A\$|\$|€|£|AED|USD|EUR|GBP)\s?\d[\d,]*(?:\.\d\d)?/, rx = /(?:₹|Rs\.?|INR)\s?\d/;
+        let foreign = rx.test(t) ? '' : ((t.match(fx) || [])[0] || '');
+        const norm = x => (x || '').toLowerCase().replace(/\s+/g, ' ');
+        const at = title ? norm(t).indexOf(norm(title)) : -1;
+        if (!foreign && at >= 0) { const w = t.replace(/\s+/g, ' ').slice(at, at + title.length + 160);
+          const m = w.match(fx); if (m && !rx.test(w.slice(0, w.indexOf(m[0])))) foreign = m[0]; }
         return {active: c.active || '', rate: parseFloat(c.rate || '1') || 1, country: (window.Shopify || {}).country || '',
-                foreign: inr ? '' : foreign}; }""") or {}
+                foreign}; }""", title) or {}
     active = (cur.get("active") or "").upper()
     if (active and active != "INR" and abs(cur.get("rate", 1) - 1) > 1e-6) or cur.get("foreign"):
         shown = f" (page shows {cur['foreign']!r})" if cur.get("foreign") else ""
@@ -1489,7 +1496,7 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             ctx.sess.evaluate("() => scrollTo(0, 0)")
         ok, how = price_shown(want, nums)
         if not ok:
-            _raise_if_catalog_only(ctx)
+            _raise_if_catalog_only(ctx, p["title"])
         where = "" if ok else _hidden_price(ctx, want)
         ctx.expect("selected variant price shown", rupees(v["price"]),
                    how if ok else f"not on page{where}", ok)
@@ -1646,7 +1653,7 @@ def add_to_cart(ctx: Ctx, url: str, variant_id: int | None = None, cart_path: st
         v = next((x for x in p["variants"] if variant_id and int(x["id"]) == int(variant_id)), None) or _selected_variant(ctx, p)
         state.update(p=p, v=v)
         if not price_shown(round(int(v["price"]) / 100, 2), prices_in_text(ctx.sess.evaluate("() => document.body.innerText")))[0]:
-            _raise_if_catalog_only(ctx)
+            _raise_if_catalog_only(ctx, p["title"])
         return f"{p['title']!r}, variant {v['id']} at {rupees(v['price'])}"
     ctx.steps.run("product_identified", identify)
 
@@ -3387,9 +3394,18 @@ CARD_PRICES_JS = r"""([handles]) => {
 CART_LINE_PRICES_JS = r"""([title]) => {
   const items = """ + PRICE_ITEMS_FN + r""";
   const norm = t => (t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const qtySel = 'input[name="updates[]"], input[name^="updates"], input.quantity__input, input[name="quantity"], ' +
+                 'input[type="number"], input[data-quantity-input], input[class*="qty" i], input[class*="quantity" i]';
+  const cartLevel = e => e === document.body || /^(FORM|MAIN|BODY|TABLE|TBODY)$/.test(e.tagName) ||
+    e.matches('cart-items, cart-drawer, [role=dialog]') || !!e.querySelector('[name="checkout"], a[href$="/checkout"]');
   let row = document.querySelector('[data-radar-cart="qty"]'); if (!row) return null;
-  while (row.parentElement && !norm(row.innerText).includes(norm(title)) && !/^(FORM|MAIN|BODY)$/.test(row.parentElement.tagName) &&
-         !row.parentElement.querySelector('[name="checkout"], a[href$="/checkout"]')) row = row.parentElement;
+  // Round 2 (12 theme demos, cycle 28 re-run): Dawn's quantity box carries hidden 'Decrease quantity for <title>'
+  // text, so stopping at the first ancestor that names the product kept only the quantity box (no price). The line is
+  // the highest ancestor that still holds this one quantity box and no cart-level control (as CART_LINE_JS).
+  while (row.parentElement && !cartLevel(row.parentElement) &&
+         [...row.parentElement.querySelectorAll(qtySel)].filter(vis).length <= 1) row = row.parentElement;
   return items(row); }"""
 
 _PRICE_RX = re.compile(r"(?:₹|\brs\.?|\binr\b|\$|€|£)\s*(\d[\d,]*(?:\.\d{1,2})?)|(\d[\d,]*(?:\.\d{1,2})?)\s*(?:\binr\b|₹)", re.I)
@@ -3505,7 +3521,13 @@ def price_consistency(ctx: Ctx, collection_url: str, product_handles: list[str] 
         ok, how = price_shown(round(want * qty / 100, 2), nums)
         if not ok and qty > 1:              # a line that shows the unit price
             ok, how = price_shown(round(want / 100, 2), nums)
-        ev = "" if texts else ctx.sess.evaluate("""() => { const q = document.querySelector('[data-radar-cart="qty"]');
+        if not ok:                          # a discount code / automatic discount: the regular price struck, a lower one
+            struck = [n for x in texts if x["struck"] for n in prices_in_text(x["text"])]       # (craft demo FIRSTTIMER)
+            for unit in {round(want * qty / 100, 2), round(want / 100, 2)}:
+                if price_shown(unit, struck)[0] and any(0 < n < unit for n in nums):
+                    ok, how = True, f"{rupees(round(unit * 100))} struck, discounted in the cart to {rupees(round(min(n for n in nums if 0 < n < unit) * 100))}"
+                    break
+        ev = "" if texts else ctx.sess.evaluate(r"""() => { const q = document.querySelector('[data-radar-cart="qty"]');
             if (!q) return 'no quantity box marked'; let r = q; for (let k = 0; k < 4 && r.parentElement; k++) r = r.parentElement;
             return r.tagName.toLowerCase() + '.' + String(r.className).slice(0, 40) + ': ' + (r.innerText || '').replace(/\s+/g, ' ').slice(0, 160); }""")
         # evidence for round 2: all 12 theme demos (cycle 28 run 38123470941) said 'no price' on the line
