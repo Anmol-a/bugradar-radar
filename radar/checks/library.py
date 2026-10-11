@@ -833,6 +833,20 @@ def links_resolve(ctx: Ctx, urls: list[str], max_links: int = 10):
         and f"{opened} pages open and show content" + (f", {skipped} skipped by robots.txt" if skipped else ""))
 
 
+def _reveal_product_grid(ctx: Ctx) -> str:
+    """No product link on a collection page yet: scroll down like a shopper, a screen at a time, until the grid shows.
+    veirdo.in (new30h, desktop + phone): a 520 px sale banner, then '144 items' and a grid an app renders only when it
+    scrolls into view; Radar never scrolled and said 'products listed: 0' (collection, journey, phone menu link)."""
+    if _product_links(ctx.sess):
+        return ""
+    found = ctx.sess.evaluate("""async () => { const has = () => [...document.querySelectorAll("a[href*='/products/']")]
+        .some(a => { const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
+      for (let y = 0; y <= Math.min(document.body.scrollHeight, 15000); y += Math.round(innerHeight * 0.7)) {
+        scrollTo(0, y); for (let i = 0; i < 4; i++) { await new Promise(r => setTimeout(r, 250)); if (has()) return y; } }
+      return -1; }""")
+    return f" (the grid appeared after scrolling {found}px down)" if isinstance(found, (int, float)) and found >= 0 else ""
+
+
 def collection_page(ctx: Ctx, url: str):
     ctx.steps.run("loads", lambda: _load(ctx, url))
 
@@ -842,8 +856,10 @@ def collection_page(ctx: Ctx, url: str):
             ctx.sess.page.wait_for_timeout(500)
             waited += 0.5
             n = len(_product_links(ctx.sess))
+        scrolled = _reveal_product_grid(ctx) if not n else ""
+        n = n or len(_product_links(ctx.sess))
         ctx.expect("products listed", "≥ 1", n, n >= 1)
-        return f"{n} products listed" + (f" (rendered {waited:.1f}s after the page loaded)" if waited else "")
+        return f"{n} products listed" + (f" (rendered {waited:.1f}s after the page loaded)" if waited else "") + scrolled
     ctx.steps.run("lists_products", has_products)
     ctx.sess.page.wait_for_timeout(1000)
     ctx.steps.run("images_load", lambda: _images_ok(ctx), soft=True)
@@ -2804,6 +2820,10 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
         _click_picked(ctx, got)
         ctx.expect("landed on that collection", _path(got["href"]), _path(page.url), "/collections/" in page.url)
         n = len(_product_links(ctx.sess))
+        if not n:
+            _wait_stable(ctx, PRODUCT_HREF)
+            _reveal_product_grid(ctx)
+            n = len(_product_links(ctx.sess))
         ctx.expect("products listed in collection", "≥ 1", n, n >= 1)
         return f"clicked {how} → {_path(page.url)} ({n} products)" + (f"; {got['overlay']}" if got.get("overlay") else "")
     # soft: some themes (e.g. Origin) put no collection link on the homepage; then home -> product
@@ -2815,6 +2835,8 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
         _dismiss(ctx)
         prefer = [f"/products/{h}" for h in product_handles]
         _wait_stable(ctx, PRODUCT_HREF)
+        if "/collections/" in page.url:
+            _reveal_product_grid(ctx)
         got = _pick(ctx, "a[href]", PRODUCT_HREF, prefer)
         found = not got.get("none")
         ctx.expect("product card a shopper can click", "found",

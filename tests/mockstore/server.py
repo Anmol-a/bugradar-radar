@@ -167,6 +167,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> pages load (no 'down'); the SEO test 'title' warns
   annual_return_pdf  the footer's first link is 'Annual Return FY 2024-25', a PDF under /cdn/ (giva.co): a company-law
                    filing, not the returns policy -> never picked as an info page, info.policy_pages PASSES
+  grid_on_scroll   collection pages show a 1600 px banner and an EMPTY grid that an app fills only when the grid
+                   scrolls into view (veirdo.in, new30h: '144 items', Radar saw 0 products) -> collection + journey PASS
   lazy_gallery     the product page's main picture is a lazy gallery slide: an empty 300x300 <img> whose data-src is
                    swapped in 2 s after load (soultree.in, new30h: image on screen, Radar said 'none loaded') -> PASSES
   other_market     every page shows prices converted to USD (Shopify Markets for a US visitor: Shopify.currency
@@ -600,6 +602,16 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "annual_return_pdf":
             body = body.replace('<div class="footer-menu">', '<div class="footer-menu"><a href="/cdn/shop/t/234/assets/'
                                 'annual-return-fy-2024-25.pdf">Annual Return FY 2024-25</a> ')
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "grid_on_scroll" and urlparse(self.path).path.startswith("/collections/"):
+            cards = re.findall(r'<a class="card" href="/products/[^"]+">.*?</a>', body)
+            for c in cards:
+                body = body.replace(c, "", 1)
+            body = body.replace("<main>", '<main><div class="sale-banner" style="height:1600px">SALE</div>'
+                                '<div id="app-grid" style="min-height:50px"></div>', 1)
+            body = body.replace("</body>", "<div style='height:1200px'></div><script>const G = " + json.dumps("".join(cards)) +
+                                "; new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { "
+                                "document.getElementById('app-grid').innerHTML = G; o.disconnect(); } })"
+                                ".observe(document.getElementById('app-grid'));</script></body>", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "lazy_gallery" and "/products/" in self.path:
             body = re.sub(r'<img src="(/cdn/shop/files/[^"]+\.svg)" width="300" height="300"',
                           r'<img class="gallery-slide" data-src="\1" width="300" height="300"', body, count=1)

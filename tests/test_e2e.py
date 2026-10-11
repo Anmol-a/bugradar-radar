@@ -1783,3 +1783,14 @@ def test_lazy_gallery_image_is_waited_for_not_called_missing(tmp_path):
     checks = {ch["what"]: ch for s in c.attempts[-1].steps for ch in s.checks}
     assert c.verdict == "pass" and checks["main product image loaded"]["ok"], (c.verdict, c.attempts[-1].error)
     assert checks["main product image loaded"]["actual"].startswith("yes (img 300x300")
+
+
+def test_collection_grid_rendered_on_scroll_is_found_by_scrolling(tmp_path):
+    """veirdo.in (new30h, both devices): a tall sale banner, then a grid an app renders only when it scrolls into view.
+    Radar never scrolled and failed 'products listed: 0' (collection) and 'product card a shopper can click' (journey)."""
+    run, _ = _scan("grid_on_scroll", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    for prefix in ("catalog.collection.", "journey."):
+        c = _case(run, prefix)
+        assert c.verdict == "pass", (prefix, c.verdict, c.attempts[-1].error)
+    coll = _case(run, "catalog.collection.")
+    assert "after scrolling" in coll.attempts[-1].steps[1].detail, coll.attempts[-1].steps[1].detail
