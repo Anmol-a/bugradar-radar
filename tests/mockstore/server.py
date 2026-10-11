@@ -167,6 +167,9 @@ Modes (to prove Radar catches and heals what it should):
                    -> pages load (no 'down'); the SEO test 'title' warns
   annual_return_pdf  the footer's first link is 'Annual Return FY 2024-25', a PDF under /cdn/ (giva.co): a company-law
                    filing, not the returns policy -> never picked as an info page, info.policy_pages PASSES
+  other_market     every page shows prices converted to USD (Shopify Markets for a US visitor: Shopify.currency
+                   {active: USD, rate: 0.012}, '$15.59' where the catalog says ₹1,299; theindianethnicco.com, saltattire.com
+                   new30h, tilfi.com new30g) -> product / journey / cart tests are BLOCKED 'location (US runner)', not DOWN
   marketplace_only product pages show no price and no cart, only 'Buy on Amazon / Flipkart' links (antesports, beyondsnack)
                    -> product + journey BLOCKED "sells only on marketplaces", never DOWN
   cart_qty_broken  the cart page's + / − buttons and quantity box do nothing (theme script missing) -> cart.edit_and_checkout
@@ -595,6 +598,10 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "annual_return_pdf":
             body = body.replace('<div class="footer-menu">', '<div class="footer-menu"><a href="/cdn/shop/t/234/assets/'
                                 'annual-return-fy-2024-25.pdf">Annual Return FY 2024-25</a> ')
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market":
+            body = re.sub(r"₹\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
+            body = body.replace("</head>", "<script>window.Shopify = window.Shopify || {}; Shopify.country = 'US'; "
+                                "Shopify.currency = {active: 'USD', rate: '0.012'};</script></head>", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "empty_doc_title":
             body = re.sub(r"<title>.*?</title>", "<title></title>", body, count=1, flags=re.S)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode in self.OVERLAYS:

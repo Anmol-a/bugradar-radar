@@ -51,8 +51,15 @@ MARKETPLACE_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRec
 
 
 def _raise_if_catalog_only(ctx: Ctx) -> None:
-    """Called only when the product's price is NOT on its page: marketplace links and no buy control of its own =
-    a catalog store (CatalogOnly). A page with its own buy button is judged as usual."""
+    """Called only when the product's price is NOT on its page: prices converted for another country = location
+    (OtherMarket); marketplace links and no buy control of its own = a catalog store (CatalogOnly). A page with its
+    own buy button is judged as usual."""
+    cur = ctx.sess.evaluate("""() => { const c = (window.Shopify || {}).currency || {};
+        return {active: c.active || '', rate: parseFloat(c.rate || '1') || 1, country: (window.Shopify || {}).country || ''}; }""") or {}
+    if cur.get("active") and abs(cur.get("rate", 1) - 1) > 1e-6:
+        raise OtherMarket(f"location (US runner): the store shows prices converted to {cur['active']} for this visitor "
+                          f"(market {cur.get('country') or '?'}, rate {cur['rate']:g}); the catalog price in the store's own "
+                          "currency is not on the page. Radar's cloud machines are in the US: check from India")
     m = ctx.sess.evaluate(MARKETPLACE_JS) or {}
     if m.get("own_buy"):
         return
@@ -62,6 +69,13 @@ def _raise_if_catalog_only(ctx: Ctx) -> None:
     if m.get("shop_on"):         # beyondsnack 'Diwali Box': the 'Shop Now On:' heading with no marketplace listed yet
         raise CatalogOnly(f"not tested: the product page shows no price and no buy button, only {m['shop_on']!r}: "
                           "the store sells elsewhere, not on its own site")
+
+
+class OtherMarket(Exception):
+    """The store converts its prices for this visitor's country (Shopify Markets: window.Shopify.currency.rate is not 1,
+    e.g. USD at 0.012 for a US visitor) and the catalog price in ₹ is not on the page (theindianethnicco.com $62.91,
+    saltattire.com $24.23, new30h 11 Oct; tilfi.com $497, new30g). Radar's cloud machines are in the US, so this is
+    'location (US runner)': BLOCKED with the reason, never a store failure."""
 
 
 class StepFailed(Exception):
@@ -106,7 +120,7 @@ class Steps:
             self.items.append(StepResult(name, "pass", out, None, round(time.time() - t0, 2), healed, self._checks,
                                          self._shot(name)))
             return out if out is not None else True
-        except (RobotsBlocked, AgeGate, RateLimited, PincodeGate, CatalogOnly) as e:
+        except (RobotsBlocked, AgeGate, RateLimited, PincodeGate, CatalogOnly, OtherMarket) as e:
             self.items.append(StepResult(name, "skip", None, str(e), round(time.time() - t0, 2), None, self._checks))
             raise StepFailed(name, str(e), blocked=True) from e
         except Exception as e:  # noqa: BLE001
