@@ -1548,3 +1548,66 @@ def test_variant_switch_is_not_judged_without_a_clickable_option(tmp_path):
     st = _steps(c)
     assert c.verdict == "pass" and st["variant_switch_not_judged"].status == "info", [(s.name, s.status, s.error) for s in st.values()]
     assert "no visible option control for 'Large'" in st["variant_switch_not_judged"].detail
+
+
+
+def _price_only(mode, tmp_path, strict=False, **kw):
+    """Only the cart suite's cart.price_consistency case (journey 23). strict=True flips the builder's strict=False."""
+    import radar.runner.executor as ex
+    orig = ex.build_suites
+
+    def built(sm, s):
+        suites = orig(sm, s)
+        for x in suites:
+            if x.id == "cart":
+                x.cases = [c for c in x.cases if c.check == "price_consistency"]
+                for c in x.cases:
+                    c.params["strict"] = strict
+        return suites
+    ex.build_suites = built
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, **kw), only_suites=["cart"])[0]
+    finally:
+        srv.shutdown()
+        ex.build_suites = orig
+
+
+def test_price_is_the_same_on_card_product_page_and_cart_line(tmp_path):
+    """Journey 23: the vase's collection card shows the struck MRP ₹1,599, a 'Save ₹300' badge and the sale price
+    ₹1,299: the sale price is compared, = product page ₹1,299 = cart line ₹1,299. The item leaves Radar's cart after."""
+    run = _price_only("healthy", tmp_path)
+    c = _case(run, "cart.price_consistency")
+    st = _steps(c)
+    assert c.verdict == "pass" and all(s.status == "pass" for s in st.values()), [(s.name, s.status, s.error) for s in st.values()]
+    assert set(st) == {"collection_card_price", "product_page_price", "card_matches_product_page", "cart_line_price",
+                       "cart_cleaned_up"}, list(st)
+    assert "'ceramic-vase'" in st["collection_card_price"].detail and "₹1,299.00" in st["collection_card_price"].detail
+    assert "struck ₹1,599.00" in st["collection_card_price"].detail
+    assert "₹1,299.00" in st["cart_line_price"].detail
+    assert "quantity 0" in st["cart_cleaned_up"].detail
+    assert run.verdict == "healthy"
+
+
+def test_stale_card_price_warns_now_and_fails_when_strict(tmp_path):
+    """card_price_stale: the card says ₹999 (a stale cached section), the product page and the cart ₹1,299."""
+    words = "collection card price = product page price: expected ₹1,299.00, got card shows ₹999.00"
+    c = _case(_price_only("card_price_stale", tmp_path), "cart.price_consistency")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["card_matches_product_page"].status == "warn", [(s.name, s.status, s.error) for s in st.values()]
+    assert words in st["card_matches_product_page"].error
+    assert st["cart_line_price"].status == "pass" and st["cart_cleaned_up"].status == "pass"
+    strict = _case(_price_only("card_price_stale", tmp_path / "strict", strict=True), "cart.price_consistency")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "card_matches_product_page", \
+        (strict.verdict, strict.attempts[-1].error)
+    assert words in strict.attempts[-1].error
+
+
+def test_cards_without_prices_are_not_judged_and_page_and_cart_still_compared(tmp_path):
+    """A theme whose cards show no price (the mock in any other mode): the card step is info, never a warning."""
+    c = _case(_price_only("cart_qty_broken", tmp_path), "cart.price_consistency")
+    st = _steps(c)
+    assert st["collection_card_price"].status == "info" and "show no price" in st["collection_card_price"].detail
+    assert "card_matches_product_page" not in st
+    assert st["product_page_price"].status == "pass" and st["cart_line_price"].status == "pass", \
+        [(s.name, s.status, s.error) for s in st.values()]

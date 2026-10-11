@@ -157,6 +157,14 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
                      {"url": f"{buyable.url}?variant={buyable.variant_id}", "variant_id": buyable.variant_id,
                       "cart_path": sm.cart_path, "strict": False}, "major",
                      "Quantity + updates line and subtotal; checkout page renders (never filled); remove empties the cart")]))
+        if sm.collections:      # journey 23: one price everywhere the shopper sees it
+            next(x for x in suites if x.id == "cart").cases.append(TestCase(
+                "cart.price_consistency", "cart", "Same price on the collection card, the product page and the cart line",
+                "price_consistency", {"collection_url": sm.collections[0].url,
+                                      "product_handles": [p.handle for p in priced if p.available][:10],
+                                      "cart_path": sm.cart_path, "strict": False}, "minor",
+                "Card price (the sale price, not the struck MRP; 'From' = lowest) = product page price = cart line price; "
+                "the item is taken out of Radar's cart afterwards"))
 
     terms = []
     for p in picks + spare:

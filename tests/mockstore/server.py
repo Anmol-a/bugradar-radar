@@ -232,6 +232,10 @@ Modes (to prove Radar catches and heals what it should):
                    makes it say 'Sold out' -> variant_switch and sold_out_blocks_buy PASS
   variant_sold_out_buyable  same, but the buy button stays enabled 'Add to cart' on the sold-out size -> WARNS (strict:
                    FAILS) at sold_out_blocks_buy (the buy button is never clicked)
+  card_price_stale collection cards show prices (as in healthy: the vase on sale, MRP ₹1,599 struck, 'Save' badge), but
+                   the vase's card shows an OLD sale price ₹999 from a stale cached section while its product page and
+                   the cart line say ₹1,299 (journey 23) -> cart.price_consistency WARNS (strict: FAILS) at
+                   card_matches_product_page; healthy -> card ₹1,299 = page ₹1,299 = cart ₹1,299, PASSES
 
 Every product page also carries a quick-add product card BEFORE the main buy button in the DOM
 and a cart drawer that opens over the page after adding (both copied from moxiebeauty.in's
@@ -310,6 +314,24 @@ INFO_PAGES = {"/pages/shipping-policy": "Shipping Policy", "/pages/privacy-polic
 
 def card(p):
     return f'<a class="card" href="/products/{p["handle"]}"><img src="/cdn/shop/files/{p["handle"]}.svg" width="40" height="40" alt="">{p["title"]}</a>'
+
+
+J23_MODES = ("healthy", "card_price_stale")       # collection cards show prices (journey 23)
+
+
+def card_price_html(handle: str, mode: str) -> str:
+    """A collection card's price block. The vase is on sale (struck MRP ₹1,599, 'Save' badge, sale price = its lowest
+    variant price ₹1,299); card_price_stale shows an OLD sale price (₹999) left in a cached section while the product
+    page and the cart charge ₹1,299."""
+    p = next((x for x in PRODUCTS + EXTRA_DECOR if x["handle"] == handle), None)
+    if not p:
+        return ""
+    low = min(float(v["price"]) for v in p["variants"])
+    if handle == "ceramic-vase":
+        sale = 999.0 if mode == "card_price_stale" else low
+        return (f'<s class="price-item price-item--regular">₹1,599.00</s> <span class="badge">Save ₹{1599 - sale:,.0f}</span> '
+                f'<span class="price-item price-item--sale">₹{sale:,.2f}</span>')
+    return f'<span class="price-item price-item--regular">Rs. {low:,.2f}</span>'
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -472,6 +494,12 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             body = re.sub(r'(<main>)(.*?)(</main>)', lambda m: m.group(1) + '<div id="grid"></div><template id="cards">'
                           + m.group(2) + '</template><script>setTimeout(() => { document.getElementById("grid").innerHTML = '
                           'document.getElementById("cards").innerHTML; }, 1500);</script>' + m.group(3), body, count=1, flags=re.S)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in J23_MODES and "/collections/" in self.path:
+            # journey 23: collection cards show their price like Dawn's card-product (only in these modes: other modes'
+            # tests read card text). The vase is 'on sale': MRP struck through, a 'Save' badge, the sale price.
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(.*?)</a>', lambda m: (
+                f'<span class="card-wrapper product-card-wrapper" style="display:inline-block;margin:6px">{m.group(0)}'
+                f'<span class="card__price price">{card_price_html(m.group(1), self.mode)}</span></span>'), body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "script_heavy":
             # journey 31: 26 app scripts, each from its own third-party host (*.localhost resolves to this machine)
             body = body.replace("</body>", "<script>for (let i = 1; i <= 26; i++) { const s = document.createElement('script'); "

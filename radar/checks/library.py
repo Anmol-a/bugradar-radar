@@ -2918,6 +2918,194 @@ def variant_switch(ctx: Ctx, url: str, strict: bool = False):
             ctx.expect("sold-out variant cannot be bought", "buy button disabled or saying sold out", shown, blocked)
             return f"chose {', '.join(picked['how'])}: {_variant_label(sold)} selected, buy blocked ({shown}); buy never clicked"
         ctx.steps.run("sold_out_blocks_buy", sold_out, soft=soft)
+# ---------------- price consistency: card = product page = cart (journey #23) ----------------
+
+# The price texts inside one element, as a shopper sees them: the DEEPEST visible elements whose short text holds a
+# currency sign and a number (a theme may split '₹' and '1,299' into two spans; the parent then holds both). Each says
+# whether it is struck through (<s>/<del>, line-through, a 'compare at' class): a card on sale shows the MRP struck
+# and the sale price beside it, and only the sale price is what the shopper pays.
+PRICE_ITEMS_FN = r"""(root) => {
+  const cur = /(₹|\brs\.?\s*\d|\binr\b|\$|€|£)/i;
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const hit = e => { const t = (e.textContent || '').replace(/\s+/g, ' ').trim(); return t.length <= 40 && /\d/.test(t) && cur.test(t); };
+  const struck = e => { for (let a = e; a && a !== root.parentElement; a = a.parentElement) {
+      if (/^(S|DEL|STRIKE)$/.test(a.tagName)) return true;
+      if ((getComputedStyle(a).textDecorationLine || '').includes('line-through')) return true;
+      if (/compare|was-price|price--was|\bmrp\b|strike/i.test(typeof a.className === 'string' ? a.className : '')) return true; }
+    return false; };
+  const out = [];
+  for (const e of root.querySelectorAll('*')) {
+    if (/^(SCRIPT|STYLE|TEMPLATE|NOSCRIPT)$/.test(e.tagName) || !hit(e) || !vis(e)) continue;
+    if ([...e.children].some(hit)) continue;
+    out.push({text: (e.textContent || '').replace(/\s+/g, ' ').trim(), struck: struck(e)});
+    if (out.length >= 12) break;
+  }
+  return out; }"""
+
+# The product card of the first of these handles that is on the collection page: the card is the link's highest
+# ancestor that still links to no OTHER product (the grid around it does), never main/body. Returns its price texts.
+CARD_PRICES_JS = r"""([handles]) => {
+  const items = """ + PRICE_ITEMS_FN + r""";
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const hOf = a => (a.pathname.match(/\/products\/([^/?#]+)/) || [])[1];
+  const links = [...document.querySelectorAll("a[href*='/products/']")].filter(vis);
+  const out = {cards: 0, found: []};
+  for (const h of handles) {
+    const a = links.find(x => hOf(x) === h); if (!a) continue;
+    out.cards++;
+    let card = a;
+    while (card.parentElement && !/^(MAIN|BODY|HTML|FORM|HEADER|NAV|FOOTER)$/.test(card.parentElement.tagName) &&
+           !card.parentElement.matches('[role=main], #MainContent') &&
+           ![...card.parentElement.querySelectorAll("a[href*='/products/']")].some(x => hOf(x) && hOf(x) !== h)) card = card.parentElement;
+    out.found.push({handle: h, prices: items(card)});
+    if (out.found.length >= 4) break;
+  }
+  return out; }"""
+
+# The cart line of the variant Radar added: from the quantity box CART_LINE_JS marked, up to the first ancestor that
+# names the product (the line row), never the cart itself. Returns that row's price texts.
+CART_LINE_PRICES_JS = r"""([title]) => {
+  const items = """ + PRICE_ITEMS_FN + r""";
+  const norm = t => (t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  let row = document.querySelector('[data-radar-cart="qty"]'); if (!row) return null;
+  while (row.parentElement && !norm(row.innerText).includes(norm(title)) && !/^(FORM|MAIN|BODY)$/.test(row.parentElement.tagName) &&
+         !row.parentElement.querySelector('[name="checkout"], a[href$="/checkout"]')) row = row.parentElement;
+  return items(row); }"""
+
+_PRICE_RX = re.compile(r"(?:₹|\brs\.?|\binr\b|\$|€|£)\s*(\d[\d,]*(?:\.\d{1,2})?)|(\d[\d,]*(?:\.\d{1,2})?)\s*(?:\binr\b|₹)", re.I)
+_NOT_A_PRICE_RX = re.compile(r"\bsave\b|\boff\b|discount|\bextra\b|cashback|\bper\b|/\s*\d*\s*(ml|g|kg|l|pc|unit)", re.I)
+
+
+def card_price(items: list[dict]) -> tuple[float | None, bool]:
+    """The price a product card asks the shopper to pay, from its price texts ({text, struck}): the lowest price that is
+    not struck through (MRP / 'compare at' are struck or higher) and not a 'Save ₹300' / '20% off' badge. Second value:
+    the card says 'From' (a product with several prices shows its lowest). (None, False) when no price is shown. Pure."""
+    best, from_ = None, False
+    for it in items or []:
+        t = it.get("text") or ""
+        if it.get("struck") or _NOT_A_PRICE_RX.search(t):
+            continue
+        for m in _PRICE_RX.finditer(t):
+            try:
+                n = round(float((m.group(1) or m.group(2)).replace(",", "")), 2)
+            except ValueError:
+                continue
+            if n > 0 and (best is None or n < best):
+                best, from_ = n, bool(re.search(r"\bfrom\b|\bstarting\b", t, re.I))
+    return best, from_
+
+
+def card_price_agrees(shown: float, want_paise: int, low_paise: int | None = None) -> tuple[bool, str]:
+    """Does the card's price match the product? Equal to the selected variant's price (exact or rounded to whole rupees,
+    like price_shown), or to the product's lowest variant price: cards show one price for a product, usually the lowest
+    ('From ₹X' or not). Pure."""
+    ok, how = price_shown(round(want_paise / 100, 2), [shown])
+    if ok:
+        return True, how
+    if low_paise is not None and low_paise != want_paise:
+        ok, how = price_shown(round(low_paise / 100, 2), [shown])
+        if ok:
+            return True, f"{how}, the product's lowest price"
+    return False, f"₹{shown:,.2f}"
+
+
+def price_consistency(ctx: Ctx, collection_url: str, product_handles: list[str] | tuple, cart_path: str = "/cart",
+                      strict: bool = False):
+    """Journey #23: the price on the collection card = the price on the product page = the price on the cart line, all
+    checked against Shopify's own product data. A stale cached section or an app that rewrites one of them makes the
+    shopper see one price and pay another. The item goes in Radar's own cart by the request the store's buy button sends
+    (/cart/add.js) and is taken out again (/cart/change.js) at the end. Warnings unless strict. No form is submitted to
+    the store, checkout is never opened."""
+    base, page = _base(collection_url), ctx.sess.page
+    soft = not strict
+    state: dict = {"handle": (list(product_handles) or [None])[0]}
+    if not state["handle"]:
+        ctx.steps.info("not_judged", "no in-stock priced product to compare")
+        return
+
+    def card():
+        _load(ctx, collection_url)
+        got = ctx.sess.evaluate(CARD_PRICES_JS, [list(product_handles)[:10]]) or {"cards": 0, "found": []}
+        for f in got["found"]:
+            price, from_ = card_price(f["prices"])
+            if price is not None:
+                state.update(handle=f["handle"], card=price, card_from=from_,
+                             card_texts=[("struck " if x["struck"] else "") + x["text"] for x in f["prices"]])
+                return f"card of {f['handle']!r} shows {'From ' if from_ else ''}₹{price:,.2f} (price texts: " \
+                       f"{'; '.join(state['card_texts'])[:120]})"
+        if got["found"]:
+            state["handle"] = got["found"][0]["handle"]
+            return f"not judged: {len(got['found'])} product card(s) on the page show no price; card not compared"
+        return "not judged: none of the products is on the collection page's first screen; card not compared"
+    ctx.steps.run("collection_card_price", card, soft=soft)
+    last = ctx.steps.items[-1]
+    if "card" not in state and last.name == "collection_card_price" and last.status == "pass":
+        last.status = "info"             # nothing to compare is not a finding
+
+    def pdp():
+        _load(ctx, f"{base}/products/{state['handle']}")
+        p = _product_js(ctx, page.url)
+        v = _selected_variant(ctx, p)
+        if not v.get("available"):
+            v = next((x for x in p["variants"] if x.get("available")), v)
+        state.update(p=p, v=v, low=min((int(x["price"]) for x in p["variants"] if int(x["price"] or 0) > 0), default=None))
+        ok, how = price_shown(round(int(v["price"]) / 100, 2), prices_in_text(ctx.sess.evaluate("() => document.body.innerText")))
+        ctx.expect("product page shows the variant's price", rupees(v["price"]), how or "not on page", ok)
+        return f"{p['title']!r} variant {v['id']}: product page shows {how} (store data {rupees(v['price'])})"
+    if ctx.steps.run("product_page_price", pdp, soft=soft) is None and "v" not in state:
+        return
+    want = int(state["v"]["price"])
+
+    if "card" in state:
+        def compare():
+            ok, how = card_price_agrees(state["card"], want, state["low"])
+            ctx.expect("collection card price = product page price", rupees(want),
+                       how if ok else f"card shows ₹{state['card']:,.2f} ({'; '.join(state['card_texts'])[:100]})", ok)
+            return f"card {how} = product page {rupees(want)}"
+        ctx.steps.run("card_matches_product_page", compare, soft=soft)
+
+    vid = int(state["v"]["id"])
+
+    def cart_line():
+        state["before"] = _cart_qty(ctx, base, vid)
+        r = ctx.sess.evaluate("""async (id) => { const r = await fetch('/cart/add.js', {method: 'POST',
+            headers: {'content-type': 'application/json', 'accept': 'application/json'},
+            body: JSON.stringify({id, quantity: 1})}); return r.status; }""", vid)
+        ctx.expect("/cart/add.js answer", "< 400", r, (r or 999) < 400)
+        state["added"] = True
+        qty = _wait_qty(ctx, base, vid, state["before"] + 1, 5)
+        ctx.expect("cart quantity of this product", state["before"] + 1, qty)
+        _load(ctx, base + cart_path)
+        _dismiss(ctx)
+        title = state["p"]["title"]
+        line = ctx.sess.evaluate(CART_LINE_JS, [vid, title])
+        ctx.expect("cart page lists the product", f"{title} line", "line found" if line else "not found", bool(line))
+        texts = ctx.sess.evaluate(CART_LINE_PRICES_JS, [title]) or []
+        nums = [n for x in texts if not x["struck"] for n in prices_in_text(x["text"])]
+        ok, how = price_shown(round(want * qty / 100, 2), nums)
+        if not ok and qty > 1:              # a line that shows the unit price
+            ok, how = price_shown(round(want / 100, 2), nums)
+        ctx.expect("cart line price = product page price", rupees(want * qty),
+                   how if ok else f"line shows {'; '.join(x['text'] for x in texts)[:100] or 'no price'}", ok)
+        return f"cart line shows {how} = product page {rupees(want)}"
+    ctx.steps.run("cart_line_price", cart_line, soft=soft)
+
+    if state.get("added"):
+        def clean():
+            c = ctx.sess.get_json(f"{base}/cart.js")
+            line = next((n for n, i in enumerate(c.get("items", []), 1) if int(i.get("variant_id") or i.get("id") or 0) == vid), None)
+            if line is None:
+                return "Radar's cart no longer holds it"
+            r = ctx.sess.evaluate("""async ([line, quantity]) => { const r = await fetch('/cart/change.js', {method: 'POST',
+                headers: {'content-type': 'application/json', 'accept': 'application/json'},
+                body: JSON.stringify({line, quantity})}); return r.status; }""", [line, state["before"]])
+            ctx.expect("/cart/change.js answer", "< 400", r, (r or 999) < 400)
+            q = _wait_qty(ctx, base, vid, state["before"], 5)
+            ctx.expect("Radar's cart back as it was", state["before"], q)
+            return f"took it out of Radar's own cart (quantity {q})"
+        # housekeeping, not a price finding: always a warning at most
+        ctx.steps.run("cart_cleaned_up", clean, soft=True)
 
 
 REGISTRY: dict[str, Callable] = {
@@ -2929,4 +3117,5 @@ REGISTRY: dict[str, Callable] = {
     "collection_more": collection_more, "more_links_resolve": more_links_resolve, "mobile_menu": mobile_menu,
     "cart_edit": cart_edit,
     "variant_switch": variant_switch,      # journey 22
+    "price_consistency": price_consistency,
 }
