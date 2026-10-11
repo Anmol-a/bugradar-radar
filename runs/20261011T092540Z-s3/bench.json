@@ -1,0 +1,154 @@
+{
+  "stamp": "20261011T092540Z",
+  "rows": [
+    {
+      "site_id": "veirdo.in",
+      "url": "https://veirdo.in",
+      "verdict": "down",
+      "platform": "shopify",
+      "theme": "TMRW (store copy: VeirdoMigration - 1st April Release)",
+      "checkout": "GoKwik + Shopflo + Razorpay Magic Checkout",
+      "access": "open",
+      "suites": {
+        "journey": "confirmed_fail",
+        "smoke": "confirmed_fail",
+        "catalog": "confirmed_fail",
+        "product": "pass",
+        "search": "pass",
+        "health": "pass",
+        "info": "pass"
+      },
+      "failures": [
+        {
+          "case": "journey.shopper",
+          "verdict": "confirmed_fail",
+          "step": "click_into_product",
+          "error": "product card a shopper can click: expected found, got none on /collections/buy-2-get-1-free (no matching links on the page)",
+          "llm": "radar problem: The page clearly displays products and add-to-cart buttons, so the monitor likely looked for links in the wrong place or used the wrong selector to find clickable product cards.",
+          "device": "desktop"
+        },
+        {
+          "case": "catalog.collection.buy-2-get-1-free",
+          "verdict": "confirmed_fail",
+          "step": "lists_products",
+          "error": "products listed: expected \u2265 1, got 0",
+          "llm": "radar problem: The page clearly contains product listings but the robot reported zero items, so the check looked in the wrong place (locator issue).",
+          "device": "desktop"
+        },
+        {
+          "case": "journey.shopper",
+          "verdict": "confirmed_fail",
+          "step": "click_into_product",
+          "error": "product card a shopper can click: expected found, got none on /collections/veirdo-centre-stage (no matching links on the page)",
+          "llm": "unsure: The robot could not find any clickable product card on the collection page, but the page shows a hero and an \"Explore T-Shirts\" CTA rather than a product grid; there is not enough positive evi",
+          "device": "mobile"
+        },
+        {
+          "case": "smoke.nav_links",
+          "verdict": "confirmed_fail",
+          "step": "all_links_ok",
+          "error": "broken navigation pages: expected 0, got 1: /collections/veirdo-centre-stage",
+          "llm": "radar problem: The page visibly contains the SUPREME EDITION collection content so the robot looked in the wrong place (the broken link /collections/veirdo-centre-stage is not present in the visible p",
+          "device": "mobile"
+        },
+        {
+          "case": "catalog.collection.buy-2-get-1-free",
+          "verdict": "confirmed_fail",
+          "step": "lists_products",
+          "error": "products listed: expected \u2265 1, got 0",
+          "llm": "radar problem: The page clearly contains product listings and add-to-cart controls, so the robot looked in the wrong place to count products (locator).",
+          "device": "mobile"
+        }
+      ],
+      "warnings": 12,
+      "healed": 0,
+      "radar_suspect": 4,
+      "notes": [],
+      "report": "data/sites/veirdo.in/runs/20261011T092540Z-d-c63f/report.html",
+      "secs": 1186,
+      "suites_by_device": {
+        "desktop": {
+          "journey": "confirmed_fail",
+          "smoke": "pass",
+          "catalog": "confirmed_fail",
+          "product": "pass",
+          "search": "pass",
+          "health": "pass",
+          "info": "pass"
+        },
+        "mobile": {
+          "journey": "confirmed_fail",
+          "smoke": "confirmed_fail",
+          "catalog": "confirmed_fail",
+          "product": "pass",
+          "search": "pass",
+          "health": "pass",
+          "info": "pass"
+        }
+      },
+      "device_only": {
+        "desktop": [],
+        "mobile": [
+          "smoke.nav_links"
+        ]
+      },
+      "devices": {
+        "desktop": {
+          "verdict": "down",
+          "report": "data/sites/veirdo.in/runs/20261011T092540Z-d-c63f/report.html",
+          "secs": 601,
+          "perf": {
+            "pages": 21,
+            "median_load_secs": 2.83,
+            "slowest": {
+              "url": "/",
+              "load_secs": 10.77
+            },
+            "console_errors": 6,
+            "console_warnings": 11,
+            "failed_requests": 234
+          },
+          "failures": 2,
+          "warnings": 7,
+          "report_rel": "../../sites/veirdo.in/runs/20261011T092540Z-d-c63f/report.html"
+        },
+        "mobile": {
+          "verdict": "down",
+          "report": "data/sites/veirdo.in/runs/20261011T093541Z-m-7296/report.html",
+          "secs": 585,
+          "perf": {
+            "pages": 20,
+            "median_load_secs": 2.93,
+            "slowest": {
+              "url": "/",
+              "load_secs": 26.76
+            },
+            "console_errors": 10,
+            "console_warnings": 19,
+            "failed_requests": 233
+          },
+          "failures": 3,
+          "warnings": 5,
+          "report_rel": "../../sites/veirdo.in/runs/20261011T093541Z-m-7296/report.html"
+        }
+      },
+      "cart": false,
+      "input": "https://veirdo.in",
+      "report_rel": "../../sites/veirdo.in/runs/20261011T092540Z-d-c63f/report.html"
+    }
+  ],
+  "totals": {
+    "stores": 1,
+    "down": 1,
+    "tested": 1
+  },
+  "devices": [
+    "desktop",
+    "mobile"
+  ],
+  "browser": {
+    "ua_style": "browser",
+    "identity": "BugRadar/0.1 (+bugradar.in)",
+    "headless": true
+  }
+}
