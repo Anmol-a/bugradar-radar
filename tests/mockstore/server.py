@@ -236,6 +236,13 @@ Modes (to prove Radar catches and heals what it should):
                    the vase's card shows an OLD sale price ₹999 from a stale cached section while its product page and
                    the cart line say ₹1,299 (journey 23) -> cart.price_consistency WARNS (strict: FAILS) at
                    card_matches_product_page; healthy -> card ₹1,299 = page ₹1,299 = cart ₹1,299, PASSES
+  soldout_buyable  the sold-out lamp's page shows an ENABLED 'Add to cart' in a product form for its variant and no
+                   'sold out' words (journey 24) -> product.sold_out WARNS (strict: FAILS) at shows_sold_out; healthy
+                   (disabled 'Sold out' button) PASSES
+  soldout_oversell  /cart/add.js ADDS the sold-out lamp (Shopify's 'continue selling when out of stock') -> product.sold_out
+                   PASSES with an 'oversell_allowed' note; Radar removes it from its own cart again
+  (every mode)     /cart/add.js refuses a sold-out variant with HTTP 422 'already sold out', like Shopify; /cart/change.js
+                   also takes {id: <variant id>} instead of a line number
 
 Every product page also carries a quick-add product card BEFORE the main buy button in the DOM
 and a cart drawer that opens over the page after adding (both copied from moxiebeauty.in's
@@ -1097,7 +1104,13 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                                     "availability": "https://schema.org/InStock"}})
         available = any(v["available"] for v in p["variants"])
         vid = next((v["id"] for v in p["variants"] if v["available"]), p["variants"][0]["id"])
-        if not available:
+        if not available and self.mode == "soldout_buyable":
+            # journey 24: the theme forgot its sold-out state: an ENABLED 'Add to cart' for the sold-out variant, no
+            # 'sold out' words anywhere (Shopify still refuses the add with 422)
+            buy = (f'<product-form class="product-form"><form id="product-form-template__main" action="/cart/add" method="post" '
+                   f'onsubmit="event.preventDefault();addToCart({vid})"><input type="hidden" name="id" value="{vid}">'
+                   f'<button type="submit" name="add">Add to cart</button></form></product-form>')
+        elif not available:
             buy = '<button disabled>Sold out</button>'
         elif self.mode == "obscure_button":
             buy = (f'<div class="actions"><span role="button" tabindex="0" class="cta-x" data-vid="{vid}" '
@@ -1252,6 +1265,8 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
         cid, new = self._cart()
         if u.path == "/cart/change.js":
             body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
+            if body.get("id") and not body.get("line"):      # Shopify also takes the variant id instead of a line number
+                body["line"] = next((n for n, i in enumerate(CARTS[cid], 1) if str(i["variant_id"]) == str(body["id"])), 0)
             self._change(cid, int(body.get("line") or 0), int(body.get("quantity") or 0))
             items = CARTS[cid]
             return self._json({"items": items, "item_count": sum(i["quantity"] for i in items)}, set_cart=new)
@@ -1263,6 +1278,10 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             p = next((x for x in PRODUCTS for v in x["variants"] if v["id"] == vid), None)
             if not p:
                 return self._json({"status": 404}, 404)
+            if not next(v["available"] for v in p["variants"] if v["id"] == vid) and self.mode != "soldout_oversell":
+                # like Shopify: a sold-out variant is refused (soldout_oversell: 'continue selling when out of stock')
+                return self._json({"status": 422, "message": "Cart Error",
+                                   "description": f"The product '{p['title']}' is already sold out."}, 422)
             price = int(float(next(v["price"] for v in p["variants"] if v["id"] == vid)) * 100)
             CARTS[cid].append({"id": vid, "variant_id": vid, "product_id": p["id"], "handle": p["handle"],
                                "title": p["title"], "product_title": p["title"], "price": price, "quantity": 1})

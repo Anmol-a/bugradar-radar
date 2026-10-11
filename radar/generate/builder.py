@@ -143,6 +143,15 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
             "variant_switch", {"url": vurl(multi), "strict": False}, "minor",
             "Click another size/colour like a shopper: the page selects it and shows its price; a sold-out one cannot be "
             "bought. The buy button is never clicked; judged only when the theme shows clickable options"))
+    # journey 24: the first sold-out product in the store's own data must SAY it is sold out and not offer an enabled
+    # buy button (warnings until a bench measures it). No sold-out product -> no case.
+    sold = next((p for p in priced if not p.available), None)
+    if sold:
+        product.cases.append(TestCase(
+            "product.sold_out", "product", f"Sold-out '{sold.title[:40]}' shows sold out, buy disabled", "sold_out_page",
+            {"url": vurl(sold), "strict": False, "cart_probe": s.allow_cart_flow}, "minor",
+            "Sold out in products.json (re-checked live): buy button disabled / absent or 'sold out' wording shown; "
+            "/cart/add.js in Radar's own cart should be refused. Buy and checkout never clicked"))
     if product.cases:
         suites.append(product)
 

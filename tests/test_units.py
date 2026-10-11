@@ -938,3 +938,48 @@ def test_price_consistency_case_only_with_the_cart_flow():
     assert c.params["strict"] is False
     assert not any(c.check == "price_consistency" for x in build_suites(sm, replace(Settings(), allow_cart_flow=False))
                    for c in x.cases)
+# ---------- journey 24: sold-out product page ----------
+from radar.checks.library import sold_out_wording, sold_out_verdict
+
+
+@pytest.mark.parametrize("text,want", [
+    ("Brass Table Lamp ₹2,499.00 Sold out", "Sold out"),
+    ("SOLD OUT", "SOLD OUT"),
+    ("Sold-out", "Sold-out"),
+    ("This item is Out of stock", "Out of stock"),
+    ("Out-of-stock", "Out-of-stock"),
+    ("Notify me when available", "Notify me"),
+    ("Email me when it's back", "Email me when it's back"),
+    ("Coming soon", "Coming soon"),
+    ("Unavailable", "Unavailable"),
+    ("Currently not available", "Currently not available"),
+    ("Back in stock soon!", "Back in stock soon"),
+])
+def test_sold_out_wording_finds_what_stores_show(text, want):
+    assert sold_out_wording(text) == want
+
+
+@pytest.mark.parametrize("text", ["Add to cart", "In stock, ready to ship", "Only 3 left", "Buy it now",
+                                  "Cash on delivery available", "Soldier figurine", ""])
+def test_sold_out_wording_ignores_normal_buy_text(text):
+    assert sold_out_wording(text) == ""
+
+
+def test_sold_out_verdict_fails_only_an_enabled_button_with_no_sold_out_words():
+    assert sold_out_verdict(None, "Sold out")[2] and "page says 'Sold out'" in sold_out_verdict(None, "Sold out")[1]
+    assert sold_out_verdict(None, "")[2]                                     # no button at all: nothing to buy
+    assert sold_out_verdict({"text": "Sold out", "enabled": False}, "Sold out")[1] == "buy button 'Sold out' disabled; page says 'Sold out'"
+    assert sold_out_verdict({"text": "Add to cart", "enabled": True}, "Out of stock")[2]   # told, Shopify refuses the add
+    exp, actual, ok = sold_out_verdict({"text": "Add to cart", "enabled": True}, "")
+    assert not ok and "ENABLED and no sold-out wording" in actual and "'Add to cart'" in actual
+
+
+def test_builder_adds_a_sold_out_case_only_when_the_store_has_a_sold_out_product():
+    prod = next(s for s in build_suites(_sm(), Settings()) if s.id == "product")
+    so = next(c for c in prod.cases if c.check == "sold_out_page")
+    assert so.id == "product.sold_out" and so.severity == "minor" and so.params["url"] == "https://x.in/products/sold?variant=1"
+    assert so.params["strict"] is False and so.params["cart_probe"] is True
+    no_cart = next(s for s in build_suites(_sm(), replace(Settings(), allow_cart_flow=False)) if s.id == "product")
+    assert next(c for c in no_cart.cases if c.check == "sold_out_page").params["cart_probe"] is False
+    in_stock = _sm(products=[Product("vase", "Ceramic Vase", "https://x.in/products/vase", 2, "5", True)])
+    assert not any(c.check == "sold_out_page" for s in build_suites(in_stock, Settings()) for c in s.cases)
