@@ -54,12 +54,20 @@ def _raise_if_catalog_only(ctx: Ctx) -> None:
     """Called only when the product's price is NOT on its page: prices converted for another country = location
     (OtherMarket); marketplace links and no buy control of its own = a catalog store (CatalogOnly). A page with its
     own buy button is judged as usual."""
+    # Round 2 (cycle 28 re-run): theindianethnicco + saltattire still said 'not on page' with the rate test alone, so
+    # foreign prices on the page itself count too: a $ / US$ / € / £ / AED price and no ₹ / Rs / INR price anywhere.
     cur = ctx.sess.evaluate("""() => { const c = (window.Shopify || {}).currency || {};
-        return {active: c.active || '', rate: parseFloat(c.rate || '1') || 1, country: (window.Shopify || {}).country || ''}; }""") or {}
-    if cur.get("active") and abs(cur.get("rate", 1) - 1) > 1e-6:
-        raise OtherMarket(f"location (US runner): the store shows prices converted to {cur['active']} for this visitor "
-                          f"(market {cur.get('country') or '?'}, rate {cur['rate']:g}); the catalog price in the store's own "
-                          "currency is not on the page. Radar's cloud machines are in the US: check from India")
+        const t = document.body.innerText || '';
+        const foreign = (t.match(/(?:US\$|CA\$|A\$|\$|€|£|AED|USD|EUR|GBP)\s?\d[\d,]*(?:\.\d\d)?/) || [])[0] || '';
+        const inr = /(?:₹|Rs\.?|INR)\s?\d/.test(t);
+        return {active: c.active || '', rate: parseFloat(c.rate || '1') || 1, country: (window.Shopify || {}).country || '',
+                foreign: inr ? '' : foreign}; }""") or {}
+    active = (cur.get("active") or "").upper()
+    if (active and active != "INR" and abs(cur.get("rate", 1) - 1) > 1e-6) or cur.get("foreign"):
+        shown = f" (page shows {cur['foreign']!r})" if cur.get("foreign") else ""
+        raise OtherMarket(f"location (US runner): the store shows this visitor prices in {active or 'another currency'}{shown}, "
+                          f"market {cur.get('country') or '?'}, rate {cur.get('rate', 1):g}; the catalog price in ₹ is not on "
+                          "the page. Radar's cloud machines are in the US: check from India")
     m = ctx.sess.evaluate(MARKETPLACE_JS) or {}
     if m.get("own_buy"):
         return
@@ -2389,7 +2397,11 @@ def _llm_find_name(ctx: Ctx, title: str) -> dict | None:
         "null if the page does not show this product.", max_tokens=120, images=[shot] if shot else None)
     if not ans or ans.get("index") is None:
         return None
-    c = next((x for x in cands if x["i"] == int(ans["index"])), None)
+    try:                 # the model sometimes answers with the name instead of the index (beminimalist, cycle 28)
+        idx = int(ans["index"])
+    except (TypeError, ValueError, KeyError):
+        return None
+    c = next((x for x in cands if x["i"] == idx), None)
     words = {w for w in re.findall(r"[a-z]{4,}", title.lower()) if w not in _GENERIC_WORDS}
     if not c or not (c["size"] >= 16 or c["tag"] in ("h1", "h2", "h3")) or not (words & set(re.findall(r"[a-z]{4,}", c["text"].lower()))):
         return None
@@ -3493,8 +3505,13 @@ def price_consistency(ctx: Ctx, collection_url: str, product_handles: list[str] 
         ok, how = price_shown(round(want * qty / 100, 2), nums)
         if not ok and qty > 1:              # a line that shows the unit price
             ok, how = price_shown(round(want / 100, 2), nums)
+        ev = "" if texts else ctx.sess.evaluate("""() => { const q = document.querySelector('[data-radar-cart="qty"]');
+            if (!q) return 'no quantity box marked'; let r = q; for (let k = 0; k < 4 && r.parentElement; k++) r = r.parentElement;
+            return r.tagName.toLowerCase() + '.' + String(r.className).slice(0, 40) + ': ' + (r.innerText || '').replace(/\s+/g, ' ').slice(0, 160); }""")
+        # evidence for round 2: all 12 theme demos (cycle 28 run 38123470941) said 'no price' on the line
         ctx.expect("cart line price = product page price", rupees(want * qty),
-                   how if ok else f"line shows {'; '.join(x['text'] for x in texts)[:100] or 'no price'}", ok)
+                   how if ok else f"line shows {'; '.join(x['text'] for x in texts)[:100] or 'no price'}"
+                   + (f" (line area: {ev})" if ev else ""), ok)
         return f"cart line shows {how} = product page {rupees(want)}"
     ctx.steps.run("cart_line_price", cart_line, soft=soft)
 

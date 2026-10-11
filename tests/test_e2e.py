@@ -1763,15 +1763,16 @@ def test_checkout_summary_is_read_past_a_big_inline_script(tmp_path):
     assert st.status == "pass" and all(ch["ok"] for ch in st.checks), (st.status, st.error, st.checks)
 
 
-def test_prices_converted_for_another_country_are_location_never_down(tmp_path):
+@pytest.mark.parametrize("mode", ["other_market", "other_market_norate"])
+def test_prices_converted_for_another_country_are_location_never_down(tmp_path, mode):
     """theindianethnicco.com ($62.91) + saltattire.com ($24.23), new30h 11 Oct, and tilfi.com ($497), new30g: Shopify
     Markets shows a US visitor converted dollar prices, so the catalog's ₹ price is 'not on page' and Radar said DOWN.
     The cloud machines are in the US: that is 'location (US runner)', BLOCKED with the reason."""
-    run, _ = _scan("other_market", tmp_path)
+    run, _ = _scan(mode, tmp_path)
     assert run.verdict != "down", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
     for prefix in ("journey.", "product.pdp.ceramic", "cart.add_to_cart"):
         c = _case(run, prefix)
-        assert c.verdict == "blocked" and "location (US runner)" in c.attempts[-1].error and "USD" in c.attempts[-1].error, \
+        assert c.verdict == "blocked" and "location (US runner)" in c.attempts[-1].error and ("USD" in c.attempts[-1].error or "$" in c.attempts[-1].error), \
             (prefix, c.verdict, c.attempts[-1].error)
 
 

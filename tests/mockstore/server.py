@@ -174,6 +174,8 @@ Modes (to prove Radar catches and heals what it should):
   other_market     every page shows prices converted to USD (Shopify Markets for a US visitor: Shopify.currency
                    {active: USD, rate: 0.012}, '$15.59' where the catalog says ₹1,299; theindianethnicco.com, saltattire.com
                    new30h, tilfi.com new30g) -> product / journey / cart tests are BLOCKED 'location (US runner)', not DOWN
+  other_market_norate  same dollar prices, but the page exposes no Shopify.currency (theindianethnicco.com $62.91 and
+                   saltattire.com $24.23 kept failing on the rate test alone, cycle 28 re-run) -> BLOCKED 'location'
   marketplace_only product pages show no price and no cart, only 'Buy on Amazon / Flipkart' links (antesports, beyondsnack)
                    -> product + journey BLOCKED "sells only on marketplaces", never DOWN
   cart_qty_broken  the cart page's + / − buttons and quantity box do nothing (theme script missing) -> cart.edit_and_checkout
@@ -617,8 +619,10 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                           r'<img class="gallery-slide" data-src="\1" width="300" height="300"', body, count=1)
             body = body.replace("</body>", "<script>setTimeout(() => document.querySelectorAll('img.gallery-slide').forEach("
                                 "i => i.src = i.dataset.src), 2000);</script></body>", 1)
-        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market":
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("other_market", "other_market_norate"):
             body = re.sub(r"₹\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
+            body = re.sub(r"Rs\.\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market":
             body = body.replace("</head>", "<script>window.Shopify = window.Shopify || {}; Shopify.country = 'US'; "
                                 "Shopify.currency = {active: 'USD', rate: '0.012'};</script></head>", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "empty_doc_title":
