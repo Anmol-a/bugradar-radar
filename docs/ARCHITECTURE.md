@@ -1055,6 +1055,47 @@ wishcare (DNS failed), miraggio (self-signed) → all 7 **unreachable** with the
 **Gaps vs Revenue Shield still open** (rows added to the status doc): 'Buy it now' flow opening the checkout (not
 filled), and storefront app changes between runs (needs run history: store profile, ARCHITECTURE 12).
 
+## 4ze. Journeys 22–25, journey 21 round 2, new30h fixes (loop cycle 28, 11 Oct 2026, 12:30 IST)
+
+Built in parallel by four worktree agents, merged and reviewed in one batch; every journey is a WARNING (strict=True
+turns it into a failure) until a real-store bench shows 0 false failures on it.
+
+| # | Case (suite) | What it does | Mock proof (healthy passes / broken warns, strict fails) |
+|---|---|---|---|
+| 22 | `product.variant_switch` (product) | first priced product with ≥ 2 variants: click another size/colour like a shopper (radio label, swatch, visible select; never the hidden `select[name=id]`); the page must select it (form id, `?variant=`, or marked options) and show its price; a sold-out variant must leave no enabled add-to-cart. No clickable option control = info, not judged | healthy pills / `variant_switch_broken`, `variant_sold_out`, `variant_sold_out_buyable` |
+| 23 | `cart.price_consistency` (cart, cart flow only) | collection card price (sale price, not MRP / 'Save ₹X' / per-unit; 'From ₹X' = lowest variant) = product page price = cart line price; Radar's cart cleaned afterwards (`/cart/change.js` → 0). Card without a price = info | healthy (struck MRP + Save badge) / `card_price_stale` |
+| 24 | `product.sold_out` (product) | first sold-out product in products.json (re-checked live; back in stock = info): buy button disabled/absent or sold-out wording in the product's own area; `/cart/add.js` should answer 422 (a store that keeps selling = info 'oversell_allowed', Radar removes it again). Never clicks buy, never submits 'Notify me' | healthy / `soldout_buyable`, `soldout_oversell` |
+| 25 | `catalog.filter.<handle>` (catalog) | biggest collection: apply ONE storefront filter like a shopper (In stock first; phone: 'Filter' drawer); URL has exactly one `filter.*`, ≥ 1 product, no more than before, every product matches products.json. Sort only where robots.txt allows `sort_by` (Shopify's default disallows it). No filter UI = info | `facets`, `facets_sort`, `facets_sort_allowed` / `filter_broken` |
+
+**robots.txt wildcards (all of Radar):** Python's `urllib.robotparser` does not implement `*` the way RFC 9309 does
+(3.12 reads it literally; 3.13 encodes `&` so `filter*&*filter` never matched). `Robots.allowed` now also runs a small
+RFC 9309 matcher (`robots_rules`, `rules_allow`) and allows a URL only when both agree: it can only refuse more.
+
+**Journey 21 round 2 (last):** the checkout summary was never read because Shopify's checkout puts ~100 kB of inline
+JSON `<script>` in the body before the order summary and Radar read `body.textContent` cut at 40 000 chars. It now
+reads text nodes only (script/style/template skipped, 200 000 chars). Mock `checkout_big_script` fails on the old code.
+
+**new30h (run 38117718084, 12 machines, run once):** 30 never-seen stores → 20 scored (4 not Shopify, 5 unreachable:
+2 dead DNS, 1 wrong certificate, 2 redirect to another site; tribeamrapali bot challenge). Location (US runner): 3
+(theindianethnicco $62.91, saltattire $24.23, kidbea products hidden from the US market). Store finding: maspar footer
+'Printed Bed Sheets' → /collections/printed 404 (both devices). Radar false failures: **2/17** (soultree image, veirdo
+grid). Fixed in this batch (each with a mock that fails on the old code):
+- **Location instead of DOWN** (`OtherMarket`): when the catalog ₹ price is not on the page and
+  `Shopify.currency.rate` ≠ 1 (Shopify Markets converted the prices for this visitor), the case is BLOCKED
+  'location (US runner) … converted to USD (market US, rate …)'. 3 stores (theindianethnicco, saltattire, tilfi).
+  Mock `other_market`.
+- **Main product image** (soultree.in, image plainly on screen): waits up to ~5 s for lazy galleries, reads open shadow
+  roots and large CSS background images that loaded, and on failure names the 3 largest images it saw (size, position,
+  naturalWidth, file). Mock `lazy_gallery`.
+- **Grid rendered on scroll** (veirdo.in: '144 items', 0 product links): `_reveal_product_grid` scrolls a screen at a
+  time until product links show, in the collection test and the journey (collection + product click). Mock
+  `grid_on_scroll`.
+- kidbea.com (catalog products 404 + 'no products in this collection' while products.json lists them, market US/INR):
+  documented as location for now; if it repeats on another store, label 'products not published to this market'.
+
+**Cloud runs on 12 machines** (was 6): each store is still visited by one machine (same per-store volume), the run takes
+about half the time; result pushes retry 16 times.
+
 ## 5. Self-healing locators
 
 Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `checkout_button`).
