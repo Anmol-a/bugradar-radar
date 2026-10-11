@@ -1387,6 +1387,8 @@ def _search_once(ctx: Ctx, url: str, step: str, soft: bool):
 
     def search():
         page = ctx.sess.page
+        if not ctx.sess.allowed(url):      # typing into the box opens /search: same robots.txt rule as opening it
+            raise RobotsBlocked(f"robots.txt disallows {_path(url)}: search not tested on this store")
         _dismiss(ctx)
         field = _open_search_box(ctx)
         if field is not None:
@@ -1503,6 +1505,8 @@ def search_suggestions(ctx: Ctx, home: str, term: str):
 
     def suggest():
         page = ctx.sess.page
+        if not ctx.sess.allowed(_base(home) + "/search/suggest.json"):
+            return "not tested: the store's robots.txt disallows /search"
         _dismiss(ctx)
         field = _open_search_box(ctx)
         if field is None:
@@ -1542,8 +1546,10 @@ def _relevant(links: list[dict], term: str) -> bool:
 
 
 def _shopify_search(ctx: Ctx, term: str) -> dict:
-    """Shopify's own predictive search for the word, fetched from the page (same origin, the store's own endpoint),
+    """Never called when robots.txt disallows /search (it returns 'not found' then). Shopify's own predictive search for the word, fetched from the page (same origin, the store's own endpoint),
     plus the result count Shopify printed in the <title>. {'n': products found, 'first': a title, 'title': page title}."""
+    if not ctx.sess.allowed(ctx.sess.page.url.split("/", 3)[0] + "//" + ctx.sess.page.url.split("/", 3)[2] + "/search/suggest.json"):
+        return {"n": 0, "first": "", "title": ""}
     try:
         r = ctx.sess.evaluate("""async (q) => { try {
             const res = await fetch('/search/suggest.json?q=' + encodeURIComponent(q) + '&resources[type]=product&resources[limit]=10',

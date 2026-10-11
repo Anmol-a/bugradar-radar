@@ -1474,3 +1474,16 @@ def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path
     assert run.verdict == "unreachable", (run.verdict, run.notes)
     assert any("bombae.example: the domain points to 127.0.0.1" in n and "check the store's address" in n
                for n in run.notes), run.notes
+
+def test_store_that_disallows_search_is_not_searched_unless_it_authorised_radar(tmp_path):
+    # Shopify Web Bot Auth registration (11 Oct): Radar obeys robots.txt; the search box counts as shopper flow only on
+    # stores that authorised Radar (cart flag). 'hostile' disallows /search.
+    run = _info("hostile", tmp_path, suites=("search",), allow_cart_flow=False)
+    assert run.verdict in ("healthy", "blocked"), run.verdict
+    main = next(c for c in run.cases if c.case_id.startswith("search.") and c.check == "search_results")
+    assert main.verdict == "blocked" and "robots.txt" in (main.attempts[-1].error or ""), (main.verdict, main.attempts[-1].error)
+    sug = _steps(_case(run, "search.suggestions"))["suggestions_while_typing"]
+    assert sug.detail == "not tested: the store's robots.txt disallows /search", sug.detail
+    run = _info("hostile", tmp_path, suites=("search",))           # authorised (cart flow on): searched like a shopper
+    main = next(c for c in run.cases if c.case_id.startswith("search.") and c.check == "search_results")
+    assert main.verdict == "pass", main.attempts[-1].error

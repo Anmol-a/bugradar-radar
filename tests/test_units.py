@@ -862,3 +862,10 @@ def test_dead_store_addresses_are_told_apart_from_temporary_problems():
     for temporary in ("APIRequestContext.get: Timeout 20000ms exceeded.", "Client network socket disconnected before secure "
                       "TLS connection was established", "connect ECONNREFUSED 104.18.2.3:443", ""):
         assert why(temporary) == "", temporary
+
+
+def test_crawl_delay_is_read_for_radars_token():
+    from radar.core.robots import Robots
+    assert Robots("User-agent: *\nCrawl-delay: 5\nDisallow: /cart\n", "BugRadar/0.1 (+bugradar.in)").crawl_delay() == 5.0
+    assert Robots("User-agent: *\nDisallow: /cart\n", "BugRadar/0.1").crawl_delay() is None
+    assert Robots(None, "BugRadar/0.1").crawl_delay() is None
