@@ -61,6 +61,16 @@ class Robots:
         self._rp.parse((robots_txt or "").splitlines())
         self._rules = robots_rules(robots_txt or "", user_agent.split("/")[0])
 
+    def crawl_delay(self) -> float | None:
+        """Seconds the store's robots.txt asks between requests (Crawl-delay) for Radar's token, else None."""
+        if not self.loaded:
+            return None
+        try:
+            d = self._rp.crawl_delay(self.user_agent.split("/")[0])
+            return float(d) if d else None
+        except (TypeError, ValueError):
+            return None
+
     def allowed(self, url: str) -> bool:
         if self.unreachable:
             return False

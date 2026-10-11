@@ -1794,3 +1794,15 @@ def test_collection_grid_rendered_on_scroll_is_found_by_scrolling(tmp_path):
         assert c.verdict == "pass", (prefix, c.verdict, c.attempts[-1].error)
     coll = _case(run, "catalog.collection.")
     assert "after scrolling" in coll.attempts[-1].steps[1].detail, coll.attempts[-1].steps[1].detail
+def test_store_that_disallows_search_is_not_searched_unless_it_authorised_radar(tmp_path):
+    # Shopify Web Bot Auth registration (11 Oct): Radar obeys robots.txt; the search box counts as shopper flow only on
+    # stores that authorised Radar (cart flag). 'hostile' disallows /search.
+    run = _info("hostile", tmp_path, suites=("search",), allow_cart_flow=False)
+    assert run.verdict in ("healthy", "blocked"), run.verdict
+    main = next(c for c in run.cases if c.case_id.startswith("search.") and c.check == "search_results")
+    assert main.verdict == "blocked" and "robots.txt" in (main.attempts[-1].error or ""), (main.verdict, main.attempts[-1].error)
+    sug = _steps(_case(run, "search.suggestions"))["suggestions_while_typing"]
+    assert sug.detail == "not tested: the store's robots.txt disallows /search", sug.detail
+    run = _info("hostile", tmp_path, suites=("search",))           # authorised (cart flow on): searched like a shopper
+    main = next(c for c in run.cases if c.case_id.startswith("search.") and c.check == "search_results")
+    assert main.verdict == "pass", main.attempts[-1].error

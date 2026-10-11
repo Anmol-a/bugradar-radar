@@ -1055,3 +1055,8 @@ def test_builder_adds_one_filter_case_for_the_biggest_collection():
     assert [c.id for c in f] == ["catalog.filter.big"] and f[0].severity == "minor"
     assert f[0].params == {"url": "https://x.in/collections/big", "strict": False,
                            "products_json": "https://x.in/collections/big/products.json?limit=250"}
+def test_crawl_delay_is_read_for_radars_token():
+    from radar.core.robots import Robots
+    assert Robots("User-agent: *\nCrawl-delay: 5\nDisallow: /cart\n", "BugRadar/0.1 (+bugradar.in)").crawl_delay() == 5.0
+    assert Robots("User-agent: *\nDisallow: /cart\n", "BugRadar/0.1").crawl_delay() is None
+    assert Robots(None, "BugRadar/0.1").crawl_delay() is None

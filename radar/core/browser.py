@@ -291,12 +291,18 @@ class Session:
             return True   # shopper-flow exemption, see ARCHITECTURE.md
         if (path.rstrip("/") == "/checkout" or path.startswith("/checkouts/")) and self.s.allow_cart_flow:
             return True   # opening the checkout page to see it renders (Anmol, 10 Oct): one GET, never filled or paid
-        if path.rstrip("/") == "/search" and self.s.search_is_shopper_flow:
+        # 11 Oct 2026 (Shopify Web Bot Auth registration: 'obeys robots.txt'): the search-box exemption only on stores
+        # that authorised Radar (the same switch as the cart flow); elsewhere a disallowed /search is not tested
+        if path.rstrip("/") == "/search" and self.s.search_is_shopper_flow and self.s.allow_cart_flow:
             return True   # a shopper typing in the store's own search box; see ARCHITECTURE.md
         return self.robots.allowed(url)
 
     def _polite(self):
-        wait = self.s.delay_seconds - (time.time() - self._last_nav)
+        delay = self.s.delay_seconds
+        cd = self.robots.crawl_delay() if self.robots is not None and hasattr(self.robots, "crawl_delay") else None
+        if cd:                                   # the store's robots.txt Crawl-delay, when longer (capped at 60 s)
+            delay = max(delay, min(float(cd), 60.0))
+        wait = delay - (time.time() - self._last_nav)
         if wait > 0:
             time.sleep(wait)
         self._last_nav = time.time()
