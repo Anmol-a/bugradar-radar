@@ -167,6 +167,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> pages load (no 'down'); the SEO test 'title' warns
   annual_return_pdf  the footer's first link is 'Annual Return FY 2024-25', a PDF under /cdn/ (giva.co): a company-law
                    filing, not the returns policy -> never picked as an info page, info.policy_pages PASSES
+  lazy_gallery     the product page's main picture is a lazy gallery slide: an empty 300x300 <img> whose data-src is
+                   swapped in 2 s after load (soultree.in, new30h: image on screen, Radar said 'none loaded') -> PASSES
   other_market     every page shows prices converted to USD (Shopify Markets for a US visitor: Shopify.currency
                    {active: USD, rate: 0.012}, '$15.59' where the catalog says ₹1,299; theindianethnicco.com, saltattire.com
                    new30h, tilfi.com new30g) -> product / journey / cart tests are BLOCKED 'location (US runner)', not DOWN
@@ -598,6 +600,11 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "annual_return_pdf":
             body = body.replace('<div class="footer-menu">', '<div class="footer-menu"><a href="/cdn/shop/t/234/assets/'
                                 'annual-return-fy-2024-25.pdf">Annual Return FY 2024-25</a> ')
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "lazy_gallery" and "/products/" in self.path:
+            body = re.sub(r'<img src="(/cdn/shop/files/[^"]+\.svg)" width="300" height="300"',
+                          r'<img class="gallery-slide" data-src="\1" width="300" height="300"', body, count=1)
+            body = body.replace("</body>", "<script>setTimeout(() => document.querySelectorAll('img.gallery-slide').forEach("
+                                "i => i.src = i.dataset.src), 2000);</script></body>", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market":
             body = re.sub(r"₹\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
             body = body.replace("</head>", "<script>window.Shopify = window.Shopify || {}; Shopify.country = 'US'; "

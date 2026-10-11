@@ -1773,3 +1773,13 @@ def test_prices_converted_for_another_country_are_location_never_down(tmp_path):
         c = _case(run, prefix)
         assert c.verdict == "blocked" and "location (US runner)" in c.attempts[-1].error and "USD" in c.attempts[-1].error, \
             (prefix, c.verdict, c.attempts[-1].error)
+
+
+def test_lazy_gallery_image_is_waited_for_not_called_missing(tmp_path):
+    """soultree.in (new30h, desktop + phone): the product picture is plainly on screen in the evidence screenshot, yet
+    'main product image loaded' said none = DOWN. A lazy gallery that fills its slide 2 s after load now passes."""
+    run = _product_only("lazy_gallery", tmp_path)
+    c = _case(run, "product.pdp.ceramic")
+    checks = {ch["what"]: ch for s in c.attempts[-1].steps for ch in s.checks}
+    assert c.verdict == "pass" and checks["main product image loaded"]["ok"], (c.verdict, c.attempts[-1].error)
+    assert checks["main product image loaded"]["actual"].startswith("yes (img 300x300")

@@ -1411,6 +1411,29 @@ def _page_market(ctx: Ctx) -> str:
     return ("; " + ", ".join(bits)) if bits else ""
 
 
+# The product's main picture as a shopper sees it: an <img> (also inside open shadow roots) that decoded, or a large
+# element painted with a CSS background image (zoom galleries). soultree.in (new30h, both devices): the gallery image
+# is plainly on screen in the evidence screenshot, yet 'main product image loaded' said none: the check now waits for
+# lazy galleries, reads shadow roots and backgrounds, and on failure names what it saw.
+MAIN_IMAGE_JS = r"""() => { const big = r => r.width >= 150 && r.height >= 150 && r.top < 1400 && r.bottom > 0;
+  const imgs = []; const walk = root => { root.querySelectorAll('img').forEach(i => imgs.push(i));
+    root.querySelectorAll('*').forEach(e => { if (e.shadowRoot) walk(e.shadowRoot); }); };
+  walk(document);
+  for (const i of imgs) { const r = i.getBoundingClientRect();
+    if (big(r) && i.naturalWidth > 0) return {ok: true, how: 'img ' + Math.round(r.width) + 'x' + Math.round(r.height)}; }
+  for (const e of document.querySelectorAll('main *, [role=main] *, .product *, [class*=product] *')) {
+    const bg = getComputedStyle(e).backgroundImage; if (!bg || !/url\(/.test(bg)) continue;
+    const r = e.getBoundingClientRect(); if (!big(r)) continue;
+    const u = (bg.match(/url\(["']?([^"')]+)/) || [])[1] || '';
+    const done = performance.getEntriesByType('resource').some(x => u && x.name.split('?')[0] === new URL(u, location.href).href.split('?')[0]);
+    if (done) return {ok: true, how: 'background image ' + Math.round(r.width) + 'x' + Math.round(r.height)}; }
+  const seen = imgs.map(i => ({i, r: i.getBoundingClientRect()})).filter(x => x.r.width * x.r.height > 2000)
+    .sort((a, b) => b.r.width * b.r.height - a.r.width * a.r.height).slice(0, 3)
+    .map(x => Math.round(x.r.width) + 'x' + Math.round(x.r.height) + '@' + Math.round(x.r.top) + ' natural ' + x.i.naturalWidth +
+      (x.i.complete ? '' : ' loading') + ' ' + (x.i.currentSrc || x.i.src || x.i.getAttribute('data-src') || '').split('/').pop().slice(0, 40));
+  return {ok: false, seen: seen.join('; ')}; }"""
+
+
 def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = False):
     """Everything a product page must show, asserted against Shopify's own product data."""
     state: dict = {}
@@ -1446,9 +1469,15 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         where = "" if ok else _hidden_price(ctx, want)
         ctx.expect("selected variant price shown", rupees(v["price"]),
                    how if ok else f"not on page{where}", ok)
-        img = ctx.sess.evaluate("""() => [...document.images].some(i => { const r = i.getBoundingClientRect();
-                return r.width >= 150 && r.height >= 150 && i.naturalWidth > 0 && r.top < 1400; })""")
-        ctx.expect("main product image loaded", "image ≥150px rendered", "yes" if img else "none loaded", img)
+        img = ctx.sess.evaluate(MAIN_IMAGE_JS)
+        for _ in range(8):            # lazy galleries decode the first slide a moment after the price shows
+            if img and img.get("ok"):
+                break
+            ctx.sess.page.wait_for_timeout(600)
+            img = ctx.sess.evaluate(MAIN_IMAGE_JS)
+        ok_img = bool(img and img.get("ok"))
+        ctx.expect("main product image loaded", "image ≥150px rendered",
+                   f"yes ({img.get('how')})" if ok_img else f"none loaded ({(img or {}).get('seen') or 'no large image element'})", ok_img)
         return "title, price and image visible"
     ctx.steps.run("shows_title_price_image", shown)
 
