@@ -3896,3 +3896,242 @@ def sold_out_page(ctx: Ctx, url: str, strict: bool = False, cart_probe: bool = T
 
 
 REGISTRY["sold_out_page"] = sold_out_page
+
+
+# ---------------- journey 18: the cart drawer, the cart page and /cart.js agree ----------------
+
+# What one view of the cart (the drawer Radar marked, or the cart page's main area) shows: its text, and the quantity box
+# of the product's line. The line is the box's highest ancestor that still holds only this one quantity box (like
+# CART_LINE_JS), and it must name the variant id or the product. Inputs of an add-to-cart form are never cart lines.
+CART_VIEW_JS = r"""([rootSel, vid, title]) => {
+  const root = rootSel ? document.querySelector(rootSel) : (document.querySelector('main, [role="main"], #MainContent') || document.body);
+  if (!root) return null;
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const norm = t => (t || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const qtySel = 'input[name="updates[]"], input[name^="updates"], input.quantity__input, input[name="quantity"], ' +
+                 'input[type="number"], input[data-quantity-input], input[class*="qty" i], input[class*="quantity" i]';
+  const inputs = [...root.querySelectorAll(qtySel)].filter(i => vis(i) && !i.closest('form[action*="/cart/add"]'));
+  let qty = null;
+  for (const inp of inputs) {
+    let row = inp;
+    while (row.parentElement && row.parentElement !== root &&
+           [...row.parentElement.querySelectorAll(qtySel)].filter(vis).length <= 1) row = row.parentElement;
+    if (row.outerHTML.slice(0, 40000).includes(String(vid)) || norm(row.innerText).includes(norm(title))) { qty = inp.value; break; }
+  }
+  return {text: (root.innerText || '').slice(0, 20000), qty, boxes: inputs.length}; }"""
+
+# /cart.js read by the page itself (the request the theme's own drawer script makes), at the store's locale root.
+CART_JSON_IN_PAGE_JS = r"""async () => { const root = ((window.Shopify || {}).routes || {}).root || '/';
+  const r = await fetch(root.replace(/\/?$/, '/') + 'cart.js', {headers: {accept: 'application/json'}, cache: 'no-store'});
+  if (!r.ok) return {status: r.status}; return await r.json(); }"""
+
+_SUBTOTAL_RX = re.compile(r"\bsub\s*-?\s*total\b|\b(?:estimated |order |cart |grand )?total\b", re.I)
+_NOT_SUBTOTAL_RX = re.compile(r"sav(e|ing)|discount|\boff\b|tax|shipping|free\s+delivery|reward|points?\b", re.I)
+_QTY_RX = re.compile(r"\b(?:qty|quantity)\s*[:\-]?\s*(\d{1,3})\b|(?:^|\s)[x×]\s?(\d{1,3})\b", re.I)
+
+
+def subtotal_in_text(text: str) -> float | None:
+    """The cart subtotal a view shows: the price on the first 'Subtotal' line (else a 'Total' line), or on the line
+    right after the label (themes put label and amount in two elements). Only amounts with a currency sign count, so
+    'Subtotal (2 items)' is never read as ₹2; savings / tax / shipping lines are skipped. None when not shown. Pure."""
+    lines = [ln.strip() for ln in (text or "").splitlines() if ln.strip()]
+    for want_sub in (True, False):
+        for i, ln in enumerate(lines):
+            m = _SUBTOTAL_RX.search(ln)
+            if not m or _NOT_SUBTOTAL_RX.search(ln) or want_sub != m.group(0).lower().startswith("sub"):
+                continue
+            for cand in (ln[m.end():], lines[i + 1] if i + 1 < len(lines) else ""):
+                for p in _PRICE_RX.finditer(cand):
+                    try:
+                        n = round(float((p.group(1) or p.group(2)).replace(",", "")), 2)
+                    except ValueError:
+                        continue
+                    if n > 0:
+                        return n
+    return None
+
+
+def qty_in_text(text: str, title: str) -> int | None:
+    """The quantity a cart view prints next to the product when it has no quantity box ('Qty: 2', 'Quantity 2', '× 2'):
+    searched after the product's name on its line and on the 3 lines after it. None when no quantity is named. Pure."""
+    lines = [ln.strip() for ln in (text or "").splitlines() if ln.strip()]
+    t = norm_text(title)
+    for i, ln in enumerate(lines):
+        if t and t in norm_text(ln):
+            k = ln.lower().find((title or "").lower())
+            for cand in [ln[k + len(title):] if k >= 0 else ln] + lines[i + 1:i + 4]:
+                m = _QTY_RX.search(cand)
+                if m:
+                    return int(m.group(1) or m.group(2))
+            return None
+    return None
+
+
+def cart_view_mismatches(where: str, view: dict, truth: dict, drawer: dict | None = None) -> list[str]:
+    """What one view of the cart (the drawer or the cart page) gets wrong against /cart.js, in plain words.
+    view: {listed, empty, qty, subtotal}; truth: {qty, totals (paise: total_price, items_subtotal_price, ...)};
+    drawer: what the drawer showed, named in the cart page's messages. A quantity or subtotal the view does not show
+    is not judged. Empty list = consistent. Pure."""
+    out = []
+    other = drawer if drawer is not None and drawer is not view else None
+    if not view.get("listed"):
+        out.append(f"{where} does not list the product" + (" and says the cart is empty" if view.get("empty") else "")
+                   + (" (the cart drawer showed it)" if other and other.get("listed") else ""))
+    if view.get("qty") is not None and int(view["qty"]) != int(truth["qty"]):
+        d = f", the drawer showed {other['qty']}" if other and other.get("qty") is not None else ""
+        out.append(f"quantity differs: {where} shows {view['qty']}, /cart.js says {truth['qty']}{d}")
+    totals = [int(t) for t in truth.get("totals") or [] if t is not None]
+    if view.get("subtotal") is not None and totals and \
+            not any(price_shown(round(t / 100, 2), [view["subtotal"]])[0] for t in totals):
+        d = f", the drawer showed ₹{other['subtotal']:,.2f}" if other and other.get("subtotal") is not None else ""
+        out.append(f"subtotal differs: {where} shows ₹{view['subtotal']:,.2f}, /cart.js says {rupees(totals[0])}{d}")
+    return out
+
+
+def _view_summary(v: dict) -> str:
+    return (("lists the product" if v.get("listed") else "product NOT listed")
+            + (f", quantity {v['qty']}" if v.get("qty") is not None else ", no quantity shown")
+            + (f", subtotal ₹{v['subtotal']:,.2f}" if v.get("subtotal") is not None else ", no subtotal shown"))
+
+
+def _read_view(ctx: Ctx, root: str | None, vid: int, title: str) -> dict:
+    got = ctx.sess.evaluate(CART_VIEW_JS, [root, vid, title]) or {"text": "", "qty": None}
+    text, qty = got.get("text") or "", got.get("qty")
+    try:
+        qty = int(str(qty).strip()) if qty not in (None, "") else None
+    except ValueError:
+        qty = None
+    if qty is None:
+        qty = qty_in_text(text, title)
+    return {"listed": norm_text(title) in norm_text(text), "empty": bool(EMPTY_CART_RX.search(text)), "qty": qty,
+            "subtotal": subtotal_in_text(text)}
+
+
+def _cart_truth(ctx: Ctx, base: str, vid: int) -> dict:
+    """/cart.js as the page's own scripts read it (fetched in the page); the store's answer directly if that fails."""
+    try:
+        c = ctx.sess.evaluate(CART_JSON_IN_PAGE_JS) or {}
+    except Exception:  # noqa: BLE001  a page that is navigating
+        c = {}
+    if "items" not in c:
+        c = ctx.sess.get_json(f"{base}/cart.js")
+    qty = sum(int(i.get("quantity") or 0) for i in c.get("items", []) if int(i.get("variant_id") or i.get("id") or 0) == vid)
+    totals = [c.get(k) for k in ("total_price", "items_subtotal_price", "original_total_price") if c.get(k) is not None]
+    return {"qty": qty, "totals": list(dict.fromkeys(totals))}
+
+
+def cart_drawer(ctx: Ctx, url: str, variant_id: int | None = None, cart_path: str = "/cart", strict: bool = False):
+    """Journey #18: the cart DRAWER (or mini-cart) the theme opens after adding, the cart PAGE and Shopify's own /cart.js
+    must tell the shopper the same thing: the product, its quantity, the subtotal. A drawer rendered from a stale cached
+    section shows the shopper one cart while the cart page and checkout hold another. The item goes in by the store's
+    own buy button (the drawer only opens on that click), is read in the drawer, then on the cart page in the same
+    session, each compared with /cart.js, then taken out again (/cart/change.js). No drawer after adding nor after
+    clicking the cart icon (the theme goes straight to the cart page) = information, not a finding. Warnings unless
+    strict (not yet measured on a bench). Checkout is never opened; no form but the store's add-to-cart is submitted."""
+    base, page = _base(url), ctx.sess.page
+    soft = not strict
+    state: dict = {}
+    ctx.steps.run("product_loads", lambda: _load(ctx, url))
+
+    def add():
+        p = _product_js(ctx, page.url)
+        v = _ensure_variant(ctx, p)
+        if v.get("_pincode_gate"):
+            raise PincodeGate("cart drawer not tested: the buy button stays disabled until the shopper checks a delivery "
+                              f"pincode ({v['_pincode_gate']}); Radar never enters one")
+        ids = {int(x["id"]) for x in p["variants"]}
+        vid_of = lambda i: int(i.get("variant_id") or i.get("id") or 0)
+        had = {vid_of(i): int(i.get("quantity") or 0) for i in ctx.sess.get_json(f"{base}/cart.js").get("items", [])}
+        _dismiss(ctx)
+        loc, how, healed = _main_buy_button(ctx, p)
+        _expect_buy_enabled(ctx, loc)
+        loc.evaluate("e => e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'})")
+        loc.click(timeout=8000)
+        added = None
+        for _ in range(14):                                   # cart updates are async
+            page.wait_for_timeout(600)
+            items = ctx.sess.get_json(f"{base}/cart.js").get("items", [])
+            added = next((vid_of(i) for i in items if vid_of(i) in ids and int(i.get("quantity") or 0) > had.get(vid_of(i), 0)), None)
+            if added:
+                break
+        ctx.expect("the store's cart received the product", p["title"], f"variant {added}" if added else "not added", bool(added))
+        state.update(p=p, vid=added, before=had.get(added, 0))
+        return (f"clicked {how}: {p['title']!r} (variant {added}) is in Radar's own cart", healed)
+    # soft: a buy button that adds nothing is cart.add_to_cart's (critical) finding, not a second incident from this case
+    if ctx.steps.run("add_with_buy_button", add, soft=soft) is None:
+        return
+    title, vid = state["p"]["title"], state["vid"]
+
+    def find_drawer() -> str:
+        page.wait_for_timeout(500)
+        if _path(page.url) == cart_path:               # the theme sent the shopper to the cart page
+            return ""
+        if ctx.sess.evaluate(DRAWER_JS):
+            return "opened by itself after adding"
+        link = next((c.nth(i) for sel in (f'header a[href$="{cart_path}"]', f'a[href$="{cart_path}"]')
+                     for c in [page.locator(sel)] for i in range(min(c.count(), 5)) if c.nth(i).is_visible()), None)
+        if link is None:
+            return ""
+        try:
+            link.click(timeout=5000)
+            ctx.sess.settle()
+        except Exception:  # noqa: BLE001
+            return ""
+        return "opened by clicking the cart icon" if _path(page.url) != cart_path and ctx.sess.evaluate(DRAWER_JS) else ""
+    how = find_drawer()
+    if not how:
+        ctx.steps.info("no_drawer", "info: no drawer on this theme (adding to cart and the cart icon lead to the cart "
+                                    "page); the cart page is compared with /cart.js only")
+    else:
+        def drawer():
+            v: dict = {}
+            for _ in range(8):                          # drawers render their lines a moment after opening
+                v = _read_view(ctx, '[data-radar-target="drawer"]', vid, title)
+                if v["listed"]:
+                    break
+                page.wait_for_timeout(500)
+            truth = _cart_truth(ctx, base, vid)
+            state["drawer"] = v
+            bad = cart_view_mismatches("the cart drawer", v, truth)
+            ctx.expect("cart drawer = /cart.js (product, quantity, subtotal)",
+                       f"lists {title}, quantity {truth['qty']}, subtotal {rupees(truth['totals'][0]) if truth['totals'] else '?'}",
+                       "; ".join(bad) if bad else _view_summary(v), not bad)
+            return f"drawer {how}: {_view_summary(v)}; /cart.js agrees (quantity {truth['qty']})"
+        ctx.steps.run("drawer_matches_cart", drawer, soft=soft)
+
+    def cart_page():
+        if _path(page.url) != cart_path:
+            _load(ctx, base + cart_path)
+        _dismiss(ctx)
+        v: dict = {}
+        for _ in range(4):
+            v = _read_view(ctx, None, vid, title)
+            if v["listed"]:
+                break
+            page.wait_for_timeout(500)
+        truth = _cart_truth(ctx, base, vid)
+        bad = cart_view_mismatches("the cart page", v, truth, state.get("drawer"))
+        ctx.expect("cart page = /cart.js" + (" = cart drawer" if state.get("drawer") else "") + " (product, quantity, subtotal)",
+                   f"lists {title}, quantity {truth['qty']}, subtotal {rupees(truth['totals'][0]) if truth['totals'] else '?'}",
+                   "; ".join(bad) if bad else _view_summary(v), not bad)
+        return f"cart page {_view_summary(v)}; /cart.js agrees (quantity {truth['qty']})"
+    ctx.steps.run("cart_page_matches_cart", cart_page, soft=soft)
+
+    def clean():
+        c = ctx.sess.get_json(f"{base}/cart.js")
+        line = next((n for n, i in enumerate(c.get("items", []), 1) if int(i.get("variant_id") or i.get("id") or 0) == vid), None)
+        if line is None:
+            return "Radar's cart no longer holds it"
+        r = ctx.sess.evaluate("""async ([line, quantity]) => { const r = await fetch('/cart/change.js', {method: 'POST',
+            headers: {'content-type': 'application/json', 'accept': 'application/json'},
+            body: JSON.stringify({line, quantity})}); return r.status; }""", [line, state["before"]])
+        ctx.expect("/cart/change.js answer", "< 400", r, (r or 999) < 400)
+        q = _wait_qty(ctx, base, vid, state["before"], 5)
+        ctx.expect("Radar's cart back as it was", state["before"], q)
+        return f"took it out of Radar's own cart (quantity {q})"
+    # housekeeping, not a cart finding: always a warning at most
+    ctx.steps.run("cart_cleaned_up", clean, soft=True)
+
+
+REGISTRY["cart_drawer"] = cart_drawer

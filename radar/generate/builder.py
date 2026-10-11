@@ -183,6 +183,13 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
                                       "cart_path": sm.cart_path, "strict": False}, "minor",
                 "Card price (the sale price, not the struck MRP; 'From' = lowest) = product page price = cart line price; "
                 "the item is taken out of Radar's cart afterwards"))
+        # journey 18: the drawer the theme opens after adding, the cart page and /cart.js tell the shopper one story
+        next(x for x in suites if x.id == "cart").cases.append(TestCase(
+            "cart.drawer_and_page", "cart", "Cart drawer and cart page show the same product, quantity and subtotal",
+            "cart_drawer", {"url": f"{buyable.url}?variant={buyable.variant_id}", "variant_id": buyable.variant_id,
+                            "cart_path": sm.cart_path, "strict": False}, "minor",
+            "Add with the store's buy button; the drawer (if the theme opens one) and then the cart page each match "
+            "Shopify's /cart.js; the item is taken out of Radar's cart afterwards. No drawer = information only"))
 
     terms = []
     for p in picks + spare:

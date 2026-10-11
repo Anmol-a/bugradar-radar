@@ -191,6 +191,13 @@ Modes (to prove Radar catches and heals what it should):
                    checkout, 12 theme demos, run 38086965951) -> 'order summary names the product' PASSES (it warned on
                    all 24 demo runs while Radar read only the first 40 000 chars of body.textContent)
   checkout_broken  GET /checkout answers HTTP 500 -> WARNS (strict: FAILS) at checkout_opens (checkout never filled)
+  cart_drawer      the drawer that opens after adding lists every cart line (name, price, quantity box) and a Subtotal,
+                   read from /cart.js (journey 18) -> cart.drawer_and_page PASSES: drawer = cart page = /cart.js
+  cart_drawer_stale  same drawer, rendered from a stale cart: quantity 2 and subtotal ₹2,598 while /cart.js and the cart
+                   page hold 1 vase at ₹1,299 -> cart.drawer_and_page WARNS (strict: FAILS) at drawer_matches_cart
+  cart_no_drawer   adding sends the shopper straight to the cart page (no drawer) -> 'no_drawer' information, the cart
+                   page is compared with /cart.js, PASSES (healthy: the drawer names the product only, no quantity or
+                   subtotal; those are not judged)
   no_title         product pages show no product name at all (snitch.co.in after its move)
                    -> product tests FAIL at shows_title_price_image with "none"
   (every mode)     footer links to an 'Annual Return FY 2024-25' PDF (downloads; giva.co), Cloudflare's /cdn-cgi/l/email-protection
@@ -1345,10 +1352,20 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
   const item = await r.json();
   if (window.GIFT_MODE && Number(id) !== 401) {
     await fetch('/cart/add.js', {method:'POST', headers:{'content-type':'application/json'}, body: JSON.stringify({id: 401, quantity: 1})}); }
+  if (window.NO_DRAWER) { location.href = '/cart'; return; }
+  let lines = '<div class="cart-item">' + item.product_title + '</div>';
+  if (window.DRAWER_MODE) {      // journey 18: Dawn-like drawer lines + subtotal ('stale': one more of each than the cart)
+    const c = await (await fetch('/cart.js')).json(), k = window.DRAWER_MODE === 'stale' ? 1 : 0;
+    const fmt = p => '₹' + (p / 100).toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+    lines = c.items.map((i, n) => '<div class="cart-drawer__item"><a href="/products/' + i.handle + '">' + i.product_title
+      + '</a> <span class="price">' + fmt(i.price) + '</span> <input type="number" class="quantity__input" name="updates[]" value="'
+      + (i.quantity + k) + '" data-index="' + (n + 1) + '" aria-label="Quantity"></div>').join('')
+      + '<div class="totals"><h3 class="totals__total">Subtotal</h3><p class="totals__total-value">'
+      + fmt(c.items.reduce((s, i) => s + i.price * (i.quantity + k), 0)) + '</p></div>'; }
   const d = document.createElement('cart-drawer'); d.className = 'drawer animate active';
   d.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:50';
   d.innerHTML = '<div class="drawer__inner" style="position:absolute;right:0;top:0;width:360px;height:100%;background:#fff;padding:16px">'
-    + '<h2>Your cart</h2><div class="cart-item">' + item.product_title + '</div>'
+    + '<h2>Your cart</h2>' + lines
     + '<button type="button" name="checkout">Check out</button></div>';
   document.body.appendChild(d); }
 </script>"""
@@ -1450,6 +1467,10 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      '.requestSubmit()">ADD TO CART</button></div>')
         if self.mode == "free_gift":
             script += "<script>window.GIFT_MODE = true;</script>"
+        if self.mode in ("cart_drawer", "cart_drawer_stale"):         # journey 18
+            script += f"<script>window.DRAWER_MODE = '{'stale' if self.mode == 'cart_drawer_stale' else 'full'}';</script>"
+        if self.mode == "cart_no_drawer":
+            script += "<script>window.NO_DRAWER = true;</script>"
         if p.get("redirect"):
             script += f"<script>setTimeout(() => location.replace('{p['redirect']}'), 150)</script>"
         return page(f"{p['title']} | Mock Store", body, f'<script type="application/ld+json">{ld}</script>{script}')

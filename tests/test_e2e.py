@@ -1645,6 +1645,80 @@ def test_cards_without_prices_are_not_judged_and_page_and_cart_still_compared(tm
         [(s.name, s.status, s.error) for s in st.values()]
 
 
+# ---------------- journey 18: cart drawer = cart page = /cart.js (11 Oct 2026) ----------------
+
+def _drawer_only(mode, tmp_path, strict=False, **kw):
+    """Only the cart suite's cart.drawer_and_page case (journey 18). strict=True flips the builder's strict=False."""
+    import radar.runner.executor as ex
+    orig = ex.build_suites
+
+    def built(sm, s):
+        suites = orig(sm, s)
+        for x in suites:
+            if x.id == "cart":
+                x.cases = [c for c in x.cases if c.check == "cart_drawer"]
+                for c in x.cases:
+                    c.params["strict"] = strict
+        return suites
+    ex.build_suites = built
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, **kw), only_suites=["cart"])[0]
+    finally:
+        srv.shutdown()
+        ex.build_suites = orig
+
+
+def test_cart_drawer_and_cart_page_agree_with_cart_json(tmp_path):
+    """Journey 18 with a Dawn-like drawer (lines, quantity box, Subtotal): drawer = cart page = /cart.js (vase ×1,
+    ₹1,299), then the vase leaves Radar's cart."""
+    run = _drawer_only("cart_drawer", tmp_path)
+    c = _case(run, "cart.drawer_and_page")
+    st = _steps(c)
+    assert c.verdict == "pass" and all(s.status == "pass" for s in st.values()), [(s.name, s.status, s.error) for s in st.values()]
+    assert set(st) == {"product_loads", "add_with_buy_button", "drawer_matches_cart", "cart_page_matches_cart",
+                       "cart_cleaned_up"}, list(st)
+    d = st["drawer_matches_cart"].detail
+    assert "opened by itself after adding" in d and "quantity 1" in d and "subtotal ₹1,299.00" in d, d
+    p = st["cart_page_matches_cart"].detail
+    assert "quantity 1" in p and "subtotal ₹1,299.00" in p, p
+    assert "quantity 0" in st["cart_cleaned_up"].detail
+    assert run.verdict == "healthy"
+
+
+def test_cart_drawer_on_the_healthy_store_judges_only_what_it_shows(tmp_path):
+    """The default mock's drawer names the product only: quantity and subtotal are not judged there; the page is."""
+    c = _case(_drawer_only("healthy", tmp_path), "cart.drawer_and_page")
+    st = _steps(c)
+    assert c.verdict == "pass" and all(s.status == "pass" for s in st.values()), [(s.name, s.status, s.error) for s in st.values()]
+    assert "no quantity shown, no subtotal shown" in st["drawer_matches_cart"].detail
+    assert "quantity 1, subtotal ₹1,299.00" in st["cart_page_matches_cart"].detail
+
+
+def test_theme_without_a_cart_drawer_is_information_only(tmp_path):
+    """Adding sends the shopper straight to /cart: 'no drawer on this theme' (info), the cart page is still compared."""
+    c = _case(_drawer_only("cart_no_drawer", tmp_path), "cart.drawer_and_page")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["no_drawer"].status == "info", [(s.name, s.status, s.error) for s in st.values()]
+    assert "info: no drawer on this theme" in st["no_drawer"].detail and "drawer_matches_cart" not in st
+    assert st["cart_page_matches_cart"].status == "pass", st["cart_page_matches_cart"].error
+
+
+def test_stale_cart_drawer_warns_now_and_fails_when_strict(tmp_path):
+    """cart_drawer_stale: the drawer says 2 vases / ₹2,598, /cart.js and the cart page 1 vase / ₹1,299."""
+    words = "quantity differs: the cart drawer shows 2, /cart.js says 1"
+    c = _case(_drawer_only("cart_drawer_stale", tmp_path), "cart.drawer_and_page")
+    st = _steps(c)
+    s = st["drawer_matches_cart"]
+    assert c.verdict == "pass" and s.status == "warn", [(x.name, x.status, x.error) for x in st.values()]
+    assert words in s.error and "subtotal differs: the cart drawer shows ₹2,598.00, /cart.js says ₹1,299.00" in s.error, s.error
+    assert st["cart_page_matches_cart"].status == "pass" and st["cart_cleaned_up"].status == "pass"
+    strict = _case(_drawer_only("cart_drawer_stale", tmp_path / "strict", strict=True), "cart.drawer_and_page")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "drawer_matches_cart", \
+        (strict.verdict, strict.attempts[-1].error)
+    assert words in strict.attempts[-1].error
+
+
 
 # ---------------- journey 24: sold-out product shows sold out, buy disabled (11 Oct 2026) ----------------
 

@@ -960,6 +960,63 @@ def test_price_consistency_case_only_with_the_cart_flow():
     assert c.params["strict"] is False
     assert not any(c.check == "price_consistency" for x in build_suites(sm, replace(Settings(), allow_cart_flow=False))
                    for c in x.cases)
+
+
+# ---------- journey 18: cart drawer = cart page = /cart.js ----------
+
+def test_cart_drawer_case_only_with_the_cart_flow():
+    sm = SiteMap(site_id="x.com", base_url="https://x.com", platform="shopify",
+                 collections=[Collection("c", "C", "https://x.com/collections/c", 3)],
+                 products=[Product("a", "Alpha Vase", "https://x.com/products/a", 11, "499.00", True)])
+    cart = next(x for x in build_suites(sm, Settings()) if x.id == "cart")
+    c = next(c for c in cart.cases if c.check == "cart_drawer")
+    assert c.id == "cart.drawer_and_page" and c.severity == "minor" and c.params["strict"] is False
+    assert c.params["url"] == "https://x.com/products/a?variant=11" and c.params["cart_path"] == sm.cart_path
+    assert not any(c.check == "cart_drawer" for x in build_suites(sm, replace(Settings(), allow_cart_flow=False))
+                   for c in x.cases)
+
+
+@pytest.mark.parametrize("text,want", [
+    ("Your cart\nVase ₹1,299.00\nSubtotal\n₹1,299.00\nCheck out", 1299.0),         # label and amount in two elements
+    ("Subtotal (2 items) ₹2,598.00", 2598.0),                                       # '(2 items)' is not ₹2
+    ("You save ₹300.00\nEstimated total Rs. 1,299", 1299.0),                         # savings line skipped
+    ("Taxes and shipping calculated at checkout\nTotal ₹499.00", 499.0),
+    ("Your cart\nVase ₹1,299.00\nCheck out", None),                                 # no subtotal shown
+])
+def test_subtotal_in_text(text, want):
+    from radar.checks.library import subtotal_in_text
+    assert subtotal_in_text(text) == want
+
+
+@pytest.mark.parametrize("text,want", [
+    ("Ceramic Flower Vase\n₹1,299.00\nQty: 2", 2),
+    ("Ceramic Flower Vase x1 ₹1,299.00", 1),
+    ("Ceramic Flower Vase × 3", 3),
+    ("Ceramic Flower Vase\n₹1,299.00", None),
+    ("Wooden Spoon Set Qty: 4", None),                                              # another product's line
+])
+def test_qty_in_text(text, want):
+    from radar.checks.library import qty_in_text
+    assert qty_in_text(text, "Ceramic Flower Vase") == want
+
+
+def test_cart_view_mismatches_in_plain_words():
+    from radar.checks.library import cart_view_mismatches
+    truth = {"qty": 1, "totals": [129900]}
+    ok = {"listed": True, "empty": False, "qty": 1, "subtotal": 1299.0}
+    assert cart_view_mismatches("the cart drawer", ok, truth) == []
+    assert cart_view_mismatches("the cart drawer", dict(ok, qty=None, subtotal=None), truth) == []   # not shown: not judged
+    stale = dict(ok, qty=2, subtotal=2598.0)
+    assert cart_view_mismatches("the cart drawer", stale, truth) == [
+        "quantity differs: the cart drawer shows 2, /cart.js says 1",
+        "subtotal differs: the cart drawer shows ₹2,598.00, /cart.js says ₹1,299.00"]
+    empty_page = {"listed": False, "empty": True, "qty": None, "subtotal": None}
+    assert cart_view_mismatches("the cart page", empty_page, truth, ok) == [
+        "the cart page does not list the product and says the cart is empty (the cart drawer showed it)"]
+    assert cart_view_mismatches("the cart page", dict(ok, qty=3), truth, stale)[0] == \
+        "quantity differs: the cart page shows 3, /cart.js says 1, the drawer showed 2"
+    # a cart-level discount: the subtotal may be either total_price or items_subtotal_price
+    assert cart_view_mismatches("the cart page", ok, {"qty": 1, "totals": [109900, 129900]}) == []
 # ---------- journey 24: sold-out product page ----------
 from radar.checks.library import sold_out_wording, sold_out_verdict
 
