@@ -1093,6 +1093,25 @@ grid). Fixed in this batch (each with a mock that fails on the old code):
 - kidbea.com (catalog products 404 + 'no products in this collection' while products.json lists them, market US/INR):
   documented as location for now; if it repeats on another store, label 'products not published to this market'.
 
+**Real-store result (run 38123470941: full 36 + 6 new30h re-tests, 12 machines, ~20 min):**
+- 36 regression: 1 Radar false failure: beminimalist.co phone, journey 'product name shown: none' on 'B12 + Repair
+  Complex 5.5% Face Moisturizer' (desktop fine; PDP name logic untouched by this batch; its LLM re-check then crashed
+  on a name instead of an index = guarded now). Store findings as before (foxtale, plum, palmonas / soulflower 404).
+  vaaree.com BLOCKED 'robots.txt disallows the whole site for Radar' also in the chat session's run 38119198301 (not
+  this batch): check its robots.txt next cycle.
+- Journey 21: checkout summary now read: cart.edit_and_checkout 22/24 pass (studio quantity = known limit) → done.
+- Journey 22: 43 pass, 3 info, 8 warn (antinorm, supplysix, veirdo: the page kept the old variant after the click;
+  taste demo new price not shown; kidbea location) → round 2.
+- Journey 23: 24/24 warn 'cart line shows no price' on all 12 theme demos (mock passes) → evidence added to the
+  message (line area tag/class/text), round 2 next run.
+- Journey 24: only 2 sold-out products in the stores' data, both info (not judged) → needs more evidence.
+- Journey 25: 65 info (no filter UI / sort not allowed), 2 blocked by robots.txt (soulflower product_type filter),
+  5 warn (maspar 0 products with the filter; antinorm + beminimalist 1 listed product not 'available' in products.json).
+- new30h fixes: soultree.in healthy both devices (lazy image fix verified). veirdo.in still 0 cards (scrolling did
+  not reveal the grid: round 2 needs the DOM). theindianethnicco + saltattire still 'not on page': their pages do not
+  expose a converted Shopify.currency, so round 2 also reads foreign prices on the page itself (mock
+  `other_market_norate`). kidbea + maspar unchanged (location / store finding).
+
 **Cloud runs on 12 machines** (was 6): each store is still visited by one machine (same per-store volume), the run takes
 about half the time; result pushes retry 16 times.
 
