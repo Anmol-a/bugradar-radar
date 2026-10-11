@@ -1669,3 +1669,86 @@ def test_store_that_keeps_selling_when_out_of_stock_is_a_note_and_radar_cleans_i
     assert c.verdict == "pass" and st["store_refuses_sold_out_add"].status == "pass", [(s.name, s.status, s.error) for s in st.values()]
     assert "ADDED the sold-out variant (0 → 1" in st["oversell_allowed"].detail and "not a bug" in st["oversell_allowed"].detail
     assert st["oversell_allowed"].status == "info"
+
+
+
+# ---------------- journey 25: a collection filter narrows the products (11 Oct 2026) ----------------
+
+def _filter_only(mode, tmp_path, device="desktop", strict=False):
+    """Only the catalog suite's catalog.filter case. strict=True flips the builder's strict=False."""
+    import radar.runner.executor as ex
+    orig = ex.build_suites
+
+    def built(sm, s):
+        suites = orig(sm, s)
+        for x in suites:
+            if x.id == "catalog":
+                x.cases = [c for c in x.cases if c.check == "collection_filter"]
+                for c in x.cases:
+                    c.params["strict"] = strict
+        return suites
+    ex.build_suites = built
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=2), device=device,
+                    only_suites=["catalog"])[0]
+    finally:
+        srv.shutdown()
+        ex.build_suites = orig
+
+
+def test_collection_filter_in_stock_narrows_the_products_on_desktop_and_phone(tmp_path):
+    """Dawn-like filters: 'Availability' is a closed group on desktop and sits behind a 'Filter' button on phones.
+    Radar opens it, clicks 'In stock', the theme swaps the grid: only the 2 in-stock products are left (the sold-out
+    lamp is gone), the address carries exactly filter.v.availability=1. No sort control -> sorting not judged."""
+    for device, opened in (("desktop", "opened 'Availability', clicked 'In stock (2)'"),
+                           ("mobile", "opened 'Filter', opened 'Availability', clicked 'In stock (2)'")):
+        run = _filter_only("facets", tmp_path / device, device=device)
+        c = _case(run, "catalog.filter.home-decor")
+        st = _steps(c)
+        assert c.verdict == "pass" and st["applies_filter"].status == "pass", (device, [(s.name, s.status, s.error) for s in st.values()])
+        assert st["applies_filter"].detail == opened, (device, st["applies_filter"].detail)
+        assert st["filter_narrows_results"].status == "pass", (device, st["filter_narrows_results"].error)
+        assert st["filter_narrows_results"].detail == ("'In stock (2)': 2 products listed (3 without the filter), all match "
+                                                       "it in the store's data"), st["filter_narrows_results"].detail
+        assert st["sort_not_judged"].detail == "no sort control on the page"
+
+
+def test_collection_filter_that_does_not_filter_warns_and_fails_when_strict(tmp_path):
+    run = _filter_only("filter_broken", tmp_path)
+    c = _case(run, "catalog.filter.home-decor")
+    s = _steps(c)["filter_narrows_results"]
+    assert c.verdict == "pass" and s.status == "warn" and "not matching: sold-out-lamp" in s.error, (c.verdict, s.status, s.error)
+    assert run.verdict == "healthy"
+    strict = _case(_filter_only("filter_broken", tmp_path / "strict", strict=True), "catalog.filter.home-decor")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "filter_narrows_results", \
+        (strict.verdict, strict.attempts[-1].error)
+    assert "not matching: sold-out-lamp" in strict.attempts[-1].error
+
+
+def test_collection_without_filters_is_information_not_a_warning(tmp_path):
+    run = _filter_only("healthy", tmp_path)
+    c = _case(run, "catalog.filter.home-decor")
+    st = _steps(c)
+    assert c.verdict == "pass" and not any(s.status in ("warn", "fail") for s in st.values()), [(s.name, s.status) for s in st.values()]
+    assert st["filter_not_judged"].status == "info" and "offers no filters" in st["filter_not_judged"].detail
+    assert run.verdict == "healthy"
+
+
+def test_collection_sort_is_checked_only_where_robots_txt_allows_sort_by(tmp_path):
+    """Shopify's default robots.txt disallows /collections/*sort_by* and two filters. With a sort_by select in the
+    filter form, the theme's own request would carry sort_by: Radar opens the one-filter address directly, and does
+    not sort. Where robots.txt allows sort_by, Radar clicks the filter and chooses 'Price, low to high'."""
+    run = _filter_only("facets_sort", tmp_path)
+    st = _steps(_case(run, "catalog.filter.home-decor"))
+    assert st["applies_filter"].status == "pass" and st["applies_filter"].detail.startswith(
+        "opened /collections/home-decor?filter.v.availability=1 directly: the theme's own request"), st["applies_filter"].detail
+    assert "sort_by=manual) is disallowed by robots.txt" in st["applies_filter"].detail, st["applies_filter"].detail
+    assert st["filter_narrows_results"].status == "pass", st["filter_narrows_results"].error
+    assert st["sort_not_judged"].status == "info" and "robots.txt disallows" in st["sort_not_judged"].detail
+    assert "sorts_by_price" not in st
+    run = _filter_only("facets_sort_allowed", tmp_path / "allowed")
+    st = _steps(_case(run, "catalog.filter.home-decor"))
+    assert st["applies_filter"].detail == "opened 'Availability', clicked 'In stock (2)'", st["applies_filter"].detail
+    s = st["sorts_by_price"]
+    assert s.status == "pass" and s.detail.startswith("chose 'Price, low to high': 3 products from ₹0.00 to ₹2,499.00"), (s.status, s.error, s.detail)

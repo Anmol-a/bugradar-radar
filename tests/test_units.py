@@ -983,3 +983,75 @@ def test_builder_adds_a_sold_out_case_only_when_the_store_has_a_sold_out_product
     assert next(c for c in no_cart.cases if c.check == "sold_out_page").params["cart_probe"] is False
     in_stock = _sm(products=[Product("vase", "Ceramic Vase", "https://x.in/products/vase", 2, "5", True)])
     assert not any(c.check == "sold_out_page" for s in build_suites(in_stock, Settings()) for c in s.cases)
+# ---------- journey 25: collection filter (11 Oct 2026) ----------
+SHOPIFY_ROBOTS = ("User-agent: *\nDisallow: /checkout\nDisallow: /collections/*sort_by*\nDisallow: /*/collections/*sort_by*\n"
+                  "Disallow: /collections/*filter*&*filter*\nDisallow: /collections/*+*\nDisallow: /collections/*%2B*\n"
+                  "Disallow: /search\n\nUser-agent: adsbot-google\nDisallow: /\n")
+
+
+def test_robots_wildcards_follow_shopify_default_on_every_python():
+    """Python's own parser reads '*' literally up to 3.12 and encodes the '&' of '*filter*&*filter*' in 3.13: Radar's
+    own RFC 9309 matcher must still refuse sort_by and two filters, and allow one filter."""
+    from radar.core.robots import Robots, robots_rules, rules_allow
+    r = Robots(SHOPIFY_ROBOTS, "BugRadar/0.1")
+    c = "https://x.in/collections/all"
+    assert r.allowed(c) and r.allowed(c + "?filter.v.availability=1") and r.allowed(c + "?page=2")
+    assert not r.allowed(c + "?sort_by=price-ascending")
+    assert not r.allowed(c + "?filter.v.availability=1&sort_by=manual")
+    assert not r.allowed(c + "?filter.v.availability=1&filter.v.price.gte=")       # Dawn's empty price boxes count
+    assert not r.allowed(c + "?filter.v.availability=1&filter.p.vendor=Acme")
+    assert not r.allowed("https://x.in/collections/a+b") and not r.allowed("https://x.in/collections/a%2Bb")
+    assert not r.allowed("https://x.in/en/collections/all?sort_by=x")
+    rules = robots_rules(SHOPIFY_ROBOTS, "BugRadar")
+    assert (False, "/") not in rules                       # another bot's group never applies to Radar
+    assert rules_allow([(False, "/a"), (True, "/a/b")], "/a/b/c") and not rules_allow([(False, "/a"), (True, "/a/b")], "/a/c")
+    assert rules_allow([(False, "/x$")], "/xy") and not rules_allow([(False, "/x$")], "/x")
+    assert robots_rules("User-agent: BugRadar\nDisallow: /p\nUser-agent: *\nDisallow: /", "bugradar") == [(False, "/p")]
+
+
+def test_filter_address_has_exactly_one_filter_and_the_one_filter_address_is_built_clean():
+    from radar.checks.library import applied_filters, one_filter_url
+    u = "https://x.in/collections/all?filter.v.availability=1&filter.v.price.gte=&filter.v.price.lte=&sort_by=manual"
+    assert applied_filters(u) == [("filter.v.availability", "1")]                 # empty boxes and sort_by are not filters
+    assert applied_filters("https://x.in/collections/all?filter.v.availability=1&filter.p.vendor=A%20B") == [
+        ("filter.v.availability", "1"), ("filter.p.vendor", "A B")]
+    assert applied_filters("https://x.in/collections/all?page=2") == []
+    assert one_filter_url(u, "filter.v.availability", "1") == "https://x.in/collections/all?filter.v.availability=1"
+    assert one_filter_url("https://x.in/collections/all#top", "filter.v.option.color", "Dark Red") == \
+        "https://x.in/collections/all?filter.v.option.color=Dark+Red"
+
+
+def test_filter_pick_prefers_in_stock_and_never_a_price_box_or_an_empty_option():
+    from radar.checks.library import pick_filter
+    o = lambda n, v, label="": {"name": n, "value": v, "label": label}
+    assert pick_filter([o("filter.v.price.gte", ""), o("filter.p.vendor", "Acme"), o("filter.v.availability", "1")])["name"] \
+        == "filter.v.availability"
+    assert pick_filter([o("filter.v.availability", "0"), o("filter.v.option.size", "M")])["value"] == "M"
+    assert pick_filter([o("filter.p.m.custom.fabric", "Silk"), o("filter.p.tag", "new", "New (0)")])["value"] == "Silk"
+    assert pick_filter([o("filter.v.price.lte", "500")]) is None and pick_filter([]) is None
+
+
+def test_filter_truth_comes_from_the_stores_own_product_data():
+    from radar.checks.library import filter_matches, price_order_ok
+    p = {"vendor": "Acme Co", "product_type": "Mugs", "tags": ["New", "Gift"],
+         "variants": [{"available": False, "option1": "Red", "option2": "L"}, {"available": True, "option1": "Blue"}]}
+    sold = {"variants": [{"available": False}]}
+    assert filter_matches(p, "filter.v.availability", "1") is True and filter_matches(sold, "filter.v.availability", "1") is False
+    assert filter_matches(p, "filter.v.availability", "0") is None
+    assert filter_matches(p, "filter.v.option.color", "red") is True and filter_matches(p, "filter.v.option.color", "Green") is False
+    assert filter_matches(p, "filter.p.vendor", "Acme Co") is True and filter_matches(p, "filter.p.product_type", "Plates") is False
+    assert filter_matches(p, "filter.p.tag", "gift") is True and filter_matches(sold, "filter.p.vendor", "x") is None
+    assert filter_matches(p, "filter.p.m.custom.fabric", "Silk") is None
+    assert price_order_ok(["a", "zz", "b"], {"a": 1.0, "b": 2.0})[0]
+    ok, why = price_order_ok(["b", "a"], {"a": 1.0, "b": 2.0})
+    assert not ok and why == "a (₹1.00) listed after b (₹2.00)"
+
+
+def test_builder_adds_one_filter_case_for_the_biggest_collection():
+    sm = _sm(collections=[Collection("small", "Small", "https://x.in/collections/small", 3),
+                          Collection("big", "Big", "https://x.in/collections/big", 40)])
+    cat = next(s for s in build_suites(sm, Settings()) if s.id == "catalog")
+    f = [c for c in cat.cases if c.check == "collection_filter"]
+    assert [c.id for c in f] == ["catalog.filter.big"] and f[0].severity == "minor"
+    assert f[0].params == {"url": "https://x.in/collections/big", "strict": False,
+                           "products_json": "https://x.in/collections/big/products.json?limit=250"}
