@@ -160,6 +160,23 @@ Modes (to prove Radar catches and heals what it should):
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
                    bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
   robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
+  blank_not_shopify  gozero.in (cycle 34): no robots.txt (404), the homepage answers 200 with an EMPTY title, an empty
+                   <div id=root> and no Shopify marker -> verdict UNSUPPORTED with what the homepage showed (v0.19:
+                   'error', shown as 'Radar crashed')
+  pack_of_two      theformalclub.in (cycle 34): the vase is a 'pack of 2' with ONE option whose values join both items'
+                   sizes ('S / 38 / M / 40'); the page shows two pickers labelled 'S' / 'M' and fills the form's id only
+                   when both are picked -> Radar clicks 'S' in each picker and PASSES (v0.19: 'variant selected like a
+                   shopper ... after choosing nothing (no matching picker)')
+  stale_catalog    bombaytrooper.com (cycle 34): /products.json lists the vase in stock, its /products/<h>.js and page
+                   say sold out -> the product test notes it (info) and tests the next in-stock catalog product, PASSES
+                   (v0.19: 'an in-stock variant exists ... got none available')
+  app_proxy_page   arakucoffee.in (cycle 34): a homepage section links to /tools/product-finder/match-me, an app-proxy
+                   quiz page with no theme layout whose content a web component draws in a CLOSED shadow root (body text
+                   empty, no <img>) -> smoke.more_links PASSES on what the browser painted (v0.19: 'page not blank: got
+                   0 chars, 0 images' -> confirmed_fail)
+  slow_page        bluenectar.co.in (cycle 34, desktop): the menu page /pages/about answers after SLOW_PAGE_SECS (3 s;
+                   tests use a 2 s navigation timeout) -> opened again with twice the wait: smoke.nav_links PASSES with a
+                   'slow page' WARNING (v0.19: 'Timeout exceeded' -> broken navigation page, confirmed_fail)
   robots_404       /robots.txt answers HTTP 404 (no file) -> everything allowed, store tested normally
   (Radar's own network dropping mid-run is not a mode: tests shut the store down from the progress hook and point
    the connectivity probe at a dead port (Radar offline) or at a live server (Radar online, store died).)
@@ -350,6 +367,13 @@ J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepag
 # journey 22: size pills on multi-variant product pages (only in these modes: other modes test their own pickers)
 VARIANT_MODES = ("healthy", "variant_switch_broken", "variant_sold_out", "variant_sold_out_buyable",
                  "variant_no_url_push", "variant_price_late", "variant_form_late", "variant_id_on_submit")
+# theformalclub.in (cycle 34): a 'pack of 2 shirts' product with ONE option whose values join both shirts' sizes
+# ('S / 38 / M / 40'); the page shows two size pickers labelled 'S', 'M' (one per shirt) and sets the variant id only
+# when both are picked
+PACK_SIZES = (("S", "S / 38"), ("M", "M / 40"))
+PACK_VARIANTS = [{"id": 210 + 2 * i + j, "available": True, "price": "1299.00", "option1": f"{a[1]} / {b[1]}",
+                  "title": f"{a[1]} / {b[1]}"} for i, a in enumerate(PACK_SIZES) for j, b in enumerate(PACK_SIZES)]
+SLOW_PAGE_SECS = 3.0      # slow_page: /pages/about answers after this long (tests set a 2 s navigation timeout)
 SOLD_OUT_SIZE = {"id": 203, "available": False, "price": "1499.00", "option1": "Extra Large", "title": "Extra Large"}
 FACET_MODES = ("facets", "facets_sort", "facets_sort_allowed", "filter_broken",     # storefront filters (journey 25)
                "filter_stock_differs", "filter_big_collection", "filter_empty", "filter_app")
@@ -983,7 +1007,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                 return self._send(500, "Internal Server Error", "text/plain")
         if path == "/robots.txt" and self.mode == "robots_500":
             return self._send(500, "Internal Server Error", "text/plain")
-        if path == "/robots.txt" and self.mode == "robots_404":
+        if path == "/robots.txt" and self.mode in ("robots_404", "blank_not_shopify"):
             return self._send(404, "Not Found", "text/plain")
         if path == "/robots.txt":
             extra = "Disallow: /search\n" if self.mode == "hostile" else ""
@@ -1006,6 +1030,9 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(200, "void 0;", "application/javascript")
         if path.startswith("/cdn/shop/files/") or path.startswith("/static/"):
             return self._send(200, SVG, "image/svg+xml")
+        if path == "/" and self.mode == "blank_not_shopify":     # gozero.in (cycle 34): no title, no markers, no robots.txt
+            return self._send(200, '<!doctype html><html><head><meta charset="utf-8"><title></title></head>'
+                                   '<body><div id="root"></div></body></html>')
         if path == "/" and self.mode == "store_refuses":
             return self._send(423, page("This store is unavailable", "<h1>This store is unavailable</h1>"))
         if path == "/":
@@ -1015,10 +1042,25 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                            '<a href="/collections/kitchen">Shop the kitchen</a>'
                                            + (' <a href="/https://www.mockstore.in/collections/sale">Sale</a>'   # beyondsnack.in
                                               if self.mode == "broken_section_link" else "") + '</section>'
-                                           if self.mode in J15_MODES else ""),
+                                           if self.mode in J15_MODES else "")
+                                        + ('<section class="quiz-banner"><a href="/tools/product-finder/match-me">Match me '
+                                           'a cup</a></section>' if self.mode == "app_proxy_page" else ""),
                                         shopify=self.mode != "not_shopify"), set_cart=new)
         if path == "/pages/blank":       # HTTP 200 with a title but nothing on screen (JS crash style)
             return self._send(200, "<!doctype html><html><head><title>Blank | Mock Store</title></head><body><div id=app></div></body></html>")
+        if path == "/tools/product-finder/match-me" and self.mode == "app_proxy_page":
+            # arakucoffee.in (cycle 34): an app-proxy quiz page, no theme layout, drawn by a web component in a CLOSED
+            # shadow root (no text in document.body, no <img>)
+            return self._send(200, '<!doctype html><html><head><meta charset="utf-8"><title>Match Me A Cup</title></head>'
+                                   '<body><quiz-app style="display:block"></quiz-app><script>customElements.define("quiz-app", '
+                                   'class extends HTMLElement { connectedCallback() { const r = this.attachShadow({mode: "closed"}); '
+                                   'setTimeout(() => { r.innerHTML = \'<h1 style="font-size:44px">Find your perfect cup</h1>'
+                                   '<p style="font-size:20px">Answer three quick questions about how you brew and we will '
+                                   'match you with a coffee.</p><button>Start the quiz</button>\'; }, 300); } });</script>'
+                                   '</body></html>')
+        if path == "/pages/about" and self.mode == "slow_page":
+            import time as _t                     # bluenectar.co.in (cycle 34, desktop): pages slower than the timeout
+            _t.sleep(SLOW_PAGE_SECS)
         if path == "/pages/about":
             return self._send(200, page("About Mock Store", "<p>About us</p>"))
         if path in ("/pages/our-story", "/pages/offers"):      # journey 15: a homepage banner, the announcement bar
@@ -1060,7 +1102,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                                for c in COLLECTIONS]})
         if path == "/products.json":
             return self._json({"products": [{"id": p["id"], "handle": p["handle"], "title": p["title"],
-                                             "variants": self._variants(p)} for p in PRODUCTS]})
+                                             "variants": self._variants(p, catalog=True)} for p in PRODUCTS]})
         if path.startswith("/collections/"):
             h = path.split("/")[2]
             items = [p for p in PRODUCTS if (h == "all" and p["collection"]) or p["collection"] == h]
@@ -1069,7 +1111,9 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             if path.endswith("products.json"):
                 if self.mode == "filter_big_collection":     # Radar reads 250 of a bigger collection: the vase is not in them
                     items = [p for p in items if p["handle"] != "ceramic-vase"]
-                return self._json({"products": [{"handle": p["handle"], "title": p["title"], "variants": p["variants"]} for p in items]})
+                return self._json({"products": [{"handle": p["handle"], "title": p["title"], "variants":
+                                                 PACK_VARIANTS if self.mode == "pack_of_two" and p["handle"] == "ceramic-vase"
+                                                 else p["variants"]} for p in items]})
             if not items:
                 return self._send(404, page("Not found", "404"))
             if self.mode in FACET_MODES:
@@ -1271,8 +1315,14 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
             return self._send(200, page(f"Search: {term} | Mock Store", found))
         return self._send(404, page("Page not found", "<h1>404</h1>"))
 
-    def _variants(self, p):
-        """The product's variants as this mode serves them (journey 22: the vase gains a sold-out size)."""
+    def _variants(self, p, catalog: bool = False):
+        """The product's variants as this mode serves them (journey 22: the vase gains a sold-out size). catalog=True:
+        as the store-wide /products.json lists them."""
+        if self.mode == "pack_of_two" and p["handle"] == "ceramic-vase":
+            return PACK_VARIANTS
+        if self.mode == "stale_catalog" and p["handle"] == "ceramic-vase" and not catalog:
+            # bombaytrooper.com (cycle 34): products.json still lists it in stock; its .js and its page say sold out
+            return [dict(v, available=False) for v in p["variants"]]
         if self.mode in ("variant_sold_out", "variant_sold_out_buyable") and p["handle"] == "ceramic-vase":
             return p["variants"] + [SOLD_OUT_SIZE]
         if self.mode == "filter_stock_differs" and p["handle"] == "sold-out-lamp":
@@ -1365,6 +1415,22 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                    f'<button type="submit" name="add">Add to cart</button></form></product-form>')
         elif not available:
             buy = '<button disabled>Sold out</button>'
+        elif self.mode == "pack_of_two" and p["handle"] == "ceramic-vase":
+            ids = json.dumps({v["option1"]: v["id"] for v in PACK_VARIANTS})
+            full = json.dumps(dict(PACK_SIZES))
+            group = lambda n, label: (f'<div class="product-option" data-group="{n}"><span>{label}:</span> ' + "".join(
+                f'<button type="button" class="size-pill" onclick="packPick({n}, this)">{short}</button>'
+                for short, _ in PACK_SIZES) + '</div>')
+            buy = (group(0, "Size") + group(1, "Second shirt (Size)") +
+                   '<product-form class="product-form"><form id="product-form-template__main" action="/cart/add" method="post" '
+                   'onsubmit="event.preventDefault();addToCart(this.querySelector(&quot;[name=id]&quot;).value)">'
+                   '<input type="hidden" name="id" value=""><button type="submit" name="add" disabled>Add to cart</button>'
+                   f'</form></product-form><script>const PACK_IDS = {ids}, PACK_FULL = {full}, PACK = [null, null];'
+                   'function packPick(n, b) { b.parentElement.querySelectorAll("button").forEach(x => x.classList.remove("active"));'
+                   ' b.classList.add("active"); PACK[n] = PACK_FULL[b.innerText.trim()];'
+                   ' if (PACK[0] && PACK[1]) { const f = document.getElementById("product-form-template__main");'
+                   ' f.querySelector("[name=id]").value = PACK_IDS[PACK[0] + " / " + PACK[1]];'
+                   ' f.querySelector("[name=add]").disabled = false; } }</script>')
         elif self.mode == "obscure_button":
             buy = (f'<div class="actions"><span role="button" tabindex="0" class="cta-x" data-vid="{vid}" '
                    f'onclick="addToCart(this.dataset.vid)">Grab it</span><span role="button" class="cta-y">Share</span></div>')

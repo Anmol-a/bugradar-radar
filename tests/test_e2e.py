@@ -126,6 +126,15 @@ def test_non_shopify_is_unsupported(tmp_path):
     assert run.verdict == "unsupported" and run.cases == []
 
 
+def test_blank_non_shopify_homepage_is_unsupported_not_a_radar_crash(tmp_path):
+    """gozero.in (cycle 34): no robots.txt, homepage 200 with an empty title and no Shopify marker. v0.19 called it
+    'error' (the bench shows 'Radar crashed'); nothing crashed: Radar looked at the site and it is not Shopify."""
+    run, _ = _scan("blank_not_shopify", tmp_path)
+    assert run.verdict == "unsupported" and run.cases == [], (run.verdict, run.notes)
+    note = next(n for n in run.notes if "not Shopify" in n)
+    assert "HTTP 200" in note and "no Shopify marker" in note and "no robots.txt" in note, note
+
+
 def test_js_redirecting_page_does_not_crash(tmp_path):
     from radar.core.models import Suite, TestCase
     import radar.runner.executor as ex
@@ -536,6 +545,30 @@ def test_catalog_product_hidden_from_shoppers_is_a_warning_and_the_next_product_
         assert st["loads"].status == "warn" and words in st["loads"].error, (mode, st["loads"].error)
         assert st["loads_next_catalog_product_1"].status == "pass"
         assert "wooden-spoon-set" in st["product_identified"].detail.lower() or "Wooden Spoon" in st["product_identified"].detail
+
+
+def test_product_sold_out_since_the_catalog_listed_it_is_skipped_for_the_next_one(tmp_path):
+    """bombaytrooper.com (cycle 34, both devices): products.json listed the hoppers in stock; their .js and page said
+    SOLD OUT ('an in-stock variant exists: got none available' -> confirmed_fail). The product test now tests the next
+    in-stock catalog product and says why (info). The last candidate is never skipped."""
+    run = _product_only("stale_catalog", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)
+    assert vase.verdict == "pass", (vase.attempts[-1].error, [(s.name, s.status, s.error) for s in vase.attempts[-1].steps])
+    assert st["sold_out_since_listed_0"].status == "info" and "0 of 2 variant(s) available" in st["sold_out_since_listed_0"].detail
+    assert "Wooden Spoon" in st["product_identified"].detail
+
+
+def test_pack_of_two_picks_each_item_size_in_its_own_picker(tmp_path):
+    """theformalclub.in (cycle 34, both devices): a 'pack of 2' product with ONE option whose values join both shirts'
+    sizes ('S / 38 / S / 38'); the page shows two size pickers labelled 'S', 'M', ... v0.19: 'variant selected like a
+    shopper: expected ... (S / 38 / S / 38), got  after choosing nothing (no matching picker)'. Radar now picks the
+    value's parts like a shopper, one control per picker (the second 'S' is the second picker's)."""
+    run = _product_only("pack_of_two", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.attempts[-1].error, [(s.name, s.status, s.error) for s in vase.attempts[-1].steps])
+    k = next(k for k in _checks(vase) if k["what"] == "variant selected like a shopper")
+    assert k["ok"] and k["actual"].startswith("210 after choosing button S, button S"), k
 
 
 def test_product_page_without_its_own_buy_form_says_so(tmp_path):
@@ -1421,6 +1454,44 @@ def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_p
     assert "sent to the homepage" in _steps(c)["announcement bar: opens /pages/offers"].error
     assert "homepage section malformed link 'Sale'" in err, err
     assert "starts with '/http'" in _steps(c)["homepage section: malformed link"].detail
+
+
+def test_app_proxy_page_drawn_in_a_shadow_root_is_not_blank(tmp_path):
+    """arakucoffee.in (cycle 34, both devices): a homepage section links to an app-proxy quiz page (/tools/...). It
+    answered 200 with a title and the browser painted it (largest contentful paint 1.6 s), but body.innerText was empty
+    and there was no <img>: 'page not blank: 0 chars, 0 images' -> broken link. v0.20 reads open shadow roots and what
+    the browser painted, waiting up to ~4 s for app pages."""
+    run = _info("app_proxy_page", tmp_path, suites=("smoke",))
+    c = _case(run, "smoke.more_links")
+    st = _steps(c)
+    step = st["homepage section: opens /tools/product-finder/match-me"]
+    assert c.verdict == "pass" and step.status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    blank = next(k for k in step.checks if k["what"] == "page not blank")
+    assert blank["ok"] and "painted" in blank["actual"], blank
+
+
+def test_blank_page_is_still_blank(tmp_path):
+    """The other side of the app-page fix: a page that answers 200 and draws nothing still fails 'page not blank'."""
+    with pytest.raises(AssertionError, match="page not blank"):
+        _on_page("healthy", tmp_path, "/pages/blank", lambda ctx: None)
+
+
+def test_slow_menu_page_is_retried_and_warned_not_called_broken(tmp_path):
+    """bluenectar.co.in (cycle 34, desktop only): collection pages took 9-33 s; two hit the 30 s navigation timeout on
+    every attempt and became 'broken navigation pages' (phone run, same hour: all fine). A page that times out is opened
+    once more with twice the wait: it loads -> WARNING 'slow page' with the time, never a broken link."""
+    srv, url = serve("slow_page")
+    try:
+        run = scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=4, nav_timeout_ms=2000),
+                   only_suites=["smoke"])[0]
+    finally:
+        srv.shutdown()
+    c = _case(run, "smoke.nav_links")
+    steps = c.attempts[-1].steps
+    assert c.verdict == "pass", (c.attempts[-1].error, [(s.name, s.status, s.error) for s in steps])
+    slow = [s for s in steps if s.name.startswith("slow page /pages/about")]
+    assert slow and slow[0].status == "warn" and "did not load within 2 s" in slow[0].error, [(s.name, s.status, s.error) for s in steps]
+    assert any(s.name == "open /pages/about" and s.status == "pass" for s in steps)
 
 
 def test_too_many_third_party_scripts_warn_with_the_hosts_named(tmp_path):
