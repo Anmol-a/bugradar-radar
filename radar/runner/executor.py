@@ -233,7 +233,10 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
         elif sm.access in ("unreachable", "offsite"):
             run.verdict = "unreachable"
         elif sm.platform != "shopify":
-            run.verdict = "unsupported" if sm.home_title or sm.platform_evidence or sm.robots_loaded else "error"
+            # Discovery only gets here after the homepage answered < 400 and was read: a site with no title, no
+            # Shopify marker and no robots.txt is still a site Radar looked at and found not to be Shopify, never a
+            # Radar crash (gozero.in, cycle 34: 'error' / 'Radar crashed' for a non-Shopify page with an empty title).
+            run.verdict = "unsupported"
         else:
             suites = build_suites(sm, s)
             if only_suites:

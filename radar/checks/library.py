@@ -6,7 +6,10 @@ Step kinds:
   soft            a failed assertion is a WARNING (theme-dependent, or real but not shopper-blocking)
 
 HARD RULES enforced here: never click checkout, never submit forms other than the store's
-own add-to-cart, never create accounts, never enter personal data.
+own add-to-cart, never create accounts, never enter personal data. Exceptions, inside the cart
+flow only (stores that authorised Radar): journey 33 clicks 'Buy it now' and journey 35 clicks
+the cart's checkout button under a third-party checkout app, ONLY to see the checkout render;
+nothing is typed or submitted there, no OTP is requested, nothing is paid.
 """
 from __future__ import annotations
 
@@ -99,6 +102,11 @@ class StepFailed(Exception):
         super().__init__(message)
 
 
+class StoreWarning(AssertionError):
+    """A finding a hard step reports as a WARNING: the step could judge the store and found a merchandising issue a
+    shopper can get past (a collection page with no product grid while its sub-collections list products)."""
+
+
 def _short(v, n=160) -> str:
     s = v if isinstance(v, str) else json.dumps(v, default=str, ensure_ascii=False)
     return s if len(s) <= n else s[: n - 1] + "…"
@@ -140,6 +148,7 @@ class Steps:
             raise StepFailed(name, str(e), blocked=True) from e
         except Exception as e:  # noqa: BLE001
             msg = str(e).split("\n")[0][:400]
+            soft = soft or isinstance(e, StoreWarning)
             self.items.append(StepResult(name, "warn" if soft else "fail", None, msg,
                                          round(time.time() - t0, 2), None, self._checks, self._shot(name)))
             if not soft:
@@ -195,8 +204,60 @@ def _dismiss(ctx: Ctx) -> None:
                    f"clicked {d['button']!r} on: {d['text']!r}", True)
 
 
+# What a shopper sees on the page: text and decoded images, also inside open shadow roots, plus what the browser itself
+# painted. arakucoffee.in (cycle 34, both devices): the app-proxy quiz page /tools/perfect-product-finder/… answered 200
+# with a title and a largest contentful paint at 1.6 s, yet document.body.innerText was empty and there was no <img>
+# (an app draws it inside a web component): 'page not blank: got 0 chars, 0 images'. 'painted' = the largest paint the
+# browser recorded (≥ 100x100 px), a visible iframe / canvas / video ≥ 200x150 px (an embedded app); else ''.
+SHOWN_JS = r"""() => new Promise(done => {
+  let text = ((document.body && document.body.innerText) || '').trim().length, imgs = 0;
+  const big = (e, w, h) => { const r = e.getBoundingClientRect(); return r.width >= w && r.height >= h; };
+  const walk = (root, deep) => { root.querySelectorAll('img').forEach(i => { if (i.getBoundingClientRect().width > 20 && i.naturalWidth > 0) imgs++; });
+    if (deep) { const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      while (w.nextNode()) { const p = w.currentNode.parentElement;
+        if (p && !/^(STYLE|SCRIPT|TEMPLATE)$/.test(p.tagName)) text += w.currentNode.textContent.replace(/\s+/g, ' ').trim().length; } }
+    root.querySelectorAll('*').forEach(e => { if (e.shadowRoot) walk(e.shadowRoot, true); }); };
+  walk(document, false);
+  const emb = [...document.querySelectorAll('iframe, canvas, video, embed, object')].find(e => big(e, 200, 150));
+  const out = paint => done({text, imgs, painted: emb ? 'a ' + Math.round(emb.getBoundingClientRect().width) + 'x' +
+    Math.round(emb.getBoundingClientRect().height) + ' ' + emb.tagName.toLowerCase() : paint});
+  if (text >= 40 || imgs > 0 || emb) return out('');
+  try {
+    const po = new PerformanceObserver(l => { const e = l.getEntries().pop(); po.disconnect();
+      out(e && e.size >= 10000 ? 'content of ' + e.size + ' px² at ' + (e.startTime / 1000).toFixed(1) + ' s (largest contentful paint)' : ''); });
+    po.observe({type: 'largest-contentful-paint', buffered: true});
+    setTimeout(() => { po.disconnect(); out(''); }, 250);
+  } catch (e) { out(''); }
+})"""
+
+
+def _goto_patiently(ctx: Ctx, url: str):
+    """Open url; a page that does not even start rendering within the navigation timeout is opened once more with
+    twice the wait before Radar calls it broken. bluenectar.co.in (cycle 34, desktop): three collection pages took
+    9-33 s (one 'HTTP 200 in 32.78 s'), two hit the 30 s timeout on every attempt and were reported as broken links
+    while the phone run, same store, same hour, opened all of them. A page that loads on the second try is a SLOW page
+    (a warning naming the time), not a broken one; one that times out twice still fails as before."""
+    try:
+        return ctx.sess.goto(url)
+    except Exception as e:  # noqa: BLE001
+        if not re.search(r"Timeout \d+ms exceeded", str(e)):
+            raise
+        first = ctx.sess.s.nav_timeout_ms
+        try:
+            resp, secs = ctx.sess.goto(url, timeout_ms=2 * first)
+        except Exception as e2:  # noqa: BLE001
+            if re.search(r"Timeout \d+ms exceeded", str(e2)):
+                raise AssertionError(f"page did not load: no page within {first // 1000} s, nor within {2 * first // 1000} s "
+                                     f"on a second try ({str(e2).splitlines()[0][:80]})") from e2
+            raise
+        ctx.steps.items.append(StepResult(f"slow page {_path(url)[:40]}", "warn", None,
+                                          f"slow page: {_path(url)[:80]} did not load within {first // 1000} s; it loaded on "
+                                          f"a second try in {secs} s (shoppers on a slow connection may give up)"))
+        return resp, secs
+
+
 def _load(ctx: Ctx, url: str) -> str:
-    resp, secs = ctx.sess.goto(url)
+    resp, secs = _goto_patiently(ctx, url)
     status = resp.status if resp else ctx.sess.evaluate(
         "() => { const n = performance.getEntriesByType('navigation')[0]; return n && n.responseStatus ? n.responseStatus : null }")
     if status is None:      # served without a network response (cache / service worker / same-document)
@@ -216,9 +277,13 @@ def _load(ctx: Ctx, url: str) -> str:
             break
         ctx.sess.page.wait_for_timeout(500)
         title = (ctx.sess.evaluate("() => document.title") or "").strip()
-    shown = ctx.sess.evaluate("""() => ({text: ((document.body && document.body.innerText) || '').trim().length,
-        imgs: [...document.images].filter(i => i.getBoundingClientRect().width > 20 && i.naturalWidth > 0).length})""")
-    rendered = shown["text"] >= 40 or shown["imgs"] > 0
+    shown = ctx.sess.evaluate(SHOWN_JS)
+    for _ in range(8):    # app pages (quiz / app-proxy pages) draw after load: up to ~4 s more before 'blank'
+        if shown["text"] >= 40 or shown["imgs"] > 0 or shown["painted"]:
+            break
+        ctx.sess.page.wait_for_timeout(500)
+        shown = ctx.sess.evaluate(SHOWN_JS)
+    rendered = shown["text"] >= 40 or shown["imgs"] > 0 or bool(shown["painted"])
     # An empty <title> on a page that visibly rendered is an SEO finding (the SEO test 'title' reports it as a
     # warning), not a broken page: shoppers never see the tab title. hairoriginals.com (new30e held-out, 10 Oct: every
     # page fully rendered, document.title empty, both devices) and fablestreet.com (new30c) were 'down' for this alone.
@@ -226,7 +291,9 @@ def _load(ctx: Ctx, url: str) -> str:
                                                       "finding, see the SEO test)" if rendered else "(empty)"),
                bool(title) or rendered)
     ctx.expect("page not blank", "≥ 40 chars of text or an image",
-               f"{shown['text']} chars, {shown['imgs']} images", shown["text"] >= 40 or shown["imgs"] > 0)
+               f"{shown['text']} chars, {shown['imgs']} images"
+               + (f"; the browser painted {shown['painted']}" if shown["painted"] and shown["text"] < 40
+                  and not shown["imgs"] else ""), rendered)
     _dismiss(ctx)
     final = ctx.sess.page.url
     ctx.redirected_to = _path(final) if _path(final) != _path(url) else None
@@ -239,10 +306,21 @@ def _broken_images(sess) -> list[str]:
         .map(i => i.currentSrc || i.src).slice(0, 10)""")
 
 
+# The box a shopper sees for a link. A link styled display:contents has no box of its own (0x0 rect) while its image,
+# name and price render and take the click (valliyan.com, Baseline theme, new30j: 'products listed: 0', '15 links: 15
+# not visible' under plainly visible cards). Its box is then the union of its children's boxes.
+BOX_JS = r"""const boxOf = e => { const r = e.getBoundingClientRect();
+    if ((r.width > 0 && r.height > 0) || getComputedStyle(e).display !== 'contents') return r;
+    let l = Infinity, t = Infinity, R = -Infinity, B = -Infinity;
+    for (const c of e.children) { const b = boxOf(c); if (b.width > 0 && b.height > 0) {
+      l = Math.min(l, b.left); t = Math.min(t, b.top); R = Math.max(R, b.right); B = Math.max(B, b.bottom); } }
+    return R > l ? new DOMRect(l, t, R - l, B - t) : r; };"""
+
+
 def _product_links(sess) -> list[dict]:
-    return sess.evaluate("""() => { const seen = new Map();
+    return sess.evaluate("""() => { const seen = new Map(); """ + BOX_JS + """
         for (const a of document.querySelectorAll("a[href*='/products/']")) {
-          const r = a.getBoundingClientRect(); if (r.width === 0 || r.height === 0) continue;
+          const r = boxOf(a); if (r.width === 0 || r.height === 0) continue;
           const h = (a.pathname.match(/\\/products\\/([^/?#]+)/) || [])[1];
           if (h && !seen.has(h)) seen.set(h, (a.innerText || a.getAttribute('aria-label') || '').trim().slice(0, 80));
         } return [...seen].map(([handle, text]) => ({handle, text})); }""")
@@ -494,28 +572,36 @@ PINCODE_GATE_JS = r"""([ids, quick]) => { const s = new Set(ids.map(String));
                && rx.test([e.placeholder, e.name, e.id, e.getAttribute('aria-label'), e.className].join(' ')));
   return box ? 'page asks for a delivery pincode (' + JSON.stringify((box.placeholder || box.name || box.id || '').slice(0, 40)) + ' box)' : null; }"""
 
+# Pick option values like a shopper. A control used for one value is never used again for the next one: a 'pack of 2'
+# product shows the same sizes twice (two pickers), and the second 'S' is the second picker's. A value no control shows
+# whole is tried by its ' / ' parts: theformalclub.in (cycle 34) has ONE option whose values are 'S / 38 / M / 40' and
+# shows two size pickers labelled 'S', 'M', ... (one per shirt); the shopper clicks 'S' in each.
 CHOOSE_JS = r"""([values, quick]) => {
   const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const ok = e => !e.closest(quick);
-  const done = [];
-  for (const val of values) {
-    const v = String(val).trim(); const low = v.toLowerCase(); let hit = false;
+  const done = [], used = new Set(), usedNames = new Set();
+  const pick = v => { const low = v.toLowerCase();
     for (const sel of document.querySelectorAll('select')) {                       // dropdown pickers
-      if (!ok(sel)) continue;
+      if (!ok(sel) || used.has(sel)) continue;
       const o = [...sel.options].find(o => o.value.trim().toLowerCase() === low || o.text.trim().toLowerCase() === low);
-      if (o) { sel.value = o.value; sel.dispatchEvent(new Event('change', {bubbles: true})); hit = true; done.push('select ' + v); break; }
+      if (o) { sel.value = o.value; sel.dispatchEvent(new Event('change', {bubbles: true})); used.add(sel); done.push('select ' + v); return true; }
     }
-    if (hit) continue;
     for (const r of document.querySelectorAll('input[type="radio"]')) {           // pill / swatch radios
-      if (!ok(r) || r.value.trim().toLowerCase() !== low) continue;
+      if (!ok(r) || r.value.trim().toLowerCase() !== low || used.has(r) || (r.name && usedNames.has(r.name))) continue;
       const lab = (r.id && document.querySelector('label[for="' + CSS.escape(r.id) + '"]')) || r.closest('label');
-      (lab && vis(lab) ? lab : r).click(); hit = true; done.push('radio ' + v); break;
+      (lab && vis(lab) ? lab : r).click(); used.add(r); if (r.name) usedNames.add(r.name); done.push('radio ' + v); return true;
     }
-    if (hit) continue;
     const btn = [...document.querySelectorAll('[data-value], [data-option-value], button, li, span')]
-      .find(e => ok(e) && vis(e) && e.closest('[class*="variant" i], [class*="swatch" i], [class*="option" i], variant-selects, variant-radios')
+      .find(e => ok(e) && vis(e) && !used.has(e) && ![...used].some(u => u.contains(e) || e.contains(u))
+              && e.closest('[class*="variant" i], [class*="swatch" i], [class*="option" i], variant-selects, variant-radios')
               && ((e.getAttribute('data-value') || e.getAttribute('data-option-value') || e.innerText || '').trim().toLowerCase() === low));
-    if (btn) { btn.click(); done.push('button ' + v); }
+    if (btn) { btn.click(); used.add(btn); done.push('button ' + v); return true; }
+    return false; };
+  for (const val of values) {
+    const v = String(val).trim();
+    if (pick(v)) continue;
+    const parts = v.split(' / ').map(x => x.trim()).filter(Boolean);
+    if (parts.length > 1) parts.forEach(pick);
   }
   return done;
 }"""
@@ -551,6 +637,14 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
     picked = ctx.sess.evaluate(CHOOSE_JS, [values, QUICK_SEL]) if values else []
     ctx.sess.page.wait_for_timeout(700)
     st = ctx.sess.evaluate(FORM_STATE_JS, [ids, QUICK_SEL])
+    if not picked and not (st and str(st["variant"]) == str(target["id"])):
+        # No control on the page shows any of the variant's option values (an app-built picker, labels Radar cannot
+        # tie to the values): Radar cannot pick like a shopper, which says nothing about the store. Not judged here;
+        # the buy button check and the cart check (what really lands in the cart) still judge the page.
+        ctx.expect("variant selected like a shopper", f"{target['id']} ({' / '.join(values) or target.get('title')})",
+                   f"not judged: no option control on the page shows {' / '.join(values)!r}; the page's form holds "
+                   f"{(st or {}).get('variant') or 'no variant yet'} (the cart check verifies what is added)", True)
+        return dict(target, _unverified=True)
     got = st["variant"] if st else "(no product form)"
     right = bool(st) and str(st["variant"]) == str(target["id"])
     if right and st["disabled"]:
@@ -854,12 +948,59 @@ def _reveal_product_grid(ctx: Ctx) -> str:
     scrolls into view; Radar never scrolled and said 'products listed: 0' (collection, journey, phone menu link)."""
     if _product_links(ctx.sess):
         return ""
-    found = ctx.sess.evaluate("""async () => { const has = () => [...document.querySelectorAll("a[href*='/products/']")]
-        .some(a => { const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
+    found = ctx.sess.evaluate("""async () => { """ + BOX_JS + """ const has = () => [...document.querySelectorAll("a[href*='/products/']")]
+        .some(a => { const r = boxOf(a); return r.width > 0 && r.height > 0; });
       for (let y = 0; y <= Math.min(document.body.scrollHeight, 15000); y += Math.round(innerHeight * 0.7)) {
         scrollTo(0, y); for (let i = 0; i < 4; i++) { await new Promise(r => setTimeout(r, 250)); if (has()) return y; } }
       return -1; }""")
     return f" (the grid appeared after scrolling {found}px down)" if isinstance(found, (int, float)) and found >= 0 else ""
+
+
+SUB_COLLECTIONS_JS = r"""() => { const here = location.pathname.replace(/\/$/, ''); const out = [];
+  for (const a of document.querySelectorAll('a[href*="/collections/"]')) {
+    if (a.closest('header, nav, footer, [role="navigation"]')) continue;
+    const r = a.getBoundingClientRect(); if (r.width <= 2 || r.height <= 2) continue;
+    let u; try { u = new URL(a.href); } catch (x) { continue; }
+    const p = u.pathname.replace(/\/$/, '');
+    if (u.origin !== location.origin || p === here || !/^\/collections\/[^/]+$/.test(p) || /\/frontpage$/.test(p) || out.includes(p)) continue;
+    out.push(p); }
+  return out.slice(0, 3); }"""
+
+
+def _why_no_grid(ctx: Ctx, url: str) -> str | None:
+    """A collection page that lists no products, judged as a shopper would. A WARNING (returned reason), not an outage:
+    the collection is empty in the store's own data, or it is a landing page whose sub-collections list products
+    (quboworld.com 'Smart Entrance', new30j: hero + 'Learn more' tiles, no grid; failed as 'products listed: 0' = DOWN).
+    None: neither; the page should list products and does not (a real failure)."""
+    try:
+        data = ctx.sess.get_json(url.split("?")[0].rstrip("/") + "/products.json?limit=1")
+        if isinstance(data, dict) and data.get("products") == []:
+            return "the collection is empty in the store's own data (its products.json lists none)"
+    except Exception:  # noqa: BLE001  robots.txt / no data: judge by the page alone
+        pass
+    subs = ctx.sess.evaluate(SUB_COLLECTIONS_JS) or []
+    found = None
+    for p in subs:
+        try:
+            ctx.sess.goto(urljoin(url, p))
+        except Exception:  # noqa: BLE001
+            continue
+        n = len(_product_links(ctx.sess))
+        if not n:
+            ctx.sess.page.wait_for_timeout(1500)
+            n = len(_product_links(ctx.sess))
+        if n:
+            found = f"{p}: {n} products"
+            break
+    if subs:
+        try:
+            ctx.sess.goto(url)          # the steps after this one judge the collection page itself
+        except Exception:  # noqa: BLE001
+            pass
+    if found:
+        return (f"a landing page with no product grid; it links to {len(subs)} collection(s) that list products "
+                f"({found})")
+    return None
 
 
 def collection_page(ctx: Ctx, url: str):
@@ -873,6 +1014,10 @@ def collection_page(ctx: Ctx, url: str):
             n = len(_product_links(ctx.sess))
         scrolled = _reveal_product_grid(ctx) if not n else ""
         n = n or len(_product_links(ctx.sess))
+        if not n:
+            why = _why_no_grid(ctx, url)
+            if why:
+                raise StoreWarning(f"products listed: expected ≥ 1, got 0: {why}")
         ctx.expect("products listed", "≥ 1", n, n >= 1)
         return f"{n} products listed" + (f" (rendered {waited:.1f}s after the page loaded)" if waited else "") + scrolled
     ctx.steps.run("lists_products", has_products)
@@ -1712,6 +1857,21 @@ def _hidden_product_page(ctx: Ctx, url: str) -> str | None:
     return f"page shows other content, not {title[:60]!r} (no buy form, no product data, name not on the page)"
 
 
+def _sold_out_since_listed(ctx: Ctx, url: str) -> str | None:
+    """A product the catalog (products.json) listed in stock whose own Shopify data (/products/<h>.js, what its page
+    renders from) now has no available variant: the catalog answer was stale (sold out since, or cached). Returns the
+    evidence, else None. Unknown data -> None (the product test judges it as before)."""
+    try:
+        p = ctx.sess.get_json(f"{_base(url)}/products/{_handle(url)}.js") or {}
+    except Exception:  # noqa: BLE001
+        return None
+    vs = p.get("variants") or []
+    if not vs or any(v.get("available") for v in vs):
+        return None
+    return (f"was listed in stock by the store's products.json, but its /products/{_handle(url)}.js has 0 of "
+            f"{len(vs)} variant(s) available (sold out since the catalog was read)")
+
+
 def product_page(ctx: Ctx, url: str, expect_buyable: bool = True, fallbacks: list[str] | tuple = ()):
     """fallbacks: other catalog products, used only when this one's page is unreachable (that is
     recorded as a warning, so the finding is never hidden, and the product checks still run)."""
@@ -1720,9 +1880,18 @@ def product_page(ctx: Ctx, url: str, expect_buyable: bool = True, fallbacks: lis
         last = i == len(cands) - 1
         ok = ctx.steps.run("loads" if i == 0 else f"loads_next_catalog_product_{i}",
                            lambda u=u: _load_product(ctx, u), soft=not last)
-        if ok is not None:
-            url = u
-            break
+        if ok is None:
+            continue
+        gone = _sold_out_since_listed(ctx, u) if expect_buyable and not last else None
+        if gone:
+            # bombaytrooper.com (cycle 34, both devices): products.json listed it in stock, its .js and page said
+            # SOLD OUT. Shoppers see a consistent sold-out page; Radar tests an in-stock product instead. The last
+            # candidate is never skipped, so a store whose every listed product is sold out still fails.
+            ctx.steps.info(f"sold_out_since_listed_{i}", f"not tested: {_path(u)} {gone}; the next in-stock catalog "
+                                                         "product is tested instead")
+            continue
+        url = u
+        break
     ctx.steps.run("url_stable", lambda: ctx.expect("final URL", _path(url), ctx.redirected_to or _path(url),
                                                    not ctx.redirected_to) and "no redirect", soft=True)
     _pdp_assertions(ctx, url, expect_buyable)
@@ -2567,10 +2736,10 @@ def _llm_close_overlay(ctx: Ctx) -> str | None:
         return None
 
 
-STABLE_JS = r"""(hrefRe) => { const re = new RegExp(hrefRe);
+STABLE_JS = r"""(hrefRe) => { const re = new RegExp(hrefRe); """ + BOX_JS + r"""
   const ls = [...document.querySelectorAll('a[href]')].filter(a => re.test(a.getAttribute('href') || '')).filter(a => {
-    const r = a.getBoundingClientRect(); return r.width > 2 && r.height > 2; });
-  return ls.length + '|' + ls.slice(0, 8).map(a => a.getAttribute('href') + '@' + Math.round(a.getBoundingClientRect().top + scrollY)).join(',');
+    const r = boxOf(a); return r.width > 2 && r.height > 2; });
+  return ls.length + '|' + ls.slice(0, 8).map(a => a.getAttribute('href') + '@' + Math.round(boxOf(a).top + scrollY)).join(',');
 }"""
 
 
@@ -2619,15 +2788,65 @@ def _hover_menus_for(ctx: Ctx, href_re: str, prefer) -> tuple[dict | None, str]:
     return None, ""
 
 
+def _other_collection(ctx: Ctx, home: str, skip: list[str]) -> dict | None:
+    """A collection link a shopper can click that is none of `skip` (collection paths that listed no products): on this
+    page first (a landing page's tiles to its sub-collections), else on the homepage."""
+    handles = "|".join(re.escape(p.split("/collections/", 1)[1]) for p in skip if "/collections/" in p)
+    href_re = rf"/collections/(?!(?:frontpage{'|' + handles if handles else ''})(?:[/?#]|$))[^/?#]+/?(?:[?#].*)?$"
+    got = _pick(ctx, "a[href]", href_re, [], second_pass=False)
+    if got.get("none"):
+        _load(ctx, home)
+        got = _pick(ctx, "a[href]", href_re, [], second_pass=False)
+    return None if got.get("none") else got
+
+
+MENU_LINKS_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+    return r.width > 2 && r.height > 2 && r.bottom > 0 && r.top < innerHeight && s.visibility !== 'hidden' && s.display !== 'none'; };
+  document.querySelectorAll('[data-radar-nav]').forEach(e => e.removeAttribute('data-radar-nav'));
+  return [...document.querySelectorAll('a[href]:not([data-radar-shown])')].filter(vis)
+    .filter(e => (e.innerText || '').trim().length > 1 && (e.innerText || '').trim().length < 30).slice(0, 12)
+    .map((e, i) => { e.setAttribute('data-radar-nav', String(i));
+      return {i, text: (e.innerText || '').trim().replace(/\s+/g, ' '), href: e.getAttribute('href') || ''}; }); }"""
+
+
+def _menu_drawer_links(ctx: Ctx) -> list[dict]:
+    """Links a shopper finds by opening the menu (☰): those visible only after the menu button is clicked."""
+    page = ctx.sess.page
+    toggles = page.locator(MENU_TOGGLES)
+    for i in range(min(toggles.count(), 6)):
+        tg = toggles.nth(i)
+        try:
+            if not tg.is_visible():
+                continue
+            ctx.sess.evaluate("() => document.querySelectorAll('a[href]').forEach(a => { const r = a.getBoundingClientRect();"
+                              " if (r.width > 2 && r.height > 2) a.setAttribute('data-radar-shown', '1'); })")
+            _click(ctx, tg)
+        except Exception:  # noqa: BLE001
+            continue
+        items = ctx.sess.evaluate(MENU_LINKS_JS) or []
+        if items:
+            return items
+    return []
+
+
+def _hop_target(home: str, h: str) -> bool:
+    """A menu link that leads to another page of the store (not a product, cart, account or search, not home)."""
+    if not h or h.startswith(("#", "javascript")) or re.search(r"/(products|cart|account|search)\b", h):
+        return False
+    return _path(urljoin(home, h)) not in ("/", _path(home)) and same_site_url(urljoin(home, h), home)
+
+
 def _landing_hop(ctx: Ctx, home: str) -> str | None:
     """Brand-landing homepages (thehouseofrare.com: MEN -> /pages/rare-rabbit): click the first top
-    menu link that goes to another page of the store, like a shopper picking a section."""
+    menu link that goes to another page of the store, like a shopper picking a section. On phones the top menu sits
+    behind the menu button (subko.coffee phone, new30j: desktop hopped via 'Specialty Coffee', the phone found no header
+    link on screen): the menu is opened and its links are used."""
     page = ctx.sess.page
-    for item in (ctx.sess.evaluate(TOP_NAV_JS) or [])[:6]:
-        h = item["href"]
-        if not h or h.startswith(("#", "javascript")) or re.search(r"/(products|cart|account|search)\b", h):
-            continue
-        if _path(urljoin(home, h)) in ("/", _path(home)) or not same_site_url(urljoin(home, h), home):
+    items = ctx.sess.evaluate(TOP_NAV_JS) or []
+    if not any(_hop_target(home, it["href"]) for it in items):
+        items = _menu_drawer_links(ctx)
+    for item in items[:6]:
+        if not _hop_target(home, item["href"]):
             continue
         try:
             before = page.url
@@ -2656,8 +2875,8 @@ NOT_SHOPPING = ("cart-drawer, cart-notification, [id*='cart-drawer' i], [class*=
 
 PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   document.querySelectorAll('[data-radar-target]').forEach(e => { if (e.getAttribute('data-radar-target') !== 'drawer') e.removeAttribute('data-radar-target'); });
-  const re = hrefRe ? new RegExp(hrefRe) : null;
-  const vis = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+  const re = hrefRe ? new RegExp(hrefRe) : null; """ + BOX_JS + r"""
+  const vis = e => { const r = boxOf(e); const s = getComputedStyle(e);
     return r.width > 2 && r.height > 2 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
   const tag = e => e ? (e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' && e.className.trim()
                     ? '.' + e.className.trim().split(/\s+/)[0] : '')).slice(0, 40) : 'nothing';
@@ -2688,8 +2907,9 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   const cands = all.map((e, i) => [e, i]).filter(([e]) => usable(e))
     .map(([e, i]) => [e, rank(e, i)]).sort((a, b) => a[1][0] - b[1][0] || a[1][1] - b[1][1]).slice(0, 80);
   for (const [e] of cands) {
-    e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'});
-    const r = e.getBoundingClientRect();
+    if (e.getBoundingClientRect().width > 0) e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'});
+    else { const b = boxOf(e); scrollBy(0, b.top + b.height / 2 - innerHeight / 2); }    // display:contents: no box to scroll to
+    const r = boxOf(e);
     if (r.bottom <= 0 || r.right <= 0 || r.top >= innerHeight || r.left >= innerWidth) { note('off screen (carousel slide)'); continue; }
     const card = cardOf(e);
     const cx = Math.min(Math.max(r.left + r.width / 2, 1), innerWidth - 1);
@@ -2709,8 +2929,8 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
 }"""
 
 AIM_JS = r"""(via) => { const t = document.querySelector('[data-radar-target="click"]'); if (!t) return null;
-  const c = document.querySelector('[data-radar-target="card"]') || t;
-  const r = t.getBoundingClientRect(); if (r.bottom <= 0 || r.top >= innerHeight || r.width <= 0) return null;
+  const c = document.querySelector('[data-radar-target="card"]') || t; """ + BOX_JS + r"""
+  const r = boxOf(t); if (r.bottom <= 0 || r.top >= innerHeight || r.width <= 0) return null;
   const cx = Math.min(Math.max(r.left + r.width / 2, 1), innerWidth - 1);
   const pts = [[cx, r.top + r.height / 2], [cx, r.top + Math.min(r.height / 2, 40)], [r.left + Math.min(r.width / 2, 20), r.top + Math.min(r.height / 2, 12)]]
     .map(([x, y]) => [Math.round(x), Math.round(Math.min(Math.max(y, 1), innerHeight - 1))]);
@@ -2750,6 +2970,57 @@ BIG_FIXED_LAYER_JS = r"""() => { const vw = innerWidth, vh = innerHeight;
   return false; }"""
 
 
+# The layer actually covering the page, found from what is on top at the screen's centre (not from popup-like names):
+# teatrunk.in (new30i, both devices) showed 'Shopping from Outside India? International | Stay Here' inside the theme's
+# <header>, which the popup rules skip (menus live there); every card was 'covered by div.ctryModal-Content-overlay' and
+# no popup was closed. Only a control a shopper uses to stay (close / × / no thanks / stay here ...) is clicked, never
+# one that leaves, accepts or subscribes; a layer with many links or the page's main content is not a popup.
+COVER_CLOSE_JS = r"""() => {
+  document.querySelectorAll('[data-radar-target="cover-close"]').forEach(e => e.removeAttribute('data-radar-target'));
+  const vw = innerWidth, vh = innerHeight;
+  const shown = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
+  const text = e => (e.innerText || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
+  const SAFE = /^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip|continue browsing|continue shopping|stay here|stay on this (site|store|page)|dismiss)$/i;
+  const BAD = /accept|agree|allow|subscribe|sign ?up|submit|yes|international|go to|take me|switch|redirect/i;
+  for (const [fx, fy] of [[0.5, 0.5], [0.33, 0.33], [0.67, 0.67], [0.2, 0.5], [0.8, 0.5]]) {
+    let layer = null;
+    for (let n = document.elementFromPoint(vw * fx, vh * fy); n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
+      const s = getComputedStyle(n), r = n.getBoundingClientRect();
+      if (s.position === 'fixed' && r.width * r.height >= 0.25 * vw * vh) layer = n; }      // the outermost big fixed layer
+    if (!layer) continue;
+    // the layer itself, or its parent when the layer is only the backdrop beside the dialog box
+    for (const root of [layer, layer.parentElement]) {
+      if (!root || root === document.body || root.querySelectorAll('a[href]').length > 12
+          || root.querySelector('main, form[action*="/cart/add"]')) break;
+      const btn = [...root.querySelectorAll('button, a, [role="button"], [aria-label]')].filter(shown).find(c =>
+        !BAD.test(text(c)) && (SAFE.test(text(c)) || /close|dismiss/i.test(c.getAttribute('aria-label') || '')));
+      if (!btn) continue;
+      const b = btn.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+      if (!hit || !(hit === btn || btn.contains(hit))) continue;
+      btn.setAttribute('data-radar-target', 'cover-close');
+      const t = text(root);
+      return {button: text(btn).slice(0, 30) || 'close', text: t.slice(0, 60).toLowerCase(),
+              kind: /country|region|currency|ship to|location/i.test(t) ? 'location' : 'popup'};
+    } }
+  return null; }"""
+
+
+def _close_covering_layer(ctx: Ctx) -> str | None:
+    """Close the large fixed layer on top of the page with its own stay / close control (COVER_CLOSE_JS)."""
+    found = ctx.sess.evaluate(COVER_CLOSE_JS)
+    if not found:
+        return None
+    try:
+        ctx.sess.page.locator('[data-radar-target="cover-close"]').first.click(timeout=3000)
+    except Exception:  # noqa: BLE001
+        return None
+    ctx.sess.page.wait_for_timeout(500)
+    ctx.expect(f"{found['kind']} popup closed", "closed without accepting or subscribing",
+               f"clicked {found['button']!r} on: {found['text']!r}", True)
+    return f"clicked {found['button']!r} on a layer covering the page"
+
+
 def _pick(ctx: Ctx, sel: str, href_re: str | None = None, prefer=(), exclude: str | None = NOT_SHOPPING,
           second_pass: bool = True):
     """First element a shopper could actually click: visible, enabled, not covered, on screen.
@@ -2776,6 +3047,12 @@ def _pick(ctx: Ctx, sel: str, href_re: str | None = None, prefer=(), exclude: st
         got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
         if not got.get("none"):
             got["overlay"] = "pressed Escape to close a layer covering the cards"
+    if got and got.get("none") and second_pass and any(k.startswith("covered by") for k in got.get("why", {})):
+        closed = _close_covering_layer(ctx)
+        if closed:
+            got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
+            if not got.get("none"):
+                got["overlay"] = closed
     if got and got.get("none") and any(k.startswith("covered by") for k in got.get("why", {})):
         closed = _llm_close_overlay(ctx)            # re-check after triage only
         if closed:
@@ -2901,6 +3178,14 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
     def click_collection():
         _dismiss(ctx)
         got, how = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False), "visible link"
+        if got.get("none"):
+            # a layer the popup rules missed covers the page (teatrunk.in): close it before opening menus (which it
+            # covers too); runs on the fresh homepage only, so it never closes a menu Radar opened
+            closed = _close_covering_layer(ctx)
+            if closed:
+                got = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
+                if not got.get("none"):
+                    got["overlay"] = closed
         if got.get("none"):                                 # links inside closed dropdowns / hamburger
             toggles = page.locator(MENU_TOGGLES)
             for i in range(min(toggles.count(), 6)):
@@ -2931,13 +3216,31 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                    f"{got['href']} ({got['text']!r})" if found else "none (menus opened too)", found)
         _click_picked(ctx, got)
         ctx.expect("landed on that collection", _path(got["href"]), _path(page.url), "/collections/" in page.url)
-        n = len(_product_links(ctx.sess))
-        if not n:
-            _wait_stable(ctx, PRODUCT_HREF)
-            _reveal_product_grid(ctx)
+
+        def listed() -> int:
             n = len(_product_links(ctx.sess))
+            if not n:
+                _wait_stable(ctx, PRODUCT_HREF)
+                _reveal_product_grid(ctx)
+                n = len(_product_links(ctx.sess))
+            return n
+        n, empty = listed(), []
+        while not n and len(empty) < 3:
+            # This collection lists no products: an 'entrance' landing page with tiles to sub-collections (quboworld.com
+            # 'Smart Entrance', new30j: '104 links: 104 not visible' = hidden mega-menu links) or an empty collection.
+            # A shopper goes on to another collection: one this page links to first, else another from the homepage.
+            empty.append(_path(page.url))
+            alt = _other_collection(ctx, home, empty)
+            if not alt:
+                break
+            _click_picked(ctx, alt)
+            if "/collections/" not in page.url:
+                break
+            n = listed()
         ctx.expect("products listed in collection", "≥ 1", n, n >= 1)
-        return f"clicked {how} → {_path(page.url)} ({n} products)" + (f"; {got['overlay']}" if got.get("overlay") else "")
+        went = f"; {', '.join(empty)} listed no products, went on to {_path(page.url)}" if empty else ""
+        return (f"clicked {how} → {_path(page.url)} ({n} products){went}"
+                + (f"; {got['overlay']}" if got.get("overlay") else ""))
     # soft: some themes (e.g. Origin) put no collection link on the homepage; then home -> product
     if ctx.steps.run("click_into_collection", click_collection, soft=True) is None:
         if "/collections/" not in page.url:
@@ -3090,6 +3393,7 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
     base, page, vid = _base(url), ctx.sess.page, int(variant_id)
     soft = not strict
     state: dict = {}
+    app_errors = _watch_app_errors(ctx)        # journey 35: a checkout app's script that answers 404 / 5xx is evidence
     ctx.steps.run("product_loads", lambda: _load(ctx, url))
 
     def put_in_cart():
@@ -3150,6 +3454,16 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
     ctx.steps.run("change_quantity", change_qty, soft=soft)
 
     def checkout_opens():
+        # Journey 35: a third-party checkout app (GoKwik, Shopflo, Fastrr, Razorpay Magic, Simpl) takes over the cart's
+        # checkout button; GET /checkout would walk past it. On the cart page Radar reads the page's scripts / iframes;
+        # when an app is named there, it clicks the store's own checkout button like a shopper and judges what opens
+        # (popup, iframe or redirect). Never types a phone number, never asks for an OTP, never submits.
+        if _path(page.url) != _path(base + cart_path):
+            _load(ctx, base + cart_path)
+            _dismiss(ctx)
+        apps = _checkout_apps_here(ctx)
+        if apps:
+            return _third_party_checkout(ctx, apps, title, app_errors)
         resp, _ = ctx.sess.goto(base + "/checkout")
         ctx.sess.settle()
         status, final = (resp.status if resp else None), page.url
@@ -3194,6 +3508,311 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
                    "gone" + (", 'empty' message shown" if EMPTY_CART_RX.search(text) else "") if gone else "still listed", gone)
         return f"pressed {found['remove'][:30]!r}: /cart.js has 0 of it, the cart page no longer lists it"
     ctx.steps.run("remove_item", remove, soft=soft)
+
+
+# ---------------- checkout surfaces: Shopify's checkout or a third-party app (journeys #33 + #35) ----------------
+#
+# Both journeys click a store control that should open a checkout (the product page's 'Buy it now', the cart's checkout
+# button under a third-party app) and judge only what a shopper SEES first. Radar NEVER types (no phone number, no
+# email, no OTP request), never submits, never pays; a popup it opened is closed afterwards.
+
+# The visible text (scripts / styles skipped: Shopify's checkout inlines ~100 kB of JSON), the fields a shopper would
+# fill (counted, never touched), a phone / mobile-number box (third-party first screens), OTP wording, error wording.
+CHECKOUT_VIEW_JS = r"""() => { const out = []; let n = 0;
+  if (!document.body) return {text: '', fields: 0, phone: '', otp: false, error: ''};
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {acceptNode: t =>
+    /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/.test(t.parentNode.nodeName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
+  while (w.nextNode() && n < 200000) { const v = w.currentNode.nodeValue; if (v.trim()) { out.push(v); n += v.length; } }
+  const text = out.join(' ').replace(/\s+/g, ' ').trim();
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const inputs = [...document.querySelectorAll('input')].filter(i => vis(i) && !/hidden|checkbox|radio/.test(i.type));
+  const ph = inputs.find(i => i.type === 'tel' || /phone|mobile|contact number|whatsapp/i.test(
+    [i.name, i.id, i.placeholder, i.getAttribute('aria-label'), i.autocomplete].join(' ')));
+  const err = (text.match(/something went wrong|an error occurred|unable to (load|process)|failed to load|try again later|page not found|\b(404|500|502|503)\b|there was a problem/i) || [])[0] || '';
+  return {text: text.slice(0, 20000), fields: inputs.length, otp: /\bOTP\b|one[- ]time password|verification code/i.test(text),
+          phone: ph ? (ph.placeholder || ph.name || ph.getAttribute('aria-label') || ph.type || '').slice(0, 40) : '', error: err}; }"""
+
+# The cart page's own clues to a checkout app: script and iframe addresses, and the page's HTML (inline app config).
+PAGE_SOURCES_JS = r"""() => ({urls: [...[...document.scripts].map(s => s.src), ...[...document.querySelectorAll('iframe')].map(f => f.src || ''),
+                                 ...[...document.querySelectorAll('link[href]')].map(l => l.href)].filter(Boolean).slice(0, 400),
+                          html: document.documentElement.outerHTML.slice(0, 600000)})"""
+
+
+def _watch_app_errors(ctx: Ctx) -> list[str]:
+    """Responses >= 400 (and failed loads) for a checkout app's own files during this check: 'the app's script answered
+    404' is the evidence when its checkout never opens. Never raises."""
+    from radar.discovery.detect import checkout_app_of
+    seen: list[str] = []
+
+    def on_resp(r):
+        try:
+            if r.status >= 400 and checkout_app_of(r.url):
+                seen.append(f"{checkout_app_of(r.url)} file {r.url[:110]} answered HTTP {r.status}")
+        except Exception:  # noqa: BLE001  never break a page event
+            pass
+
+    def on_fail(r):
+        try:
+            if checkout_app_of(r.url):
+                seen.append(f"{checkout_app_of(r.url)} file {r.url[:110]} did not load ({(r.failure or '')[:40]})")
+        except Exception:  # noqa: BLE001
+            pass
+    ctx.sess.page.on("response", on_resp)
+    ctx.sess.page.on("requestfailed", on_fail)
+    return seen
+
+
+def _checkout_apps_here(ctx: Ctx) -> list[str]:
+    from radar.discovery.detect import checkout_apps_in
+    src = ctx.sess.evaluate(PAGE_SOURCES_JS) or {}
+    return checkout_apps_in(src.get("urls") or [], src.get("html") or "")
+
+
+def checkout_view_verdict(view: dict, title: str, third_party: bool) -> tuple[bool, str]:
+    """Did the checkout's FIRST screen render? Shopify's checkout: a field to fill and the product named in the order
+    summary. A third-party app: its phone-number / OTP screen or an order summary naming the product. Blank, or an error
+    message with neither = not rendered. Pure, unit-tested."""
+    text = view.get("text") or ""
+    named = bool(title) and norm_text(title) in norm_text(text)
+    if len(text) < 20 and not view.get("fields"):
+        return False, "blank (no text, no field)"
+    if third_party:
+        if view.get("phone"):
+            return True, f"phone-number screen ({view['phone']!r} box shown, NOT filled)" + ("; order summary names the product" if named else "")
+        if view.get("otp"):
+            return True, "OTP screen shown (no OTP requested)"
+        if named:
+            return True, "order summary names the product"
+        if view.get("error"):
+            return False, f"error message {view['error']!r}, no phone screen or order summary"
+        return False, f"no phone-number / OTP screen and no order summary naming the product ({len(text)} chars of text)"
+    if view.get("error") and not named:
+        return False, f"error message {view['error']!r}"
+    if not view.get("fields"):
+        return False, "no field a shopper would fill" + ("" if named else "; product not named")
+    if not named:
+        return False, f"{view['fields']} fields, but the order summary does not name the product"
+    return True, f"{view['fields']} fields shown (none filled), order summary names the product"
+
+
+def _frame_box(frame):
+    try:
+        el = frame.frame_element()
+        return el.bounding_box() if el.is_visible() else None
+    except Exception:  # noqa: BLE001  detached frame
+        return None
+
+
+def _click_and_find_checkout(ctx: Ctx, loc, base: str, secs: float = 12.0) -> dict:
+    """Click a control that should open a checkout and see WHERE it opened: a popup (new tab / window), an iframe over
+    the page (a known app's host, or any new frame covering ≥ 30% of the screen), or the page moving to a checkout
+    (Shopify's /checkouts/… on the store, or another site). {kind, target (Page/Frame), url, status, app} or
+    {kind: None} when nothing happened."""
+    from radar.discovery.detect import checkout_app_of
+    page = ctx.sess.page
+    popups: list = []
+    docs: list = []
+    on_page = lambda p: popups.append(p)
+    on_resp = lambda r: docs.append((r.url, r.status)) if r.request.resource_type == "document" and r.frame == page.main_frame else None
+    page.context.on("page", on_page)
+    page.on("response", on_resp)
+    vp = page.viewport_size or {"width": 1366, "height": 850}
+    big = lambda box: bool(box) and box["width"] * box["height"] >= 0.3 * vp["width"] * vp["height"]
+    # frames already on screen and big before the click (a chat widget, KwikPass) are not what the click opened; an
+    # app's hidden iframe that the click SHOWS counts
+    before_url = page.url
+    before_big = {f for f in page.frames if f != page.main_frame and big(_frame_box(f))}
+    store_host = (urlparse(base).hostname or "").removeprefix("www.")
+    try:
+        loc.scroll_into_view_if_needed(timeout=5000)
+        loc.click(timeout=8000)
+        t_end = time.time() + secs
+        while time.time() < t_end:
+            page.wait_for_timeout(500)
+            if popups:
+                pop = popups[0]
+                try:
+                    pop.wait_for_load_state("domcontentloaded", timeout=10000)
+                except Exception:  # noqa: BLE001
+                    pass
+                return {"kind": "popup", "target": pop, "url": pop.url, "status": None, "app": checkout_app_of(pop.url)}
+            try:
+                now = page.url
+            except Exception:  # noqa: BLE001
+                continue
+            if now != before_url:
+                host = (urlparse(now).hostname or "").removeprefix("www.")
+                shopify = host == store_host and bool(re.search(r"/checkouts?(/|$)", urlparse(now).path))
+                if shopify or host != store_host:
+                    ctx.sess.settle()
+                    st = next((s for u, s in reversed(docs) if u.split("#")[0] == page.url.split("#")[0]), None) or \
+                        (docs[-1][1] if docs else None)
+                    return {"kind": "redirect", "target": page, "url": page.url, "status": st,
+                            "app": "" if shopify else (checkout_app_of(page.url) or host)}
+            for f in page.frames:
+                if f in before_big or f == page.main_frame or not f.url or f.url == "about:blank":
+                    continue
+                app, box = checkout_app_of(f.url), _frame_box(f)
+                if big(box) or (app and box and box["width"] >= 200 and box["height"] >= 200):
+                    try:
+                        f.wait_for_load_state("domcontentloaded", timeout=10000)
+                    except Exception:  # noqa: BLE001
+                        pass
+                    return {"kind": "iframe", "target": f, "url": f.url, "status": None,
+                            "app": app or (urlparse(f.url).hostname or "")}
+        if page.url != before_url:      # moved to another store page that is not a checkout: judged as landed there
+            st = docs[-1][1] if docs else None
+            return {"kind": "redirect", "target": page, "url": page.url, "status": st, "app": ""}
+        return {"kind": None, "target": None, "url": page.url, "status": None, "app": ""}
+    finally:
+        page.context.remove_listener("page", on_page)
+        page.remove_listener("response", on_resp)
+
+
+def _judge_checkout(ctx: Ctx, opened: dict, title: str, third_party: bool, secs: float = 12.0) -> str:
+    """Read the opened checkout's first screen (polling: checkouts are apps that render seconds after load) and assert
+    it rendered. Nothing is typed or clicked inside it."""
+    view: dict = {}
+    ok, why = False, "not read"
+    for _ in range(int(secs / 0.75)):
+        try:
+            view = opened["target"].evaluate(CHECKOUT_VIEW_JS) or {}
+        except Exception:  # noqa: BLE001  the frame / page is still navigating
+            view = {}
+        ok, why = checkout_view_verdict(view, title, third_party)
+        if ok:
+            break
+        ctx.sess.page.wait_for_timeout(750)
+    if opened.get("status") is not None:
+        ctx.expect("checkout page HTTP status", "< 400", opened["status"], opened["status"] < 400)
+    ctx.expect("checkout first screen rendered" + (f" ({opened['app']})" if opened.get("app") else ""),
+               "phone-number / OTP screen or order summary (nothing typed)" if third_party
+               else "≥ 1 field (NOT filled by Radar) + order summary names the product", why, ok)
+    return why
+
+
+def _close_opened(ctx: Ctx, opened: dict) -> str:
+    """Leave the checkout: a popup is closed; an iframe / redirected page is left behind by the next page load."""
+    if opened.get("kind") == "popup":
+        try:
+            opened["target"].close()
+            return "popup closed"
+        except Exception:  # noqa: BLE001
+            return "popup already closed"
+    return "left without typing anything"
+
+
+def _third_party_checkout(ctx: Ctx, apps: list[str], title: str, app_errors: list[str]) -> str:
+    """Journey 35: the cart page names a checkout app. Click the store's own checkout button, name the app that opened
+    and confirm its first screen (phone number / OTP screen or order summary) renders. Never typed, never submitted."""
+    page = ctx.sess.page
+    named = " + ".join(apps)
+    f = ctx.healer.find(page, "checkout_button")
+    ctx.expect("checkout button on the cart page", "visible + enabled", f"via {f.method}", f.locator.is_enabled())
+    opened = _click_and_find_checkout(ctx, f.locator, _base(page.url))
+    if not opened["kind"]:
+        ctx.expect(f"{named} checkout opens from the cart's checkout button", "a popup, iframe or checkout page",
+                   "nothing opened within 12 s" + (f"; {'; '.join(dict.fromkeys(app_errors))[:200]}" if app_errors else ""), False)
+    third = bool(opened["app"])
+    if not third:     # the app did not take over: Shopify's own checkout opened (fine for the shopper)
+        ctx.expect("landed on the checkout", "/checkouts/… or /checkout", _path(opened["url"]),
+                   bool(re.search(r"/checkouts?(/|$)", urlparse(opened["url"]).path)))
+        why = _judge_checkout(ctx, opened, title, third_party=False)
+        _close_opened(ctx, opened)
+        return f"{named} on the cart page, but Shopify's checkout opened at {_path(opened['url'])}: {why}; nothing typed or submitted"
+    ctx.expect("checkout app named", named, f"{opened['app']} ({opened['kind']}: {(urlparse(opened['url']).hostname or '')})", True)
+    why = _judge_checkout(ctx, opened, title, third_party=True)
+    left = _close_opened(ctx, opened)
+    return (f"{opened['app']} checkout opened ({opened['kind']}, {urlparse(opened['url']).hostname}): {why}; "
+            f"no phone number typed, no OTP requested, nothing submitted; {left}")
+
+
+# ---------------- journey 33: 'Buy it now' on the product page opens a working checkout ----------------
+
+# Shopify's dynamic checkout button (<div class="shopify-payment-button"> … 'Buy it now') or a theme / app 'Buy now'
+# button for THIS product: visible, not on another product's card, not in header / footer / cart drawer. Branded
+# wallet buttons (Shop Pay, G Pay, Apple Pay, PayPal) are never picked: they open payment sheets.
+BUY_NOW_JS = r"""([ids, quick]) => {
+  const otherCard = __OTHER_CARD__;
+  document.querySelectorAll('[data-radar-target="buynow"]').forEach(e => e.removeAttribute('data-radar-target'));
+  const mine = new Set(ids.map(String));
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
+  const wallet = /shop ?pay|g ?pay|google|apple|paypal|amazon|venmo|more payment options/i;
+  const c = [...document.querySelectorAll('button, a, [role="button"], input[type=submit], input[type=button]')]
+    .filter(e => vis(e) && txt(e).length <= 30 && !wallet.test(txt(e))
+      && (/^buy\s*(it\s*)?now\b/i.test(txt(e)) || (e.closest('.shopify-payment-button, [data-shopify="payment-button"]') && /\bbuy\b/i.test(txt(e))))
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !otherCard(e, quick));
+  const own = e => { const f = e.closest('form') || (e.getAttribute('form') && document.getElementById(e.getAttribute('form')));
+    const i = f && f.querySelector('[name="id"]'); return i && mine.has(String(i.value || '')) ? 1 : 0; };
+  c.sort((x, y) => own(y) - own(x) || (!!y.closest('.shopify-payment-button') - !!x.closest('.shopify-payment-button')));
+  const pending = !!document.querySelector('.shopify-payment-button, [data-shopify="payment-button"]') && !c.length;
+  if (!c.length) return {found: null, pending};
+  const on = c.filter(e => !(e.disabled || e.getAttribute('aria-disabled') === 'true'));
+  const t = on[0] || c[0]; t.setAttribute('data-radar-target', 'buynow');
+  return {found: {text: txt(t).slice(0, 30), off: !on.length, own: !!own(t),
+                  tag: t.tagName.toLowerCase() + (typeof t.className === 'string' && t.className.trim() ? '.' + t.className.trim().split(/\s+/)[0] : '')},
+          pending: false}; }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
+
+
+def buy_now(ctx: Ctx, url: str, variant_id: int | None = None, strict: bool = False):
+    """Journey 33: the product page's 'Buy it now' (Shopify's dynamic checkout button, or a theme / checkout-app 'Buy
+    now') opens a checkout that renders and shows this product. Clicked once in Radar's own browser session; the
+    checkout (Shopify's /checkouts/…, or a third-party popup / iframe) is only looked at: NOTHING typed, nothing
+    submitted, no payment; a popup is closed. No buy-now button = information only. Warnings unless strict.
+    (The add-to-cart tests never click 'buy it now'; this is its own case.)"""
+    soft = not strict
+    page, base = ctx.sess.page, _base(url)
+    app_errors = _watch_app_errors(ctx)
+    state: dict = {}
+
+    def load():
+        out = _load(ctx, url)
+        state["p"] = _product_js(ctx, page.url)
+        return out
+    ctx.steps.run("product_loads", load)
+    p = state["p"]
+    ids = [int(v["id"]) for v in p["variants"]]
+    if not ctx.sess.allowed(base + "/checkouts/"):
+        ctx.steps.info("buy_now_not_judged", "robots.txt disallows the checkout for Radar on this store; buy-now not clicked")
+        return
+    if not any(v.get("available") for v in p["variants"]):
+        ctx.steps.info("buy_now_not_judged", "product is sold out now; buy-now not judged")
+        return
+    found: dict = {}
+    for _ in range(8):           # Shopify renders the dynamic checkout button from a script after load
+        found = ctx.sess.evaluate(BUY_NOW_JS, [ids, QUICK_SEL]) or {}
+        if found.get("found") or not found.get("pending"):
+            break
+        page.wait_for_timeout(500)
+    btn = found.get("found")
+    if not btn:
+        ctx.steps.info("buy_now_not_judged", "no buy-now button on this store" + (
+            " (Shopify's payment-button slot is on the page but rendered no 'Buy it now')" if found.get("pending") else ""))
+        return
+    if btn["off"]:
+        ctx.steps.info("buy_now_not_judged", f"the buy-now button <{btn['tag']}> {btn['text']!r} is disabled; not clicked")
+        return
+
+    def opens():
+        opened = _click_and_find_checkout(ctx, page.locator('[data-radar-target="buynow"]').first, base)
+        ctx.expect(f"<{btn['tag']}> {btn['text']!r} opens a checkout", "a checkout page, popup or iframe",
+                   opened["kind"] or ("nothing happened within 12 s (page stayed at "
+                                      f"{_path(page.url)})" + (f"; {'; '.join(dict.fromkeys(app_errors))[:200]}" if app_errors else "")),
+                   bool(opened["kind"]))
+        third = bool(opened["app"])
+        if not third:
+            ctx.expect("landed on Shopify's checkout", "/checkouts/… or /checkout", _path(opened["url"]),
+                       bool(re.search(r"/checkouts?(/|$)", urlparse(opened["url"]).path)))
+        why = _judge_checkout(ctx, opened, p["title"], third_party=third)
+        left = _close_opened(ctx, opened)
+        where = (f"{opened['app']} {opened['kind']} ({urlparse(opened['url']).hostname})" if third
+                 else f"Shopify checkout at {_path(opened['url'])}")
+        return f"clicked {btn['text']!r}: {where}: {why}; nothing typed or submitted, no payment; {left}"
+    ctx.steps.run("buy_now_opens_checkout", opens, soft=soft)
 
 
 # ---------------- journey 22: variant switch ----------------
@@ -3311,6 +3930,36 @@ def _variant_label(v: dict) -> str:
     return f"{v['id']} ({' / '.join(variant_options(v)) or v.get('title')}, {rupees(v['price'])})"
 
 
+# Where a shopper's click on an option control lands: the control's centre, and whether the element on top there is
+# part of the same picker (a swatch tooltip / transparent layer inside the option box: dotandkey.com, 12 Oct) or
+# something else covering it (a popup, a sticky bar).
+OPTION_HIT_JS = r"""e => { const r = e.getBoundingClientRect(); const x = r.left + r.width / 2, y = r.top + r.height / 2;
+  const h = document.elementFromPoint(x, y); if (!h) return {x, y, own: false, by: 'nothing'};
+  const lab = e.closest('label') || (e.id && document.querySelector('label[for="' + CSS.escape(e.id) + '"]'));
+  const box = e.closest('variant-radios, variant-selects, fieldset, [role="radiogroup"], [class*="swatch" i], ' +
+                        '[class*="variant" i], [class*="option" i]');
+  const own = e.contains(h) || h.contains(e) || !!(lab && lab.contains(h)) ||
+              !!(box && box.contains(h) && !h.closest('[role="dialog"], [aria-modal="true"]'));
+  const cls = typeof h.className === 'string' ? h.className.trim().split(/\s+/)[0] : '';
+  return {x, y, own, by: h.tagName.toLowerCase() + (cls ? '.' + cls : '')}; }"""
+
+
+def _click_covered_option(ctx: Ctx, loc, c: dict, err: Exception) -> None:
+    """Playwright would not click the option (another element receives the click). A shopper clicks where the option
+    shows: when the element on top belongs to the same picker, click that point with the mouse; otherwise close what
+    covers it once and retry. Still covered = the shopper cannot pick it either -> the check fails, naming the cover."""
+    hit = loc.evaluate(OPTION_HIT_JS)
+    if hit.get("own"):
+        ctx.sess.page.mouse.click(hit["x"], hit["y"])
+        return
+    _dismiss(ctx)
+    try:
+        loc.click(timeout=3000)
+    except Exception as e2:  # noqa: BLE001
+        raise AssertionError(f"option {c['how']} could not be clicked: covered by {hit.get('by')} "
+                             f"({str(err).splitlines()[0][:120]})") from e2
+
+
 def _pick_variant(ctx: Ctx, product: dict, target: dict, current: dict) -> dict:
     """Click (or choose in a dropdown) each option value where target differs from current, like a shopper.
     Returns {how: [...], disabled: bool, missing: value or None}."""
@@ -3331,7 +3980,7 @@ def _pick_variant(ctx: Ctx, product: dict, target: dict, current: dict) -> dict:
             try:
                 loc.click(timeout=5000)
             except Exception as e:  # noqa: BLE001
-                raise AssertionError(f"option {c['how']} could not be clicked: {str(e).splitlines()[0][:160]}") from e
+                _click_covered_option(ctx, loc, c, e)
         out["how"].append(c["how"] + (" (disabled)" if c.get("disabled") else ""))
     return out
 
@@ -3719,6 +4368,7 @@ REGISTRY: dict[str, Callable] = {
     "variant_switch": variant_switch,      # journey 22
     "price_consistency": price_consistency,
     "collection_filter": collection_filter,
+    "buy_now": buy_now,                    # journey 33
 }
 
 

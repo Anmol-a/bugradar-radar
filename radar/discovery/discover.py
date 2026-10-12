@@ -391,7 +391,10 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
     if sm.platform != "shopify":
         sm.notes.append("platform is not Shopify; v1 builds tests for Shopify only"
                         + (f" (homepage '{sm.home_title[:50]}', {len(html)} chars of HTML, Shopify markers found: "
-                           f"{', '.join(sm.platform_evidence)}; 2 needed)" if sm.platform_evidence else ""))
+                           f"{', '.join(sm.platform_evidence)}; 2 needed)" if sm.platform_evidence else
+                           f" (homepage {urlparse(sess.page.url).path or '/'} answered HTTP {resp.status}, title "
+                           f"'{sm.home_title[:50]}', {len(html)} chars of HTML, no Shopify marker"
+                           + ("" if sm.robots_loaded else ", no robots.txt: every Shopify store serves one") + ")"))
         return sm
 
     # 3. navigation

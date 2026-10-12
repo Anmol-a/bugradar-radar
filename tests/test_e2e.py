@@ -126,6 +126,15 @@ def test_non_shopify_is_unsupported(tmp_path):
     assert run.verdict == "unsupported" and run.cases == []
 
 
+def test_blank_non_shopify_homepage_is_unsupported_not_a_radar_crash(tmp_path):
+    """gozero.in (cycle 34): no robots.txt, homepage 200 with an empty title and no Shopify marker. v0.19 called it
+    'error' (the bench shows 'Radar crashed'); nothing crashed: Radar looked at the site and it is not Shopify."""
+    run, _ = _scan("blank_not_shopify", tmp_path)
+    assert run.verdict == "unsupported" and run.cases == [], (run.verdict, run.notes)
+    note = next(n for n in run.notes if "not Shopify" in n)
+    assert "HTTP 200" in note and "no Shopify marker" in note and "no robots.txt" in note, note
+
+
 def test_js_redirecting_page_does_not_crash(tmp_path):
     from radar.core.models import Suite, TestCase
     import radar.runner.executor as ex
@@ -536,6 +545,30 @@ def test_catalog_product_hidden_from_shoppers_is_a_warning_and_the_next_product_
         assert st["loads"].status == "warn" and words in st["loads"].error, (mode, st["loads"].error)
         assert st["loads_next_catalog_product_1"].status == "pass"
         assert "wooden-spoon-set" in st["product_identified"].detail.lower() or "Wooden Spoon" in st["product_identified"].detail
+
+
+def test_product_sold_out_since_the_catalog_listed_it_is_skipped_for_the_next_one(tmp_path):
+    """bombaytrooper.com (cycle 34, both devices): products.json listed the hoppers in stock; their .js and page said
+    SOLD OUT ('an in-stock variant exists: got none available' -> confirmed_fail). The product test now tests the next
+    in-stock catalog product and says why (info). The last candidate is never skipped."""
+    run = _product_only("stale_catalog", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)
+    assert vase.verdict == "pass", (vase.attempts[-1].error, [(s.name, s.status, s.error) for s in vase.attempts[-1].steps])
+    assert st["sold_out_since_listed_0"].status == "info" and "0 of 2 variant(s) available" in st["sold_out_since_listed_0"].detail
+    assert "Wooden Spoon" in st["product_identified"].detail
+
+
+def test_pack_of_two_picks_each_item_size_in_its_own_picker(tmp_path):
+    """theformalclub.in (cycle 34, both devices): a 'pack of 2' product with ONE option whose values join both shirts'
+    sizes ('S / 38 / S / 38'); the page shows two size pickers labelled 'S', 'M', ... v0.19: 'variant selected like a
+    shopper: expected ... (S / 38 / S / 38), got  after choosing nothing (no matching picker)'. Radar now picks the
+    value's parts like a shopper, one control per picker (the second 'S' is the second picker's)."""
+    run = _product_only("pack_of_two", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.attempts[-1].error, [(s.name, s.status, s.error) for s in vase.attempts[-1].steps])
+    k = next(k for k in _checks(vase) if k["what"] == "variant selected like a shopper")
+    assert k["ok"] and k["actual"].startswith("210 after choosing button S, button S"), k
 
 
 def test_product_page_without_its_own_buy_form_says_so(tmp_path):
@@ -1423,6 +1456,44 @@ def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_p
     assert "starts with '/http'" in _steps(c)["homepage section: malformed link"].detail
 
 
+def test_app_proxy_page_drawn_in_a_shadow_root_is_not_blank(tmp_path):
+    """arakucoffee.in (cycle 34, both devices): a homepage section links to an app-proxy quiz page (/tools/...). It
+    answered 200 with a title and the browser painted it (largest contentful paint 1.6 s), but body.innerText was empty
+    and there was no <img>: 'page not blank: 0 chars, 0 images' -> broken link. v0.20 reads open shadow roots and what
+    the browser painted, waiting up to ~4 s for app pages."""
+    run = _info("app_proxy_page", tmp_path, suites=("smoke",))
+    c = _case(run, "smoke.more_links")
+    st = _steps(c)
+    step = st["homepage section: opens /tools/product-finder/match-me"]
+    assert c.verdict == "pass" and step.status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    blank = next(k for k in step.checks if k["what"] == "page not blank")
+    assert blank["ok"] and "painted" in blank["actual"], blank
+
+
+def test_blank_page_is_still_blank(tmp_path):
+    """The other side of the app-page fix: a page that answers 200 and draws nothing still fails 'page not blank'."""
+    with pytest.raises(AssertionError, match="page not blank"):
+        _on_page("healthy", tmp_path, "/pages/blank", lambda ctx: None)
+
+
+def test_slow_menu_page_is_retried_and_warned_not_called_broken(tmp_path):
+    """bluenectar.co.in (cycle 34, desktop only): collection pages took 9-33 s; two hit the 30 s navigation timeout on
+    every attempt and became 'broken navigation pages' (phone run, same hour: all fine). A page that times out is opened
+    once more with twice the wait: it loads -> WARNING 'slow page' with the time, never a broken link."""
+    srv, url = serve("slow_page")
+    try:
+        run = scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=4, nav_timeout_ms=2000),
+                   only_suites=["smoke"])[0]
+    finally:
+        srv.shutdown()
+    c = _case(run, "smoke.nav_links")
+    steps = c.attempts[-1].steps
+    assert c.verdict == "pass", (c.attempts[-1].error, [(s.name, s.status, s.error) for s in steps])
+    slow = [s for s in steps if s.name.startswith("slow page /pages/about")]
+    assert slow and slow[0].status == "warn" and "did not load within 2 s" in slow[0].error, [(s.name, s.status, s.error) for s in steps]
+    assert any(s.name == "open /pages/about" and s.status == "pass" for s in steps)
+
+
 def test_too_many_third_party_scripts_warn_with_the_hosts_named(tmp_path):
     run = _info("script_heavy", tmp_path, suites=("smoke", "catalog", "product"))
     assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
@@ -1511,6 +1582,15 @@ def test_variant_switch_selects_the_picked_size_and_shows_its_price(tmp_path):
     assert "₹1,299.00 → ₹1,399.00" in d, d
     assert "sold_out_blocks_buy" not in st and "sold-out variant: none" in st["variant_options"].detail
     assert run.verdict == "healthy"
+
+
+def test_variant_switch_clicks_a_pill_under_the_pickers_own_layer_like_a_shopper(tmp_path):
+    """dotandkey.com (12 Oct): a transparent swatch layer inside the picker receives the click and forwards it; the
+    locator click times out ('intercepts pointer events'). Radar clicks the point -> Large picked, PASS."""
+    c = _case(_variant_only("variant_pill_covered", tmp_path), "product.variant_switch")
+    s = _steps(c)["variant_switch"]
+    assert c.verdict == "pass" and s.status == "pass", (s.status, s.error)
+    assert "202 (Large, ₹1,399.00)" in s.detail, s.detail
 
 
 def test_variant_switch_that_changes_nothing_warns_and_fails_when_strict(tmp_path):
@@ -1971,3 +2051,156 @@ def test_dawn_cart_row_price_is_read_and_a_discount_code_is_not_a_mismatch(tmp_p
     st = _steps(c)
     assert st["cart_line_price"].status == "pass", (st["cart_line_price"].status, st["cart_line_price"].error)
     assert "₹1,299.00 struck, discounted in the cart to ₹1,169.10" in st["cart_line_price"].detail, st["cart_line_price"].detail
+
+
+# ---------------- new30i/j false failures: cards a shopper sees, landing collections (12 Oct 2026) ----------------
+
+def _scan_small(mode, tmp_path, device="desktop", suites=None):
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2),
+                    device=device, only_suites=suites)[0]
+    finally:
+        srv.shutdown()
+
+
+def _fails(case):
+    return [(s.name, s.status, s.error) for s in case.attempts[-1].steps if s.status in ("fail", "warn")]
+
+
+def test_card_link_with_display_contents_is_a_card_a_shopper_can_click(tmp_path):
+    """valliyan.com (Baseline theme, new30j, both devices): the card link is display:contents around image + name +
+    price. The products were plainly on screen (journey.shopper.a1.png), yet 'products listed: 0' and '15 links: 15
+    not visible': the <a> has no box of its own. Its box is its children's."""
+    run = _scan_small("contents_cards", tmp_path, suites=["journey", "catalog"])
+    coll, j = _case(run, "catalog.collection."), _case(run, "journey.")
+    assert coll.verdict == "pass", _fails(coll)
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "/products/" in _steps(j)["click_into_product"].detail
+
+
+def test_landing_collection_without_a_grid_warns_and_the_journey_goes_on_to_a_collection_with_products(tmp_path):
+    """quboworld.com (Horizon, new30j): the menu's first collection, 'Smart Entrance', is a landing page (hero + 'Learn
+    more' tiles to sub-collections, mega-menu product links hidden). Radar failed it as 'products listed: 0' and the
+    journey as '104 links: 104 not visible' (DOWN). A shopper goes on to a collection that lists products."""
+    run = _scan_small("landing_collection", tmp_path, suites=["journey", "catalog"])
+    coll, j = _case(run, "catalog.collection.home-decor"), _case(run, "journey.")
+    st = _steps(coll)["lists_products"]
+    assert st.status == "warn" and "landing page" in st.error and "/collections/kitchen" in st.error, (st.status, st.error)
+    assert coll.verdict != "confirmed_fail", coll.verdict
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    d = _steps(j)["click_into_collection"].detail
+    assert "/collections/kitchen" in d and "listed no products" in d, d
+
+
+def test_phone_brand_landing_menu_behind_the_menu_button_is_opened_for_the_hop(tmp_path):
+    """subko.coffee phone (new30j; desktop healthy via 'Specialty Coffee' -> /pages/coffee): on phones the brand
+    landing's top menu sits behind ☰. Radar looked only at header links already on screen and failed 'no matching
+    links on the page'. A shopper opens the menu and picks the section."""
+    j = _case(_scan_small("phone_brand_landing", tmp_path, device="mobile", suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "(/pages/shop)" in _steps(j)["click_into_collection"].detail, _steps(j)["click_into_collection"].detail
+
+
+@pytest.mark.parametrize("device", ["desktop", "mobile"])
+def test_country_modal_inside_the_header_is_answered_stay_here_never_international(tmp_path, device):
+    """teatrunk.in (new30i, both devices): 'Shopping from Outside India? International | Stay Here' covered every card
+    ('covered by div.ctryModal-Content-overlay') and Radar recorded no popup closed: the modal sits inside <header>,
+    which the popup rules skip (menus live there). The layer actually covering the cards is answered 'Stay Here'."""
+    j = _case(_scan_small("country_modal", tmp_path / device, device=device, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    closed = [k for k in _checks(j) if "popup closed" in k["what"]]
+    assert closed and all("International" not in k["actual"] for k in closed), closed
+    assert any("Stay Here" in k["actual"] for k in closed), closed
+
+# ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
+
+def _buy_now_only(mode, tmp_path, strict=False, **kw):
+    """Only the cart suite's cart.buy_now case (journey 33). strict=True flips the builder's strict=False."""
+    import radar.runner.executor as ex
+    orig = ex.build_suites
+
+    def built(sm, s):
+        suites = orig(sm, s)
+        for x in suites:
+            if x.id == "cart":
+                x.cases = [c for c in x.cases if c.check == "buy_now"]
+                for c in x.cases:
+                    c.params["strict"] = strict
+        return suites
+    ex.build_suites = built
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, **kw), only_suites=["cart"])[0]
+    finally:
+        srv.shutdown()
+        ex.build_suites = orig
+
+
+def test_buy_it_now_opens_shopify_checkout_showing_the_product(tmp_path):
+    """Journey 33: the dynamic checkout button (rendered 600 ms after load, like Shopify's) is clicked once; the checkout
+    renders fields (none filled) and names the vase. The add-to-cart tests still never click it (buy_now_first)."""
+    c = _case(_buy_now_only("buy_now_ok", tmp_path), "cart.buy_now")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["buy_now_opens_checkout"].status == "pass", [(s.name, s.status, s.error) for s in st.values()]
+    d = st["buy_now_opens_checkout"].detail
+    assert "clicked 'Buy it now'" in d and "Shopify checkout at /checkouts/cn/buynow" in d and "nothing typed" in d, d
+    assert all(ch["ok"] for ch in st["buy_now_opens_checkout"].checks), st["buy_now_opens_checkout"].checks
+
+
+def test_store_without_buy_it_now_is_information_only(tmp_path):
+    c = _case(_buy_now_only("healthy", tmp_path), "cart.buy_now")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["buy_now_not_judged"].status == "info", [(s.name, s.status, s.error) for s in st.values()]
+    assert st["buy_now_not_judged"].detail == "no buy-now button on this store"
+    assert "buy_now_opens_checkout" not in st
+
+
+@pytest.mark.parametrize("mode,words", [
+    ("buy_now_dead", "opens a checkout: expected a checkout page, popup or iframe, got nothing happened within 12 s"),
+    ("buy_now_error", "checkout page HTTP status: expected < 400, got 500"),
+])
+def test_broken_buy_it_now_warns_now_and_fails_when_strict(tmp_path, mode, words):
+    c = _case(_buy_now_only(mode, tmp_path), "cart.buy_now")
+    st = _steps(c)["buy_now_opens_checkout"]
+    assert c.verdict == "pass" and st.status == "warn" and words in st.error, (c.verdict, st.status, st.error)
+    strict = _case(_buy_now_only(mode, tmp_path / "strict", strict=True), "cart.buy_now")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "buy_now_opens_checkout", \
+        (strict.verdict, strict.attempts[-1].error)
+    assert words in strict.attempts[-1].error
+
+
+@pytest.mark.parametrize("mode,app,kind", [("tp_checkout", "GoKwik", "iframe"), ("tp_checkout_popup", "Shopflo", "popup")])
+def test_third_party_checkout_app_is_named_and_its_first_screen_renders(tmp_path, mode, app, kind):
+    """Journey 35: the cart page names a checkout app; Radar clicks the store's checkout button, finds the app's iframe /
+    popup on another origin, names the app and sees its mobile-number screen. Nothing typed, no OTP requested."""
+    run = _cart_edit_only(mode, tmp_path)
+    c = _case(run, "cart.edit_and_checkout")
+    st = _steps(c)
+    assert c.verdict == "pass" and all(s.status == "pass" for s in st.values()), [(s.name, s.status, s.error) for s in st.values()]
+    d = st["checkout_opens"].detail
+    assert d.startswith(f"{app} checkout opened ({kind}, localhost)"), d
+    assert "phone-number screen ('Enter mobile number' box shown, NOT filled)" in d and "no OTP requested" in d, d
+    assert "order summary names the product" in d, d
+    if kind == "popup":
+        assert d.endswith("popup closed"), d
+    checks = {ch["what"]: ch for ch in st["checkout_opens"].checks}
+    assert checks["checkout app named"]["actual"].startswith(f"{app} ({kind}"), checks
+    assert st["remove_item"].status == "pass"        # the journey went on to the cart page and emptied it
+
+
+@pytest.mark.parametrize("mode,words", [
+    ("tp_checkout_blank", "checkout first screen rendered (GoKwik): expected phone-number / OTP screen or order summary "
+                          "(nothing typed), got blank"),
+    ("tp_checkout_script_404", "GoKwik checkout opens from the cart's checkout button: expected a popup, iframe or checkout "
+                               "page, got nothing opened within 12 s; GoKwik file"),
+])
+def test_broken_third_party_checkout_warns_now_and_fails_when_strict(tmp_path, mode, words):
+    c = _case(_cart_edit_only(mode, tmp_path), "cart.edit_and_checkout")
+    st = _steps(c)["checkout_opens"]
+    assert c.verdict == "pass" and st.status == "warn" and words in st.error, (c.verdict, st.status, st.error)
+    if mode == "tp_checkout_script_404":
+        assert "answered HTTP 404" in st.error, st.error
+    strict = _case(_cart_edit_only(mode, tmp_path / "strict", strict=True), "cart.edit_and_checkout")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "checkout_opens", \
+        (strict.verdict, strict.attempts[-1].error)

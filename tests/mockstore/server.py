@@ -160,6 +160,23 @@ Modes (to prove Radar catches and heals what it should):
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
                    bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
   robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
+  blank_not_shopify  gozero.in (cycle 34): no robots.txt (404), the homepage answers 200 with an EMPTY title, an empty
+                   <div id=root> and no Shopify marker -> verdict UNSUPPORTED with what the homepage showed (v0.19:
+                   'error', shown as 'Radar crashed')
+  pack_of_two      theformalclub.in (cycle 34): the vase is a 'pack of 2' with ONE option whose values join both items'
+                   sizes ('S / 38 / M / 40'); the page shows two pickers labelled 'S' / 'M' and fills the form's id only
+                   when both are picked -> Radar clicks 'S' in each picker and PASSES (v0.19: 'variant selected like a
+                   shopper ... after choosing nothing (no matching picker)')
+  stale_catalog    bombaytrooper.com (cycle 34): /products.json lists the vase in stock, its /products/<h>.js and page
+                   say sold out -> the product test notes it (info) and tests the next in-stock catalog product, PASSES
+                   (v0.19: 'an in-stock variant exists ... got none available')
+  app_proxy_page   arakucoffee.in (cycle 34): a homepage section links to /tools/product-finder/match-me, an app-proxy
+                   quiz page with no theme layout whose content a web component draws in a CLOSED shadow root (body text
+                   empty, no <img>) -> smoke.more_links PASSES on what the browser painted (v0.19: 'page not blank: got
+                   0 chars, 0 images' -> confirmed_fail)
+  slow_page        bluenectar.co.in (cycle 34, desktop): the menu page /pages/about answers after SLOW_PAGE_SECS (3 s;
+                   tests use a 2 s navigation timeout) -> opened again with twice the wait: smoke.nav_links PASSES with a
+                   'slow page' WARNING (v0.19: 'Timeout exceeded' -> broken navigation page, confirmed_fail)
   robots_404       /robots.txt answers HTTP 404 (no file) -> everything allowed, store tested normally
   (Radar's own network dropping mid-run is not a mode: tests shut the store down from the progress hook and point
    the connectivity probe at a dead port (Radar offline) or at a live server (Radar online, store died).)
@@ -250,6 +267,9 @@ Modes (to prove Radar catches and heals what it should):
                    -> product pages WARN 'screen covered by fixed bars' naming div.sticky-info; the store stays healthy
   healthy (+)      the vase's page has Dawn-style size pills (radio + label) whose script updates the form's variant id,
                    the price and ?variant= (journey 22) -> product.variant_switch PASSES (Small → Large, ₹1,299 → ₹1,399)
+  variant_pill_covered  healthy pills under a transparent swatch layer that forwards clicks (dotandkey.com, 12 Oct):
+                   Playwright's click on the pill times out ('intercepts pointer events') -> Radar clicks the point like
+                   a shopper, variant_switch PASSES (was 'option could not be clicked' warning)
   variant_switch_broken  same pills, but the theme's variant script is missing: clicking Large changes nothing (id, price
                    and address stay Small's) -> product.variant_switch WARNS (strict: FAILS) at variant_switch
   variant_sold_out the vase also has a sold-out 'Extra Large' size (data + page); picking it disables the buy button and
@@ -294,6 +314,30 @@ Modes (to prove Radar catches and heals what it should):
                    found') -> catalog.filter WARNS (strict: FAILS), naming the store's own count
   filter_app       Dawn's filter form is on the page, but a filter app (script /static/boost-sd-filter.js) owns the grid
                    and empties it on addresses with filter.* -> 'not judged: filter app Boost' (info), not a warning
+  contents_cards   every product card's link is display:contents around image + name (valliyan.com, Baseline theme):
+                   the <a> has no box of its own -> collection + journey PASS (was 'products listed: 0', 'N not visible')
+  landing_collection  /collections/home-decor (the menu's first collection) is a landing page: hero, hidden mega-menu
+                   product links, a 'Learn more' tile to /collections/kitchen (quboworld.com 'Smart Entrance') -> the
+                   collection test WARNS 'landing page', the journey goes on to the sub-collection and PASSES
+  phone_brand_landing  brand_landing, but on phones the top menu sits behind a ☰ drawer (subko.coffee phone) -> the
+                   journey opens the menu, hops to /pages/shop, PASSES
+  country_modal    a 'Shopping from Outside India? International / Stay Here' modal rendered inside <header> covers the
+                   page until answered (teatrunk.in) -> Radar clicks 'Stay Here' (never 'International'), PASSES
+  buy_now_ok       (journey 33) the product form carries Shopify's dynamic checkout slot (div.shopify-payment-button); a
+                   script renders 'Buy it now' into it 600 ms after load; the click opens /checkouts/cn/buynow?variant=<id>,
+                   a checkout (contact + delivery fields) whose order summary names the product -> cart.buy_now PASSES
+                   (nothing typed); healthy (no buy-now button) -> 'no buy-now button on this store' (info)
+  buy_now_dead     same button, but the dynamic-checkout script never wires it: the click does nothing -> cart.buy_now
+                   WARNS (strict: FAILS) at buy_now_opens_checkout 'nothing happened'
+  buy_now_error    same button, the checkout it opens answers HTTP 500 'There was a problem with our checkout' -> WARNS
+  tp_checkout      (journey 35) the cart page loads a GoKwik-style app (/static/gokwik-checkout.js) that takes over the
+                   checkout button: a full-screen iframe from another origin (localhost/gokwik/checkout) shows the order
+                   summary and an 'Enter mobile number' (tel) box 800 ms later -> cart.edit_and_checkout checkout_opens
+                   PASSES naming GoKwik; no number typed, no OTP asked
+  tp_checkout_popup  same with a Shopflo-style app opening its checkout in a POPUP window -> PASSES naming Shopflo
+  tp_checkout_blank  the GoKwik iframe opens but stays blank -> checkout_opens WARNS (strict: FAILS) 'blank'
+  tp_checkout_script_404  the app script answers HTTP 404, so the checkout button (type=button, owned by the app) does
+                   nothing -> checkout_opens WARNS naming the 404
   (every mode)     robots.txt carries Shopify's default collection lines: /collections/*sort_by*,
                    /collections/*filter*&*filter*, /collections/*+* (facets_sort_allowed: without the sort_by lines)
 
@@ -340,7 +384,15 @@ MORE_MODES = ("paginated", "pagination_broken", "load_more", "infinite_scroll", 
 J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepage banner (journey 15)
 # journey 22: size pills on multi-variant product pages (only in these modes: other modes test their own pickers)
 VARIANT_MODES = ("healthy", "variant_switch_broken", "variant_sold_out", "variant_sold_out_buyable",
-                 "variant_no_url_push", "variant_price_late", "variant_form_late", "variant_id_on_submit")
+                 "variant_no_url_push", "variant_price_late", "variant_form_late", "variant_id_on_submit",
+                 "variant_pill_covered")
+# theformalclub.in (cycle 34): a 'pack of 2 shirts' product with ONE option whose values join both shirts' sizes
+# ('S / 38 / M / 40'); the page shows two size pickers labelled 'S', 'M' (one per shirt) and sets the variant id only
+# when both are picked
+PACK_SIZES = (("S", "S / 38"), ("M", "M / 40"))
+PACK_VARIANTS = [{"id": 210 + 2 * i + j, "available": True, "price": "1299.00", "option1": f"{a[1]} / {b[1]}",
+                  "title": f"{a[1]} / {b[1]}"} for i, a in enumerate(PACK_SIZES) for j, b in enumerate(PACK_SIZES)]
+SLOW_PAGE_SECS = 3.0      # slow_page: /pages/about answers after this long (tests set a 2 s navigation timeout)
 SOLD_OUT_SIZE = {"id": 203, "available": False, "price": "1499.00", "option1": "Extra Large", "title": "Extra Large"}
 FACET_MODES = ("facets", "facets_sort", "facets_sort_allowed", "filter_broken",     # storefront filters (journey 25)
                "filter_stock_differs", "filter_big_collection", "filter_empty", "filter_app")
@@ -402,6 +454,9 @@ ff.addEventListener('change', () => { const url = ff.action.split('?')[0] + '?' 
   fetch(url).then(r => r.text()).then(t => { const d = new DOMParser().parseFromString(t, 'text/html');
     document.getElementById('product-grid').innerHTML = d.getElementById('product-grid').innerHTML; }); });</script>""")
 CARTS: dict[str, list[dict]] = {}
+BUY_NOW_MODES = ("buy_now_ok", "buy_now_dead", "buy_now_error")                                     # journey 33
+TP_APPS = {"tp_checkout": "gokwik", "tp_checkout_popup": "shopflo", "tp_checkout_blank": "gokwik",   # journey 35
+           "tp_checkout_script_404": "gokwik"}
 
 SVG = b'<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#c96"/></svg>'
 
@@ -730,7 +785,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   document.body.appendChild(d); });
 </script></body>""")
         path_now = urlparse(self.path).path.rstrip("/") or "/"
-        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("hover_menu", "brand_landing"):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("hover_menu", "brand_landing", "phone_brand_landing"):
             if path_now == "/":                       # brand-landing homepage: no products, no collection links
                 body = re.sub(r'<a class="card"[^>]*>.*?</a>', "", body)
             mega = ('<div class="mega" style="position:absolute;left:0;top:30px;background:#fff;padding:10px;display:none">'
@@ -740,6 +795,48 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                                 f'<a href="/pages/shop">Shop</a>{mega}</div> <a href="/pages/about">About</a></nav>'
                                 '<style>.menu-item:hover .mega{display:block !important}</style>', 1)
             body = body.replace('<a href="/collections/all">Shop all</a>', '')
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "phone_brand_landing" \
+                and "Mobile" in (self.headers.get("User-Agent") or ""):
+            # subko.coffee phone (new30j, 11 Oct): the brand-landing top menu ('Shop' -> /pages/shop) sits behind the ☰
+            # button on phones; the drawer holds no collection link, only the landing pages
+            body = body.replace('<nav><div class="menu-item"', '<button type="button" class="header__icon--menu" '
+                                'aria-label="Menu" onclick="document.getElementById(\'m-drawer\').style.display=\'block\'">'
+                                '&#9776;</button><div id="m-drawer" style="display:none"><nav><div class="menu-item"', 1)
+            body = body.replace('<a href="/pages/about">About</a></nav><style>', '<a href="/pages/about">About</a></nav></div><style>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "contents_cards":
+            # valliyan.com (Baseline theme, new30j, both devices): the product card's link is display:contents around
+            # the image + name + price. A shopper sees and taps the card; the <a> itself has no box (0x0 rect), so
+            # Radar said 'products listed: 0' and '15 links: 15 not visible'.
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
+                f'<a class="card" href="/products/{m.group(1)}" style="display:contents">'
+                f'<div class="product-item" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
+                f'<div class="product-item__image" style="height:200px;background:#eee">{m.group(2)}</div>'
+                f'<div class="product-item__title">{m.group(3)}</div></div></a>'), body)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "landing_collection" \
+                and path_now == "/collections/home-decor":
+            # quboworld.com (Horizon, new30j): the menu's first collection is an 'entrance' landing page: a hero and
+            # tiles with 'Learn more' buttons to sub-collections, no product grid; the mega menu's product links are in
+            # the page but hidden ('104 links: 104 not visible')
+            body = re.sub(r'(<main>).*?(</main>)', lambda m: m.group(1) + (
+                '<section class="hero" style="height:420px;background:#111;color:#fff"><h1>Smarter homes.</h1></section>'
+                '<div class="mega-products" style="display:none">'
+                + "".join(f'<a href="/products/{p["handle"]}">{p["title"]}</a>' for p in PRODUCTS if p["collection"]) +
+                '</div><section class="tiles"><div class="tile"><h3>Kitchen</h3>'
+                '<a class="button" href="/collections/kitchen">Learn more</a></div></section>') + m.group(2),
+                body, count=1, flags=re.S)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal":
+            # teatrunk.in (new30i, both devices): 'Shopping from Outside India?' with International / Stay Here, rendered
+            # inside the theme's <header>, its backdrop (div.ctryModal-Content-overlay) over every card and menu link.
+            # Shown until the shopper answers. 'International' leaves the store: never clicked.
+            body = body.replace("</header>", """<div class="ctryModal" id="ctryModal" style="position:fixed;inset:0;z-index:100">
+<div class="ctryModal-Content-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,.45)"></div>
+<div class="ctryModal-Content" style="position:relative;margin:30vh auto 0;width:60%;background:#fff;padding:20px">
+<h2>Shopping from Outside India?</h2><p>We have a dedicated store which serves in your country. Would you like us to take you there?</p>
+<button type="button" class="ctry-intl">International</button> <button type="button" class="ctry-stay">Stay Here</button></div></div>
+<script>(() => { const m = document.getElementById('ctryModal');
+  if (document.cookie.includes('ctry=stay')) { m.remove(); return; }
+  m.querySelector('.ctry-intl').onclick = () => { location.href = '/pages/international'; };
+  m.querySelector('.ctry-stay').onclick = () => { document.cookie = 'ctry=stay;path=/'; m.remove(); }; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "dead_image_link" and path_now.startswith("/collections/"):
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
                 f'<div class="card-wrapper" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
@@ -932,7 +1029,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                 return self._send(500, "Internal Server Error", "text/plain")
         if path == "/robots.txt" and self.mode == "robots_500":
             return self._send(500, "Internal Server Error", "text/plain")
-        if path == "/robots.txt" and self.mode == "robots_404":
+        if path == "/robots.txt" and self.mode in ("robots_404", "blank_not_shopify"):
             return self._send(404, "Not Found", "text/plain")
         if path == "/robots.txt":
             extra = "Disallow: /search\n" if self.mode == "hostile" else ""
@@ -951,10 +1048,35 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             self.end_headers()
             self.wfile.write(b"%PDF-1.4")
             return
+        if path in ("/gokwik/checkout", "/shopflo/checkout"):    # journey 35: the app's checkout (on 'localhost': another origin)
+            if self.mode == "tp_checkout_blank":
+                return self._send(200, "<html><head><title></title></head><body></body></html>")
+            items = (q.get("items") or [""])[0].replace("<", "")
+            app = "GoKwik" if path.startswith("/gokwik") else "Shopflo"
+            return self._send(200, f"""<html><head><title>{app} checkout</title></head><body><div id="app"></div>
+<template id="first"><div class="brand">Mock Store · secured by {app}</div><div class="summary">Order summary: {items}</div>
+<h3>Enter mobile number to continue</h3><input type="tel" name="phone" placeholder="Enter mobile number">
+<button type="button" class="get-otp">Get OTP</button></template>
+<script>setTimeout(() => document.getElementById('app').innerHTML = document.getElementById('first').innerHTML, 800);</script>
+</body></html>""")
+        if path.startswith("/static/") and path.endswith("-checkout.js") and self.mode in TP_APPS:
+            app = TP_APPS[self.mode]
+            if self.mode == "tp_checkout_script_404" or app not in path:
+                return self._send(404, "not found", "text/plain")
+            how = ("window.open(u, 'checkout', 'width=480,height=720');" if app == "shopflo" else
+                   "{ const f = document.createElement('iframe'); f.id = '" + app + "-iframe'; f.src = u; "
+                   "f.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:9999;background:#fff'; "
+                   "document.body.appendChild(f); }")
+            return self._send(200, "document.querySelectorAll('[name=checkout]').forEach(b => b.addEventListener('click', e => {"
+                              " e.preventDefault(); const u = 'http://localhost:' + location.port + '/" + app + "/checkout?items='"
+                              " + encodeURIComponent(b.dataset.items || ''); " + how + " }));", "application/javascript")
         if path.startswith("/static/") and path.endswith(".js"):      # third-party app scripts (script_heavy mode)
             return self._send(200, "void 0;", "application/javascript")
         if path.startswith("/cdn/shop/files/") or path.startswith("/static/"):
             return self._send(200, SVG, "image/svg+xml")
+        if path == "/" and self.mode == "blank_not_shopify":     # gozero.in (cycle 34): no title, no markers, no robots.txt
+            return self._send(200, '<!doctype html><html><head><meta charset="utf-8"><title></title></head>'
+                                   '<body><div id="root"></div></body></html>')
         if path == "/" and self.mode == "store_refuses":
             return self._send(423, page("This store is unavailable", "<h1>This store is unavailable</h1>"))
         if path == "/":
@@ -964,10 +1086,25 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                            '<a href="/collections/kitchen">Shop the kitchen</a>'
                                            + (' <a href="/https://www.mockstore.in/collections/sale">Sale</a>'   # beyondsnack.in
                                               if self.mode == "broken_section_link" else "") + '</section>'
-                                           if self.mode in J15_MODES else ""),
+                                           if self.mode in J15_MODES else "")
+                                        + ('<section class="quiz-banner"><a href="/tools/product-finder/match-me">Match me '
+                                           'a cup</a></section>' if self.mode == "app_proxy_page" else ""),
                                         shopify=self.mode != "not_shopify"), set_cart=new)
         if path == "/pages/blank":       # HTTP 200 with a title but nothing on screen (JS crash style)
             return self._send(200, "<!doctype html><html><head><title>Blank | Mock Store</title></head><body><div id=app></div></body></html>")
+        if path == "/tools/product-finder/match-me" and self.mode == "app_proxy_page":
+            # arakucoffee.in (cycle 34): an app-proxy quiz page, no theme layout, drawn by a web component in a CLOSED
+            # shadow root (no text in document.body, no <img>)
+            return self._send(200, '<!doctype html><html><head><meta charset="utf-8"><title>Match Me A Cup</title></head>'
+                                   '<body><quiz-app style="display:block"></quiz-app><script>customElements.define("quiz-app", '
+                                   'class extends HTMLElement { connectedCallback() { const r = this.attachShadow({mode: "closed"}); '
+                                   'setTimeout(() => { r.innerHTML = \'<h1 style="font-size:44px">Find your perfect cup</h1>'
+                                   '<p style="font-size:20px">Answer three quick questions about how you brew and we will '
+                                   'match you with a coffee.</p><button>Start the quiz</button>\'; }, 300); } });</script>'
+                                   '</body></html>')
+        if path == "/pages/about" and self.mode == "slow_page":
+            import time as _t                     # bluenectar.co.in (cycle 34, desktop): pages slower than the timeout
+            _t.sleep(SLOW_PAGE_SECS)
         if path == "/pages/about":
             return self._send(200, page("About Mock Store", "<p>About us</p>"))
         if path in ("/pages/our-story", "/pages/offers"):      # journey 15: a homepage banner, the announcement bar
@@ -1009,7 +1146,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                                for c in COLLECTIONS]})
         if path == "/products.json":
             return self._json({"products": [{"id": p["id"], "handle": p["handle"], "title": p["title"],
-                                             "variants": self._variants(p)} for p in PRODUCTS]})
+                                             "variants": self._variants(p, catalog=True)} for p in PRODUCTS]})
         if path.startswith("/collections/"):
             h = path.split("/")[2]
             items = [p for p in PRODUCTS if (h == "all" and p["collection"]) or p["collection"] == h]
@@ -1018,7 +1155,9 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             if path.endswith("products.json"):
                 if self.mode == "filter_big_collection":     # Radar reads 250 of a bigger collection: the vase is not in them
                     items = [p for p in items if p["handle"] != "ceramic-vase"]
-                return self._json({"products": [{"handle": p["handle"], "title": p["title"], "variants": p["variants"]} for p in items]})
+                return self._json({"products": [{"handle": p["handle"], "title": p["title"], "variants":
+                                                 PACK_VARIANTS if self.mode == "pack_of_two" and p["handle"] == "ceramic-vase"
+                                                 else p["variants"]} for p in items]})
             if not items:
                 return self._send(404, page("Not found", "404"))
             if self.mode in FACET_MODES:
@@ -1117,6 +1256,19 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             self.send_header("Location", "/cart")
             self.end_headers()
             return
+        if path == "/checkouts/cn/buynow":     # journey 33: Shopify's buy-now checkout holds only that variant, not the cart
+            if self.mode == "buy_now_error":
+                return self._send(500, page("Checkout error", "<h1>There was a problem with our checkout</h1>"))
+            vid = int((q.get("variant") or ["0"])[0] or 0)
+            p = next((x for x in PRODUCTS for v in x["variants"] if v["id"] == vid), None)
+            if not p:
+                return self._send(404, page("Page not found", "<h1>404</h1>"))
+            price = int(float(next(v["price"] for v in p["variants"] if v["id"] == vid)) * 100)
+            return self._send(200, page("Checkout - Mock Store", '<h2>Contact</h2><input type="email" name="email" '
+                                        'placeholder="Email or mobile phone number"><h2>Delivery</h2><input name="firstName" '
+                                        'placeholder="First name"><h2>Payment</h2><button type="submit" id="checkout-pay-button">'
+                                        f'Pay now</button><aside id="summary"><div class="summary-line">{p["title"]} × 1 '
+                                        f'{rupees(price)}</div></aside>'))
         if path in ("/checkout", "/checkouts/cn/mock"):
             items = CARTS[cid]
             if not items:                          # Shopify sends an empty cart back to the cart page
@@ -1177,7 +1329,11 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
 </script>"""
             return self._send(200, page("Your Cart | Mock Store",
                                         f'{rows}<p class="totals">Subtotal {rupees(total)}</p>'
-                                        f'<form action="/checkout" method="post"><button type="submit" name="checkout">Check out</button></form>{js}'),
+                                        + (f'<button type="button" name="checkout" class="{TP_APPS[self.mode]}-checkout-btn" '
+                                           f'data-items="{" | ".join(i["title"] + " × " + str(i["quantity"]) for i in items)}">Check out</button>'
+                                           f'<script src="/static/{TP_APPS[self.mode]}-checkout.js"></script>' if self.mode in TP_APPS else
+                                           '<form action="/checkout" method="post"><button type="submit" name="checkout">Check out</button></form>')
+                                        + js),
                               set_cart=new)
         if path == "/search/suggest.json":
             term = (q.get("q") or [""])[0].lower()
@@ -1220,8 +1376,14 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
             return self._send(200, page(f"Search: {term} | Mock Store", found))
         return self._send(404, page("Page not found", "<h1>404</h1>"))
 
-    def _variants(self, p):
-        """The product's variants as this mode serves them (journey 22: the vase gains a sold-out size)."""
+    def _variants(self, p, catalog: bool = False):
+        """The product's variants as this mode serves them (journey 22: the vase gains a sold-out size). catalog=True:
+        as the store-wide /products.json lists them."""
+        if self.mode == "pack_of_two" and p["handle"] == "ceramic-vase":
+            return PACK_VARIANTS
+        if self.mode == "stale_catalog" and p["handle"] == "ceramic-vase" and not catalog:
+            # bombaytrooper.com (cycle 34): products.json still lists it in stock; its .js and its page say sold out
+            return [dict(v, available=False) for v in p["variants"]]
         if self.mode in ("variant_sold_out", "variant_sold_out_buyable") and p["handle"] == "ceramic-vase":
             return p["variants"] + [SOLD_OUT_SIZE]
         if self.mode == "filter_stock_differs" and p["handle"] == "sold-out-lamp":
@@ -1246,6 +1408,13 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
         data = json.dumps([{"id": v["id"], "option1": v["option1"], "available": v["available"],
                             "price": f'₹{float(v["price"]):,.2f}'} for v in vs])
         block = "false" if self.mode == "variant_sold_out_buyable" else "true"
+        if self.mode == "variant_pill_covered":      # dotandkey.com (12 Oct): a transparent swatch layer lies over the
+            pills = pills.replace('<fieldset>', '<fieldset style="position:relative">').replace(  # pills; it forwards
+                '</fieldset>', '<div class="swatch-layer" style="position:absolute;inset:0;z-index:5"></div></fieldset>') + (
+                "<script>document.querySelector('.swatch-layer').addEventListener('click', ev => {"   # the click to the
+                " const l = ev.currentTarget; l.style.pointerEvents = 'none';"                        # pill under it
+                " const t = document.elementFromPoint(ev.clientX, ev.clientY); l.style.pointerEvents = '';"
+                " if (t) t.click(); });</script>")
         return pills + ("<script>(() => { const V = " + data + ", BLOCK = " + block + ";\n"
                         "document.querySelectorAll('variant-radios input[type=radio]').forEach(r => r.addEventListener('change', () => {\n"
                         "  const v = V.find(x => x.option1 === r.value); if (!v) return;\n"
@@ -1314,6 +1483,22 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                    f'<button type="submit" name="add">Add to cart</button></form></product-form>')
         elif not available:
             buy = '<button disabled>Sold out</button>'
+        elif self.mode == "pack_of_two" and p["handle"] == "ceramic-vase":
+            ids = json.dumps({v["option1"]: v["id"] for v in PACK_VARIANTS})
+            full = json.dumps(dict(PACK_SIZES))
+            group = lambda n, label: (f'<div class="product-option" data-group="{n}"><span>{label}:</span> ' + "".join(
+                f'<button type="button" class="size-pill" onclick="packPick({n}, this)">{short}</button>'
+                for short, _ in PACK_SIZES) + '</div>')
+            buy = (group(0, "Size") + group(1, "Second shirt (Size)") +
+                   '<product-form class="product-form"><form id="product-form-template__main" action="/cart/add" method="post" '
+                   'onsubmit="event.preventDefault();addToCart(this.querySelector(&quot;[name=id]&quot;).value)">'
+                   '<input type="hidden" name="id" value=""><button type="submit" name="add" disabled>Add to cart</button>'
+                   f'</form></product-form><script>const PACK_IDS = {ids}, PACK_FULL = {full}, PACK = [null, null];'
+                   'function packPick(n, b) { b.parentElement.querySelectorAll("button").forEach(x => x.classList.remove("active"));'
+                   ' b.classList.add("active"); PACK[n] = PACK_FULL[b.innerText.trim()];'
+                   ' if (PACK[0] && PACK[1]) { const f = document.getElementById("product-form-template__main");'
+                   ' f.querySelector("[name=id]").value = PACK_IDS[PACK[0] + " / " + PACK[1]];'
+                   ' f.querySelector("[name=add]").disabled = false; } }</script>')
         elif self.mode == "obscure_button":
             buy = (f'<div class="actions"><span role="button" tabindex="0" class="cta-x" data-vid="{vid}" '
                    f'onclick="addToCart(this.dataset.vid)">Grab it</span><span role="button" class="cta-y">Share</span></div>')
@@ -1456,6 +1641,19 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="button" class="shopify-payment-button__button" '
                                 'onclick="location.href=\'/checkouts/c/mock\'">Buy it now</button>'
                                 '<button type="submit" name="add">Add to cart</button>')
+        if self.mode in BUY_NOW_MODES and available:
+            # journey 33: Shopify's dynamic checkout slot inside the product form; its script renders 'Buy it now' a moment
+            # after load (buy_now_dead: the button is drawn, its click handler never attached)
+            go = "" if self.mode == "buy_now_dead" else (
+                "b.onclick = () => { const id = document.querySelector('#product-form-template__main [name=id]').value; "
+                "location.href = '/checkouts/cn/buynow?variant=' + id; };")
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add">Add to cart</button><div data-shopify="payment-button" '
+                                'class="shopify-payment-button"></div>', 1)
+            body += ("<script>setTimeout(() => { const s = document.querySelector('.shopify-payment-button'); if (!s) return; "
+                     "const b = document.createElement('button'); b.type = 'button'; "
+                     "b.className = 'shopify-payment-button__button shopify-payment-button__button--unbranded'; "
+                     "b.textContent = 'Buy it now'; " + go + " s.appendChild(b); }, 600);</script>")
         if self.mode == "healer_disabled_sticky" and available:
             # littleboxindia.com mobile (new30c/d/e): the form's own button is not shown, the healer finds a DISABLED
             # 'Add to cart' near the title, and an ENABLED sticky ADD TO CART (no form attribute) is on screen.

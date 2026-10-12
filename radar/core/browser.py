@@ -307,12 +307,12 @@ class Session:
             time.sleep(wait)
         self._last_nav = time.time()
 
-    def goto(self, url: str):
+    def goto(self, url: str, timeout_ms: int | None = None):
         if not self.allowed(url):
             raise RobotsBlocked(f"robots.txt disallows {url}")
         self._polite()
         t0 = time.time()
-        resp = self.page.goto(url, wait_until="domcontentloaded", timeout=self.s.nav_timeout_ms)
+        resp = self.page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms or self.s.nav_timeout_ms)
         self.last_load_secs = round(time.time() - t0, 2)
         self.settle()
         self.record_load()
