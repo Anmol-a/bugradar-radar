@@ -195,8 +195,60 @@ def _dismiss(ctx: Ctx) -> None:
                    f"clicked {d['button']!r} on: {d['text']!r}", True)
 
 
+# What a shopper sees on the page: text and decoded images, also inside open shadow roots, plus what the browser itself
+# painted. arakucoffee.in (cycle 34, both devices): the app-proxy quiz page /tools/perfect-product-finder/… answered 200
+# with a title and a largest contentful paint at 1.6 s, yet document.body.innerText was empty and there was no <img>
+# (an app draws it inside a web component): 'page not blank: got 0 chars, 0 images'. 'painted' = the largest paint the
+# browser recorded (≥ 100x100 px), a visible iframe / canvas / video ≥ 200x150 px (an embedded app); else ''.
+SHOWN_JS = r"""() => new Promise(done => {
+  let text = ((document.body && document.body.innerText) || '').trim().length, imgs = 0;
+  const big = (e, w, h) => { const r = e.getBoundingClientRect(); return r.width >= w && r.height >= h; };
+  const walk = (root, deep) => { root.querySelectorAll('img').forEach(i => { if (i.getBoundingClientRect().width > 20 && i.naturalWidth > 0) imgs++; });
+    if (deep) { const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+      while (w.nextNode()) { const p = w.currentNode.parentElement;
+        if (p && !/^(STYLE|SCRIPT|TEMPLATE)$/.test(p.tagName)) text += w.currentNode.textContent.replace(/\s+/g, ' ').trim().length; } }
+    root.querySelectorAll('*').forEach(e => { if (e.shadowRoot) walk(e.shadowRoot, true); }); };
+  walk(document, false);
+  const emb = [...document.querySelectorAll('iframe, canvas, video, embed, object')].find(e => big(e, 200, 150));
+  const out = paint => done({text, imgs, painted: emb ? 'a ' + Math.round(emb.getBoundingClientRect().width) + 'x' +
+    Math.round(emb.getBoundingClientRect().height) + ' ' + emb.tagName.toLowerCase() : paint});
+  if (text >= 40 || imgs > 0 || emb) return out('');
+  try {
+    const po = new PerformanceObserver(l => { const e = l.getEntries().pop(); po.disconnect();
+      out(e && e.size >= 10000 ? 'content of ' + e.size + ' px² at ' + (e.startTime / 1000).toFixed(1) + ' s (largest contentful paint)' : ''); });
+    po.observe({type: 'largest-contentful-paint', buffered: true});
+    setTimeout(() => { po.disconnect(); out(''); }, 250);
+  } catch (e) { out(''); }
+})"""
+
+
+def _goto_patiently(ctx: Ctx, url: str):
+    """Open url; a page that does not even start rendering within the navigation timeout is opened once more with
+    twice the wait before Radar calls it broken. bluenectar.co.in (cycle 34, desktop): three collection pages took
+    9-33 s (one 'HTTP 200 in 32.78 s'), two hit the 30 s timeout on every attempt and were reported as broken links
+    while the phone run, same store, same hour, opened all of them. A page that loads on the second try is a SLOW page
+    (a warning naming the time), not a broken one; one that times out twice still fails as before."""
+    try:
+        return ctx.sess.goto(url)
+    except Exception as e:  # noqa: BLE001
+        if not re.search(r"Timeout \d+ms exceeded", str(e)):
+            raise
+        first = ctx.sess.s.nav_timeout_ms
+        try:
+            resp, secs = ctx.sess.goto(url, timeout_ms=2 * first)
+        except Exception as e2:  # noqa: BLE001
+            if re.search(r"Timeout \d+ms exceeded", str(e2)):
+                raise AssertionError(f"page did not load: no page within {first // 1000} s, nor within {2 * first // 1000} s "
+                                     f"on a second try ({str(e2).splitlines()[0][:80]})") from e2
+            raise
+        ctx.steps.items.append(StepResult(f"slow page {_path(url)[:40]}", "warn", None,
+                                          f"slow page: {_path(url)[:80]} did not load within {first // 1000} s; it loaded on "
+                                          f"a second try in {secs} s (shoppers on a slow connection may give up)"))
+        return resp, secs
+
+
 def _load(ctx: Ctx, url: str) -> str:
-    resp, secs = ctx.sess.goto(url)
+    resp, secs = _goto_patiently(ctx, url)
     status = resp.status if resp else ctx.sess.evaluate(
         "() => { const n = performance.getEntriesByType('navigation')[0]; return n && n.responseStatus ? n.responseStatus : null }")
     if status is None:      # served without a network response (cache / service worker / same-document)
@@ -216,9 +268,13 @@ def _load(ctx: Ctx, url: str) -> str:
             break
         ctx.sess.page.wait_for_timeout(500)
         title = (ctx.sess.evaluate("() => document.title") or "").strip()
-    shown = ctx.sess.evaluate("""() => ({text: ((document.body && document.body.innerText) || '').trim().length,
-        imgs: [...document.images].filter(i => i.getBoundingClientRect().width > 20 && i.naturalWidth > 0).length})""")
-    rendered = shown["text"] >= 40 or shown["imgs"] > 0
+    shown = ctx.sess.evaluate(SHOWN_JS)
+    for _ in range(8):    # app pages (quiz / app-proxy pages) draw after load: up to ~4 s more before 'blank'
+        if shown["text"] >= 40 or shown["imgs"] > 0 or shown["painted"]:
+            break
+        ctx.sess.page.wait_for_timeout(500)
+        shown = ctx.sess.evaluate(SHOWN_JS)
+    rendered = shown["text"] >= 40 or shown["imgs"] > 0 or bool(shown["painted"])
     # An empty <title> on a page that visibly rendered is an SEO finding (the SEO test 'title' reports it as a
     # warning), not a broken page: shoppers never see the tab title. hairoriginals.com (new30e held-out, 10 Oct: every
     # page fully rendered, document.title empty, both devices) and fablestreet.com (new30c) were 'down' for this alone.
@@ -226,7 +282,9 @@ def _load(ctx: Ctx, url: str) -> str:
                                                       "finding, see the SEO test)" if rendered else "(empty)"),
                bool(title) or rendered)
     ctx.expect("page not blank", "≥ 40 chars of text or an image",
-               f"{shown['text']} chars, {shown['imgs']} images", shown["text"] >= 40 or shown["imgs"] > 0)
+               f"{shown['text']} chars, {shown['imgs']} images"
+               + (f"; the browser painted {shown['painted']}" if shown["painted"] and shown["text"] < 40
+                  and not shown["imgs"] else ""), rendered)
     _dismiss(ctx)
     final = ctx.sess.page.url
     ctx.redirected_to = _path(final) if _path(final) != _path(url) else None
@@ -494,28 +552,36 @@ PINCODE_GATE_JS = r"""([ids, quick]) => { const s = new Set(ids.map(String));
                && rx.test([e.placeholder, e.name, e.id, e.getAttribute('aria-label'), e.className].join(' ')));
   return box ? 'page asks for a delivery pincode (' + JSON.stringify((box.placeholder || box.name || box.id || '').slice(0, 40)) + ' box)' : null; }"""
 
+# Pick option values like a shopper. A control used for one value is never used again for the next one: a 'pack of 2'
+# product shows the same sizes twice (two pickers), and the second 'S' is the second picker's. A value no control shows
+# whole is tried by its ' / ' parts: theformalclub.in (cycle 34) has ONE option whose values are 'S / 38 / M / 40' and
+# shows two size pickers labelled 'S', 'M', ... (one per shirt); the shopper clicks 'S' in each.
 CHOOSE_JS = r"""([values, quick]) => {
   const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
   const ok = e => !e.closest(quick);
-  const done = [];
-  for (const val of values) {
-    const v = String(val).trim(); const low = v.toLowerCase(); let hit = false;
+  const done = [], used = new Set(), usedNames = new Set();
+  const pick = v => { const low = v.toLowerCase();
     for (const sel of document.querySelectorAll('select')) {                       // dropdown pickers
-      if (!ok(sel)) continue;
+      if (!ok(sel) || used.has(sel)) continue;
       const o = [...sel.options].find(o => o.value.trim().toLowerCase() === low || o.text.trim().toLowerCase() === low);
-      if (o) { sel.value = o.value; sel.dispatchEvent(new Event('change', {bubbles: true})); hit = true; done.push('select ' + v); break; }
+      if (o) { sel.value = o.value; sel.dispatchEvent(new Event('change', {bubbles: true})); used.add(sel); done.push('select ' + v); return true; }
     }
-    if (hit) continue;
     for (const r of document.querySelectorAll('input[type="radio"]')) {           // pill / swatch radios
-      if (!ok(r) || r.value.trim().toLowerCase() !== low) continue;
+      if (!ok(r) || r.value.trim().toLowerCase() !== low || used.has(r) || (r.name && usedNames.has(r.name))) continue;
       const lab = (r.id && document.querySelector('label[for="' + CSS.escape(r.id) + '"]')) || r.closest('label');
-      (lab && vis(lab) ? lab : r).click(); hit = true; done.push('radio ' + v); break;
+      (lab && vis(lab) ? lab : r).click(); used.add(r); if (r.name) usedNames.add(r.name); done.push('radio ' + v); return true;
     }
-    if (hit) continue;
     const btn = [...document.querySelectorAll('[data-value], [data-option-value], button, li, span')]
-      .find(e => ok(e) && vis(e) && e.closest('[class*="variant" i], [class*="swatch" i], [class*="option" i], variant-selects, variant-radios')
+      .find(e => ok(e) && vis(e) && !used.has(e) && ![...used].some(u => u.contains(e) || e.contains(u))
+              && e.closest('[class*="variant" i], [class*="swatch" i], [class*="option" i], variant-selects, variant-radios')
               && ((e.getAttribute('data-value') || e.getAttribute('data-option-value') || e.innerText || '').trim().toLowerCase() === low));
-    if (btn) { btn.click(); done.push('button ' + v); }
+    if (btn) { btn.click(); used.add(btn); done.push('button ' + v); return true; }
+    return false; };
+  for (const val of values) {
+    const v = String(val).trim();
+    if (pick(v)) continue;
+    const parts = v.split(' / ').map(x => x.trim()).filter(Boolean);
+    if (parts.length > 1) parts.forEach(pick);
   }
   return done;
 }"""
@@ -551,6 +617,14 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
     picked = ctx.sess.evaluate(CHOOSE_JS, [values, QUICK_SEL]) if values else []
     ctx.sess.page.wait_for_timeout(700)
     st = ctx.sess.evaluate(FORM_STATE_JS, [ids, QUICK_SEL])
+    if not picked and not (st and str(st["variant"]) == str(target["id"])):
+        # No control on the page shows any of the variant's option values (an app-built picker, labels Radar cannot
+        # tie to the values): Radar cannot pick like a shopper, which says nothing about the store. Not judged here;
+        # the buy button check and the cart check (what really lands in the cart) still judge the page.
+        ctx.expect("variant selected like a shopper", f"{target['id']} ({' / '.join(values) or target.get('title')})",
+                   f"not judged: no option control on the page shows {' / '.join(values)!r}; the page's form holds "
+                   f"{(st or {}).get('variant') or 'no variant yet'} (the cart check verifies what is added)", True)
+        return dict(target, _unverified=True)
     got = st["variant"] if st else "(no product form)"
     right = bool(st) and str(st["variant"]) == str(target["id"])
     if right and st["disabled"]:
@@ -1712,6 +1786,21 @@ def _hidden_product_page(ctx: Ctx, url: str) -> str | None:
     return f"page shows other content, not {title[:60]!r} (no buy form, no product data, name not on the page)"
 
 
+def _sold_out_since_listed(ctx: Ctx, url: str) -> str | None:
+    """A product the catalog (products.json) listed in stock whose own Shopify data (/products/<h>.js, what its page
+    renders from) now has no available variant: the catalog answer was stale (sold out since, or cached). Returns the
+    evidence, else None. Unknown data -> None (the product test judges it as before)."""
+    try:
+        p = ctx.sess.get_json(f"{_base(url)}/products/{_handle(url)}.js") or {}
+    except Exception:  # noqa: BLE001
+        return None
+    vs = p.get("variants") or []
+    if not vs or any(v.get("available") for v in vs):
+        return None
+    return (f"was listed in stock by the store's products.json, but its /products/{_handle(url)}.js has 0 of "
+            f"{len(vs)} variant(s) available (sold out since the catalog was read)")
+
+
 def product_page(ctx: Ctx, url: str, expect_buyable: bool = True, fallbacks: list[str] | tuple = ()):
     """fallbacks: other catalog products, used only when this one's page is unreachable (that is
     recorded as a warning, so the finding is never hidden, and the product checks still run)."""
@@ -1720,9 +1809,18 @@ def product_page(ctx: Ctx, url: str, expect_buyable: bool = True, fallbacks: lis
         last = i == len(cands) - 1
         ok = ctx.steps.run("loads" if i == 0 else f"loads_next_catalog_product_{i}",
                            lambda u=u: _load_product(ctx, u), soft=not last)
-        if ok is not None:
-            url = u
-            break
+        if ok is None:
+            continue
+        gone = _sold_out_since_listed(ctx, u) if expect_buyable and not last else None
+        if gone:
+            # bombaytrooper.com (cycle 34, both devices): products.json listed it in stock, its .js and page said
+            # SOLD OUT. Shoppers see a consistent sold-out page; Radar tests an in-stock product instead. The last
+            # candidate is never skipped, so a store whose every listed product is sold out still fails.
+            ctx.steps.info(f"sold_out_since_listed_{i}", f"not tested: {_path(u)} {gone}; the next in-stock catalog "
+                                                         "product is tested instead")
+            continue
+        url = u
+        break
     ctx.steps.run("url_stable", lambda: ctx.expect("final URL", _path(url), ctx.redirected_to or _path(url),
                                                    not ctx.redirected_to) and "no redirect", soft=True)
     _pdp_assertions(ctx, url, expect_buyable)
