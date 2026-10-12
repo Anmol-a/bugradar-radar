@@ -320,6 +320,21 @@ Modes (to prove Radar catches and heals what it should):
                    journey opens the menu, hops to /pages/shop, PASSES
   country_modal    a 'Shopping from Outside India? International / Stay Here' modal rendered inside <header> covers the
                    page until answered (teatrunk.in) -> Radar clicks 'Stay Here' (never 'International'), PASSES
+  buy_now_ok       (journey 33) the product form carries Shopify's dynamic checkout slot (div.shopify-payment-button); a
+                   script renders 'Buy it now' into it 600 ms after load; the click opens /checkouts/cn/buynow?variant=<id>,
+                   a checkout (contact + delivery fields) whose order summary names the product -> cart.buy_now PASSES
+                   (nothing typed); healthy (no buy-now button) -> 'no buy-now button on this store' (info)
+  buy_now_dead     same button, but the dynamic-checkout script never wires it: the click does nothing -> cart.buy_now
+                   WARNS (strict: FAILS) at buy_now_opens_checkout 'nothing happened'
+  buy_now_error    same button, the checkout it opens answers HTTP 500 'There was a problem with our checkout' -> WARNS
+  tp_checkout      (journey 35) the cart page loads a GoKwik-style app (/static/gokwik-checkout.js) that takes over the
+                   checkout button: a full-screen iframe from another origin (localhost/gokwik/checkout) shows the order
+                   summary and an 'Enter mobile number' (tel) box 800 ms later -> cart.edit_and_checkout checkout_opens
+                   PASSES naming GoKwik; no number typed, no OTP asked
+  tp_checkout_popup  same with a Shopflo-style app opening its checkout in a POPUP window -> PASSES naming Shopflo
+  tp_checkout_blank  the GoKwik iframe opens but stays blank -> checkout_opens WARNS (strict: FAILS) 'blank'
+  tp_checkout_script_404  the app script answers HTTP 404, so the checkout button (type=button, owned by the app) does
+                   nothing -> checkout_opens WARNS naming the 404
   (every mode)     robots.txt carries Shopify's default collection lines: /collections/*sort_by*,
                    /collections/*filter*&*filter*, /collections/*+* (facets_sort_allowed: without the sort_by lines)
 
@@ -435,6 +450,9 @@ ff.addEventListener('change', () => { const url = ff.action.split('?')[0] + '?' 
   fetch(url).then(r => r.text()).then(t => { const d = new DOMParser().parseFromString(t, 'text/html');
     document.getElementById('product-grid').innerHTML = d.getElementById('product-grid').innerHTML; }); });</script>""")
 CARTS: dict[str, list[dict]] = {}
+BUY_NOW_MODES = ("buy_now_ok", "buy_now_dead", "buy_now_error")                                     # journey 33
+TP_APPS = {"tp_checkout": "gokwik", "tp_checkout_popup": "shopflo", "tp_checkout_blank": "gokwik",   # journey 35
+           "tp_checkout_script_404": "gokwik"}
 
 SVG = b'<svg xmlns="http://www.w3.org/2000/svg" width="40" height="40"><rect width="40" height="40" fill="#c96"/></svg>'
 
@@ -1026,6 +1044,28 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             self.end_headers()
             self.wfile.write(b"%PDF-1.4")
             return
+        if path in ("/gokwik/checkout", "/shopflo/checkout"):    # journey 35: the app's checkout (on 'localhost': another origin)
+            if self.mode == "tp_checkout_blank":
+                return self._send(200, "<html><head><title></title></head><body></body></html>")
+            items = (q.get("items") or [""])[0].replace("<", "")
+            app = "GoKwik" if path.startswith("/gokwik") else "Shopflo"
+            return self._send(200, f"""<html><head><title>{app} checkout</title></head><body><div id="app"></div>
+<template id="first"><div class="brand">Mock Store · secured by {app}</div><div class="summary">Order summary: {items}</div>
+<h3>Enter mobile number to continue</h3><input type="tel" name="phone" placeholder="Enter mobile number">
+<button type="button" class="get-otp">Get OTP</button></template>
+<script>setTimeout(() => document.getElementById('app').innerHTML = document.getElementById('first').innerHTML, 800);</script>
+</body></html>""")
+        if path.startswith("/static/") and path.endswith("-checkout.js") and self.mode in TP_APPS:
+            app = TP_APPS[self.mode]
+            if self.mode == "tp_checkout_script_404" or app not in path:
+                return self._send(404, "not found", "text/plain")
+            how = ("window.open(u, 'checkout', 'width=480,height=720');" if app == "shopflo" else
+                   "{ const f = document.createElement('iframe'); f.id = '" + app + "-iframe'; f.src = u; "
+                   "f.style.cssText = 'position:fixed;inset:0;width:100%;height:100%;border:0;z-index:9999;background:#fff'; "
+                   "document.body.appendChild(f); }")
+            return self._send(200, "document.querySelectorAll('[name=checkout]').forEach(b => b.addEventListener('click', e => {"
+                              " e.preventDefault(); const u = 'http://localhost:' + location.port + '/" + app + "/checkout?items='"
+                              " + encodeURIComponent(b.dataset.items || ''); " + how + " }));", "application/javascript")
         if path.startswith("/static/") and path.endswith(".js"):      # third-party app scripts (script_heavy mode)
             return self._send(200, "void 0;", "application/javascript")
         if path.startswith("/cdn/shop/files/") or path.startswith("/static/"):
@@ -1212,6 +1252,19 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             self.send_header("Location", "/cart")
             self.end_headers()
             return
+        if path == "/checkouts/cn/buynow":     # journey 33: Shopify's buy-now checkout holds only that variant, not the cart
+            if self.mode == "buy_now_error":
+                return self._send(500, page("Checkout error", "<h1>There was a problem with our checkout</h1>"))
+            vid = int((q.get("variant") or ["0"])[0] or 0)
+            p = next((x for x in PRODUCTS for v in x["variants"] if v["id"] == vid), None)
+            if not p:
+                return self._send(404, page("Page not found", "<h1>404</h1>"))
+            price = int(float(next(v["price"] for v in p["variants"] if v["id"] == vid)) * 100)
+            return self._send(200, page("Checkout - Mock Store", '<h2>Contact</h2><input type="email" name="email" '
+                                        'placeholder="Email or mobile phone number"><h2>Delivery</h2><input name="firstName" '
+                                        'placeholder="First name"><h2>Payment</h2><button type="submit" id="checkout-pay-button">'
+                                        f'Pay now</button><aside id="summary"><div class="summary-line">{p["title"]} × 1 '
+                                        f'{rupees(price)}</div></aside>'))
         if path in ("/checkout", "/checkouts/cn/mock"):
             items = CARTS[cid]
             if not items:                          # Shopify sends an empty cart back to the cart page
@@ -1272,7 +1325,11 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
 </script>"""
             return self._send(200, page("Your Cart | Mock Store",
                                         f'{rows}<p class="totals">Subtotal {rupees(total)}</p>'
-                                        f'<form action="/checkout" method="post"><button type="submit" name="checkout">Check out</button></form>{js}'),
+                                        + (f'<button type="button" name="checkout" class="{TP_APPS[self.mode]}-checkout-btn" '
+                                           f'data-items="{" | ".join(i["title"] + " × " + str(i["quantity"]) for i in items)}">Check out</button>'
+                                           f'<script src="/static/{TP_APPS[self.mode]}-checkout.js"></script>' if self.mode in TP_APPS else
+                                           '<form action="/checkout" method="post"><button type="submit" name="checkout">Check out</button></form>')
+                                        + js),
                               set_cart=new)
         if path == "/search/suggest.json":
             term = (q.get("q") or [""])[0].lower()
@@ -1573,6 +1630,19 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="button" class="shopify-payment-button__button" '
                                 'onclick="location.href=\'/checkouts/c/mock\'">Buy it now</button>'
                                 '<button type="submit" name="add">Add to cart</button>')
+        if self.mode in BUY_NOW_MODES and available:
+            # journey 33: Shopify's dynamic checkout slot inside the product form; its script renders 'Buy it now' a moment
+            # after load (buy_now_dead: the button is drawn, its click handler never attached)
+            go = "" if self.mode == "buy_now_dead" else (
+                "b.onclick = () => { const id = document.querySelector('#product-form-template__main [name=id]').value; "
+                "location.href = '/checkouts/cn/buynow?variant=' + id; };")
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add">Add to cart</button><div data-shopify="payment-button" '
+                                'class="shopify-payment-button"></div>', 1)
+            body += ("<script>setTimeout(() => { const s = document.querySelector('.shopify-payment-button'); if (!s) return; "
+                     "const b = document.createElement('button'); b.type = 'button'; "
+                     "b.className = 'shopify-payment-button__button shopify-payment-button__button--unbranded'; "
+                     "b.textContent = 'Buy it now'; " + go + " s.appendChild(b); }, 600);</script>")
         if self.mode == "healer_disabled_sticky" and available:
             # littleboxindia.com mobile (new30c/d/e): the form's own button is not shown, the healer finds a DISABLED
             # 'Add to cart' near the title, and an ENABLED sticky ADD TO CART (no form attribute) is on screen.

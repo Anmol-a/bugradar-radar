@@ -1174,3 +1174,51 @@ def test_menu_hop_targets_are_other_store_pages_only():
     for h in ("/", "#", "javascript:void(0)", "/products/x", "/cart", "/account/login", "/search?q=a",
               "https://other.example/pages/coffee", ""):
         assert not _hop_target(home, h), h
+
+# ---------- journeys 33 + 35: buy-now and third-party checkout apps ----------
+
+def test_checkout_app_named_from_its_host_or_address():
+    from radar.discovery.detect import checkout_app_of, CHECKOUT_APP_HOSTS
+    assert checkout_app_of("https://pdp.gokwik.co/v4/checkout?x=1") == "GoKwik"
+    assert checkout_app_of("https://checkout.shopflo.co/s/abc") == "Shopflo"
+    assert checkout_app_of("https://fastrr-boost-ui.pickrr.com/") == "Shiprocket Fastrr"
+    assert checkout_app_of("https://api.razorpay.com/v1/checkout/public") == "Razorpay Magic Checkout"
+    assert checkout_app_of("https://checkout.getsimpl.com/1") == "Simpl"
+    assert checkout_app_of("http://localhost:9/gokwik/checkout?items=a") == "GoKwik"      # app named in the address
+    assert checkout_app_of("https://notgokwik.co.evil.com/") == ""                       # host suffix, not substring
+    assert checkout_app_of("https://store.in/checkouts/cn/abc") == "" and checkout_app_of("") == ""
+    assert set(CHECKOUT_APP_HOSTS) >= {"GoKwik", "Shopflo", "Shiprocket Fastrr", "Razorpay Magic Checkout", "Simpl"}
+
+
+def test_checkout_apps_found_in_scripts_iframes_and_html():
+    from radar.discovery.detect import checkout_apps_in
+    assert checkout_apps_in(["https://cdn.shopify.com/a.js", "https://pdp.gokwik.co/merchant.js"]) == ["GoKwik"]
+    assert checkout_apps_in([], "<script>window.shopfloConfig = {}</script>") == ["Shopflo"]
+    assert checkout_apps_in(["https://checkout.getsimpl.com/x.js"], "magic-checkout") == ["Razorpay Magic Checkout", "Simpl"]
+    assert checkout_apps_in(["https://cdn.shopify.com/a.js"], "<html>plain</html>") == []
+
+
+def test_checkout_first_screen_verdict():
+    from radar.checks.library import checkout_view_verdict
+    t = "Ceramic Flower Vase"
+    tp = lambda **k: checkout_view_verdict({"text": "Mock Store secured by GoKwik", "fields": 0, "phone": "", "otp": False,
+                                            "error": "", **k}, t, True)
+    assert tp(phone="Enter mobile number", fields=1)[0] and "NOT filled" in tp(phone="Enter mobile number")[1]
+    assert tp(otp=True)[0] and tp(text="Order summary: Ceramic Flower Vase × 1")[0]
+    assert tp(text="", fields=0) == (False, "blank (no text, no field)")
+    assert not tp(text="Something went wrong, please try again later", error="Something went wrong")[0]
+    assert not tp()[0]                                      # text, but no phone screen and no order summary
+    shop = lambda **k: checkout_view_verdict({"text": "Contact Delivery Payment Ceramic Flower Vase × 1", "fields": 2,
+                                              "phone": "", "otp": False, "error": "", **k}, t, False)
+    assert shop()[0] and not shop(fields=0)[0] and not shop(text="Contact Delivery Payment, your cart")[0]
+    assert not shop(text="There was a problem with our checkout", error="There was a problem")[0]
+
+
+def test_buy_now_case_only_with_the_cart_flow():
+    cart = next(s for s in build_suites(_sm(), Settings()) if s.id == "cart")
+    c = next(c for c in cart.cases if c.check == "buy_now")
+    assert c.id == "cart.buy_now" and c.severity == "minor" and c.params["strict"] is False
+    assert c.params["variant_id"] == 2 and c.params["url"].endswith("?variant=2")
+    assert cart.cases[0].check == "add_to_cart"             # the add-to-cart test stays first; it never clicks buy-now
+    assert not any(c.check == "buy_now" for x in build_suites(_sm(), replace(Settings(), allow_cart_flow=False))
+                   for c in x.cases)

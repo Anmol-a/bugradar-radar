@@ -190,6 +190,13 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
                             "cart_path": sm.cart_path, "strict": False}, "minor",
             "Add with the store's buy button; the drawer (if the theme opens one) and then the cart page each match "
             "Shopify's /cart.js; the item is taken out of Radar's cart afterwards. No drawer = information only"))
+        # journey 33: 'Buy it now' (Shopify's dynamic checkout button) opens a working checkout. Inside the cart flow only:
+        # the checkout it opens is what robots.txt keeps from bots unless the store authorised Radar
+        next(x for x in suites if x.id == "cart").cases.append(TestCase(
+            "cart.buy_now", "cart", f"'Buy it now' on '{buyable.title[:40]}' opens a checkout showing the product", "buy_now",
+            {"url": f"{buyable.url}?variant={buyable.variant_id}", "variant_id": buyable.variant_id, "strict": False}, "minor",
+            "Clicks the product page's enabled 'Buy it now' / 'Buy now' once; Shopify's checkout or the checkout app's popup / "
+            "iframe must render and name the product. Nothing typed or submitted, never paid. No buy-now = information only"))
 
     terms = []
     for p in picks + spare:
