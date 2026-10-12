@@ -6,7 +6,10 @@ Step kinds:
   soft            a failed assertion is a WARNING (theme-dependent, or real but not shopper-blocking)
 
 HARD RULES enforced here: never click checkout, never submit forms other than the store's
-own add-to-cart, never create accounts, never enter personal data.
+own add-to-cart, never create accounts, never enter personal data. Exceptions, inside the cart
+flow only (stores that authorised Radar): journey 33 clicks 'Buy it now' and journey 35 clicks
+the cart's checkout button under a third-party checkout app, ONLY to see the checkout render;
+nothing is typed or submitted there, no OTP is requested, nothing is paid.
 """
 from __future__ import annotations
 
@@ -3090,6 +3093,7 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
     base, page, vid = _base(url), ctx.sess.page, int(variant_id)
     soft = not strict
     state: dict = {}
+    app_errors = _watch_app_errors(ctx)        # journey 35: a checkout app's script that answers 404 / 5xx is evidence
     ctx.steps.run("product_loads", lambda: _load(ctx, url))
 
     def put_in_cart():
@@ -3150,6 +3154,16 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
     ctx.steps.run("change_quantity", change_qty, soft=soft)
 
     def checkout_opens():
+        # Journey 35: a third-party checkout app (GoKwik, Shopflo, Fastrr, Razorpay Magic, Simpl) takes over the cart's
+        # checkout button; GET /checkout would walk past it. On the cart page Radar reads the page's scripts / iframes;
+        # when an app is named there, it clicks the store's own checkout button like a shopper and judges what opens
+        # (popup, iframe or redirect). Never types a phone number, never asks for an OTP, never submits.
+        if _path(page.url) != _path(base + cart_path):
+            _load(ctx, base + cart_path)
+            _dismiss(ctx)
+        apps = _checkout_apps_here(ctx)
+        if apps:
+            return _third_party_checkout(ctx, apps, title, app_errors)
         resp, _ = ctx.sess.goto(base + "/checkout")
         ctx.sess.settle()
         status, final = (resp.status if resp else None), page.url
@@ -3194,6 +3208,311 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
                    "gone" + (", 'empty' message shown" if EMPTY_CART_RX.search(text) else "") if gone else "still listed", gone)
         return f"pressed {found['remove'][:30]!r}: /cart.js has 0 of it, the cart page no longer lists it"
     ctx.steps.run("remove_item", remove, soft=soft)
+
+
+# ---------------- checkout surfaces: Shopify's checkout or a third-party app (journeys #33 + #35) ----------------
+#
+# Both journeys click a store control that should open a checkout (the product page's 'Buy it now', the cart's checkout
+# button under a third-party app) and judge only what a shopper SEES first. Radar NEVER types (no phone number, no
+# email, no OTP request), never submits, never pays; a popup it opened is closed afterwards.
+
+# The visible text (scripts / styles skipped: Shopify's checkout inlines ~100 kB of JSON), the fields a shopper would
+# fill (counted, never touched), a phone / mobile-number box (third-party first screens), OTP wording, error wording.
+CHECKOUT_VIEW_JS = r"""() => { const out = []; let n = 0;
+  if (!document.body) return {text: '', fields: 0, phone: '', otp: false, error: ''};
+  const w = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {acceptNode: t =>
+    /^(SCRIPT|STYLE|NOSCRIPT|TEMPLATE)$/.test(t.parentNode.nodeName) ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT});
+  while (w.nextNode() && n < 200000) { const v = w.currentNode.nodeValue; if (v.trim()) { out.push(v); n += v.length; } }
+  const text = out.join(' ').replace(/\s+/g, ' ').trim();
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const inputs = [...document.querySelectorAll('input')].filter(i => vis(i) && !/hidden|checkbox|radio/.test(i.type));
+  const ph = inputs.find(i => i.type === 'tel' || /phone|mobile|contact number|whatsapp/i.test(
+    [i.name, i.id, i.placeholder, i.getAttribute('aria-label'), i.autocomplete].join(' ')));
+  const err = (text.match(/something went wrong|an error occurred|unable to (load|process)|failed to load|try again later|page not found|\b(404|500|502|503)\b|there was a problem/i) || [])[0] || '';
+  return {text: text.slice(0, 20000), fields: inputs.length, otp: /\bOTP\b|one[- ]time password|verification code/i.test(text),
+          phone: ph ? (ph.placeholder || ph.name || ph.getAttribute('aria-label') || ph.type || '').slice(0, 40) : '', error: err}; }"""
+
+# The cart page's own clues to a checkout app: script and iframe addresses, and the page's HTML (inline app config).
+PAGE_SOURCES_JS = r"""() => ({urls: [...[...document.scripts].map(s => s.src), ...[...document.querySelectorAll('iframe')].map(f => f.src || ''),
+                                 ...[...document.querySelectorAll('link[href]')].map(l => l.href)].filter(Boolean).slice(0, 400),
+                          html: document.documentElement.outerHTML.slice(0, 600000)})"""
+
+
+def _watch_app_errors(ctx: Ctx) -> list[str]:
+    """Responses >= 400 (and failed loads) for a checkout app's own files during this check: 'the app's script answered
+    404' is the evidence when its checkout never opens. Never raises."""
+    from radar.discovery.detect import checkout_app_of
+    seen: list[str] = []
+
+    def on_resp(r):
+        try:
+            if r.status >= 400 and checkout_app_of(r.url):
+                seen.append(f"{checkout_app_of(r.url)} file {r.url[:110]} answered HTTP {r.status}")
+        except Exception:  # noqa: BLE001  never break a page event
+            pass
+
+    def on_fail(r):
+        try:
+            if checkout_app_of(r.url):
+                seen.append(f"{checkout_app_of(r.url)} file {r.url[:110]} did not load ({(r.failure or '')[:40]})")
+        except Exception:  # noqa: BLE001
+            pass
+    ctx.sess.page.on("response", on_resp)
+    ctx.sess.page.on("requestfailed", on_fail)
+    return seen
+
+
+def _checkout_apps_here(ctx: Ctx) -> list[str]:
+    from radar.discovery.detect import checkout_apps_in
+    src = ctx.sess.evaluate(PAGE_SOURCES_JS) or {}
+    return checkout_apps_in(src.get("urls") or [], src.get("html") or "")
+
+
+def checkout_view_verdict(view: dict, title: str, third_party: bool) -> tuple[bool, str]:
+    """Did the checkout's FIRST screen render? Shopify's checkout: a field to fill and the product named in the order
+    summary. A third-party app: its phone-number / OTP screen or an order summary naming the product. Blank, or an error
+    message with neither = not rendered. Pure, unit-tested."""
+    text = view.get("text") or ""
+    named = bool(title) and norm_text(title) in norm_text(text)
+    if len(text) < 20 and not view.get("fields"):
+        return False, "blank (no text, no field)"
+    if third_party:
+        if view.get("phone"):
+            return True, f"phone-number screen ({view['phone']!r} box shown, NOT filled)" + ("; order summary names the product" if named else "")
+        if view.get("otp"):
+            return True, "OTP screen shown (no OTP requested)"
+        if named:
+            return True, "order summary names the product"
+        if view.get("error"):
+            return False, f"error message {view['error']!r}, no phone screen or order summary"
+        return False, f"no phone-number / OTP screen and no order summary naming the product ({len(text)} chars of text)"
+    if view.get("error") and not named:
+        return False, f"error message {view['error']!r}"
+    if not view.get("fields"):
+        return False, "no field a shopper would fill" + ("" if named else "; product not named")
+    if not named:
+        return False, f"{view['fields']} fields, but the order summary does not name the product"
+    return True, f"{view['fields']} fields shown (none filled), order summary names the product"
+
+
+def _frame_box(frame):
+    try:
+        el = frame.frame_element()
+        return el.bounding_box() if el.is_visible() else None
+    except Exception:  # noqa: BLE001  detached frame
+        return None
+
+
+def _click_and_find_checkout(ctx: Ctx, loc, base: str, secs: float = 12.0) -> dict:
+    """Click a control that should open a checkout and see WHERE it opened: a popup (new tab / window), an iframe over
+    the page (a known app's host, or any new frame covering ≥ 30% of the screen), or the page moving to a checkout
+    (Shopify's /checkouts/… on the store, or another site). {kind, target (Page/Frame), url, status, app} or
+    {kind: None} when nothing happened."""
+    from radar.discovery.detect import checkout_app_of
+    page = ctx.sess.page
+    popups: list = []
+    docs: list = []
+    on_page = lambda p: popups.append(p)
+    on_resp = lambda r: docs.append((r.url, r.status)) if r.request.resource_type == "document" and r.frame == page.main_frame else None
+    page.context.on("page", on_page)
+    page.on("response", on_resp)
+    vp = page.viewport_size or {"width": 1366, "height": 850}
+    big = lambda box: bool(box) and box["width"] * box["height"] >= 0.3 * vp["width"] * vp["height"]
+    # frames already on screen and big before the click (a chat widget, KwikPass) are not what the click opened; an
+    # app's hidden iframe that the click SHOWS counts
+    before_url = page.url
+    before_big = {f for f in page.frames if f != page.main_frame and big(_frame_box(f))}
+    store_host = (urlparse(base).hostname or "").removeprefix("www.")
+    try:
+        loc.scroll_into_view_if_needed(timeout=5000)
+        loc.click(timeout=8000)
+        t_end = time.time() + secs
+        while time.time() < t_end:
+            page.wait_for_timeout(500)
+            if popups:
+                pop = popups[0]
+                try:
+                    pop.wait_for_load_state("domcontentloaded", timeout=10000)
+                except Exception:  # noqa: BLE001
+                    pass
+                return {"kind": "popup", "target": pop, "url": pop.url, "status": None, "app": checkout_app_of(pop.url)}
+            try:
+                now = page.url
+            except Exception:  # noqa: BLE001
+                continue
+            if now != before_url:
+                host = (urlparse(now).hostname or "").removeprefix("www.")
+                shopify = host == store_host and bool(re.search(r"/checkouts?(/|$)", urlparse(now).path))
+                if shopify or host != store_host:
+                    ctx.sess.settle()
+                    st = next((s for u, s in reversed(docs) if u.split("#")[0] == page.url.split("#")[0]), None) or \
+                        (docs[-1][1] if docs else None)
+                    return {"kind": "redirect", "target": page, "url": page.url, "status": st,
+                            "app": "" if shopify else (checkout_app_of(page.url) or host)}
+            for f in page.frames:
+                if f in before_big or f == page.main_frame or not f.url or f.url == "about:blank":
+                    continue
+                app, box = checkout_app_of(f.url), _frame_box(f)
+                if big(box) or (app and box and box["width"] >= 200 and box["height"] >= 200):
+                    try:
+                        f.wait_for_load_state("domcontentloaded", timeout=10000)
+                    except Exception:  # noqa: BLE001
+                        pass
+                    return {"kind": "iframe", "target": f, "url": f.url, "status": None,
+                            "app": app or (urlparse(f.url).hostname or "")}
+        if page.url != before_url:      # moved to another store page that is not a checkout: judged as landed there
+            st = docs[-1][1] if docs else None
+            return {"kind": "redirect", "target": page, "url": page.url, "status": st, "app": ""}
+        return {"kind": None, "target": None, "url": page.url, "status": None, "app": ""}
+    finally:
+        page.context.remove_listener("page", on_page)
+        page.remove_listener("response", on_resp)
+
+
+def _judge_checkout(ctx: Ctx, opened: dict, title: str, third_party: bool, secs: float = 12.0) -> str:
+    """Read the opened checkout's first screen (polling: checkouts are apps that render seconds after load) and assert
+    it rendered. Nothing is typed or clicked inside it."""
+    view: dict = {}
+    ok, why = False, "not read"
+    for _ in range(int(secs / 0.75)):
+        try:
+            view = opened["target"].evaluate(CHECKOUT_VIEW_JS) or {}
+        except Exception:  # noqa: BLE001  the frame / page is still navigating
+            view = {}
+        ok, why = checkout_view_verdict(view, title, third_party)
+        if ok:
+            break
+        ctx.sess.page.wait_for_timeout(750)
+    if opened.get("status") is not None:
+        ctx.expect("checkout page HTTP status", "< 400", opened["status"], opened["status"] < 400)
+    ctx.expect("checkout first screen rendered" + (f" ({opened['app']})" if opened.get("app") else ""),
+               "phone-number / OTP screen or order summary (nothing typed)" if third_party
+               else "≥ 1 field (NOT filled by Radar) + order summary names the product", why, ok)
+    return why
+
+
+def _close_opened(ctx: Ctx, opened: dict) -> str:
+    """Leave the checkout: a popup is closed; an iframe / redirected page is left behind by the next page load."""
+    if opened.get("kind") == "popup":
+        try:
+            opened["target"].close()
+            return "popup closed"
+        except Exception:  # noqa: BLE001
+            return "popup already closed"
+    return "left without typing anything"
+
+
+def _third_party_checkout(ctx: Ctx, apps: list[str], title: str, app_errors: list[str]) -> str:
+    """Journey 35: the cart page names a checkout app. Click the store's own checkout button, name the app that opened
+    and confirm its first screen (phone number / OTP screen or order summary) renders. Never typed, never submitted."""
+    page = ctx.sess.page
+    named = " + ".join(apps)
+    f = ctx.healer.find(page, "checkout_button")
+    ctx.expect("checkout button on the cart page", "visible + enabled", f"via {f.method}", f.locator.is_enabled())
+    opened = _click_and_find_checkout(ctx, f.locator, _base(page.url))
+    if not opened["kind"]:
+        ctx.expect(f"{named} checkout opens from the cart's checkout button", "a popup, iframe or checkout page",
+                   "nothing opened within 12 s" + (f"; {'; '.join(dict.fromkeys(app_errors))[:200]}" if app_errors else ""), False)
+    third = bool(opened["app"])
+    if not third:     # the app did not take over: Shopify's own checkout opened (fine for the shopper)
+        ctx.expect("landed on the checkout", "/checkouts/… or /checkout", _path(opened["url"]),
+                   bool(re.search(r"/checkouts?(/|$)", urlparse(opened["url"]).path)))
+        why = _judge_checkout(ctx, opened, title, third_party=False)
+        _close_opened(ctx, opened)
+        return f"{named} on the cart page, but Shopify's checkout opened at {_path(opened['url'])}: {why}; nothing typed or submitted"
+    ctx.expect("checkout app named", named, f"{opened['app']} ({opened['kind']}: {(urlparse(opened['url']).hostname or '')})", True)
+    why = _judge_checkout(ctx, opened, title, third_party=True)
+    left = _close_opened(ctx, opened)
+    return (f"{opened['app']} checkout opened ({opened['kind']}, {urlparse(opened['url']).hostname}): {why}; "
+            f"no phone number typed, no OTP requested, nothing submitted; {left}")
+
+
+# ---------------- journey 33: 'Buy it now' on the product page opens a working checkout ----------------
+
+# Shopify's dynamic checkout button (<div class="shopify-payment-button"> … 'Buy it now') or a theme / app 'Buy now'
+# button for THIS product: visible, not on another product's card, not in header / footer / cart drawer. Branded
+# wallet buttons (Shop Pay, G Pay, Apple Pay, PayPal) are never picked: they open payment sheets.
+BUY_NOW_JS = r"""([ids, quick]) => {
+  const otherCard = __OTHER_CARD__;
+  document.querySelectorAll('[data-radar-target="buynow"]').forEach(e => e.removeAttribute('data-radar-target'));
+  const mine = new Set(ids.map(String));
+  const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
+  const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
+  const wallet = /shop ?pay|g ?pay|google|apple|paypal|amazon|venmo|more payment options/i;
+  const c = [...document.querySelectorAll('button, a, [role="button"], input[type=submit], input[type=button]')]
+    .filter(e => vis(e) && txt(e).length <= 30 && !wallet.test(txt(e))
+      && (/^buy\s*(it\s*)?now\b/i.test(txt(e)) || (e.closest('.shopify-payment-button, [data-shopify="payment-button"]') && /\bbuy\b/i.test(txt(e))))
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !otherCard(e, quick));
+  const own = e => { const f = e.closest('form') || (e.getAttribute('form') && document.getElementById(e.getAttribute('form')));
+    const i = f && f.querySelector('[name="id"]'); return i && mine.has(String(i.value || '')) ? 1 : 0; };
+  c.sort((x, y) => own(y) - own(x) || (!!y.closest('.shopify-payment-button') - !!x.closest('.shopify-payment-button')));
+  const pending = !!document.querySelector('.shopify-payment-button, [data-shopify="payment-button"]') && !c.length;
+  if (!c.length) return {found: null, pending};
+  const on = c.filter(e => !(e.disabled || e.getAttribute('aria-disabled') === 'true'));
+  const t = on[0] || c[0]; t.setAttribute('data-radar-target', 'buynow');
+  return {found: {text: txt(t).slice(0, 30), off: !on.length, own: !!own(t),
+                  tag: t.tagName.toLowerCase() + (typeof t.className === 'string' && t.className.trim() ? '.' + t.className.trim().split(/\s+/)[0] : '')},
+          pending: false}; }""".replace("__OTHER_CARD__", OTHER_CARD_FN)
+
+
+def buy_now(ctx: Ctx, url: str, variant_id: int | None = None, strict: bool = False):
+    """Journey 33: the product page's 'Buy it now' (Shopify's dynamic checkout button, or a theme / checkout-app 'Buy
+    now') opens a checkout that renders and shows this product. Clicked once in Radar's own browser session; the
+    checkout (Shopify's /checkouts/…, or a third-party popup / iframe) is only looked at: NOTHING typed, nothing
+    submitted, no payment; a popup is closed. No buy-now button = information only. Warnings unless strict.
+    (The add-to-cart tests never click 'buy it now'; this is its own case.)"""
+    soft = not strict
+    page, base = ctx.sess.page, _base(url)
+    app_errors = _watch_app_errors(ctx)
+    state: dict = {}
+
+    def load():
+        out = _load(ctx, url)
+        state["p"] = _product_js(ctx, page.url)
+        return out
+    ctx.steps.run("product_loads", load)
+    p = state["p"]
+    ids = [int(v["id"]) for v in p["variants"]]
+    if not ctx.sess.allowed(base + "/checkouts/"):
+        ctx.steps.info("buy_now_not_judged", "robots.txt disallows the checkout for Radar on this store; buy-now not clicked")
+        return
+    if not any(v.get("available") for v in p["variants"]):
+        ctx.steps.info("buy_now_not_judged", "product is sold out now; buy-now not judged")
+        return
+    found: dict = {}
+    for _ in range(8):           # Shopify renders the dynamic checkout button from a script after load
+        found = ctx.sess.evaluate(BUY_NOW_JS, [ids, QUICK_SEL]) or {}
+        if found.get("found") or not found.get("pending"):
+            break
+        page.wait_for_timeout(500)
+    btn = found.get("found")
+    if not btn:
+        ctx.steps.info("buy_now_not_judged", "no buy-now button on this store" + (
+            " (Shopify's payment-button slot is on the page but rendered no 'Buy it now')" if found.get("pending") else ""))
+        return
+    if btn["off"]:
+        ctx.steps.info("buy_now_not_judged", f"the buy-now button <{btn['tag']}> {btn['text']!r} is disabled; not clicked")
+        return
+
+    def opens():
+        opened = _click_and_find_checkout(ctx, page.locator('[data-radar-target="buynow"]').first, base)
+        ctx.expect(f"<{btn['tag']}> {btn['text']!r} opens a checkout", "a checkout page, popup or iframe",
+                   opened["kind"] or ("nothing happened within 12 s (page stayed at "
+                                      f"{_path(page.url)})" + (f"; {'; '.join(dict.fromkeys(app_errors))[:200]}" if app_errors else "")),
+                   bool(opened["kind"]))
+        third = bool(opened["app"])
+        if not third:
+            ctx.expect("landed on Shopify's checkout", "/checkouts/… or /checkout", _path(opened["url"]),
+                       bool(re.search(r"/checkouts?(/|$)", urlparse(opened["url"]).path)))
+        why = _judge_checkout(ctx, opened, p["title"], third_party=third)
+        left = _close_opened(ctx, opened)
+        where = (f"{opened['app']} {opened['kind']} ({urlparse(opened['url']).hostname})" if third
+                 else f"Shopify checkout at {_path(opened['url'])}")
+        return f"clicked {btn['text']!r}: {where}: {why}; nothing typed or submitted, no payment; {left}"
+    ctx.steps.run("buy_now_opens_checkout", opens, soft=soft)
 
 
 # ---------------- journey 22: variant switch ----------------
@@ -3719,6 +4038,7 @@ REGISTRY: dict[str, Callable] = {
     "variant_switch": variant_switch,      # journey 22
     "price_consistency": price_consistency,
     "collection_filter": collection_filter,
+    "buy_now": buy_now,                    # journey 33
 }
 
 

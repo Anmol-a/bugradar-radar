@@ -1971,3 +1971,96 @@ def test_dawn_cart_row_price_is_read_and_a_discount_code_is_not_a_mismatch(tmp_p
     st = _steps(c)
     assert st["cart_line_price"].status == "pass", (st["cart_line_price"].status, st["cart_line_price"].error)
     assert "₹1,299.00 struck, discounted in the cart to ₹1,169.10" in st["cart_line_price"].detail, st["cart_line_price"].detail
+
+
+# ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
+
+def _buy_now_only(mode, tmp_path, strict=False, **kw):
+    """Only the cart suite's cart.buy_now case (journey 33). strict=True flips the builder's strict=False."""
+    import radar.runner.executor as ex
+    orig = ex.build_suites
+
+    def built(sm, s):
+        suites = orig(sm, s)
+        for x in suites:
+            if x.id == "cart":
+                x.cases = [c for c in x.cases if c.check == "buy_now"]
+                for c in x.cases:
+                    c.params["strict"] = strict
+        return suites
+    ex.build_suites = built
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, **kw), only_suites=["cart"])[0]
+    finally:
+        srv.shutdown()
+        ex.build_suites = orig
+
+
+def test_buy_it_now_opens_shopify_checkout_showing_the_product(tmp_path):
+    """Journey 33: the dynamic checkout button (rendered 600 ms after load, like Shopify's) is clicked once; the checkout
+    renders fields (none filled) and names the vase. The add-to-cart tests still never click it (buy_now_first)."""
+    c = _case(_buy_now_only("buy_now_ok", tmp_path), "cart.buy_now")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["buy_now_opens_checkout"].status == "pass", [(s.name, s.status, s.error) for s in st.values()]
+    d = st["buy_now_opens_checkout"].detail
+    assert "clicked 'Buy it now'" in d and "Shopify checkout at /checkouts/cn/buynow" in d and "nothing typed" in d, d
+    assert all(ch["ok"] for ch in st["buy_now_opens_checkout"].checks), st["buy_now_opens_checkout"].checks
+
+
+def test_store_without_buy_it_now_is_information_only(tmp_path):
+    c = _case(_buy_now_only("healthy", tmp_path), "cart.buy_now")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["buy_now_not_judged"].status == "info", [(s.name, s.status, s.error) for s in st.values()]
+    assert st["buy_now_not_judged"].detail == "no buy-now button on this store"
+    assert "buy_now_opens_checkout" not in st
+
+
+@pytest.mark.parametrize("mode,words", [
+    ("buy_now_dead", "opens a checkout: expected a checkout page, popup or iframe, got nothing happened within 12 s"),
+    ("buy_now_error", "checkout page HTTP status: expected < 400, got 500"),
+])
+def test_broken_buy_it_now_warns_now_and_fails_when_strict(tmp_path, mode, words):
+    c = _case(_buy_now_only(mode, tmp_path), "cart.buy_now")
+    st = _steps(c)["buy_now_opens_checkout"]
+    assert c.verdict == "pass" and st.status == "warn" and words in st.error, (c.verdict, st.status, st.error)
+    strict = _case(_buy_now_only(mode, tmp_path / "strict", strict=True), "cart.buy_now")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "buy_now_opens_checkout", \
+        (strict.verdict, strict.attempts[-1].error)
+    assert words in strict.attempts[-1].error
+
+
+@pytest.mark.parametrize("mode,app,kind", [("tp_checkout", "GoKwik", "iframe"), ("tp_checkout_popup", "Shopflo", "popup")])
+def test_third_party_checkout_app_is_named_and_its_first_screen_renders(tmp_path, mode, app, kind):
+    """Journey 35: the cart page names a checkout app; Radar clicks the store's checkout button, finds the app's iframe /
+    popup on another origin, names the app and sees its mobile-number screen. Nothing typed, no OTP requested."""
+    run = _cart_edit_only(mode, tmp_path)
+    c = _case(run, "cart.edit_and_checkout")
+    st = _steps(c)
+    assert c.verdict == "pass" and all(s.status == "pass" for s in st.values()), [(s.name, s.status, s.error) for s in st.values()]
+    d = st["checkout_opens"].detail
+    assert d.startswith(f"{app} checkout opened ({kind}, localhost)"), d
+    assert "phone-number screen ('Enter mobile number' box shown, NOT filled)" in d and "no OTP requested" in d, d
+    assert "order summary names the product" in d, d
+    if kind == "popup":
+        assert d.endswith("popup closed"), d
+    checks = {ch["what"]: ch for ch in st["checkout_opens"].checks}
+    assert checks["checkout app named"]["actual"].startswith(f"{app} ({kind}"), checks
+    assert st["remove_item"].status == "pass"        # the journey went on to the cart page and emptied it
+
+
+@pytest.mark.parametrize("mode,words", [
+    ("tp_checkout_blank", "checkout first screen rendered (GoKwik): expected phone-number / OTP screen or order summary "
+                          "(nothing typed), got blank"),
+    ("tp_checkout_script_404", "GoKwik checkout opens from the cart's checkout button: expected a popup, iframe or checkout "
+                               "page, got nothing opened within 12 s; GoKwik file"),
+])
+def test_broken_third_party_checkout_warns_now_and_fails_when_strict(tmp_path, mode, words):
+    c = _case(_cart_edit_only(mode, tmp_path), "cart.edit_and_checkout")
+    st = _steps(c)["checkout_opens"]
+    assert c.verdict == "pass" and st.status == "warn" and words in st.error, (c.verdict, st.status, st.error)
+    if mode == "tp_checkout_script_404":
+        assert "answered HTTP 404" in st.error, st.error
+    strict = _case(_cart_edit_only(mode, tmp_path / "strict", strict=True), "cart.edit_and_checkout")
+    assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "checkout_opens", \
+        (strict.verdict, strict.attempts[-1].error)
