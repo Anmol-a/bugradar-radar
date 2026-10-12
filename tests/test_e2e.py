@@ -1584,6 +1584,15 @@ def test_variant_switch_selects_the_picked_size_and_shows_its_price(tmp_path):
     assert run.verdict == "healthy"
 
 
+def test_variant_switch_clicks_a_pill_under_the_pickers_own_layer_like_a_shopper(tmp_path):
+    """dotandkey.com (12 Oct): a transparent swatch layer inside the picker receives the click and forwards it; the
+    locator click times out ('intercepts pointer events'). Radar clicks the point -> Large picked, PASS."""
+    c = _case(_variant_only("variant_pill_covered", tmp_path), "product.variant_switch")
+    s = _steps(c)["variant_switch"]
+    assert c.verdict == "pass" and s.status == "pass", (s.status, s.error)
+    assert "202 (Large, ₹1,399.00)" in s.detail, s.detail
+
+
 def test_variant_switch_that_changes_nothing_warns_and_fails_when_strict(tmp_path):
     """Theme script missing: the Large pill gets checked but the form keeps Small's id and price -> warning (strict: fail)."""
     c = _case(_variant_only("variant_switch_broken", tmp_path), "product.variant_switch")

@@ -267,6 +267,9 @@ Modes (to prove Radar catches and heals what it should):
                    -> product pages WARN 'screen covered by fixed bars' naming div.sticky-info; the store stays healthy
   healthy (+)      the vase's page has Dawn-style size pills (radio + label) whose script updates the form's variant id,
                    the price and ?variant= (journey 22) -> product.variant_switch PASSES (Small → Large, ₹1,299 → ₹1,399)
+  variant_pill_covered  healthy pills under a transparent swatch layer that forwards clicks (dotandkey.com, 12 Oct):
+                   Playwright's click on the pill times out ('intercepts pointer events') -> Radar clicks the point like
+                   a shopper, variant_switch PASSES (was 'option could not be clicked' warning)
   variant_switch_broken  same pills, but the theme's variant script is missing: clicking Large changes nothing (id, price
                    and address stay Small's) -> product.variant_switch WARNS (strict: FAILS) at variant_switch
   variant_sold_out the vase also has a sold-out 'Extra Large' size (data + page); picking it disables the buy button and
@@ -381,7 +384,8 @@ MORE_MODES = ("paginated", "pagination_broken", "load_more", "infinite_scroll", 
 J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepage banner (journey 15)
 # journey 22: size pills on multi-variant product pages (only in these modes: other modes test their own pickers)
 VARIANT_MODES = ("healthy", "variant_switch_broken", "variant_sold_out", "variant_sold_out_buyable",
-                 "variant_no_url_push", "variant_price_late", "variant_form_late", "variant_id_on_submit")
+                 "variant_no_url_push", "variant_price_late", "variant_form_late", "variant_id_on_submit",
+                 "variant_pill_covered")
 # theformalclub.in (cycle 34): a 'pack of 2 shirts' product with ONE option whose values join both shirts' sizes
 # ('S / 38 / M / 40'); the page shows two size pickers labelled 'S', 'M' (one per shirt) and sets the variant id only
 # when both are picked
@@ -1404,6 +1408,13 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
         data = json.dumps([{"id": v["id"], "option1": v["option1"], "available": v["available"],
                             "price": f'₹{float(v["price"]):,.2f}'} for v in vs])
         block = "false" if self.mode == "variant_sold_out_buyable" else "true"
+        if self.mode == "variant_pill_covered":      # dotandkey.com (12 Oct): a transparent swatch layer lies over the
+            pills = pills.replace('<fieldset>', '<fieldset style="position:relative">').replace(  # pills; it forwards
+                '</fieldset>', '<div class="swatch-layer" style="position:absolute;inset:0;z-index:5"></div></fieldset>') + (
+                "<script>document.querySelector('.swatch-layer').addEventListener('click', ev => {"   # the click to the
+                " const l = ev.currentTarget; l.style.pointerEvents = 'none';"                        # pill under it
+                " const t = document.elementFromPoint(ev.clientX, ev.clientY); l.style.pointerEvents = '';"
+                " if (t) t.click(); });</script>")
         return pills + ("<script>(() => { const V = " + data + ", BLOCK = " + block + ";\n"
                         "document.querySelectorAll('variant-radios input[type=radio]').forEach(r => r.addEventListener('change', () => {\n"
                         "  const v = V.find(x => x.option1 === r.value); if (!v) return;\n"

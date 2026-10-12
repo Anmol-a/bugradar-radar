@@ -3930,6 +3930,36 @@ def _variant_label(v: dict) -> str:
     return f"{v['id']} ({' / '.join(variant_options(v)) or v.get('title')}, {rupees(v['price'])})"
 
 
+# Where a shopper's click on an option control lands: the control's centre, and whether the element on top there is
+# part of the same picker (a swatch tooltip / transparent layer inside the option box: dotandkey.com, 12 Oct) or
+# something else covering it (a popup, a sticky bar).
+OPTION_HIT_JS = r"""e => { const r = e.getBoundingClientRect(); const x = r.left + r.width / 2, y = r.top + r.height / 2;
+  const h = document.elementFromPoint(x, y); if (!h) return {x, y, own: false, by: 'nothing'};
+  const lab = e.closest('label') || (e.id && document.querySelector('label[for="' + CSS.escape(e.id) + '"]'));
+  const box = e.closest('variant-radios, variant-selects, fieldset, [role="radiogroup"], [class*="swatch" i], ' +
+                        '[class*="variant" i], [class*="option" i]');
+  const own = e.contains(h) || h.contains(e) || !!(lab && lab.contains(h)) ||
+              !!(box && box.contains(h) && !h.closest('[role="dialog"], [aria-modal="true"]'));
+  const cls = typeof h.className === 'string' ? h.className.trim().split(/\s+/)[0] : '';
+  return {x, y, own, by: h.tagName.toLowerCase() + (cls ? '.' + cls : '')}; }"""
+
+
+def _click_covered_option(ctx: Ctx, loc, c: dict, err: Exception) -> None:
+    """Playwright would not click the option (another element receives the click). A shopper clicks where the option
+    shows: when the element on top belongs to the same picker, click that point with the mouse; otherwise close what
+    covers it once and retry. Still covered = the shopper cannot pick it either -> the check fails, naming the cover."""
+    hit = loc.evaluate(OPTION_HIT_JS)
+    if hit.get("own"):
+        ctx.sess.page.mouse.click(hit["x"], hit["y"])
+        return
+    _dismiss(ctx)
+    try:
+        loc.click(timeout=3000)
+    except Exception as e2:  # noqa: BLE001
+        raise AssertionError(f"option {c['how']} could not be clicked: covered by {hit.get('by')} "
+                             f"({str(err).splitlines()[0][:120]})") from e2
+
+
 def _pick_variant(ctx: Ctx, product: dict, target: dict, current: dict) -> dict:
     """Click (or choose in a dropdown) each option value where target differs from current, like a shopper.
     Returns {how: [...], disabled: bool, missing: value or None}."""
@@ -3950,7 +3980,7 @@ def _pick_variant(ctx: Ctx, product: dict, target: dict, current: dict) -> dict:
             try:
                 loc.click(timeout=5000)
             except Exception as e:  # noqa: BLE001
-                raise AssertionError(f"option {c['how']} could not be clicked: {str(e).splitlines()[0][:160]}") from e
+                _click_covered_option(ctx, loc, c, e)
         out["how"].append(c["how"] + (" (disabled)" if c.get("disabled") else ""))
     return out
 
