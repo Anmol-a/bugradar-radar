@@ -134,6 +134,14 @@ jobs:
           for i in $(seq 1 16); do git push -q origin cloud-results && break; sleep $((RANDOM % 10 + 2)); git pull -q --rebase -X theirs origin cloud-results || { git checkout --theirs LATEST 2>/dev/null; git add -A; GIT_EDITOR=true git rebase --continue || git rebase --abort; }; done
           cd - >/dev/null; git worktree remove --force "$OUT" || true
 
+      - name: Send results to the BugRadar dashboard
+        if: always() && steps.req.outputs.count != '0'
+        continue-on-error: true    # the dashboard must never break a Radar run; no key set = nothing sent
+        env:
+          BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
+          BUGRADAR_CI_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: python3 tools/upload_dashboard.py "${{ steps.req.outputs.data || 'data' }}" --since "${{ steps.t0.outputs.since }}"
+
       - name: Keep the full data folder for 7 days (GitHub machines only)
         if: always() && runner.environment == 'github-hosted' && steps.req.outputs.count != '0'
         uses: actions/upload-artifact@v4
