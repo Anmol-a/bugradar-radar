@@ -99,6 +99,11 @@ class StepFailed(Exception):
         super().__init__(message)
 
 
+class StoreWarning(AssertionError):
+    """A finding a hard step reports as a WARNING: the step could judge the store and found a merchandising issue a
+    shopper can get past (a collection page with no product grid while its sub-collections list products)."""
+
+
 def _short(v, n=160) -> str:
     s = v if isinstance(v, str) else json.dumps(v, default=str, ensure_ascii=False)
     return s if len(s) <= n else s[: n - 1] + "…"
@@ -140,6 +145,7 @@ class Steps:
             raise StepFailed(name, str(e), blocked=True) from e
         except Exception as e:  # noqa: BLE001
             msg = str(e).split("\n")[0][:400]
+            soft = soft or isinstance(e, StoreWarning)
             self.items.append(StepResult(name, "warn" if soft else "fail", None, msg,
                                          round(time.time() - t0, 2), None, self._checks, self._shot(name)))
             if not soft:
@@ -239,10 +245,21 @@ def _broken_images(sess) -> list[str]:
         .map(i => i.currentSrc || i.src).slice(0, 10)""")
 
 
+# The box a shopper sees for a link. A link styled display:contents has no box of its own (0x0 rect) while its image,
+# name and price render and take the click (valliyan.com, Baseline theme, new30j: 'products listed: 0', '15 links: 15
+# not visible' under plainly visible cards). Its box is then the union of its children's boxes.
+BOX_JS = r"""const boxOf = e => { const r = e.getBoundingClientRect();
+    if ((r.width > 0 && r.height > 0) || getComputedStyle(e).display !== 'contents') return r;
+    let l = Infinity, t = Infinity, R = -Infinity, B = -Infinity;
+    for (const c of e.children) { const b = boxOf(c); if (b.width > 0 && b.height > 0) {
+      l = Math.min(l, b.left); t = Math.min(t, b.top); R = Math.max(R, b.right); B = Math.max(B, b.bottom); } }
+    return R > l ? new DOMRect(l, t, R - l, B - t) : r; };"""
+
+
 def _product_links(sess) -> list[dict]:
-    return sess.evaluate("""() => { const seen = new Map();
+    return sess.evaluate("""() => { const seen = new Map(); """ + BOX_JS + """
         for (const a of document.querySelectorAll("a[href*='/products/']")) {
-          const r = a.getBoundingClientRect(); if (r.width === 0 || r.height === 0) continue;
+          const r = boxOf(a); if (r.width === 0 || r.height === 0) continue;
           const h = (a.pathname.match(/\\/products\\/([^/?#]+)/) || [])[1];
           if (h && !seen.has(h)) seen.set(h, (a.innerText || a.getAttribute('aria-label') || '').trim().slice(0, 80));
         } return [...seen].map(([handle, text]) => ({handle, text})); }""")
@@ -854,12 +871,59 @@ def _reveal_product_grid(ctx: Ctx) -> str:
     scrolls into view; Radar never scrolled and said 'products listed: 0' (collection, journey, phone menu link)."""
     if _product_links(ctx.sess):
         return ""
-    found = ctx.sess.evaluate("""async () => { const has = () => [...document.querySelectorAll("a[href*='/products/']")]
-        .some(a => { const r = a.getBoundingClientRect(); return r.width > 0 && r.height > 0; });
+    found = ctx.sess.evaluate("""async () => { """ + BOX_JS + """ const has = () => [...document.querySelectorAll("a[href*='/products/']")]
+        .some(a => { const r = boxOf(a); return r.width > 0 && r.height > 0; });
       for (let y = 0; y <= Math.min(document.body.scrollHeight, 15000); y += Math.round(innerHeight * 0.7)) {
         scrollTo(0, y); for (let i = 0; i < 4; i++) { await new Promise(r => setTimeout(r, 250)); if (has()) return y; } }
       return -1; }""")
     return f" (the grid appeared after scrolling {found}px down)" if isinstance(found, (int, float)) and found >= 0 else ""
+
+
+SUB_COLLECTIONS_JS = r"""() => { const here = location.pathname.replace(/\/$/, ''); const out = [];
+  for (const a of document.querySelectorAll('a[href*="/collections/"]')) {
+    if (a.closest('header, nav, footer, [role="navigation"]')) continue;
+    const r = a.getBoundingClientRect(); if (r.width <= 2 || r.height <= 2) continue;
+    let u; try { u = new URL(a.href); } catch (x) { continue; }
+    const p = u.pathname.replace(/\/$/, '');
+    if (u.origin !== location.origin || p === here || !/^\/collections\/[^/]+$/.test(p) || /\/frontpage$/.test(p) || out.includes(p)) continue;
+    out.push(p); }
+  return out.slice(0, 3); }"""
+
+
+def _why_no_grid(ctx: Ctx, url: str) -> str | None:
+    """A collection page that lists no products, judged as a shopper would. A WARNING (returned reason), not an outage:
+    the collection is empty in the store's own data, or it is a landing page whose sub-collections list products
+    (quboworld.com 'Smart Entrance', new30j: hero + 'Learn more' tiles, no grid; failed as 'products listed: 0' = DOWN).
+    None: neither; the page should list products and does not (a real failure)."""
+    try:
+        data = ctx.sess.get_json(url.split("?")[0].rstrip("/") + "/products.json?limit=1")
+        if isinstance(data, dict) and data.get("products") == []:
+            return "the collection is empty in the store's own data (its products.json lists none)"
+    except Exception:  # noqa: BLE001  robots.txt / no data: judge by the page alone
+        pass
+    subs = ctx.sess.evaluate(SUB_COLLECTIONS_JS) or []
+    found = None
+    for p in subs:
+        try:
+            ctx.sess.goto(urljoin(url, p))
+        except Exception:  # noqa: BLE001
+            continue
+        n = len(_product_links(ctx.sess))
+        if not n:
+            ctx.sess.page.wait_for_timeout(1500)
+            n = len(_product_links(ctx.sess))
+        if n:
+            found = f"{p}: {n} products"
+            break
+    if subs:
+        try:
+            ctx.sess.goto(url)          # the steps after this one judge the collection page itself
+        except Exception:  # noqa: BLE001
+            pass
+    if found:
+        return (f"a landing page with no product grid; it links to {len(subs)} collection(s) that list products "
+                f"({found})")
+    return None
 
 
 def collection_page(ctx: Ctx, url: str):
@@ -873,6 +937,10 @@ def collection_page(ctx: Ctx, url: str):
             n = len(_product_links(ctx.sess))
         scrolled = _reveal_product_grid(ctx) if not n else ""
         n = n or len(_product_links(ctx.sess))
+        if not n:
+            why = _why_no_grid(ctx, url)
+            if why:
+                raise StoreWarning(f"products listed: expected ≥ 1, got 0: {why}")
         ctx.expect("products listed", "≥ 1", n, n >= 1)
         return f"{n} products listed" + (f" (rendered {waited:.1f}s after the page loaded)" if waited else "") + scrolled
     ctx.steps.run("lists_products", has_products)
@@ -2567,10 +2635,10 @@ def _llm_close_overlay(ctx: Ctx) -> str | None:
         return None
 
 
-STABLE_JS = r"""(hrefRe) => { const re = new RegExp(hrefRe);
+STABLE_JS = r"""(hrefRe) => { const re = new RegExp(hrefRe); """ + BOX_JS + r"""
   const ls = [...document.querySelectorAll('a[href]')].filter(a => re.test(a.getAttribute('href') || '')).filter(a => {
-    const r = a.getBoundingClientRect(); return r.width > 2 && r.height > 2; });
-  return ls.length + '|' + ls.slice(0, 8).map(a => a.getAttribute('href') + '@' + Math.round(a.getBoundingClientRect().top + scrollY)).join(',');
+    const r = boxOf(a); return r.width > 2 && r.height > 2; });
+  return ls.length + '|' + ls.slice(0, 8).map(a => a.getAttribute('href') + '@' + Math.round(boxOf(a).top + scrollY)).join(',');
 }"""
 
 
@@ -2619,15 +2687,65 @@ def _hover_menus_for(ctx: Ctx, href_re: str, prefer) -> tuple[dict | None, str]:
     return None, ""
 
 
+def _other_collection(ctx: Ctx, home: str, skip: list[str]) -> dict | None:
+    """A collection link a shopper can click that is none of `skip` (collection paths that listed no products): on this
+    page first (a landing page's tiles to its sub-collections), else on the homepage."""
+    handles = "|".join(re.escape(p.split("/collections/", 1)[1]) for p in skip if "/collections/" in p)
+    href_re = rf"/collections/(?!(?:frontpage{'|' + handles if handles else ''})(?:[/?#]|$))[^/?#]+/?(?:[?#].*)?$"
+    got = _pick(ctx, "a[href]", href_re, [], second_pass=False)
+    if got.get("none"):
+        _load(ctx, home)
+        got = _pick(ctx, "a[href]", href_re, [], second_pass=False)
+    return None if got.get("none") else got
+
+
+MENU_LINKS_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+    return r.width > 2 && r.height > 2 && r.bottom > 0 && r.top < innerHeight && s.visibility !== 'hidden' && s.display !== 'none'; };
+  document.querySelectorAll('[data-radar-nav]').forEach(e => e.removeAttribute('data-radar-nav'));
+  return [...document.querySelectorAll('a[href]:not([data-radar-shown])')].filter(vis)
+    .filter(e => (e.innerText || '').trim().length > 1 && (e.innerText || '').trim().length < 30).slice(0, 12)
+    .map((e, i) => { e.setAttribute('data-radar-nav', String(i));
+      return {i, text: (e.innerText || '').trim().replace(/\s+/g, ' '), href: e.getAttribute('href') || ''}; }); }"""
+
+
+def _menu_drawer_links(ctx: Ctx) -> list[dict]:
+    """Links a shopper finds by opening the menu (☰): those visible only after the menu button is clicked."""
+    page = ctx.sess.page
+    toggles = page.locator(MENU_TOGGLES)
+    for i in range(min(toggles.count(), 6)):
+        tg = toggles.nth(i)
+        try:
+            if not tg.is_visible():
+                continue
+            ctx.sess.evaluate("() => document.querySelectorAll('a[href]').forEach(a => { const r = a.getBoundingClientRect();"
+                              " if (r.width > 2 && r.height > 2) a.setAttribute('data-radar-shown', '1'); })")
+            _click(ctx, tg)
+        except Exception:  # noqa: BLE001
+            continue
+        items = ctx.sess.evaluate(MENU_LINKS_JS) or []
+        if items:
+            return items
+    return []
+
+
+def _hop_target(home: str, h: str) -> bool:
+    """A menu link that leads to another page of the store (not a product, cart, account or search, not home)."""
+    if not h or h.startswith(("#", "javascript")) or re.search(r"/(products|cart|account|search)\b", h):
+        return False
+    return _path(urljoin(home, h)) not in ("/", _path(home)) and same_site_url(urljoin(home, h), home)
+
+
 def _landing_hop(ctx: Ctx, home: str) -> str | None:
     """Brand-landing homepages (thehouseofrare.com: MEN -> /pages/rare-rabbit): click the first top
-    menu link that goes to another page of the store, like a shopper picking a section."""
+    menu link that goes to another page of the store, like a shopper picking a section. On phones the top menu sits
+    behind the menu button (subko.coffee phone, new30j: desktop hopped via 'Specialty Coffee', the phone found no header
+    link on screen): the menu is opened and its links are used."""
     page = ctx.sess.page
-    for item in (ctx.sess.evaluate(TOP_NAV_JS) or [])[:6]:
-        h = item["href"]
-        if not h or h.startswith(("#", "javascript")) or re.search(r"/(products|cart|account|search)\b", h):
-            continue
-        if _path(urljoin(home, h)) in ("/", _path(home)) or not same_site_url(urljoin(home, h), home):
+    items = ctx.sess.evaluate(TOP_NAV_JS) or []
+    if not any(_hop_target(home, it["href"]) for it in items):
+        items = _menu_drawer_links(ctx)
+    for item in items[:6]:
+        if not _hop_target(home, item["href"]):
             continue
         try:
             before = page.url
@@ -2656,8 +2774,8 @@ NOT_SHOPPING = ("cart-drawer, cart-notification, [id*='cart-drawer' i], [class*=
 
 PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   document.querySelectorAll('[data-radar-target]').forEach(e => { if (e.getAttribute('data-radar-target') !== 'drawer') e.removeAttribute('data-radar-target'); });
-  const re = hrefRe ? new RegExp(hrefRe) : null;
-  const vis = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
+  const re = hrefRe ? new RegExp(hrefRe) : null; """ + BOX_JS + r"""
+  const vis = e => { const r = boxOf(e); const s = getComputedStyle(e);
     return r.width > 2 && r.height > 2 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
   const tag = e => e ? (e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' && e.className.trim()
                     ? '.' + e.className.trim().split(/\s+/)[0] : '')).slice(0, 40) : 'nothing';
@@ -2688,8 +2806,9 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   const cands = all.map((e, i) => [e, i]).filter(([e]) => usable(e))
     .map(([e, i]) => [e, rank(e, i)]).sort((a, b) => a[1][0] - b[1][0] || a[1][1] - b[1][1]).slice(0, 80);
   for (const [e] of cands) {
-    e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'});
-    const r = e.getBoundingClientRect();
+    if (e.getBoundingClientRect().width > 0) e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'});
+    else { const b = boxOf(e); scrollBy(0, b.top + b.height / 2 - innerHeight / 2); }    // display:contents: no box to scroll to
+    const r = boxOf(e);
     if (r.bottom <= 0 || r.right <= 0 || r.top >= innerHeight || r.left >= innerWidth) { note('off screen (carousel slide)'); continue; }
     const card = cardOf(e);
     const cx = Math.min(Math.max(r.left + r.width / 2, 1), innerWidth - 1);
@@ -2709,8 +2828,8 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
 }"""
 
 AIM_JS = r"""(via) => { const t = document.querySelector('[data-radar-target="click"]'); if (!t) return null;
-  const c = document.querySelector('[data-radar-target="card"]') || t;
-  const r = t.getBoundingClientRect(); if (r.bottom <= 0 || r.top >= innerHeight || r.width <= 0) return null;
+  const c = document.querySelector('[data-radar-target="card"]') || t; """ + BOX_JS + r"""
+  const r = boxOf(t); if (r.bottom <= 0 || r.top >= innerHeight || r.width <= 0) return null;
   const cx = Math.min(Math.max(r.left + r.width / 2, 1), innerWidth - 1);
   const pts = [[cx, r.top + r.height / 2], [cx, r.top + Math.min(r.height / 2, 40)], [r.left + Math.min(r.width / 2, 20), r.top + Math.min(r.height / 2, 12)]]
     .map(([x, y]) => [Math.round(x), Math.round(Math.min(Math.max(y, 1), innerHeight - 1))]);
@@ -2750,6 +2869,57 @@ BIG_FIXED_LAYER_JS = r"""() => { const vw = innerWidth, vh = innerHeight;
   return false; }"""
 
 
+# The layer actually covering the page, found from what is on top at the screen's centre (not from popup-like names):
+# teatrunk.in (new30i, both devices) showed 'Shopping from Outside India? International | Stay Here' inside the theme's
+# <header>, which the popup rules skip (menus live there); every card was 'covered by div.ctryModal-Content-overlay' and
+# no popup was closed. Only a control a shopper uses to stay (close / × / no thanks / stay here ...) is clicked, never
+# one that leaves, accepts or subscribes; a layer with many links or the page's main content is not a popup.
+COVER_CLOSE_JS = r"""() => {
+  document.querySelectorAll('[data-radar-target="cover-close"]').forEach(e => e.removeAttribute('data-radar-target'));
+  const vw = innerWidth, vh = innerHeight;
+  const shown = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
+  const text = e => (e.innerText || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
+  const SAFE = /^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip|continue browsing|continue shopping|stay here|stay on this (site|store|page)|dismiss)$/i;
+  const BAD = /accept|agree|allow|subscribe|sign ?up|submit|yes|international|go to|take me|switch|redirect/i;
+  for (const [fx, fy] of [[0.5, 0.5], [0.33, 0.33], [0.67, 0.67], [0.2, 0.5], [0.8, 0.5]]) {
+    let layer = null;
+    for (let n = document.elementFromPoint(vw * fx, vh * fy); n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
+      const s = getComputedStyle(n), r = n.getBoundingClientRect();
+      if (s.position === 'fixed' && r.width * r.height >= 0.25 * vw * vh) layer = n; }      // the outermost big fixed layer
+    if (!layer) continue;
+    // the layer itself, or its parent when the layer is only the backdrop beside the dialog box
+    for (const root of [layer, layer.parentElement]) {
+      if (!root || root === document.body || root.querySelectorAll('a[href]').length > 12
+          || root.querySelector('main, form[action*="/cart/add"]')) break;
+      const btn = [...root.querySelectorAll('button, a, [role="button"], [aria-label]')].filter(shown).find(c =>
+        !BAD.test(text(c)) && (SAFE.test(text(c)) || /close|dismiss/i.test(c.getAttribute('aria-label') || '')));
+      if (!btn) continue;
+      const b = btn.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
+      if (!hit || !(hit === btn || btn.contains(hit))) continue;
+      btn.setAttribute('data-radar-target', 'cover-close');
+      const t = text(root);
+      return {button: text(btn).slice(0, 30) || 'close', text: t.slice(0, 60).toLowerCase(),
+              kind: /country|region|currency|ship to|location/i.test(t) ? 'location' : 'popup'};
+    } }
+  return null; }"""
+
+
+def _close_covering_layer(ctx: Ctx) -> str | None:
+    """Close the large fixed layer on top of the page with its own stay / close control (COVER_CLOSE_JS)."""
+    found = ctx.sess.evaluate(COVER_CLOSE_JS)
+    if not found:
+        return None
+    try:
+        ctx.sess.page.locator('[data-radar-target="cover-close"]').first.click(timeout=3000)
+    except Exception:  # noqa: BLE001
+        return None
+    ctx.sess.page.wait_for_timeout(500)
+    ctx.expect(f"{found['kind']} popup closed", "closed without accepting or subscribing",
+               f"clicked {found['button']!r} on: {found['text']!r}", True)
+    return f"clicked {found['button']!r} on a layer covering the page"
+
+
 def _pick(ctx: Ctx, sel: str, href_re: str | None = None, prefer=(), exclude: str | None = NOT_SHOPPING,
           second_pass: bool = True):
     """First element a shopper could actually click: visible, enabled, not covered, on screen.
@@ -2776,6 +2946,12 @@ def _pick(ctx: Ctx, sel: str, href_re: str | None = None, prefer=(), exclude: st
         got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
         if not got.get("none"):
             got["overlay"] = "pressed Escape to close a layer covering the cards"
+    if got and got.get("none") and second_pass and any(k.startswith("covered by") for k in got.get("why", {})):
+        closed = _close_covering_layer(ctx)
+        if closed:
+            got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
+            if not got.get("none"):
+                got["overlay"] = closed
     if got and got.get("none") and any(k.startswith("covered by") for k in got.get("why", {})):
         closed = _llm_close_overlay(ctx)            # re-check after triage only
         if closed:
@@ -2901,6 +3077,14 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
     def click_collection():
         _dismiss(ctx)
         got, how = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False), "visible link"
+        if got.get("none"):
+            # a layer the popup rules missed covers the page (teatrunk.in): close it before opening menus (which it
+            # covers too); runs on the fresh homepage only, so it never closes a menu Radar opened
+            closed = _close_covering_layer(ctx)
+            if closed:
+                got = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
+                if not got.get("none"):
+                    got["overlay"] = closed
         if got.get("none"):                                 # links inside closed dropdowns / hamburger
             toggles = page.locator(MENU_TOGGLES)
             for i in range(min(toggles.count(), 6)):
@@ -2931,13 +3115,31 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                    f"{got['href']} ({got['text']!r})" if found else "none (menus opened too)", found)
         _click_picked(ctx, got)
         ctx.expect("landed on that collection", _path(got["href"]), _path(page.url), "/collections/" in page.url)
-        n = len(_product_links(ctx.sess))
-        if not n:
-            _wait_stable(ctx, PRODUCT_HREF)
-            _reveal_product_grid(ctx)
+
+        def listed() -> int:
             n = len(_product_links(ctx.sess))
+            if not n:
+                _wait_stable(ctx, PRODUCT_HREF)
+                _reveal_product_grid(ctx)
+                n = len(_product_links(ctx.sess))
+            return n
+        n, empty = listed(), []
+        while not n and len(empty) < 3:
+            # This collection lists no products: an 'entrance' landing page with tiles to sub-collections (quboworld.com
+            # 'Smart Entrance', new30j: '104 links: 104 not visible' = hidden mega-menu links) or an empty collection.
+            # A shopper goes on to another collection: one this page links to first, else another from the homepage.
+            empty.append(_path(page.url))
+            alt = _other_collection(ctx, home, empty)
+            if not alt:
+                break
+            _click_picked(ctx, alt)
+            if "/collections/" not in page.url:
+                break
+            n = listed()
         ctx.expect("products listed in collection", "≥ 1", n, n >= 1)
-        return f"clicked {how} → {_path(page.url)} ({n} products)" + (f"; {got['overlay']}" if got.get("overlay") else "")
+        went = f"; {', '.join(empty)} listed no products, went on to {_path(page.url)}" if empty else ""
+        return (f"clicked {how} → {_path(page.url)} ({n} products){went}"
+                + (f"; {got['overlay']}" if got.get("overlay") else ""))
     # soft: some themes (e.g. Origin) put no collection link on the homepage; then home -> product
     if ctx.steps.run("click_into_collection", click_collection, soft=True) is None:
         if "/collections/" not in page.url:

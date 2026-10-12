@@ -1147,3 +1147,30 @@ def test_crawl_delay_is_read_for_radars_token():
     assert Robots("User-agent: *\nCrawl-delay: 5\nDisallow: /cart\n", "BugRadar/0.1 (+bugradar.in)").crawl_delay() == 5.0
     assert Robots("User-agent: *\nDisallow: /cart\n", "BugRadar/0.1").crawl_delay() is None
     assert Robots(None, "BugRadar/0.1").crawl_delay() is None
+
+
+# ---------- new30i/j: empty / landing collections warn, menu hop targets ----------
+def test_store_warning_makes_a_hard_step_a_warning_and_other_failures_stay_failures():
+    from radar.checks.library import Steps, StepFailed, StoreWarning
+
+    def landing():
+        raise StoreWarning("products listed: expected ≥ 1, got 0: a landing page with no product grid")
+
+    def broken():
+        raise AssertionError("products listed: expected ≥ 1, got 0")
+    st = Steps()
+    assert st.run("lists_products", landing) is None
+    assert st.items[-1].status == "warn" and "landing page" in st.items[-1].error
+    with pytest.raises(StepFailed):
+        st.run("lists_products", broken)
+    assert st.items[-1].status == "fail"
+
+
+def test_menu_hop_targets_are_other_store_pages_only():
+    from radar.checks.library import _hop_target
+    home = "https://store.example/"
+    assert _hop_target(home, "/pages/coffee")
+    assert _hop_target(home, "https://store.example/pages/bakehouse")
+    for h in ("/", "#", "javascript:void(0)", "/products/x", "/cart", "/account/login", "/search?q=a",
+              "https://other.example/pages/coffee", ""):
+        assert not _hop_target(home, h), h

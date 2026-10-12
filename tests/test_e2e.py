@@ -1971,3 +1971,64 @@ def test_dawn_cart_row_price_is_read_and_a_discount_code_is_not_a_mismatch(tmp_p
     st = _steps(c)
     assert st["cart_line_price"].status == "pass", (st["cart_line_price"].status, st["cart_line_price"].error)
     assert "₹1,299.00 struck, discounted in the cart to ₹1,169.10" in st["cart_line_price"].detail, st["cart_line_price"].detail
+
+
+# ---------------- new30i/j false failures: cards a shopper sees, landing collections (12 Oct 2026) ----------------
+
+def _scan_small(mode, tmp_path, device="desktop", suites=None):
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2),
+                    device=device, only_suites=suites)[0]
+    finally:
+        srv.shutdown()
+
+
+def _fails(case):
+    return [(s.name, s.status, s.error) for s in case.attempts[-1].steps if s.status in ("fail", "warn")]
+
+
+def test_card_link_with_display_contents_is_a_card_a_shopper_can_click(tmp_path):
+    """valliyan.com (Baseline theme, new30j, both devices): the card link is display:contents around image + name +
+    price. The products were plainly on screen (journey.shopper.a1.png), yet 'products listed: 0' and '15 links: 15
+    not visible': the <a> has no box of its own. Its box is its children's."""
+    run = _scan_small("contents_cards", tmp_path, suites=["journey", "catalog"])
+    coll, j = _case(run, "catalog.collection."), _case(run, "journey.")
+    assert coll.verdict == "pass", _fails(coll)
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "/products/" in _steps(j)["click_into_product"].detail
+
+
+def test_landing_collection_without_a_grid_warns_and_the_journey_goes_on_to_a_collection_with_products(tmp_path):
+    """quboworld.com (Horizon, new30j): the menu's first collection, 'Smart Entrance', is a landing page (hero + 'Learn
+    more' tiles to sub-collections, mega-menu product links hidden). Radar failed it as 'products listed: 0' and the
+    journey as '104 links: 104 not visible' (DOWN). A shopper goes on to a collection that lists products."""
+    run = _scan_small("landing_collection", tmp_path, suites=["journey", "catalog"])
+    coll, j = _case(run, "catalog.collection.home-decor"), _case(run, "journey.")
+    st = _steps(coll)["lists_products"]
+    assert st.status == "warn" and "landing page" in st.error and "/collections/kitchen" in st.error, (st.status, st.error)
+    assert coll.verdict != "confirmed_fail", coll.verdict
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    d = _steps(j)["click_into_collection"].detail
+    assert "/collections/kitchen" in d and "listed no products" in d, d
+
+
+def test_phone_brand_landing_menu_behind_the_menu_button_is_opened_for_the_hop(tmp_path):
+    """subko.coffee phone (new30j; desktop healthy via 'Specialty Coffee' -> /pages/coffee): on phones the brand
+    landing's top menu sits behind ☰. Radar looked only at header links already on screen and failed 'no matching
+    links on the page'. A shopper opens the menu and picks the section."""
+    j = _case(_scan_small("phone_brand_landing", tmp_path, device="mobile", suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "(/pages/shop)" in _steps(j)["click_into_collection"].detail, _steps(j)["click_into_collection"].detail
+
+
+@pytest.mark.parametrize("device", ["desktop", "mobile"])
+def test_country_modal_inside_the_header_is_answered_stay_here_never_international(tmp_path, device):
+    """teatrunk.in (new30i, both devices): 'Shopping from Outside India? International | Stay Here' covered every card
+    ('covered by div.ctryModal-Content-overlay') and Radar recorded no popup closed: the modal sits inside <header>,
+    which the popup rules skip (menus live there). The layer actually covering the cards is answered 'Stay Here'."""
+    j = _case(_scan_small("country_modal", tmp_path / device, device=device, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    closed = [k for k in _checks(j) if "popup closed" in k["what"]]
+    assert closed and all("International" not in k["actual"] for k in closed), closed
+    assert any("Stay Here" in k["actual"] for k in closed), closed

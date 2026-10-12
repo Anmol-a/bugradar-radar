@@ -294,6 +294,15 @@ Modes (to prove Radar catches and heals what it should):
                    found') -> catalog.filter WARNS (strict: FAILS), naming the store's own count
   filter_app       Dawn's filter form is on the page, but a filter app (script /static/boost-sd-filter.js) owns the grid
                    and empties it on addresses with filter.* -> 'not judged: filter app Boost' (info), not a warning
+  contents_cards   every product card's link is display:contents around image + name (valliyan.com, Baseline theme):
+                   the <a> has no box of its own -> collection + journey PASS (was 'products listed: 0', 'N not visible')
+  landing_collection  /collections/home-decor (the menu's first collection) is a landing page: hero, hidden mega-menu
+                   product links, a 'Learn more' tile to /collections/kitchen (quboworld.com 'Smart Entrance') -> the
+                   collection test WARNS 'landing page', the journey goes on to the sub-collection and PASSES
+  phone_brand_landing  brand_landing, but on phones the top menu sits behind a ☰ drawer (subko.coffee phone) -> the
+                   journey opens the menu, hops to /pages/shop, PASSES
+  country_modal    a 'Shopping from Outside India? International / Stay Here' modal rendered inside <header> covers the
+                   page until answered (teatrunk.in) -> Radar clicks 'Stay Here' (never 'International'), PASSES
   (every mode)     robots.txt carries Shopify's default collection lines: /collections/*sort_by*,
                    /collections/*filter*&*filter*, /collections/*+* (facets_sort_allowed: without the sort_by lines)
 
@@ -730,7 +739,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   document.body.appendChild(d); });
 </script></body>""")
         path_now = urlparse(self.path).path.rstrip("/") or "/"
-        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("hover_menu", "brand_landing"):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("hover_menu", "brand_landing", "phone_brand_landing"):
             if path_now == "/":                       # brand-landing homepage: no products, no collection links
                 body = re.sub(r'<a class="card"[^>]*>.*?</a>', "", body)
             mega = ('<div class="mega" style="position:absolute;left:0;top:30px;background:#fff;padding:10px;display:none">'
@@ -740,6 +749,48 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                                 f'<a href="/pages/shop">Shop</a>{mega}</div> <a href="/pages/about">About</a></nav>'
                                 '<style>.menu-item:hover .mega{display:block !important}</style>', 1)
             body = body.replace('<a href="/collections/all">Shop all</a>', '')
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "phone_brand_landing" \
+                and "Mobile" in (self.headers.get("User-Agent") or ""):
+            # subko.coffee phone (new30j, 11 Oct): the brand-landing top menu ('Shop' -> /pages/shop) sits behind the ☰
+            # button on phones; the drawer holds no collection link, only the landing pages
+            body = body.replace('<nav><div class="menu-item"', '<button type="button" class="header__icon--menu" '
+                                'aria-label="Menu" onclick="document.getElementById(\'m-drawer\').style.display=\'block\'">'
+                                '&#9776;</button><div id="m-drawer" style="display:none"><nav><div class="menu-item"', 1)
+            body = body.replace('<a href="/pages/about">About</a></nav><style>', '<a href="/pages/about">About</a></nav></div><style>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "contents_cards":
+            # valliyan.com (Baseline theme, new30j, both devices): the product card's link is display:contents around
+            # the image + name + price. A shopper sees and taps the card; the <a> itself has no box (0x0 rect), so
+            # Radar said 'products listed: 0' and '15 links: 15 not visible'.
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
+                f'<a class="card" href="/products/{m.group(1)}" style="display:contents">'
+                f'<div class="product-item" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
+                f'<div class="product-item__image" style="height:200px;background:#eee">{m.group(2)}</div>'
+                f'<div class="product-item__title">{m.group(3)}</div></div></a>'), body)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "landing_collection" \
+                and path_now == "/collections/home-decor":
+            # quboworld.com (Horizon, new30j): the menu's first collection is an 'entrance' landing page: a hero and
+            # tiles with 'Learn more' buttons to sub-collections, no product grid; the mega menu's product links are in
+            # the page but hidden ('104 links: 104 not visible')
+            body = re.sub(r'(<main>).*?(</main>)', lambda m: m.group(1) + (
+                '<section class="hero" style="height:420px;background:#111;color:#fff"><h1>Smarter homes.</h1></section>'
+                '<div class="mega-products" style="display:none">'
+                + "".join(f'<a href="/products/{p["handle"]}">{p["title"]}</a>' for p in PRODUCTS if p["collection"]) +
+                '</div><section class="tiles"><div class="tile"><h3>Kitchen</h3>'
+                '<a class="button" href="/collections/kitchen">Learn more</a></div></section>') + m.group(2),
+                body, count=1, flags=re.S)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal":
+            # teatrunk.in (new30i, both devices): 'Shopping from Outside India?' with International / Stay Here, rendered
+            # inside the theme's <header>, its backdrop (div.ctryModal-Content-overlay) over every card and menu link.
+            # Shown until the shopper answers. 'International' leaves the store: never clicked.
+            body = body.replace("</header>", """<div class="ctryModal" id="ctryModal" style="position:fixed;inset:0;z-index:100">
+<div class="ctryModal-Content-overlay" style="position:absolute;inset:0;background:rgba(0,0,0,.45)"></div>
+<div class="ctryModal-Content" style="position:relative;margin:30vh auto 0;width:60%;background:#fff;padding:20px">
+<h2>Shopping from Outside India?</h2><p>We have a dedicated store which serves in your country. Would you like us to take you there?</p>
+<button type="button" class="ctry-intl">International</button> <button type="button" class="ctry-stay">Stay Here</button></div></div>
+<script>(() => { const m = document.getElementById('ctryModal');
+  if (document.cookie.includes('ctry=stay')) { m.remove(); return; }
+  m.querySelector('.ctry-intl').onclick = () => { location.href = '/pages/international'; };
+  m.querySelector('.ctry-stay').onclick = () => { document.cookie = 'ctry=stay;path=/'; m.remove(); }; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "dead_image_link" and path_now.startswith("/collections/"):
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
                 f'<div class="card-wrapper" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
