@@ -94,6 +94,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("folder", type=Path)
     ap.add_argument("--build", default="", help="build label; default: the day the run started")
     ap.add_argument("--ci-url", default=os.environ.get("BUGRADAR_CI_URL"))
+    ap.add_argument("--since", type=float, default=0, help="only runs written after this unix time (machines that keep old data)")
     ap.add_argument("--dry-run", action="store_true")
     a = ap.parse_args(argv)
     key = os.environ.get("BUGRADAR_KEY", "")
@@ -102,6 +103,7 @@ def main(argv: list[str] | None = None) -> int:
         return 0                       # never fail a Radar run because the dashboard isn't set up
     files = [a.folder / "run.json"] if (a.folder / "run.json").exists() else sorted(a.folder.glob("**/sites/*/*/run.json"))
     sent = failed = 0
+    files = [f for f in files if f.stat().st_mtime >= a.since]
     for f in files:
         try:
             run = json.loads(f.read_text())
