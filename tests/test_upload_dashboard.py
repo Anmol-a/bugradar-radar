@@ -161,6 +161,9 @@ def test_a_failed_check_carries_the_page_it_stopped_on(tmp_path):
     # a cart is private to each visitor: the product that was added is linked instead
     assert up.failing_page(case(loads=[{"url": "/products/serum?variant=1"}, {"url": "/cart"}]), base) == ("https://shop.example/products/serum?variant=1", "cart")
     assert up.failing_page(case(loads=[{"url": "/cart"}]), base) == (None, "cart")
+    # the named product's page was hidden and the next catalog product was tested: the link is that one, and says so
+    moved = [{"name": "loads", "status": "warn"}, {"name": "loads_next_catalog_product_1", "status": "pass"}, {"name": "shows_title_price_image", "status": "fail"}]
+    assert up.failing_page(case(steps=moved, loads=[{"url": "/products/a"}, {"url": "/products/b"}]), base) == ("https://shop.example/products/b", "next_product")
     # another site is never linked; the made-up 404 address has no page at all
     assert up.failing_page(case(loads=[{"url": "https://evil.example/x"}]), base) == (None, None)
     assert up.failing_page({"check": "not_found", "attempts": [{"loads": [{"url": "/"}]}]}, base) == (None, "test_address")
