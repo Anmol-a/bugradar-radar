@@ -170,6 +170,10 @@ Modes (to prove Radar catches and heals what it should):
   stale_catalog    bombaytrooper.com (cycle 34): /products.json lists the vase in stock, its /products/<h>.js and page
                    say sold out -> the product test notes it (info) and tests the next in-stock catalog product, PASSES
                    (v0.19: 'an in-stock variant exists ... got none available')
+  stale_catalog_all  bombaytrooper.com (13 Oct, dashboard): as stale_catalog, but EVERY product is sold out in its .js and on
+                   its page, so there is no in-stock product to test instead -> the product test judges the sold-out page
+                   (name, price, picture, 'sold out' told), tags it with a 'sold_out_product' step and PASSES (before:
+                   'an in-stock variant exists ... got none available', confirmed_fail)
   app_proxy_page   arakucoffee.in (cycle 34): a homepage section links to /tools/product-finder/match-me, an app-proxy
                    quiz page with no theme layout whose content a web component draws in a CLOSED shadow root (body text
                    empty, no <img>) -> smoke.more_links PASSES on what the browser painted (v0.19: 'page not blank: got
@@ -1464,6 +1468,8 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
         as the store-wide /products.json lists them."""
         if self.mode == "pack_of_two" and p["handle"] == "ceramic-vase":
             return PACK_VARIANTS
+        if self.mode == "stale_catalog_all" and not catalog:
+            return [dict(v, available=False) for v in p["variants"]]      # every product sold out since it was listed
         if self.mode == "stale_catalog" and p["handle"] == "ceramic-vase" and not catalog:
             # bombaytrooper.com (cycle 34): products.json still lists it in stock; its .js and its page say sold out
             return [dict(v, available=False) for v in p["variants"]]

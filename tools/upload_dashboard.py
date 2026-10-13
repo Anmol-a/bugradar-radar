@@ -125,6 +125,10 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None) -> dict
             "duration_ms": int(sum(a.get("secs") or 0 for a in c.get("attempts") or []) * 1000) or None,
             "attempts": len(c.get("attempts") or []) or 1,
         }
+        if status in ("passed", "flaky") and any(s.get("name") == "sold_out_product" for s in last.get("steps") or []):
+            # the product page is fine, the product just is not in stock: a tag, not a failure and not a warning
+            item["tags"] = ["sold out"]
+            item["reason"] = "This product is sold out, so the buy steps were not tested."
         if status == "failed" and shots < MAX_SHOTS_PER_RUN:
             shot = evidence(c, run_dir)
             if shot:

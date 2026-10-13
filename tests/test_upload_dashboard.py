@@ -139,3 +139,11 @@ def test_a_big_full_page_png_goes_up_as_a_small_jpeg(tmp_path, monkeypatch):
 
 def test_store_name_drops_www(tmp_path):
     assert up.to_payload({**RUN, "base_url": "https://www.shop.example"}, tmp_path, "", None)["project"] == "shop.example"
+
+
+def test_a_sold_out_product_is_tagged(tmp_path):
+    run = json.loads(json.dumps(RUN))
+    run["cases"][0]["attempts"][-1]["steps"] = [{"name": "sold_out_product", "status": "info", "detail": "sold out: /products/x"}]
+    by = {r["key"]: r for r in up.to_payload(run, tmp_path, "", None)["results"]}
+    assert by["smoke.home"]["status"] == "passed" and by["smoke.home"]["tags"] == ["sold out"] and "sold out" in by["smoke.home"]["reason"]
+    assert "tags" not in by["cart.add"]
