@@ -1,0 +1,2959 @@
+{
+  "run_id": "20261013T025017Z-m-f276",
+  "site_id": "supplysix.com",
+  "base_url": "https://supplysix.com",
+  "device": "mobile",
+  "started_at": "2026-10-13T02:50:17+00:00",
+  "finished_at": "2026-10-13T02:53:18+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.87s",
+              "error": null,
+              "secs": 7.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fixing the Gaps in your Diet",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3540 chars, 67 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/all (23 products)",
+              "error": null,
+              "secs": 5.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/all ('View More')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "23",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 69 candidates \u2192 /products/supply6-salts-peach",
+              "error": null,
+              "secs": 6.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/supply6-salts-peach ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/supply6-salts-peach",
+                  "actual": "/products/supply6-salts-peach",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Supply6 Salts - Peach', selected variant 51324158869727 at \u20b9530.00",
+              "error": null,
+              "secs": 0.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/supply6-salts-peach",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/supply6-salts-peach.js with variants",
+                  "actual": "'Supply6 Salts - Peach', 3 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Supply6 Salts - Peach",
+                  "actual": "'Supply6 Salts' (h1, 24px, contains the name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9530.00",
+                  "actual": "\u20b9530.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 324x324)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Supply6 Salts - Peach",
+                  "actual": "'Supply6 Salts' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Supply6 Salts - Peach",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "530.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.07-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 22.86,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://supplysix.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "this._setupVisibilityObservers is not a function",
+              "url": "https://supplysix.com/products/supply6-salts-peach"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "GET https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&ae=g&auid=1416922949.1791859829&dt=Fixing%20the%20Gaps%20in%20your%20Diet&en=page_view&dl=https%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1416922949.1791859829&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859826527&g",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1416922949.1791859829&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&en=page",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=1416922949.1791859829&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&dl",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859830367&cv=11&fst=1791859830367&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859826527&_gaz=1&gcs=G111&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859830871&ec=3",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859831821.693b1b560f&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&ae=g&auid=1416922949.1791859829&dt=All%20Products&en=page_view&dl=https%3A%2F%2Fsupplysix.com%2F",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859831821.693b1b560f&hclk=-&ref=https%3A%2F%2Fsupplysix.com%2",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=CollectionViewed&pi=SS_10998_Supply6&ui=hs.1791859831821.693b1b560f&hclk=-&ref=https%3A%2F%2Fsu",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859838169&cv=11&fst=1791859838169&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=1416922949.1791859829&dt=All%20Products&tid=AW-11254121813&dl=https%3A%2F%2Fsupplysix",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=1416922949.1791859829&dt=All%20Products&tid=AW-11254121813&en=page_view&dl=https%3A%2F%2Fs",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859838392&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&ae=g&auid=1416922949.1791859829&dt=Supply6%20Salts%20-%20Peach&en=page_view&dl=https%3A%2F%2Fsup",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=ViewContent&pi=SS_10998_Supply6&ui=hs.1791859831821.693b1b560f&hclk=-&ref=https%3A%2F%2Fsupplys"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.12,
+              "dcl": 1.36,
+              "load": 6.5,
+              "lcp": 0.82
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.15,
+              "dcl": 1.15,
+              "load": 3.99,
+              "lcp": 0.62
+            },
+            {
+              "url": "/products/supply6-salts-peach",
+              "ttfb": 0.18,
+              "dcl": 1.0,
+              "load": 4.05,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.88s",
+              "error": null,
+              "secs": 5.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fixing the Gaps in your Diet",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3540 chars, 67 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.88s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.88s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.64s, CLS 0.0",
+              "error": null,
+              "secs": 0.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.64s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "128 scripts, at least 1.6 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (8), pdp.gokwik.co (2), connect.facebook.net (2), snap.licdn.com (2), analytics.gokwik.co (1)",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "128 scripts, at least 1.6 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (8), pdp.gokwik.co (2), connect.facebook.net (2), snap.licdn.\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.84,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://supplysix.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "GET https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&ae=g&auid=2049204424.1791859852&dt=Fixing%20the%20Gaps%20in%20your%20Diet&en=page_view&dl=https%",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2049204424.1791859852&gtm=45He6a91h1v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859852075.571b41e465&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=2049204424.1791859852&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&dl",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859852518&cv=11&fst=1791859852518&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91h1v913484340",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=2049204424.1791859852&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&en=page",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91h1v9120234551za200zb9134843407zd9134843407xf1&_p=1791859849409",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859849409&_gaz=1&gcs=G111&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859853433&ec=3",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.13,
+              "dcl": 1.35,
+              "load": 4.82,
+              "lcp": 0.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/all",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.49s",
+              "error": null,
+              "secs": 6.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3533 chars, 52 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/about-us-new",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.48s",
+              "error": null,
+              "secs": 4.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About Us - Supply6",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2434 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /blogs/all",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.14s",
+              "error": null,
+              "secs": 5.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Supply6 Blog",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4519 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/faqs",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.61s",
+              "error": null,
+              "secs": 4.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "FAQs",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1193 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.46,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://supplysix.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&ae=g&auid=1352491084.1791859859&dt=All%20Products&en=page_view&dl=https%3A%2F%2Fsupplysix.com%2F",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=UfmHSMB0iJIFtjeR3mI0C0CKX838yI8SZA&auid=1352491084.1791859859&gtm=45He6a91v9134843407za200zd9134843407x",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859860238&cv=11&fst=1791859860238&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1352491084.1791859859&dt=All%20Products&tid=AW-11254121813&en=page_view&dl=https%3A%2F%2Fsu",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=1352491084.1791859859&dt=All%20Products&tid=AW-11254121813&dl=https%3A%2F%2Fsupplysix.",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859857240&_gaz=1&gcs=G111&g",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859860824.09a38ed390&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=CollectionViewed&pi=SS_10998_Supply6&ui=hs.1791859860824.09a38ed390&hclk=-&ref=&uri=https%3A%2F",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6ac0h2v9120234551za200zb9134843407zd9134843407xf1&_p=1791859857240",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859860960&ec=3",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&ae=g&auid=1352491084.1791859859&dt=About%20Us%20-%20Supply6&en=page_view&dl=https%3A%2F%2Fsupply",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&ae=g&auid=1352491084.1791859859&dt=About%20Us%20-%20Supply6&tid=AW-11254121813&dl=https%3A%2F%2",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859865919&cv=11&fst=1791859865919&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&auid=1352491084.1791859859&dt=About%20Us%20-%20Supply6&tid=AW-11254121813&en=page_view&dl=https",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859866757&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&ae=g&auid=1352491084.1791859859&dt=Supply6%20Blog&en=page_view&dl=https%3A%2F%2Fsupplysix.com%2",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859869738&cv=11&fst=1791859869738&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=1352491084.1791859859&dt=Supply6%20Blog&tid=AW-11254121813&dl=https%3A%2F%2Fsupplysix",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&auid=1352491084.1791859859&dt=Supply6%20Blog&tid=AW-11254121813&en=page_view&dl=https%3A%2F%2Fs"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.25,
+              "dcl": 2.09,
+              "load": 5.38,
+              "lcp": 1.4
+            },
+            {
+              "url": "/pages/about-us-new",
+              "ttfb": 0.07,
+              "dcl": 1.34,
+              "load": 3.53,
+              "lcp": 1.39
+            },
+            {
+              "url": "/blogs/all",
+              "ttfb": 0.22,
+              "dcl": 0.98,
+              "load": 4.69,
+              "lcp": 0.66
+            },
+            {
+              "url": "/pages/faqs",
+              "ttfb": 0.22,
+              "dcl": 1.31,
+              "load": 3.92,
+              "lcp": 0.77
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.19s",
+              "error": null,
+              "secs": 6.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fixing the Gaps in your Diet",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3540 chars, 67 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "tapped the menu button ('Navigation'): 7 links shown, e.g. Shop, Our Story, Blogs",
+              "error": null,
+              "secs": 2.53,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.1,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://supplysix.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "GET https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&ae=g&auid=1435995898.1791859881&dt=Fixing%20the%20Gaps%20in%20your%20Diet&en=page_view&dl=https%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1435995898.1791859881&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859881740.9c68d63466&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859878693&_gaz=1&gcs=G111&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859878693&g",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=1435995898.1791859881&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&dl=",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=1435995898.1791859881&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&en=page_",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859882387&cv=11&fst=1791859882387&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859882534&ec=3",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.15,
+              "dcl": 0.94,
+              "load": 5.02,
+              "lcp": 0.81
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /blogs/all/what-to-eat-for-a-healthy-liv",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.85s",
+              "error": null,
+              "secs": 5.7,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "What to Eat for a Healthy Living: 20 Super Foods & Meal Ideas",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "34857 chars, 31 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'What to Eat for a Healthy Living: 20 Super Foods & Meal Idea', heading 'What to Eat for a Healthy Living: 20 Super Foods & Meal Ideas'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/blogs/all/what-to-eat-for-a-healthy-living-20-super-foods-meal-ideas",
+                  "actual": "/blogs/all/what-to-eat-for-a-healthy-living-20-super-foods-meal-ideas",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /blogs/all/12-tips-to-maintain-a-healthy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.42s",
+              "error": null,
+              "secs": 4.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "12 Tips to Maintain a Healthy Lifestyle for a Longer Life",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "25565 chars, 29 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title '12 Tips to Maintain a Healthy Lifestyle for a Longer Life', heading '12 Tips to Maintain a Healthy Lifestyle for a Longer Life'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/blogs/all/12-tips-to-maintain-a-healthy-lifestyle-for-a-longer-life",
+                  "actual": "/blogs/all/12-tips-to-maintain-a-healthy-lifestyle-for-a-longer-life",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/referral-1",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.94s",
+              "error": null,
+              "secs": 6.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Referral",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1046 chars, 26 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Referral', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/referral-1",
+                  "actual": "/pages/referral-1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /customer_authentication/redirect",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.14s, redirected to /authentication/47383511194/login",
+              "error": null,
+              "secs": 4.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sign in - Supply6",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "332 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Sign in - Supply6', heading 'Sign in'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/customer_authentication/redirect",
+                  "actual": "/authentication/47383511194/login",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.08,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Unsafe attempt to load URL https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg from frame with URL https://shopify.com/authentication/47383511194/login?analytics_trace_id=1b98b47",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/index.CClZ7wPK.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/ShopLoginButtonInner.qiI6tYBv.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&ae=g&auid=1766837581.1791859890&dt=What%20to%20Eat%20for%20a%20Healthy%20Living%3A%2020%20Super%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1766837581.1791859890&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859890380.12929e08e6&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859887944&_gaz=1&gcs=G111&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859887944&g",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859891090&cv=11&fst=1791859891090&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac0h2v913484340",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1766837581.1791859890&dt=What%20to%20Eat%20for%20a%20Healthy%20Living%3A%2020%20Super",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=1766837581.1791859890&dt=What%20to%20Eat%20for%20a%20Healthy%20Living%3A%2020%20Super%20Fo",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859891514&ec=3",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&ae=g&auid=1766837581.1791859890&dt=12%20Tips%20to%20Maintain%20a%20Healthy%20Lifestyle%20for%20",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=1766837581.1791859890&dt=12%20Tips%20to%20Maintain%20a%20Healthy%20Lifestyle%20for%20",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859896048&cv=11&fst=1791859896048&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&auid=1766837581.1791859890&dt=12%20Tips%20to%20Maintain%20a%20Healthy%20Lifestyle%20for%20a%20L",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859896735&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&ae=g&auid=1766837581.1791859890&dt=Referral&en=page_view&dl=https%3A%2F%2Fsupplysix.com%2Fpages",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859900949&cv=11&fst=1791859900949&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=1766837581.1791859890&dt=Referral&tid=AW-11254121813&dl=https%3A%2F%2Fsupplysix.com%2F",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=1766837581.1791859890&dt=Referral&tid=AW-11254121813&en=page_view&dl=https%3A%2F%2Fsupplysi",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859898702&gcs=G111&gcd=13t3"
+          ],
+          "loads": [
+            {
+              "url": "/blogs/all/what-to-eat-for-a-healthy-living-20-super-foods-meal-ideas",
+              "ttfb": 0.32,
+              "dcl": 1.47,
+              "load": 4.59,
+              "lcp": 1.33
+            },
+            {
+              "url": "/blogs/all/12-tips-to-maintain-a-healthy-lifestyle-for-a-longer-life",
+              "ttfb": 0.26,
+              "dcl": 1.14,
+              "load": 4.06,
+              "lcp": 0.78
+            },
+            {
+              "url": "/pages/referral-1",
+              "ttfb": 0.07,
+              "dcl": 1.52,
+              "load": 5.19,
+              "lcp": 0.96
+            },
+            {
+              "url": "/authentication/47383511194/login?analytics_trace_id=1b98b470-0131-4f46-bbbc-c6779e7f4732&client_id=",
+              "ttfb": 1.43,
+              "dcl": 1.86,
+              "load": 1.86,
+              "lcp": 2.24
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.all",
+      "suite": "catalog",
+      "title": "Collection 'All Products' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.91s",
+              "error": null,
+              "secs": 7.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3533 chars, 52 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "23 products listed",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "23",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.8s, CLS 0.005",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.8s, CLS 0.005",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "145 scripts, at least 1.6 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (8), pdp.gokwik.co (2), connect.facebook.net (2), snap.licdn.com (2), analytics.gokwik.co (1)",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "145 scripts, at least 1.6 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (8), pdp.gokwik.co (2), connect.facebook.net (2), snap.licdn.\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.3,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&ae=g&auid=597737598.1791859911&dt=All%20Products&en=page_view&dl=https%3A%2F%2Fsupplysix.com%2Fc",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=597737598.1791859911&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859912122&cv=11&fst=1791859912122&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=597737598.1791859911&dt=All%20Products&tid=AW-11254121813&dl=https%3A%2F%2Fsupplysix.c",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=597737598.1791859911&dt=All%20Products&tid=AW-11254121813&en=page_view&dl=https%3A%2F%2Fsup",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859909045&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859909045&_gaz=1&gcs=G111&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859913239&ec=3",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=CollectionViewed&pi=SS_10998_Supply6&ui=hs.1791859913522.f393e5cff3&hclk=-&ref=&uri=https%3A%2F",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859913522.f393e5cff3&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.23,
+              "dcl": 1.44,
+              "load": 5.81,
+              "lcp": 0.8
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.all",
+      "suite": "catalog",
+      "title": "Collection 'All Products' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.9s",
+              "error": null,
+              "secs": 13.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3533 chars, 52 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "23 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "more_products_not_judged",
+              "status": "info",
+              "detail": "the first page shows the collection (23 shown, 26 in stock in the store's data, 5 not shown)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.6,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&ae=g&auid=1812539779.1791859921&dt=All%20Products&en=page_view&dl=https%3A%2F%2Fsupplysix.com%2F",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1812539779.1791859921&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859918278&g",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859921688&cv=11&fst=1791859921688&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=1812539779.1791859921&dt=All%20Products&tid=AW-11254121813&en=page_view&dl=https%3A%2F%2Fs",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1812539779.1791859921&dt=All%20Products&tid=AW-11254121813&dl=https%3A%2F%2Fsupplysix",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859918278&_gaz=1&gcs=G111&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859922289&ec=3",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=CollectionViewed&pi=SS_10998_Supply6&ui=hs.1791859923095.a1c519ab83&hclk=-&ref=&uri=https%3A%2F",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859923095.a1c519ab83&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859918278&gcs=G111&gcd=13t3"
+          ],
+          "loads": []
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.all",
+      "suite": "catalog",
+      "title": "Filtering collection 'All Products' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.39s",
+              "error": null,
+              "secs": 8.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3533 chars, 52 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_not_judged",
+              "status": "info",
+              "detail": "this collection offers no filters (no storefront filter options on the page)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.57,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&ae=g&auid=772860505.1791859934&dt=All%20Products&en=page_view&dl=https%3A%2F%2Fsupplysix.com%2F",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=772860505.1791859934&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://supplysix.com/api/collect",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859934829&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=772860505.1791859934&dt=All%20Products&tid=AW-11254121813&dl=https%3A%2F%2Fsupplysix.",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=772860505.1791859934&dt=All%20Products&tid=AW-11254121813&en=page_view&dl=https%3A%2F%2Fsu",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859935098&cv=11&fst=1791859935098&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859931825&_gaz=1&gcs=G111&g",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859931825&g",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859936493.471fa8b0ab&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=CollectionViewed&pi=SS_10998_Supply6&ui=hs.1791859936493.471fa8b0ab&hclk=-&ref=&uri=https%3A%2F",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859939988&ec=1",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859931825&gcs=G111&gcd=13t3"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.14,
+              "dcl": 2.91,
+              "load": 7.58,
+              "lcp": 1.84
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.supply6-salts-peach",
+      "suite": "product",
+      "title": "PDP 'Supply6 Salts - Peach'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.91s",
+              "error": null,
+              "secs": 6.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Supply6 Salts - Peach",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3852 chars, 66 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/supply6-salts-peach",
+                  "actual": "/products/supply6-salts-peach",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Supply6 Salts - Peach', selected variant 51324158869727 at \u20b9530.00",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/supply6-salts-peach",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/supply6-salts-peach.js with variants",
+                  "actual": "'Supply6 Salts - Peach', 3 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Supply6 Salts - Peach",
+                  "actual": "'Supply6 Salts' (h1, 24px, contains the name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9530.00",
+                  "actual": "\u20b9530.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 324x324)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Supply6 Salts - Peach",
+                  "actual": "'Supply6 Salts' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Supply6 Salts - Peach",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "530.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 51324158869727 (18) selected, in stock",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "3 of 3 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--27835955708127__main-9534149525727 (variant 51324158869727, button 'ADD TO CART')",
+              "error": null,
+              "secs": 0.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: this._setupVisibilityObservers is not a function",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: this._setupVisibilityObservers is not a function",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (412px)",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (412px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "9%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "9%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.85s, CLS 0.0",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.85s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "122 scripts, at least 1.6 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (8), pdp.gokwik.co (2), connect.facebook.net (2), snap.licdn.com (2), analytics.gokwik.co (1)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "122 scripts, at least 1.6 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (8), pdp.gokwik.co (2), connect.facebook.net (2), snap.licdn.\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.89,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "this._setupVisibilityObservers is not a function",
+              "url": "https://supplysix.com/products/supply6-salts-peach?variant=51324158869727"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&ae=g&auid=893326147.1791859946&dt=Supply6%20Salts%20-%20Peach&en=page_view&dl=https%3A%2F%2Fsup",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=893326147.1791859946&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859946592&ec=4",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859946813&cv=11&fst=1791859946813&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=893326147.1791859946&dt=Supply6%20Salts%20-%20Peach&tid=AW-11254121813&dl=https%3A%2F%",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=893326147.1791859946&dt=Supply6%20Salts%20-%20Peach&tid=AW-11254121813&en=page_view&dl=http",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6ac0h2v9102200075za200zb9134843407zd9134843407xf1&_p=1791859943466&_gaz=1&gcs=G111",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859943466&g",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=ViewContent&pi=SS_10998_Supply6&ui=hs.1791859948332.485fbd6e52&hclk=-&ref=&uri=https%3A%2F%2Fsu",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859948332.485fbd6e52&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix"
+          ],
+          "loads": [
+            {
+              "url": "/products/supply6-salts-peach?variant=51324158869727",
+              "ttfb": 0.25,
+              "dcl": 1.47,
+              "load": 5.71,
+              "lcp": 0.85
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'Supply6 Salts - Peach' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.18s",
+              "error": null,
+              "secs": 6.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Supply6 Salts - Peach",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3852 chars, 66 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "3 variants; selected 51324158869727 (18, \u20b9530.00); switch to 51324158902495 (36, \u20b91,010.00); sold-out variant: none",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/supply6-salts-peach",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/supply6-salts-peach.js with variants",
+                  "actual": "'Supply6 Salts - Peach', 3 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_switch",
+              "status": "pass",
+              "detail": "chose option \"Best Results\\n36\\nSachets\\n\u20b9 1,070.00\\n\u20b9 1,010.00\\n\u20b928/Serving\\nSave \u20b9 60.00\": page selects 51324158902495 (36, \u20b91,010.00); address now ?variant=51324158902495; price \u20b9530.00 \u2192 \u20b91,010.00",
+              "error": null,
+              "secs": 1.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "option control for the other variant",
+                  "expected": "36",
+                  "actual": "option \"Best Results\\n36\\nSachets\\n\u20b9 1,070.00\\n\u20b9 1,010.00\\n\u20b928/Serving\\nSave \u20b9 60.00\"",
+                  "ok": true
+                },
+                {
+                  "what": "page selects the picked variant",
+                  "expected": "51324158902495 (36, \u20b91,010.00)",
+                  "actual": "51324158902495 (the product form's variant id) after choosing option \"Best Results\\n36\\nSachets\\n\u20b9 1,070.00\\n\u20b9 1,010.00\\n\u20b928/Serving\\nSave \u20b9 60.00\"",
+                  "ok": true
+                },
+                {
+                  "what": "new variant's price shown",
+                  "expected": "\u20b91,010.00",
+                  "actual": "\u20b91,010.00",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.92,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "this._setupVisibilityObservers is not a function",
+              "url": "https://supplysix.com/products/supply6-salts-peach?variant=51324158869727"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://supplysix.com/api/collect",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&ae=g&auid=1578567590.1791859955&dt=Supply6%20Salts%20-%20Peach&en=page_view&dl=https%3A%2F%2Fsu",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1578567590.1791859955&gtm=45He6a91h1v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859955148&ec=4",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=1578567590.1791859955&dt=Supply6%20Salts%20-%20Peach&tid=AW-11254121813&dl=https%3A%2",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=1578567590.1791859955&dt=Supply6%20Salts%20-%20Peach&tid=AW-11254121813&en=page_view&dl=ht",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859955577&cv=11&fst=1791859955577&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859952282&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91h1v9102200075za200zb9134843407zd9134843407xf1&_p=1791859952282&_gaz=1&gcs=G111",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=ViewContent&pi=SS_10998_Supply6&ui=hs.1791859957083.69bf31c224&hclk=-&ref=&uri=https%3A%2F%2Fsu",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859957083.69bf31c224&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91h1v9102200075za200zb9134843407zd9134843407xf1&_p=1791859952282&gcs=G111&gcd=13",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859958956&cv=11&fst=1791859958956&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859959047&cv=11&fst=1791859959047&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a"
+          ],
+          "loads": [
+            {
+              "url": "/products/supply6-salts-peach?variant=51324158869727",
+              "ttfb": 0.12,
+              "dcl": 2.61,
+              "load": 5.42,
+              "lcp": 1.19
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.salts",
+      "suite": "search",
+      "title": "Search for 'salts' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.31s",
+              "error": null,
+              "secs": 5.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fixing the Gaps in your Diet",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3540 chars, 67 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "skip",
+              "detail": null,
+              "error": "robots.txt disallows /search: search not tested on this store",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": "returns_relevant_products",
+          "error": "robots.txt disallows /search: search not tested on this store",
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.72,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://supplysix.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "GET https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&ae=g&auid=306561799.1791859962&dt=Fixing%20the%20Gaps%20in%20your%20Diet&en=page_view&dl=https%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=306561799.1791859962&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859962521.7dbff7dfe0&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=306561799.1791859962&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&dl=h",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=306561799.1791859962&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&en=page_v",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859963012&cv=11&fst=1791859963012&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859960130&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859960130&_gaz=1&gcs=G111&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859963646&ec=3",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.13,
+              "dcl": 0.96,
+              "load": 4.3,
+              "lcp": 0.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "skip",
+              "detail": null,
+              "error": "robots.txt disallows https://supplysix.com/search?q=qzxvbugradar&type=product",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": "loads",
+          "error": "robots.txt disallows https://supplysix.com/search?q=qzxvbugradar&type=product",
+          "screenshot": null,
+          "trace": null,
+          "secs": 0.35,
+          "note": null,
+          "console": [],
+          "failed_requests": [],
+          "loads": [
+            {
+              "url": "blank",
+              "ttfb": 0.0,
+              "dcl": 0.04,
+              "load": 0.04,
+              "lcp": null
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'salts' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.15s",
+              "error": null,
+              "secs": 5.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fixing the Gaps in your Diet",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3540 chars, 67 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "not tested: the store's robots.txt disallows /search",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.64,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://supplysix.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "GET https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&ae=g&auid=406272815.1791859968&dt=Fixing%20the%20Gaps%20in%20your%20Diet&en=page_view&dl=https%3",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=406272815.1791859968&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859968535.a5b45231e3&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&ae=g&auid=406272815.1791859968&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&dl=",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859969112&cv=11&fst=1791859969112&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&auid=406272815.1791859968&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&en=page_",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859966277&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859966277&_gaz=1&gcs=G111&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859969507&ec=3",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.12,
+              "dcl": 1.03,
+              "load": 4.2,
+              "lcp": 0.68
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.43s",
+              "error": null,
+              "secs": 7.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Fixing the Gaps in your Diet",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3540 chars, 67 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Fixing the Gaps in your Diet",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "28: 'Fixing the Gaps in your Diet'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Foundational Nutrition for a Happy and Healthier life. Backed by Scien",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "89: 'Foundational Nutrition for a Happy and Healthier life. Backe'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://supplysix.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://supplysix.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Fixing the Gaps in your Diet",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://supplysix.com/cdn/shop/files/Supply_6_logo_512_9f147ea2-2594-4869-beeb-604e5e429792.jpg?v=1719227010",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.47,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://supplysix.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "GET https://supplysix.com/cdn/shop/t/88/assets/wellness-routine.js?v=40243",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&ae=g&auid=62721051.1791859975&dt=Fixing%20the%20Gaps%20in%20your%20Diet&en=page_view&dl=https%3A",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=62721051.1791859975&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859971899&_gaz=1&gcs=G111&g",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=62721051.1791859975&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&dl=h",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859975646&cv=11&fst=1791859975646&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=62721051.1791859975&dt=Fixing%20the%20Gaps%20in%20your%20Diet&tid=AW-11254121813&en=page_v",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859971899&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859975921&ec=3",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859976859.7a18d447bc&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.13,
+              "dcl": 1.09,
+              "load": 6.08,
+              "lcp": 0.87
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.96s",
+              "error": null,
+              "secs": 7.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Supply6 Salts - Peach",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3857 chars, 66 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Supply6 Salts - Peach",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "21: 'Supply6 Salts - Peach'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 222: 'Supply6 Salts supercharges your day with an ideal mix of ele'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "222: 'Supply6 Salts supercharges your day with an ideal mix of ele'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://supplysix.com/products/supply6-salts-peach",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://supplysix.com/products/supply6-salts-peach",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Supply6 Salts - Peach",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://supplysix.com/cdn/shop/files/PeachCatalogue2.jpg?v=1788426318",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.39,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "this._setupVisibilityObservers is not a function",
+              "url": "https://supplysix.com/products/supply6-salts-peach"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&ae=g&auid=694026672.1791859982&dt=Supply6%20Salts%20-%20Peach&en=page_view&dl=https%3A%2F%2Fsupp",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=694026672.1791859982&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859983057&cv=11&fst=1791859983057&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=694026672.1791859982&dt=Supply6%20Salts%20-%20Peach&tid=AW-11254121813&en=page_view&dl=htt",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=694026672.1791859982&dt=Supply6%20Salts%20-%20Peach&tid=AW-11254121813&dl=https%3A%2F",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859979378&g",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859979378&_gaz=1&gcs=G111&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859983745&ec=4",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_action?evn=ViewContent&pi=SS_10998_Supply6&ui=hs.1791859984557.0ed4b9606d&hclk=-&ref=&uri=https%3A%2F%2Fsu",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859984557.0ed4b9606d&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix"
+          ],
+          "loads": [
+            {
+              "url": "/products/supply6-salts-peach",
+              "ttfb": 0.13,
+              "dcl": 1.46,
+              "load": 6.21,
+              "lcp": 0.85
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 6.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.19,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&ae=g&auid=884818470.1791859988&dt=404%20Not%20Found&en=page_view&dl=https%3A%2F%2Fsupplysix.com%",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859988151.527b17dc60&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=884818470.1791859988&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859986733&_gaz=1&gcs=G111&g",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859989269&cv=11&fst=1791859989269&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=884818470.1791859988&dt=404%20Not%20Found&tid=AW-11254121813&dl=https%3A%2F%2Fsupplysi",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=884818470.1791859988&dt=404%20Not%20Found&tid=AW-11254121813&en=page_view&dl=https%3A%2F%2F",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859986733&g",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859989574&ec=3",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.31,
+              "dcl": 0.92,
+              "load": 5.36,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "contact: opens /pages/contact-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.29s",
+              "error": null,
+              "secs": 4.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact Us",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1291 chars, 26 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact Us', heading 'Contact Us'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact-us",
+                  "actual": "/pages/contact-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "1 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.72,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://analytics.gokwik.co/analytics.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://analytics.gokwik.co/analytics.js",
+            "POST https://supplysix.com/api/collect",
+            "POST https://supplysix.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://events.shoplift.ai/api/v0/events",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&ae=g&auid=1702897544.1791859995&dt=Contact%20Us&en=page_view&dl=https%3A%2F%2Fsupplysix.com%2Fpa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1702897544.1791859995&gtm=45He6a91v9134843407za200zd9134843407xeaxf1&fmt=8",
+            "GET https://hspx.hotstar.com/v1/events/track/cp_page_view?evn=&pi=SS_10998_Supply6&ui=hs.1791859994486.8a508375fb&hclk=-&ref=-&uri=https%3A%2F%2Fsupplysix",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-5YPDF01YNH&gtm=45Pe6a91v9120234551za200zb9134843407zd9134843407xf1&_p=1791859992876&g",
+            "POST https://www.google.com/rmkt/collect/11254121813/?random=1791859995052&cv=11&fst=1791859995052&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v9134843408z",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=1702897544.1791859995&dt=Contact%20Us&tid=AW-11254121813&dl=https%3A%2F%2Fsupplysix.co",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1702897544.1791859995&dt=Contact%20Us&tid=AW-11254121813&en=page_view&dl=https%3A%2F%2Fsupp",
+            "POST https://analytics.google.com/g/collect?v=2&tid=G-GMV0XJ0DMV&gtm=45je6a91v9102200075za200zb9134843407zd9134843407xf1&_p=1791859992876&_gaz=1&gcs=G111&g",
+            "POST https://d3-36c34dc0877246a0b32c4f4e24be6ce8.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=XuKzzMGtye6fQrxLaZPZT5&st=oaiq-web&sv=0.1.41&t=1791859995710&ec=3",
+            "POST https://px.ads.linkedin.com/wa/?medium=fetch&fmt=g"
+          ],
+          "loads": [
+            {
+              "url": "/pages/contact-us",
+              "ttfb": 0.12,
+              "dcl": 1.0,
+              "load": 3.64,
+              "lcp": 0.63
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Fixing the Gaps in your Diet",
+    "theme": "Focal (store copy: Copy of 18/9/2026 4 PM || Gayatri || FRE)",
+    "checkout_app": "GoKwik",
+    "access": "open",
+    "nav": 5,
+    "collections": 39,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "footer info page(s) not opened, the store's robots.txt disallows them: refund /policies/refund-policy, shipping /policies/shipping-policy, privacy /policies/privacy-policy, terms /policies/terms-of-service"
+  ],
+  "perf": {
+    "pages": 14,
+    "median_load_secs": 4.64,
+    "slowest": {
+      "url": "/collections/all",
+      "load_secs": 7.58
+    },
+    "console_errors": 5,
+    "console_warnings": 2,
+    "failed_requests": 192
+  },
+  "counts": {
+    "pass": 15,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 2,
+    "skipped": 0
+  }
+}
