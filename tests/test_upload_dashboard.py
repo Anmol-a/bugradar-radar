@@ -67,3 +67,13 @@ def test_sends_with_key_and_never_fails_without_one(tmp_path, monkeypatch, capsy
     srv.shutdown()
     assert got[0][0] == "Bearer brk_test" and got[0][1]["run"]["ci_url"] == "https://ci/1"
     assert "1 sent, 0 failed" in capsys.readouterr().out
+
+
+def test_finds_runs_in_the_engines_own_data_folder(tmp_path, capsys):
+    """A GitHub machine has data/sites/<store>/runs/<run>/run.json; the uploader must find those (13 Oct: it found none)."""
+    d = tmp_path / "data" / "sites" / "shop.example" / "runs" / "r1"
+    d.mkdir(parents=True)
+    (d / "run.json").write_text(json.dumps(RUN))
+    assert up.main([str(tmp_path / "data"), "--dry-run"]) == 0
+    out = capsys.readouterr().out
+    assert '"project": "shop.example"' in out and "1 found" in out
