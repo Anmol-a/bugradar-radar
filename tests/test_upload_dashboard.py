@@ -39,7 +39,7 @@ def test_payload_maps_verdicts_reasons_and_evidence(tmp_path):
     by = {r["key"]: r for r in p["results"]}
     assert [by[k]["status"] for k in ("smoke.home", "cart.add", "search.q", "cat.more")] == ["passed", "failed", "blocked", "flaky"]
     assert by["cart.add"]["reason"] == "A chat widget covers the button." and by["cart.add"]["attempts"] == 2
-    assert by["cart.add"]["artifacts"][0]["content_type"] == "image/png"
+    assert by["cart.add"]["artifacts"][0]["content_type"] == "image/png"      # not a real picture: sent as it is
     assert "robots.txt" in by["search.q"]["reason"] and "artifacts" not in by["search.q"]
     assert by["cat.more"]["reason"].startswith("Passed on try 2")
 
@@ -121,3 +121,21 @@ def test_every_run_has_a_line_for_the_store_itself(tmp_path):
     d.mkdir(parents=True)
     (d / "run.json").write_text(json.dumps(down))
     assert up.main([str(tmp_path / "data"), "--dry-run"]) == 0
+
+
+def test_a_big_full_page_png_goes_up_as_a_small_jpeg(tmp_path, monkeypatch):
+    """Checks without step photos (product pages) only have the full-page PNG; on phones it is over the limit (13 Oct)."""
+    Image = __import__("pytest").importorskip("PIL.Image")
+    d = tmp_path / "data" / "sites" / "shop.example" / "runs" / "r1"
+    d.mkdir(parents=True)
+    im = Image.effect_noise((1082, 2202), 8).convert("RGB")     # photo-like: fine grain everywhere, so the PNG is large
+    im.save(d / "shot.png")
+    small = up.smaller(d / "shot.png")
+    assert small and small[0] == "shot.jpg" and len(small[2]) < (d / "shot.png").stat().st_size
+    monkeypatch.setattr(up, "MAX_SHOT_BYTES", (len(small[2]) + (d / "shot.png").stat().st_size) // 2)   # PNG over, JPEG under
+    art = {r["key"]: r for r in up.to_payload(RUN, d, "", None)["results"]}["cart.add"]["artifacts"][0]
+    assert art["name"] == "shot.jpg" and art["content_type"] == "image/jpeg"
+
+
+def test_store_name_drops_www(tmp_path):
+    assert up.to_payload({**RUN, "base_url": "https://www.shop.example"}, tmp_path, "", None)["project"] == "shop.example"
