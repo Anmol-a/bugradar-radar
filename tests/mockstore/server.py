@@ -319,6 +319,9 @@ Modes (to prove Radar catches and heals what it should):
   zero_box_cards   valliyan.com re-test (cycle 34 fix still failed): the card's display:contents link wraps a block whose
                    image and name FLOAT, so that block has zero height too -> collection + journey PASS (v0.19 cycle 34:
                    'products listed: 0', '15 links: 15 not visible')
+  contents_reveal_cards  valliyan.com re-test 2 (run 38326679916): the card's display:contents link carries a
+                   scroll-reveal opacity:0 that never lifts (no box to observe); its image and name still paint -> the
+                   journey PASSES (v0.19 13 Oct: grid counted, then '15 links: 15 not visible')
   offsite_hang     nonasties.in phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
                    that never finishes loading for the phone browser -> smoke.more_links PASSES, naming the other site
                    (v0.19: 'page did not load ... nor within 60 s' -> links that fail to open, confirmed_fail)
@@ -822,6 +825,13 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "offsite_hang":
             body = body.replace('<div class="footer-menu">', '<div class="footer-menu"><a href="/map">Assagao, Goa</a> '
                                 '<a href="/panjim">Panjim, Goa</a> ', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "contents_reveal_cards":
+            # valliyan.com re-test 2: a boxless card link with a reveal class still at opacity:0 (has no effect: no box)
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
+                f'<a class="card reveal" href="/products/{m.group(1)}" style="display:contents;opacity:0">'
+                f'<div class="product-item" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
+                f'<div class="product-item__image" style="height:200px;background:#eee">{m.group(2)}</div>'
+                f'<div class="product-item__title">{m.group(3)}</div></div></a>'), body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "zero_box_cards":
             # valliyan.com re-test: display:contents link > a wrapper whose children float (the wrapper's height is 0)
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
