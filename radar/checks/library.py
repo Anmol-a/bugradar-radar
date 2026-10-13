@@ -2908,7 +2908,12 @@ NOT_SHOPPING = ("cart-drawer, cart-notification, [id*='cart-drawer' i], [class*=
 PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   document.querySelectorAll('[data-radar-target]').forEach(e => { if (e.getAttribute('data-radar-target') !== 'drawer') e.removeAttribute('data-radar-target'); });
   const re = hrefRe ? new RegExp(hrefRe) : null; """ + BOX_JS + r"""
-  const vis = e => { const r = boxOf(e); const s = getComputedStyle(e);
+  // A display:contents link paints nothing itself: its own opacity has no effect and its children may override its
+  // visibility (Chromium). Visible = one of its children is (valliyan.com re-test 2, run 38326679916: the grid counted
+  // 15 products, yet '15 links: 15 not visible', likely a never-fired scroll-reveal opacity:0 on the boxless link).
+  const vis = e => { const s = getComputedStyle(e);
+    if (s.display === 'contents' && e.children.length) return [...e.children].some(vis);
+    const r = boxOf(e);
     return r.width > 2 && r.height > 2 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
   const tag = e => e ? (e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' && e.className.trim()
                     ? '.' + e.className.trim().split(/\s+/)[0] : '')).slice(0, 40) : 'nothing';

@@ -2103,6 +2103,17 @@ def test_card_link_around_a_wrapper_of_floats_is_a_card_a_shopper_can_click(tmp_
     assert "/products/" in _steps(j)["click_into_product"].detail
 
 
+def test_boxless_card_link_with_a_stuck_reveal_opacity_is_still_a_card_a_shopper_can_click(tmp_path):
+    """valliyan.com re-test 2 (run 38326679916, both devices): after the empty-box fix the collection counted 15
+    products, but the journey still said '15 links: 15 not visible' under the visible grid (journey.shopper.a1.png).
+    A display:contents link paints nothing itself, so its own opacity has no effect; it is visible when a child is."""
+    run = _scan_small("contents_reveal_cards", tmp_path, suites=["journey", "catalog"])
+    coll, j = _case(run, "catalog.collection."), _case(run, "journey.")
+    assert coll.verdict == "pass", _fails(coll)
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "/products/" in _steps(j)["click_into_product"].detail
+
+
 def test_landing_collection_without_a_grid_warns_and_the_journey_goes_on_to_a_collection_with_products(tmp_path):
     """quboworld.com (Horizon, new30j): the menu's first collection, 'Smart Entrance', is a landing page (hero + 'Learn
     more' tiles to sub-collections, mega-menu product links hidden). Radar failed it as 'products listed: 0' and the
