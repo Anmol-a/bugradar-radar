@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- 13 Oct 2026 15:55 IST, sold-out products (Anmol: 'not a warning or broken but a tag'): when every candidate product is sold out
+  in its own data, the product test judges the sold-out page (name, price, picture, shopper told it is sold out), records a
+  `sold_out_product` step and passes; the buy checks are not run. The dashboard uploader turns that step into the tag
+  `sold out`. Mock mode `stale_catalog_all` fails on the old code. Full e2e 179 passed, unit 154 passed.
 - 13 Oct 2026, dashboard uploader (`tools/upload_dashboard.py`), after the first real uploads: a failed check sends the small
   photo of the step that failed (phone full-page PNGs were over the size limit, so phone failures had no picture); the build
   day is the India day (`BUGRADAR_TZ`), not the UTC day; an LLM triage label of `radar_problem` / `unsure` is said in plain
