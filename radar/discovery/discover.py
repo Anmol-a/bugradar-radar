@@ -160,6 +160,13 @@ NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift
                            re.I)
 
 
+# A gift SKU by the store's own label: product type 'Freebies' or a tag that is exactly 'freebie' / 'free gift' / 'gwp'
+# (suta.in, full 36 13 Oct: 'Free Fabric', Rs 1,000, badge FREEBIES, no product image, was the one product tested ->
+# degraded). Only the type or a WHOLE tag counts: 'free-gift-eligible' marks a real product that qualifies for an offer.
+GIFT_KIND = re.compile(r"(^|\|)\s*(freebies?|free[-_ ]?gifts?|gift[-_ ]?with[-_ ]?purchase|gwp|complimentary[-_ ]?gifts?)\s*(\||$)",
+                       re.I)
+
+
 def token_priced(products: list, floor_share: float = 0.10, max_price: float = 50.0) -> list:
     """Products priced like a freebie SKU next to the store's real prices: at most 10% of the median
     priced product AND at most 50 (currency units). plumgoodness.com lists a Rs 1 'Skincare Duo'
@@ -455,10 +462,11 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
             except (RobotsBlocked, AssertionError, ValueError):
                 continue
         sm.products.sort(key=lambda p: not p.available)
-    special = [p for p in sm.products if price_ok(p.price) and NOT_FOR_TESTS.search(f"{p.handle} {p.title}")]
+    special = [p for p in sm.products if price_ok(p.price) and (NOT_FOR_TESTS.search(f"{p.handle} {p.title}")
+                                                                or GIFT_KIND.search(p.kind))]
     if special:
         sm.products = [p for p in sm.products if p not in special]
-        sm.notes.append(f"{len(special)} gift-app clone / gift card / sample product(s) skipped "
+        sm.notes.append(f"{len(special)} gift-app clone / gift card / sample / free-gift product(s) skipped "
                         f"(e.g. {special[0].handle})")
     token = token_priced(sm.products)
     if token:

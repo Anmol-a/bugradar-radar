@@ -2114,6 +2114,17 @@ def test_boxless_card_link_with_a_stuck_reveal_opacity_is_still_a_card_a_shopper
     assert "/products/" in _steps(j)["click_into_product"].detail
 
 
+def test_gift_sku_by_product_type_is_not_the_product_radar_tests(tmp_path):
+    """suta.in (full 36 run 38338066670, both devices): the one product tested was 'Free Fabric' (Rs 1,000, badge
+    FREEBIES) whose page has no product image -> 'main product image loaded: got none', store degraded. The store labels
+    it a gift SKU by its product type; such products are skipped like gift cards and samples."""
+    run = _scan_small("freebie_type", tmp_path, suites=["product"])
+    pdp = [c for c in run.cases if c.case_id.startswith("product.pdp.")]
+    assert pdp and all("free-fabric" not in c.case_id for c in pdp), [c.case_id for c in pdp]
+    assert all(c.verdict == "pass" for c in pdp), [(c.case_id, _fails(c)) for c in pdp]
+    assert any("free-gift product(s) skipped" in n for n in run.notes), run.notes
+
+
 def test_landing_collection_without_a_grid_warns_and_the_journey_goes_on_to_a_collection_with_products(tmp_path):
     """quboworld.com (Horizon, new30j): the menu's first collection, 'Smart Entrance', is a landing page (hero + 'Learn
     more' tiles to sub-collections, mega-menu product links hidden). Radar failed it as 'products listed: 0' and the

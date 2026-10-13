@@ -322,6 +322,9 @@ Modes (to prove Radar catches and heals what it should):
   contents_reveal_cards  valliyan.com re-test 2 (run 38326679916): the card's display:contents link carries a
                    scroll-reveal opacity:0 that never lifts (no box to observe); its image and name still paint -> the
                    journey PASSES (v0.19 13 Oct: grid counted, then '15 links: 15 not visible')
+  freebie_type     suta.in (full 36, 13 Oct): the catalog's first product is 'Free Fabric' (Rs 1,000, product type
+                   'Freebies', also in Home Decor), whose page has no product image -> it is skipped as a gift SKU and a
+                   real product is tested: product suite PASSES (v0.19: 'main product image loaded: got none', degraded)
   offsite_hang     nonasties.in phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
                    that never finishes loading for the phone browser -> smoke.more_links PASSES, naming the other site
                    (v0.19: 'page did not load ... nor within 60 s' -> links that fail to open, confirmed_fail)
@@ -384,6 +387,8 @@ PRODUCTS.append({"id": 4, "handle": "free-sampler", "title": "Vase Sampler", "pr
 PRODUCTS.append({"id": 5, "handle": "gift-pouch", "title": "Travel Pouch (gift)", "price": "1.00",
                  "variants": [{"id": 501, "available": True, "price": "1.00"}], "collection": None,
                  "unavailable_page": True})   # like plumgoodness.com's Rs 1 freebie: not in any collection
+FREEBIE = {"id": 9, "handle": "free-fabric", "title": "Free Fabric", "price": "1000.00", "product_type": "Freebies",
+           "variants": [{"id": 901, "available": True, "price": "1000.00"}], "collection": "home-decor"}   # freebie_type
 COLLECTIONS = [{"handle": "home-decor", "title": "Home Decor"}, {"handle": "kitchen", "title": "Kitchen"}]
 # journey 26: in the pagination modes 'Home Decor' also lists 10 clay bowls (collection pages + its products.json only)
 EXTRA_DECOR = [{"id": 60 + i, "handle": f"clay-bowl-{i}", "title": f"Clay Bowl No. {i}", "price": "599.00",
@@ -1183,14 +1188,18 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._json({"collections": [dict(c, products_count=sum(p["collection"] == c["handle"] for p in PRODUCTS))
                                                for c in COLLECTIONS]})
         if path == "/products.json":
+            cat = ([FREEBIE] if self.mode == "freebie_type" else []) + PRODUCTS
             return self._json({"products": [{"id": p["id"], "handle": p["handle"], "title": p["title"],
-                                             "variants": self._variants(p, catalog=True)} for p in PRODUCTS]})
+                                             "product_type": p.get("product_type", ""), "tags": p.get("tags", []),
+                                             "variants": self._variants(p, catalog=True)} for p in cat]})
         if path.startswith("/collections/"):
             h = path.split("/")[2]
             items = [p for p in PRODUCTS if (h == "all" and p["collection"]) or p["collection"] == h]
             if self.mode in MORE_MODES and h == "home-decor":
                 items = items + EXTRA_DECOR
             if path.endswith("products.json"):
+                if self.mode == "freebie_type" and h in ("home-decor", "all"):
+                    items = [FREEBIE] + items
                 if self.mode == "filter_big_collection":     # Radar reads 250 of a bigger collection: the vase is not in them
                     items = [p for p in items if p["handle"] != "ceramic-vase"]
                 return self._json({"products": [{"handle": p["handle"], "title": p["title"], "variants":
@@ -1235,7 +1244,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
         if path.startswith("/products/"):
             h = path.split("/")[2]
             if h.endswith(".js"):
-                p = next((x for x in PRODUCTS if x["handle"] == h[:-3]), None)
+                p = next((x for x in PRODUCTS + ([FREEBIE] if self.mode == "freebie_type" else []) if x["handle"] == h[:-3]), None)
                 if not p:
                     return self._json({"error": "not found"}, 404)
                 if self.mode == "rate_limited":
@@ -1254,6 +1263,11 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                         return self._send(200, "", "text/html")
                 return self._json({"id": p["id"], "handle": p["handle"], "title": p["title"],
                                    "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in self._variants(p)]})
+            if self.mode == "freebie_type" and h == "free-fabric":      # suta.in: a gift SKU's page, no product image
+                return self._send(200, page("Free Fabric | Mock Store", '<div class="product"><h1>Free Fabric</h1>'
+                                            '<span class="badge">FREEBIES</span><div class="price">Rs. 1,000.00</div>'
+                                            '<form action="/cart/add" method="post"><input type="hidden" name="id" value="901">'
+                                            '<button type="submit" name="add">Add to cart</button></form></div>'))
             p = next((x for x in PRODUCTS if x["handle"] == h), None)
             if not p:
                 return self._send(404, page("Page not found", "<h1>404</h1>"))
