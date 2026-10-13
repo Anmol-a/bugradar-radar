@@ -2125,6 +2125,32 @@ def test_gift_sku_by_product_type_is_not_the_product_radar_tests(tmp_path):
     assert any("free-gift product(s) skipped" in n for n in run.notes), run.notes
 
 
+def test_card_visibility_is_judged_by_what_paints_inside_the_link(tmp_path):
+    """Robust card visibility (13 Oct, after valliyan.com's 3 re-tests): the link's own computed style is not the
+    judge; something inside it that paints is. A visibility:hidden link whose image and name override it is a card a
+    shopper sees and taps."""
+    run = _scan_small("hidden_link_shown_cards", tmp_path, suites=["journey", "catalog"])
+    coll, j = _case(run, "catalog.collection."), _case(run, "journey.")
+    assert coll.verdict == "pass", _fails(coll)
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "/products/" in _steps(j)["click_into_product"].detail
+
+
+def test_no_clickable_card_names_the_first_refused_link_for_the_report(tmp_path):
+    """When no card qualifies, run.json says what the first refused link looked like (tag.class, display, opacity,
+    visibility, size, and its first descendants), so a theme Radar misreads is fixed from evidence, not guesses."""
+    from radar.checks.library import _pick, _why_none
+
+    def probe(ctx):
+        ctx.sess.page.set_content('<main><a class="pc" href="/products/x" style="display:block;opacity:0">'
+                                  '<div class="in" style="width:200px;height:100px;background:#eee">X</div></a></main>')
+        got = _pick(ctx, "a[href*='/products/']", second_pass=False)
+        return got, _why_none(got, "/")
+    got, msg = _on_page("healthy", tmp_path, "/pages/about", probe)
+    assert got.get("none") and "1 not visible" in msg, msg
+    assert "first refused: a.pc{block,op 0,visible," in msg and "> div.in{block,op 1,visible,200x100}" in msg, msg
+
+
 def test_landing_collection_without_a_grid_warns_and_the_journey_goes_on_to_a_collection_with_products(tmp_path):
     """quboworld.com (Horizon, new30j): the menu's first collection, 'Smart Entrance', is a landing page (hero + 'Learn
     more' tiles to sub-collections, mega-menu product links hidden). Radar failed it as 'products listed: 0' and the

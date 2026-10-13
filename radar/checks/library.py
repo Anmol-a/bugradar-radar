@@ -2908,19 +2908,30 @@ NOT_SHOPPING = ("cart-drawer, cart-notification, [id*='cart-drawer' i], [class*=
 PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   document.querySelectorAll('[data-radar-target]').forEach(e => { if (e.getAttribute('data-radar-target') !== 'drawer') e.removeAttribute('data-radar-target'); });
   const re = hrefRe ? new RegExp(hrefRe) : null; """ + BOX_JS + r"""
-  // A display:contents link paints nothing itself: its own opacity has no effect and its children may override its
-  // visibility (Chromium). Visible = one of its children is (valliyan.com re-test 2, run 38326679916: the grid counted
-  // 15 products, yet '15 links: 15 not visible', likely a never-fired scroll-reveal opacity:0 on the boxless link).
-  const vis = e => { const s = getComputedStyle(e);
-    if (s.display === 'contents' && e.children.length) return [...e.children].some(vis);
-    const r = boxOf(e);
-    return r.width > 2 && r.height > 2 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
+  // Visible = something INSIDE the link paints: the link or a descendant with a box > 2 px, not visibility:hidden,
+  // whose opacity multiplied down from the link (display:contents elements skipped: they paint nothing, so their own
+  // opacity has no effect in Chromium) is > 0.05. A child may override the link's visibility. Opacity of ANCESTORS
+  // above the link is not judged here (scroll-reveal sections fade in when scrolled to). valliyan.com (3 re-tests,
+  // 13 Oct): the grid counted 15 products, yet '15 links: 15 not visible' under the visible cards.
+  const shows = (n, op) => { const s = getComputedStyle(n); if (s.display === 'none') return false;
+    const boxless = s.display === 'contents', o = boxless ? op : op * parseFloat(s.opacity || 1);
+    if (o <= 0.05) return false;
+    if (!boxless && s.visibility !== 'hidden') { const r = n.getBoundingClientRect(); if (r.width > 2 && r.height > 2) return true; }
+    for (const c of n.children) if (shows(c, o)) return true;
+    return false; };
+  const vis = e => shows(e, 1);
+  const invis = [];
+  // evidence for run.json when nothing qualifies: the first refused link and its first descendants (tag.class
+  // {display, opacity, visibility, WxH}), so a theme like valliyan's is fixed from facts, not guesses
+  const desc = (e, depth) => { const s = getComputedStyle(e), r = e.getBoundingClientRect();
+    const me = tag(e) + '{' + s.display + ',op ' + s.opacity + ',' + s.visibility + ',' + Math.round(r.width) + 'x' + Math.round(r.height) + '}';
+    const c = e.firstElementChild; return depth > 0 && c ? me + ' > ' + desc(c, depth - 1) : me; };
   const tag = e => e ? (e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' && e.className.trim()
                     ? '.' + e.className.trim().split(/\s+/)[0] : '')).slice(0, 40) : 'nothing';
   const why = {}; const note = k => { why[k] = (why[k] || 0) + 1; };
   const usable = e => {
     if (re && !re.test(e.getAttribute('href') || '')) return false;
-    if (!vis(e)) { note('not visible'); return false; }
+    if (!vis(e)) { note('not visible'); invis.push(e); return false; }
     if (exclude && e.closest(exclude)) { note('inside cart drawer / quick-add'); return false; }
     if (e.getAttribute('aria-disabled') === 'true') { note('disabled'); return false; }
     if (e.closest('[aria-hidden="true"], [inert]')) { note('hidden from shoppers (aria-hidden/inert)'); return false; }
@@ -2962,7 +2973,7 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
     return {href: e.getAttribute('href') || '', text: (e.innerText || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 60),
             considered: cands.length, x: Math.round(at[0]), y: Math.round(at[1]), via};
   }
-  return {none: true, total: all.length, why};
+  return {none: true, total: all.length, why, refused: invis.length ? desc(invis[0], 3).slice(0, 300) : null};
 }"""
 
 AIM_JS = r"""(via) => { const t = document.querySelector('[data-radar-target="click"]'); if (!t) return null;
@@ -2993,7 +3004,7 @@ def _why_none(got: dict | None, where: str) -> str:
     if not got or not got.get("total"):
         return f"none on {where} (no matching links on the page)"
     why = ", ".join(f"{n} {k}" for k, n in sorted(got.get("why", {}).items(), key=lambda kv: -kv[1])[:3])
-    return f"none on {where} ({got['total']} links: {why})"
+    return f"none on {where} ({got['total']} links: {why})" + (f"; first refused: {got['refused']}" if got.get("refused") else "")
 
 
 BIG_FIXED_LAYER_JS = r"""() => { const vw = innerWidth, vh = innerHeight;
