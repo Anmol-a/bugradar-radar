@@ -313,7 +313,20 @@ def _broken_images(sess) -> list[str]:
 # has zero height (valliyan.com re-test, cycle 34: the display:contents fix alone still gave '15 links: 15 not
 # visible' under the same visible grid), so every empty box, not only display:contents, takes its children's union.
 # Hidden content stays hidden: display:none children have no box, visibility/opacity are checked on the link.
-BOX_JS = r"""const boxOf = e => { const r = e.getBoundingClientRect();
+# A 'stretched link' (valliyan.com, Baseline theme; seen by the first-refused evidence, 13 Oct): an empty inline
+# <a class="increase-target"> (0x0, only a visually-hidden name inside) whose ::before is position:absolute over the
+# whole card. A shopper taps the card and hits the link. Its box is its pseudo-element's box, placed in the nearest
+# positioned ancestor (the card); a pseudo inside the link's own positioned box is not a stretch.
+BOX_JS = r"""const stretchOf = e => { for (const p of ['::before', '::after']) { const s = getComputedStyle(e, p);
+      if (!s.content || s.content === 'none' || s.content === 'normal' || s.position !== 'absolute') continue;
+      const w = parseFloat(s.width), h = parseFloat(s.height); if (!(w > 2 && h > 2)) continue;
+      let c = e; while (c && c !== document.body && getComputedStyle(c).position === 'static') c = c.parentElement;
+      if (!c || c === e || c === document.body) continue;
+      const cr = c.getBoundingClientRect(), l = parseFloat(s.left), t = parseFloat(s.top);
+      return new DOMRect(cr.left + (isNaN(l) ? 0 : l), cr.top + (isNaN(t) ? 0 : t), w, h); }
+    return null; };
+  const boxOf = e => { const r = e.getBoundingClientRect();
+    if ((r.width <= 2 || r.height <= 2) && getComputedStyle(e).display !== 'none') { const st = stretchOf(e); if (st) return st; }
     if ((r.width > 0 && r.height > 0) || getComputedStyle(e).display === 'none') return r;
     let l = Infinity, t = Infinity, R = -Infinity, B = -Infinity;
     for (const c of e.children) { const b = boxOf(c); if (b.width > 0 && b.height > 0) {
@@ -2919,7 +2932,9 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
     if (!boxless && s.visibility !== 'hidden') { const r = n.getBoundingClientRect(); if (r.width > 2 && r.height > 2) return true; }
     for (const c of n.children) if (shows(c, o)) return true;
     return false; };
-  const vis = e => shows(e, 1);
+  const vis = e => { const s = getComputedStyle(e);      // a stretched link: visible where its card is
+    if (s.visibility !== 'hidden' && parseFloat(s.opacity || 1) > 0.05 && stretchOf(e)) return true;
+    return shows(e, 1); };
   const invis = [];
   // evidence for run.json when nothing qualifies: the first refused link and its first descendants (tag.class
   // {display, opacity, visibility, WxH}), so a theme like valliyan's is fixed from facts, not guesses
