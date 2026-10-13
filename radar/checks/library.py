@@ -1893,24 +1893,45 @@ def product_page(ctx: Ctx, url: str, expect_buyable: bool = True, fallbacks: lis
     """fallbacks: other catalog products, used only when this one's page is unreachable (that is
     recorded as a warning, so the finding is never hidden, and the product checks still run)."""
     cands = [url, *list(fallbacks)[:2]]
+    sold_out = None
     for i, u in enumerate(cands):
         last = i == len(cands) - 1
         ok = ctx.steps.run("loads" if i == 0 else f"loads_next_catalog_product_{i}",
                            lambda u=u: _load_product(ctx, u), soft=not last)
         if ok is None:
             continue
-        gone = _sold_out_since_listed(ctx, u) if expect_buyable and not last else None
-        if gone:
+        gone = _sold_out_since_listed(ctx, u) if expect_buyable else None
+        if gone and not last:
             # bombaytrooper.com (cycle 34, both devices): products.json listed it in stock, its .js and page said
-            # SOLD OUT. Shoppers see a consistent sold-out page; Radar tests an in-stock product instead. The last
-            # candidate is never skipped, so a store whose every listed product is sold out still fails.
+            # SOLD OUT. Shoppers see a consistent sold-out page; Radar tests an in-stock product instead.
             ctx.steps.info(f"sold_out_since_listed_{i}", f"not tested: {_path(u)} {gone}; the next in-stock catalog "
                                                          "product is tested instead")
             continue
+        sold_out = gone
         url = u
         break
     ctx.steps.run("url_stable", lambda: ctx.expect("final URL", _path(url), ctx.redirected_to or _path(url),
                                                    not ctx.redirected_to) and "no redirect", soft=True)
+    if sold_out:
+        # Anmol, 13 Oct (bombaytrooper.com, 3 'broken' product pages per device on the dashboard, all sold out): a
+        # sold-out product is not a broken page and not a warning. With no in-stock candidate left, the page is judged
+        # as what it is: name, price and picture must show (hard, as for any product), and the shopper must be told it
+        # is sold out (a warning if an enabled buy button says nothing, as in the sold-out page test). The buy checks
+        # are not run. The 'sold_out_product' step is what reports and the dashboard tag it by.
+        ctx.steps.info("sold_out_product", f"sold out: {_path(url)} {sold_out}; no in-stock catalog product was left to "
+                                           "test instead, so the buy checks are not run")
+        p, _ = _pdp_assertions(ctx, url, False)
+
+        def told():
+            _dismiss(ctx)
+            b = _sold_out_button(ctx, p)
+            text = (ctx.sess.evaluate(SOLD_OUT_TEXT_JS, [QUICK_SEL]) or "") + " \n " + ((b or {}).get("text") or "")
+            exp, actual, ok = sold_out_verdict(b, sold_out_wording(text))
+            ctx.expect("shopper is told the product is sold out", exp, actual + (f" ({b['how']})" if b else ""), ok)
+            return actual
+        ctx.steps.run("shows_sold_out", told, soft=True)
+        ctx.steps.run("no_js_errors", lambda: _js_errors(ctx), soft=True)
+        return
     _pdp_assertions(ctx, url, expect_buyable)
     ctx.steps.run("no_js_errors", lambda: _js_errors(ctx), soft=True)
     layout_steps(ctx)

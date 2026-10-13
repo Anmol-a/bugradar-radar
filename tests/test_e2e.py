@@ -559,6 +559,19 @@ def test_product_sold_out_since_the_catalog_listed_it_is_skipped_for_the_next_on
     assert "Wooden Spoon" in st["product_identified"].detail
 
 
+def test_a_sold_out_product_with_no_in_stock_one_to_test_instead_is_tagged_not_failed(tmp_path):
+    """bombaytrooper.com (13 Oct, on the dashboard: '3 things are broken' per device, all three sold-out product pages).
+    Anmol: a sold-out product is not broken and not a warning; tag it. Before: the last candidate was never skipped, so
+    'an in-stock variant exists: got none available' -> confirmed_fail."""
+    run = _product_only("stale_catalog_all", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)
+    assert vase.verdict == "pass", (vase.attempts[-1].error, [(s.name, s.status, s.error) for s in vase.attempts[-1].steps])
+    assert st["sold_out_product"].status == "info" and "sold out" in st["sold_out_product"].detail
+    assert st["shows_title_price_image"].status == "pass" and st["shows_sold_out"].status == "pass"
+    assert "variant_ready" not in st and "buy_button_ready" not in st
+
+
 def test_pack_of_two_picks_each_item_size_in_its_own_picker(tmp_path):
     """theformalclub.in (cycle 34, both devices): a 'pack of 2' product with ONE option whose values join both shirts'
     sizes ('S / 38 / S / 38'); the page shows two size pickers labelled 'S', 'M', ... v0.19: 'variant selected like a
