@@ -101,7 +101,10 @@ def main(argv: list[str] | None = None) -> int:
     if not a.dry_run and not key.startswith("brk_"):
         print("BUGRADAR_KEY is not set; nothing sent.")
         return 0                       # never fail a Radar run because the dashboard isn't set up
-    files = [a.folder / "run.json"] if (a.folder / "run.json").exists() else sorted(a.folder.glob("**/sites/*/*/run.json"))
+    # two layouts: the engine's own data folder (sites/<store>/runs/<run>/run.json, what a GitHub machine has) and the
+    # published results (sites/<store>/<run>/run.json). 13 Oct: only the second was looked for, so nothing was ever sent
+    files = [a.folder / "run.json"] if (a.folder / "run.json").exists() else sorted(
+        set(a.folder.glob("**/sites/*/runs/*/run.json")) | set(a.folder.glob("**/sites/*/*/run.json")))
     sent = failed = 0
     files = [f for f in files if f.stat().st_mtime >= a.since]
     for f in files:
