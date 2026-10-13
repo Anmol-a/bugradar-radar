@@ -338,6 +338,15 @@ Modes (to prove Radar catches and heals what it should):
   late_grid        giva.co phone (full 36, 13 Oct): collection pages say '12 products' at once but an app draws the
                    product cards LATE_GRID_SECS (8 s) after load, past Radar's 6 s grid wait -> collection + journey PASS
                    ('rendered 8.0s after the page loaded'); v0.19: 'products listed: 0' on the first attempt (flaky)
+  veiled_cards     verdict rule (13 Oct): every product card sits under a transparent fixed layer with NO control to
+                   close it -> Radar cannot find a card it is sure a shopper can tap: journey NOT JUDGED (case 'blocked',
+                   store 'blocked'), never DOWN (v0.19: 'product card a shopper can click: ... covered by div.veil' = DOWN)
+  pdp_no_image     verdict rule: the vase's page has no image at all (suta.in 'Free Fabric') -> product.pdp NOT JUDGED
+                   with what was seen; store stays healthy (v0.19: 'main product image loaded: got none' = degraded)
+  pdp_broken_image the vase's 300x300 image answers 404 -> positive evidence: product.pdp FAILS 'a large image failed
+                   to load' (the rule keeps real breakage a failure)
+  refused_mid_run  bombayshirts.com phone (new30l, 13 Oct): discovery sees the store (robots, homepage, data), then the
+                   bot wall answers HTTP 403 to every page -> run verdict 'blocked' with a note (v0.19: DOWN, 8 failed checks)
   offsite_hang     nonasties.in phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
                    that never finishes loading for the phone browser -> smoke.more_links PASSES, naming the other site
                    (v0.19: 'page did not load ... nor within 60 s' -> links that fail to open, confirmed_fail)
@@ -746,6 +755,10 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                                 "; new IntersectionObserver((es, o) => { if (es[0].isIntersecting) { "
                                 "document.getElementById('app-grid').innerHTML = G; o.disconnect(); } })"
                                 ".observe(document.getElementById('app-grid'));</script></body>", 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "veiled_cards":
+            body = body.replace("</body>", '<div class="veil" style="position:fixed;inset:0;z-index:99999;background:rgba(0,0,0,0.001)"></div></body>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "pdp_no_image" and "/products/" in self.path:
+            body = re.sub(r'<img src="/cdn/shop/files/[^"]+\.svg" width="300" height="300"[^>]*>', '', body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "lazy_gallery" and "/products/" in self.path:
             body = re.sub(r'<img src="(/cdn/shop/files/[^"]+\.svg)" width="300" height="300"',
                           r'<img class="gallery-slide" data-src="\1" width="300" height="300"', body, count=1)
@@ -1074,6 +1087,13 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             if "t0" in st and _t.time() - st["t0"] < 3.0:
                 return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
         cid, new = self._cart()
+        if self.mode == "refused_mid_run" and not path.startswith("/cdn/") and path != "/robots.txt" \
+                and not path.endswith((".js", ".json")):
+            st = type(self).__dict__.get("REFUSED") or {"n": 0}
+            type(self).REFUSED = st
+            st["n"] += 1
+            if st["n"] > 3:                 # discovery's first page loads pass; the wall goes up for the tests
+                return self._send(403, page("Access denied", "<h1>Access denied</h1><p>Request blocked.</p>"))
         if self.mode == "password" and path not in ("/password", "/robots.txt") and not path.startswith("/cdn/"):
             self.send_response(302)
             self.send_header("Location", "/password")
@@ -1134,6 +1154,8 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
         if path.startswith("/static/") and path.endswith(".js"):      # third-party app scripts (script_heavy mode)
             return self._send(200, "void 0;", "application/javascript")
         if path.startswith("/cdn/shop/files/") or path.startswith("/static/"):
+            if self.mode == "pdp_broken_image" and path.endswith("/ceramic-vase.svg"):
+                return self._send(404, "gone", "text/plain")
             return self._send(200, SVG, "image/svg+xml")
         if path == "/" and self.mode == "blank_not_shopify":     # gozero.in (cycle 34): no title, no markers, no robots.txt
             return self._send(200, '<!doctype html><html><head><meta charset="utf-8"><title></title></head>'
