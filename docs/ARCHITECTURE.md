@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 lean loop 14 Oct 01:15 IST (run 38437504227 re-test):** vedix.com still NOT JUDGED after the 'Stay on' rule: a
+  popup's closed country list (hidden '#' links) made the layer count as page content (> 12 links). Both close rules now
+  count only visible links that go somewhere; when the covering layer stays, the step records why (layer, controls seen)
+  as evidence. Mock `country_modal_stay_on` gained a 40-country hidden list.
 - **v0.20 lean loop 13 Oct 22:13 IST:** a country / location popup is answered with its own 'Stay on <brand> <country> Site'
   control (vedix.com new30l: 'Shop on US Site | Stay on Vedix IN Site', unlabelled icon ×; was NOT JUDGED). Both close
   rules (`COVER_CLOSE_JS`, overlays) accept 'stay on …'; 'go to / switch / take me / shop on' controls are never clicked

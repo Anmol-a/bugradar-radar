@@ -3164,6 +3164,8 @@ COVER_CLOSE_JS = r"""() => {
   const text = e => (e.innerText || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
   const SAFE = /^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip|continue browsing|continue shopping|stay here|stay on this (site|store|page)|stay on [\w .'&-]{1,40}|dismiss)$/i;
   const BAD = /accept|agree|allow|subscribe|sign ?up|submit|yes|international|go to|take me|switch|redirect/i;
+  const navLinks = r => [...r.querySelectorAll('a[href]')].filter(a => shown(a) && !/^(#|javascript:)/i.test(a.getAttribute('href') || '')).length;
+  const why = [];
   for (const [fx, fy] of [[0.5, 0.5], [0.33, 0.33], [0.67, 0.67], [0.2, 0.5], [0.8, 0.5]]) {
     let layer = null;
     for (let n = document.elementFromPoint(vw * fx, vh * fy); n && n !== document.body && n !== document.documentElement; n = n.parentElement) {
@@ -3172,24 +3174,30 @@ COVER_CLOSE_JS = r"""() => {
     if (!layer) continue;
     // the layer itself, or its parent when the layer is only the backdrop beside the dialog box
     for (const root of [layer, layer.parentElement]) {
-      if (!root || root === document.body || root.querySelectorAll('a[href]').length > 12
-          || root.querySelector('main, form[action*="/cart/add"]')) break;
-      const btn = [...root.querySelectorAll('button, a, [role="button"], [aria-label]')].filter(shown).find(c =>
+      const tag = root ? root.tagName.toLowerCase() + (root.classList[0] ? '.' + root.classList[0] : '') : 'none';
+      // a page's own links are visible and go somewhere; a closed country list ('#' links) does not count
+      if (!root || root === document.body || navLinks(root) > 12
+          || root.querySelector('main, form[action*="/cart/add"]')) { why.push(tag + ': page content (' + (root ? navLinks(root) : 0) + ' links)'); break; }
+      const cands = [...root.querySelectorAll('button, a, [role="button"], [aria-label]')].filter(shown);
+      const btn = cands.find(c =>
         !BAD.test(text(c)) && (SAFE.test(text(c)) || /close|dismiss/i.test(c.getAttribute('aria-label') || '')));
-      if (!btn) continue;
+      if (!btn) { why.push(tag + ': no stay/close control in [' + cands.slice(0, 6).map(c => text(c).slice(0, 20) || c.tagName.toLowerCase()).join(' | ') + ']'); continue; }
       const b = btn.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
-      if (!hit || !(hit === btn || btn.contains(hit))) continue;
+      if (!hit || !(hit === btn || btn.contains(hit))) { why.push(tag + ': ' + text(btn).slice(0, 20) + ' covered'); continue; }
       btn.setAttribute('data-radar-target', 'cover-close');
       const t = text(root);
       return {button: text(btn).slice(0, 30) || 'close', text: t.slice(0, 60).toLowerCase(),
               kind: /country|region|currency|ship to|location/i.test(t) ? 'location' : 'popup'};
     } }
-  return null; }"""
+  return why.length ? {none: true, why: [...new Set(why)].join('; ').slice(0, 300)} : null; }"""
 
 
 def _close_covering_layer(ctx: Ctx) -> str | None:
     """Close the large fixed layer on top of the page with its own stay / close control (COVER_CLOSE_JS)."""
     found = ctx.sess.evaluate(COVER_CLOSE_JS)
+    if found and found.get("none"):    # evidence for the not-judged step: why the covering layer stayed
+        ctx.expect("layer covering the page", "closed with its own stay / close control", f"not closed: {found['why']}", True)
+        return None
     if not found:
         return None
     try:
