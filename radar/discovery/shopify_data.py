@@ -86,6 +86,13 @@ def cart_has_variant(cart_json: dict, variant_id: int) -> bool:
                for i in (cart_json or {}).get("items", []))
 
 
+def _kind(product_type, tags) -> str:
+    """Product type and tags as one string ('Freebies | free gift'); tags come as a list or a comma string."""
+    if isinstance(tags, str):
+        tags = [t.strip() for t in tags.split(",")]
+    return " | ".join(x for x in [str(product_type or "").strip(), *[str(t).strip() for t in (tags or [])]] if x)
+
+
 def products_from_json(products_json: dict, base_url: str, limit: int = 10) -> list[dict]:
     """Shopify /products.json -> list of product dicts, in-stock first.
     Each: {handle, title, url, variant_id (first available, else first), price, available, variants}."""
@@ -101,6 +108,7 @@ def products_from_json(products_json: dict, base_url: str, limit: int = 10) -> l
             "url": f"{base_url}/products/{p['handle']}",
             "variant_id": v.get("id"), "price": v.get("price"),
             "available": bool(avail), "variants": len(variants), "vendor": p.get("vendor") or "",
+            "kind": _kind(p.get("product_type"), p.get("tags")),
         })
     out.sort(key=lambda d: not d["available"])
     return out[:limit]
@@ -122,6 +130,7 @@ def product_from_js(product_js: dict, base_url: str) -> dict | None:
         "url": f"{base_url}/products/{product_js['handle']}",
         "variant_id": v.get("id"), "price": price,
         "available": bool(avail), "variants": len(variants),
+        "kind": _kind(product_js.get("type"), product_js.get("tags")),
     }
 
 

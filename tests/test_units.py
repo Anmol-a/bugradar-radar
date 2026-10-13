@@ -367,6 +367,24 @@ def test_gift_clone_and_gift_card_products_excluded():
         assert not NOT_FOR_TESTS.search(h), h
 
 
+def test_gift_sku_by_product_type_or_whole_tag():
+    """suta.in 'Free Fabric' (type 'Freebies'): a gift SKU by the store's own label. A tag that only marks a real
+    product as eligible for an offer ('free-gift-eligible') does not count."""
+    from radar.discovery.discover import GIFT_KIND
+    from radar.discovery.shopify_data import products_from_json, product_from_js
+    for k in ("Freebies", "Saree | freebie", "Free Gift", "Sarees | GWP | new"):
+        assert GIFT_KIND.search(k), k
+    for k in ("free-gift-eligible", "gwp-eligible", "Sarees | Silk", "Free Size", ""):
+        assert not GIFT_KIND.search(k), k
+    p = products_from_json({"products": [{"handle": "free-fabric", "title": "Free Fabric", "product_type": "Freebies",
+                                          "tags": ["gift"], "variants": [{"id": 1, "available": True, "price": "1000"}]}]},
+                           "https://x.in")[0]
+    assert p["kind"] == "Freebies | gift"
+    j = product_from_js({"handle": "a", "type": "Saree", "tags": "silk, new", "variants": [{"id": 2, "available": True,
+                                                                                         "price": 100}]}, "https://x.in")
+    assert j["kind"] == "Saree | silk | new"
+
+
 def test_token_priced_freebies_are_found():
     from radar.discovery.discover import token_priced
     from radar.core.models import Product
