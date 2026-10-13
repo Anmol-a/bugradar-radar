@@ -347,6 +347,11 @@ Modes (to prove Radar catches and heals what it should):
                    to load' (the rule keeps real breakage a failure)
   refused_mid_run  bombayshirts.com phone (new30l, 13 Oct): discovery sees the store (robots, homepage, data), then the
                    bot wall answers HTTP 403 to every page -> run verdict 'blocked' with a note (v0.19: DOWN, 8 failed checks)
+  grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
+                   prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
+                   (the page shows the products by name), never a failure
+  grid_empty_data_full  the collection page shows no products at all while its products.json lists them -> positive
+                   evidence: 'products listed' FAILS naming the data
   offsite_hang     nonasties.in phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
                    that never finishes loading for the phone browser -> smoke.more_links PASSES, naming the other site
                    (v0.19: 'page did not load ... nor within 60 s' -> links that fail to open, confirmed_fail)
@@ -1258,6 +1263,15 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                                  else p["variants"]} for p in items]})
             if not items:
                 return self._send(404, page("Not found", "404"))
+            if self.mode == "grid_without_links":    # giva.co desktop: cards a script navigates, no product links
+                tiles = "".join(f'<div class="tile" role="button" data-url="/products/{p["handle"]}" style="display:inline-block;'
+                                f'width:200px;margin:8px"><div style="height:160px;background:#eee"></div>'
+                                f'<div class="tile__title">{p["title"]}</div><div>Rs. {p["price"]}</div></div>' for p in items)
+                return self._send(200, page(f"{h.title()} Collection | Mock Store", f"<h2>{len(items)} products</h2>{tiles}"
+                                            "<script>document.querySelectorAll('.tile').forEach(t => t.onclick = () => "
+                                            "location.href = t.dataset.url);</script>"), set_cart=new)
+            if self.mode == "grid_empty_data_full":  # the page lists nothing; the store's data lists the products
+                return self._send(200, page(f"{h.title()} Collection | Mock Store", "<h2>Our collection</h2><p>Loading…</p>"), set_cart=new)
             if self.mode == "late_grid":        # giva.co phone: the count is in the HTML, the cards come from a script later
                 cards = "".join(card(p) for p in items).replace("`", "")
                 return self._send(200, page(f"{h.title()} Collection | Mock Store",

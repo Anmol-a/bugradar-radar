@@ -2095,6 +2095,22 @@ def test_verdict_rule_product_without_an_image_is_not_judged_but_a_broken_image_
         (vase.verdict, vase.attempts[-1].error)
 
 
+def test_verdict_rule_products_shown_by_name_without_links_are_not_judged_and_an_empty_page_fails(tmp_path):
+    """giva.co desktop (verdict-rule sanity run 38403594396): the failure screenshot showed a grid of named, priced
+    cards while Radar counted 0 product links and failed on 'the data lists 50, the page shows none'. The page's own
+    text is the second signal: product names on the page = NOT JUDGED; no names and no links while the data lists
+    products = a failure with the data as evidence."""
+    run = _scan_small("grid_without_links", tmp_path, suites=["catalog"])
+    coll = _case(run, "catalog.collection.")
+    st = _steps(coll)["lists_products"]
+    assert coll.verdict == "blocked" and st.status == "skip" and "3 of the collection's 3 products by name" in st.error, \
+        (coll.verdict, st.error)
+    run = _scan_small("grid_empty_data_full", tmp_path / "empty", suites=["catalog"])
+    coll = _case(run, "catalog.collection.")
+    assert coll.verdict == "confirmed_fail" and "none of their names is on the page" in coll.attempts[-1].error, \
+        (coll.verdict, coll.attempts[-1].error)
+
+
 def test_verdict_rule_collection_with_no_grid_fails_only_when_the_store_data_lists_products(tmp_path):
     """Verdict rule: 'products listed: 0' is a failure only with the store's own data as evidence (its collection
     products.json lists products while the page shows none); unreadable data = NOT JUDGED."""

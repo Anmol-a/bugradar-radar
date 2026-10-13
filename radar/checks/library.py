@@ -1019,14 +1019,34 @@ SUB_COLLECTIONS_JS = r"""() => { const here = location.pathname.replace(/\/$/, '
   return out.slice(0, 3); }"""
 
 
-def _collection_data_count(ctx: Ctx, url: str) -> int | None:
-    """How many products the store's own collection data lists (up to 50), None when it cannot be read."""
+def _collection_data_titles(ctx: Ctx, url: str) -> list[str] | None:
+    """The product titles the store's own collection data lists (up to 50), None when it cannot be read."""
     try:
         data = ctx.sess.get_json(url.split("?")[0].rstrip("/") + "/products.json?limit=50")
         ps = data.get("products") if isinstance(data, dict) else None
-        return len(ps) if isinstance(ps, list) else None
+        return [str(p.get("title") or "") for p in ps] if isinstance(ps, list) else None
     except Exception:  # noqa: BLE001  robots.txt, no data, not JSON
         return None
+
+
+def _collection_data_count(ctx: Ctx, url: str) -> int | None:
+    """How many products the store's own collection data lists (up to 50), None when it cannot be read."""
+    titles = _collection_data_titles(ctx, url)
+    return None if titles is None else len(titles)
+
+
+def _titles_on_page(ctx: Ctx, titles: list[str]) -> list[str]:
+    """Which of the store's product titles a shopper can read on the page (visible text, case-insensitive, the first
+    40 characters of each title). The second, independent signal behind 'the page shows no products': giva.co desktop
+    (verdict-rule sanity run 38403594396) counted 0 product LINKS on a grid whose failure screenshot shows 8 cards with
+    names and prices; the data said 50, Radar said the page showed none, and the page was right."""
+    text = (ctx.sess.evaluate("() => (document.body && document.body.innerText || '').toLowerCase()") or "")
+    out = []
+    for t in titles:
+        key = re.sub(r"\s+", " ", t.strip().lower())[:40]
+        if len(key) >= 6 and key in text:
+            out.append(t)
+    return out
 
 
 def _why_no_grid(ctx: Ctx, url: str) -> str | None:
@@ -1080,12 +1100,18 @@ def collection_page(ctx: Ctx, url: str):
             waited += again
         if not n:
             # verdict rule (13 Oct): the page shows no product link Radar recognises. Positive evidence = the store's
-            # own collection data lists products while the page shows none; data unreadable = NOT JUDGED.
-            k = _collection_data_count(ctx, url)
-            if k is None:
+            # own collection data lists products AND none of their names is on the page; data unreadable, or the
+            # names ARE on the page (cards Radar cannot read as links) = NOT JUDGED with the facts.
+            titles = _collection_data_titles(ctx, url)
+            if titles is None:
                 raise NotJudged("products listed: no product link found on the page and the store's collection data "
                                 "could not be read to confirm the collection has products")
-            ctx.expect("products listed", f"≥ 1 (the store's own data lists {k})", n, n >= 1)
+            shown = _titles_on_page(ctx, titles)
+            if shown:
+                raise NotJudged(f"products listed: the page shows {len(shown)} of the collection's {len(titles)} products "
+                                f"by name (e.g. {shown[0][:50]!r}) but no product link Radar recognises")
+            ctx.expect("products listed", f"≥ 1 (the store's own data lists {len(titles)}, none of their names is on the page)",
+                       n, n >= 1)
         ctx.expect("products listed", "≥ 1", n, n >= 1)
         return f"{n} products listed" + (f" (rendered {waited:.1f}s after the page loaded)" if waited else "") + scrolled
     ctx.steps.run("lists_products", has_products)
