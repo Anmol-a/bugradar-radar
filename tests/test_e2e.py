@@ -547,6 +547,20 @@ def test_catalog_product_hidden_from_shoppers_is_a_warning_and_the_next_product_
         assert "wooden-spoon-set" in st["product_identified"].detail.lower() or "Wooden Spoon" in st["product_identified"].detail
 
 
+def test_product_meta_tags_are_judged_on_the_next_product_when_the_first_page_is_gone(tmp_path):
+    """giva.co (full 36 verification run 38379683273, desktop): the first catalog product's page answered 404. The
+    product test warned and tested the next product (right), but health.meta.pdp opened the same URL and hard-failed:
+    the same store fact counted twice and the store went 'degraded'. The meta check judges the product-page
+    template, so it moves on to the next catalog product the same way."""
+    run = _info("notfound_product", tmp_path, suites=("health",))
+    meta = _case(run, "health.meta.pdp")
+    st = _steps(meta)
+    assert meta.verdict == "pass", (meta.attempts[-1].error, [(s.name, s.status, s.error) for s in meta.attempts[-1].steps])
+    assert st["loads"].status == "warn" and "page does not exist" in st["loads"].error, st["loads"].error
+    assert st["loads_next_catalog_product_1"].status == "pass"
+    assert st["title"].status == "pass" and "Spoon" in st["title"].detail, st["title"].detail
+
+
 def test_product_sold_out_since_the_catalog_listed_it_is_skipped_for_the_next_one(tmp_path):
     """bombaytrooper.com (cycle 34, both devices): products.json listed the hoppers in stock; their .js and page said
     SOLD OUT ('an in-stock variant exists: got none available' -> confirmed_fail). The product test now tests the next
@@ -2173,6 +2187,19 @@ def test_no_clickable_card_names_the_first_refused_link_for_the_report(tmp_path)
     got, msg = _on_page("healthy", tmp_path, "/pages/about", probe)
     assert got.get("none") and "1 not visible" in msg, msg
     assert "first refused: a.pc{block,op 0,visible," in msg and "> div.in{block,op 1,visible,200x100}" in msg, msg
+
+
+def test_grid_an_app_draws_late_is_waited_for_when_the_page_promises_products(tmp_path):
+    """giva.co phone (full 36 verification run 38379683273): collection pages announced '4643 products' but the app
+    drew the cards after Radar's 6 s wait on a cold visit; four collections counted 0 and the retry passed (flaky,
+    store 'degraded'); the failure screenshot shows the cards. While the page itself promises products (a count in
+    its text, or still loading) Radar waits up to 15 s."""
+    run = _scan_small("late_grid", tmp_path, suites=["journey", "catalog"])
+    coll, j = _case(run, "catalog.collection."), _case(run, "journey.")
+    assert coll.verdict == "pass" and len(coll.attempts) == 1, _fails(coll)
+    assert "rendered" in _steps(coll)["lists_products"].detail, _steps(coll)["lists_products"].detail
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "/products/" in _steps(j)["click_into_product"].detail
 
 
 def test_landing_collection_without_a_grid_warns_and_the_journey_goes_on_to_a_collection_with_products(tmp_path):
