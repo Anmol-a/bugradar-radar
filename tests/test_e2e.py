@@ -2319,6 +2319,16 @@ def test_country_modal_answered_stay_on_brand_site_never_the_other_site(tmp_path
     assert closed and all("US Site" not in k["actual"] for k in closed), closed
     assert any("Stay on Mock IN Site" in k["actual"] for k in closed), closed
 
+@pytest.mark.parametrize("device", ["desktop", "mobile"])
+def test_country_modal_stay_here_as_plain_div_is_answered(tmp_path, device):
+    """teatrunk.in re-test (run 38461923525): the layer stayed ('no stay/close control in [International]'): 'Stay Here'
+    is not a <button>. A tappable element whose own text is a stay control counts; 'International' is never clicked."""
+    j = _case(_scan_small("country_modal_div_stay", tmp_path / device, device=device, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    closed = [k for k in _checks(j) if "popup closed" in k["what"]]
+    assert closed and all("International" not in k["actual"] for k in closed), closed
+    assert any("Stay Here" in k["actual"] for k in closed), closed
+
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 
 def _buy_now_only(mode, tmp_path, strict=False, **kw):

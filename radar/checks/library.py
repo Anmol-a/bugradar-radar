@@ -3161,7 +3161,7 @@ COVER_CLOSE_JS = r"""() => {
   const vw = innerWidth, vh = innerHeight;
   const shown = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
-  const text = e => (e.innerText || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
+  const text = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
   const SAFE = /^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip|continue browsing|continue shopping|stay here|stay on this (site|store|page)|stay on [\w .'&-]{1,40}|dismiss)$/i;
   const BAD = /accept|agree|allow|subscribe|sign ?up|submit|yes|international|go to|take me|switch|redirect/i;
   const navLinks = r => [...r.querySelectorAll('a[href]')].filter(a => shown(a) && !/^(#|javascript:)/i.test(a.getAttribute('href') || '')).length;
@@ -3178,7 +3178,12 @@ COVER_CLOSE_JS = r"""() => {
       // a page's own links are visible and go somewhere; a closed country list ('#' links) does not count
       if (!root || root === document.body || navLinks(root) > 12
           || root.querySelector('main, form[action*="/cart/add"]')) { why.push(tag + ': page content (' + (root ? navLinks(root) : 0) + ' links)'); break; }
-      const cands = [...root.querySelectorAll('button, a, [role="button"], [aria-label]')].filter(shown);
+      // also a plain <div>/<span> or <input type=button> a shopper can tap (teatrunk.in re-test: 'Stay Here' was not a
+      // <button>, only 'International' was listed); a non-button counts only when its own text is a stay control
+      const tappable = e => /^(button|submit)$/i.test(e.type || '') && e.tagName === 'INPUT'
+        || (getComputedStyle(e).cursor === 'pointer' && e.children.length <= 2 && SAFE.test(text(e)));
+      const cands = [...root.querySelectorAll('button, a, [role="button"], [aria-label]')]
+        .concat([...root.querySelectorAll('div, span, p, li, label, input')].filter(tappable)).filter(shown);
       const btn = cands.find(c =>
         !BAD.test(text(c)) && (SAFE.test(text(c)) || /close|dismiss/i.test(c.getAttribute('aria-label') || '')));
       if (!btn) { why.push(tag + ': no stay/close control in [' + cands.slice(0, 6).map(c => text(c).slice(0, 20) || c.tagName.toLowerCase()).join(' | ') + ']'); continue; }

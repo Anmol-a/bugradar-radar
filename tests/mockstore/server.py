@@ -362,6 +362,8 @@ Modes (to prove Radar catches and heals what it should):
                    journey opens the menu, hops to /pages/shop, PASSES
   country_modal    a 'Shopping from Outside India? International / Stay Here' modal rendered inside <header> covers the
                    page until answered (teatrunk.in) -> Radar clicks 'Stay Here' (never 'International'), PASSES
+  country_modal_div_stay  country_modal, but 'Stay Here' is a plain <div> with a click handler and the backdrop is a
+                   sibling of the box (teatrunk.in re-test) -> Radar clicks 'Stay Here', PASSES
   country_modal_stay_on  'Visiting from United States (USD $)?' with 'Shop on US Site' / 'Stay on Mock IN Site' and an
                    unlabelled icon x, inside <header> (vedix.com) -> Radar clicks 'Stay on Mock IN Site' (never the US
                    site), PASSES
@@ -915,6 +917,18 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
 <div class="ctryModal-Content" style="position:relative;margin:30vh auto 0;width:60%;background:#fff;padding:20px">
 <h2>Shopping from Outside India?</h2><p>We have a dedicated store which serves in your country. Would you like us to take you there?</p>
 <button type="button" class="ctry-intl">International</button> <button type="button" class="ctry-stay">Stay Here</button></div></div>
+<script>(() => { const m = document.getElementById('ctryModal');
+  if (document.cookie.includes('ctry=stay')) { m.remove(); return; }
+  m.querySelector('.ctry-intl').onclick = () => { location.href = '/pages/international'; };
+  m.querySelector('.ctry-stay').onclick = () => { document.cookie = 'ctry=stay;path=/'; m.remove(); }; })();</script></header>""", 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal_div_stay":
+            # teatrunk.in re-test (run 38461923525): same modal, but its backdrop is a sibling of the box inside a
+            # section and 'Stay Here' is a plain <div> with a click handler (only 'International' is a <button>).
+            body = body.replace("</header>", """<div class="shopify-section" id="ctryModal">
+<div class="ctryModal-Content-overlay" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.45)"></div>
+<div class="ctryModal-Content" style="position:fixed;top:30vh;left:20%;width:60%;z-index:101;background:#fff;padding:20px">
+<h2>Shopping from Outside India?</h2><p>We have a dedicated store which serves in your country. Would you like us to take you there?</p>
+<button type="button" class="ctry-intl">International</button> <div class="ctry-stay" style="display:inline-block;cursor:pointer;padding:8px">Stay Here</div></div></div>
 <script>(() => { const m = document.getElementById('ctryModal');
   if (document.cookie.includes('ctry=stay')) { m.remove(); return; }
   m.querySelector('.ctry-intl').onclick = () => { location.href = '/pages/international'; };

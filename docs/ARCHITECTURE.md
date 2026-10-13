@@ -1373,6 +1373,9 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 lean loop 14 Oct 03:20 IST (run 38461923525 re-test):** vedix.com now healthy (both devices). teatrunk.in still
+  NOT JUDGED: 'no stay/close control in [International]', its 'Stay Here' is not a <button>. `COVER_CLOSE_JS` also takes a
+  tappable non-button (cursor pointer, own text a stay control) or <input type=button>; mock `country_modal_div_stay`.
 - **v0.20 lean loop 14 Oct 01:15 IST (run 38437504227 re-test):** vedix.com still NOT JUDGED after the 'Stay on' rule: a
   popup's closed country list (hidden '#' links) made the layer count as page content (> 12 links). Both close rules now
   count only visible links that go somewhere; when the covering layer stays, the step records why (layer, controls seen)
