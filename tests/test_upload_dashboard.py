@@ -38,7 +38,7 @@ def test_payload_maps_verdicts_reasons_and_evidence(tmp_path):
     assert p["run"]["tool"] == "radar" and p["run"]["device"] == "mobile"
     by = {r["key"]: r for r in p["results"]}
     assert [by[k]["status"] for k in ("smoke.home", "cart.add", "search.q", "cat.more")] == ["passed", "failed", "blocked", "flaky"]
-    assert by["cart.add"]["reason"] == "A chat widget covers the button" and by["cart.add"]["attempts"] == 2
+    assert by["cart.add"]["reason"] == "A chat widget covers the button." and by["cart.add"]["attempts"] == 2
     assert by["cart.add"]["artifacts"][0]["content_type"] == "image/png"
     assert "robots.txt" in by["search.q"]["reason"] and "artifacts" not in by["search.q"]
     assert by["cat.more"]["reason"].startswith("Passed on try 2")
@@ -77,3 +77,47 @@ def test_finds_runs_in_the_engines_own_data_folder(tmp_path, capsys):
     assert up.main([str(tmp_path / "data"), "--dry-run"]) == 0
     out = capsys.readouterr().out
     assert '"project": "shop.example"' in out and "1 found" in out
+
+
+def test_phone_failure_gets_the_small_step_photo_when_the_full_page_one_is_too_big(tmp_path):
+    """13 Oct: phone full-page PNGs are over the size limit, so phone failures reached the dashboard with no picture."""
+    d = tmp_path / "data" / "sites" / "shop.example" / "runs" / "r1"
+    d.mkdir(parents=True)
+    (d / "shot.png").write_bytes(b"x" * (up.MAX_SHOT_BYTES + 1))
+    (d / "a2.02-add.jpg").write_bytes(b"\xff\xd8 small")
+    run = json.loads(json.dumps(RUN))
+    run["cases"][1]["attempts"][-1].update(failed_step="add", steps=[{"name": "open", "status": "pass", "shot": "a2.01-open.jpg"},
+                                                                      {"name": "add", "status": "fail", "shot": "a2.02-add.jpg"}])
+    art = {r["key"]: r for r in up.to_payload(run, d, "", None)["results"]}["cart.add"]["artifacts"][0]
+    assert art["name"] == "a2.02-add.jpg" and art["content_type"] == "image/jpeg"
+
+
+def test_build_day_is_the_shoppers_day_and_names_are_plain(tmp_path):
+    run = json.loads(json.dumps(RUN))
+    run["started_at"] = "2026-10-12T23:40:00+00:00"                      # 05:10 in India on the 13th
+    run["cases"][0]["title"] = "PDP 'Vitamin C Serum'"
+    run["cases"][1]["triage"] = {"verdict": "radar_problem", "reason": "A popup covers the button."}
+    p = up.to_payload(run, tmp_path, "", None)
+    by = {r["key"]: r for r in p["results"]}
+    assert p["build"]["version"] == "2026-10-13"
+    assert by["smoke.home"]["name"] == "Product page 'Vitamin C Serum'"
+    assert by["cart.add"]["reason"] == "A popup covers the button (this may be the test's fault, not the store's)."
+
+
+def test_every_run_has_a_line_for_the_store_itself(tmp_path):
+    """A store that cannot be opened has no checks at all: it must still arrive, as a failure (13 Oct: it was dropped)."""
+    ok = up.to_payload(RUN, tmp_path, "", None)["results"][0]
+    assert (ok["key"], ok["status"]) == (up.SITE_KEY, "passed")
+    down = {"run_id": "r2", "site_id": "gone.example", "base_url": "https://gone.example", "device": "desktop", "verdict": "unreachable",
+            "started_at": "2026-10-12T10:00:00+00:00", "cases": [], "notes": ["gone.example: the domain does not resolve"]}
+    rs = up.to_payload(down, tmp_path, "", None)["results"]
+    assert len(rs) == 1 and rs[0]["status"] == "failed" and "does not resolve" in rs[0]["reason"]
+    long = "gone.example: the domain does not resolve. Check the address (robots.txt request: APIRequestContext.get: getaddrinfo ENOTFOUND gone.example)"
+    r = up.to_payload({**down, "notes": [long]}, tmp_path, "", None)["results"][0]
+    assert r["reason"] == "gone.example: the domain does not resolve. Check the address" and r["error"] == long
+    for verdict, want in (("blocked", "blocked"), ("unsupported", "skipped")):
+        assert up.to_payload({**down, "verdict": verdict}, tmp_path, "", None)["results"][0]["status"] == want
+    d = tmp_path / "data" / "sites" / "gone.example" / "runs" / "r2"
+    d.mkdir(parents=True)
+    (d / "run.json").write_text(json.dumps(down))
+    assert up.main([str(tmp_path / "data"), "--dry-run"]) == 0
