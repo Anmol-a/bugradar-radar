@@ -331,6 +331,9 @@ Modes (to prove Radar catches and heals what it should):
   stretched_link_cards  valliyan.com (Baseline; first-refused evidence 13 Oct: 'a.increase-target{inline,op 1,visible,
                    0x0} > span.visually-hidden'): each card holds an EMPTY inline link whose ::before is position:absolute
                    over the card -> collection + journey PASS (v0.19: '15 links: 15 not visible')
+  late_grid        giva.co phone (full 36, 13 Oct): collection pages say '12 products' at once but an app draws the
+                   product cards LATE_GRID_SECS (8 s) after load, past Radar's 6 s grid wait -> collection + journey PASS
+                   ('rendered 8.0s after the page loaded'); v0.19: 'products listed: 0' on the first attempt (flaky)
   offsite_hang     nonasties.in phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
                    that never finishes loading for the phone browser -> smoke.more_links PASSES, naming the other site
                    (v0.19: 'page did not load ... nor within 60 s' -> links that fail to open, confirmed_fail)
@@ -413,6 +416,7 @@ PACK_SIZES = (("S", "S / 38"), ("M", "M / 40"))
 PACK_VARIANTS = [{"id": 210 + 2 * i + j, "available": True, "price": "1299.00", "option1": f"{a[1]} / {b[1]}",
                   "title": f"{a[1]} / {b[1]}"} for i, a in enumerate(PACK_SIZES) for j, b in enumerate(PACK_SIZES)]
 OFFSITE_HANG_SECS = 7.0   # offsite_hang: the other site answers after this long (> 2x the tests' 2 s timeout)
+LATE_GRID_SECS = 8.0      # late_grid: the collection app draws the cards this long after load (> 6 s base wait, < 15 s)
 SLOW_PAGE_SECS = 3.0      # slow_page: /pages/about answers after this long (tests set a 2 s navigation timeout)
 SOLD_OUT_SIZE = {"id": 203, "available": False, "price": "1499.00", "option1": "Extra Large", "title": "Extra Large"}
 FACET_MODES = ("facets", "facets_sort", "facets_sort_allowed", "filter_broken",     # storefront filters (journey 25)
@@ -1228,6 +1232,12 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                                  else p["variants"]} for p in items]})
             if not items:
                 return self._send(404, page("Not found", "404"))
+            if self.mode == "late_grid":        # giva.co phone: the count is in the HTML, the cards come from a script later
+                cards = "".join(card(p) for p in items).replace("`", "")
+                return self._send(200, page(f"{h.title()} Collection | Mock Store",
+                                            f"<h2>{len(items)} products</h2><div id=\"late-grid\"></div><script>setTimeout(() => "
+                                            f"{{ document.getElementById('late-grid').innerHTML = `{cards}`; }}, "
+                                            f"{int(LATE_GRID_SECS * 1000)});</script>"), set_cart=new)
             if self.mode in FACET_MODES:
                 return self._send(200, page(f"{h.title()} Collection | Mock Store", facets_page(h, items, q, self.mode),
                                             '<meta name="viewport" content="width=device-width, initial-scale=1">'),

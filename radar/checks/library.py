@@ -959,6 +959,29 @@ def links_resolve(ctx: Ctx, urls: list[str], max_links: int = 10):
         and f"{opened} pages open and show content" + (f", {skipped} skipped by robots.txt" if skipped else ""))
 
 
+PROMISES_PRODUCTS_JS = r"""() => { if (document.readyState !== 'complete') return 'still loading';
+  const t = (document.body && document.body.innerText || '').slice(0, 20000);
+  const m = t.match(/\b(\d{1,3}(?:,\d{3})*|\d+)\s+(products?|items?|results?|designs?|styles?)\b/i);
+  return m && parseInt(m[1].replace(/,/g, ''), 10) > 0 ? m[0] : null; }"""
+
+
+def _wait_for_products(ctx: Ctx, base_s: float = 6.0, long_s: float = 15.0) -> tuple[int, float]:
+    """Product links on the page, waiting for a grid a script renders after load: up to 6 s (thehouseofrare phone,
+    11 Oct), or up to 15 s while the page itself promises products (a '4,643 products' heading, or still loading).
+    giva.co phone, full 36 run 38379683273: the collection app drew its grid after Radar's 6 s on a cold visit, four
+    collections counted 0, the retry passed (flaky, store 'degraded'); the failure screenshot shows the cards."""
+    n, waited, promise = len(_product_links(ctx.sess)), 0.0, None
+    while not n:
+        if waited >= base_s:
+            promise = ctx.sess.evaluate(PROMISES_PRODUCTS_JS)
+            if not promise or waited >= long_s:
+                break
+        ctx.sess.page.wait_for_timeout(500)
+        waited += 0.5
+        n = len(_product_links(ctx.sess))
+    return n, waited
+
+
 def _reveal_product_grid(ctx: Ctx) -> str:
     """No product link on a collection page yet: scroll down like a shopper, a screen at a time, until the grid shows.
     veirdo.in (new30h, desktop + phone): a 520 px sale banner, then '144 items' and a grid an app renders only when it
@@ -1024,17 +1047,15 @@ def collection_page(ctx: Ctx, url: str):
     ctx.steps.run("loads", lambda: _load(ctx, url))
 
     def has_products():
-        n, waited = len(_product_links(ctx.sess)), 0.0
-        while not n and waited < 6:     # grids a script renders after load (thehouseofrare phone, 11 Oct): up to 6 s
-            ctx.sess.page.wait_for_timeout(500)
-            waited += 0.5
-            n = len(_product_links(ctx.sess))
+        n, waited = _wait_for_products(ctx)
         scrolled = _reveal_product_grid(ctx) if not n else ""
         n = n or len(_product_links(ctx.sess))
         if not n:
             why = _why_no_grid(ctx, url)
             if why:
                 raise StoreWarning(f"products listed: expected ≥ 1, got 0: {why}")
+            n, again = _wait_for_products(ctx)      # the page was opened once more by _why_no_grid: judge what it shows now
+            waited += again
         ctx.expect("products listed", "≥ 1", n, n >= 1)
         return f"{n} products listed" + (f" (rendered {waited:.1f}s after the page loaded)" if waited else "") + scrolled
     ctx.steps.run("lists_products", has_products)
@@ -2240,8 +2261,18 @@ def _shopify_search(ctx: Ctx, term: str) -> dict:
     return r or {"n": 0, "first": "", "title": ""}
 
 
-def meta_tags(ctx: Ctx, url: str):
-    ctx.steps.run("loads", lambda: _load(ctx, url))
+def meta_tags(ctx: Ctx, url: str, fallbacks: list[str] | tuple = ()):
+    """fallbacks (product pages only): other catalog products, used when this one's page is unreachable. The meta
+    check judges the store's product-page template, not one product; a catalog product whose page is gone is already
+    the product test's warning (giva.co, full 36 run 38379683273: 'silver-classic-bracelet-for-charms' 404 made
+    health.meta.pdp a second, hard failure for the same fact and the store 'degraded')."""
+    cands = [url, *list(fallbacks)[:2]]
+    for i, u in enumerate(cands):
+        last = i == len(cands) - 1
+        if ctx.steps.run("loads" if i == 0 else f"loads_next_catalog_product_{i}",
+                         lambda u=u: _load_product(ctx, u) if "/products/" in u else _load(ctx, u), soft=not last) is not None:
+            url = u
+            break
     m = ctx.sess.evaluate("""() => ({
         title: document.title,
         desc: document.querySelector('meta[name=description]')?.content || '',
@@ -3281,7 +3312,7 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
         ctx.expect("landed on that collection", _path(got["href"]), _path(page.url), "/collections/" in page.url)
 
         def listed() -> int:
-            n = len(_product_links(ctx.sess))
+            n, _ = _wait_for_products(ctx)
             if not n:
                 _wait_stable(ctx, PRODUCT_HREF)
                 _reveal_product_grid(ctx)
