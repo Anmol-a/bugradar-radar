@@ -27,6 +27,7 @@ STATUS = {"pass": "passed", "flaky": "flaky", "confirmed_fail": "failed", "fail"
           "skipped": "skipped", "no_network": "skipped", "pending": "skipped"}
 MAX_SHOTS_PER_RUN = 6
 MAX_SHOT_BYTES = 600_000
+SHOT_WIDTH = 900
 # a build is one day of results; the day is counted where the store's shoppers are (a 5 am India run belongs to that
 # day, not to the UTC day before). BUGRADAR_TZ overrides.
 TZ = os.environ.get("BUGRADAR_TZ", "Asia/Kolkata")
@@ -50,8 +51,25 @@ def plain_name(title: str) -> str:
     return re.sub(r"^PDP\b", "Product page", title)
 
 
-def evidence(case: dict, run_dir: Path) -> Path | None:
-    """The picture for a failed check: the small photo of the step that failed, else the full-page one if it is not huge.
+def smaller(p: Path) -> tuple[str, str, bytes] | None:
+    """A full-page PNG as a JPEG no wider than SHOT_WIDTH: about a fifth of the size, still readable. Needs Pillow."""
+    try:
+        from io import BytesIO
+        from PIL import Image
+        with Image.open(p) as im:
+            im = im.convert("RGB")
+            if im.width > SHOT_WIDTH:
+                im = im.resize((SHOT_WIDTH, round(im.height * SHOT_WIDTH / im.width)))
+            buf = BytesIO()
+            im.save(buf, "JPEG", quality=72, optimize=True)
+        return p.with_suffix(".jpg").name, "image/jpeg", buf.getvalue()
+    except Exception:          # no Pillow on this machine, or an unreadable file: the caller falls back to the file as it is
+        return None
+
+
+def evidence(case: dict, run_dir: Path) -> tuple[str, str, bytes] | None:
+    """The picture for a failed check, as (name, content type, bytes): the small photo of the step that failed; else the
+    full-page one, shrunk to a JPEG when Pillow is there, or as it is when it is under the size limit.
     (13 Oct: phone full-page PNGs are 0.6-1.5 MB, over the limit, so phone failures arrived with no picture at all.)"""
     last = (case.get("attempts") or [{}])[-1]
     steps = last.get("steps") or []
@@ -59,8 +77,14 @@ def evidence(case: dict, run_dir: Path) -> Path | None:
         or next((s.get("shot") for s in reversed(steps) if s.get("shot")), None)
     for name in (step, last.get("screenshot")):
         p = run_dir / name if name else None
-        if p and p.is_file() and 0 < p.stat().st_size <= MAX_SHOT_BYTES:
-            return p
+        if not (p and p.is_file() and p.stat().st_size):
+            continue
+        if p.suffix.lower() == ".png":
+            small = smaller(p)
+            if small and len(small[2]) <= MAX_SHOT_BYTES:
+                return small
+        if p.stat().st_size <= MAX_SHOT_BYTES:
+            return p.name, "image/png" if p.suffix.lower() == ".png" else "image/jpeg", p.read_bytes()
     return None
 
 
@@ -89,7 +113,7 @@ def reason_of(case: dict) -> str | None:
 
 
 def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None) -> dict:
-    host = urlparse(run.get("base_url") or "").hostname or run.get("site_id") or "store"
+    host = (urlparse(run.get("base_url") or "").hostname or run.get("site_id") or "store").removeprefix("www.")
     results, shots = [], 0
     for c in run.get("cases", []):
         status = STATUS.get(c.get("verdict"), "warning")
@@ -102,11 +126,10 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None) -> dict
             "attempts": len(c.get("attempts") or []) or 1,
         }
         if status == "failed" and shots < MAX_SHOTS_PER_RUN:
-            p = evidence(c, run_dir)
-            if p:
-                ctype = "image/png" if p.suffix.lower() == ".png" else "image/jpeg"
-                item["artifacts"] = [{"kind": "screenshot", "name": p.name, "content_type": ctype,
-                                      "data_base64": base64.b64encode(p.read_bytes()).decode()}]
+            shot = evidence(c, run_dir)
+            if shot:
+                item["artifacts"] = [{"kind": "screenshot", "name": shot[0], "content_type": shot[1],
+                                      "data_base64": base64.b64encode(shot[2]).decode()}]
                 shots += 1
         results.append(item)
     # one line for the store itself, in every run: it fails when the store cannot be opened, is "not tested" when Radar
