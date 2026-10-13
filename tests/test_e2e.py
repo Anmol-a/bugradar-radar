@@ -115,10 +115,21 @@ def test_llm_rung_heals_when_heuristic_cannot(tmp_path):
     assert run.llm_usage["calls"] == 1                          # healed once, then cached
 
 
-def test_obscure_button_without_llm_fails_honestly(tmp_path):
+def test_obscure_button_without_llm_is_not_judged_and_says_why(tmp_path):
+    """Verdict rule (13 Oct): a buy button Radar cannot find is not proof there is none. Before: confirmed_fail."""
     run, _ = _scan("obscure_button", tmp_path)
     c = _case(run, "cart.")
-    assert c.verdict == "confirmed_fail" and "LLM healing disabled" in c.attempts[-1].error
+    assert c.verdict == "blocked" and c.attempts[-1].error.startswith("not judged: add-to-cart control") \
+        and "LLM healing disabled" in c.attempts[-1].error, (c.verdict, c.attempts[-1].error)
+
+
+def test_store_refusing_radar_mid_run_is_blocked_not_down(tmp_path):
+    """bombayshirts.com phone (new30l, 13 Oct): discovery saw the store, then its bot wall answered HTTP 403 to the
+    homepage and every page after it -> 8 failed checks, DOWN. A refusal of Radar's browser is 'blocked' (could not
+    check) with a note, never an outage."""
+    run, _ = _scan("refused_mid_run", tmp_path, allow_cart_flow=False)
+    assert run.verdict == "blocked", (run.verdict, [(c.case_id, c.verdict) for c in run.cases])
+    assert any("refused Radar's browser during this run" in n and "HTTP 403" in n for n in run.notes), run.notes
 
 
 def test_non_shopify_is_unsupported(tmp_path):
@@ -464,7 +475,9 @@ def test_unknown_overlay_closed_by_llm_pick_never_by_the_tempting_button(tmp_pat
     finally:
         srv.shutdown()
     j = _case(run, "journey.")
-    assert j.verdict == "pass" and j.healed_after_triage, [(a.ok, a.error) for a in j.attempts]
+    # verdict rule (13 Oct): the model's overlay pick is the LAST rung inside the first attempt (a not-judged case
+    # ends after one attempt, so there is no triage re-check to run it in); before: 2 failed attempts + triage + re-check
+    assert j.verdict == "pass" and len(j.attempts) == 1 and not j.healed_after_triage, [(a.ok, a.error) for a in j.attempts]
     assert any("popup or overlay" in x["system"] for x in fake.seen)
     shots = [s.shot for s in j.attempts[-1].steps if s.shot]
     assert len(shots) >= 5                                      # a picture after every journey step
@@ -599,9 +612,12 @@ def test_pack_of_two_picks_each_item_size_in_its_own_picker(tmp_path):
 
 
 def test_product_page_without_its_own_buy_form_says_so(tmp_path):
+    """Verdict rule (13 Oct): NOT JUDGED (case 'blocked'), with the same facts as before: no add-to-cart form for
+    this product, and whose the forms on the page are. Before: confirmed_fail."""
     run = _product_only("no_buy_form", tmp_path)
     vase = _case(run, "product.pdp.ceramic")
-    assert vase.verdict == "confirmed_fail"
+    assert vase.verdict == "blocked", (vase.verdict, vase.attempts[-1].error)
+    assert vase.attempts[-1].error.startswith("not judged: add-to-cart control for THIS product")
     assert "no add-to-cart form for this product" in vase.attempts[-1].error
     assert "belong to other products' cards" in vase.attempts[-1].error
 
@@ -2048,6 +2064,47 @@ def test_prices_converted_for_another_country_are_location_never_down(tmp_path, 
         c = _case(run, prefix)
         assert c.verdict == "blocked" and "location (US runner)" in c.attempts[-1].error and ("USD" in c.attempts[-1].error or "$" in c.attempts[-1].error), \
             (prefix, c.verdict, c.attempts[-1].error)
+
+
+def test_verdict_rule_no_clickable_card_is_not_judged_never_down(tmp_path):
+    """Verdict rule (Anmol, 13 Oct): a store is failed only on positive evidence of breakage. Every card under a
+    transparent layer Radar cannot close: it cannot find a card it is sure a shopper can tap, which is not proof the
+    page is broken -> the journey is NOT JUDGED (case 'blocked', one attempt, no triage), the store 'blocked', not
+    DOWN; the step says what was looked for and what the page had, and keeps its screenshot."""
+    run = _scan_small("veiled_cards", tmp_path, suites=["journey"])
+    j = _case(run, "journey.")
+    assert j.verdict == "blocked" and len(j.attempts) == 1 and j.triage is None, (j.verdict, _fails(j))
+    st = _steps(j)["click_into_product"]
+    assert st.status == "skip" and st.error.startswith("not judged: product card a shopper can click") \
+        and "covered by div.veil" in st.error and "not proof" in st.error, st.error
+    assert run.verdict == "blocked", run.verdict
+    assert j.attempts[-1].screenshot, "the not-judged attempt keeps its screenshot as evidence"
+
+
+def test_verdict_rule_product_without_an_image_is_not_judged_but_a_broken_image_fails(tmp_path):
+    """Verdict rule: no large image Radar can find on a product page (suta.in 'Free Fabric') is NOT JUDGED with what
+    was seen, and the store stays healthy; a large image that FAILED to load (404) is positive evidence and fails."""
+    run = _product_only("pdp_no_image", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert vase.verdict == "blocked" and st.status == "skip" and "not judged: main product image" in st.error, (vase.verdict, st.error)
+    assert run.verdict == "healthy", run.verdict
+    run = _product_only("pdp_broken_image", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "confirmed_fail" and "a large image failed to load: ceramic-vase.svg" in vase.attempts[-1].error, \
+        (vase.verdict, vase.attempts[-1].error)
+
+
+def test_verdict_rule_collection_with_no_grid_fails_only_when_the_store_data_lists_products(tmp_path):
+    """Verdict rule: 'products listed: 0' is a failure only with the store's own data as evidence (its collection
+    products.json lists products while the page shows none); unreadable data = NOT JUDGED."""
+    from radar.checks.library import _collection_data_count, _why_no_grid
+    def probe(ctx):
+        return _collection_data_count(ctx, ctx.sess.page.url), _why_no_grid(ctx, ctx.sess.page.url)
+    k, why = _on_page("healthy", tmp_path, "/collections/home-decor", probe)
+    assert k and k >= 1 and why is None, (k, why)
+    k = _on_page("rate_limited_all", tmp_path / "rl", "/collections/home-decor", lambda ctx: _collection_data_count(ctx, ctx.sess.page.url))
+    assert k is None, k
 
 
 def test_lazy_gallery_image_is_waited_for_not_called_missing(tmp_path):

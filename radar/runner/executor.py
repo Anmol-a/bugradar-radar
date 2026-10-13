@@ -64,7 +64,7 @@ def _attempt(browser: Browser, case: TestCase, run_dir, robots, healer: Healer, 
             fn(Ctx(sess, healer, steps, llm_assist=assist), **case.params)
         except StepFailed as f:
             failed, blocked = f, f.blocked
-            sess.failed = not f.blocked
+            sess.failed = (not f.blocked) or f.not_judged      # a not-judged step keeps its screenshot as evidence
         except Exception as e:  # noqa: BLE001  a bug in Radar itself must not kill the run
             failed = StepFailed("radar_internal", f"{type(e).__name__}: {str(e)[:200]}")
             steps.items.append(StepResult("radar_internal", "fail", None, failed.args[0]))
@@ -175,6 +175,26 @@ def perf_summary(cases: list[CaseResult]) -> dict:
             "failed_requests": len(failed)}
 
 
+REFUSED_RX = re.compile(r"HTTP status: expected < 400, got (401|403|423|429)\b")
+
+
+def _refused_mid_run(cases: list[CaseResult]) -> str | None:
+    """The store refused Radar's browser while the run was on (the homepage health check and at least half of the
+    failed cases answered 401 / 403 / 423 / 429): the note for a 'blocked' verdict, else None. A single refused page
+    among working ones is still that page's finding."""
+    home = next((c for c in cases if c.case_id == "smoke.home_health"), None)
+    if not home or home.verdict != "confirmed_fail" or not REFUSED_RX.search(home.attempts[-1].error or ""):
+        return None
+    failed = [c for c in cases if c.verdict == "confirmed_fail"]
+    refused = [c for c in failed if REFUSED_RX.search(c.attempts[-1].error or "")]
+    if len(refused) * 2 < len(failed):
+        return None
+    code = REFUSED_RX.search(home.attempts[-1].error).group(1)
+    return (f"the store refused Radar's browser during this run: the homepage answered HTTP {code} and so did "
+            f"{len(refused)} of {len(failed)} failed checks (bot protection or rate limiting, not an outage); "
+            "nothing is counted as broken. The store can allowlist the BugRadar User-Agent.")
+
+
 def run_verdict(cases: list[CaseResult]) -> str:
     # SEO notes (soft 404, meta tags; severity "seo", 9 Oct) are shown in reports but never make a store
     # degraded or down: a shopper can still find and buy everything.
@@ -264,6 +284,13 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
                     where=f" during '{lost.title}' ({total - len(run.cases)} of {total} tests not run)"))
             else:
                 run.verdict = run_verdict(run.cases)
+                refused = _refused_mid_run(run.cases)
+                if refused:
+                    # bombayshirts.com phone (new30l, 13 Oct): the desktop run was healthy; on the phone the store's
+                    # bot protection answered HTTP 403 to the homepage and every page after it (0.07 s loads), and
+                    # Radar said DOWN. A refusal of Radar's browser is 'blocked' (could not check), never an outage.
+                    run.verdict = "blocked"
+                    run.notes.append(refused)
 
     run.finished_at = _now()
     run.perf = perf_summary(run.cases)

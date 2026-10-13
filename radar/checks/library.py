@@ -97,9 +97,17 @@ class OtherMarket(Exception):
 
 
 class StepFailed(Exception):
-    def __init__(self, step: str, message: str, blocked: bool = False):
-        self.step, self.blocked = step, blocked
+    def __init__(self, step: str, message: str, blocked: bool = False, not_judged: bool = False):
+        self.step, self.blocked, self.not_judged = step, blocked, not_judged
         super().__init__(message)
+
+
+class NotJudged(Exception):
+    """Radar could not find what it needed on the page and holds NO positive evidence of breakage. The verdict rule
+    (Anmol, 13 Oct): a store is failed only on positive evidence: an HTTP error, a 'page not found' page, the store's
+    own data saying one thing while the page shows another, a control that is there but disabled or broken. 'Could not
+    find it' is reported as NOT JUDGED with the evidence (what was looked for, what the page had), never as broken.
+    The step is 'skip' ('not judged: ...'), the case 'blocked' (no retries, no triage), the screenshot is kept."""
 
 
 class StoreWarning(AssertionError):
@@ -146,6 +154,11 @@ class Steps:
         except (RobotsBlocked, AgeGate, RateLimited, PincodeGate, CatalogOnly, OtherMarket) as e:
             self.items.append(StepResult(name, "skip", None, str(e), round(time.time() - t0, 2), None, self._checks))
             raise StepFailed(name, str(e), blocked=True) from e
+        except NotJudged as e:
+            msg = "not judged: " + str(e).split("\n")[0][:600]
+            self.items.append(StepResult(name, "skip", None, msg, round(time.time() - t0, 2), None, self._checks,
+                                         self._shot(name)))
+            raise StepFailed(name, msg, blocked=True, not_judged=True) from e
         except Exception as e:  # noqa: BLE001
             msg = str(e).split("\n")[0][:400]
             soft = soft or isinstance(e, StoreWarning)
@@ -734,13 +747,12 @@ def _main_buy_button(ctx: Ctx, product: dict):
             for (const f of document.querySelectorAll('form[action*="/cart/add"]')) {
               const v = (f.querySelector('[name="id"]') || {}).value; if (mine.has(String(v))) own++; else other++; }
             return {own, other}; }""", ids) or {"own": 0, "other": 0}
-        if not st["own"]:
-            ctx.expect("add-to-cart control for THIS product on its page", "present",
-                       "none: no add-to-cart form for this product"
-                       + (f" ({st['other']} such forms belong to other products' cards)" if st["other"] else "")
-                       + "; no other buy control found" + ("; LLM healing disabled" if "LLM healing disabled" in str(e) else ""),
-                       False)
-        raise
+        # verdict rule (13 Oct): no buy control Radar can find is not proof there is none: NOT JUDGED with the facts
+        raise NotJudged("add-to-cart control for THIS product on its page: "
+                        + ("none: no add-to-cart form for this product" if not st["own"]
+                           else f"{st['own']} add-to-cart form(s) for this product, but no buy button Radar could use")
+                        + (f" ({st['other']} such forms belong to other products' cards)" if st["other"] else "")
+                        + "; no other buy control found" + ("; LLM healing disabled" if "LLM healing disabled" in str(e) else "")) from e
     try:
         healed_on = f.locator.is_enabled()
     except Exception:  # noqa: BLE001  detached
@@ -1007,6 +1019,16 @@ SUB_COLLECTIONS_JS = r"""() => { const here = location.pathname.replace(/\/$/, '
   return out.slice(0, 3); }"""
 
 
+def _collection_data_count(ctx: Ctx, url: str) -> int | None:
+    """How many products the store's own collection data lists (up to 50), None when it cannot be read."""
+    try:
+        data = ctx.sess.get_json(url.split("?")[0].rstrip("/") + "/products.json?limit=50")
+        ps = data.get("products") if isinstance(data, dict) else None
+        return len(ps) if isinstance(ps, list) else None
+    except Exception:  # noqa: BLE001  robots.txt, no data, not JSON
+        return None
+
+
 def _why_no_grid(ctx: Ctx, url: str) -> str | None:
     """A collection page that lists no products, judged as a shopper would. A WARNING (returned reason), not an outage:
     the collection is empty in the store's own data, or it is a landing page whose sub-collections list products
@@ -1056,6 +1078,14 @@ def collection_page(ctx: Ctx, url: str):
                 raise StoreWarning(f"products listed: expected ≥ 1, got 0: {why}")
             n, again = _wait_for_products(ctx)      # the page was opened once more by _why_no_grid: judge what it shows now
             waited += again
+        if not n:
+            # verdict rule (13 Oct): the page shows no product link Radar recognises. Positive evidence = the store's
+            # own collection data lists products while the page shows none; data unreadable = NOT JUDGED.
+            k = _collection_data_count(ctx, url)
+            if k is None:
+                raise NotJudged("products listed: no product link found on the page and the store's collection data "
+                                "could not be read to confirm the collection has products")
+            ctx.expect("products listed", f"≥ 1 (the store's own data lists {k})", n, n >= 1)
         ctx.expect("products listed", "≥ 1", n, n >= 1)
         return f"{n} products listed" + (f" (rendered {waited:.1f}s after the page loaded)" if waited else "") + scrolled
     ctx.steps.run("lists_products", has_products)
@@ -1728,11 +1758,13 @@ MAIN_IMAGE_JS = r"""() => { const big = r => r.width >= 150 && r.height >= 150 &
     const u = (bg.match(/url\(["']?([^"')]+)/) || [])[1] || '';
     const done = performance.getEntriesByType('resource').some(x => u && x.name.split('?')[0] === new URL(u, location.href).href.split('?')[0]);
     if (done) return {ok: true, how: 'background image ' + Math.round(r.width) + 'x' + Math.round(r.height)}; }
+  const broken = imgs.map(i => ({i, r: i.getBoundingClientRect()})).find(x => big(x.r) && x.i.complete && x.i.naturalWidth === 0
+    && (x.i.currentSrc || x.i.src));
   const seen = imgs.map(i => ({i, r: i.getBoundingClientRect()})).filter(x => x.r.width * x.r.height > 2000)
     .sort((a, b) => b.r.width * b.r.height - a.r.width * a.r.height).slice(0, 3)
     .map(x => Math.round(x.r.width) + 'x' + Math.round(x.r.height) + '@' + Math.round(x.r.top) + ' natural ' + x.i.naturalWidth +
       (x.i.complete ? '' : ' loading') + ' ' + (x.i.currentSrc || x.i.src || x.i.getAttribute('data-src') || '').split('/').pop().slice(0, 40));
-  return {ok: false, seen: seen.join('; ')}; }"""
+  return {ok: false, seen: seen.join('; '), broken: broken ? (broken.i.currentSrc || broken.i.src).split('/').pop().slice(0, 60) : null}; }"""
 
 
 def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = False):
@@ -1777,8 +1809,13 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             ctx.sess.page.wait_for_timeout(600)
             img = ctx.sess.evaluate(MAIN_IMAGE_JS)
         ok_img = bool(img and img.get("ok"))
+        if not ok_img and not (img or {}).get("broken"):
+            # verdict rule (13 Oct): a large image that FAILED to load is evidence (below); no large image Radar can
+            # find is not (galleries in canvas / video / app widgets): NOT JUDGED with what was seen
+            raise NotJudged("main product image: no image ≥150px found in the page's markup, which is not proof it is "
+                            f"missing for a shopper (largest seen: {(img or {}).get('seen') or 'none'})")
         ctx.expect("main product image loaded", "image ≥150px rendered",
-                   f"yes ({img.get('how')})" if ok_img else f"none loaded ({(img or {}).get('seen') or 'no large image element'})", ok_img)
+                   f"yes ({img.get('how')})" if ok_img else f"a large image failed to load: {img.get('broken')}", ok_img)
         return "title, price and image visible"
     ctx.steps.run("shows_title_price_image", shown)
 
@@ -2729,9 +2766,12 @@ _GENERIC_WORDS = {"with", "pack", "size", "combo", "free", "mens", "women", "wom
                   "and", "for", "set", "pcs", "piece", "pieces", "copy", "new", "online", "buy"}
 
 
-def _llm(ctx: Ctx):
+def _llm(ctx: Ctx, last_rung: bool = False):
+    """The model, only in the re-check after triage (ctx.llm_assist), or as the LAST rung before a step gives up as
+    NOT JUDGED (verdict rule, 13 Oct: a not-judged case ends after one attempt, so the rung runs here, not after
+    triage)."""
     llm = getattr(ctx.healer, "llm", None) if ctx.healer else None
-    return llm if (ctx.llm_assist and llm is not None and llm.enabled) else None
+    return llm if ((ctx.llm_assist or last_rung) and llm is not None and llm.enabled) else None
 
 
 def _llm_find_name(ctx: Ctx, title: str) -> dict | None:
@@ -2800,10 +2840,10 @@ def safe_to_close(text: str, cls: str = "") -> bool:
     return False
 
 
-def _llm_close_overlay(ctx: Ctx) -> str | None:
-    """Re-check rung: something big covers the page and Radar's rules did not close it. The model picks
+def _llm_close_overlay(ctx: Ctx, last_rung: bool = False) -> str | None:
+    """Last rung: something big covers the page and Radar's rules did not close it. The model picks
     the control that CLOSES it; code refuses anything that subscribes, accepts, confirms age, or buys."""
-    llm = _llm(ctx)
+    llm = _llm(ctx, last_rung)
     if not llm:
         return None
     ctrls = ctx.sess.evaluate(OVERLAY_CONTROLS_JS) or []
@@ -3169,7 +3209,7 @@ def _pick(ctx: Ctx, sel: str, href_re: str | None = None, prefer=(), exclude: st
             if not got.get("none"):
                 got["overlay"] = closed
     if got and got.get("none") and any(k.startswith("covered by") for k in got.get("why", {})):
-        closed = _llm_close_overlay(ctx)            # re-check after triage only
+        closed = _llm_close_overlay(ctx, last_rung=True)    # the model's pick before the step gives up as not judged
         if closed:
             got = ctx.sess.evaluate(PICK_JS, [sel, href_re, list(prefer), exclude])
             got["overlay"] = closed
@@ -3369,8 +3409,12 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
             _reveal_product_grid(ctx)
         got = _pick(ctx, "a[href]", PRODUCT_HREF, prefer)
         found = not got.get("none")
-        ctx.expect("product card a shopper can click", "found",
-                   f"{got['href']} ({got['text']!r})" if found else _why_none(got, _path(page.url)), found)
+        if not found:
+            # verdict rule (13 Oct): no card Radar could judge usable is not proof the page is broken (valliyan's
+            # stretched links, teatrunk's slider cells, popups it could not close): NOT JUDGED, with the evidence
+            raise NotJudged(f"product card a shopper can click: {_why_none(got, _path(page.url))}; Radar could not "
+                            "find a card it is sure a shopper can tap, which is not proof the page is broken")
+        ctx.expect("product card a shopper can click", "found", f"{got['href']} ({got['text']!r})", True)
         clicked = _handle(got["href"])
         listing = page.url
         first = ctx.sess.evaluate(MARK_TRIED_JS)
@@ -3533,8 +3577,10 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
         _load(ctx, base + cart_path)
         _dismiss(ctx)
         found = ctx.sess.evaluate(CART_LINE_JS, [vid, title])
-        ctx.expect("cart page lists the product with a quantity box", f"{title} line", found and f"line found, qty {found['qty']}",
-                   bool(found))
+        if not found:       # verdict rule (13 Oct): /cart.js holds the product; a line Radar cannot recognise is not proof
+            raise NotJudged(f"cart page lists the product with a quantity box: no cart line for {title!r} that Radar "
+                            "recognises (the store's cart data does hold it)")
+        ctx.expect("cart page lists the product with a quantity box", f"{title} line", f"line found, qty {found['qty']}", True)
         state["line"] = found
         return (f"cart page line: qty {found['qty']}; + control: {found['plus'] or 'none (quantity box)'}; "
                 f"remove control: {found['remove'] or 'none found'}")
@@ -3611,8 +3657,10 @@ def cart_edit(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", str
         _load(ctx, base + cart_path)
         _dismiss(ctx)
         found = ctx.sess.evaluate(CART_LINE_JS, [vid, title])
-        ctx.expect("remove control on the product's cart line", "found", found and (found["remove"] or "none"),
-                   bool(found and found["remove"]))
+        if not (found and found["remove"]):     # verdict rule (13 Oct): not found is not proof there is none
+            raise NotJudged("remove control on the product's cart line: " + ("no remove control Radar recognises on the line"
+                            if found else f"no cart line for {title!r} that Radar recognises"))
+        ctx.expect("remove control on the product's cart line", "found", found["remove"], True)
         page.locator('[data-radar-cart="remove"]').first.click(timeout=8000)
         q = _wait_qty(ctx, base, vid, 0)
         ctx.expect("cart quantity of this product after remove", 0, q)
@@ -3823,7 +3871,10 @@ def _third_party_checkout(ctx: Ctx, apps: list[str], title: str, app_errors: lis
     and confirm its first screen (phone number / OTP screen or order summary) renders. Never typed, never submitted."""
     page = ctx.sess.page
     named = " + ".join(apps)
-    f = ctx.healer.find(page, "checkout_button")
+    try:
+        f = ctx.healer.find(page, "checkout_button")
+    except LocatorNotFound as e:        # verdict rule (13 Oct): a button Radar cannot find is not proof there is none
+        raise NotJudged(f"checkout button on the cart page: none Radar could find ({str(e)[:160]})") from e
     ctx.expect("checkout button on the cart page", "visible + enabled", f"via {f.method}", f.locator.is_enabled())
     opened = _click_and_find_checkout(ctx, f.locator, _base(page.url))
     if not opened["kind"]:
