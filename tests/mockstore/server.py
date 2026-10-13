@@ -921,13 +921,17 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   m.querySelector('.ctry-stay').onclick = () => { document.cookie = 'ctry=stay;path=/'; m.remove(); }; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal_stay_on":
             # vedix.com (new30l, desktop): 'Visiting from United States (USD $)?' with 'Shop on US Site' (leaves the
-            # store: never clicked), the link 'Stay on Vedix IN Site' and a country select; its x is an unlabelled icon.
+            # store: never clicked), the link 'Stay on Vedix IN Site' and a country dropdown; its x is an unlabelled icon.
+            # Re-test (run 38437504227) still not closed: the closed country list ('#' links, hidden) made the layer look
+            # like page content (> 12 links); only visible links that go somewhere count.
             body = body.replace("</header>", """<div class="geo-wrap" id="geoModal" style="position:fixed;inset:0;z-index:100">
 <div class="geo-bg" style="position:absolute;inset:0;background:rgba(0,0,0,.45)"></div>
 <div class="geo-box" style="position:relative;margin:25vh auto 0;width:60%;background:#fff;padding:20px">
 <span class="geo-x" style="position:absolute;right:8px;top:8px;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1 11 11M11 1 1 11" stroke="#000"/></svg></span>
 <h2>Visiting from United States (USD $)?</h2><a class="geo-go" href="/pages/international">Shop on US Site</a>
-<a class="geo-stay" href="#">Stay on Mock IN Site</a><p>Or Select Your Country Below</p><select><option>Select</option></select></div></div>
+<a class="geo-stay" href="#">Stay on Mock IN Site</a><p>Or Select Your Country Below</p>
+<div class="geo-select"><button type="button" class="geo-toggle">Select</button><ul class="geo-list" style="display:none">"""
+                + "".join(f'<li><a href="#" data-value="C{i}">Country {i}</a></li>' for i in range(40)) + """</ul></div></div></div>
 <script>(() => { const m = document.getElementById('geoModal');
   if (document.cookie.includes('geo=stay')) { m.remove(); return; }
   const stay = e => { e.preventDefault(); document.cookie = 'geo=stay;path=/'; m.remove(); };

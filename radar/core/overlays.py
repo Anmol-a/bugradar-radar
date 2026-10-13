@@ -60,7 +60,7 @@ FIND_JS = r"""() => {
     const r = e.getBoundingClientRect(); if (r.width * r.height < 0.5 * vw * vh || (parseInt(s.zIndex) || 0) < 1) return false;
     if (isCart(e) || e.closest('header, nav, [id*="header" i]') || tried(e) || !onScreen(e)) return false;
     // a popup is small inside: not the page's own content (main, the buy form, a menu full of links)
-    if (e.querySelector('main, form[action*="/cart/add"], [role="navigation"]') || e.querySelectorAll('a[href]').length > 12) return false;
+    if (e.querySelector('main, form[action*="/cart/add"], [role="navigation"]') || [...e.querySelectorAll('a[href]')].filter(a => shown(a) && !/^(#|javascript:)/i.test(a.getAttribute('href') || '')).length > 12) return false;
     // a control to close it: a real button, or a bare "×" drawn by a div/span (soulflower.in birthday popup, 9 Oct)
     return !!e.querySelector('button, [role="button"]') || bareX(e);
   }).slice(0, 4);
