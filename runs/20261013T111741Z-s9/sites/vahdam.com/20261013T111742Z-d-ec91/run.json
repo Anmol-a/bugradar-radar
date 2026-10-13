@@ -1,0 +1,3809 @@
+{
+  "run_id": "20261013T111742Z-d-ec91",
+  "site_id": "vahdam.com",
+  "base_url": "https://vahdam.com",
+  "device": "desktop",
+  "started_at": "2026-10-13T11:17:42+00:00",
+  "finished_at": "2026-10-13T11:20:54+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.06s",
+              "error": null,
+              "secs": 6.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7128 chars, 48 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/all (25 products)",
+              "error": null,
+              "secs": 6.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/all ('Teas')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "25",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 80 candidates \u2192 /products/tea-bags-tea-assortment",
+              "error": null,
+              "secs": 6.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "https://www.vahdam.com/products/tea-bags-tea-assortment ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/tea-bags-tea-assortment",
+                  "actual": "/products/tea-bags-tea-assortment",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Assorted Selection Tea Sampler, 15 Variants', selected variant 14659826352171 at \u20b910.99",
+              "error": null,
+              "secs": 0.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/tea-bags-tea-assortment",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/tea-bags-tea-assortment.js with variants",
+                  "actual": "'Assorted Selection Tea Sampler, 15 Variants', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Assorted Selection Tea Sampler, 15 Variants",
+                  "actual": "'Assorted Selection Tea Sampler, 15 Variants' (h1, 45px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b910.99",
+                  "actual": "\u20b910.99",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 160x194)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Assorted Selection Tea Sampler, 15 Variants",
+                  "actual": "'Assorted Selection Tea Sampler, 15 Variants' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Assorted Selection Tea Sampler, 15 Variants",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "10.99",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.75,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1116674798.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1116674798.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1116674798.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'APP_ID' has already been declared",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'postMessage' on 'Window': Response object could not be cloned.",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1776841493.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/tea-bags-tea-assortment"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1776841493.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/tea-bags-tea-assortment"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1776841493.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/tea-bags-tea-assortment"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=881180147.1791890278&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%20F",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=881180147.1791890278&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%20F",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890277735&cv=11&fst=1791890277735&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=881180147.1791890278&gtm=45be6a91v9100929506za208zb9112805515zd9112805515xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9112805515zd9112805515xf1&_p=1791890275492&g",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91h1v9112805515za200zd9112805515xf1&_p=1791890275492&gcs=G111&gcd=13t3t3t3t5",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=881180147.1791890278&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=881180147.1791890278&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890279590&cv=11&fst=1791890279590&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890279610&cv=11&fst=1791890279610&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91h1v9112805515z8810391212za200zd9112805515xf1&_p=1791890275492&gcs=G111&gcd",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890281306&cv=11&fst=1791890281306&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/651afd6d4f8940488fe409c04f5ab1f3/651afd6d4f8940488fe409c04f5ab1f3.HD-720p-1.6Mbps-55640110.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/309c211ae76e4d5086c5e432f8aa21bb/309c211ae76e4d5086c5e432f8aa21bb.HD-1080p-2.5Mbps-47570875.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/605fbc4e5fae40e6954172d29c64be7c/605fbc4e5fae40e6954172d29c64be7c.HD-1080p-4.8Mbps-47026714.mp4?v=0"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.29,
+              "dcl": 1.64,
+              "load": 5.16,
+              "lcp": 0.79
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.18,
+              "dcl": 1.01,
+              "load": 3.96,
+              "lcp": 1.85
+            },
+            {
+              "url": "/products/tea-bags-tea-assortment",
+              "ttfb": 0.14,
+              "dcl": 0.84,
+              "load": 3.76,
+              "lcp": 0.52
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.29s",
+              "error": null,
+              "secs": 5.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7128 chars, 48 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.29s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.29s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Invalid value used as weak map key",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Invalid value used as weak map key",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "16%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "16%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.56s, CLS 0.014",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.56s, CLS 0.014",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "warn",
+              "detail": null,
+              "error": "scripts the page loads: expected < 4 MB of JavaScript and < 25 third-party script hosts, got 195 scripts, at least 1.4 MB of JavaScript, 27 third-party script hosts: static.klaviyo.com (10), www.googletagmanager.com (8), cdn-widgetsrepository.yotpo.com\u2026",
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "195 scripts, at least 1.4 MB of JavaScript, 27 third-party script hosts: static.klaviyo.com (10), www.googletagmanager.com (8), cdn-widgetsrepository.yotpo.com\u2026",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.83,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account Y2FNHb. Skipping account NPYp6V.",
+              "url": "https://static.klaviyo.com/onsite/js/NPYp6V/klaviyo.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm408783236.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm408783236.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm408783236.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zd9112805515xf1&_p=1791890296565&gcs=G111&gcd=13t3t3t3t5l1",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9112805515zd9112805515xf1&_p=1791890296565&g",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1081321198.1791890298&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%20",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1081321198.1791890298&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%20",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890298491&cv=11&fst=1791890298491&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1081321198.1791890298&gtm=45be6a91v9100929506za208zb9112805515zd9112805515xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=1081321198.1791890298&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890300141&cv=11&fst=1791890300141&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=1081321198.1791890298&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890300159&cv=11&fst=1791890300159&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890301657&cv=11&fst=1791890301657&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.22,
+              "dcl": 0.97,
+              "load": 3.88,
+              "lcp": 0.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/black-teas",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.37s",
+              "error": null,
+              "secs": 5.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Loose Leaf Black Tea Collection \u2013 Premium Blends | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6256 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/chai-teas",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.91s",
+              "error": null,
+              "secs": 5.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Authentic Masala Chai Collection \u2013 Loose Leaf & Tea Bags | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6017 chars, 41 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/herbal-teas",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.17s",
+              "error": null,
+              "secs": 5.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Herbal Teas Collection \u2013 Caffeine Free Loose & Tea Bags | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5947 chars, 41 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/best-sellers",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.28s",
+              "error": null,
+              "secs": 4.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Sellers Collection \u2013 Top Rated Black Teas | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6107 chars, 41 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 20.18,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/collections/black-teas"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/collections/black-teas"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://www.vahdam.com/collections/black-teas"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'postMessage' on 'Window': Response object could not be cloned.",
+              "url": "https://www.vahdam.com/collections/black-teas"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/338a24cf4c5342b5a8707f788e29b550/338a24cf4c5342b5a8707f788e29b550.HD-1080p-7.2Mbps-55640609.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/309c211ae76e4d5086c5e432f8aa21bb/309c211ae76e4d5086c5e432f8aa21bb.HD-1080p-2.5Mbps-47570875.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/651afd6d4f8940488fe409c04f5ab1f3/651afd6d4f8940488fe409c04f5ab1f3.HD-720p-1.6Mbps-55640110.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/605fbc4e5fae40e6954172d29c64be7c/605fbc4e5fae40e6954172d29c64be7c.HD-1080p-4.8Mbps-47026714.mp4?v=0",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zd9112805515xf1&_p=1791890304553&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://events.attentivemobile.com/shp-pixel",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6ac0h2v9193578654za200zb9112805515zd9112805515xf1&_p=1791890304553",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=310670103.1791890307&gtm=45be6a91h1v9100929506za208zb9112805515zd9112805515xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=310670103.1791890307&dt=Loose%20Leaf%20Black%20Tea%20Collection%20%E2%80%93%20Premium%20Bl",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&auid=310670103.1791890307&dt=Loose%20Leaf%20Black%20Tea%20Collection%20%E2%80%93%20Premium%20Bl",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890306566&cv=11&fst=1791890306566&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=310670103.1791890307&dt=Loose%20Leaf%20Black%20Tea%20Collection%20%E2%80%93%20Premium%",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=310670103.1791890307&dt=Loose%20Leaf%20Black%20Tea%20Collection%20%E2%80%93%20Premium",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890307836&cv=11&fst=1791890307836&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac0h2v894449750z8"
+          ],
+          "loads": [
+            {
+              "url": "/collections/black-teas",
+              "ttfb": 0.25,
+              "dcl": 0.92,
+              "load": 3.98,
+              "lcp": 2.65
+            },
+            {
+              "url": "/collections/chai-teas",
+              "ttfb": 0.21,
+              "dcl": 0.74,
+              "load": 3.76,
+              "lcp": 2.26
+            },
+            {
+              "url": "/collections/herbal-teas",
+              "ttfb": 0.24,
+              "dcl": 0.96,
+              "load": 3.71,
+              "lcp": 1.84
+            },
+            {
+              "url": "/collections/best-sellers",
+              "ttfb": 0.29,
+              "dcl": 0.92,
+              "load": 3.24,
+              "lcp": 1.99
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.69s",
+              "error": null,
+              "secs": 5.81,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7128 chars, 48 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.11,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1494200028.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1494200028.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1494200028.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91h1v9193578654za200zd9193578654xf1&_p=1791890324641&gcs=G111&gc",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=334077026.1791890326&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%20",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&auid=334077026.1791890326&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%20",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890326202&cv=11&fst=1791890326202&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=334077026.1791890326&gtm=45be6a91v9100929506za208zb9193578654zd9193578654xecxf1&fmt=8",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zb9193578654zd9193578654xf1&_p=1791890324641&gcs=G111&gcd=",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=334077026.1791890326&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890328338&cv=11&fst=1791890328338&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=334077026.1791890326&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890328381&cv=11&fst=1791890328381&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890328983&cv=11&fst=1791890328983&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.2,
+              "dcl": 1.46,
+              "load": 3.92,
+              "lcp": 0.62
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/new-arrivals",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.42s",
+              "error": null,
+              "secs": 6.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "New Arrivals \u2013 Herbal Tea Collection | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3267 chars, 19 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'New Arrivals \u2013 Herbal Tea Collection | VAHDAM\u00ae', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/new-arrivals",
+                  "actual": "/collections/new-arrivals",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /pages/store-locator-1",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.04s",
+              "error": null,
+              "secs": 6.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Store Locator",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1602 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Store Locator', heading 'Store Locator'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/store-locator-1",
+                  "actual": "/pages/store-locator-1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/team",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.03s",
+              "error": null,
+              "secs": 5.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Meet our Team - Vahdam Teas",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2456 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Meet our Team - Vahdam Teas', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/team",
+                  "actual": "/pages/team",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/annual-impact-report",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.1s",
+              "error": null,
+              "secs": 3.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Annual Impact Report 2025",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "565 chars, 13 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Annual Impact Report 2025', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/annual-impact-report",
+                  "actual": "/pages/annual-impact-report",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.99,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/collections/new-arrivals"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/collections/new-arrivals"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://www.vahdam.com/collections/new-arrivals"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'postMessage' on 'Window': Response object could not be cloned.",
+              "url": "https://www.vahdam.com/collections/new-arrivals"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account Y2FNHb. Skipping account NPYp6V.",
+              "url": "https://static.klaviyo.com/onsite/js/NPYp6V/klaviyo.js"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/store-locator-1"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm426329303.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/store-locator-1"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm426329303.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/store-locator-1"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm426329303.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/store-locator-1"
+            },
+            {
+              "type": "warning",
+              "text": "Google Maps JavaScript API has been loaded directly without loading=async. This can result in suboptimal performance. For best-practice loading patterns please see https://goo.gle/js-api-loading",
+              "url": "https://maps.googleapis.com/maps/api/js?key=AIzaSyAdI0Cf9qfIh1tadbZaVhkuoOFw-eF3bs4&libraries=marker,places"
+            },
+            {
+              "type": "warning",
+              "text": "As of March 1st, 2025, google.maps.places.AutocompleteService is not available to new customers. Please use google.maps.places.AutocompleteSuggestion instead. At this time, google.maps.places.AutocompleteService is not s",
+              "url": "https://maps.googleapis.com/maps/api/js?key=AIzaSyAdI0Cf9qfIh1tadbZaVhkuoOFw-eF3bs4&libraries=marker,places"
+            },
+            {
+              "type": "warning",
+              "text": "As of March 1st, 2025, google.maps.places.PlacesService is not available to new customers. Please use google.maps.places.Place instead. At this time, google.maps.places.PlacesService is not scheduled to be discontinued, ",
+              "url": "https://maps.googleapis.com/maps/api/js?key=AIzaSyAdI0Cf9qfIh1tadbZaVhkuoOFw-eF3bs4&libraries=marker,places"
+            },
+            {
+              "type": "warning",
+              "text": "As of February 21st, 2024, google.maps.Marker is deprecated. Please use google.maps.marker.AdvancedMarkerElement instead. At this time, google.maps.Marker is not scheduled to be discontinued, but google.maps.marker.Advan",
+              "url": "https://maps.googleapis.com/maps/api/js?key=AIzaSyAdI0Cf9qfIh1tadbZaVhkuoOFw-eF3bs4&libraries=marker,places"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1312746984.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/team"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1312746984.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/team"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1312746984.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/team"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1179912281.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/annual-impact-report"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1179912281.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/annual-impact-report"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1179912281.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/annual-impact-report"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/309c211ae76e4d5086c5e432f8aa21bb/309c211ae76e4d5086c5e432f8aa21bb.HD-1080p-2.5Mbps-47570875.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/651afd6d4f8940488fe409c04f5ab1f3/651afd6d4f8940488fe409c04f5ab1f3.HD-720p-1.6Mbps-55640110.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/605fbc4e5fae40e6954172d29c64be7c/605fbc4e5fae40e6954172d29c64be7c.HD-1080p-4.8Mbps-47026714.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/338a24cf4c5342b5a8707f788e29b550/338a24cf4c5342b5a8707f788e29b550.HD-1080p-7.2Mbps-55640609.mp4?v=0",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=266804111.1791890332&dt=New%20Arrivals%20%E2%80%93%20Herbal%20Tea%20Collection%20%7C%20VAH",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=266804111.1791890332&gtm=45be6ac0h2v9100929506za208zd9100929506xecxf1&fmt=8",
+            "POST https://events.attentivemobile.com/shp-pixel",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9100929506zd9100929506xf1&_p=1791890330894&g",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zb9100929506zd9100929506xf1&_p=1791890330894&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=266804111.1791890332&dt=New%20Arrivals%20%E2%80%93%20Herbal%20Tea%20Collection%20%7C%20VAH",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890332661&cv=11&fst=1791890332661&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=266804111.1791890332&dt=New%20Arrivals%20%E2%80%93%20Herbal%20Tea%20Collection%20%7C%2",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890335273&cv=11&fst=1791890335273&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91h1v894449750z8",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=266804111.1791890332&dt=New%20Arrivals%20%E2%80%93%20Herbal%20Tea%20Collection%20%7C%2"
+          ],
+          "loads": [
+            {
+              "url": "/collections/new-arrivals",
+              "ttfb": 0.23,
+              "dcl": 0.95,
+              "load": 4.89,
+              "lcp": 2.59
+            },
+            {
+              "url": "/pages/store-locator-1",
+              "ttfb": 0.18,
+              "dcl": 0.86,
+              "load": 3.97,
+              "lcp": 0.85
+            },
+            {
+              "url": "/pages/team",
+              "ttfb": 0.23,
+              "dcl": 0.81,
+              "load": 3.91,
+              "lcp": 1.53
+            },
+            {
+              "url": "/pages/annual-impact-report",
+              "ttfb": 0.22,
+              "dcl": 0.79,
+              "load": 2.9,
+              "lcp": 1.01
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.all",
+      "suite": "catalog",
+      "title": "Collection 'All Products' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.2s",
+              "error": null,
+              "secs": 4.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Tea Collection \u2013 Loose Leaf Black Teas & Chai | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6364 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "25 products listed",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "25",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 3: Invalid value used as weak map key",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "3: Invalid value used as weak map key",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "2%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "2%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.75s, CLS 0.105",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.75s, CLS 0.105",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "warn",
+              "detail": null,
+              "error": "scripts the page loads: expected < 4 MB of JavaScript and < 25 third-party script hosts, got 199 scripts, at least 1.5 MB of JavaScript, 26 third-party script hosts: static.klaviyo.com (20), www.googletagmanager.com (8), static-tracking.klaviyo.com (4)\u2026",
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "199 scripts, at least 1.5 MB of JavaScript, 26 third-party script hosts: static.klaviyo.com (20), www.googletagmanager.com (8), static-tracking.klaviyo.com (4)\u2026",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.1,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'postMessage' on 'Window': Response object could not be cloned.",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/api/collect",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/309c211ae76e4d5086c5e432f8aa21bb/309c211ae76e4d5086c5e432f8aa21bb.HD-1080p-2.5Mbps-47570875.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/605fbc4e5fae40e6954172d29c64be7c/605fbc4e5fae40e6954172d29c64be7c.HD-1080p-4.8Mbps-47026714.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/338a24cf4c5342b5a8707f788e29b550/338a24cf4c5342b5a8707f788e29b550.HD-1080p-7.2Mbps-55640609.mp4?v=0",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/651afd6d4f8940488fe409c04f5ab1f3/651afd6d4f8940488fe409c04f5ab1f3.HD-720p-1.6Mbps-55640110.mp4?v=0",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zd9112805515xf1&_p=1791890352424&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://events.attentivemobile.com/shp-pixel",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9112805515zd9112805515xf1&_p=1791890352424&g",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1185659247.1791890354&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Teas%2",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1185659247.1791890354&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Teas%2",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890354063&cv=11&fst=1791890354063&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?_gsid=HoJ6TJF8pwQqldM37_qLOuKtu1Q938X4Aw&auid=1185659247.1791890354&gtm=45be6a91v9100929506za208zb9112805515z",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1185659247.1791890354&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=1185659247.1791890354&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20T",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890355468&cv=11&fst=1791890355468&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.25,
+              "dcl": 0.98,
+              "load": 3.29,
+              "lcp": 1.75
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.all",
+      "suite": "catalog",
+      "title": "Collection 'All Products' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.14s",
+              "error": null,
+              "secs": 6.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Tea Collection \u2013 Loose Leaf Black Teas & Chai | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6364 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "25 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.3s",
+              "error": null,
+              "secs": 4.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Tea Collection \u2013 Loose Leaf Black Teas & Chai | VAHDAM\u00ae \u2013 Page 2",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6339 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 3 more products (page-2 link found in the page head)",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "3",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.73,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'postMessage' on 'Window': Response object could not be cloned.",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            },
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://www.vahdam.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/651afd6d4f8940488fe409c04f5ab1f3/651afd6d4f8940488fe409c04f5ab1f3.HD-720p-1.6Mbps-55640110.mp4?v=0",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/309c211ae76e4d5086c5e432f8aa21bb/309c211ae76e4d5086c5e432f8aa21bb.HD-1080p-2.5Mbps-47570875.mp4?v=0",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/605fbc4e5fae40e6954172d29c64be7c/605fbc4e5fae40e6954172d29c64be7c.HD-1080p-4.8Mbps-47026714.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/338a24cf4c5342b5a8707f788e29b550/338a24cf4c5342b5a8707f788e29b550.HD-1080p-7.2Mbps-55640609.mp4?v=0",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6ac0h2v9193578654za200zb9112805515zd9112805515xf1&_p=1791890358706",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zd9112805515xf1&_p=1791890358706&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=613055524.1791890361&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Teas%2",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=613055524.1791890361&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Teas%2",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890360846&cv=11&fst=1791890360846&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=613055524.1791890361&gtm=45be6a91v9100929506za208zb9112805515zd9112805515xecxf1&fmt=8",
+            "POST https://events.attentivemobile.com/shp-pixel",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=613055524.1791890361&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Te",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=613055524.1791890361&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Te",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890363645&cv=11&fst=1791890363645&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.26,
+              "dcl": 0.84,
+              "load": 5.31,
+              "lcp": 2.42
+            },
+            {
+              "url": "/collections/all?page=2",
+              "ttfb": 0.18,
+              "dcl": 1.08,
+              "load": 3.45,
+              "lcp": 2.16
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.all",
+      "suite": "catalog",
+      "title": "Filtering collection 'All Products' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.22s",
+              "error": null,
+              "secs": 5.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Tea Collection \u2013 Loose Leaf Black Teas & Chai | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6364 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_not_judged",
+              "status": "info",
+              "detail": "this collection offers no filters (no storefront filter options on the page)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.16,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'postMessage' on 'Window': Response object could not be cloned.",
+              "url": "https://www.vahdam.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/605fbc4e5fae40e6954172d29c64be7c/605fbc4e5fae40e6954172d29c64be7c.HD-1080p-4.8Mbps-47026714.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/309c211ae76e4d5086c5e432f8aa21bb/309c211ae76e4d5086c5e432f8aa21bb.HD-1080p-2.5Mbps-47570875.mp4?v=0",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/651afd6d4f8940488fe409c04f5ab1f3/651afd6d4f8940488fe409c04f5ab1f3.HD-720p-1.6Mbps-55640110.mp4?v=0",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "GET https://www.vahdam.com/cdn/shop/videos/c/vp/338a24cf4c5342b5a8707f788e29b550/338a24cf4c5342b5a8707f788e29b550.HD-1080p-7.2Mbps-55640609.mp4?v=0",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://events.attentivemobile.com/shp-pixel",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=132759941.1791890373&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Teas%20",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=132759941.1791890373&gtm=45be6a91v9100929506za208zd9100929506xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=132759941.1791890373&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Teas%20",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890373445&cv=11&fst=1791890373445&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9100929506zd9100929506xf1&_p=1791890371463&g",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zb9100929506zd9100929506xf1&_p=1791890371463&gcs=G111&gcd=",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=132759941.1791890373&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Te",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890375759&cv=11&fst=1791890375759&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=132759941.1791890373&dt=All%20Tea%20Collection%20%E2%80%93%20Loose%20Leaf%20Black%20Te"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.24,
+              "dcl": 0.85,
+              "load": 4.59,
+              "lcp": 2.18
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.2026-castleton-classic-darjeeling-second",
+      "suite": "product",
+      "title": "PDP '2026 Castleton Classic Darjeeling Second Flush Bla'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.59s",
+              "error": null,
+              "secs": 7.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Castleton Classic Darjeeling Second Flush Black Tea 2026 | Exquisite Flavor | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4506 chars, 42 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/2026-castleton-classic-darjeeling-second-flush-black-tea",
+                  "actual": "/products/2026-castleton-classic-darjeeling-second-flush-black-tea",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'2026 Castleton Classic Darjeeling Second Flush Black Tea', selected variant 44562467094571 at \u20b924.99",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/2026-castleton-classic-darjeeling-second-flush-black-tea",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/2026-castleton-classic-darjeeling-second-flush-black-tea.js with variants",
+                  "actual": "'2026 Castleton Classic Darjeeling Second Flush Black Tea', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "2026 Castleton Classic Darjeeling Second Flush Black Tea",
+                  "actual": "'2026 Castleton Classic Darjeeling Second Flush Black Tea' (h1, 45px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b924.99",
+                  "actual": "\u20b924.99",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 160x194)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "2026 Castleton Classic Darjeeling Second Flush Black Tea",
+                  "actual": "'2026 Castleton Classic Darjeeling Second Flush Black Tea' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "2026 Castleton Classic Darjeeling Second Flush Black Tea",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "24.99",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 44562467094571 (Default Title) selected, in stock",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-8031399739435-template--26284941443115__main (variant 44562467094571, button '')",
+              "error": null,
+              "secs": 0.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Invalid value used as weak map key",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Invalid value used as weak map key",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "16%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "16%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.74s, CLS 0.017",
+              "error": null,
+              "secs": 0.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.74s, CLS 0.017",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "warn",
+              "detail": null,
+              "error": "scripts the page loads: expected < 4 MB of JavaScript and < 25 third-party script hosts, got 193 scripts, at least 1.4 MB of JavaScript, 27 third-party script hosts: static.klaviyo.com (20), cdn-widgetsrepository.yotpo.com (11), www.googletagmanager.co\u2026",
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "193 scripts, at least 1.4 MB of JavaScript, 27 third-party script hosts: static.klaviyo.com (20), cdn-widgetsrepository.yotpo.com (11), www.googletagmanager.co\u2026",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.37,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea?variant=44562467094571"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea?variant=44562467094571"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea?variant=44562467094571"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm459590307.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea?variant=44562467094571"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm459590307.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea?variant=44562467094571"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm459590307.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea?variant=44562467094571"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=507924943.1791890381&dt=Buy%20Castleton%20Classic%20Darjeeling%20Second%20Flush%20Black%20",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=507924943.1791890381&gtm=45be6a91v9100929506za208zd9100929506xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=507924943.1791890381&dt=Buy%20Castleton%20Classic%20Darjeeling%20Second%20Flush%20Black%20",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890381309&cv=11&fst=1791890381309&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9100929506zd9100929506xf1&_p=1791890379866&g",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zb9100929506zd9100929506xf1&_p=1791890379866&gcs=G111&gcd=",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=507924943.1791890381&dt=Buy%20Castleton%20Classic%20Darjeeling%20Second%20Flush%20Bla",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=507924943.1791890381&dt=Buy%20Castleton%20Classic%20Darjeeling%20Second%20Flush%20Bla",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890385412&cv=11&fst=1791890385412&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890386309&cv=11&fst=1791890386309&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa"
+          ],
+          "loads": [
+            {
+              "url": "/products/2026-castleton-classic-darjeeling-second-flush-black-tea?variant=44562467094571",
+              "ttfb": 0.26,
+              "dcl": 1.26,
+              "load": 6.3,
+              "lcp": 0.74
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.castleton",
+      "suite": "search",
+      "title": "Search for 'castleton' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.46s",
+              "error": null,
+              "secs": 5.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7128 chars, 48 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 3 results, 2 mention 'castleton'",
+              "error": null,
+              "secs": 4.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "3",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'castleton'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "2 of 3",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.13,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 503 ()",
+              "url": "https://api-cdn.yotpo.com/v3/storefront/store/nULz3c4cbjU7NEqLKreeoyIyIP4L5pnrZ53k1952/product/7882327130155/ratings"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1214473356.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1214473356.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1214473356.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'APP_ID' has already been declared",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Invalid keyframe value for property visibility: visibility",
+              "url": "https://www.vahdam.com/cdn/shop/t/595/assets/vendor.min.js?v=52426788336887041471776921857"
+            },
+            {
+              "type": "pageerror",
+              "text": "dataLayer is not a function",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://www.vahdam.com/pages/search?q=castleton"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'getAttribute')",
+              "url": "https://www.vahdam.com/pages/search?q=castleton"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'getComputedStyle' on 'Window': parameter 1 is not of type 'Element'.",
+              "url": "https://www.vahdam.com/pages/search?q=castleton"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'classList')",
+              "url": "https://www.vahdam.com/pages/search?q=castleton"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zd9112805515xf1&_p=1791890389101&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9112805515zd9112805515xf1&_p=1791890389101&g",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=2110002948.1791890391&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%2",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=2110002948.1791890391&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%2",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890391105&cv=11&fst=1791890391105&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=2110002948.1791890391&gtm=45be6ac0h2v9100929506za208zb9112805515zd9112805515xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=2110002948.1791890391&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890392751&cv=11&fst=1791890392751&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=2110002948.1791890391&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890392771&cv=11&fst=1791890392771&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890393724&cv=11&fst=1791890393724&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890395338&cv=11&fst=1791890395338&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890395371&cv=11&fst=1791890395371&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a91",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890395452&cv=11&fst=1791890395452&fmt=8&bg=ffffff&guid=ON&async=1&en=search&gtm=45be6ac0h2",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890395598&cv=11&fst=1791890395598&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.1,
+              "load": 4.08,
+              "lcp": 0.52
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.25s",
+              "error": null,
+              "secs": 4.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\"",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "502 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "says 'No results could be found. Search Learn Our Story'",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "message 'No results could be found. Search Learn Our Story'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.83,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm657188478.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm657188478.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm657188478.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/api/collect",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1992466737.1791890400&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22&tid=AW-",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=1992466737.1791890400&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22&tid=AW-",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890400140&cv=11&fst=1791890400140&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1992466737.1791890400&gtm=45be6a91v9100929506za208zd9100929506xecxf1&fmt=8",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9100929506zd9100929506xf1&_p=1791890398887&g",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6ac0h2v9112805515za200zb9100929506zd9100929506xf1&_p=1791890398887&gcs=G111&gc",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=1992466737.1791890400&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22&en",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890402256&cv=11&fst=1791890402256&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=1992466737.1791890400&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22&t"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.25,
+              "dcl": 1.05,
+              "load": 3.52,
+              "lcp": 0.92
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'castleton' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.65s",
+              "error": null,
+              "secs": 7.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7128 chars, 48 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "2 product suggestion(s) while typing 'castleton', e.g. '2026 Castleton Classic Darjeeling Second Flush Black Tea $24'",
+              "error": null,
+              "secs": 4.84,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.18,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm569493005.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm569493005.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm569493005.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Identifier 'APP_ID' has already been declared",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Invalid keyframe value for property visibility: visibility",
+              "url": "https://www.vahdam.com/cdn/shop/t/595/assets/vendor.min.js?v=52426788336887041471776921857"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zd9112805515xf1&_p=1791890404217&gcs=G111&gcd=13t3t3t3t5l1",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1608833349.1791890406&gtm=45be6a91h1v9100929506za208zb9112805515zd9112805515xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1608833349.1791890406&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%20",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9112805515zd9112805515xf1&_p=1791890404217&g",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=1608833349.1791890406&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%20",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890406674&cv=11&fst=1791890406674&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=1608833349.1791890406&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890409253&cv=11&fst=1791890409253&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=1608833349.1791890406&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890409294&cv=11&fst=1791890409294&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890411381&cv=11&fst=1791890411381&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.2,
+              "load": 5.71,
+              "lcp": 0.73
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.46s",
+              "error": null,
+              "secs": 6.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7128 chars, 48 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "49: 'VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Feel alive every day with VAHDAM\u00ae USA\u2019s premium herbal teas & coffee. ",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "134: 'Feel alive every day with VAHDAM\u00ae USA\u2019s premium herbal teas '",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.vahdam.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.vahdam.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.vahdam.com/cdn/shop/files/logo_cc2402fc-d613-4c1e-9f20-6cb6d4e4d189.png?v=1616074957&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.93,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm907815737.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm907815737.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm907815737.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zd9193578654xf1&_p=1791890416355&gcs=G111&gcd=",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1351298795.1791890418&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1351298795.1791890418&gtm=45be6a91v9100929506za208zb9193578654zd9193578654xecxf1&fmt=8",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zb9193578654zd9193578654xf1&_p=1791890416355&gcs=G111&gcd=",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=1351298795.1791890418&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20%7C%2",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890418240&cv=11&fst=1791890418240&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=1351298795.1791890418&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=1351298795.1791890418&dt=VAHDAM%C2%AE%20USA%20%7C%20Wellness%20Teas%20%26%20Coffee%20",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890420864&cv=11&fst=1791890420864&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890420842&cv=11&fst=1791890420842&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.14,
+              "load": 5.03,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.26s",
+              "error": null,
+              "secs": 5.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Castleton Classic Darjeeling Second Flush Black Tea 2026 | Exquisite Flavor | VAHDAM\u00ae",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4506 chars, 42 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 89: 'Buy Castleton Classic Darjeeling Second Flush Black Tea 2026'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "89: 'Buy Castleton Classic Darjeeling Second Flush Black Tea 2026'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Buy Castleton Classic Darjeeling Second Flush Black Tea 2026 for a pre",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "155: 'Buy Castleton Classic Darjeeling Second Flush Black Tea 2026'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "2026 Castleton Classic Darjeeling Second Flush Black Tea",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.vahdam.com/cdn/shop/files/Copy_of_castleton-half_11zon_d5872785-939e-486e-9018-feca5a2c94ca.jpg?v=1753778672&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.15,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm755160345.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm755160345.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm755160345.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/products/2026-castleton-classic-darjeeling-second-flush-black-tea"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zd9112805515xf1&_p=1791890422932&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=48560025.1791890424&dt=Buy%20Castleton%20Classic%20Darjeeling%20Second%20Flush%20Black%20T",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=48560025.1791890424&gtm=45be6a91v9100929506za208zb9112805515zd9112805515xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9112805515zd9112805515xf1&_p=1791890422932&g",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&auid=48560025.1791890424&dt=Buy%20Castleton%20Classic%20Darjeeling%20Second%20Flush%20Black%20T",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890424360&cv=11&fst=1791890424360&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=48560025.1791890424&dt=Buy%20Castleton%20Classic%20Darjeeling%20Second%20Flush%20Blac",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=48560025.1791890424&dt=Buy%20Castleton%20Classic%20Darjeeling%20Second%20Flush%20Blac",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890427099&cv=11&fst=1791890427099&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91h1v894449750z8"
+          ],
+          "loads": [
+            {
+              "url": "/products/2026-castleton-classic-darjeeling-second-flush-black-tea",
+              "ttfb": 0.24,
+              "dcl": 1.03,
+              "load": 4.2,
+              "lcp": 0.57
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 4.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.45,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "jQuery.Deferred exception: Cannot read properties of undefined (reading 'split') TypeError: Cannot read properties of undefined (reading 'split') at HTMLDocument.<anonymous> (https://www.vahdam.com/cdn/shop/t/595/assets/",
+              "url": "https://code.jquery.com/jquery-3.7.1.min.js"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zd9112805515xf1&_p=1791890429060&gcs=G111&gcd=13t3t3t3t5l1",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=1725933229.1791890430&dt=404%20Not%20Found&tid=AW-11071132222&en=manifest_nudge_displayed&",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890430341&cv=11&fst=1791890430341&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1725933229.1791890430&dt=404%20Not%20Found&tid=AW-11071132222&en=page_view&dl=https%3A%2F%",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1725933229.1791890430&gtm=45be6ac0h2v9100929506za208zb9112805515zd9112805515xecxf1&fmt=8",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zb9112805515zd9112805515xf1&_p=1791890429060&g",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "GET https://www.vahdam.com/products/bugradar-check-does-not-exist.js",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=1725933229.1791890430&dt=404%20Not%20Found&en=page_view&dl=https%3A%2F%2Fwww.vahdam.co"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.28,
+              "dcl": 1.08,
+              "load": 3.4,
+              "lcp": 0.81
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /pages/return",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.04s",
+              "error": null,
+              "secs": 4.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Returns & Exchanges",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3160 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Returns & Exchanges', heading 'Returns & Exchanges'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/return",
+                  "actual": "/pages/return",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "3974 chars of policy text",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "3974 chars under 'Returns & Exchanges'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /pages/shipping",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.97s",
+              "error": null,
+              "secs": 4.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping & Delivery",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2368 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping & Delivery', heading 'Shipping & Delivery'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/shipping",
+                  "actual": "/pages/shipping",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "3223 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "3223 chars under 'Shipping & Delivery'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /pages/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.77s",
+              "error": null,
+              "secs": 4.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy Policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "22631 chars, 8 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy Policy', heading 'Privacy Policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/privacy-policy",
+                  "actual": "/pages/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "22830 chars of policy text",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "22830 chars under 'Privacy Policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /pages/terms-conditions",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.88s",
+              "error": null,
+              "secs": 3.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms & Conditions",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "12915 chars, 9 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms & Conditions', heading 'Terms & Conditions'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/terms-conditions",
+                  "actual": "/pages/terms-conditions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "13657 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "13657 chars under 'Terms & Conditions'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.81s",
+              "error": null,
+              "secs": 3.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2147 chars, 19 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.37,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://www.vahdam.com/cdn/shop/t/595/assets/custom.js.liquid?v=97252990283713356291779791283' because its MIME type ('application/x-liquid') is not executable, and strict MIME type checki",
+              "url": "https://www.vahdam.com/pages/return"
+            },
+            {
+              "type": "pageerror",
+              "text": "Invalid value used as weak map key",
+              "url": "https://www.vahdam.com/pages/return"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account NPYp6V. Skipping account Y2FNHb.",
+              "url": "https://static.klaviyo.com/onsite/js/Y2FNHb/klaviyo.js?company_id=Y2FNHb"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-73804863-1, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/return"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1714596120.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/return"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1714596120.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/return"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1714596120.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/return"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_NAME_NOT_RESOLVED",
+              "url": "https://event.getblue.io/js/blue-tag.min.js"
+            },
+            {
+              "type": "warning",
+              "text": "Already loaded for account Y2FNHb. Skipping account NPYp6V.",
+              "url": "https://static.klaviyo.com/onsite/js/NPYp6V/klaviyo.js"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1249816520.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/shipping"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1249816520.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/shipping"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1249816520.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/shipping"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1462235176.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/privacy-policy"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1462235176.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/privacy-policy"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1462235176.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/privacy-policy"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1188375850.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/terms-conditions"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1188375850.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/terms-conditions"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm1188375850.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/terms-conditions"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm560622253.set, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/contact"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm560622253.require, displayfeatures, undefined, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/contact"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [gtm560622253.send, pageview] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.vahdam.com/pages/contact"
+            }
+          ],
+          "failed_requests": [
+            "GET https://storage.googleapis.com/gsf-scripts/global-remarketing/vahdamindia.js",
+            "POST https://www.vahdam.com/api/collect",
+            "POST https://www.vahdam.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.vahdam.com/shopify_pay/accelerated_checkout",
+            "HEAD https://cdn.attn.tv/attentive/dtag.js",
+            "POST https://analytics.tiktok.com/api/v2/shopify_pixel",
+            "POST https://analytics-ipv6.tiktokw.us/ipv6/enrich_ipv6",
+            "POST https://www.merchant-center-analytics.goog/mc/collect?v=2&tid=MC-DK9TLXE2TM&gtm=45Pe6a91v9193578654za200zd9193578654xf1&_p=1791890433338&gcs=G111&gcd=",
+            "GET https://b.applovin.com/v1/gcm/match?google_error=2",
+            "POST https://ad.doubleclick.net/ccm/s/collect?auid=1317298561.1791890435&gtm=45be6a91v9100929506za208zb9193578654zd9193578654xecxf1&fmt=8",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1317298561.1791890435&dt=Returns%20%26%20Exchanges&tid=AW-11071132222&en=page_view&dl=http",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=1317298561.1791890435&dt=Returns%20%26%20Exchanges&tid=AW-11071132222&en=manifest_nudge_di",
+            "POST https://www.google.com/rmkt/collect/11071132222/?random=1791890434550&cv=11&fst=1791890434550&fmt=8&bg=ffffff&guid=ON&async=1&en=manifest_nudge_displa",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zb9193578654zd9193578654xf1&_p=1791890433338&gcs=G111&gcd=",
+            "HEAD https://www.vahdam.com/apps/pushowl/sdks/service-worker.js?v=2&subdomain=vahdamusa",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=1317298561.1791890435&dt=Returns%20%26%20Exchanges&en=page_view&dl=https%3A%2F%2Fwww.v",
+            "GET https://event.getblue.io/js/blue-tag.min.js",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890436607&cv=11&fst=1791890436607&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=1317298561.1791890435&dt=Returns%20%26%20Exchanges&tid=AW-789019325&dl=https%3A%2F%2F",
+            "POST https://vahdamteas-us.attn.tv/unrenderedCreative?v=2026.10.1&r=&id=382d88de2dd649e890b6416aff53468f&pv=2&l=https%3A%2F%2Fwww.vahdam.com%2Fpages%2Fship",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1317298561.1791890435&dt=Shipping%20%26%20Delivery&tid=AW-11071132222&en=page_view&dl=https",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=1317298561.1791890435&dt=Shipping%20%26%20Delivery&en=page_view&dl=https%3A%2F%2Fwww.v",
+            "POST https://www.google-analytics.com/g/collect?v=2&tid=G-J7GGRCM2L5&gtm=45je6a91v9112805515za200zd9112805515xf1&_p=1791890438167&gcs=G111&gcd=13t3t3t3t5l1",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=1317298561.1791890435&dt=Shipping%20%26%20Delivery&tid=AW-789019325&dl=https%3A%2F%2Fw",
+            "POST https://www.google.com/rmkt/collect/789019325/?random=1791890440701&cv=11&fst=1791890440701&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6a91v894449750z881"
+          ],
+          "loads": [
+            {
+              "url": "/pages/return",
+              "ttfb": 0.2,
+              "dcl": 0.79,
+              "load": 3.13,
+              "lcp": 0.72
+            },
+            {
+              "url": "/pages/shipping",
+              "ttfb": 0.23,
+              "dcl": 0.87,
+              "load": 2.76,
+              "lcp": 0.96
+            },
+            {
+              "url": "/pages/privacy-policy",
+              "ttfb": 0.2,
+              "dcl": 0.68,
+              "load": 3.44,
+              "lcp": 0.69
+            },
+            {
+              "url": "/pages/terms-conditions",
+              "ttfb": 0.21,
+              "dcl": 0.69,
+              "load": 2.58,
+              "lcp": 0.74
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.21,
+              "dcl": 0.71,
+              "load": 2.48,
+              "lcp": 0.75
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "VAHDAM\u00ae USA | Wellness Teas & Coffee | Feel Alive",
+    "theme": "Impact (store copy: One time purchase | 23 April 2026)",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 25,
+    "collections": 50,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "account page /account/ not opened: robots.txt disallows it",
+    "2 product(s) not listed in the browsed collections are tested last (e.g. foldable-advent-calendar-tea-gift-24-teas-1-69-oz-48g)"
+  ],
+  "perf": {
+    "pages": 21,
+    "median_load_secs": 3.71,
+    "slowest": {
+      "url": "/products/2026-castleton-classic-darjeeling-second-flush-black-tea?variant=44562467094571",
+      "load_secs": 6.3
+    },
+    "console_errors": 66,
+    "console_warnings": 9,
+    "failed_requests": 182
+  },
+  "counts": {
+    "pass": 16,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
