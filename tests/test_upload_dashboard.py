@@ -147,3 +147,26 @@ def test_a_sold_out_product_is_tagged(tmp_path):
     by = {r["key"]: r for r in up.to_payload(run, tmp_path, "", None)["results"]}
     assert by["smoke.home"]["status"] == "passed" and by["smoke.home"]["tags"] == ["sold out"] and "sold out" in by["smoke.home"]["reason"]
     assert "tags" not in by["cart.add"]
+
+
+def test_a_failed_check_carries_the_page_it_stopped_on(tmp_path):
+    """The dashboard's 'Open this page' link: always the store's own address, never a private or made-up page."""
+    base = "https://shop.example"
+    case = lambda **a: {"check": "product_page", "attempts": [{"steps": [], "loads": [], **a}]}          # noqa: E731
+    # the page the last try ended on
+    assert up.failing_page(case(loads=[{"url": "/"}, {"url": "/collections/all"}]), base) == ("https://shop.example/collections/all", None)
+    # a link check names the broken link in the step that warned
+    steps = [{"name": "footer: opens /pages/about", "status": "pass"}, {"name": "footer: opens /pages/gone", "status": "warn"}]
+    assert up.failing_page(case(steps=steps, loads=[{"url": "/pages/about"}]), base)[0] == "https://shop.example/pages/gone"
+    # a cart is private to each visitor: the product that was added is linked instead
+    assert up.failing_page(case(loads=[{"url": "/products/serum?variant=1"}, {"url": "/cart"}]), base) == ("https://shop.example/products/serum?variant=1", "cart")
+    assert up.failing_page(case(loads=[{"url": "/cart"}]), base) == (None, "cart")
+    # another site is never linked; the made-up 404 address has no page at all
+    assert up.failing_page(case(loads=[{"url": "https://evil.example/x"}]), base) == (None, None)
+    assert up.failing_page({"check": "not_found", "attempts": [{"loads": [{"url": "/"}]}]}, base) == (None, "test_address")
+    # and it is in the payload, with the steps of the last try, for failed checks only
+    run = json.loads(json.dumps(RUN))
+    run["cases"][1]["attempts"][-1].update(loads=[{"url": "/products/serum"}], steps=[{"name": "open", "status": "pass"}, {"name": "add", "status": "fail"}])
+    by = {r["key"]: r for r in up.to_payload(run, tmp_path, "", None)["results"]}
+    assert by["cart.add"]["page_url"] == "https://shop.example/products/serum" and [s["name"] for s in by["cart.add"]["steps"]] == ["open", "add"]
+    assert "page_url" not in by["smoke.home"]

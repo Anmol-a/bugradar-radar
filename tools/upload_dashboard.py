@@ -88,6 +88,53 @@ def evidence(case: dict, run_dir: Path) -> tuple[str, str, bytes] | None:
     return None
 
 
+# where a failed check stopped, for the "Open this page" link on the dashboard
+PRIVATE_PAGES = ("/cart", "/checkout", "/checkouts", "/account")     # different for every visitor: never linked
+NO_PAGE = {"not_found": "test_address"}         # checks that ask for a made-up address: there is no real page to open
+PATH_IN_STEP = re.compile(r"(?:^|\s)(/[A-Za-z0-9][^\s]{1,200})")
+
+
+def failing_page(case: dict, base_url: str) -> tuple[str | None, str | None]:
+    """(link, note) for a failed check. The link is always on the store's own address. Order: a page named by a step that
+    failed or warned (link checks name the broken link there), else the page the last try ended on. A cart / checkout /
+    account page is private to each visitor, so the last product page is linked instead (note 'cart')."""
+    if case.get("check") in NO_PAGE:
+        return None, NO_PAGE[case["check"]]
+    base = urlparse(base_url or "")
+    if not base.hostname:
+        return None, None
+    last = (case.get("attempts") or [{}])[-1]
+
+    def own(u: str | None) -> str | None:
+        if not u:
+            return None
+        q = urlparse(u if "://" in u else f"{base.scheme}://{base.netloc}{u if u.startswith('/') else '/' + u}")
+        if q.scheme not in ("http", "https") or (q.hostname or "").removeprefix("www.") != base.hostname.removeprefix("www."):
+            return None
+        return f"{q.scheme}://{q.netloc}{q.path or '/'}{('?' + q.query) if q.query and len(q.query) < 120 else ''}"[:400]
+
+    private = lambda u: urlparse(u).path.rstrip("/").startswith(PRIVATE_PAGES)       # noqa: E731
+    named = [m.group(1) for st in last.get("steps") or [] if st.get("status") in ("fail", "warn")
+             for m in [PATH_IN_STEP.search(str(st.get("name") or ""))] if m]
+    loads = [l.get("url") for l in last.get("loads") or [] if l.get("url")]
+    for cand in [*named, *reversed(loads)]:
+        u = own(cand)
+        if not u:
+            continue
+        if private(u):
+            product = next((own(x) for x in reversed(loads) if "/products/" in str(x)), None)
+            return (product, "cart") if product else (None, "cart")
+        return u, None
+    return None, None
+
+
+def steps_of(case: dict) -> list[dict] | None:
+    """The steps of the last try, in order, for the 'what Radar did' line (names only; long lists are cut)."""
+    steps = [{"name": str(st.get("name") or "")[:70], "status": st.get("status")} for st in ((case.get("attempts") or [{}])[-1].get("steps") or [])
+             if st.get("name") and st.get("status") in ("pass", "warn", "fail")]
+    return steps[-8:] or None
+
+
 def reason_of(case: dict) -> str | None:
     """One plain sentence on why a check did not pass."""
     tri = case.get("triage") or {}
@@ -129,6 +176,9 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None) -> dict
             # the product page is fine, the product just is not in stock: a tag, not a failure and not a warning
             item["tags"] = ["sold out"]
             item["reason"] = "This product is sold out, so the buy steps were not tested."
+        if status == "failed":
+            item["page_url"], item["page_note"] = failing_page(c, run.get("base_url") or "")
+            item["steps"] = steps_of(c)
         if status == "failed" and shots < MAX_SHOTS_PER_RUN:
             shot = evidence(c, run_dir)
             if shot:
