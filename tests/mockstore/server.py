@@ -316,6 +316,12 @@ Modes (to prove Radar catches and heals what it should):
                    and empties it on addresses with filter.* -> 'not judged: filter app Boost' (info), not a warning
   contents_cards   every product card's link is display:contents around image + name (valliyan.com, Baseline theme):
                    the <a> has no box of its own -> collection + journey PASS (was 'products listed: 0', 'N not visible')
+  zero_box_cards   valliyan.com re-test (cycle 34 fix still failed): the card's display:contents link wraps a block whose
+                   image and name FLOAT, so that block has zero height too -> collection + journey PASS (v0.19 cycle 34:
+                   'products listed: 0', '15 links: 15 not visible')
+  offsite_hang     nonasties.in phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
+                   that never finishes loading for the phone browser -> smoke.more_links PASSES, naming the other site
+                   (v0.19: 'page did not load ... nor within 60 s' -> links that fail to open, confirmed_fail)
   landing_collection  /collections/home-decor (the menu's first collection) is a landing page: hero, hidden mega-menu
                    product links, a 'Learn more' tile to /collections/kitchen (quboworld.com 'Smart Entrance') -> the
                    collection test WARNS 'landing page', the journey goes on to the sub-collection and PASSES
@@ -392,6 +398,7 @@ VARIANT_MODES = ("healthy", "variant_switch_broken", "variant_sold_out", "varian
 PACK_SIZES = (("S", "S / 38"), ("M", "M / 40"))
 PACK_VARIANTS = [{"id": 210 + 2 * i + j, "available": True, "price": "1299.00", "option1": f"{a[1]} / {b[1]}",
                   "title": f"{a[1]} / {b[1]}"} for i, a in enumerate(PACK_SIZES) for j, b in enumerate(PACK_SIZES)]
+OFFSITE_HANG_SECS = 7.0   # offsite_hang: the other site answers after this long (> 2x the tests' 2 s timeout)
 SLOW_PAGE_SECS = 3.0      # slow_page: /pages/about answers after this long (tests set a 2 s navigation timeout)
 SOLD_OUT_SIZE = {"id": 203, "available": False, "price": "1499.00", "option1": "Extra Large", "title": "Extra Large"}
 FACET_MODES = ("facets", "facets_sort", "facets_sort_allowed", "filter_broken",     # storefront filters (journey 25)
@@ -812,6 +819,16 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                 f'<div class="product-item" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
                 f'<div class="product-item__image" style="height:200px;background:#eee">{m.group(2)}</div>'
                 f'<div class="product-item__title">{m.group(3)}</div></div></a>'), body)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "offsite_hang":
+            body = body.replace('<div class="footer-menu">', '<div class="footer-menu"><a href="/map">Assagao, Goa</a> '
+                                '<a href="/panjim">Panjim, Goa</a> ', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "zero_box_cards":
+            # valliyan.com re-test: display:contents link > a wrapper whose children float (the wrapper's height is 0)
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
+                f'<a class="card" href="/products/{m.group(1)}" style="display:contents">'
+                f'<div class="product-item" style="width:240px">'
+                f'<div class="product-item__image" style="float:left;width:220px;height:200px;background:#eee">{m.group(2)}</div>'
+                f'<div class="product-item__title" style="float:left;width:220px">{m.group(3)}</div></div></a>'), body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "landing_collection" \
                 and path_now == "/collections/home-decor":
             # quboworld.com (Horizon, new30j): the menu's first collection is an 'entrance' landing page: a hero and
@@ -1102,6 +1119,17 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                    '<p style="font-size:20px">Answer three quick questions about how you brew and we will '
                                    'match you with a coffee.</p><button>Start the quiz</button>\'; }, 300); } });</script>'
                                    '</body></html>')
+        if self.mode == "offsite_hang" and path in ("/map", "/panjim"):
+            # nonasties.in (new30k, phone): the store's footer link redirects to Google Maps, another site
+            self.send_response(302)
+            self.send_header("Location", f"http://localhost:{self.server.server_address[1]}/offsite{path}")
+            self.send_header("Content-Length", "0")
+            self.end_headers()
+            return
+        if self.mode == "offsite_hang" and path.startswith("/offsite/"):
+            import time as _t                     # the other site never finishes for this browser (tests: 2 s timeout)
+            _t.sleep(OFFSITE_HANG_SECS)
+            return self._send(200, page("Maps", "<p>map</p>"))
         if path == "/pages/about" and self.mode == "slow_page":
             import time as _t                     # bluenectar.co.in (cycle 34, desktop): pages slower than the timeout
             _t.sleep(SLOW_PAGE_SECS)

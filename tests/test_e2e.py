@@ -1494,6 +1494,19 @@ def test_slow_menu_page_is_retried_and_warned_not_called_broken(tmp_path):
     assert any(s.name == "open /pages/about" and s.status == "pass" for s in steps)
 
 
+def test_store_link_redirecting_to_another_site_that_never_loads_is_not_a_broken_link(tmp_path):
+    """nonasties.in phone (new30k, run 38297412579): footer /map and /panjim redirect to Google Maps; on desktop they
+    opened (title '... - Google Maps'), on the phone the maps page never finished: 'page did not load ... nor within
+    60 s' -> 'links beyond the menu that fail to open: 2' (degraded). The store's own link works; the other site is
+    not judged."""
+    run = _info("offsite_hang", tmp_path, suites=("smoke",), nav_timeout_ms=2000)
+    c = _case(run, "smoke.more_links")
+    st = _steps(c)
+    assert c.verdict == "pass", (c.attempts[-1].error, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
+    d = st["footer: opens /map"].detail
+    assert "another site (localhost, HTTP 302)" in d and "not judged" in d, d
+
+
 def test_too_many_third_party_scripts_warn_with_the_hosts_named(tmp_path):
     run = _info("script_heavy", tmp_path, suites=("smoke", "catalog", "product"))
     assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
@@ -2073,6 +2086,17 @@ def test_card_link_with_display_contents_is_a_card_a_shopper_can_click(tmp_path)
     price. The products were plainly on screen (journey.shopper.a1.png), yet 'products listed: 0' and '15 links: 15
     not visible': the <a> has no box of its own. Its box is its children's."""
     run = _scan_small("contents_cards", tmp_path, suites=["journey", "catalog"])
+    coll, j = _case(run, "catalog.collection."), _case(run, "journey.")
+    assert coll.verdict == "pass", _fails(coll)
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "/products/" in _steps(j)["click_into_product"].detail
+
+
+def test_card_link_around_a_wrapper_of_floats_is_a_card_a_shopper_can_click(tmp_path):
+    """valliyan.com re-test (cycle 34 display:contents fix, run 38297409964): the same visible grid still gave
+    'products listed: 0' and '15 links: 15 not visible'. A card wrapper whose image and name float has zero height
+    too; any empty box takes its children's boxes, recursively."""
+    run = _scan_small("zero_box_cards", tmp_path, suites=["journey", "catalog"])
     coll, j = _case(run, "catalog.collection."), _case(run, "journey.")
     assert coll.verdict == "pass", _fails(coll)
     assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)

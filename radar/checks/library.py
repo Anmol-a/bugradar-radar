@@ -308,9 +308,13 @@ def _broken_images(sess) -> list[str]:
 
 # The box a shopper sees for a link. A link styled display:contents has no box of its own (0x0 rect) while its image,
 # name and price render and take the click (valliyan.com, Baseline theme, new30j: 'products listed: 0', '15 links: 15
-# not visible' under plainly visible cards). Its box is then the union of its children's boxes.
+# not visible' under plainly visible cards). Its box is then the union of its children's boxes. The same holds for any
+# link or wrapper with an empty box whose content still renders: a wrapper whose children all float or are positioned
+# has zero height (valliyan.com re-test, cycle 34: the display:contents fix alone still gave '15 links: 15 not
+# visible' under the same visible grid), so every empty box, not only display:contents, takes its children's union.
+# Hidden content stays hidden: display:none children have no box, visibility/opacity are checked on the link.
 BOX_JS = r"""const boxOf = e => { const r = e.getBoundingClientRect();
-    if ((r.width > 0 && r.height > 0) || getComputedStyle(e).display !== 'contents') return r;
+    if ((r.width > 0 && r.height > 0) || getComputedStyle(e).display === 'none') return r;
     let l = Infinity, t = Infinity, R = -Infinity, B = -Infinity;
     for (const c of e.children) { const b = boxOf(c); if (b.width > 0 && b.height > 0) {
       l = Math.min(l, b.left); t = Math.min(t, b.top); R = Math.max(R, b.right); B = Math.max(B, b.bottom); } }
@@ -2284,10 +2288,38 @@ INFO_TEXT_JS = r"""() => {
 SOFT_404 = re.compile(r"\b404\b|page not found|not be found|doesn.t exist|does not exist", re.I)
 
 
+def _offsite_redirect(ctx: Ctx, url: str):
+    """(other host, status) when the store answers url with a redirect to another site, else None. One request to the
+    store's own address (robots.txt already allowed it), redirects not followed."""
+    try:
+        ctx.sess._polite()
+        r = ctx.sess.page.context.request.get(url, max_redirects=0, timeout=15000, headers=ctx.sess.sign(url) or None)
+    except Exception:  # noqa: BLE001
+        return None
+    loc = r.headers.get("location") if 300 <= r.status < 400 else None
+    if not loc:
+        return None
+    to = urljoin(url, loc)
+    host = (urlparse(to).hostname or "").lower()
+    return (host, r.status) if host and not same_site_url(to, url) else None
+
+
 def _open_info_page(ctx: Ctx, url: str) -> str:
     """Opens like a shopper clicking the footer link: HTTP < 400 and not blank (_load), and NOT the store's
-    'page not found' page served with 200, and not a redirect to the homepage (a deleted page)."""
-    out = _load(ctx, url)
+    'page not found' page served with 200, and not a redirect to the homepage (a deleted page). A link the store
+    redirects to ANOTHER site that then never finishes loading is the store's link working: the other site is not
+    judged (nonasties.in phone, new30k: footer /map and /panjim -> Google Maps, 'page did not load' twice)."""
+    try:
+        out = _load(ctx, url)
+    except AssertionError as e:
+        if "page did not load" not in str(e):
+            raise
+        off = _offsite_redirect(ctx, url)
+        if not off:
+            raise
+        ctx.expect("the store's link answers", "HTTP < 400", f"HTTP {off[1]}, a redirect to {off[0]}", True)
+        return (f"sends shoppers to another site ({off[0]}, HTTP {off[1]}); that site did not finish loading in "
+                f"Radar's browser and is not judged")
     title = (ctx.sess.evaluate("() => document.title") or "").strip()
     h1 = (ctx.sess.evaluate("() => ((document.querySelector('main h1, h1') || {}).innerText || '').trim()") or "")[:80]
     ctx.expect("not the store's 'page not found' page", "the page itself", f"title {title[:60]!r}, heading {h1!r}",
