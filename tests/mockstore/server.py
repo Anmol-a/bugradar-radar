@@ -328,6 +328,9 @@ Modes (to prove Radar catches and heals what it should):
   hidden_link_shown_cards  the card's link is visibility:hidden while its image + name override it (visibility:visible),
                    so the card paints and takes the click -> collection + journey PASS (v0.19 13 Oct: the link's own style
                    decided: 'N not visible'). Visibility is judged by what paints INSIDE the link.
+  stretched_link_cards  valliyan.com (Baseline; first-refused evidence 13 Oct: 'a.increase-target{inline,op 1,visible,
+                   0x0} > span.visually-hidden'): each card holds an EMPTY inline link whose ::before is position:absolute
+                   over the card -> collection + journey PASS (v0.19: '15 links: 15 not visible')
   offsite_hang     nonasties.in phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
                    that never finishes loading for the phone browser -> smoke.more_links PASSES, naming the other site
                    (v0.19: 'page did not load ... nor within 60 s' -> links that fail to open, confirmed_fail)
@@ -846,6 +849,15 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                 f'visibility:hidden"><div class="product-item" style="visibility:visible">'
                 f'<div class="product-item__image" style="height:200px;background:#eee">{m.group(2)}</div>'
                 f'<div class="product-item__title">{m.group(3)}</div></div></a>'), body)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "stretched_link_cards":
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
+                f'<div class="product-item" style="position:relative;display:inline-block;width:220px;margin:8px;vertical-align:top">'
+                f'<div class="product-item__image" style="height:200px;background:#eee">{m.group(2)}</div>'
+                f'<div class="product-item__title">{m.group(3)}</div><a class="increase-target" href="/products/{m.group(1)}">'
+                f'<span class="visually-hidden">{re.sub(r"<[^>]+>", "", m.group(3))}</span></a></div>'), body)
+            body = body.replace("</head>", "<style>.increase-target::before{content:'';position:absolute;top:0;right:0;"
+                                "bottom:0;left:0}.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;"
+                                "clip:rect(0 0 0 0);white-space:nowrap}</style></head>", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "zero_box_cards":
             # valliyan.com re-test: display:contents link > a wrapper whose children float (the wrapper's height is 0)
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (

@@ -2136,6 +2136,17 @@ def test_card_visibility_is_judged_by_what_paints_inside_the_link(tmp_path):
     assert "/products/" in _steps(j)["click_into_product"].detail
 
 
+def test_stretched_link_over_the_card_is_a_card_a_shopper_can_click(tmp_path):
+    """valliyan.com (Baseline theme): the first-refused evidence (run 38361019922) showed 'a.increase-target{inline,op 1,
+    visible,0x0} > span.visually-hidden': an empty link whose ::before is stretched over the card. Its box is its
+    pseudo-element's; the tap on the card hits the link."""
+    run = _scan_small("stretched_link_cards", tmp_path, suites=["journey", "catalog"])
+    coll, j = _case(run, "catalog.collection."), _case(run, "journey.")
+    assert coll.verdict == "pass", _fails(coll)
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "/products/" in _steps(j)["click_into_product"].detail
+
+
 def test_no_clickable_card_names_the_first_refused_link_for_the_report(tmp_path):
     """When no card qualifies, run.json says what the first refused link looked like (tag.class, display, opacity,
     visibility, size, and its first descendants), so a theme Radar misreads is fixed from evidence, not guesses."""
