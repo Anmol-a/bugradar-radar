@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- 13 Oct 2026 18:00 IST, dashboard uploader: a failed check carries the page it stopped on (`page_url`: a page named by the
+  failing / warning step, else the last page of the try; the store's own address only) and the steps of the last try. A cart,
+  checkout or account page is never linked (the last product page is, note `cart`); the made-up 404 address has no link
+  (note `test_address`). No check code changed.
 - 13 Oct 2026 15:55 IST, sold-out products (Anmol: 'not a warning or broken but a tag'): when every candidate product is sold out
   in its own data, the product test judges the sold-out page (name, price, picture, shopper told it is sold out), records a
   `sold_out_product` step and passes; the buy checks are not run. The dashboard uploader turns that step into the tag
