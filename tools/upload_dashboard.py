@@ -124,7 +124,11 @@ def failing_page(case: dict, base_url: str) -> tuple[str | None, str | None]:
         if private(u):
             product = next((own(x) for x in reversed(loads) if "/products/" in str(x)), None)
             return (product, "cart") if product else (None, "cart")
-        return u, None
+        # foxtale.in, 13 Oct: the check is named after the first product, but its page was hidden and the next catalog
+        # product was tested: the link is that product, so say so (note 'next_product')
+        moved = any(str(st.get("name") or "").startswith("loads_next_catalog_product_") and st.get("status") == "pass"
+                    for st in last.get("steps") or [])
+        return u, "next_product" if moved and cand in loads else None
     return None, None
 
 
