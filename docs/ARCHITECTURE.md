@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 lean loop 13 Oct 22:13 IST:** a country / location popup is answered with its own 'Stay on <brand> <country> Site'
+  control (vedix.com new30l: 'Shop on US Site | Stay on Vedix IN Site', unlabelled icon ×; was NOT JUDGED). Both close
+  rules (`COVER_CLOSE_JS`, overlays) accept 'stay on …'; 'go to / switch / take me / shop on' controls are never clicked
+  (mock `country_modal_stay_on`).
 - 13 Oct 2026 18:00 IST, dashboard uploader: a failed check carries the page it stopped on (`page_url`: a page named by the
   failing / warning step, else the last page of the try; the store's own address only) and the steps of the last try. A cart,
   checkout or account page is never linked (the last product page is, note `cart`); the made-up 404 address has no link

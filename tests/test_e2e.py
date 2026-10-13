@@ -2309,6 +2309,16 @@ def test_country_modal_inside_the_header_is_answered_stay_here_never_internation
     assert closed and all("International" not in k["actual"] for k in closed), closed
     assert any("Stay Here" in k["actual"] for k in closed), closed
 
+@pytest.mark.parametrize("device", ["desktop", "mobile"])
+def test_country_modal_answered_stay_on_brand_site_never_the_other_site(tmp_path, device):
+    """vedix.com (new30l, desktop): 'Visiting from United States (USD $)? Shop on US Site | Stay on Vedix IN Site',
+    its x an unlabelled icon, covered every card; 'Stay on <brand> <country> Site' is a stay control too."""
+    j = _case(_scan_small("country_modal_stay_on", tmp_path / device, device=device, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    closed = [k for k in _checks(j) if "popup closed" in k["what"]]
+    assert closed and all("US Site" not in k["actual"] for k in closed), closed
+    assert any("Stay on Mock IN Site" in k["actual"] for k in closed), closed
+
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 
 def _buy_now_only(mode, tmp_path, strict=False, **kw):

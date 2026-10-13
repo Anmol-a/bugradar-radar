@@ -76,7 +76,7 @@ FIND_JS = r"""() => {
     const pick = (re, attr) => clickables.find(c => re.test(attr ? ((c.getAttribute('aria-label') || '') + ' ' + (c.className || '')) : text(c)));
     let btn = null;
     if (kind === 'cookie') btn = pick(/^(decline|reject|deny|reject all|decline all|only necessary|necessary only|use necessary cookies only)$/i);
-    btn = btn || pick(/close|dismiss/i, true) || pick(/^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip|continue browsing|stay here|dismiss)$/i);
+    btn = btn || pick(/close|dismiss/i, true) || pick(/^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip|continue browsing|stay here|stay on [\w .'&-]{1,40}|dismiss)$/i);
     // icon-only close: a text-less button whose icon is an X (svg class x/close/cross, or the usual X path),
     // or a small text-less button in the top-right corner of the popup box
     btn = btn || clickables.find(c => !text(c) && c.matches('button, [role="button"]') && (

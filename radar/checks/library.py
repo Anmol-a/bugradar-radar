@@ -3162,7 +3162,7 @@ COVER_CLOSE_JS = r"""() => {
   const shown = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none' && parseFloat(s.opacity || 1) > 0.05; };
   const text = e => (e.innerText || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
-  const SAFE = /^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip|continue browsing|continue shopping|stay here|stay on this (site|store|page)|dismiss)$/i;
+  const SAFE = /^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip|continue browsing|continue shopping|stay here|stay on this (site|store|page)|stay on [\w .'&-]{1,40}|dismiss)$/i;
   const BAD = /accept|agree|allow|subscribe|sign ?up|submit|yes|international|go to|take me|switch|redirect/i;
   for (const [fx, fy] of [[0.5, 0.5], [0.33, 0.33], [0.67, 0.67], [0.2, 0.5], [0.8, 0.5]]) {
     let layer = null;

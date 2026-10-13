@@ -362,6 +362,9 @@ Modes (to prove Radar catches and heals what it should):
                    journey opens the menu, hops to /pages/shop, PASSES
   country_modal    a 'Shopping from Outside India? International / Stay Here' modal rendered inside <header> covers the
                    page until answered (teatrunk.in) -> Radar clicks 'Stay Here' (never 'International'), PASSES
+  country_modal_stay_on  'Visiting from United States (USD $)?' with 'Shop on US Site' / 'Stay on Mock IN Site' and an
+                   unlabelled icon x, inside <header> (vedix.com) -> Radar clicks 'Stay on Mock IN Site' (never the US
+                   site), PASSES
   buy_now_ok       (journey 33) the product form carries Shopify's dynamic checkout slot (div.shopify-payment-button); a
                    script renders 'Buy it now' into it 600 ms after load; the click opens /checkouts/cn/buynow?variant=<id>,
                    a checkout (contact + delivery fields) whose order summary names the product -> cart.buy_now PASSES
@@ -916,6 +919,19 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   if (document.cookie.includes('ctry=stay')) { m.remove(); return; }
   m.querySelector('.ctry-intl').onclick = () => { location.href = '/pages/international'; };
   m.querySelector('.ctry-stay').onclick = () => { document.cookie = 'ctry=stay;path=/'; m.remove(); }; })();</script></header>""", 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal_stay_on":
+            # vedix.com (new30l, desktop): 'Visiting from United States (USD $)?' with 'Shop on US Site' (leaves the
+            # store: never clicked), the link 'Stay on Vedix IN Site' and a country select; its x is an unlabelled icon.
+            body = body.replace("</header>", """<div class="geo-wrap" id="geoModal" style="position:fixed;inset:0;z-index:100">
+<div class="geo-bg" style="position:absolute;inset:0;background:rgba(0,0,0,.45)"></div>
+<div class="geo-box" style="position:relative;margin:25vh auto 0;width:60%;background:#fff;padding:20px">
+<span class="geo-x" style="position:absolute;right:8px;top:8px;cursor:pointer"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1 11 11M11 1 1 11" stroke="#000"/></svg></span>
+<h2>Visiting from United States (USD $)?</h2><a class="geo-go" href="/pages/international">Shop on US Site</a>
+<a class="geo-stay" href="#">Stay on Mock IN Site</a><p>Or Select Your Country Below</p><select><option>Select</option></select></div></div>
+<script>(() => { const m = document.getElementById('geoModal');
+  if (document.cookie.includes('geo=stay')) { m.remove(); return; }
+  const stay = e => { e.preventDefault(); document.cookie = 'geo=stay;path=/'; m.remove(); };
+  m.querySelector('.geo-stay').onclick = stay; m.querySelector('.geo-x').onclick = stay; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "dead_image_link" and path_now.startswith("/collections/"):
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
                 f'<div class="card-wrapper" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
