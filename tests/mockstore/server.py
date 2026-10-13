@@ -325,6 +325,9 @@ Modes (to prove Radar catches and heals what it should):
   freebie_type     suta.in (full 36, 13 Oct): the catalog's first product is 'Free Fabric' (Rs 1,000, product type
                    'Freebies', also in Home Decor), whose page has no product image -> it is skipped as a gift SKU and a
                    real product is tested: product suite PASSES (v0.19: 'main product image loaded: got none', degraded)
+  hidden_link_shown_cards  the card's link is visibility:hidden while its image + name override it (visibility:visible),
+                   so the card paints and takes the click -> collection + journey PASS (v0.19 13 Oct: the link's own style
+                   decided: 'N not visible'). Visibility is judged by what paints INSIDE the link.
   offsite_hang     nonasties.in phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
                    that never finishes loading for the phone browser -> smoke.more_links PASSES, naming the other site
                    (v0.19: 'page did not load ... nor within 60 s' -> links that fail to open, confirmed_fail)
@@ -835,6 +838,12 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
                 f'<a class="card reveal" href="/products/{m.group(1)}" style="display:contents;opacity:0">'
                 f'<div class="product-item" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
+                f'<div class="product-item__image" style="height:200px;background:#eee">{m.group(2)}</div>'
+                f'<div class="product-item__title">{m.group(3)}</div></div></a>'), body)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "hidden_link_shown_cards":
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
+                f'<a class="card" href="/products/{m.group(1)}" style="display:inline-block;width:220px;margin:8px;'
+                f'visibility:hidden"><div class="product-item" style="visibility:visible">'
                 f'<div class="product-item__image" style="height:200px;background:#eee">{m.group(2)}</div>'
                 f'<div class="product-item__title">{m.group(3)}</div></div></a>'), body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "zero_box_cards":
