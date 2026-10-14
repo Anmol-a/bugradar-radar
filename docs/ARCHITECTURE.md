@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 loop 14 Oct 18:10 IST (full 36 run 38558763569: 0 false failures, 1 not-judged):** giva.co desktop
+  /collections/all-1 NOT JUDGED again (50 of 50 names shown, no product link read on a cold load). Radar now taps a listed
+  name like a shopper: a product page opening = PASS; nothing opening = NOT JUDGED with what was tapped (`_tap_listed_name`;
+  mocks `grid_without_links` → pass, `grid_names_dead` → not judged).
 - **v0.20 loop 14 Oct 14:30 IST (palmonas re-test run 38534330264):** the real cause: product pages on the headless
   subdomain shop.palmonas.com answer HTML for /products/<h>.js; palmonas.com answers the data. `_product_data_candidates`
   asks the store's own domain (same site only) before the handle the page names. Session carries `store_url`. Unit test.
