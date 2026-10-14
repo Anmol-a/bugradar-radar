@@ -354,6 +354,9 @@ Modes (to prove Radar catches and heals what it should):
                    14 Oct) -> loads WARNS 'redirects to / shortly after loading', the next catalog product is tested
   sibling_variant_links  the vase's <h1> shares a box with big 'CHOOSE VARIANTS' cards linking to sibling
                    products (beminimalist.co 14 Oct) -> its name is still found, the journey PASSES first try
+  market_path      Shopify Markets: / sends the shopper to /en-us/, links carry the prefix, prices are +20% there and so is
+                   /en-us/products/<h>.js; the default /products/<h>.js says the base price (amayrajewellery.com 14 Oct)
+                   -> Radar reads the data under the page's market path, journey PASSES first try
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
@@ -667,6 +670,18 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "market_path" and getattr(self, "market", False) and isinstance(body, str):
+            if ctype.startswith("text/html"):
+                body = re.sub(r'href="/(?!en-us)', 'href="/en-us/', body).replace('href="/en-us/"', 'href="/en-us"')
+                body = re.sub(r'action="/(cart|search)', r'action="/en-us/\1', body)
+                body = re.sub(r"₹\s?([\d,]+(?:\.\d\d)?)", lambda m: f"₹{float(m.group(1).replace(',', '')) * 1.2:,.2f}", body)
+                body = re.sub(r"Rs\.\s?([\d,]+(?:\.\d\d)?)", lambda m: f"Rs. {float(m.group(1).replace(',', '')) * 1.2:,.2f}", body)
+            elif ctype.startswith("application/json") and '"variants"' in body:
+                data = json.loads(body)
+                for v in data.get("variants", []):
+                    if isinstance(v.get("price"), int):
+                        v["price"] = int(round(v["price"] * 1.2))
+                body = json.dumps(data)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "sibling_variant_links" \
                 and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
             # beminimalist.co (full 36, 14 Oct, both devices, twice): 'CHOOSE VARIANTS' = big cards linking to the
@@ -1139,6 +1154,19 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
+        if self.mode == "market_path":
+            # amayrajewellery.com (new30n, 14 Oct): Shopify Markets sends the visitor to /en-us/, where every page link
+            # carries the prefix and prices are the US market's (+20%); the default market's /products/<h>.js says less
+            self.market = path == "/en-us" or path.startswith("/en-us/")
+            if path == "/" and not self.market:
+                self.send_response(302)
+                self.send_header("Location", "/en-us")
+                self.end_headers()
+                return
+            if self.market:
+                self.path = self.path[len("/en-us"):] or "/"
+                u = urlparse(self.path)
+                path = u.path.rstrip("/") or "/"
         if path == "/kwikpass/kwikpass.html":      # the KwikPass frame (served on 'localhost': another origin)
             return self._send(200, """<html><body style="margin:0;background:rgba(0,0,0,.55)">
 <div style="background:#fff;width:600px;margin:20vh auto;padding:20px;position:relative;border-radius:16px">

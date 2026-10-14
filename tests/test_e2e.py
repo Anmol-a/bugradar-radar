@@ -2353,6 +2353,26 @@ def test_product_name_found_beside_sibling_variant_cards(tmp_path):
     assert vase.verdict == "pass" and len(vase.attempts) == 1, (vase.verdict, vase.attempts[-1].error)
     assert "Ceramic Flower Vase" in str(_steps(vase)["shows_title_price_image"].checks)
 
+@pytest.mark.parametrize("device", ["desktop", "mobile"])
+def test_market_path_product_data_is_read_under_the_pages_market(tmp_path, device):
+    """amayrajewellery.com (new30n, 14 Oct, both devices DOWN): the store sent the US runner to /en-us/, where the page
+    showed the US market's price (₹1,798,800) while Radar asked the default market's .js (₹1,499,000): 'price not on
+    page'. Product data is asked under the page's own market path."""
+    j = _case(_scan_small("market_path", tmp_path / device, device=device, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "/en-us/products/" in _steps(j)["click_into_product"].detail, _steps(j)["click_into_product"].detail
+
+
+def test_product_handle_ignores_a_trailing_space_in_the_href():
+    """thechumbakwala.com (new30n, 14 Oct): the card's href ended in a space; the page opened without it and
+    'opened the product that was clicked' compared 'x ' with 'x'."""
+    from radar.checks.library import _handle, _market_prefix
+    assert _handle("https://s.in/products/custom-spiritual-desk-calendar ") == "custom-spiritual-desk-calendar"
+    assert _handle("https://s.in/products/desk%20calendar%20") == "desk calendar"
+    assert _market_prefix("https://s.in/en-us/collections/all/products/x") == "/en-us"
+    assert _market_prefix("https://s.in/fr/products/x") == "/fr"
+    assert _market_prefix("https://s.in/products/x") == "" and _market_prefix("https://s.in/cart") == ""
+
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 
 def _buy_now_only(mode, tmp_path, strict=False, **kw):

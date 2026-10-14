@@ -1373,6 +1373,12 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 loop 14 Oct 22:40 IST (new30n run 38597947475, 30 verified domains):** 2 Radar bugs. amayrajewellery.com DOWN on
+  both devices: Shopify Markets sent the US runner to /en-us/, where the page shows that market's price while Radar read
+  the default market's .js. Product data (`_product_js`, candidates, sold-out check) is now asked under the page's market
+  path (`_market_prefix`; mock `market_path`, +20% there). thechumbakwala.com desktop: a card href with a trailing space
+  (`_handle` strips it). Seen, not fixed yet: 'Price on Request' pages (artoftimeindia ₹0 product, houseofquadri), phone
+  tap landing on a card's wishlist icon (thechumbakwala), overlays div.mida-blocker (stagsallowed), no form (ramveda zeus-1).
 - **v0.20 loop 14 Oct 20:30 IST (new30m run 38581354119):** list quality was poor (14 wrong/parked domains, 5 robots.txt
   blocks, 4 not Shopify: Radar reported each correctly); 7 testable. saturn.health NOT JUDGED on 'Free Returns + Package
   Protection', a checkout add-on sold as a product: NOT_FOR_TESTS now skips package / shipping / order protection and
