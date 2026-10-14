@@ -1525,7 +1525,7 @@ def test_slow_menu_page_is_retried_and_warned_not_called_broken(tmp_path):
     once more with twice the wait: it loads -> WARNING 'slow page' with the time, never a broken link."""
     srv, url = serve("slow_page")
     try:
-        run = scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=4, nav_timeout_ms=2000),
+        run = scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=4, nav_timeout_ms=3000),
                    only_suites=["smoke"])[0]
     finally:
         srv.shutdown()
@@ -1533,7 +1533,7 @@ def test_slow_menu_page_is_retried_and_warned_not_called_broken(tmp_path):
     steps = c.attempts[-1].steps
     assert c.verdict == "pass", (c.attempts[-1].error, [(s.name, s.status, s.error) for s in steps])
     slow = [s for s in steps if s.name.startswith("slow page /pages/about")]
-    assert slow and slow[0].status == "warn" and "did not load within 2 s" in slow[0].error, [(s.name, s.status, s.error) for s in steps]
+    assert slow and slow[0].status == "warn" and "did not load within 3 s" in slow[0].error, [(s.name, s.status, s.error) for s in steps]
     assert any(s.name == "open /pages/about" and s.status == "pass" for s in steps)
 
 
@@ -2420,3 +2420,33 @@ def test_broken_third_party_checkout_warns_now_and_fails_when_strict(tmp_path, m
     strict = _case(_cart_edit_only(mode, tmp_path / "strict", strict=True), "cart.edit_and_checkout")
     assert strict.verdict == "confirmed_fail" and strict.attempts[-1].failed_step == "checkout_opens", \
         (strict.verdict, strict.attempts[-1].error)
+
+
+def test_product_with_an_open_incident_is_retested_every_run_until_it_passes(tmp_path):
+    """14 Oct, Anmol's option (a): a problem found on a product stays re-checked on that product, whatever the
+    sample picks later, and closes the moment it passes; a product that left the catalog closes with that reason."""
+    from radar.core.storage import Storage
+    srv, url = serve("healthy")
+    try:
+        s = _settings(tmp_path, max_products=1)
+        run1, _ = scan(url, s)
+        pdps = [c.case_id for c in run1.cases if c.case_id.startswith("product.pdp.")]
+        assert pdps == ["product.pdp.ceramic-vase"], pdps          # the normal sample tests one product
+        st = Storage(tmp_path)
+        # pretend an earlier run found problems on the spoon set (never sampled) and on a product since removed
+        st._touch_incident(f"{run1.site_id}|product.pdp.wooden-spoon-set|price", run1.site_id,
+                           "product.pdp.wooden-spoon-set", "price missing")
+        st._touch_incident(f"{run1.site_id}|product.pdp.old-rug|title", run1.site_id, "product.pdp.old-rug", "no title")
+        st.db.commit()
+        run2, _ = scan(url, s, storage=st)
+        pdps = {c.case_id: c.verdict for c in run2.cases if c.case_id.startswith("product.pdp.")}
+        assert set(pdps) == {"product.pdp.wooden-spoon-set", "product.pdp.ceramic-vase"}, pdps   # pin + the normal sample
+        assert pdps["product.pdp.wooden-spoon-set"] == "pass"
+        inc = {i["case_id"]: i for i in st.incidents(run2.site_id)}
+        assert inc["product.pdp.wooden-spoon-set"]["status"] == "resolved"     # passed this run -> closed
+        assert inc["product.pdp.old-rug"]["status"] == "resolved" and "no longer" in inc["product.pdp.old-rug"]["last_error"]
+        assert any("old-rug" in n and "no longer in the store's catalog" in n for n in run2.notes)
+        run3, _ = scan(url, s, storage=st)
+        assert [c.case_id for c in run3.cases if c.case_id.startswith("product.pdp.")] == ["product.pdp.ceramic-vase"]
+    finally:
+        srv.shutdown()

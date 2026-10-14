@@ -26,6 +26,16 @@ def _slug(s: str) -> str:
     return re.sub(r"[^a-z0-9]+", "-", (s or "").lower()).strip("-")[:40] or "x"
 
 
+def _pinned_first(items, pinned_handles, n):
+    """The normal sample of n, plus every item with an open incident in front of it (14 Oct, Anmol's option (a)):
+    a product or collection that failed once is tested in EVERY later run until it passes, and the pins never eat
+    into the normal coverage. Pinned items missing from `items` (e.g. a sold-out pin when only in-stock ones are
+    offered) are not re-added here; discovery already put them in sm.products / sm.collections."""
+    pins = [x for x in items if x.handle in pinned_handles]
+    rest = [x for x in items if x not in pins]
+    return pins + rest[:n]
+
+
 GENERIC = {"with", "pack", "size", "combo", "free", "mens", "women", "womens", "unisex", "kids", "new", "the",
            "and", "for", "set", "pcs", "piece", "pieces", "travel", "mini", "gift", "copy", "plain", "regular",
            # promo / bundle words: stores often keep these items out of search on purpose (plumgoodness.com
@@ -110,7 +120,7 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
     suites.append(smoke)
 
     catalog = Suite("catalog", "Catalog", "Collections load and list products")
-    for c in sm.collections[: s.max_collections]:
+    for c in _pinned_first(sm.collections, sm.pinned_collections, s.max_collections):
         catalog.cases.append(TestCase(f"catalog.collection.{_slug(c.handle)}", "catalog",
                                       f"Collection '{c.title}' lists products", "collection_page",
                                       {"url": c.url}, "major"))
@@ -134,15 +144,19 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
                                       "that filter and every listed product matches it in the store's data"))
     suites.append(catalog)
 
-    picks = [p for p in priced if p.available][: s.max_products] or priced[: s.max_products]
+    pinned = [p for p in priced if p.handle in sm.pinned_products]      # open incident: re-tested whatever its stock
+    picks = _pinned_first([p for p in priced if p.available] or priced, sm.pinned_products, s.max_products)
+    picks = pinned + [p for p in picks if p not in pinned]
     product = Suite("product", "Product pages", "PDPs show what a shopper needs")
     spare = [p for p in priced if p.available and p not in picks]      # used only if a pick's page is unreachable
     vurl = lambda p: p.url + (f"?variant={p.variant_id}" if p.variant_id else "")
-    for i, p in enumerate(picks):
+    for p in picks:
+        i = (picks.index(p) - len(pinned)) if p not in pinned else -1     # spare pairs belong to the normal sample
         product.cases.append(TestCase(
             f"product.pdp.{_slug(p.handle)}", "product", f"PDP '{p.title[:50]}'", "product_page",
             {"url": vurl(p), "expect_buyable": p.available,
-             "fallbacks": [vurl(x) for x in spare[i * 2:(i + 1) * 2]] if p.available else []}, "major",
+             # a pinned product gets no fallback: its open incident must be judged on that very page
+             "fallbacks": [vurl(x) for x in spare[i * 2:(i + 1) * 2]] if p.available and i >= 0 else []}, "major",
             "Structured title/price/image present, price > 0, buy button visible when in stock"))
     # journey 22: a product with several variants (size, colour), in stock first: picking another one updates the page
     multi = next((p for p in priced if p.variants >= 2 and p.available), None) or next((p for p in priced if p.variants >= 2), None)

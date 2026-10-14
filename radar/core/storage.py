@@ -122,6 +122,24 @@ class Storage:
                 self.db.execute("UPDATE incidents SET status='resolved' WHERE signature=?", (sig,))
         self.db.commit()
 
+    def open_incident_cases(self, site_id: str, device: str = "desktop") -> list[str]:
+        """Case ids of this site's OPEN incidents on this device (14 Oct, Anmol's option (a): a product or collection
+        with an open incident is tested in every later run until it passes, however the normal sample falls)."""
+        from radar.runner.confirm import signature_device
+        rows = self.db.execute("SELECT signature, case_id FROM incidents WHERE site_id=? AND status='open'", (site_id,))
+        return sorted({cid for sig, cid in rows.fetchall() if signature_device(sig) == device})
+
+    def resolve_incidents_for_cases(self, site_id: str, case_ids: set[str], note: str, device: str = "desktop"):
+        """Close the open incidents of these cases with a reason (e.g. the product left the store's catalog, so
+        there is nothing left to re-test). Returns the signatures closed."""
+        from radar.runner.confirm import signature_device
+        rows = self.db.execute("SELECT signature, case_id FROM incidents WHERE site_id=? AND status='open'", (site_id,))
+        done = [sig for sig, cid in rows.fetchall() if cid in case_ids and signature_device(sig) == device]
+        for sig in done:
+            self.db.execute("UPDATE incidents SET status='resolved', last_error=? WHERE signature=?", (note[:300], sig))
+        self.db.commit()
+        return done
+
     def incidents(self, site_id: str) -> list[dict]:
         from radar.runner.confirm import signature_device
         rows = [dict(r) for r in self.db.execute(

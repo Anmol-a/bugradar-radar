@@ -178,8 +178,8 @@ Modes (to prove Radar catches and heals what it should):
                    quiz page with no theme layout whose content a web component draws in a CLOSED shadow root (body text
                    empty, no <img>) -> smoke.more_links PASSES on what the browser painted (v0.19: 'page not blank: got
                    0 chars, 0 images' -> confirmed_fail)
-  slow_page        bluenectar.co.in (cycle 34, desktop): the menu page /pages/about answers after SLOW_PAGE_SECS (3 s;
-                   tests use a 2 s navigation timeout) -> opened again with twice the wait: smoke.nav_links PASSES with a
+  slow_page        bluenectar.co.in (cycle 34, desktop): the menu page /pages/about answers after SLOW_PAGE_SECS (4 s;
+                   tests use a 3 s navigation timeout) -> opened again with twice the wait: smoke.nav_links PASSES with a
                    'slow page' WARNING (v0.19: 'Timeout exceeded' -> broken navigation page, confirmed_fail)
   robots_404       /robots.txt answers HTTP 404 (no file) -> everything allowed, store tested normally
   (Radar's own network dropping mid-run is not a mode: tests shut the store down from the progress hook and point
@@ -440,7 +440,8 @@ PACK_VARIANTS = [{"id": 210 + 2 * i + j, "available": True, "price": "1299.00", 
                   "title": f"{a[1]} / {b[1]}"} for i, a in enumerate(PACK_SIZES) for j, b in enumerate(PACK_SIZES)]
 OFFSITE_HANG_SECS = 7.0   # offsite_hang: the other site answers after this long (> 2x the tests' 2 s timeout)
 LATE_GRID_SECS = 8.0      # late_grid: the collection app draws the cards this long after load (> 6 s base wait, < 15 s)
-SLOW_PAGE_SECS = 3.0      # slow_page: /pages/about answers after this long (tests set a 2 s navigation timeout)
+SLOW_PAGE_SECS = 4.0      # slow_page: /pages/about answers after this long (tests set a 3 s navigation timeout; the
+                          # 6 s second try leaves 2 s for a loaded CI machine: 14 Oct, GitHub shard failed twice at 3 s / 2 s)
 SOLD_OUT_SIZE = {"id": 203, "available": False, "price": "1499.00", "option1": "Extra Large", "title": "Extra Large"}
 FACET_MODES = ("facets", "facets_sort", "facets_sort_allowed", "filter_broken",     # storefront filters (journey 25)
                "filter_stock_differs", "filter_big_collection", "filter_empty", "filter_app")
@@ -493,9 +494,13 @@ def facets_page(h: str, items: list[dict], q: dict, mode: str) -> str:
             '@media (min-width: 750px) { .facets-open { display: none } }</style>'
             f'<div id="product-grid">{"".join(card(p) for p in shown) or "<p>No products found</p>"}</div>'
             # filter_app: an app owns the grid and empties it whenever the address carries filter.* (its own params differ)
-            + ('<script src="/static/boost-sd-filter.js"></script><script>setInterval(() => { const g = document.'
+            # the app empties the grid the moment its script runs (synchronously, like a real filter app that owns
+            # the grid), then keeps watching the address: a 150 ms-only timer let a fast read see the theme's own
+            # products first (14 Oct: flaky on a GitHub machine)
+            + ('<script src="/static/boost-sd-filter.js"></script><script>const boostSd = () => { const g = document.'
                "getElementById('product-grid'); if (/[?&]filter\\./.test(location.search) && !g.dataset.app) { g.dataset.app = 1; "
-               "g.innerHTML = '<div class=\"boost-sd__product-list\"></div>'; } }, 150);</script>" if mode == "filter_app" else "")
+               "g.innerHTML = '<div class=\"boost-sd__product-list\"></div>'; } }; boostSd(); setInterval(boostSd, 150);</script>"
+               if mode == "filter_app" else "")
             + """<script>const ff = document.getElementById('FacetFiltersForm');
 ff.addEventListener('change', () => { const url = ff.action.split('?')[0] + '?' + new URLSearchParams(new FormData(ff));
   history.pushState({}, '', url);

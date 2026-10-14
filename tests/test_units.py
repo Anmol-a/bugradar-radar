@@ -1240,3 +1240,40 @@ def test_buy_now_case_only_with_the_cart_flow():
     assert cart.cases[0].check == "add_to_cart"             # the add-to-cart test stays first; it never clicks buy-now
     assert not any(c.check == "buy_now" for x in build_suites(_sm(), replace(Settings(), allow_cart_flow=False))
                    for c in x.cases)
+
+
+# ---------- open incidents pin their product / collection into every later run (14 Oct, Anmol: option (a)) ----------
+def test_builder_pins_products_and_collections_with_open_incidents():
+    from radar.core.models import Collection as C, Product as P
+    prods = [P(f"p{i}", f"Product {i}", f"https://x.in/products/p{i}", i, "5", True) for i in range(1, 6)]
+    prods.append(P("sold", "Sold Lamp", "https://x.in/products/sold", 9, "9", False))
+    cols = [C(f"c{i}", f"Col {i}", f"https://x.in/collections/c{i}") for i in range(1, 5)]
+    s = replace(Settings(), max_products=2, max_collections=2)
+    plain = build_suites(_sm(products=prods, collections=cols), s)
+    pdp = [c.id for c in next(x for x in plain if x.id == "product").cases if c.id.startswith("product.pdp.")]
+    assert pdp == ["product.pdp.p1", "product.pdp.p2"]        # the normal sample: first two in stock
+    # p5 (never sampled) and the sold-out lamp have open incidents; so does collection c4
+    sm = _sm(products=prods, collections=cols, pinned_products=["p5", "sold"], pinned_collections=["c4"])
+    pinned = build_suites(sm, s)
+    pcases = [c for c in next(x for x in pinned if x.id == "product").cases if c.id.startswith("product.pdp.")]
+    assert [c.id for c in pcases] == ["product.pdp.p5", "product.pdp.sold", "product.pdp.p1", "product.pdp.p2"]
+    assert pcases[0].params["fallbacks"] == [] and pcases[2].params["fallbacks"]   # a pin is judged on its own page
+    assert pcases[1].params["expect_buyable"] is False
+    ccases = [c.id for c in next(x for x in pinned if x.id == "catalog").cases if c.id.startswith("catalog.collection.")]
+    assert ccases == ["catalog.collection.c4", "catalog.collection.c1", "catalog.collection.c2"]   # pins never eat coverage
+
+
+def test_storage_lists_open_incident_cases_per_device_and_closes_gone_pins(tmp_path):
+    from radar.core.storage import Storage
+    st = Storage(tmp_path)
+    st._touch_incident("x.in|product.pdp.p5|title", "x.in", "product.pdp.p5", "no title")
+    st._touch_incident("x.in|product.pdp.p6|title|mobile", "x.in", "product.pdp.p6", "no title")
+    st._touch_incident("x.in|catalog.collection.c4|cards", "x.in", "catalog.collection.c4", "no cards")
+    st.db.commit()
+    assert st.open_incident_cases("x.in") == ["catalog.collection.c4", "product.pdp.p5"]
+    assert st.open_incident_cases("x.in", "mobile") == ["product.pdp.p6"]
+    assert st.resolve_incidents_for_cases("x.in", {"product.pdp.p5", "product.pdp.p6"}, "gone") == ["x.in|product.pdp.p5|title"]
+    inc = {i["case_id"]: i for i in st.incidents("x.in")}
+    assert inc["product.pdp.p5"]["status"] == "resolved" and inc["product.pdp.p5"]["last_error"] == "gone"
+    assert inc["product.pdp.p6"]["status"] == "open" and inc["catalog.collection.c4"]["status"] == "open"
+    assert st.open_incident_cases("x.in") == ["catalog.collection.c4"]
