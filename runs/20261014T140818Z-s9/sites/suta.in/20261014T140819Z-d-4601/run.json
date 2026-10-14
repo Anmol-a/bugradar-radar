@@ -1,0 +1,3821 @@
+{
+  "run_id": "20261014T140819Z-d-4601",
+  "site_id": "suta.in",
+  "base_url": "https://suta.in",
+  "device": "desktop",
+  "started_at": "2026-10-14T14:08:19+00:00",
+  "finished_at": "2026-10-14T14:17:37+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.13s",
+              "error": null,
+              "secs": 16.69,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "875 chars, 28 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/saree (13 products)",
+              "error": null,
+              "secs": 20.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://suta.in/collections/saree ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/saree",
+                  "actual": "/collections/saree",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "13",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 25 candidates \u2192 /products/ponvaani",
+              "error": null,
+              "secs": 19.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/ponvaani ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/ponvaani",
+                  "actual": "/products/ponvaani",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Ponvaani', selected variant 63054215086451 at \u20b99,600.00",
+              "error": null,
+              "secs": 0.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/ponvaani",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/ponvaani.js with variants",
+                  "actual": "'Ponvaani', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.69,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Ponvaani",
+                  "actual": "'PONVAANI' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b99,600.00",
+                  "actual": "\u20b99,600.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 475x633)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Ponvaani",
+                  "actual": "'PONVAANI' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Ponvaani",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "9600.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.07-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 63.09,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'createElement' on 'Document': The result must not have children",
+              "url": "https://suta.in/collections/saree"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+              "url": "https://www.clarity.ms/tag/mu9eq5w7f5"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://suta.in/products/x"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=2126443474.1791986930&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=2126443474.1791986930&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791986930252&cv=11&fst=1791986930252&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986930610&cv=11&fst=1791986930610&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986930860&cv=11&fst=1791986930860&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986930776&cv=11&fst=1791986930776&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986930900&cv=11&fst=1791986930900&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=2126443474.1791986930&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986937112&cv=11&fst=1791986937112&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791986937209&cv=11&fst=1791986937209&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986938303&cv=11&fst=1791986938303&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986938354&cv=11&fst=1791986938354&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=2126443474.1791986930&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=2126443474.1791986930&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986951644&cv=11&fst=1791986951644&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986951671&cv=11&fst=1791986951671&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986951714&cv=11&fst=1791986951714&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986951693&cv=11&fst=1791986951693&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=2126443474.1791986930&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%20Suta",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791986952010&cv=11&fst=1791986952010&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1h",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=2126443474.1791986930&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%20Suta",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986953189&cv=11&fst=1791986953189&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 2.95,
+              "load": 9.49,
+              "lcp": 11.34
+            },
+            {
+              "url": "/collections/saree?f.Availability=In+Stock+Only",
+              "ttfb": 0.01,
+              "dcl": 4.45,
+              "load": 13.18,
+              "lcp": 4.16
+            },
+            {
+              "url": "/products/ponvaani",
+              "ttfb": 0.01,
+              "dcl": 3.13,
+              "load": 11.7,
+              "lcp": 1.19
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.21s",
+              "error": null,
+              "secs": 19.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "888 chars, 28 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "4.21s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "4.21s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of null (reading 'addEventListener')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of null (reading 'addEventListener')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "warn",
+              "detail": null,
+              "error": "Core Web Vitals: expected LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner), got LCP 11.6s (poor > 4.0s); CLS 0.341 (poor > 0.25), biggest shift: section#shopify-section-template--29390706147699__image_link_W9LLVB.shopify-section",
+              "secs": 0.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 11.6s (poor > 4.0s); CLS 0.341 (poor > 0.25), biggest shift: section#shopify-section-template--29390706147699__image_link_W9LLVB.shopify-section",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "268 scripts, at least 2.7 MB of JavaScript, 16 third-party script hosts: googleads.g.doubleclick.net (9), www.googletagmanager.com (8), x.nitrocommerce.ai (2), connect.facebook.net (2), pdp.gokwik.co (2)",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "268 scripts, at least 2.7 MB of JavaScript, 16 third-party script hosts: googleads.g.doubleclick.net (9), www.googletagmanager.com (8), x.nitrocommerce.ai (2),\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 22.36,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986994242&cv=11&fst=1791986994242&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986994300&cv=11&fst=1791986994300&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986994142&cv=11&fst=1791986994142&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791986994274&cv=11&fst=1791986994274&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=859533287.1791986994&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%2",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=859533287.1791986994&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%2",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=859533287.1791986994&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791986995464&cv=11&fst=1791986995464&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987000356&cv=11&fst=1791987000356&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987000398&cv=11&fst=1791987000398&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987000553&cv=11&fst=1791987000553&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=859533287.1791986994&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%2",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987002945&cv=11&fst=1791987002945&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1h1v9126917489z",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=859533287.1791986994&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.1,
+              "dcl": 3.75,
+              "load": 13.11,
+              "lcp": 11.6
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.39s",
+              "error": null,
+              "secs": 17.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "877 chars, 28 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.31s",
+              "error": null,
+              "secs": 18.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Latest Sarees (\u0938\u093e\u0921\u093c\u0940) Collection At Best Price In India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "878 chars, 13 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.25s",
+              "error": null,
+              "secs": 15.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Blouse Collection",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "807 chars, 13 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.44s",
+              "error": null,
+              "secs": 12.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Women wear",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "604 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 64.74,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+              "url": "https://www.clarity.ms/tag/mu9eq5w7f5"
+            },
+            {
+              "type": "pageerror",
+              "text": "nconsole.warn is not a function",
+              "url": "https://suta.in/?page-view=BLOUSE"
+            },
+            {
+              "type": "error",
+              "text": "Access to XMLHttpRequest at 'https://swymstore-v3premium-01.swymrelay.com/api/v3/provider/checkAndGet?pid=gLPFz6i9ElR8dvPXOOWPb%2F21LU0Ll%2FUbrAjAAeVrktc%3D&country=US&locale=en&currency=INR' from origin 'https://suta.in",
+              "url": "https://suta.in/?page-view=Women"
+            },
+            {
+              "type": "error",
+              "text": "Swym Server API Error - 0 Error: Server API Error - , url - , data - {\"js_v\":\"7.0.13\",\"s_v\":\"214-0\",\"f\":false,\"regid\":\"nf1TR4q8JwI19Lwu5J85e5_42IwhbW6Ul3knvRVgB-5K0z4NBCWEXFA2cEnaPCVHGDdXbEaHSJtjDy-_thAo3iHl2iAOj5536S2oL",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://swymstore-v3premium-01.swymrelay.com/api/v3/provider/checkAndGet?pid=gLPFz6i9ElR8dvPXOOWPb%2F21LU0Ll%2FUbrAjAAeVrktc%3D&country=US&l"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987015784&cv=11&fst=1791987015784&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987015986&cv=11&fst=1791987015986&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987016104&cv=11&fst=1791987016104&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987016189&cv=11&fst=1791987016189&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1013665133.1791987016&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=1013665133.1791987016&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=1013665133.1791987016&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987016679&cv=11&fst=1791987016679&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987022502&cv=11&fst=1791987022502&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987022597&cv=11&fst=1791987022597&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987023121&cv=11&fst=1791987023121&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=1013665133.1791987016&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%2",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987024419&cv=11&fst=1791987024419&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=1013665133.1791987016&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1013665133.1791987016&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987034751&cv=11&fst=1791987034751&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&auid=1013665133.1791987016&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987038847&cv=11&fst=1791987038847&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987038988&cv=11&fst=1791987038988&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987038955&cv=11&fst=1791987038955&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987039028&cv=11&fst=1791987039028&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=1013665133.1791987016&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.97,
+              "load": 12.21,
+              "lcp": 9.18
+            },
+            {
+              "url": "/?page-view=SAREE",
+              "ttfb": 0.03,
+              "dcl": 4.06,
+              "load": 12.81,
+              "lcp": 10.14
+            },
+            {
+              "url": "/?page-view=BLOUSE",
+              "ttfb": 0.05,
+              "dcl": 2.77,
+              "load": 7.89,
+              "lcp": 9.64
+            },
+            {
+              "url": "/?page-view=Women",
+              "ttfb": 0.06,
+              "dcl": 3.12,
+              "load": 9.11,
+              "lcp": 9.14
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.49s",
+              "error": null,
+              "secs": 17.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "885 chars, 28 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.0,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1413489215.1791987081&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1413489215.1791987081&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987080542&cv=11&fst=1791987080542&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987080896&cv=11&fst=1791987080896&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987080993&cv=11&fst=1791987080993&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987081017&cv=11&fst=1791987081017&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987080972&cv=11&fst=1791987080972&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=1413489215.1791987081&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987087413&cv=11&fst=1791987087413&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987087262&cv=11&fst=1791987087262&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987088013&cv=11&fst=1791987088013&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=1413489215.1791987081&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%2",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=1413489215.1791987081&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987089262&cv=11&fst=1791987089262&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 3.08,
+              "load": 12.33,
+              "lcp": 8.93
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/sale",
+              "status": "pass",
+              "detail": "HTTP 200 in 5.2s",
+              "error": null,
+              "secs": 24.55,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "DIL-Wali Sale: Up to 60% Off Sarees & Blouses - SUTA",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1769 chars, 23 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'DIL-Wali Sale: Up to 60% Off Sarees & Blouses - SUTA', heading 'DIL-WALI SALE'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/sale",
+                  "actual": "/collections/sale",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections/moumita",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.28s",
+              "error": null,
+              "secs": 17.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Moumita",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1816 chars, 21 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Moumita', heading 'MOUMITA'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/moumita",
+                  "actual": "/collections/moumita",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/suta-store",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.3s",
+              "error": null,
+              "secs": 15.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta Stores in India | Suta",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6533 chars, 5 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Suta Stores in India | Suta', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/suta-store",
+                  "actual": "/pages/suta-store",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/disclaimer-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.18s",
+              "error": null,
+              "secs": 14.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "DISCLAIMER POLICY",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4894 chars, 5 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'DISCLAIMER POLICY', heading 'DISCLAIMER POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/disclaimer-policy",
+                  "actual": "/pages/disclaimer-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 72.58,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/collections/sale"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'createElement' on 'Document': The result must not have children",
+              "url": "https://suta.in/collections/sale"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://suta.in/cdn/shop/files/Harshitha_4_-436.jpg?format=webp&v=1747728539&width=400 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has",
+              "url": "https://suta.in/collections/sale?f.Availability=In+Stock+Only"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://cdn.shopify.com/s/files/1/0026/6544/7536/t/691/assets/theme.css?v=26136838271287162971791537119 (as=style) was preloaded using link preload in Early Hints but not used within a few seconds from the w",
+              "url": "https://suta.in/collections/sale?f.Availability=In+Stock+Only"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/collections/sale?f.Availability=In+Stock+Only"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+              "url": "https://www.clarity.ms/tag/mu9eq5w7f5"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=787200519.1791987099&dt=DIL-Wali%20Sale%3A%20Up%20to%2060%25%20Off%20Sarees%20%26%20Blouse",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=787200519.1791987099&dt=DIL-Wali%20Sale%3A%20Up%20to%2060%25%20Off%20Sarees%20%26%20Blouse",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987098909&cv=11&fst=1791987098909&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987099190&cv=11&fst=1791987099190&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987099208&cv=11&fst=1791987099208&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987099164&cv=11&fst=1791987099164&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=787200519.1791987099&dt=DIL-Wali%20Sale%3A%20Up%20to%2060%25%20Off%20Sarees%20%26%20Blouses",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987099227&cv=11&fst=1791987099227&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987101803&cv=11&fst=1791987101803&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987101914&cv=11&fst=1791987101914&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987102354&cv=11&fst=1791987102354&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987103956&cv=11&fst=1791987103956&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=787200519.1791987099&dt=DIL-Wali%20Sale%3A%20Up%20to%2060%25%20Off%20Sarees%20%26%20Bl",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=787200519.1791987099&dt=DIL-Wali%20Sale%3A%20Up%20to%2060%25%20Off%20Sarees%20%26%20Bl",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987108236&cv=11&fst=1791987108236&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987122980&cv=11&fst=1791987122980&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987123005&cv=11&fst=1791987123005&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987123029&cv=11&fst=1791987123029&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987123049&cv=11&fst=1791987123049&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=787200519.1791987099&dt=Moumita&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fsuta.in%2Fc",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=787200519.1791987099&dt=Moumita&tid=AW-848170364&en=page_view&dl=https%3A%2F%2Fsuta.in%2Fco",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987123402&cv=11&fst=1791987123402&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ad0h"
+          ],
+          "loads": [
+            {
+              "url": "/collections/sale?f.Availability=In+Stock+Only",
+              "ttfb": 0.05,
+              "dcl": 3.52,
+              "load": 13.24,
+              "lcp": 3.34
+            },
+            {
+              "url": "/collections/moumita?f.Availability=In+Stock+Only",
+              "ttfb": 0.27,
+              "dcl": 2.77,
+              "load": 9.25,
+              "lcp": 2.76
+            },
+            {
+              "url": "/pages/suta-store",
+              "ttfb": 0.03,
+              "dcl": 2.58,
+              "load": 9.18,
+              "lcp": 1.37
+            },
+            {
+              "url": "/pages/disclaimer-policy",
+              "ttfb": 0.2,
+              "dcl": 2.8,
+              "load": 8.83,
+              "lcp": 1.89
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.saree",
+      "suite": "catalog",
+      "title": "Collection 'All collections - Online saree shopping' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.36s",
+              "error": null,
+              "secs": 19.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Saree for Women Online at Best Prices - Suta",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4618 chars, 29 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "13 products listed",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "13",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 8: Cannot read properties of null (reading 'addEventListener')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "8: Cannot read properties of null (reading 'addEventListener')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 2.96s, CLS 0.023",
+              "error": null,
+              "secs": 0.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 2.96s, CLS 0.023",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "248 scripts, at least 2.5 MB of JavaScript, 16 third-party script hosts: googleads.g.doubleclick.net (10), www.googletagmanager.com (8), x.nitrocommerce.ai (2), connect.facebook.net (2), pdp.gokwik.co (2)",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "248 scripts, at least 2.5 MB of JavaScript, 16 third-party script hosts: googleads.g.doubleclick.net (10), www.googletagmanager.com (8), x.nitrocommerce.ai (2)\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.71,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/collections/saree"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'createElement' on 'Document': The result must not have children",
+              "url": "https://suta.in/collections/saree"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987170827&cv=11&fst=1791987170827&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987170803&cv=11&fst=1791987170803&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987170765&cv=11&fst=1791987170765&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987170855&cv=11&fst=1791987170855&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1280487065.1791987171&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%20Sut",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&auid=1280487065.1791987171&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%20Suta",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987171112&cv=11&fst=1791987171112&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1h",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&auid=1280487065.1791987171&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%20Sut",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987173798&cv=11&fst=1791987173798&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987173863&cv=11&fst=1791987173863&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987173901&cv=11&fst=1791987173901&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987174242&cv=11&fst=1791987174242&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=1280487065.1791987171&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%2",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=1280487065.1791987171&dt=Buy%20Saree%20for%20Women%20Online%20at%20Best%20Prices%20-%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987179359&cv=11&fst=1791987179359&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in"
+          ],
+          "loads": [
+            {
+              "url": "/collections/saree?f.Availability=In+Stock+Only",
+              "ttfb": 0.06,
+              "dcl": 3.08,
+              "load": 11.89,
+              "lcp": 2.96
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.all-products",
+      "suite": "catalog",
+      "title": "Collection 'All Products' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.67s",
+              "error": null,
+              "secs": 18.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1691 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "12 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.5s",
+              "error": null,
+              "secs": 19.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products \u2013 Page 2",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2019 chars, 27 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 11 more products",
+              "error": null,
+              "secs": 0.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "11",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 40.37,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/collections/all-products"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'createElement' on 'Document': The result must not have children",
+              "url": "https://suta.in/collections/all-products"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://suta.in/cdn/shop/files/Manmohini-4.jpg?format=webp&v=1788950928&width=400 was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an a",
+              "url": "https://suta.in/collections/all-products?f.Availability=In+Stock+Only"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/collections/all-products?f.Availability=In+Stock+Only"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+              "url": "https://www.clarity.ms/tag/mu9eq5w7f5"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=657911372.1791987193&dt=All%20Products&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fsuta",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987193357&cv=11&fst=1791987193357&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987193334&cv=11&fst=1791987193334&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987193394&cv=11&fst=1791987193394&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987193371&cv=11&fst=1791987193371&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=657911372.1791987193&dt=All%20Products&tid=AW-848170364&en=page_view&dl=https%3A%2F%2Fsuta.",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987193642&cv=11&fst=1791987193642&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1h",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987195428&cv=11&fst=1791987195428&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=657911372.1791987193&dt=All%20Products&tid=AW-739549334&en=view_search_results&dl=https%3A",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987195693&cv=11&fst=1791987195693&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=657911372.1791987193&dt=All%20Products&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fsuta",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987195760&cv=11&fst=1791987195760&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987196446&cv=11&fst=1791987196446&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=657911372.1791987193&dt=All%20Products&en=page_view&dl=https%3A%2F%2Fsuta.in%2Fcollec",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987198423&cv=11&fst=1791987198423&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=657911372.1791987193&dt=All%20Products&tid=AW-739549334&dl=https%3A%2F%2Fsuta.in%2Fco",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987213324&cv=11&fst=1791987213324&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ad0h",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=657911372.1791987193&dt=All%20Products%20%E2%80%93%20Page%202&tid=AW-848170364&en=page_view",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=657911372.1791987193&dt=All%20Products%20%E2%80%93%20Page%202&tid=AW-848170364&en=page_view",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987213537&cv=11&fst=1791987213537&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987213553&cv=11&fst=1791987213553&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987213570&cv=11&fst=1791987213570&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all-products?f.Availability=In+Stock+Only",
+              "ttfb": 0.33,
+              "dcl": 3.22,
+              "load": 9.19,
+              "lcp": 3.12
+            },
+            {
+              "url": "/collections/all-products?f.Availability=In+Stock+Only",
+              "ttfb": 0.23,
+              "dcl": 3.24,
+              "load": 10.72,
+              "lcp": 3.12
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.all-products",
+      "suite": "catalog",
+      "title": "Filtering collection 'All Products' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.32s",
+              "error": null,
+              "secs": 17.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Products",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1710 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_not_judged",
+              "status": "info",
+              "detail": "this collection offers no filters (no storefront filter options on the page)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 38.01,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/collections/all-products"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'createElement' on 'Document': The result must not have children",
+              "url": "https://suta.in/collections/all-products"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Access to fetch at 'https://t.makehook.ws/jsv1/org-details/68962627-78ef-42bc-8bb1-28612b07da54?u=https://suta.in/collections/all-products?f.Availability=In+Stock+Only' from origin 'https://suta.in' has been blocked by C",
+              "url": "https://suta.in/collections/all-products?f.Availability=In+Stock+Only"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: net::ERR_FAILED",
+              "url": "https://t.makehook.ws/jsv1/org-details/68962627-78ef-42bc-8bb1-28612b07da54?u=https://suta.in/collections/all-products?f.Availability=In+Sto"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'status')",
+              "url": "https://suta.in/collections/all-products?f.Availability=In+Stock+Only"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/collections/all-products?f.Availability=In+Stock+Only"
+            },
+            {
+              "type": "error",
+              "text": "Access to fetch at 'https://t.makehook.ws/jsv1/sauce/settings/68962627-78ef-42bc-8bb1-28612b07da54' from origin 'https://suta.in' has been blocked by CORS policy: No 'Access-Control-Allow-Origin' header is present on the",
+              "url": "https://suta.in/collections/all-products?f.Availability=In+Stock+Only"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=502480538.1791987233&dt=All%20Products&tid=AW-848170364&en=page_view&dl=https%3A%2F%2Fsuta",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=502480538.1791987233&dt=All%20Products&tid=AW-848170364&en=page_view&dl=https%3A%2F%2Fsuta",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987232808&cv=11&fst=1791987232808&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987233109&cv=11&fst=1791987233109&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987233135&cv=11&fst=1791987233135&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987233164&cv=11&fst=1791987233164&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987233184&cv=11&fst=1791987233184&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=502480538.1791987233&dt=All%20Products&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fsuta.",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=502480538.1791987233&dt=All%20Products&tid=AW-739549334&en=view_search_results&dl=https%3A%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987236185&cv=11&fst=1791987236185&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987236384&cv=11&fst=1791987236384&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987236412&cv=11&fst=1791987236412&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987237128&cv=11&fst=1791987237128&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=502480538.1791987233&dt=All%20Products&en=page_view&dl=https%3A%2F%2Fsuta.in%2Fcollec",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=502480538.1791987233&dt=All%20Products&tid=AW-739549334&dl=https%3A%2F%2Fsuta.in%2Fcol",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987241814&cv=11&fst=1791987241814&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1h1v9126917489z",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "GET https://t.makehook.ws/jsv1/org-details/68962627-78ef-42bc-8bb1-28612b07da54?u=https://suta.in/collections/all-products?f.Availability=In+Stock+Only",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987253290&cv=11&fst=1791987253290&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987253305&cv=11&fst=1791987253305&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987253270&cv=11&fst=1791987253270&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=502480538.1791987233&dt=All%20Products&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fsuta.",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987253322&cv=11&fst=1791987253322&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all-products?f.Availability=In+Stock+Only",
+              "ttfb": 0.4,
+              "dcl": 3.16,
+              "load": 12.25,
+              "lcp": 3.02
+            },
+            {
+              "url": "/collections/all-products?f.Availability=In+Stock+Only",
+              "ttfb": 0.28,
+              "dcl": 1.81,
+              "load": 9.54,
+              "lcp": 1.78
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.moonstone-play",
+      "suite": "product",
+      "title": "PDP 'Moonstone Play'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.84s",
+              "error": null,
+              "secs": 12.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Moonstone Play",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1880 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/moonstone-play",
+                  "actual": "/products/moonstone-play",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Moonstone Play', selected variant 67104935805299 at \u20b92,400.00",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/moonstone-play",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/moonstone-play.js with variants",
+                  "actual": "'Moonstone Play', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Moonstone Play",
+                  "actual": "'MOONSTONE PLAY' (h1, 24px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,400.00",
+                  "actual": "\u20b92,400.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 475x633)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Moonstone Play",
+                  "actual": "'MOONSTONE PLAY' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Moonstone Play",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "2,400.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 67104935805299 (S) selected, in stock",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "4 of 4 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-main-15596902515059-template--29390705721715__main (variant 67104935805299, button '')",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of null (reading 'addEventListener')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of null (reading 'addEventListener')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0% (a popup Radar could not close covered 100%, not counted)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0% (a popup Radar could not close covered 100%, not counted)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.86s, CLS 0.012",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.86s, CLS 0.012",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "385 scripts, at least 3.2 MB of JavaScript, 17 third-party script hosts: googleads.g.doubleclick.net (10), www.googletagmanager.com (8), x.nitrocommerce.ai (2), connect.facebook.net (2), pdp.gokwik.co (2)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "385 scripts, at least 3.2 MB of JavaScript, 17 third-party script hosts: googleads.g.doubleclick.net (10), www.googletagmanager.com (8), x.nitrocommerce.ai (2)\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.98,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/products/moonstone-play?variant=67104935805299"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://suta.in/products/x"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=2084031706.1791987271&dt=Moonstone%20Play&tid=AW-848170364&en=page_view&dl=https%3A%2F%2Fs",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=2084031706.1791987271&dt=Moonstone%20Play&tid=AW-848170364&en=page_view&dl=https%3A%2F%2Fs",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=2084031706.1791987271&dt=Moonstone%20Play&tid=AW-848170364&en=view_item&dl=https%3A%2F%2Fs",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987270880&cv=11&fst=1791987270880&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ad0h",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987270889&cv=11&fst=1791987270889&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6ad0h",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987271058&cv=11&fst=1791987271058&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987271039&cv=11&fst=1791987271039&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987271077&cv=11&fst=1791987271077&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&auid=2084031706.1791987271&dt=Moonstone%20Play&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fsu",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987271096&cv=11&fst=1791987271096&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987273824&cv=11&fst=1791987273824&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987273861&cv=11&fst=1791987273861&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987274053&cv=11&fst=1791987274053&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=2084031706.1791987271&dt=Moonstone%20Play&tid=AW-739549334&dl=https%3A%2F%2Fsuta.in%2F",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987274075&cv=11&fst=1791987274075&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ad0h2v9126917489z",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=2084031706.1791987271&dt=Moonstone%20Play&en=page_view&dl=https%3A%2F%2Fsuta.in%2Fprod",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in"
+          ],
+          "loads": [
+            {
+              "url": "/products/moonstone-play?variant=67104935805299",
+              "ttfb": 0.25,
+              "dcl": 2.61,
+              "load": 6.98,
+              "lcp": 1.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'Moonstone Play' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.98s",
+              "error": null,
+              "secs": 8.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Moonstone Play",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1875 chars, 25 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "4 variants; selected 67104935805299 (S, \u20b92,400.00); switch to 67104935838067 (M, \u20b92,400.00); sold-out variant: none",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/moonstone-play",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/moonstone-play.js with variants",
+                  "actual": "'Moonstone Play', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_switch",
+              "status": "pass",
+              "detail": "chose option \"M\": page selects 67104935838067 (M, \u20b92,400.00); address now ?variant=67104935838067",
+              "error": null,
+              "secs": 0.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "option control for the other variant",
+                  "expected": "M",
+                  "actual": "option \"M\"",
+                  "ok": true
+                },
+                {
+                  "what": "page selects the picked variant",
+                  "expected": "67104935838067 (M, \u20b92,400.00)",
+                  "actual": "67104935838067 (the product form's variant id) after choosing option \"M\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.4,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/products/moonstone-play?variant=67104935805299"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://suta.in/products/x"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=1639439406.1791987284&dt=Moonstone%20Play&tid=AW-848170364&en=view_item&dl=https%3A%2F%2Fs",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=1639439406.1791987284&dt=Moonstone%20Play&tid=AW-848170364&en=page_view&dl=https%3A%2F%2Fs",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1639439406.1791987284&dt=Moonstone%20Play&tid=AW-848170364&en=page_view&dl=https%3A%2F%2Fs",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987283736&cv=11&fst=1791987283736&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987283725&cv=11&fst=1791987283725&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987284056&cv=11&fst=1791987284056&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=1639439406.1791987284&dt=Moonstone%20Play&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fs",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987284075&cv=11&fst=1791987284075&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987284108&cv=11&fst=1791987284108&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987284091&cv=11&fst=1791987284091&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987287837&cv=11&fst=1791987287837&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987287885&cv=11&fst=1791987287885&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987288098&cv=11&fst=1791987288098&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&ae=g&auid=1639439406.1791987284&dt=Moonstone%20Play&en=page_view&dl=https%3A%2F%2Fsuta.in%2Fpro",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987288119&cv=11&fst=1791987288119&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=1639439406.1791987284&dt=Moonstone%20Play&tid=AW-739549334&dl=https%3A%2F%2Fsuta.in%2",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987290358&cv=11&fst=1791987290358&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6ac1"
+          ],
+          "loads": [
+            {
+              "url": "/products/moonstone-play?variant=67104935805299",
+              "ttfb": 0.29,
+              "dcl": 1.79,
+              "load": 5.55,
+              "lcp": 0.99
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.moonstone",
+      "suite": "search",
+      "title": "Search for 'moonstone' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.82s",
+              "error": null,
+              "secs": 9.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "774 chars, 19 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box (no results page; opened /search): 43 results, 2 mention 'moonstone'",
+              "error": null,
+              "secs": 18.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                },
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "moonstone - suta.in",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2222 chars, 45 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "43",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'moonstone'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "2 of 43",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 28.11,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Removed URL query parameters due to potential violations.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=526598518.1791987293&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%2",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=526598518.1791987293&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%2",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987292994&cv=11&fst=1791987292994&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987293010&cv=11&fst=1791987293010&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987292947&cv=11&fst=1791987292947&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987293023&cv=11&fst=1791987293023&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=526598518.1791987293&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%2",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987293470&cv=11&fst=1791987293470&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1h",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987298331&cv=11&fst=1791987298331&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987298296&cv=11&fst=1791987298296&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=526598518.1791987293&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%2",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=526598518.1791987293&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987298591&cv=11&fst=1791987298591&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987298571&cv=11&fst=1791987298571&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987302940&cv=11&fst=1791987302940&fmt=8&bg=ffffff&guid=ON&async=1&en=ST%20Search%20Initiated",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987302964&cv=11&fst=1791987302964&fmt=8&bg=ffffff&guid=ON&async=1&en=ST%20Search%20Initiated",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987305452&cv=11&fst=1791987305452&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987310291&cv=11&fst=1791987310291&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987310304&cv=11&fst=1791987310304&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987310318&cv=11&fst=1791987310318&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=526598518.1791987293&dt=moonstone%20-%20suta.in&tid=AW-739549334&en=page_view&dl=https%3A%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987310333&cv=11&fst=1791987310333&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.69,
+              "load": 6.45,
+              "lcp": 1.29
+            },
+            {
+              "url": "/search?q=moonstone",
+              "ttfb": 0.04,
+              "dcl": 2.65,
+              "load": 7.19,
+              "lcp": 3.14
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.03s",
+              "error": null,
+              "secs": 13.81,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "qzxvbugradar - suta.in",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1922 chars, 19 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "warn",
+              "detail": null,
+              "error": "shopper is told nothing matched: expected a 'no results' message, or no products listed, got no message, 14 products listed",
+              "secs": 6.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 14 products listed",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 20.43,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Removed URL query parameters due to potential violations.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1938412825.1791987321&dt=qzxvbugradar%20-%20suta.in&tid=AW-848170364&en=page_view&dl=https%",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1938412825.1791987321&dt=Search%3A%201%20result%20found%20for%20%22qzxvbugradar%22&tid=AW-8",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987321151&cv=11&fst=1791987321151&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987321163&cv=11&fst=1791987321163&fmt=8&bg=ffffff&guid=ON&async=1&en=search&gtm=45be6ac1za20",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1938412825.1791987321&dt=qzxvbugradar%20-%20suta.in&tid=AW-848170364&en=search&dl=https%3A%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987321459&cv=11&fst=1791987321459&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://dtc-analytics-collector-188234251503.asia-south1.run.app/collect",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987321484&cv=11&fst=1791987321484&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987321497&cv=11&fst=1791987321497&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=1938412825.1791987321&dt=qzxvbugradar%20-%20suta.in&tid=AW-739549334&en=page_view&dl=https",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987321510&cv=11&fst=1791987321510&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=1938412825.1791987321&dt=qzxvbugradar%20-%20suta.in&tid=AW-739549334&en=view_search_result",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987322244&cv=11&fst=1791987322244&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987323294&cv=11&fst=1791987323294&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1v",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987325428&cv=11&fst=1791987325428&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1938412825.1791987321&dt=qzxvbugradar%20-%20suta.in&tid=AW-848170364&en=page_view&dl=https%",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987325475&cv=11&fst=1791987325475&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987325724&cv=11&fst=1791987325724&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=1938412825.1791987321&dt=qzxvbugradar%20-%20suta.in&en=page_view&dl=https%3A%2F%2Fsuta",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=1938412825.1791987321&dt=qzxvbugradar%20-%20suta.in&tid=AW-739549334&dl=https%3A%2F%2",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987326829&cv=11&fst=1791987326829&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar",
+              "ttfb": 0.06,
+              "dcl": 1.87,
+              "load": 7.82,
+              "lcp": 3.31
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'moonstone' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.29s",
+              "error": null,
+              "secs": 14.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "880 chars, 28 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "4 product suggestion(s) while typing 'moonstone', e.g. 'MOONSTONE PLAY'",
+              "error": null,
+              "secs": 6.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 20.98,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=668345352.1791987342&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=668345352.1791987342&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987342945&cv=11&fst=1791987342945&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987342875&cv=11&fst=1791987342875&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987342971&cv=11&fst=1791987342971&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987342994&cv=11&fst=1791987342994&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=668345352.1791987342&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%2",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987349887&cv=11&fst=1791987349887&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987349990&cv=11&fst=1791987349990&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987350601&cv=11&fst=1791987350601&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=668345352.1791987342&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=668345352.1791987342&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987350645&cv=11&fst=1791987350645&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987355900&cv=11&fst=1791987355900&fmt=8&bg=ffffff&guid=ON&async=1&en=ST%20Search%20Initiated",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987355889&cv=11&fst=1791987355889&fmt=8&bg=ffffff&guid=ON&async=1&en=ST%20Search%20Initiated",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987359951&cv=11&fst=1791987359951&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 3.07,
+              "load": 9.73,
+              "lcp": 10.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.63s",
+              "error": null,
+              "secs": 14.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "916 chars, 28 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "63: 'Suta|Shop Latest Collection of Designer Blouses & Sarees Onl'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 216: 'Suta works with weavers across India to create affordable et'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "216: 'Suta works with weavers across India to create affordable et'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://suta.in/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://suta.in/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.63,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=1439305241.1791987363&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=1439305241.1791987363&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987363363&cv=11&fst=1791987363363&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987363666&cv=11&fst=1791987363666&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987363724&cv=11&fst=1791987363724&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987363708&cv=11&fst=1791987363708&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=1439305241.1791987363&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%20%26%",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987363740&cv=11&fst=1791987363740&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987370503&cv=11&fst=1791987370503&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987370569&cv=11&fst=1791987370569&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&ae=g&auid=1439305241.1791987363&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=1439305241.1791987363&dt=Suta%7CShop%20Latest%20Collection%20of%20Designer%20Blouses%2",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987370958&cv=11&fst=1791987370958&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987370991&cv=11&fst=1791987370991&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.43,
+              "load": 8.94,
+              "lcp": 1.79
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.04s",
+              "error": null,
+              "secs": 15.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Moonstone Play",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1960 chars, 27 images",
+                  "ok": true
+                },
+                {
+                  "what": "location popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'Close' on: 'shipping outside india? if yes, then click on shop now count'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Moonstone Play",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "14: 'Moonstone Play'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Details Collection: Foil Play Fabric: Cotton Length: 0.95 m '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Details Collection: Foil Play Fabric: Cotton Length: 0.95 m '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://suta.in/products/moonstone-play",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://suta.in/products/moonstone-play",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Moonstone Play",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://suta.in/cdn/shop/files/Offwhite-3.jpg?v=1791895594&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 16.08,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/products/moonstone-play"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://suta.in/products/x"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987378646&cv=11&fst=1791987378646&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987378674&cv=11&fst=1791987378674&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987378692&cv=11&fst=1791987378692&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987378714&cv=11&fst=1791987378714&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1696009490.1791987379&dt=Moonstone%20Play&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fsu",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987378920&cv=11&fst=1791987378920&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1696009490.1791987379&dt=Moonstone%20Play&tid=AW-848170364&en=page_view&dl=https%3A%2F%2Fsu",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1696009490.1791987379&dt=Moonstone%20Play&tid=AW-848170364&en=view_item&dl=https%3A%2F%2Fsu",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987378954&cv=11&fst=1791987378954&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6ac1z",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987381480&cv=11&fst=1791987381480&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=1696009490.1791987379&dt=Moonstone%20Play&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fsu",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987381525&cv=11&fst=1791987381525&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987381720&cv=11&fst=1791987381720&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ad",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=1696009490.1791987379&dt=Moonstone%20Play&tid=AW-739549334&dl=https%3A%2F%2Fsuta.in%2F",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987381742&cv=11&fst=1791987381742&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ad0h2v9126917489z",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=1696009490.1791987379&dt=Moonstone%20Play&en=page_view&dl=https%3A%2F%2Fsuta.in%2Fprod",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in"
+          ],
+          "loads": [
+            {
+              "url": "/products/moonstone-play",
+              "ttfb": 0.32,
+              "dcl": 2.67,
+              "load": 9.07,
+              "lcp": 1.6
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 20.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404 (redirected to /collections/all)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.08,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'createElement' on 'Document': The result must not have children",
+              "url": "https://suta.in/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'loadSecondaryStyles')",
+              "url": "https://suta.in/collections/all?f.Availability=In+Stock+Only"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 (Bad Request)",
+              "url": "https://www.clarity.ms/tag/mu9eq5w7f5"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1381586845.1791987394&dt=404%20Not%20Found&tid=AW-739549334&en=page_view&dl=https%3A%2F%2Fs",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987394413&cv=11&fst=1791987394413&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987394395&cv=11&fst=1791987394395&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987394376&cv=11&fst=1791987394376&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987394356&cv=11&fst=1791987394356&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=1381586845.1791987394&dt=404%20Not%20Found&tid=AW-848170364&en=page_view&dl=https%3A%2F%2F",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987394812&cv=11&fst=1791987394812&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1h",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1381586845.1791987394&dt=Shop%20Online%20From%20Suta%27s%20Wide%20Range%20of%20Clothes%20%",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1381586845.1791987394&dt=Shop%20Online%20From%20Suta%27s%20Wide%20Range%20of%20Clothes%20%",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987398126&cv=11&fst=1791987398126&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987398417&cv=11&fst=1791987398417&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987398436&cv=11&fst=1791987398436&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987398396&cv=11&fst=1791987398396&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=1381586845.1791987394&dt=Shop%20Online%20From%20Suta%27s%20Wide%20Range%20of%20Clothes%20%2",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987398452&cv=11&fst=1791987398452&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987400180&cv=11&fst=1791987400180&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987401729&cv=11&fst=1791987401729&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987401817&cv=11&fst=1791987401817&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987402845&cv=11&fst=1791987402845&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=1381586845.1791987394&dt=Shop%20Online%20From%20Suta%27s%20Wide%20Range%20of%20Clothe",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=1381586845.1791987394&dt=Shop%20Online%20From%20Suta%27s%20Wide%20Range%20of%20Clothes",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987407282&cv=11&fst=1791987407282&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=undefined&parentDomain=suta.in"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all?f.Availability=In+Stock+Only",
+              "ttfb": 0.27,
+              "dcl": 2.72,
+              "load": 12.21,
+              "lcp": 2.68
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /pages/return-exchange-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.23s",
+              "error": null,
+              "secs": 9.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Return & Exchange Policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8956 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Return & Exchange Policy', heading 'RETURN & EXCHANGE POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/return-exchange-policy",
+                  "actual": "/pages/return-exchange-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "8641 chars of policy text",
+              "error": null,
+              "secs": 0.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "8641 chars under 'RETURN & EXCHANGE POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /pages/shipping-delivery-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.8s",
+              "error": null,
+              "secs": 11.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "SHIPPING & DELIVERY POLICY",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2746 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'SHIPPING & DELIVERY POLICY', heading 'SHIPPING & DELIVERY POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/shipping-delivery-policy",
+                  "actual": "/pages/shipping-delivery-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "2637 chars of policy text",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "2637 chars under 'SHIPPING & DELIVERY POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /pages/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.75s",
+              "error": null,
+              "secs": 8.69,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "PRIVACY POLICY",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11446 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'PRIVACY POLICY', heading 'PRIVACY POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/privacy-policy",
+                  "actual": "/pages/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "11270 chars of policy text",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "11270 chars under 'PRIVACY POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /pages/terms-conditions",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.53s",
+              "error": null,
+              "secs": 7.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "TERMS & CONDITIONS",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5416 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'TERMS & CONDITIONS', heading 'TERMS & CONDITIONS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/terms-conditions",
+                  "actual": "/pages/terms-conditions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "5296 chars of policy text",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "5296 chars under 'TERMS & CONDITIONS'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.45s",
+              "error": null,
+              "secs": 7.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "CONTACT US!",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2127 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'CONTACT US!', heading 'CONTACT US!'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact-us",
+                  "actual": "/pages/contact-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "email / phone shown",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "email / phone shown",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 44.97,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://suta.in/pages/return-exchange-policy"
+            },
+            {
+              "type": "warning",
+              "text": "Swym App Embed Block for Back in Stock App is Disabled on Live Theme. Hence, disabling Watchlist.",
+              "url": "https://cdn.shopify.com/extensions/01a135e4-59b7-7bf2-8b02-414c840b85d0/swym-relay-850/assets/swym-ext-shopify.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 403 ()",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "error",
+              "text": "Refused to display 'https://logisy.tech/' in a frame because it set 'X-Frame-Options' to 'sameorigin'.",
+              "url": "chrome-error://chromewebdata/"
+            },
+            {
+              "type": "pageerror",
+              "text": "m.processData is not a function",
+              "url": "https://suta.in/pages/return-exchange-policy"
+            },
+            {
+              "type": "pageerror",
+              "text": "nconsole.warn is not a function",
+              "url": "https://suta.in/pages/privacy-policy"
+            }
+          ],
+          "failed_requests": [
+            "POST https://suta.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1313841334.1791987415&dt=Return%20%26%20Exchange%20Policy&tid=AW-848170364&en=page_view&dl=",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=1313841334.1791987415&dt=Return%20%26%20Exchange%20Policy&tid=AW-848170364&en=page_view&dl=",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987414781&cv=11&fst=1791987414781&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987415206&cv=11&fst=1791987415206&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987415223&cv=11&fst=1791987415223&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=1313841334.1791987415&dt=Return%20%26%20Exchange%20Policy&tid=AW-739549334&en=page_view&dl=",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987415235&cv=11&fst=1791987415235&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987415247&cv=11&fst=1791987415247&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://dv-c3e594c6d429469e90b54478358619c3.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://logisy.tech/app/lg_t.html?shop=suta-in.myshopify.com&referrer=&parentDomain=suta.in",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987418519&cv=11&fst=1791987418519&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987418556&cv=11&fst=1791987418556&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=1313841334.1791987415&dt=Return%20%26%20Exchange%20Policy&en=page_view&dl=https%3A%2F%",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=1313841334.1791987415&dt=Return%20%26%20Exchange%20Policy&tid=AW-739549334&dl=https%3A",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987418844&cv=11&fst=1791987418844&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987418886&cv=11&fst=1791987418886&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ac1v9126917489z89",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1313841334.1791987415&dt=SHIPPING%20%26%20DELIVERY%20POLICY&tid=AW-848170364&en=page_view&",
+            "POST https://www.google.com/rmkt/collect/848170364/?random=1791987424935&cv=11&fst=1791987424935&fmt=8&bg=ffffff&guid=ON&async=1&en=page_view&gtm=45be6ac1z",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&auid=1313841334.1791987415&dt=SHIPPING%20%26%20DELIVERY%20POLICY&tid=AW-848170364&en=page_view&",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987425157&cv=11&fst=1791987425157&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=1313841334.1791987415&dt=SHIPPING%20%26%20DELIVERY%20POLICY&tid=AW-739549334&en=page_view&",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987425207&cv=11&fst=1791987425207&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987425254&cv=11&fst=1791987425254&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac",
+            "POST https://www.google.com/rmkt/collect/739549334/?random=1791987425281&cv=11&fst=1791987425281&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ac"
+          ],
+          "loads": [
+            {
+              "url": "/pages/return-exchange-policy",
+              "ttfb": 0.22,
+              "dcl": 2.0,
+              "load": 5.23,
+              "lcp": 1.33
+            },
+            {
+              "url": "/pages/shipping-delivery-policy",
+              "ttfb": 0.22,
+              "dcl": 2.4,
+              "load": 7.66,
+              "lcp": 1.61
+            },
+            {
+              "url": "/pages/privacy-policy",
+              "ttfb": 0.23,
+              "dcl": 2.48,
+              "load": 6.24,
+              "lcp": 1.51
+            },
+            {
+              "url": "/pages/terms-conditions",
+              "ttfb": 0.18,
+              "dcl": 1.38,
+              "load": 4.82,
+              "lcp": 0.88
+            },
+            {
+              "url": "/pages/contact-us",
+              "ttfb": 0.17,
+              "dcl": 1.27,
+              "load": 4.62,
+              "lcp": 1.83
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Suta|Shop Latest Collection of Designer Blouses & Sarees Online",
+    "theme": "Prestige (store copy: Suta-031026-sale pdp updated--AM)",
+    "checkout_app": "GoKwik",
+    "access": "open",
+    "nav": 25,
+    "collections": 47,
+    "products": 19,
+    "in_stock": 19,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "account page /account not opened: robots.txt disallows it",
+    "1 gift-app clone / gift card / sample / free-gift product(s) skipped (e.g. free-fabric)"
+  ],
+  "perf": {
+    "pages": 21,
+    "median_load_secs": 9.07,
+    "slowest": {
+      "url": "/collections/sale?f.Availability=In+Stock+Only",
+      "load_secs": 13.24
+    },
+    "console_errors": 15,
+    "console_warnings": 5,
+    "failed_requests": 323
+  },
+  "counts": {
+    "pass": 17,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
