@@ -390,27 +390,47 @@ def _product_js(ctx: Ctx, url: str) -> dict:
     except (RobotsBlocked, RateLimited):
         raise
     except Exception as first:  # noqa: BLE001
-        # headless storefronts (palmonas.com, full 36 on 14 Oct: /products/8904097333505 is the page's own URL, its
-        # .js answers the HTML page) name the product's Shopify handle in the page's canonical / og:url / ld+json url
-        alt = [x for x in dict.fromkeys(_handle(u or "") for u in (ctx.sess.evaluate(PAGE_PRODUCT_URLS_JS) or []))
-               if x and x != h]
-        for a in alt[:2]:
+        # headless storefronts: palmonas.com (full 36 + re-test, 14 Oct) sends product pages to shop.palmonas.com,
+        # whose /products/<h>.js answers the HTML page while the store's own domain answers the data; some URLs are a
+        # SKU (/products/8904097333505), not the Shopify handle, which the page's canonical / og:url / ld+json names
+        tried, p = [], None
+        for b, a, why in _product_data_candidates(ctx, url, h):
+            tried.append(f"{b}/products/{a}.js")
             try:
-                p = ctx.sess.get_json(f"{_base(url)}/products/{a}.js")
+                q = ctx.sess.get_json(f"{b}/products/{a}.js")
             except (RobotsBlocked, RateLimited):
                 raise
             except Exception:  # noqa: BLE001
                 continue
-            if p.get("variants"):
-                ctx.expect("product data via the handle the page names", f"/products/{h}.js answered no data",
-                           f"/products/{a}.js (from the page's canonical / og:url / ld+json)", True)
+            if q.get("variants"):
+                p = q
+                ctx.expect("product data via " + why, f"{_base(url)}/products/{h}.js answered no data",
+                           f"{b}/products/{a}.js", True)
                 break
-        else:
-            raise AssertionError(f"{first}; the page names no other product handle"
-                                 + (f" that answers (tried {', '.join(alt[:2])})" if alt else "")) from first
+        if p is None:
+            raise AssertionError(f"{first}; no other source answered"
+                                 + (f" (tried {', '.join(tried)})" if tried else " (the page names no other handle)")) from first
     ctx.expect("product data from Shopify", f"/products/{h}.js with variants",
                f"{p.get('title')!r}, {len(p.get('variants', []))} variant(s)", bool(p.get("variants")))
     return p
+
+
+def _product_data_candidates(ctx: Ctx, url: str, h: str) -> list[tuple[str, str, str]]:
+    """Other places Shopify's product data may answer when the page's own /products/<h>.js does not: the store's own
+    domain (a headless storefront on a subdomain), then the handle the page itself names. At most 4. Pure apart from
+    reading the page."""
+    page_b, store = _base(url), getattr(ctx.sess, "store_url", None)
+    bases = [page_b]
+    hs, hp = ((urlparse(u).hostname or "").lower().removeprefix("www.") for u in (store or "", url))
+    if store and _base(store) != page_b and hs and (hs == hp or hp.endswith("." + hs) or hs.endswith("." + hp)):
+        bases.insert(0, _base(store))
+    try:
+        alts = [x for x in dict.fromkeys(_handle(u or "") for u in (ctx.sess.evaluate(PAGE_PRODUCT_URLS_JS) or [])) if x and x != h]
+    except Exception:  # noqa: BLE001
+        alts = []
+    out = [(b, h, "the store's own domain") for b in bases if b != page_b]
+    out += [(b, a, "the handle the page names") for a in alts[:2] for b in bases]
+    return out[:4]
 
 
 PAGE_PRODUCT_URLS_JS = r"""() => { const out = [document.querySelector('link[rel=canonical]')?.href,

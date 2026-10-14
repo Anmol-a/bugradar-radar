@@ -130,6 +130,7 @@ class Browser:
         # signature proving it is BugRadar. Third-party hosts (CDNs, apps, analytics) are never signed.
         self.signer = signer_from_env()
         self.sign_domain = _store_domain(store_url)
+        self.store_url = store_url
 
     def signs(self, url: str) -> bool:
         if not (self.signer and self.sign_domain):
@@ -181,6 +182,7 @@ class Browser:
         page = ctx.new_page()
         sess = Session(page, self.s)
         sess.evidence_dir, sess.tag = Path(evidence_dir), tag
+        sess.store_url = self.store_url       # the store's own domain (headless pages may live on a subdomain)
         sess.sign = lambda url: self.signer.headers(url) if self.signs(url) else {}
         try:
             yield sess
@@ -210,6 +212,7 @@ class Session:
     def __init__(self, page: Page, settings: Settings, robots: Robots | None = None):
         self.page, self.s = page, settings
         self.robots = robots
+        self.store_url: str | None = None
         self.failed = False
         self.screenshot = self.trace = None
         self.evidence_dir: Path | None = None
