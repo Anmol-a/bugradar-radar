@@ -2546,6 +2546,17 @@ def test_pincode_checker_that_answers_passes_with_the_answer_recorded(tmp_path):
     assert "pincode box 'Enter pincode', button 'CHECK'" in st["pincode_box"].detail
 
 
+def test_pincode_checker_under_a_sticky_bar_is_still_used(tmp_path):
+    """mcaffeine / plumgoodness / boat-lifestyle (first real run, 14 Oct): the box was found, the click timed out (a
+    sticky buy bar covered it at the bottom edge). Scroll to the middle first, like a shopper would."""
+    run = _feature("pincode_covered", tmp_path, ("product",))
+    c = _case(run, "product.pincode")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["pincode_answers"].status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert "Delivery by Thu" in st["pincode_answers"].detail
+    assert "pressed its button" in st["pincode_answers"].detail or "through the cover" in st["pincode_answers"].detail
+
+
 def test_pincode_checker_that_stays_silent_is_a_warning(tmp_path):
     run = _feature("pincode_dead", tmp_path, ("product",))
     c = _case(run, "product.pincode")

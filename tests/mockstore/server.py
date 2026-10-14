@@ -1870,16 +1870,25 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
             body += ('<div class="pincode-check"><input type="text" placeholder="ENTER YOUR PINCODE" maxlength="6">'
                      '<button type="button" class="pincode-btn">CHECK</button></div>')
-        if self.mode in ("pincode_ok", "pincode_dead") and available:
+        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered") and available:
             # store feature (14 Oct): a delivery-pincode checker next to the buy button. pincode_ok answers after a
             # short app call; pincode_dead: the CHECK button is wired to nothing (the app's script failed to load)
             js = ('<script>document.querySelector(".pincode-btn").onclick = () => { const v = document.querySelector('
                   '".pincode-check input").value; setTimeout(() => { document.getElementById("pin-msg").textContent = '
                   '/^\\d{6}$/.test(v) ? "Delivery by Thu, 16 Oct · COD available for " + v : "Please enter a valid pincode"; }, 300); };</script>'
-                  if self.mode == "pincode_ok" else "")
-            body += ('<div class="pincode-check"><label>Check delivery</label><input type="text" name="pincode" '
-                     'placeholder="Enter pincode" maxlength="6"><button type="button" class="pincode-btn">CHECK</button>'
-                     '<div id="pin-msg" class="delivery-estimate"></div></div>' + js)
+                  if self.mode in ("pincode_ok", "pincode_covered") else "")
+            widget = ('<div class="pincode-check"><label>Check delivery</label><input type="text" name="pincode" '
+                      'placeholder="Enter pincode" maxlength="6"><button type="button" class="pincode-btn">CHECK</button>'
+                      '<div id="pin-msg" class="delivery-estimate"></div></div>' + js)
+            if self.mode == "pincode_covered":
+                # mcaffeine / plumgoodness / boat-lifestyle (first real run, 14 Oct): the checker sits far down the page
+                # under a sticky buy bar, and a newsletter popup opens a few seconds AFTER the page was read and its
+                # first popups closed -> the plain click timed out for 8 s
+                widget = ('<div style="height:2400px"></div>' + widget +      # no footer: the page ends under the bar
+                          '<div class="sticky-atc" style="position:fixed;left:0;right:0;bottom:0;height:140px;background:#fff;'
+                          'z-index:30;padding:10px">Sticky buy bar <button type="button">Add to cart</button></div>'
+                          + self.OVERLAYS["newsletter_popup"].replace("}, 400);", "}, 2500);"))
+            body += widget
         if self.mode == "disabled_dup_button" and available:
             # littleboxindia.com mobile (new30c + loop cycle 6): the product form holds TWO buy buttons; the one Radar
             # reads is disabled while an enabled ADD TO CART for the same product is on screen. Radar must name both.

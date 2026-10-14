@@ -10,7 +10,7 @@ from __future__ import annotations
 
 import re
 
-from radar.checks.library import REGISTRY, Ctx, _base, _dismiss, _load, _product_js, _wait_qty
+from radar.checks.library import REGISTRY, Ctx, _base, _click, _dismiss, _load, _product_js, _wait_qty
 
 PROBE_PINCODE = "400001"            # Mumbai GPO: a real, deliverable-by-everyone pincode; the store's answer is not judged
 JUNK_CODE = "BUGRADAR-TEST-CODE"    # a code no store has: the box must say so, not stay silent
@@ -125,13 +125,36 @@ def _answer_after(ctx: Ctx, snap: dict, rx: re.Pattern, secs: float = 8.0) -> tu
     return None, seen
 
 
+def _type_into(ctx: Ctx, kind: str, text: str) -> None:
+    """Scroll the box to the middle of the screen (a sticky buy bar or header can cover it: mcaffeine, plumgoodness,
+    boat-lifestyle on the first real run, 14 Oct), close any popup, then fill it like a shopper."""
+    _dismiss(ctx)
+    box = ctx.sess.page.locator(f'[data-radar-{kind}="box"]').first
+    box.evaluate("e => e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'})")
+    try:
+        box.click(timeout=4000)
+    except Exception:  # noqa: BLE001  covered by a sticky bar: focus it directly, typing still goes through the page
+        box.focus()
+    box.fill(text)
+
+
 def _press(ctx: Ctx, kind: str) -> str:
-    """Click the feature's own button, or press Enter in the box when it has none."""
+    """Click the feature's own button like a shopper (scrolled to the middle, popups closed), or press Enter in the
+    box when it has none."""
     page = ctx.sess.page
     btn = page.locator(f'[data-radar-{kind}="btn"]').first
     if btn.count():
-        btn.click(timeout=8000)
-        return "pressed its button"
+        try:
+            _click(ctx, btn)
+            return "pressed its button"
+        except Exception as e:  # noqa: BLE001
+            # still covered after scrolling (a page that ends right under a sticky bar): fire the button's own click
+            # handler, then Enter in the box as well, the two things a shopper's tap / keyboard would do
+            btn.dispatch_event("click")
+            page.locator(f'[data-radar-{kind}="box"]').first.press("Enter")
+            m = re.search(r"<[^>]{0,120}>[^\n]{0,40}intercepts pointer events", str(e))
+            why = m.group(0)[:160] if m else str(e).splitlines()[0][:60]
+            return f"its button is covered ({why}): clicked it through the cover and pressed Enter"
     page.locator(f'[data-radar-{kind}="box"]').first.press("Enter")
     return "pressed Enter in the box"
 
@@ -149,10 +172,7 @@ def pincode_check(ctx: Ctx, url: str, probe: str = PROBE_PINCODE, strict: bool =
     errors = _watch_server_errors(ctx)
 
     def answers():
-        page = ctx.sess.page
-        box = page.locator('[data-radar-pin="box"]').first
-        box.click(timeout=8000)
-        box.fill(probe)
+        _type_into(ctx, "pin", probe)
         how = _press(ctx, "pin")
         hit, seen = _answer_after(ctx, found, PIN_ANSWER_RX)
         if hit:
@@ -204,9 +224,7 @@ def discount_code(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart",
         errors = _watch_server_errors(ctx)
 
         def rejects():
-            box = page.locator('[data-radar-code="box"]').first
-            box.click(timeout=8000)
-            box.fill(JUNK_CODE)
+            _type_into(ctx, "code", JUNK_CODE)
             how = _press(ctx, "code")
             hit, seen = _answer_after(ctx, state["box"], CODE_REJECT_RX)
             c = ctx.sess.get_json(f"{base}/cart.js")
