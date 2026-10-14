@@ -352,6 +352,8 @@ Modes (to prove Radar catches and heals what it should):
                    bot wall answers HTTP 403 to every page -> run verdict 'blocked' with a note (v0.19: DOWN, 8 failed checks)
   late_redirect_product  the vase's page renders, then a script sends the shopper to / a moment later (foxtale.in
                    14 Oct) -> loads WARNS 'redirects to / shortly after loading', the next catalog product is tested
+  sibling_variant_links  the vase's <h1> shares a box with big 'CHOOSE VARIANTS' cards linking to sibling
+                   products (beminimalist.co 14 Oct) -> its name is still found, the journey PASSES first try
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
@@ -665,6 +667,15 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "sibling_variant_links" \
+                and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
+            # beminimalist.co (full 36, 14 Oct, both devices, twice): 'CHOOSE VARIANTS' = big cards linking to the
+            # sibling products (other sizes are separate products) inside the same box as the product's own <h1>
+            sib = ('<div class="pinfo">\\1<p>CHOOSE VARIANTS</p><div class="sizes">'
+                   + "".join([f'<a href="/products/{x["handle"]}" style="display:block;width:420px;height:220px;'
+                              f'border:1px solid #ccc">{x["title"]}</a>' for x in PRODUCTS if x["handle"] != "ceramic-vase"][:3])
+                   + '</div></div>')
+            body = re.sub(r"(<h1>[^<]*</h1>)", sib, body, count=1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "late_redirect_product" \
                 and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
             # foxtale.in (full 36 + re-test, 14 Oct, flaky twice): the product page renders, then the storefront's app

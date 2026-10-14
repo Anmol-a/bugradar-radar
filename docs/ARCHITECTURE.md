@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 loop 14 Oct 20:55 IST (full 36 run 38577733496: 64 healthy, 0 false, 0 not-judged, 0 flaky):** beminimalist.co
+  journey passed only via the LLM re-check (both devices, 2 runs): its <h1> shared a box with big 'CHOOSE VARIANTS' cards
+  linking to sibling products, so TITLE_JS took it for another product's card. The page's own h1 never is (mock
+  `sibling_variant_links`).
 - **v0.20 loop 14 Oct 19:25 IST (re-test run 38565109460: giva + soulflower healthy both devices):** foxtale.in catalog
   product 'flaky' twice: its page renders, then the app sends the shopper to / a moment later. `_load_product` gives the
   page 2.5 s to settle; leaving the product page = the same hidden-catalog-product warning (mock `late_redirect_product`).
