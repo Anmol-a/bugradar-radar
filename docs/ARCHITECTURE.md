@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 loop 14 Oct 20:30 IST (new30m run 38581354119):** list quality was poor (14 wrong/parked domains, 5 robots.txt
+  blocks, 4 not Shopify: Radar reported each correctly); 7 testable. saturn.health NOT JUDGED on 'Free Returns + Package
+  Protection', a checkout add-on sold as a product: NOT_FOR_TESTS now skips package / shipping / order protection and
+  insurance products. rasayanam.in shows prices 5% below Shopify's (its 'extra 5% off prepaid'): left as a store finding.
 - **v0.20 loop 14 Oct 20:55 IST (full 36 run 38577733496: 64 healthy, 0 false, 0 not-judged, 0 flaky):** beminimalist.co
   journey passed only via the LLM re-check (both devices, 2 runs): its <h1> shared a box with big 'CHOOSE VARIANTS' cards
   linking to sibling products, so TITLE_JS took it for another product's card. The page's own h1 never is (mock

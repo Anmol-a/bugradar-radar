@@ -361,9 +361,10 @@ def test_same_site_and_offsite():
 
 def test_gift_clone_and_gift_card_products_excluded():
     for h in ("skincare-duo-face-wash-50-ml-sunscreen-30-g-sca_clone_freegift", "e-gift-card", "free-gift-pouch",
-              "shampoo-sampler"):
+              "shampoo-sampler", "free-returns-package-protection", "shipping-protection", "route-package-protection"):
         assert NOT_FOR_TESTS.search(h), h
-    for h in ("ceramic-vase", "kore-s-mens-sweatshirt-maroon", "testosterone-booster"):
+    for h in ("ceramic-vase", "kore-s-mens-sweatshirt-maroon", "testosterone-booster", "sun-protection-spf-50",
+              "free-shipping-tote"):
         assert not NOT_FOR_TESTS.search(h), h
 
 
