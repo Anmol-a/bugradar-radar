@@ -133,6 +133,9 @@ Modes (to prove Radar catches and heals what it should):
   signed_only      like Shopify's edge for cloud networks (9 Oct): EVERY request without a valid Web Bot Auth signature
                    (verified against Handler.SIGNER_X) answers HTTP 429 -> unsigned Radar is BLOCKED (rate-limited);
                    Radar with RADAR_SIGNING_KEY set PASSES
+  headless_alias   product links are /products/sku-<id> (a headless storefront's own URL, palmonas.com 14 Oct); their
+                   .js answers the HTML page; the page's canonical names the Shopify handle -> Radar reads the product
+                   data via that handle, journey PASSES on the first attempt
   flaky_data       every /products/<h>.js answers an EMPTY body the first time it is asked (palmonas.com, bench 11) and
                    JSON after that -> Radar retries the data request; tests PASS on the first attempt
   sticky_buy_only  product pages: the form's own button is hidden on desktop; the same form's button shows in a sticky
@@ -658,6 +661,12 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "headless_alias":
+            if getattr(self, "canon", None):
+                body = body.replace('<link rel="canonical" href="/">', f'<link rel="canonical" href="/products/{self.canon}">', 1)
+            ids = {x["handle"]: x["id"] for x in PRODUCTS}
+            body = re.sub(r'(<a [^>]*href=")/products/([a-z0-9-]+)"', lambda m: f'{m.group(1)}/products/sku-{ids[m.group(2)]}"'
+                          if m.group(2) in ids else m.group(0), body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "frozen_product_page" \
                 and "/products/" in self.path:
             # new30f (10 Oct): one shard ran 60+ min on 5 stores (normal: ~11 min) = a page that never answers.
@@ -1353,6 +1362,16 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(200, page(f"{h.title()} Collection | Mock Store", "".join(card(p) for p in items)), set_cart=new)
         if path.startswith("/products/"):
             h = path.split("/")[2]
+            if self.mode == "headless_alias" and h.startswith("sku-"):
+                # palmonas.com (full 36, 14 Oct): a headless storefront's product URL is a SKU, not the Shopify handle;
+                # /products/<sku>.js answers the HTML page; the page's canonical names the real handle.
+                p = next((x for x in PRODUCTS if f"sku-{x['id']}" == h.removesuffix(".js")), None)
+                if not p:
+                    return self._send(404, page("Page not found", "<h1>404</h1>"))
+                if h.endswith(".js"):
+                    return self._send(200, '<!DOCTYPE html><html lang="en"><head><meta charSet="utf-8"/></head><body>app</body></html>')
+                self.canon = p["handle"]
+                h = p["handle"]
             if h.endswith(".js"):
                 p = next((x for x in PRODUCTS + ([FREEBIE] if self.mode == "freebie_type" else []) if x["handle"] == h[:-3]), None)
                 if not p:

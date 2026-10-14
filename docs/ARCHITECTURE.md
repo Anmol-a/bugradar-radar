@@ -1373,6 +1373,13 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 loop 14 Oct 14:30 IST (palmonas re-test run 38534330264):** the real cause: product pages on the headless
+  subdomain shop.palmonas.com answer HTML for /products/<h>.js; palmonas.com answers the data. `_product_data_candidates`
+  asks the store's own domain (same site only) before the handle the page names. Session carries `store_url`. Unit test.
+- **v0.20 loop 14 Oct 13:30 IST (full 36 run 38486141466):** palmonas.com journey failed its first try(s) on both devices:
+  the headless storefront's product URL (/products/8904097333505, a SKU) is not the Shopify handle and its .js answers the
+  HTML page. `_product_js` now falls back to the handle the page names (canonical / og:url / ld+json url); mock
+  `headless_alias`. palmonas footer shipping/contact → '/': footer links read from the desktop DOM, 3 tries, kept as a store finding.
 - **v0.20 lean loop 14 Oct 03:20 IST (run 38461923525 re-test):** vedix.com now healthy (both devices). teatrunk.in still
   NOT JUDGED: 'no stay/close control in [International]', its 'Stay Here' is not a <button>. `COVER_CLOSE_JS` also takes a
   tappable non-button (cursor pointer, own text a stay control) or <input type=button>; mock `country_modal_div_stay`.
