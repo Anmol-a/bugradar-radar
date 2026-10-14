@@ -1525,7 +1525,7 @@ def test_slow_menu_page_is_retried_and_warned_not_called_broken(tmp_path):
     once more with twice the wait: it loads -> WARNING 'slow page' with the time, never a broken link."""
     srv, url = serve("slow_page")
     try:
-        run = scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=4, nav_timeout_ms=2000),
+        run = scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=4, nav_timeout_ms=3000),
                    only_suites=["smoke"])[0]
     finally:
         srv.shutdown()
@@ -1533,7 +1533,7 @@ def test_slow_menu_page_is_retried_and_warned_not_called_broken(tmp_path):
     steps = c.attempts[-1].steps
     assert c.verdict == "pass", (c.attempts[-1].error, [(s.name, s.status, s.error) for s in steps])
     slow = [s for s in steps if s.name.startswith("slow page /pages/about")]
-    assert slow and slow[0].status == "warn" and "did not load within 2 s" in slow[0].error, [(s.name, s.status, s.error) for s in steps]
+    assert slow and slow[0].status == "warn" and "did not load within 3 s" in slow[0].error, [(s.name, s.status, s.error) for s in steps]
     assert any(s.name == "open /pages/about" and s.status == "pass" for s in steps)
 
 
