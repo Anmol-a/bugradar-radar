@@ -2344,6 +2344,15 @@ def test_headless_product_url_reads_data_via_the_handle_the_page_names(tmp_path,
     assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
     assert any("handle the page names" in k["what"] for k in _checks(j)), _checks(j)
 
+def test_product_name_found_beside_sibling_variant_cards(tmp_path):
+    """beminimalist.co (full 36, 14 Oct, both devices, two runs): the product's own 50 px <h1> sat in one box with big
+    'CHOOSE VARIANTS' cards linking to sibling products; that box looked like ANOTHER product's card, so the name was
+    'not shown' and only the LLM re-check passed. The page's own heading is never another product's card."""
+    run = _product_only("sibling_variant_links", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass" and len(vase.attempts) == 1, (vase.verdict, vase.attempts[-1].error)
+    assert "Ceramic Flower Vase" in str(_steps(vase)["shows_title_price_image"].checks)
+
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 
 def _buy_now_only(mode, tmp_path, strict=False, **kw):

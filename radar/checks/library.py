@@ -1771,6 +1771,9 @@ TITLE_JS = r"""(title) => {
   const otherProduct = e => {
     const link = e.closest('a[href*="/products/"]');
     if (link) return !!handle && !(link.getAttribute('href') || '').includes('/products/' + handle);
+    // the page's own main heading is never another product's card (beminimalist.co, 14 Oct: its <h1> shared a box with
+    // big 'CHOOSE VARIANTS' cards linking to sibling products; the name was 'not shown' until the LLM re-check)
+    if (e.closest('h1')) return false;
     for (let a = e.parentElement, k = 0; a && a !== document.body && k < 6; a = a.parentElement, k++) {
       const ls = [...a.querySelectorAll('a[href*="/products/"]')];
       if (!ls.length) continue;
