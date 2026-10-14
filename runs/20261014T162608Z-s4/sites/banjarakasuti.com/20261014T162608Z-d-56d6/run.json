@@ -1,0 +1,4048 @@
+{
+  "run_id": "20261014T162608Z-d-56d6",
+  "site_id": "banjarakasuti.com",
+  "base_url": "https://banjarakasuti.com",
+  "device": "desktop",
+  "started_at": "2026-10-14T16:26:08+00:00",
+  "finished_at": "2026-10-14T16:29:10+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.49s",
+              "error": null,
+              "secs": 1.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "806 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/all (24 products)",
+              "error": null,
+              "secs": 2.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/all ('SHOP')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /products/aab-handbag",
+              "error": null,
+              "secs": 4.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/all/products/aab-handbag ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/aab-handbag",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aab handbag', selected variant 44846003847349 at \u20b93,600.00",
+              "error": null,
+              "secs": 0.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aab-handbag.js with variants",
+                  "actual": "'Aab handbag', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+              "secs": 1.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aab handbag",
+                  "actual": "'Aab handbag' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b93,600.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 11.87,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://banjarakasuti.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.19,
+              "dcl": 0.44,
+              "load": 0.78,
+              "lcp": 0.82
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.8,
+              "dcl": 1.25,
+              "load": 1.49,
+              "lcp": 1.7
+            },
+            {
+              "url": "/products/aab-handbag",
+              "ttfb": 0.31,
+              "dcl": 0.5,
+              "load": 2.68,
+              "lcp": 1.94
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.49s",
+              "error": null,
+              "secs": 2.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "806 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/all (24 products)",
+              "error": null,
+              "secs": 1.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/all ('SHOP')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /products/aab-handbag",
+              "error": null,
+              "secs": 2.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/collections/all/products/aab-handbag ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/aab-handbag",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aab handbag', selected variant 44846003847349 at \u20b93,600.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aab-handbag.js with variants",
+                  "actual": "'Aab handbag', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+              "secs": 1.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aab handbag",
+                  "actual": "'Aab handbag' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b93,600.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.05-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 9.87,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://banjarakasuti.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 503 ()",
+              "url": "https://banjarakasuti.com/products/aab-handbag?view=listing"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.19,
+              "dcl": 0.43,
+              "load": 2.27,
+              "lcp": 0.74
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.17,
+              "dcl": 0.65,
+              "load": 0.83,
+              "lcp": 1.12
+            },
+            {
+              "url": "/products/aab-handbag",
+              "ttfb": 0.34,
+              "dcl": 0.53,
+              "load": 0.68,
+              "lcp": 0.9
+            }
+          ]
+        }
+      ],
+      "incident_signature": "banjarakasuti.com|journey.shopper|shows_title_price_image",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_changed_or_down",
+        "reason": "The site announces it is no longer accepting online orders and the product page displays no price or purchase option, which prevents shoppers from buying online.",
+        "evidence": "Visible page text: \"We are no longer accepting online orders. Visit us at Cauvery Handicrafts Emporium (KSHDCL) ... \ud83d\udecd\ufe0f The products are available for in-store purchase only at Cauvery Handicrafts Emporium (KSHDCL) \ud83d\udc49 Get Directions\" and the product page shows name and size controls but no price (scre"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.51s",
+              "error": null,
+              "secs": 1.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "806 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "0.51s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "0.51s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "warn",
+              "detail": null,
+              "error": "Core Web Vitals: expected LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner), got CLS 0.446 (poor > 0.25), biggest shift: div#shopify-section-template--16977388667061__custom_liquid_aY6hFC.shopify-section",
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "CLS 0.446 (poor > 0.25), biggest shift: div#shopify-section-template--16977388667061__custom_liquid_aY6hFC.shopify-section",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "76 scripts, at least 968 KB of JavaScript, 1 third-party script hosts: cdn.jsdelivr.net (1)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "76 scripts, at least 968 KB of JavaScript, 1 third-party script hosts: cdn.jsdelivr.net (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.41,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.2,
+              "dcl": 0.46,
+              "load": 0.83,
+              "lcp": 0.8
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/all",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.68s",
+              "error": null,
+              "secs": 1.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Products \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "628 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/about-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.44s",
+              "error": null,
+              "secs": 2.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About Us \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1044 chars, 7 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.48s",
+              "error": null,
+              "secs": 1.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "520 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/clothing",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.84s",
+              "error": null,
+              "secs": 2.84,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clothing \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "658 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/indian",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.75s",
+              "error": null,
+              "secs": 1.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Indian \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "642 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/western",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.64s",
+              "error": null,
+              "secs": 1.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Western \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1112 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/sarees",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.45s",
+              "error": null,
+              "secs": 1.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sarees \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "374 chars, 8 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/accessories",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.59s",
+              "error": null,
+              "secs": 1.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Accessories \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "538 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hand-bags",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.66s",
+              "error": null,
+              "secs": 1.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hand Bags \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "838 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/waist-bands",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.45s",
+              "error": null,
+              "secs": 1.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Waist Bands \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "363 chars, 6 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "10 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.04,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://banjarakasuti.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.19,
+              "dcl": 0.57,
+              "load": 0.88,
+              "lcp": 1.15
+            },
+            {
+              "url": "/pages/about-us",
+              "ttfb": 0.19,
+              "dcl": 0.41,
+              "load": 2.27,
+              "lcp": 0.9
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.15,
+              "dcl": 0.42,
+              "load": 0.86,
+              "lcp": 0.92
+            },
+            {
+              "url": "/collections/clothing",
+              "ttfb": 0.18,
+              "dcl": 1.75,
+              "load": 2.0,
+              "lcp": 2.25
+            },
+            {
+              "url": "/collections/indian",
+              "ttfb": 0.23,
+              "dcl": 0.62,
+              "load": 0.85,
+              "lcp": 1.12
+            },
+            {
+              "url": "/collections/western",
+              "ttfb": 0.16,
+              "dcl": 0.49,
+              "load": 0.97,
+              "lcp": 1.08
+            },
+            {
+              "url": "/collections/sarees",
+              "ttfb": 0.18,
+              "dcl": 0.41,
+              "load": 0.59,
+              "lcp": 0.83
+            },
+            {
+              "url": "/collections/accessories",
+              "ttfb": 0.16,
+              "dcl": 0.48,
+              "load": 0.78,
+              "lcp": 0.98
+            },
+            {
+              "url": "/collections/hand-bags",
+              "ttfb": 0.22,
+              "dcl": 0.57,
+              "load": 0.93,
+              "lcp": 1.14
+            },
+            {
+              "url": "/collections/waist-bands",
+              "ttfb": 0.19,
+              "dcl": 0.41,
+              "load": 0.7,
+              "lcp": 0.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.31s",
+              "error": null,
+              "secs": 4.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "806 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.3,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.17,
+              "dcl": 3.26,
+              "load": 3.49,
+              "lcp": 3.59
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /customer_authentication/redirect",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.0s, redirected to /authentication/65405255861/login",
+              "error": null,
+              "secs": 3.69,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sign in - Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "354 chars, 0 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Sign in - Banjara Kasuti', heading 'Banjara Kasuti'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/customer_authentication/redirect",
+                  "actual": "/authentication/65405255861/login",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /pages/news-and-events",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.6s",
+              "error": null,
+              "secs": 1.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "News & Events \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2773 chars, 16 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'News & Events \u2013 Banjara Kasuti', heading 'News & Events'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/news-and-events",
+                  "actual": "/pages/news-and-events",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "2 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.48,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Unsafe attempt to load URL https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg from frame with URL https://shopify.com/authentication/65405255861/login?analytics_trace_id=5731abb",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/index.D3grrngu.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/ShopLoginButtonInner.CI-v1RKP.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://banjarakasuti.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=5731abb3-c2d6-4e5c-aabb-28475d67c",
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/authentication/65405255861/login?analytics_trace_id=5731abb3-c2d6-4e5c-aabb-28475d67c60e&client_id=",
+              "ttfb": 1.73,
+              "dcl": 1.92,
+              "load": 1.92,
+              "lcp": 2.04
+            },
+            {
+              "url": "/pages/news-and-events",
+              "ttfb": 0.23,
+              "dcl": 0.57,
+              "load": 0.96,
+              "lcp": 0.72
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.clothing",
+      "suite": "catalog",
+      "title": "Collection 'Clothing' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.9s",
+              "error": null,
+              "secs": 1.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clothing \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "658 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "24 products listed",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.32s, CLS 0.0",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.32s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "65 scripts, at least 932 KB of JavaScript, 1 third-party script hosts: cdn.jsdelivr.net (1)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "65 scripts, at least 932 KB of JavaScript, 1 third-party script hosts: cdn.jsdelivr.net (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.37,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://banjarakasuti.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/clothing",
+              "ttfb": 0.2,
+              "dcl": 0.71,
+              "load": 1.07,
+              "lcp": 1.32
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.accessories",
+      "suite": "catalog",
+      "title": "Collection 'Accessories' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.83s",
+              "error": null,
+              "secs": 1.79,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Accessories \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "514 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "24 products listed",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.26s, CLS 0.0",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.26s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "73 scripts, at least 946 KB of JavaScript, 1 third-party script hosts: cdn.jsdelivr.net (1)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "73 scripts, at least 946 KB of JavaScript, 1 third-party script hosts: cdn.jsdelivr.net (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.25,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://banjarakasuti.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/accessories",
+              "ttfb": 0.2,
+              "dcl": 0.64,
+              "load": 0.97,
+              "lcp": 1.26
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.clothing",
+      "suite": "catalog",
+      "title": "Collection 'Clothing' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.21s",
+              "error": null,
+              "secs": 4.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clothing \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "619 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "24 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.63s",
+              "error": null,
+              "secs": 1.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clothing \u2013 Page 2 \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "686 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 24 more products",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.37,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://banjarakasuti.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/clothing",
+              "ttfb": 0.2,
+              "dcl": 3.1,
+              "load": 3.39,
+              "lcp": 3.7
+            },
+            {
+              "url": "/collections/clothing?page=2",
+              "ttfb": 0.16,
+              "dcl": 0.51,
+              "load": 0.79,
+              "lcp": 1.02
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.clothing",
+      "suite": "catalog",
+      "title": "Filtering collection 'Clothing' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.71s",
+              "error": null,
+              "secs": 1.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clothing \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1108 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "2 filter options (e.g. In stock (117)); applying 'In stock (117)' = filter.v.availability=1",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "pass",
+              "detail": "opened /collections/clothing?filter.v.availability=1 directly: the theme's own request (?filter.v.availability=1&filter.v.price.gte=&filter.v.price.lte=) is disallowed by robots.txt",
+              "error": null,
+              "secs": 7.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clothing \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "678 chars, 50 images",
+                  "ok": true
+                },
+                {
+                  "what": "filters in the page address",
+                  "expected": "exactly one: filter.v.availability=1",
+                  "actual": "filter.v.availability=1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_narrows_results",
+              "status": "pass",
+              "detail": "'In stock (117)': 24 products listed (24 without the filter), all match it in the store's data",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed with the filter on",
+                  "expected": "\u2265 1 (the store's own filter says 117)",
+                  "actual": "24",
+                  "ok": true
+                },
+                {
+                  "what": "products listed: filtered vs unfiltered",
+                  "expected": "\u2264 117",
+                  "actual": "24",
+                  "ok": true
+                },
+                {
+                  "what": "listed products matching 'In stock (117)' (store's data)",
+                  "expected": "all 24",
+                  "actual": "24 of 24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.47,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://banjarakasuti.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/clothing",
+              "ttfb": 0.18,
+              "dcl": 0.63,
+              "load": 0.93,
+              "lcp": 1.06
+            },
+            {
+              "url": "/collections/clothing?filter.v.availability=1",
+              "ttfb": 0.18,
+              "dcl": 0.48,
+              "load": 0.73,
+              "lcp": 1.0
+            },
+            {
+              "url": "/collections/clothing",
+              "ttfb": 0.19,
+              "dcl": 0.47,
+              "load": 0.68,
+              "lcp": 1.0
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.aab-handbag",
+      "suite": "product",
+      "title": "PDP 'Aab handbag'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.59s",
+              "error": null,
+              "secs": 4.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aab handbag \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "692 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aab-handbag",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aab handbag', selected variant 44846003847349 at \u20b93,600.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aab-handbag.js with variants",
+                  "actual": "'Aab handbag', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+              "secs": 1.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aab handbag",
+                  "actual": "'Aab handbag' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b93,600.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+          "screenshot": "product.pdp.aab-handbag.a1.png",
+          "trace": "product.pdp.aab-handbag.a1_trace.zip",
+          "secs": 6.24,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aab-handbag?variant=44846003847349",
+              "ttfb": 0.05,
+              "dcl": 0.55,
+              "load": 0.79,
+              "lcp": 0.91
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.49s",
+              "error": null,
+              "secs": 4.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aab handbag \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "692 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aab-handbag",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aab handbag', selected variant 44846003847349 at \u20b93,600.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aab-handbag.js with variants",
+                  "actual": "'Aab handbag', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+              "secs": 1.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aab handbag",
+                  "actual": "'Aab handbag' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b93,600.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+          "screenshot": "product.pdp.aab-handbag.a2.png",
+          "trace": "product.pdp.aab-handbag.a2_trace.zip",
+          "secs": 6.17,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aab-handbag?variant=44846003847349",
+              "ttfb": 0.04,
+              "dcl": 0.39,
+              "load": 0.73,
+              "lcp": 0.79
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.52s",
+              "error": null,
+              "secs": 3.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aab handbag \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1057 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aab-handbag",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aab handbag', selected variant 44846003847349 at \u20b93,600.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aab-handbag.js with variants",
+                  "actual": "'Aab handbag', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+              "secs": 1.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aab handbag",
+                  "actual": "'Aab handbag' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b93,600.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b93,600.00, got not on page",
+          "screenshot": "product.pdp.aab-handbag.a3.png",
+          "trace": "product.pdp.aab-handbag.a3_trace.zip",
+          "secs": 5.84,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 503 ()",
+              "url": "https://banjarakasuti.com/products/aab-handbag?view=listing"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aab-handbag?variant=44846003847349",
+              "ttfb": 0.05,
+              "dcl": 0.47,
+              "load": 0.67,
+              "lcp": 0.84
+            }
+          ]
+        }
+      ],
+      "incident_signature": "banjarakasuti.com|product.pdp.aab-handbag|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "popup_or_overlay",
+        "reason": "A newsletter/subscribe overlay is blocking the robot from seeing the price on the product page, so the check falsely reported the price as missing.",
+        "evidence": "Visible page text includes: \"We are no longer accepting online orders. Visit us at Cauvery Handicrafts Emporium (KSHDCL) \u2013 Directions\" and \"\ud83d\udecd\ufe0f The products are available for in-store purchase only at Cauvery Handicrafts Emporium (KSHDCL) \ud83d\udc49 Get Directions\"; screenshot shows a large newsletter popup c"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.rasha-cushion-cover",
+      "suite": "product",
+      "title": "PDP 'Rasha cushion cover'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.54s",
+              "error": null,
+              "secs": 4.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Rasha cushion cover \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "659 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/rasha-cushion-cover",
+                  "actual": "/products/rasha-cushion-cover",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Rasha cushion cover', selected variant 44846006567093 at \u20b91,560.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/rasha-cushion-cover",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/rasha-cushion-cover.js with variants",
+                  "actual": "'Rasha cushion cover', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b91,560.00, got not on page",
+              "secs": 1.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Rasha cushion cover",
+                  "actual": "'Rasha cushion cover' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,560.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b91,560.00, got not on page",
+          "screenshot": "product.pdp.rasha-cushion-cover.a1.png",
+          "trace": "product.pdp.rasha-cushion-cover.a1_trace.zip",
+          "secs": 7.1,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/rasha-cushion-cover?variant=44846006567093",
+              "ttfb": 0.24,
+              "dcl": 0.5,
+              "load": 1.26,
+              "lcp": 1.22
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.51s",
+              "error": null,
+              "secs": 4.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Rasha cushion cover \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "659 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/rasha-cushion-cover",
+                  "actual": "/products/rasha-cushion-cover",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Rasha cushion cover', selected variant 44846006567093 at \u20b91,560.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/rasha-cushion-cover",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/rasha-cushion-cover.js with variants",
+                  "actual": "'Rasha cushion cover', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b91,560.00, got not on page",
+              "secs": 1.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Rasha cushion cover",
+                  "actual": "'Rasha cushion cover' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,560.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b91,560.00, got not on page",
+          "screenshot": "product.pdp.rasha-cushion-cover.a2.png",
+          "trace": "product.pdp.rasha-cushion-cover.a2_trace.zip",
+          "secs": 6.12,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/rasha-cushion-cover?variant=44846006567093",
+              "ttfb": 0.05,
+              "dcl": 0.48,
+              "load": 0.7,
+              "lcp": 0.82
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.47s",
+              "error": null,
+              "secs": 3.93,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Rasha cushion cover \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "659 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/rasha-cushion-cover",
+                  "actual": "/products/rasha-cushion-cover",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Rasha cushion cover', selected variant 44846006567093 at \u20b91,560.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/rasha-cushion-cover",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/rasha-cushion-cover.js with variants",
+                  "actual": "'Rasha cushion cover', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b91,560.00, got not on page",
+              "secs": 1.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Rasha cushion cover",
+                  "actual": "'Rasha cushion cover' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,560.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b91,560.00, got not on page",
+          "screenshot": "product.pdp.rasha-cushion-cover.a3.png",
+          "trace": "product.pdp.rasha-cushion-cover.a3_trace.zip",
+          "secs": 5.99,
+          "note": "re-check with LLM help after triage",
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/rasha-cushion-cover?variant=44846006567093",
+              "ttfb": 0.04,
+              "dcl": 0.43,
+              "load": 0.64,
+              "lcp": 0.82
+            }
+          ]
+        }
+      ],
+      "incident_signature": "banjarakasuti.com|product.pdp.rasha-cushion-cover|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "popup_or_overlay",
+        "reason": "A newsletter signup overlay is blocking the product price from being visible to the robot, so the check looked at a blocked page rather than a real store bug.",
+        "evidence": "Visible page text includes a large newsletter signup popup overlaying the product page (screenshot shows 'Stay in the Loop' subscription modal) and the page text contains '\ud83d\udecd\ufe0f The products are available for in-store purchase only at Cauvery Handicrafts Emporium (KSHDCL)'. The robot also reported the "
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.noor-cushion-cover",
+      "suite": "product",
+      "title": "PDP 'Noor cushion cover'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.52s",
+              "error": null,
+              "secs": 5.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Noor cushion cover \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1083 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/noor-cushion-cover",
+                  "actual": "/products/noor-cushion-cover",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Noor cushion cover', selected variant 44846006304949 at \u20b94,200.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/noor-cushion-cover",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/noor-cushion-cover.js with variants",
+                  "actual": "'Noor cushion cover', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b94,200.00, got not on page",
+              "secs": 1.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Noor cushion cover",
+                  "actual": "'Noor cushion cover' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b94,200.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b94,200.00, got not on page",
+          "screenshot": "product.pdp.noor-cushion-cover.a1.png",
+          "trace": "product.pdp.noor-cushion-cover.a1_trace.zip",
+          "secs": 7.29,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/noor-cushion-cover?variant=44846006304949",
+              "ttfb": 0.21,
+              "dcl": 0.47,
+              "load": 1.43,
+              "lcp": 1.08
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.59s",
+              "error": null,
+              "secs": 3.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Noor cushion cover \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1039 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/noor-cushion-cover",
+                  "actual": "/products/noor-cushion-cover",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Noor cushion cover', selected variant 44846006304949 at \u20b94,200.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/noor-cushion-cover",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/noor-cushion-cover.js with variants",
+                  "actual": "'Noor cushion cover', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b94,200.00, got not on page",
+              "secs": 1.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Noor cushion cover",
+                  "actual": "'Noor cushion cover' (h1, 38px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b94,200.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b94,200.00, got not on page",
+          "screenshot": "product.pdp.noor-cushion-cover.a2.png",
+          "trace": "product.pdp.noor-cushion-cover.a2_trace.zip",
+          "secs": 5.92,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 503 ()",
+              "url": "https://banjarakasuti.com/products/noor-cushion-cover?view=listing"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://banjarakasuti.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/products/noor-cushion-cover?variant=44846006304949",
+              "ttfb": 0.04,
+              "dcl": 0.47,
+              "load": 0.68,
+              "lcp": 0.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": "banjarakasuti.com|product.pdp.noor-cushion-cover|shows_title_price_image",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_changed_or_down",
+        "reason": "The store intentionally disabled online sales and removed prices from the product page (message says online orders are not accepted), so a shopper cannot see or buy the product online.",
+        "evidence": "Visible page text includes: \"We are no longer accepting online orders. Visit us at Cauvery Handicrafts Emporium (KSHDCL) \u2013 Directions\" and \"\ud83d\udecd\ufe0f The products are available for in-store purchase only at Cauvery Handicrafts Emporium (KSHDCL)\"; the product name \"Noor cushion cover\" is present but there i"
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'Aab handbag' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.49s",
+              "error": null,
+              "secs": 1.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aab handbag \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "692 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "4 variants; selected 44846003847349 (S, \u20b93,600.00); switch to 44846003880117 (M, \u20b93,600.00); sold-out variant: none",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aab-handbag",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aab-handbag.js with variants",
+                  "actual": "'Aab handbag', 4 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_switch",
+              "status": "pass",
+              "detail": "chose option \"M\": page selects 44846003880117 (M, \u20b93,600.00); address now ?variant=44846003880117",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "option control for the other variant",
+                  "expected": "M",
+                  "actual": "option \"M\"",
+                  "ok": true
+                },
+                {
+                  "what": "page selects the picked variant",
+                  "expected": "44846003880117 (M, \u20b93,600.00)",
+                  "actual": "44846003880117 (the product form's variant id) after choosing option \"M\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 1.97,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aab-handbag?variant=44846003847349",
+              "ttfb": 0.04,
+              "dcl": 0.43,
+              "load": 0.67,
+              "lcp": 0.8
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.handbag",
+      "suite": "search",
+      "title": "Search for 'handbag' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.59s",
+              "error": null,
+              "secs": 1.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "806 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 24 results, 24 mention 'handbag'",
+              "error": null,
+              "secs": 3.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'handbag'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "24 of 24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.05,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[shop_events_listener] Error in trackViewedProductVariant: Cannot destructure property 'product' of 'findProductAndVariantInCollection(...)' as it is undefined.",
+              "url": "https://banjarakasuti.com/cdn/shopifycloud/storefront/assets/shop_events_listener-4e26a9ce.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.21,
+              "dcl": 0.53,
+              "load": 0.92,
+              "lcp": 0.94
+            },
+            {
+              "url": "/search?q=handbag&options%5Bprefix%5D=last&type=product",
+              "ttfb": 0.28,
+              "dcl": 0.63,
+              "load": 0.91,
+              "lcp": 1.22
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.64s",
+              "error": null,
+              "secs": 1.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\" \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "703 chars, 2 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "no products listed",
+              "error": null,
+              "secs": 6.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 0 products listed",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.67,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.23,
+              "dcl": 0.57,
+              "load": 0.69,
+              "lcp": 0.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'handbag' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.18s",
+              "error": null,
+              "secs": 2.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "806 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "39 product suggestion(s) while typing 'handbag', e.g. 'janaki-handbag'",
+              "error": null,
+              "secs": 2.79,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.95,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'querySelector')",
+              "url": "https://banjarakasuti.com/#"
+            }
+          ],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.2,
+              "dcl": 1.14,
+              "load": 1.38,
+              "lcp": 1.46
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.5s",
+              "error": null,
+              "secs": 1.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "806 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Banjara Kasuti",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "14: 'Banjara Kasuti'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://banjarakasuti.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://banjarakasuti.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 1.45,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.42,
+              "load": 0.68,
+              "lcp": 0.79
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.51s",
+              "error": null,
+              "secs": 3.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aab handbag \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1094 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Aab handbag \u2013 Banjara Kasuti",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "28: 'Aab handbag \u2013 Banjara Kasuti'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Colourful handbag with bold embroidery in chevron patterns, perfect to",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "107: 'Colourful handbag with bold embroidery in chevron patterns, '",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://banjarakasuti.com/products/aab-handbag",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://banjarakasuti.com/products/aab-handbag",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:title (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.06,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aab-handbag",
+              "ttfb": 0.04,
+              "dcl": 0.44,
+              "load": 0.66,
+              "lcp": 0.83
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 3.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.14,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.24,
+              "dcl": 2.11,
+              "load": 2.44,
+              "lcp": 2.25
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /policies/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.46s",
+              "error": null,
+              "secs": 1.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund policy \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1730 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Refund policy \u2013 Banjara Kasuti', heading 'Refund policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/refund-policy",
+                  "actual": "/policies/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "1992 chars of policy text",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "1992 chars under 'Refund policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /policies/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.4s",
+              "error": null,
+              "secs": 1.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping policy \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1691 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping policy \u2013 Banjara Kasuti', heading 'Shipping policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/shipping-policy",
+                  "actual": "/policies/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "2029 chars of policy text",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "2029 chars under 'Shipping policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /policies/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.53s",
+              "error": null,
+              "secs": 1.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4402 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy \u2013 Banjara Kasuti', heading 'Privacy policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/privacy-policy",
+                  "actual": "/policies/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "4626 chars of policy text",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "4626 chars under 'Privacy policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /pages/terms-conditions",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.36s",
+              "error": null,
+              "secs": 1.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms & Conditions \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3238 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms & Conditions \u2013 Banjara Kasuti', heading 'Terms & Conditions'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/terms-conditions",
+                  "actual": "/pages/terms-conditions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "3458 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "3458 chars under 'Terms & Conditions'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.48s",
+              "error": null,
+              "secs": 1.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact \u2013 Banjara Kasuti",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "520 chars, 9 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact \u2013 Banjara Kasuti', heading 'Contact'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.61,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://banjarakasuti.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/policies/refund-policy",
+              "ttfb": 0.21,
+              "dcl": 0.42,
+              "load": 0.78,
+              "lcp": 0.48
+            },
+            {
+              "url": "/policies/shipping-policy",
+              "ttfb": 0.21,
+              "dcl": 0.37,
+              "load": 0.68,
+              "lcp": 0.42
+            },
+            {
+              "url": "/policies/privacy-policy",
+              "ttfb": 0.27,
+              "dcl": 0.5,
+              "load": 0.7,
+              "lcp": 0.5
+            },
+            {
+              "url": "/pages/terms-conditions",
+              "ttfb": 0.16,
+              "dcl": 0.34,
+              "load": 0.62,
+              "lcp": 0.38
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.2,
+              "dcl": 0.44,
+              "load": 0.83,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 4,
+    "input_tokens": 9148,
+    "output_tokens": 610,
+    "est_usd": 0.003507,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Banjara Kasuti",
+    "theme": "Vantage",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 15,
+    "collections": 9,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "19 product(s) not listed in the browsed collections are tested last (e.g. rasha-cushion-cover)"
+  ],
+  "perf": {
+    "pages": 26,
+    "median_load_secs": 0.82,
+    "slowest": {
+      "url": "/",
+      "load_secs": 3.49
+    },
+    "console_errors": 3,
+    "console_warnings": 2,
+    "failed_requests": 5
+  },
+  "counts": {
+    "pass": 16,
+    "flaky": 0,
+    "confirmed_fail": 4,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
