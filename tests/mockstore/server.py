@@ -1887,13 +1887,17 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
             body += ('<div class="pincode-check"><input type="text" placeholder="ENTER YOUR PINCODE" maxlength="6">'
                      '<button type="button" class="pincode-btn">CHECK</button></div>')
-        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered", "pincode_rerender") and available:
+        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered", "pincode_rerender", "pincode_slow") and available:
             # store feature (14 Oct): a delivery-pincode checker next to the buy button. pincode_ok answers after a
             # short app call; pincode_dead: the CHECK button is wired to nothing (the app's script failed to load)
             js = ('<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; const v = document.querySelector('
                   '".pincode-check input").value; setTimeout(() => { document.getElementById("pin-msg").textContent = '
                   '/^\\d{6}$/.test(v) ? "Delivery by Thu, 16 Oct · COD available for " + v : "Please enter a valid pincode"; }, 300); });</script>'
-                  if self.mode in ("pincode_ok", "pincode_covered", "pincode_rerender") else "")
+                  if self.mode in ("pincode_ok", "pincode_covered", "pincode_rerender") else
+                  # boat-lifestyle (15 Oct): 'Checking servicability ...' for a long time, then the answer
+                  '<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; const m = document.getElementById("pin-msg"); '
+                  'm.textContent = "Checking servicability ..."; setTimeout(() => { m.textContent = "Delivery by Sat, 18 Oct"; }, 11000); });</script>'
+                  if self.mode == "pincode_slow" else "")
             widget = ('<div class="pincode-check"><label>Check delivery</label><input type="text" name="pincode" '
                       'placeholder="Enter pincode" maxlength="6"><button type="button" class="pincode-btn">CHECK</button>'
                       '<div id="pin-msg" class="delivery-estimate"></div></div>' + js)

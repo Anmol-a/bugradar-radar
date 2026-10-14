@@ -2594,6 +2594,16 @@ def test_pincode_checker_that_redraws_itself_is_still_used(tmp_path):
     assert "Delivery by Thu" in st["pincode_answers"].detail and "400001" in st["pincode_answers"].detail
 
 
+def test_pincode_checker_that_keeps_checking_is_waited_for(tmp_path):
+    """boat-lifestyle (15 Oct): 'Checking servicability ...' for longer than 8 s. Radar waits while the widget says it is
+    working (up to 25 s) and records a slow answer, not 'no answer'."""
+    run = _feature("pincode_slow", tmp_path, ("product",))
+    c = _case(run, "product.pincode")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["pincode_answers"].status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert "Delivery by Sat" in st["pincode_answers"].detail and "after 1" in st["pincode_answers"].detail   # 'after 11.x s'
+
+
 def test_pincode_checker_that_stays_silent_is_a_warning(tmp_path):
     run = _feature("pincode_dead", tmp_path, ("product",))
     c = _case(run, "product.pincode")
