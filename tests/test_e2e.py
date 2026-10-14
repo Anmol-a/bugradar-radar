@@ -1100,7 +1100,9 @@ def test_rate_limited_store_is_blocked_never_down(tmp_path, monkeypatch):
     monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
     run, _ = _scan("rate_limited", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict != "down", run.verdict
-    hit = [c for c in run.cases if c.suite in ("product", "journey")]
+    # every case that needs the store's product data is blocked; product.pincode reads the page only (14 Oct) and
+    # just reports "no checker" on this store
+    hit = [c for c in run.cases if c.suite in ("product", "journey") and c.case_id != "product.pincode"]
     assert hit and all(c.verdict == "blocked" for c in hit), [(c.case_id, c.verdict) for c in hit]
     assert all("429" in (c.attempts[-1].error or "") and "rate-limiting" in c.attempts[-1].error for c in hit)
     assert not any(c.incident_signature for c in run.cases)
@@ -2352,6 +2354,26 @@ def test_product_name_found_beside_sibling_variant_cards(tmp_path):
     vase = _case(run, "product.pdp.ceramic")
     assert vase.verdict == "pass" and len(vase.attempts) == 1, (vase.verdict, vase.attempts[-1].error)
     assert "Ceramic Flower Vase" in str(_steps(vase)["shows_title_price_image"].checks)
+
+@pytest.mark.parametrize("device", ["desktop", "mobile"])
+def test_market_path_product_data_is_read_under_the_pages_market(tmp_path, device):
+    """amayrajewellery.com (new30n, 14 Oct, both devices DOWN): the store sent the US runner to /en-us/, where the page
+    showed the US market's price (₹1,798,800) while Radar asked the default market's .js (₹1,499,000): 'price not on
+    page'. Product data is asked under the page's own market path."""
+    j = _case(_scan_small("market_path", tmp_path / device, device=device, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert "/en-us/products/" in _steps(j)["click_into_product"].detail, _steps(j)["click_into_product"].detail
+
+
+def test_product_handle_ignores_a_trailing_space_in_the_href():
+    """thechumbakwala.com (new30n, 14 Oct): the card's href ended in a space; the page opened without it and
+    'opened the product that was clicked' compared 'x ' with 'x'."""
+    from radar.checks.library import _handle, _market_prefix
+    assert _handle("https://s.in/products/custom-spiritual-desk-calendar ") == "custom-spiritual-desk-calendar"
+    assert _handle("https://s.in/products/desk%20calendar%20") == "desk calendar"
+    assert _market_prefix("https://s.in/en-us/collections/all/products/x") == "/en-us"
+    assert _market_prefix("https://s.in/fr/products/x") == "/fr"
+    assert _market_prefix("https://s.in/products/x") == "" and _market_prefix("https://s.in/cart") == ""
 
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 

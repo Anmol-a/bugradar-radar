@@ -203,8 +203,18 @@ def _base(url: str) -> str:
 
 
 def _handle(url: str) -> str | None:
+    """The product handle in a URL. A trailing space or %20 (thechumbakwala.com, new30n 14 Oct: the card's href was
+    '/products/custom-spiritual-desk-calendar ' and the browser opened the same page without it) is not part of it."""
     m = re.search(r"/products/([^/?#]+)", url)
-    return m.group(1) if m else None
+    return m.group(1).replace("%20", " ").strip() or None if m else None
+
+
+def _market_prefix(url: str) -> str:
+    """Shopify Markets' locale / country path the page lives under ('/en-us', '/fr'), else ''. Product data asked
+    under the same prefix carries that market's prices: amayrajewellery.com (new30n, 14 Oct, both devices) sent the
+    US runner to /en-us/, where the page showed Small at ₹1,798,800 while the default market's .js said ₹1,499,000."""
+    m = re.match(r"^/([a-z]{2}(?:-[a-z]{2})?)(?=/|$)", urlparse(url).path.lower())
+    return f"/{m.group(1)}" if m and m.group(1) not in ("cart", "apps") else ""
 
 
 # ---------------- shared page assertions ----------------
@@ -386,7 +396,7 @@ def _product_js(ctx: Ctx, url: str) -> dict:
     h = _handle(url)
     ctx.expect("URL is a product page", "/products/<handle>", _path(url), bool(h))
     try:
-        p = ctx.sess.get_json(f"{_base(url)}/products/{h}.js")
+        p = ctx.sess.get_json(f"{_base(url)}{_market_prefix(url)}/products/{h}.js")
     except (RobotsBlocked, RateLimited):
         raise
     except Exception as first:  # noqa: BLE001
@@ -428,9 +438,12 @@ def _product_data_candidates(ctx: Ctx, url: str, h: str) -> list[tuple[str, str,
         alts = [x for x in dict.fromkeys(_handle(u or "") for u in (ctx.sess.evaluate(PAGE_PRODUCT_URLS_JS) or [])) if x and x != h]
     except Exception:  # noqa: BLE001
         alts = []
-    out = [(b, h, "the store's own domain") for b in bases if b != page_b]
-    out += [(b, a, "the handle the page names") for a in alts[:2] for b in bases]
-    return out[:4]
+    mp = _market_prefix(url)
+    out = [(b + mp, h, "the store's own domain") for b in bases if b != page_b]
+    out += [(b + mp, a, "the handle the page names") for a in alts[:2] for b in bases]
+    if mp:
+        out.append((page_b, h, "the default market's data (the market path answered none)"))
+    return out[:5]
 
 
 PAGE_PRODUCT_URLS_JS = r"""() => { const out = [document.querySelector('link[rel=canonical]')?.href,
@@ -2080,7 +2093,7 @@ def _sold_out_since_listed(ctx: Ctx, url: str) -> str | None:
     renders from) now has no available variant: the catalog answer was stale (sold out since, or cached). Returns the
     evidence, else None. Unknown data -> None (the product test judges it as before)."""
     try:
-        p = ctx.sess.get_json(f"{_base(url)}/products/{_handle(url)}.js") or {}
+        p = ctx.sess.get_json(f"{_base(url)}{_market_prefix(url)}/products/{_handle(url)}.js") or {}
     except Exception:  # noqa: BLE001
         return None
     vs = p.get("variants") or []
