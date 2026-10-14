@@ -9,6 +9,7 @@ a failure). Code decides from the page's own answer; nothing is ordered, no form
 from __future__ import annotations
 
 import re
+import time
 
 from radar.checks.library import REGISTRY, Ctx, _base, _click, _dismiss, _load, _product_js, _wait_qty
 
@@ -135,18 +136,26 @@ def _watch_server_errors(ctx: Ctx) -> list[str]:
     return seen
 
 
-def _answer_after(ctx: Ctx, snap: dict, rx: re.Pattern, secs: float = 8.0) -> tuple[str | None, str]:
+BUSY_RX = re.compile(r"checking|loading|please wait|fetching|verifying|\.\.\.|…", re.I)
+
+
+def _answer_after(ctx: Ctx, snap: dict, rx: re.Pattern, secs: float = 8.0, busy_secs: float = 25.0) -> tuple[str | None, str]:
     """Poll the page for text matching rx (holder text that was not there before, or a message element). Returns
-    (matched text or None, what was seen last)."""
-    page, seen = ctx.sess.page, ""
-    for _ in range(int(secs * 2)):
+    (matched text or None, what was seen last). While the widget says it is still working ('Checking servicability
+    ...': boat-lifestyle, 15 Oct) the wait stretches to busy_secs: slow is a warning with the time, not 'no answer'."""
+    page, seen, t0 = ctx.sess.page, "", time.time()
+    limit = secs
+    while time.time() - t0 < limit:
         page.wait_for_timeout(500)
         got = ctx.sess.evaluate(NEW_TEXT_JS, {"before": snap.get("before") or [], "extraBefore": snap.get("extraBefore") or []}) or {}
         texts = [got.get("holder") or ""] + list(got.get("extra") or [])
         seen = " | ".join(t for t in texts if t)[:300]
         for t in texts:
-            if t and rx.search(t):
-                return t[:200], seen
+            if t and rx.search(t) and not (BUSY_RX.search(t) and len(t) < 40):
+                took = round(time.time() - t0, 1)
+                return (t[:200] + (f" (after {took} s)" if took > secs else "")), seen
+        if BUSY_RX.search(seen):
+            limit = busy_secs
     return None, seen
 
 
@@ -203,7 +212,8 @@ def pincode_check(ctx: Ctx, url: str, probe: str = PROBE_PINCODE, strict: bool =
         if hit:
             ctx.expect(f"pincode checker answers for {probe}", "a delivery answer", hit, True)
             return f"typed {probe}, {how}: {hit!r}"
-        why = f"nothing within 8 s ({how}); page showed: {seen[:120]!r}" if seen else f"nothing within 8 s ({how})"
+        waited = "25 s (it kept saying it was checking)" if BUSY_RX.search(seen or "") else "8 s"
+        why = f"nothing within {waited} ({how}); page showed: {seen[:120]!r}" if seen else f"nothing within {waited} ({how})"
         if errors:
             why += "; " + "; ".join(errors[:2])
         ctx.expect(f"pincode checker answers for {probe}", "a delivery answer (deliverable / not deliverable / days)", why, False)

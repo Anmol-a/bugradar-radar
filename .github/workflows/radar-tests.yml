@@ -1,6 +1,6 @@
 # Radar's own test suite on GitHub's machines (14 Oct 2026, Anmol: "make the change, test it, deploy only if it works").
 #
-# Why: the full suite (165 unit + 206 real-browser e2e, 371 total) took 1–1¾ h per fix cycle when run in 4 chunks
+# Why: the full suite (165 unit + 207 real-browser e2e, 372 total) took 1–1¾ h per fix cycle when run in 4 chunks
 # in a chat session. Here the e2e tests are split across 8 machines (every 8th collected test on each machine, so
 # every test runs exactly once), unit tests run on a 9th. Whole suite ≈ 8–10 min. Public repo = unlimited minutes.
 #
@@ -111,7 +111,7 @@ jobs:
           retention-days: 7
 
   verdict:
-    name: verdict (all 371)
+    name: verdict (all 372)
     needs: [unit, e2e]
     if: always()
     runs-on: ubuntu-latest
@@ -125,4 +125,4 @@ jobs:
           merge-multiple: true
       - name: One verdict for the whole suite
         run: |
-          python3 tools/test_summary.py results/*.xml --label "ALL" --expect 371 | tee -a "$GITHUB_STEP_SUMMARY"
+          python3 tools/test_summary.py results/*.xml --label "ALL" --expect 372 | tee -a "$GITHUB_STEP_SUMMARY"
