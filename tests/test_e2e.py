@@ -1100,7 +1100,9 @@ def test_rate_limited_store_is_blocked_never_down(tmp_path, monkeypatch):
     monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
     run, _ = _scan("rate_limited", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict != "down", run.verdict
-    hit = [c for c in run.cases if c.suite in ("product", "journey")]
+    # every case that needs the store's product data is blocked; product.pincode reads the page only (14 Oct) and
+    # just reports "no checker" on this store
+    hit = [c for c in run.cases if c.suite in ("product", "journey") and c.case_id != "product.pincode"]
     assert hit and all(c.verdict == "blocked" for c in hit), [(c.case_id, c.verdict) for c in hit]
     assert all("429" in (c.attempts[-1].error or "") and "rate-limiting" in c.attempts[-1].error for c in hit)
     assert not any(c.incident_signature for c in run.cases)
