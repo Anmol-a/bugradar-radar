@@ -175,6 +175,13 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
             {"url": vurl(sold), "strict": False, "cart_probe": s.allow_cart_flow}, "minor",
             "Sold out in products.json (re-checked live): buy button disabled / absent or 'sold out' wording shown; "
             "/cart/add.js in Radar's own cart should be refused. Buy and checkout never clicked"))
+    # store feature (14 Oct): a delivery-pincode checker on the product page. No checker = information only.
+    if picks:
+        product.cases.append(TestCase(
+            "product.pincode", "product", f"Pincode checker on '{picks[0].title[:40]}' answers for a delivery pincode",
+            "pincode_check", {"url": vurl(picks[0]), "probe": s.probe_pincode, "strict": False}, "minor",
+            "If the product page has a pincode / zip box: type a real pincode, press check, an answer (deliverable or "
+            "not, days) must appear. No box = nothing to judge"))
     if product.cases:
         suites.append(product)
 
@@ -204,6 +211,13 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
                             "cart_path": sm.cart_path, "strict": False}, "minor",
             "Add with the store's buy button; the drawer (if the theme opens one) and then the cart page each match "
             "Shopify's /cart.js; the item is taken out of Radar's cart afterwards. No drawer = information only"))
+        # store feature (14 Oct): a discount / coupon box on the cart page rejects a junk code with a message
+        next(x for x in suites if x.id == "cart").cases.append(TestCase(
+            "cart.discount_code", "cart", "Discount box on the cart page rejects a code no store has, total unchanged",
+            "discount_code", {"url": f"{buyable.url}?variant={buyable.variant_id}", "variant_id": buyable.variant_id,
+                              "cart_path": sm.cart_path, "strict": False}, "minor",
+            "If the cart page has a discount / coupon box: a made-up code must get a 'not valid' message and the total "
+            "must not change. No box = information only (Shopify's own box is on the checkout page, never filled)"))
         # journey 33: 'Buy it now' (Shopify's dynamic checkout button) opens a working checkout. Inside the cart flow only:
         # the checkout it opens is what robots.txt keeps from bots unless the store authorised Radar
         next(x for x in suites if x.id == "cart").cases.append(TestCase(
