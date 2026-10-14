@@ -11,10 +11,14 @@ python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
 cp .env.example .env               # then paste your OPENAI_API_KEY into .env (never into chat or git)
-python3 -m pytest -q                 # 345 tests (155 unit + 190 real-browser); locally ~1 h, on GitHub ~10 min
-python3 -m pytest -q -m "not e2e"    # 155 fast unit tests only
+python3 -m pytest -q                 # 355 tests (163 unit + 192 real-browser); locally ~1 h, on GitHub ~15 min
+python3 -m pytest -q -m "not e2e"    # 163 fast unit tests only
 # Every push to fix/v0.19, cloud-runs or main runs the whole suite on 9 GitHub machines (.github/workflows/radar-tests.yml):
-# the "verdict" job is green only when all 345 pass; its Summary tab lists every failing test id.
+# the "verdict" job is green only when all 355 pass; its Summary tab lists every failing test id.
+
+# The LIVE runner (14 Oct): one always-on process on our own machine watches the dashboard's `monitors` table,
+# scans each store on its schedule and uploads the results. Set up with cloud/setup-worker.sh; run by hand with
+#   python3 -m radar worker --once     # BUGRADAR_SUPABASE_URL, BUGRADAR_SERVICE_KEY, BUGRADAR_KEY in the environment
 ```
 
 ## Use

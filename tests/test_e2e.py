@@ -2450,3 +2450,24 @@ def test_product_with_an_open_incident_is_retested_every_run_until_it_passes(tmp
         assert [c.case_id for c in run3.cases if c.case_id.startswith("product.pdp.")] == ["product.pdp.ceramic-vase"]
     finally:
         srv.shutdown()
+
+
+def test_worker_scans_a_claimed_store_and_reports_back(tmp_path, monkeypatch):
+    """The live runner end to end: a monitor row for the mock store is claimed, scanned on both devices in a real
+    browser, and finished with the store's verdict; a second claim finds nothing due. Upload is off (no key)."""
+    from radar import worker as w
+    from tests.test_worker import FakeQueue
+    srv, url = serve("healthy")
+    try:
+        q = FakeQueue([{"id": "m1", "url": url, "devices": ["desktop", "mobile"], "quick": True, "allow_cart": True}])
+        monkeypatch.delenv("BUGRADAR_KEY", raising=False)
+        lines = []
+        ran = w.run_once(q, _settings(tmp_path), "test-box", upload=True, log=lines.append)
+        assert ran["id"] == "m1"
+        (mid, status, note), = q.finished
+        assert (mid, status) == ("m1", "healthy"), (status, note)
+        assert "desktop: healthy; mobile: healthy" in note and "NOT uploaded" in note     # no key = said so, not silent
+        assert w.run_once(q, _settings(tmp_path), "test-box", upload=False, log=lines.append) is None
+        assert len(list(tmp_path.glob("sites/*/runs/*/run.json"))) == 2      # one run per device on disk
+    finally:
+        srv.shutdown()
