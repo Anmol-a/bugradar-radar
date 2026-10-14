@@ -1887,13 +1887,13 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
             body += ('<div class="pincode-check"><input type="text" placeholder="ENTER YOUR PINCODE" maxlength="6">'
                      '<button type="button" class="pincode-btn">CHECK</button></div>')
-        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered") and available:
+        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered", "pincode_rerender") and available:
             # store feature (14 Oct): a delivery-pincode checker next to the buy button. pincode_ok answers after a
             # short app call; pincode_dead: the CHECK button is wired to nothing (the app's script failed to load)
-            js = ('<script>document.querySelector(".pincode-btn").onclick = () => { const v = document.querySelector('
+            js = ('<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; const v = document.querySelector('
                   '".pincode-check input").value; setTimeout(() => { document.getElementById("pin-msg").textContent = '
-                  '/^\\d{6}$/.test(v) ? "Delivery by Thu, 16 Oct · COD available for " + v : "Please enter a valid pincode"; }, 300); };</script>'
-                  if self.mode in ("pincode_ok", "pincode_covered") else "")
+                  '/^\\d{6}$/.test(v) ? "Delivery by Thu, 16 Oct · COD available for " + v : "Please enter a valid pincode"; }, 300); });</script>'
+                  if self.mode in ("pincode_ok", "pincode_covered", "pincode_rerender") else "")
             widget = ('<div class="pincode-check"><label>Check delivery</label><input type="text" name="pincode" '
                       'placeholder="Enter pincode" maxlength="6"><button type="button" class="pincode-btn">CHECK</button>'
                       '<div id="pin-msg" class="delivery-estimate"></div></div>' + js)
@@ -1905,6 +1905,15 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                           '<div class="sticky-atc" style="position:fixed;left:0;right:0;bottom:0;height:140px;background:#fff;'
                           'z-index:30;padding:10px">Sticky buy bar <button type="button">Add to cart</button></div>'
                           + self.OVERLAYS["newsletter_popup"].replace("}, 400);", "}, 2500);"))
+            if self.mode == "pincode_rerender":
+                # mcaffeine / plumgoodness / boat-lifestyle (15 Oct re-test): an app-rendered widget redraws itself
+                # every few hundred ms (new nodes, typed value kept): anything Radar marked on the old nodes is gone
+                widget += ('<script>setInterval(() => { const w = document.querySelector(".pincode-check"); if (!w) return; '
+                           'const v = w.querySelector("input").value, m = w.querySelector("#pin-msg").textContent; '
+                           'const n = w.cloneNode(true); n.querySelector("input").value = v; n.querySelector("#pin-msg").textContent = m; '
+                           # a real app draws fresh nodes from its own state: nothing anyone set on the old ones survives
+                           '[n, ...n.querySelectorAll("*")].forEach(e => [...e.attributes].forEach(a => { if (a.name.startsWith("data-radar")) e.removeAttribute(a.name); })); '
+                           'w.replaceWith(n); }, 250);</script>')
             body += widget
         if self.mode == "disabled_dup_button" and available:
             # littleboxindia.com mobile (new30c + loop cycle 6): the product form holds TWO buy buttons; the one Radar

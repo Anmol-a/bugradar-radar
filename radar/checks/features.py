@@ -37,6 +37,7 @@ PINCODE_BOX_JS = r"""() => {
     .filter(i => !/search|email|phone|mobile|otp|name|coupon|discount|promo/i.test([i.name, i.id, i.placeholder].join(' ')));
   if (!boxes.length) return null;
   const box = boxes[0]; box.setAttribute('data-radar-pin', 'box');
+  window.__radarPin = {box};
   // the control: a button / submit in the same form or container, with a check-like label, else the form itself (Enter)
   let scope = box.form || box.parentElement; let btn = null;
   for (let k = 0; k < 5 && scope && !btn; k++) {
@@ -44,8 +45,10 @@ PINCODE_BOX_JS = r"""() => {
       /check|apply|go\b|verify|submit|find|search|ok\b|→|›|>/i.test((b.innerText || b.value || b.getAttribute('aria-label') || '').trim()));
     scope = scope.parentElement; }
   if (btn) btn.setAttribute('data-radar-pin', 'btn');
+  window.__radarPin.btn = btn;
   const holder = box.closest('form, [class*="pincode" i], [class*="zip" i], [class*="delivery" i], [id*="pincode" i], section, div') || box.parentElement;
   holder.setAttribute('data-radar-pin', 'holder');
+  window.__radarPin.holder = holder;
   const segs = h => [...h.querySelectorAll('*'), h].map(e => [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(' ').replace(/\s+/g, ' ').trim()).filter(t => t.length > 1);
   return {placeholder: (box.placeholder || box.name || box.id || '').slice(0, 40), button: btn ? (btn.innerText || btn.value || '').trim().slice(0, 30) : null,
           before: segs(holder).slice(0, 80),
@@ -57,7 +60,9 @@ PINCODE_BOX_JS = r"""() => {
 NEW_TEXT_JS = r"""(snap) => { const before = snap.before, extraBefore = new Set(snap.extraBefore || []);
   const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 2 && r.height > 2 && s.visibility !== 'hidden' && parseFloat(s.opacity || 1) > 0.05; };
-  const holder = document.querySelector('[data-radar-pin="holder"], [data-radar-code="holder"]');
+  let holder = null;
+  for (const s of [window.__radarPin, window.__radarCode]) if (s && s.holder && document.contains(s.holder)) holder = s.holder;
+  if (!holder) for (const s of [window.__radarPin, window.__radarCode]) if (s && s.box && document.contains(s.box)) holder = s.box.closest('form, section, div') || s.box.parentElement;
   const segs = h => [...h.querySelectorAll('*'), h].map(e => [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(' ').replace(/\s+/g, ' ').trim()).filter(t => t.length > 1);
   // only text that was NOT in the holder before the probe (its label and button do not count as an answer)
   const was = new Set(before || []);
@@ -79,20 +84,40 @@ DISCOUNT_BOX_JS = r"""() => {
     .filter(i => !/pin\s*code|zip|postal|search|email|phone|otp/i.test([i.name, i.id, i.placeholder].join(' ')));
   if (!boxes.length) return null;
   const box = boxes[0]; box.setAttribute('data-radar-code', 'box');
+  window.__radarCode = {box};
   let scope = box.form || box.parentElement; let btn = null;
   for (let k = 0; k < 5 && scope && !btn; k++) {
     btn = [...scope.querySelectorAll('button, input[type=submit], [role=button], a')].find(b => vis(b) &&
       /apply|redeem|submit|go\b|check|use|add|ok\b|→|›|>/i.test((b.innerText || b.value || b.getAttribute('aria-label') || '').trim()));
     scope = scope.parentElement; }
   if (btn) btn.setAttribute('data-radar-code', 'btn');
+  window.__radarCode.btn = btn;
   const holder = box.closest('form, [class*="discount" i], [class*="coupon" i], [class*="promo" i], section, div') || box.parentElement;
   holder.setAttribute('data-radar-code', 'holder');
+  window.__radarCode.holder = holder;
   const segs = h => [...h.querySelectorAll('*'), h].map(e => [...e.childNodes].filter(n => n.nodeType === 3).map(n => n.textContent).join(' ').replace(/\s+/g, ' ').trim()).filter(t => t.length > 1);
   return {placeholder: (box.placeholder || box.name || box.id || '').slice(0, 40), button: btn ? (btn.innerText || btn.value || '').trim().slice(0, 30) : null,
           before: segs(holder).slice(0, 80),
           extraBefore: [...document.querySelectorAll('[role=alert], [role=status], [aria-live], .message, .error, .toast, .notification, ' +
     '[class*="toast" i], [class*="alert" i], [class*="message" i], [class*="error" i], [class*="success" i], [class*="estimate" i], [class*="delivery" i]')].filter(vis)
             .map(e => (e.innerText || '').replace(/\s+/g, ' ').trim()).filter(t => t.length > 2).slice(0, 40)}; }"""
+
+
+FINDERS = {"pin": ("__radarPin", PINCODE_BOX_JS), "code": ("__radarCode", DISCOUNT_BOX_JS)}
+
+
+def _el(ctx: Ctx, kind: str, part: str):
+    """The widget's box / button / holder as a live element handle. App-rendered widgets (mcaffeine, plumgoodness,
+    boat-lifestyle, 14-15 Oct) re-render themselves and drop any marker Radar set: when the remembered node has left
+    the document, the finder runs again and the new node is used."""
+    store, finder = FINDERS[kind]
+    page = ctx.sess.page
+    page.evaluate(f"() => {{ const s = window.{store}; if (!s || !s.box || !document.contains(s.box)) ({finder})(); }}")
+    h = page.evaluate_handle(f"() => (window.{store} || {{}}).{part} || null")
+    el = h.as_element()
+    if el is None:
+        raise AssertionError(f"the {kind} widget's {part} is no longer on the page")
+    return el
 
 
 def _watch_server_errors(ctx: Ctx) -> list[str]:
@@ -129,33 +154,33 @@ def _type_into(ctx: Ctx, kind: str, text: str) -> None:
     """Scroll the box to the middle of the screen (a sticky buy bar or header can cover it: mcaffeine, plumgoodness,
     boat-lifestyle on the first real run, 14 Oct), close any popup, then fill it like a shopper."""
     _dismiss(ctx)
-    box = ctx.sess.page.locator(f'[data-radar-{kind}="box"]').first
+    box = _el(ctx, kind, "box")
     box.evaluate("e => e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'})")
     try:
         box.click(timeout=4000)
     except Exception:  # noqa: BLE001  covered by a sticky bar: focus it directly, typing still goes through the page
-        box.focus()
-    box.fill(text)
+        _el(ctx, kind, "box").focus()
+    _el(ctx, kind, "box").fill(text)
 
 
 def _press(ctx: Ctx, kind: str) -> str:
     """Click the feature's own button like a shopper (scrolled to the middle, popups closed), or press Enter in the
     box when it has none."""
-    page = ctx.sess.page
-    btn = page.locator(f'[data-radar-{kind}="btn"]').first
-    if btn.count():
+    store = FINDERS[kind][0]
+    has_btn = ctx.sess.page.evaluate(f"() => !!((window.{store} || {{}}).btn)")
+    if has_btn:
         try:
-            _click(ctx, btn)
+            _click(ctx, _el(ctx, kind, "btn"))
             return "pressed its button"
         except Exception as e:  # noqa: BLE001
             # still covered after scrolling (a page that ends right under a sticky bar): fire the button's own click
             # handler, then Enter in the box as well, the two things a shopper's tap / keyboard would do
-            btn.dispatch_event("click")
-            page.locator(f'[data-radar-{kind}="box"]').first.press("Enter")
+            _el(ctx, kind, "btn").dispatch_event("click")
+            _el(ctx, kind, "box").press("Enter")
             m = re.search(r"<[^>]{0,120}>[^\n]{0,40}intercepts pointer events", str(e))
             why = m.group(0)[:160] if m else str(e).splitlines()[0][:60]
             return f"its button is covered ({why}): clicked it through the cover and pressed Enter"
-    page.locator(f'[data-radar-{kind}="box"]').first.press("Enter")
+    _el(ctx, kind, "box").press("Enter")
     return "pressed Enter in the box"
 
 
