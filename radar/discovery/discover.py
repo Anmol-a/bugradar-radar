@@ -156,7 +156,10 @@ def same_site(a: str, b: str) -> bool:
     return ha == hb or hb.endswith("." + ha) or ha.endswith("." + hb)
 
 
-NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift|sampler|tester|\bsample\b|dummy|test[-_ ]product",
+# + checkout add-ons sold as products: 'Free Returns + Package Protection' (saturn.health, new30m 14 Oct: NOT JUDGED on
+#   both devices, its page has no buy button a shopper uses) and shipping / order protection or insurance apps
+NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift|sampler|tester|\bsample\b|dummy|test[-_ ]product|"
+                           r"(package|shipping|order|returns?|delivery|parcel)[-_ ]?(protection|insurance)|route[-_ ]?protection",
                            re.I)
 
 
