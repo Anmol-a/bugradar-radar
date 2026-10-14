@@ -350,6 +350,9 @@ Modes (to prove Radar catches and heals what it should):
                    to load' (the rule keeps real breakage a failure)
   refused_mid_run  bombayshirts.com phone (new30l, 13 Oct): discovery sees the store (robots, homepage, data), then the
                    bot wall answers HTTP 403 to every page -> run verdict 'blocked' with a note (v0.19: DOWN, 8 failed checks)
+  late_redirect_product  the vase's page renders, then a script sends the shopper to / a moment later (foxtale.in
+                   14 Oct) -> loads WARNS 'redirects to / shortly after loading', the next catalog product is tested
+  grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
                    (the page shows the products by name), never a failure
@@ -406,6 +409,7 @@ from http.cookies import SimpleCookie
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import urlparse, parse_qs
 
+LATE_REDIRECT_MS = 1200
 PRODUCTS = [
     {"id": 1, "handle": "sold-out-lamp", "title": "Brass Table Lamp", "price": "2499.00",
      "variants": [{"id": 101, "available": False, "price": "2499.00"}], "collection": "home-decor"},
@@ -661,6 +665,12 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "late_redirect_product" \
+                and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
+            # foxtale.in (full 36 + re-test, 14 Oct, flaky twice): the product page renders, then the storefront's app
+            # sends the shopper to the homepage a moment later (a catalog product hidden from shoppers)
+            body = body.replace("</body>", f"<script>addEventListener('load', () => setTimeout(() => location.replace('/'), "
+                                           f"{LATE_REDIRECT_MS}));</script></body>")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "headless_alias":
             if getattr(self, "canon", None):
                 body = body.replace('<link rel="canonical" href="/">', f'<link rel="canonical" href="/products/{self.canon}">', 1)
@@ -1311,6 +1321,11 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                                  else p["variants"]} for p in items]})
             if not items:
                 return self._send(404, page("Not found", "404"))
+            if self.mode == "grid_names_dead":       # the same cards, but nothing happens when a shopper taps them
+                tiles = "".join(f'<div class="tile" style="display:inline-block;width:200px;margin:8px"><div style="height:160px;'
+                                f'background:#eee"></div><div class="tile__title">{p["title"]}</div><div>Rs. {p["price"]}</div></div>'
+                                for p in items)
+                return self._send(200, page(f"{h.title()} Collection | Mock Store", f"<h2>{len(items)} products</h2>{tiles}"), set_cart=new)
             if self.mode == "grid_without_links":    # giva.co desktop: cards a script navigates, no product links
                 tiles = "".join(f'<div class="tile" role="button" data-url="/products/{p["handle"]}" style="display:inline-block;'
                                 f'width:200px;margin:8px"><div style="height:160px;background:#eee"></div>'

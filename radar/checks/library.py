@@ -1136,6 +1136,54 @@ def _why_no_grid(ctx: Ctx, url: str) -> str | None:
     return None
 
 
+NAME_TARGET_JS = r"""(name) => { const key = name.trim().toLowerCase().replace(/\s+/g, ' ').slice(0, 40);
+  let best = null;
+  for (const e of document.querySelectorAll('body *')) {
+    if (e.children.length > 3) continue;
+    const t = (e.innerText || '').trim().toLowerCase().replace(/\s+/g, ' ');
+    if (!t.includes(key) || t.length > 200) continue;
+    const r = e.getBoundingClientRect(); if (r.width < 4 || r.height < 4) continue;
+    if (!best || t.length < best.t.length) best = {e, t}; }
+  if (!best) return null;
+  best.e.scrollIntoView({block: 'center'});
+  const r = best.e.getBoundingClientRect(), e = best.e;
+  const a = e.closest('a[href]'), cl = e.closest('[onclick], [role="button"], [role="link"], [data-url], [data-href]');
+  return {x: Math.round(r.left + r.width / 2), y: Math.round(r.top + r.height / 2),
+          what: `<${e.tagName.toLowerCase()}${e.className && typeof e.className === 'string' ? '.' + e.className.trim().split(/\s+/)[0] : ''}>`
+            + (a ? ` in <a href="${a.getAttribute('href').slice(0, 60)}">` : '') + (cl && !a ? ` in <${cl.tagName.toLowerCase()} ${cl.getAttribute('role') ? 'role=' + cl.getAttribute('role') : 'clickable'}>` : '')}; }"""
+
+
+def _tap_listed_name(ctx: Ctx, url: str, name: str) -> tuple[str | None, str]:
+    """Cards Radar cannot read as product links (giva.co desktop, full 36 on 14 Oct, both times NOT JUDGED with all 50
+    names on the page): tap a listed product's name as a shopper would. A product page opening = the listing works.
+    Returns (the product path opened or None, evidence). The collection page is opened again afterwards."""
+    page = ctx.sess.page
+    try:
+        t = ctx.sess.evaluate(NAME_TARGET_JS, name)
+    except Exception as e:  # noqa: BLE001
+        return None, f"could not read the name on the page ({str(e).splitlines()[0][:80]})"
+    if not t:
+        return None, "the name is in the page text but in no element a shopper can tap"
+    before = page.url
+    try:
+        page.mouse.click(t["x"], t["y"])
+        for _ in range(16):
+            page.wait_for_timeout(500)
+            if "/products/" in page.url:
+                break
+    except Exception:  # noqa: BLE001  a navigation mid-wait
+        pass
+    now = page.url
+    opened = _path(now) if "/products/" in now and now != before else None
+    if now != before:
+        try:
+            ctx.sess.goto(url)       # the steps after this one judge the collection page itself
+        except Exception:  # noqa: BLE001
+            pass
+    return opened, (f"tapping the name ({t['what']}) opened {_path(now)}" if now != before
+                    else f"tapping the name ({t['what']}) opened nothing")
+
+
 def collection_page(ctx: Ctx, url: str):
     ctx.steps.run("loads", lambda: _load(ctx, url))
 
@@ -1159,8 +1207,14 @@ def collection_page(ctx: Ctx, url: str):
                                 "could not be read to confirm the collection has products")
             shown = _titles_on_page(ctx, titles)
             if shown:
+                opened, how = _tap_listed_name(ctx, url, shown[0])
+                if opened:
+                    ctx.expect("a listed product opens when a shopper taps its name", "a product page",
+                               f"{shown[0][:50]!r} → {opened}", True)
+                    return (f"{len(shown)} of the collection's {len(titles)} products shown by name (cards a script "
+                            f"opens, no product links); tapping {shown[0][:40]!r} opened {opened}")
                 raise NotJudged(f"products listed: the page shows {len(shown)} of the collection's {len(titles)} products "
-                                f"by name (e.g. {shown[0][:50]!r}) but no product link Radar recognises")
+                                f"by name (e.g. {shown[0][:50]!r}) but no product link Radar recognises; {how}")
             ctx.expect("products listed", f"≥ 1 (the store's own data lists {len(titles)}, none of their names is on the page)",
                        n, n >= 1)
         ctx.expect("products listed", "≥ 1", n, n >= 1)
@@ -1962,6 +2016,15 @@ def _load_product(ctx: Ctx, url: str) -> str:
         if why:
             ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
                        f"{why} (in the store's catalog but hidden from shoppers)", False)
+    # foxtale.in (full 36 + re-test, 14 Oct: 'flaky' twice): the page renders the product, then the storefront's app
+    # sends the shopper to the homepage a moment later; the first try read the product, the next step found '/'.
+    # The page is given 2.5 s to settle; leaving the product page in that time is the same catalog finding.
+    for _ in range(5):
+        ctx.sess.page.wait_for_timeout(500)
+        later = _path(ctx.sess.page.url)
+        if not later.startswith("/products/"):
+            ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
+                       f"redirects to {later} shortly after loading (in the store's catalog but hidden from shoppers)", False)
     return out
 
 

@@ -550,7 +550,8 @@ def test_catalog_product_hidden_from_shoppers_is_a_warning_and_the_next_product_
     for mode, words in (("hidden_product", "redirects to / (in the store's catalog but hidden from shoppers)"),
                         ("notfound_product", "but the page does not exist"),
                         ("unavailable_product", "currently unavailable"),           # plumgoodness.com, bench 4
-                        ("home_at_product_url", "page shows other content")):      # foxtale.in (headless), bench 4
+                        ("home_at_product_url", "page shows other content"),       # foxtale.in (headless), bench 4
+                        ("late_redirect_product", "redirects to / shortly after loading")):   # foxtale.in, 14 Oct
         run = _product_only(mode, tmp_path / mode, max_products=1)
         vase = _case(run, "product.pdp.ceramic")
         assert vase.verdict == "pass", (mode, vase.attempts[-1].error)
@@ -2095,16 +2096,21 @@ def test_verdict_rule_product_without_an_image_is_not_judged_but_a_broken_image_
         (vase.verdict, vase.attempts[-1].error)
 
 
-def test_verdict_rule_products_shown_by_name_without_links_are_not_judged_and_an_empty_page_fails(tmp_path):
-    """giva.co desktop (verdict-rule sanity run 38403594396): the failure screenshot showed a grid of named, priced
-    cards while Radar counted 0 product links and failed on 'the data lists 50, the page shows none'. The page's own
-    text is the second signal: product names on the page = NOT JUDGED; no names and no links while the data lists
-    products = a failure with the data as evidence."""
+def test_verdict_rule_products_shown_by_name_without_links_are_tapped_and_an_empty_page_fails(tmp_path):
+    """giva.co desktop (verdict-rule sanity run 38403594396; full 36 on 14 Oct again NOT JUDGED with 50 of 50 names
+    shown): a grid of named, priced cards a script opens, no product links. Radar taps a listed name like a shopper:
+    a product page opening = PASS; nothing opening = NOT JUDGED with what was tapped (Anmol, 14 Oct: not-judged is a
+    Radar bug, target 0); no names and no links while the data lists products = a failure with the data as evidence."""
     run = _scan_small("grid_without_links", tmp_path, suites=["catalog"])
     coll = _case(run, "catalog.collection.")
     st = _steps(coll)["lists_products"]
-    assert coll.verdict == "blocked" and st.status == "skip" and "3 of the collection's 3 products by name" in st.error, \
-        (coll.verdict, st.error)
+    assert coll.verdict == "pass" and len(coll.attempts) == 1 and "3 of the collection's 3 products shown by name" in st.detail \
+        and "opened /products/" in st.detail, (coll.verdict, st.detail, st.error)
+    run = _scan_small("grid_names_dead", tmp_path / "dead", suites=["catalog"])
+    coll = _case(run, "catalog.collection.")
+    st = _steps(coll)["lists_products"]
+    assert coll.verdict == "blocked" and st.status == "skip" and "3 of the collection's 3 products by name" in st.error \
+        and "opened nothing" in st.error, (coll.verdict, st.error)
     run = _scan_small("grid_empty_data_full", tmp_path / "empty", suites=["catalog"])
     coll = _case(run, "catalog.collection.")
     assert coll.verdict == "confirmed_fail" and "none of their names is on the page" in coll.attempts[-1].error, \
