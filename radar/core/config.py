@@ -61,6 +61,7 @@ class Settings:
     device_budget_s: int = 1500         # bench: one store on one device is stopped after this (25 min; slowest real
                                         # store seen 10 Oct ≈ 19 min). A frozen page otherwise holds a shard for hours
     max_products: int = 3               # products tested per run
+    probe_pincode: str = "400001"       # typed into a store's pincode checker (Mumbai GPO); the answer itself is not judged
     max_collections: int = 2
     max_nav_links: int = 10             # menu pages opened by the smoke suite
     retries: int = 2                    # extra attempts on failure (confirm logic)
@@ -95,6 +96,7 @@ _ENV = {
     "RADAR_LLM_MODEL": ("llm_model", str),
     "RADAR_LLM_BASE_URL": ("llm_base_url", str),
     "RADAR_MAX_PRODUCTS": ("max_products", int),
+    "RADAR_PROBE_PINCODE": ("probe_pincode", str),
     "RADAR_ALLOW_CART": ("allow_cart_flow", lambda v: v.lower() not in ("0", "false", "no")),
     "RADAR_NET_PROBES": ("net_probe_urls", lambda v: tuple(u.strip() for u in v.split(",") if u.strip())),
 }

@@ -1307,3 +1307,16 @@ def test_product_data_from_the_store_domain_when_a_headless_subdomain_answers_ht
     with pytest.raises(AssertionError):
         L._product_js(ctx, "https://shop.example.in/products/ring-1")
     assert calls == ["https://shop.example.in/products/ring-1.js"]
+
+
+# ---------- store features (14 Oct): pincode checker, discount box ----------
+def test_builder_adds_the_store_feature_cases():
+    suites = build_suites(_sm(), replace(Settings(), probe_pincode="560001"))
+    pin = next(c for c in next(x for x in suites if x.id == "product").cases if c.id == "product.pincode")
+    assert pin.check == "pincode_check" and pin.params["probe"] == "560001" and pin.params["strict"] is False
+    assert pin.params["url"].endswith("/products/vase?variant=2")        # the first sampled in-stock product
+    code = next(c for c in next(x for x in suites if x.id == "cart").cases if c.id == "cart.discount_code")
+    assert code.check == "discount_code" and code.params["variant_id"] == 2 and code.params["strict"] is False
+    no_cart = build_suites(_sm(), replace(Settings(), allow_cart_flow=False))
+    assert not any(c.id == "cart.discount_code" for x in no_cart for c in x.cases)     # cart flow off = no cart tests
+    assert any(c.id == "product.pincode" for x in no_cart for c in x.cases)            # the pincode box is read-only

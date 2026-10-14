@@ -5120,3 +5120,7 @@ def cart_drawer(ctx: Ctx, url: str, variant_id: int | None = None, cart_path: st
 
 
 REGISTRY["cart_drawer"] = cart_drawer
+
+
+# ---------------- store features (14 Oct): widgets Indian D2C stores add on top of Shopify ----------------
+import radar.checks.features  # noqa: E402,F401  (registers itself into REGISTRY; imported last: it needs this module's helpers)
