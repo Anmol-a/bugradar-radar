@@ -31,8 +31,14 @@ if command -v apt-get >/dev/null; then
   dpkg-reconfigure -f noninteractive unattended-upgrades || true
   ufw default deny incoming; ufw default allow outgoing; ufw allow OpenSSH; ufw --force enable
 else
-  dnf install -y python3 python3-pip git curl ca-certificates          # Oracle Linux: firewalld is on by default
+  # Oracle Linux 8/9 (user opc): python3 there is 3.6/3.9, Radar needs 3.10+ -> python3.11; Chromium's system libraries
+  # by name (playwright install-deps knows only Debian/Ubuntu). firewalld already allows only SSH in.
+  dnf install -y python3.11 python3.11-pip git curl ca-certificates \
+    nss nspr atk at-spi2-atk at-spi2-core cups-libs libdrm libXcomposite libXdamage libXrandr libXfixes libXext \
+    libxkbcommon mesa-libgbm pango cairo alsa-lib libxcb libX11 libXcursor libXi gtk3 || true
+  PY=python3.11
 fi
+PY="${PY:-python3}"
 
 echo "== user radar + folders"
 id radar >/dev/null 2>&1 || useradd -m -s /bin/bash radar
@@ -48,10 +54,10 @@ else
 fi
 
 echo "== python + chromium"
-sudo -u radar python3 -m venv "$HOME_DIR/radar/.venv"
+sudo -u radar "$PY" -m venv "$HOME_DIR/radar/.venv"
 sudo -u radar "$HOME_DIR/radar/.venv/bin/pip" install -q -r "$HOME_DIR/radar/requirements.txt"
 sudo -u radar "$HOME_DIR/radar/.venv/bin/python" -m playwright install chromium
-"$HOME_DIR/radar/.venv/bin/python" -m playwright install-deps chromium || true    # needs root; Oracle Linux: see docs
+if command -v apt-get >/dev/null; then "$HOME_DIR/radar/.venv/bin/python" -m playwright install-deps chromium; fi   # needs root
 
 echo "== env file"
 if [ ! -f "$HOME_DIR/radar.env" ]; then
