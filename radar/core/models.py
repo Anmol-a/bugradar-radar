@@ -52,6 +52,9 @@ class SiteMap:
     more_links: list[dict] = field(default_factory=list)      # announcement bar / homepage section / footer links: [{where, text, url}]
     discovered_at: str = ""
     notes: list[str] = field(default_factory=list)           # honest record of what discovery could NOT do
+    pinned_products: list[str] = field(default_factory=list)     # handles with an open incident: tested every run until they pass (14 Oct)
+    pinned_collections: list[str] = field(default_factory=list)  # same for collections
+    pins_gone: list[str] = field(default_factory=list)           # pinned case ids whose product / collection left the catalog
 
     def to_dict(self) -> dict:
         return asdict(self)

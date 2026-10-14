@@ -280,7 +280,9 @@ def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
             sm.account_url = acct.split("#")[0]
 
 
-def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
+def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = ()) -> SiteMap:
+    """pins: case ids with an OPEN incident (product.pdp.<slug> / catalog.collection.<slug>). Their product or collection
+    is tested again in this run whatever the sample picks; one that has left the catalog goes to sm.pins_gone (14 Oct)."""
     sm = SiteMap(site_id=site_id_from_url(base_url), base_url=base_url,
                  discovered_at=datetime.now(timezone.utc).isoformat(timespec="seconds"))
 
@@ -462,6 +464,7 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
             except (RobotsBlocked, AssertionError, ValueError):
                 continue
         sm.products.sort(key=lambda p: not p.available)
+    _pin(sess, sm, base_url, pins)
     special = [p for p in sm.products if price_ok(p.price) and (NOT_FOR_TESTS.search(f"{p.handle} {p.title}")
                                                                 or GIFT_KIND.search(p.kind))]
     if special:
@@ -507,3 +510,36 @@ def discover(sess: Session, base_url: str, s: Settings) -> SiteMap:
     except Exception:  # noqa: BLE001
         sm.search_path = "/search"
     return sm
+
+
+def _pin(sess: Session, sm: SiteMap, base_url: str, pins: tuple[str, ...]) -> None:
+    """Open incidents keyed by a product or collection (14 Oct, Anmol: option (a)): keep testing that exact product /
+    collection every run until it passes. Case ids carry _slug(handle), which equals the handle for ordinary Shopify
+    handles; a product the sample did not fetch is read from /products/<handle>.js. Not in the catalog any more =
+    pins_gone (its incident is closed by the executor with that reason)."""
+    from radar.generate.builder import _slug
+    for cid in pins:
+        if cid.startswith("product.pdp."):
+            slug = cid[len("product.pdp."):]
+            hit = next((p for p in sm.products if _slug(p.handle) == slug), None)
+            if hit is None:
+                try:
+                    d = product_from_js(sess.get_json(f"{base_url}/products/{slug}.js"), base_url)
+                    hit = Product(**d) if d else None
+                    if hit:
+                        sm.products.append(hit)
+                except (RobotsBlocked, AssertionError, ValueError, Exception):  # noqa: BLE001
+                    hit = None
+            if hit:
+                sm.pinned_products.append(hit.handle)
+            else:
+                sm.pins_gone.append(cid)
+                sm.notes.append(f"open incident {cid}: product is no longer in the store's catalog (incident closed)")
+        elif cid.startswith("catalog.collection."):
+            slug = cid[len("catalog.collection."):]
+            hit = next((c for c in sm.collections if _slug(c.handle) == slug), None)
+            if hit:
+                sm.pinned_collections.append(hit.handle)
+            else:
+                sm.pins_gone.append(cid)
+                sm.notes.append(f"open incident {cid}: collection is no longer in the store's catalog (incident closed)")

@@ -95,8 +95,9 @@ jobs:
           PYTHONUNBUFFERED: "1"
         run: |
           set -o pipefail
-          xargs -a shard.txt python3 -m pytest -q -p no:cacheprovider --junitxml=junit-e2e-${{ matrix.shard }}.xml \
-            2>&1 | tee pytest-e2e-${{ matrix.shard }}.log
+          # ids can hold spaces and quotes (parametrize ids): one id per argument, split on newlines only
+          tr '\n' '\0' < shard.txt | xargs -0 python3 -m pytest -q -p no:cacheprovider \
+            --junitxml=junit-e2e-${{ matrix.shard }}.xml 2>&1 | tee pytest-e2e-${{ matrix.shard }}.log
       - name: Summary
         if: always()
         run: python3 tools/test_summary.py junit-e2e-${{ matrix.shard }}.xml --label "e2e shard ${{ matrix.shard }}" >> "$GITHUB_STEP_SUMMARY"
