@@ -63,6 +63,8 @@ def main():
         print("\n**Failing tests**\n")
         for t in failing:
             print(f"- `{t}`")
+            # also a GitHub annotation: readable from the API / the run page without opening the logs
+            print(f"::error title={a.label}: failing test::{t}", file=sys.stderr)
     if a.expect and total["tests"] < a.expect:
         print(f"\n**Only {total['tests']} of {a.expect} tests ran** — a shard is missing or crashed before writing its XML.")
     sys.exit(0 if ok else 1)
