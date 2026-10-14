@@ -385,10 +385,41 @@ def _product_js(ctx: Ctx, url: str) -> dict:
     """The product's own data from Shopify: id, title, variants with ids and prices (paise)."""
     h = _handle(url)
     ctx.expect("URL is a product page", "/products/<handle>", _path(url), bool(h))
-    p = ctx.sess.get_json(f"{_base(url)}/products/{h}.js")
+    try:
+        p = ctx.sess.get_json(f"{_base(url)}/products/{h}.js")
+    except (RobotsBlocked, RateLimited):
+        raise
+    except Exception as first:  # noqa: BLE001
+        # headless storefronts (palmonas.com, full 36 on 14 Oct: /products/8904097333505 is the page's own URL, its
+        # .js answers the HTML page) name the product's Shopify handle in the page's canonical / og:url / ld+json url
+        alt = [x for x in dict.fromkeys(_handle(u or "") for u in (ctx.sess.evaluate(PAGE_PRODUCT_URLS_JS) or []))
+               if x and x != h]
+        for a in alt[:2]:
+            try:
+                p = ctx.sess.get_json(f"{_base(url)}/products/{a}.js")
+            except (RobotsBlocked, RateLimited):
+                raise
+            except Exception:  # noqa: BLE001
+                continue
+            if p.get("variants"):
+                ctx.expect("product data via the handle the page names", f"/products/{h}.js answered no data",
+                           f"/products/{a}.js (from the page's canonical / og:url / ld+json)", True)
+                break
+        else:
+            raise AssertionError(f"{first}; the page names no other product handle"
+                                 + (f" that answers (tried {', '.join(alt[:2])})" if alt else "")) from first
     ctx.expect("product data from Shopify", f"/products/{h}.js with variants",
                f"{p.get('title')!r}, {len(p.get('variants', []))} variant(s)", bool(p.get("variants")))
     return p
+
+
+PAGE_PRODUCT_URLS_JS = r"""() => { const out = [document.querySelector('link[rel=canonical]')?.href,
+    document.querySelector('meta[property="og:url"]')?.content];
+  for (const sc of document.querySelectorAll('script[type="application/ld+json"]')) {
+    try { const walk = o => { if (!o || typeof o !== 'object') return; if (Array.isArray(o)) return o.forEach(walk);
+      if (/product/i.test(String(o['@type'] || ''))) { out.push(o.url, o['@id']); (o.offers ? [].concat(o.offers) : []).forEach(f => out.push(f && f.url)); }
+      Object.values(o).forEach(v => typeof v === 'object' && walk(v)); }; walk(JSON.parse(sc.textContent)); } catch (e) {} }
+  return out.filter(u => typeof u === 'string' && /\/products\//.test(u)).map(u => new URL(u, location.href).href); }"""
 
 
 def _selected_variant(ctx: Ctx, product: dict) -> dict:

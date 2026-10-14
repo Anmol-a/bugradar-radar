@@ -2329,6 +2329,15 @@ def test_country_modal_stay_here_as_plain_div_is_answered(tmp_path, device):
     assert closed and all("International" not in k["actual"] for k in closed), closed
     assert any("Stay Here" in k["actual"] for k in closed), closed
 
+@pytest.mark.parametrize("device", ["desktop", "mobile"])
+def test_headless_product_url_reads_data_via_the_handle_the_page_names(tmp_path, device):
+    """palmonas.com (full 36, 14 Oct, both devices): /products/8904097333505 (a SKU, not the Shopify handle) loaded for
+    the shopper, but its .js answered the HTML page and product_identified failed until a retry picked another
+    product. The page's canonical / og:url / ld+json names the real handle; Radar reads the data through it."""
+    j = _case(_scan_small("headless_alias", tmp_path / device, device=device, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    assert any("handle the page names" in k["what"] for k in _checks(j)), _checks(j)
+
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 
 def _buy_now_only(mode, tmp_path, strict=False, **kw):
