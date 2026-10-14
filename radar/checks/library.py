@@ -50,7 +50,8 @@ MARKETPLACE_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRec
     .some(b => vis(b) && !b.closest('header, footer, nav') && /add to (cart|bag|basket)|buy (it )?now|^add$|^buy$/i.test((b.innerText || b.value || '').trim()));
   const main = document.querySelector('main, [role=main], #MainContent') || document.body;
   const so = ((main.innerText || '').match(/\b(shop (now )?on|available on|buy (it )?on|also available on)\s*:/i) || [])[0];
-  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, shop_on: so || null}; }"""
+  const ask = (((document.body.innerText || '').match(/\b(price (up)?on request|request (a |the )?price|(enquire|inquire|call|contact us) for (the )?price|no longer (accepting|taking) (online )?orders|not (accepting|taking) online orders)\b/i) || [])[0]);
+  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, shop_on: so || null, ask: ask || null}; }"""
 
 
 def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
@@ -87,6 +88,10 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
     if m.get("shop_on"):         # beyondsnack 'Diwali Box': the 'Shop Now On:' heading with no marketplace listed yet
         raise CatalogOnly(f"not tested: the product page shows no price and no buy button, only {m['shop_on']!r}: "
                           "the store sells elsewhere, not on its own site")
+    if m.get("ask"):             # houseofquadri / artoftimeindia 'Price on Request', banjarakasuti 'no longer accepting
+        raise CatalogOnly(        # online orders' (new30n 14 Oct): the price is hidden on purpose, nothing to buy here
+            f"not tested: the product page shows no price and no buy button, only {m['ask']!r}: the store does not "
+            "sell this product online at a listed price")
 
 
 class OtherMarket(Exception):

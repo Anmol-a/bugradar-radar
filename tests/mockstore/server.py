@@ -207,6 +207,12 @@ Modes (to prove Radar catches and heals what it should):
                    lower on the product page (theindianethnicco.com, cycle 28 round 2 still DOWN) -> BLOCKED 'location'
   marketplace_only product pages show no price and no cart, only 'Buy on Amazon / Flipkart' links (antesports, beyondsnack)
                    -> product + journey BLOCKED "sells only on marketplaces", never DOWN
+  href_space       homepage + collection cards link to '/products/<handle> ' (trailing space in the href; the browser
+                   opens /products/<handle>; thechumbakwala.com new30n 14 Oct) -> journey PASSES (was DOWN 'opened the
+                   product that was clicked: expected /products/x , got /products/x')
+  price_on_request product pages hide the price on purpose: 'Price on Request' + 'Enquire' / 'Chat with us', no cart
+                   (houseofquadri.com, artoftimeindia.com, new30n 14 Oct); the spoon page shows no price and only the
+                   bar 'We are no longer accepting online orders' (banjarakasuti.com) -> BLOCKED 'not tested', never DOWN
   cart_qty_broken  the cart page's + / − buttons and quantity box do nothing (theme script missing) -> cart.edit_and_checkout
                    WARNS (strict: FAILS) at change_quantity "cart quantity after pressing +: expected 2"
   cart_remove_broken  the cart page's Remove link reloads the cart without removing the line -> WARNS (strict: FAILS) at
@@ -859,6 +865,8 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             body = body.replace("<h1>Wooden Spoon Set</h1>",
                                 '<header class="product__header"><div class="product__title" style="font-size:22px">'
                                 'Wooden Spoon Set</div></header>')
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "href_space":
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">', r'<a class="card" href="/products/\1 ">', body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "card_layouts":
             path_ = urlparse(self.path).path.rstrip("/") or "/"
             if path_ == "/":
@@ -1709,6 +1717,15 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         "  const v = V.find(x => x.option1 === r.value); if (!v) return;\n  " + act + " })); })();</script>")
 
     def _pdp(self, p):
+        if self.mode == "price_on_request":
+            body = (f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">')
+            if p["handle"] == "wooden-spoon-set":     # banjarakasuti.com: no price, no buy, a store-wide notice
+                body = ('<div class="announcement">We are no longer accepting online orders. Visit us at our store.</div>'
+                        + body + '<p>Hand-carved, made to share.</p>')
+            else:
+                body += ('<p>A compact, hand-finished piece.</p><button type="button" class="btn">Price on Request</button> '
+                         '<button type="button">Chat with us</button>')
+            return page(f"{p['title']} | Mock Store", body)
         if self.mode == "marketplace_only":
             # antesports.com (new30g) / beyondsnack.in (new30e): a brand catalog on Shopify, no price and no cart on the
             # product page, only 'Buy on Amazon / Flipkart' links; products.json still carries prices
@@ -1870,16 +1887,25 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
             body += ('<div class="pincode-check"><input type="text" placeholder="ENTER YOUR PINCODE" maxlength="6">'
                      '<button type="button" class="pincode-btn">CHECK</button></div>')
-        if self.mode in ("pincode_ok", "pincode_dead") and available:
+        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered") and available:
             # store feature (14 Oct): a delivery-pincode checker next to the buy button. pincode_ok answers after a
             # short app call; pincode_dead: the CHECK button is wired to nothing (the app's script failed to load)
             js = ('<script>document.querySelector(".pincode-btn").onclick = () => { const v = document.querySelector('
                   '".pincode-check input").value; setTimeout(() => { document.getElementById("pin-msg").textContent = '
                   '/^\\d{6}$/.test(v) ? "Delivery by Thu, 16 Oct · COD available for " + v : "Please enter a valid pincode"; }, 300); };</script>'
-                  if self.mode == "pincode_ok" else "")
-            body += ('<div class="pincode-check"><label>Check delivery</label><input type="text" name="pincode" '
-                     'placeholder="Enter pincode" maxlength="6"><button type="button" class="pincode-btn">CHECK</button>'
-                     '<div id="pin-msg" class="delivery-estimate"></div></div>' + js)
+                  if self.mode in ("pincode_ok", "pincode_covered") else "")
+            widget = ('<div class="pincode-check"><label>Check delivery</label><input type="text" name="pincode" '
+                      'placeholder="Enter pincode" maxlength="6"><button type="button" class="pincode-btn">CHECK</button>'
+                      '<div id="pin-msg" class="delivery-estimate"></div></div>' + js)
+            if self.mode == "pincode_covered":
+                # mcaffeine / plumgoodness / boat-lifestyle (first real run, 14 Oct): the checker sits far down the page
+                # under a sticky buy bar, and a newsletter popup opens a few seconds AFTER the page was read and its
+                # first popups closed -> the plain click timed out for 8 s
+                widget = ('<div style="height:2400px"></div>' + widget +      # no footer: the page ends under the bar
+                          '<div class="sticky-atc" style="position:fixed;left:0;right:0;bottom:0;height:140px;background:#fff;'
+                          'z-index:30;padding:10px">Sticky buy bar <button type="button">Add to cart</button></div>'
+                          + self.OVERLAYS["newsletter_popup"].replace("}, 400);", "}, 2500);"))
+            body += widget
         if self.mode == "disabled_dup_button" and available:
             # littleboxindia.com mobile (new30c + loop cycle 6): the product form holds TWO buy buttons; the one Radar
             # reads is disabled while an enabled ADD TO CART for the same product is on screen. Radar must name both.

@@ -1487,6 +1487,32 @@ def test_marketplace_only_store_is_blocked_with_the_reason_never_down(tmp_path):
     assert spoons.verdict == "blocked" and "'Shop Now On:'" in spoons.attempts[-1].error, (spoons.verdict, spoons.attempts[-1].error)
 
 
+def test_card_href_with_trailing_space_opens_the_clicked_product(tmp_path):
+    """thechumbakwala.com (new30n, 14 Oct): card hrefs end in a space ('/products/x '); the browser opens /products/x and
+    Radar compared the raw handle: DOWN 'expected /products/x , got /products/x' = a Radar false failure."""
+    srv, url = serve("href_space")
+    try:
+        run, _ = scan(url, _settings(tmp_path), only_suites=["journey"])
+    finally:
+        srv.shutdown()
+    c = _case(run, "journey.")
+    assert c.verdict == "pass", (c.verdict, c.attempts[-1].error)
+
+
+def test_price_on_request_store_is_blocked_with_the_reason_never_down(tmp_path):
+    """houseofquadri.com + artoftimeindia.com (new30n, 14 Oct): luxury pages show 'Price on Request' + 'Enquire', no cart;
+    banjarakasuti.com shows no price and 'We are no longer accepting online orders'. Was DOWN ('selected variant price
+    shown: not on page') = a Radar false failure: the price is hidden on purpose."""
+    run, _ = _scan("price_on_request", tmp_path)
+    assert run.verdict != "down", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    for prefix in ("journey.", "product.pdp.ceramic"):
+        c = _case(run, prefix)
+        assert c.verdict == "blocked" and "only 'Price on Request'" in c.attempts[-1].error, (prefix, c.verdict, c.attempts[-1].error)
+    spoons = _case(run, "product.pdp.wooden")
+    assert spoons.verdict == "blocked" and "no longer accepting online orders" in spoons.attempts[-1].error, \
+        (spoons.verdict, spoons.attempts[-1].error)
+
+
 def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_path):
     run = _info("healthy", tmp_path, suites=("smoke",))
     c = _case(run, "smoke.more_links")
@@ -2544,6 +2570,17 @@ def test_pincode_checker_that_answers_passes_with_the_answer_recorded(tmp_path):
     assert c.verdict == "pass", (c.attempts[-1].error, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
     assert st["pincode_answers"].status == "pass" and "Delivery by Thu" in st["pincode_answers"].detail and "400001" in st["pincode_answers"].detail
     assert "pincode box 'Enter pincode', button 'CHECK'" in st["pincode_box"].detail
+
+
+def test_pincode_checker_under_a_sticky_bar_is_still_used(tmp_path):
+    """mcaffeine / plumgoodness / boat-lifestyle (first real run, 14 Oct): the box was found, the click timed out (a
+    sticky buy bar covered it at the bottom edge). Scroll to the middle first, like a shopper would."""
+    run = _feature("pincode_covered", tmp_path, ("product",))
+    c = _case(run, "product.pincode")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["pincode_answers"].status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert "Delivery by Thu" in st["pincode_answers"].detail
+    assert "pressed its button" in st["pincode_answers"].detail or "through the cover" in st["pincode_answers"].detail
 
 
 def test_pincode_checker_that_stays_silent_is_a_warning(tmp_path):

@@ -1373,6 +1373,9 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 loop 14 Oct 23:55 IST (new30n):** 'Price on Request' / 'Enquire' pages (houseofquadri, artoftimeindia) and
+  'no longer accepting online orders' (banjarakasuti) with no buy button = BLOCKED 'not tested' (MARKETPLACE_JS 'ask',
+  mock price_on_request), never DOWN. Mock href_space: an e2e journey test for the trailing-space href fix below.
 - **v0.20 loop 14 Oct 22:40 IST (new30n run 38597947475, 30 verified domains):** 2 Radar bugs. amayrajewellery.com DOWN on
   both devices: Shopify Markets sent the US runner to /en-us/, where the page shows that market's price while Radar read
   the default market's .js. Product data (`_product_js`, candidates, sold-out check) is now asked under the page's market
