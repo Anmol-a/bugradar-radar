@@ -2583,6 +2583,17 @@ def test_pincode_checker_under_a_sticky_bar_is_still_used(tmp_path):
     assert "pressed its button" in st["pincode_answers"].detail or "through the cover" in st["pincode_answers"].detail
 
 
+def test_pincode_checker_that_redraws_itself_is_still_used(tmp_path):
+    """mcaffeine / plumgoodness / boat-lifestyle (15 Oct re-test): the widget is app-rendered and redraws itself every
+    few hundred ms, so the nodes Radar found are gone by the time it types ('Locator.evaluate: Timeout 30000ms').
+    Radar must find the widget again before every action."""
+    run = _feature("pincode_rerender", tmp_path, ("product",))
+    c = _case(run, "product.pincode")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["pincode_answers"].status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert "Delivery by Thu" in st["pincode_answers"].detail and "400001" in st["pincode_answers"].detail
+
+
 def test_pincode_checker_that_stays_silent_is_a_warning(tmp_path):
     run = _feature("pincode_dead", tmp_path, ("product",))
     c = _case(run, "product.pincode")
