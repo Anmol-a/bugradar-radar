@@ -550,7 +550,8 @@ def test_catalog_product_hidden_from_shoppers_is_a_warning_and_the_next_product_
     for mode, words in (("hidden_product", "redirects to / (in the store's catalog but hidden from shoppers)"),
                         ("notfound_product", "but the page does not exist"),
                         ("unavailable_product", "currently unavailable"),           # plumgoodness.com, bench 4
-                        ("home_at_product_url", "page shows other content")):      # foxtale.in (headless), bench 4
+                        ("home_at_product_url", "page shows other content"),       # foxtale.in (headless), bench 4
+                        ("late_redirect_product", "redirects to / shortly after loading")):   # foxtale.in, 14 Oct
         run = _product_only(mode, tmp_path / mode, max_products=1)
         vase = _case(run, "product.pdp.ceramic")
         assert vase.verdict == "pass", (mode, vase.attempts[-1].error)

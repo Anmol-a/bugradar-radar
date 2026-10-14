@@ -1373,6 +1373,9 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 loop 14 Oct 19:25 IST (re-test run 38565109460: giva + soulflower healthy both devices):** foxtale.in catalog
+  product 'flaky' twice: its page renders, then the app sends the shopper to / a moment later. `_load_product` gives the
+  page 2.5 s to settle; leaving the product page = the same hidden-catalog-product warning (mock `late_redirect_product`).
 - **v0.20 loop 14 Oct 18:10 IST (full 36 run 38558763569: 0 false failures, 1 not-judged):** giva.co desktop
   /collections/all-1 NOT JUDGED again (50 of 50 names shown, no product link read on a cold load). Radar now taps a listed
   name like a shopper: a product page opening = PASS; nothing opening = NOT JUDGED with what was tapped (`_tap_listed_name`;
