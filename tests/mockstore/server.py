@@ -501,12 +501,12 @@ def facets_page(h: str, items: list[dict], q: dict, mode: str) -> str:
             '@media (min-width: 750px) { .facets-open { display: none } }</style>'
             f'<div id="product-grid">{"".join(card(p) for p in shown) or "<p>No products found</p>"}</div>'
             # filter_app: an app owns the grid and empties it whenever the address carries filter.* (its own params differ)
-            # the app empties the grid the moment its script runs (synchronously, like a real filter app that owns
-            # the grid), then keeps watching the address: a 150 ms-only timer let a fast read see the theme's own
-            # products first (14 Oct: flaky on a GitHub machine)
+            # the app OWNS the grid: whenever the address carries filter.* and the grid shows the theme's cards, it
+            # replaces them with its own empty list: at script start, on every tick, and after the theme's own fetch
+            # re-fills the grid (14 Oct: a once-only flag let the theme's late re-fill win on slow GitHub machines)
             + ('<script src="/static/boost-sd-filter.js"></script><script>const boostSd = () => { const g = document.'
-               "getElementById('product-grid'); if (/[?&]filter\\./.test(location.search) && !g.dataset.app) { g.dataset.app = 1; "
-               "g.innerHTML = '<div class=\"boost-sd__product-list\"></div>'; } }; boostSd(); setInterval(boostSd, 150);</script>"
+               "getElementById('product-grid'); if (/[?&]filter\\./.test(location.search) && g.querySelector('a.card')) { "
+               "g.innerHTML = '<div class=\"boost-sd__product-list\"></div>'; } }; boostSd(); setInterval(boostSd, 50);</script>"
                if mode == "filter_app" else "")
             + """<script>const ff = document.getElementById('FacetFiltersForm');
 ff.addEventListener('change', () => { const url = ff.action.split('?')[0] + '?' + new URLSearchParams(new FormData(ff));
