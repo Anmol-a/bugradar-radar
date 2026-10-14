@@ -2495,3 +2495,58 @@ def test_worker_scans_a_claimed_store_and_reports_back(tmp_path, monkeypatch):
         assert len(list(tmp_path.glob("sites/*/runs/*/run.json"))) == 2      # one run per device on disk
     finally:
         srv.shutdown()
+
+
+# ---------------- store features (14 Oct): pincode checker, discount box ----------------
+
+def _feature(mode, tmp_path, suites, **kw):
+    srv, url = serve(mode)
+    try:
+        return scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=2, **kw),
+                    only_suites=list(suites))[0]
+    finally:
+        srv.shutdown()
+
+
+def test_store_without_a_pincode_checker_is_information_only(tmp_path):
+    run = _feature("healthy", tmp_path, ("product",))
+    c = _case(run, "product.pincode")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["pincode_not_judged"].status == "info" and "no delivery-pincode checker" in st["pincode_not_judged"].detail
+
+
+def test_pincode_checker_that_answers_passes_with_the_answer_recorded(tmp_path):
+    run = _feature("pincode_ok", tmp_path, ("product",))
+    c = _case(run, "product.pincode")
+    st = _steps(c)
+    assert c.verdict == "pass", (c.attempts[-1].error, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
+    assert st["pincode_answers"].status == "pass" and "Delivery by Thu" in st["pincode_answers"].detail and "400001" in st["pincode_answers"].detail
+    assert "pincode box 'Enter pincode', button 'CHECK'" in st["pincode_box"].detail
+
+
+def test_pincode_checker_that_stays_silent_is_a_warning(tmp_path):
+    run = _feature("pincode_dead", tmp_path, ("product",))
+    c = _case(run, "product.pincode")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["pincode_answers"].status == "warn", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert "nothing within 8 s" in st["pincode_answers"].error and "pressed its button" in st["pincode_answers"].error
+    assert run.verdict == "healthy"          # a warning, never a down store (strict=False until a bench measures it)
+
+
+def test_discount_box_rejects_a_junk_code_and_a_silent_or_crashing_one_warns(tmp_path):
+    ok = _feature("coupon_ok", tmp_path / "ok", ("cart",))
+    c = _case(ok, "cart.discount_code")
+    st = _steps(c)
+    assert c.verdict == "pass", (c.attempts[-1].error, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
+    assert st["junk_code_rejected"].status == "pass" and "Invalid discount code" in st["junk_code_rejected"].detail
+    assert st["cart_cleaned_up"].status == "pass"
+    for mode, expect in (("coupon_dead", "no message within 8 s"), ("coupon_crash", "answered HTTP 500")):
+        run = _feature(mode, tmp_path / mode, ("cart",))
+        c = _case(run, "cart.discount_code")
+        st = _steps(c)
+        assert c.verdict == "pass" and st["junk_code_rejected"].status == "warn", (mode, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
+        assert expect in st["junk_code_rejected"].error, (mode, st["junk_code_rejected"].error)
+        assert st["cart_cleaned_up"].status == "pass"
+    plain = _feature("healthy", tmp_path / "plain", ("cart",))
+    st = _steps(_case(plain, "cart.discount_code"))
+    assert "no discount / coupon box" in st["cart_page"].detail and "junk_code_rejected" not in st

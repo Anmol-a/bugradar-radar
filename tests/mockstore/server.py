@@ -1498,6 +1498,8 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                         f'<template id="sum">{summary}</template><script>setTimeout(() => document.getElementById'
                                         f'("summary").innerHTML = document.getElementById("sum").innerHTML, 2500);</script>',
                                         shopify=True))
+        if path.startswith("/apps/discount/apply"):
+            return self._send(500, "Internal Server Error", "text/plain")
         if path == "/cart":
             items = CARTS[cid]
             # Dawn-like cart rows: − / quantity / + controls, a remove link, the line price, a subtotal
@@ -1534,8 +1536,20 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
   q.querySelector('[name=minus]').onclick = () => set(Math.max(0, +inp.value - 1));
   inp.onchange = () => set(+inp.value); });
 </script>"""
+            coupon = ""
+            if self.mode in ("coupon_ok", "coupon_dead", "coupon_crash"):
+                # store feature (14 Oct): a coupon box on the cart page (a discount app). coupon_ok says the code is
+                # invalid; coupon_dead: Apply does nothing; coupon_crash: the app's endpoint answers 500, no message
+                act = {"coupon_ok": 'document.getElementById("coupon-msg").textContent = "Invalid discount code: " + v;',
+                       "coupon_dead": "",
+                       "coupon_crash": 'fetch("/apps/discount/apply?code=" + encodeURIComponent(v)).then(r => { if (!r.ok) console.error("apply failed", r.status); });'
+                       }[self.mode]
+                coupon = ('<div class="coupon-box"><input type="text" name="discount" placeholder="Enter coupon code">'
+                          '<button type="button" class="coupon-apply">Apply</button><div id="coupon-msg" class="message"></div></div>'
+                          '<script>document.querySelector(".coupon-apply").onclick = () => { const v = document.querySelector('
+                          '".coupon-box input").value; setTimeout(() => { ' + act + ' }, 300); };</script>')
             return self._send(200, page("Your Cart | Mock Store",
-                                        f'{rows}<p class="totals">Subtotal {rupees(total)}</p>'
+                                        f'{coupon}{rows}<p class="totals">Subtotal {rupees(total)}</p>'
                                         + (f'<button type="button" name="checkout" class="{TP_APPS[self.mode]}-checkout-btn" '
                                            f'data-items="{" | ".join(i["title"] + " × " + str(i["quantity"]) for i in items)}">Check out</button>'
                                            f'<script src="/static/{TP_APPS[self.mode]}-checkout.js"></script>' if self.mode in TP_APPS else
@@ -1828,6 +1842,16 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
             body += ('<div class="pincode-check"><input type="text" placeholder="ENTER YOUR PINCODE" maxlength="6">'
                      '<button type="button" class="pincode-btn">CHECK</button></div>')
+        if self.mode in ("pincode_ok", "pincode_dead") and available:
+            # store feature (14 Oct): a delivery-pincode checker next to the buy button. pincode_ok answers after a
+            # short app call; pincode_dead: the CHECK button is wired to nothing (the app's script failed to load)
+            js = ('<script>document.querySelector(".pincode-btn").onclick = () => { const v = document.querySelector('
+                  '".pincode-check input").value; setTimeout(() => { document.getElementById("pin-msg").textContent = '
+                  '/^\\d{6}$/.test(v) ? "Delivery by Thu, 16 Oct · COD available for " + v : "Please enter a valid pincode"; }, 300); };</script>'
+                  if self.mode == "pincode_ok" else "")
+            body += ('<div class="pincode-check"><label>Check delivery</label><input type="text" name="pincode" '
+                     'placeholder="Enter pincode" maxlength="6"><button type="button" class="pincode-btn">CHECK</button>'
+                     '<div id="pin-msg" class="delivery-estimate"></div></div>' + js)
         if self.mode == "disabled_dup_button" and available:
             # littleboxindia.com mobile (new30c + loop cycle 6): the product form holds TWO buy buttons; the one Radar
             # reads is disabled while an enabled ADD TO CART for the same product is on screen. Radar must name both.
