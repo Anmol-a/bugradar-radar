@@ -1277,3 +1277,32 @@ def test_storage_lists_open_incident_cases_per_device_and_closes_gone_pins(tmp_p
     assert inc["product.pdp.p5"]["status"] == "resolved" and inc["product.pdp.p5"]["last_error"] == "gone"
     assert inc["product.pdp.p6"]["status"] == "open" and inc["catalog.collection.c4"]["status"] == "open"
     assert st.open_incident_cases("x.in") == ["catalog.collection.c4"]
+
+
+def test_product_data_from_the_store_domain_when_a_headless_subdomain_answers_html():
+    """palmonas.com re-test (run 38534330264, phone): product pages live on shop.palmonas.com, whose /products/<h>.js
+    answers the HTML page; the store's own domain answers the data. Radar asks the store's domain next."""
+    from types import SimpleNamespace
+    from radar.checks import library as L
+
+    calls = []
+
+    def get_json(u):
+        calls.append(u)
+        if u.startswith("https://shop.example.in/"):
+            raise AssertionError("HTTP 200 but the body is not JSON")
+        return {"id": 1, "title": "Ring", "variants": [{"id": 11, "price": 99900, "available": True}]}
+
+    sess = SimpleNamespace(get_json=get_json, evaluate=lambda *a: [], store_url="https://example.in",
+                           page=SimpleNamespace(url="https://shop.example.in/products/ring-1"))
+    seen = []
+    ctx = SimpleNamespace(sess=sess, expect=lambda what, e, a, ok=None: seen.append((what, a, ok)))
+    p = L._product_js(ctx, "https://shop.example.in/products/ring-1")
+    assert p["title"] == "Ring" and calls == ["https://shop.example.in/products/ring-1.js", "https://example.in/products/ring-1.js"]
+    assert any("store's own domain" in w for w, _, _ in seen), seen
+    # an unrelated store domain is never asked
+    sess.store_url, calls[:] = "https://other.in", []
+    import pytest
+    with pytest.raises(AssertionError):
+        L._product_js(ctx, "https://shop.example.in/products/ring-1")
+    assert calls == ["https://shop.example.in/products/ring-1.js"]
