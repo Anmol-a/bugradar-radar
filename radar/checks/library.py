@@ -2016,6 +2016,15 @@ def _load_product(ctx: Ctx, url: str) -> str:
         if why:
             ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
                        f"{why} (in the store's catalog but hidden from shoppers)", False)
+    # foxtale.in (full 36 + re-test, 14 Oct: 'flaky' twice): the page renders the product, then the storefront's app
+    # sends the shopper to the homepage a moment later; the first try read the product, the next step found '/'.
+    # The page is given 2.5 s to settle; leaving the product page in that time is the same catalog finding.
+    for _ in range(5):
+        ctx.sess.page.wait_for_timeout(500)
+        later = _path(ctx.sess.page.url)
+        if not later.startswith("/products/"):
+            ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
+                       f"redirects to {later} shortly after loading (in the store's catalog but hidden from shoppers)", False)
     return out
 
 
