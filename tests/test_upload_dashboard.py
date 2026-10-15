@@ -51,7 +51,8 @@ def test_sends_with_key_and_never_fails_without_one(tmp_path, monkeypatch, capsy
     class H(BaseHTTPRequestHandler):
         def do_POST(self):
             got.append((self.headers["Authorization"], json.loads(self.rfile.read(int(self.headers["Content-Length"])))))
-            self.send_response(200); self.end_headers(); self.wfile.write(b'{"results": 4, "incidents_opened": 1}')
+            self.send_response(200); self.end_headers()
+            self.wfile.write(b'{"results": 4, "incidents_opened": 1, "run_id": "run-uuid", "project_id": "proj-uuid"}')
 
         def log_message(self, *a):
             pass
@@ -64,9 +65,13 @@ def test_sends_with_key_and_never_fails_without_one(tmp_path, monkeypatch, capsy
     assert up.main([str(tmp_path)]) == 0 and not got          # no key: nothing sent, run not failed
     monkeypatch.setenv("BUGRADAR_KEY", "brk_test")
     assert up.main([str(tmp_path), "--ci-url", "https://ci/1"]) == 0
+    # the worker (15 Oct) calls upload() directly and reads the dashboard's run id off the record
+    recs = up.upload(tmp_path, "brk_test", log=lambda *_: None)
     srv.shutdown()
     assert got[0][0] == "Bearer brk_test" and got[0][1]["run"]["ci_url"] == "https://ci/1"
     assert "1 sent, 0 failed" in capsys.readouterr().out
+    assert len(recs) == 1 and recs[0]["ok"] and (recs[0]["run_id"], recs[0]["project_id"]) == ("run-uuid", "proj-uuid")
+    assert recs[0]["radar_run_id"] == got[1][1]["run"]["meta"]["radar_run_id"]
 
 
 def test_finds_runs_in_the_engines_own_data_folder(tmp_path, capsys):

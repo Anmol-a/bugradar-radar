@@ -91,3 +91,141 @@ def test_worker_needs_its_environment(monkeypatch):
     monkeypatch.delenv("BUGRADAR_SERVICE_KEY", raising=False)
     with pytest.raises(SystemExit):
         w.queue_from_env()
+
+
+# ---- the free scan page (door A, 15 Oct) ----------------------------------------------------------------------------
+
+class ScanQueue(FakeQueue):
+    def __init__(self, scans, monitors=()):
+        super().__init__(monitors)
+        self.scans, self.scan_finished = list(scans), []
+
+    def claim_scan(self, worker):
+        return self.scans.pop(0) if self.scans else None
+
+    def finish_scan(self, scan_id, verdict, score, summary, run_id, project_id, note, failed=False):
+        self.scan_finished.append(dict(id=scan_id, verdict=verdict, score=score, summary=summary, run_id=run_id,
+                                       project_id=project_id, note=note, failed=failed))
+
+
+def _fake_run(verdict="healthy", cases=()):
+    class R:
+        def __init__(self):
+            self.device, self.verdict, self.run_id, self.platform, self.notes = "desktop", verdict, "r-1", "shopify", []
+            self.cases = list(cases)
+
+        def to_dict(self):
+            return {"run_id": self.run_id, "verdict": self.verdict, "platform": self.platform, "notes": self.notes,
+                    "cases": self.cases, "device": self.device}
+    return R()
+
+
+def _case(cid, verdict="pass", severity="major", steps=(), triage=None, title=None):
+    return {"case_id": cid, "suite": cid.split(".")[0], "title": title or cid, "severity": severity, "verdict": verdict,
+            "attempts": [{"steps": list(steps), "failed_step": steps[-1]["name"] if steps else None}], "triage": triage}
+
+
+def test_run_once_takes_a_free_scan_before_any_monitor(monkeypatch, tmp_path):
+    seen = {}
+
+    def fake_scan_devices(url, settings, devices, profile=None, **kw):
+        seen.update(url=url, devices=devices, profile=profile, cart=settings.allow_cart_flow)
+        return [(_fake_run("healthy", [_case("smoke.home_health"), _case("health.not_found")]), tmp_path)]
+    monkeypatch.setattr("radar.runner.executor.scan_devices", fake_scan_devices)
+    q = ScanQueue([{"id": "s1", "url": "https://x.in", "host": "x.in"}],
+                  [{"id": "m1", "url": "https://y.in", "devices": ["desktop"]}])
+    ran = w.run_once(q, Settings(), "box-1", upload=False, log=lambda *_: None)
+    assert ran["id"] == "s1"
+    assert seen == {"url": "https://x.in", "devices": ("desktop",), "profile": "basic", "cart": False}
+    assert q.finished == []                                      # the monitor waited
+    (f,) = q.scan_finished
+    assert (f["id"], f["verdict"], f["score"], f["failed"]) == ("s1", "healthy", 100, False)
+    assert f["summary"]["checked"] == 2 and f["summary"]["passed"] == 2 and f["summary"]["problems"] == []
+    assert f["note"].startswith("desktop: healthy (")
+    # the queue is empty of scans now: the monitor runs next
+    monkeypatch.setattr("radar.runner.executor.scan_devices", lambda url, settings, devices, **kw: [(_fake_run(), tmp_path)])
+    assert w.run_once(q, Settings(), "box-1", upload=False, log=lambda *_: None)["id"] == "m1"
+
+
+def test_a_crashed_free_scan_is_marked_failed_not_left_running(monkeypatch):
+    def boom(url, settings, devices, **kw):
+        raise RuntimeError("browser exploded")
+    monkeypatch.setattr("radar.runner.executor.scan_devices", boom)
+    q = ScanQueue([{"id": "s2", "url": "https://x.in"}])
+    w.run_once(q, Settings(), "box-1", upload=False, log=lambda *_: None)
+    (f,) = q.scan_finished
+    assert f["failed"] is True and f["verdict"] == "error" and f["score"] is None
+    assert f["note"] == "Radar crashed: browser exploded"
+
+
+def test_score_and_summary_from_a_run():
+    failed_pdp = _case("product.pdp.tee", "confirmed_fail", "critical", title="PDP 'Tee'",
+                       steps=[{"name": "price_visible", "status": "fail", "detail": "No price on the page"}],
+                       triage={"verdict": "store_problem", "reason": "The product page shows no price"})
+    slow_home = _case("smoke.home_health", "pass", "critical",
+                      steps=[{"name": "slow page /", "status": "warn", "detail": "Homepage took 6.2 s to load"}])
+    seo = _case("health.meta.home", "confirmed_fail", "seo", steps=[{"name": "meta", "status": "fail", "detail": "No meta description"}])
+    skipped = _case("search.tee", "blocked", "major", steps=[{"name": "open", "status": "blocked", "detail": "not judged: no search box"}])
+    run = {"verdict": "down", "platform": "shopify", "notes": ["n1"],
+           "cases": [slow_home, failed_pdp, seo, skipped, _case("smoke.nav_links")]}
+    assert w.score_of(run) == 100 - 30 - 4 - 3
+    s = w.summarize(run)
+    # passed counts slow_home (passed with a warning) and nav_links; the warning is counted on top, not instead
+    assert (s["checked"], s["passed"], s["failed"], s["warnings"], s["not_tested"]) == (5, 2, 2, 1, 1)
+    assert [p["key"] for p in s["problems"]] == ["product.pdp.tee", "health.meta.home", "smoke.home_health"]
+    assert s["problems"][0]["name"] == "Product page 'Tee'" and s["problems"][0]["reason"] == "The product page shows no price."
+    assert s["problems"][2] == {"key": "smoke.home_health", "name": "smoke.home_health", "severity": "critical",
+                                "status": "warning", "reason": "Homepage took 6.2 s to load"}
+    # a store Radar could not test has no score: nothing was measured
+    assert w.score_of({"verdict": "blocked", "cases": [slow_home]}) is None
+    assert w.score_of({"verdict": "unsupported", "cases": []}) is None
+    assert w.score_of({"verdict": "down", "cases": [_case("a.b", "confirmed_fail", "critical")] * 4}) == 0
+
+
+def test_supabase_queue_scan_functions(monkeypatch):
+    calls = []
+
+    class Resp(io.BytesIO):
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+
+    def fake_urlopen(req, timeout=0):
+        calls.append((req.full_url.rsplit("/", 1)[1], json.loads(req.data)))
+        return Resp(json.dumps([{"id": "s1", "url": "https://x.in"}]).encode() if req.full_url.endswith("claim_scan") else b"")
+    monkeypatch.setattr(w.urllib.request, "urlopen", fake_urlopen)
+    q = w.SupabaseQueue("https://ref.supabase.co", "k")
+    assert q.claim_scan("box-1") == {"id": "s1", "url": "https://x.in"}
+    q.finish_scan("s1", "healthy", 97, {"checked": 8}, "run-uuid", "proj-uuid", "n" * 400)
+    assert calls[0] == ("claim_scan", {"worker": "box-1"})
+    fn, body = calls[1]
+    assert fn == "finish_scan" and body["scan_id"] == "s1" and body["score"] == 97 and body["run_id"] == "run-uuid"
+    assert body["failed"] is False and len(body["note"]) == 300
+
+
+def test_scan_progress_drives_the_loading_screen_list():
+    from types import SimpleNamespace as NS
+    sent = []
+    prog = w.ScanProgress(lambda st: sent.append(json.loads(json.dumps(st))), log=lambda *_: None)
+    prog("start", {})
+    assert sent[-1]["stage"] == "opening"
+    prog("discovered", {"sitemap": NS(platform="shopify", theme="Dawn", products=[1, 2, 3], collections=[1],
+                                       home_title="Tee Shop")})
+    cases = [NS(id="smoke.home_health", title="Homepage loads healthy"), NS(id="product.pdp.tee", title="PDP 'Tee'"),
+             NS(id="search.tee", title="Search for 'tee' returns products")]
+    prog("suites", {"suites": [NS(cases=cases[:2]), NS(cases=cases[2:])]})
+    st = sent[-1]
+    assert st["stage"] == "testing" and st["store"]["products"] == 3 and st["store"]["theme"] == "Dawn"
+    assert [(c["name"], c["state"]) for c in st["checks"]] == [
+        ("Homepage loads healthy", "running"), ("Product page 'Tee'", "waiting"), ("Search for 'tee' returns products", "waiting")]
+    prog("attempt", {"case": cases[0], "attempt": NS(ok=True, steps=[NS(status="warn")])})
+    assert [c["state"] for c in sent[-1]["checks"]] == ["warning", "running", "waiting"]
+    prog("attempt", {"case": cases[1], "attempt": NS(ok=False, steps=[])})          # first try failed: tried again
+    assert [c["state"] for c in sent[-1]["checks"]] == ["warning", "retrying", "waiting"]
+    run = NS(cases=[NS(case_id="smoke.home_health", verdict="pass"), NS(case_id="product.pdp.tee", verdict="confirmed_fail"),
+                    NS(case_id="search.tee", verdict="blocked")])
+    prog("done", {"run": run})
+    assert sent[-1]["stage"] == "finishing"
+    assert [c["state"] for c in sent[-1]["checks"]] == ["warning", "failed", "not_tested"]
+    # a progress write that fails never stops the scan
+    broken = w.ScanProgress(lambda st: (_ for _ in ()).throw(OSError("down")), log=lambda *_: None)
+    broken("start", {})

@@ -220,6 +220,47 @@ def send(payload: dict, key: str) -> dict:
         return json.loads(r.read() or b"{}")
 
 
+def find_runs(folder: Path, since: float = 0) -> list[Path]:
+    """Every finished run.json under the folder (written after `since`), in path order."""
+    # two layouts: the engine's own data folder (sites/<store>/runs/<run>/run.json, what a GitHub machine has) and the
+    # published results (sites/<store>/<run>/run.json). 13 Oct: only the second was looked for, so nothing was ever sent
+    files = [folder / "run.json"] if (folder / "run.json").exists() else sorted(
+        set(folder.glob("**/sites/*/runs/*/run.json")) | set(folder.glob("**/sites/*/*/run.json")))
+    return [f for f in files if f.stat().st_mtime >= since]
+
+
+def upload(folder: Path, key: str, since: float = 0, build: str = "", ci_url: str | None = None,
+           dry_run: bool = False, log=print) -> list[dict]:
+    """Send every finished run under the folder. Returns one record per run.json found:
+    {"file", "project", "device", "radar_run_id", "ok", "run_id", "project_id", "error"}; the worker (15 Oct) reads
+    run_id off it to tie a free-scan request to its dashboard run."""
+    out: list[dict] = []
+    for f in find_runs(folder, since):
+        try:
+            run = json.loads(f.read_text())
+        except ValueError:
+            continue
+        if not run.get("cases") and not run.get("verdict"):
+            continue                       # not a finished run
+        payload = to_payload(run, f.parent, build, ci_url)
+        rec = {"file": str(f), "project": payload["project"], "device": payload["run"]["device"],
+               "radar_run_id": run.get("run_id"), "ok": False, "run_id": None, "project_id": None, "error": None}
+        out.append(rec)
+        if dry_run:
+            log(json.dumps({**payload, "results": f"{len(payload['results'])} results"}, default=str)[:400])
+            rec["ok"] = True
+            continue
+        try:
+            ans = send(payload, key)
+            rec.update(ok=True, run_id=ans.get("run_id"), project_id=ans.get("project_id"))
+            log(f"sent {payload['project']} {payload['run']['device']}: {ans.get('results')} results, "
+                f"{ans.get('incidents_opened', 0)} new problems, {ans.get('incidents_resolved', 0)} fixed")
+        except (urllib.error.URLError, TimeoutError, ValueError) as e:
+            rec["error"] = str(e)[:300]
+            log(f"could not send {payload['project']} {payload['run']['device']}: {e}")
+    return out
+
+
 def main(argv: list[str] | None = None) -> int:
     ap = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     ap.add_argument("folder", type=Path)
@@ -232,32 +273,10 @@ def main(argv: list[str] | None = None) -> int:
     if not a.dry_run and not key.startswith("brk_"):
         print("BUGRADAR_KEY is not set; nothing sent.")
         return 0                       # never fail a Radar run because the dashboard isn't set up
-    # two layouts: the engine's own data folder (sites/<store>/runs/<run>/run.json, what a GitHub machine has) and the
-    # published results (sites/<store>/<run>/run.json). 13 Oct: only the second was looked for, so nothing was ever sent
-    files = [a.folder / "run.json"] if (a.folder / "run.json").exists() else sorted(
-        set(a.folder.glob("**/sites/*/runs/*/run.json")) | set(a.folder.glob("**/sites/*/*/run.json")))
-    sent = failed = 0
-    files = [f for f in files if f.stat().st_mtime >= a.since]
-    for f in files:
-        try:
-            run = json.loads(f.read_text())
-        except ValueError:
-            continue
-        if not run.get("cases") and not run.get("verdict"):
-            continue                       # not a finished run
-        payload = to_payload(run, f.parent, a.build, a.ci_url)
-        if a.dry_run:
-            print(json.dumps({**payload, "results": f"{len(payload['results'])} results"}, default=str)[:400])
-            continue
-        try:
-            out = send(payload, key)
-            sent += 1
-            print(f"sent {payload['project']} {payload['run']['device']}: {out.get('results')} results, "
-                  f"{out.get('incidents_opened', 0)} new problems, {out.get('incidents_resolved', 0)} fixed")
-        except (urllib.error.URLError, TimeoutError, ValueError) as e:
-            failed += 1
-            print(f"could not send {payload['project']} {payload['run']['device']}: {e}", file=sys.stderr)
-    print(f"dashboard upload: {sent} sent, {failed} failed, {len(files)} found")
+    recs = upload(a.folder, key, a.since, a.build, a.ci_url, a.dry_run,
+                  log=lambda m: print(m, file=sys.stderr if m.startswith("could not send") else sys.stdout))
+    sent, failed = sum(r["ok"] for r in recs), sum(not r["ok"] for r in recs)
+    print(f"dashboard upload: {sent} sent, {failed} failed, {len(recs)} found")
     return 0
 
 

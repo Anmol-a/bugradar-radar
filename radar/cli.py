@@ -101,6 +101,8 @@ def main(argv=None):
                     help="pause MS milliseconds before each browser action (default 400 when --headed)")
     sc.add_argument("--no-cart", action="store_true", help="skip the add-to-cart flow")
     sc.add_argument("--suites", help="comma list: smoke,catalog,product,cart,search,health")
+    sc.add_argument("--profile", default="full", choices=["full", "basic"],
+                    help="basic = the free scan page's first check: desktop, one of each, no cart (~1-2 min)")
     sc.add_argument("--open", action="store_true", help="open the report when done")
     bp = sub.add_parser("bench", help="run Radar across a list of stores and produce one table")
     bp.add_argument("store_list", help="text file: one URL per line, add 'cart' to enable the cart flow")
@@ -191,7 +193,7 @@ def main(argv=None):
     suites = a.suites.split(",") if a.suites else None
     worst = 0
     devices = ("desktop", "mobile") if a.device == "both" else (a.device,)
-    results = scan_devices(a.url, s, devices, progress=_progress, only_suites=suites)
+    results = scan_devices(a.url, s, devices, progress=_progress, only_suites=suites, profile=a.profile)
     for run, run_dir in results:
         if a.open:
             webbrowser.open((run_dir / "report.html").as_uri())

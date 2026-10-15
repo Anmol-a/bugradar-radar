@@ -210,11 +210,13 @@ def run_verdict(cases: list[CaseResult]) -> str:
 
 def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage | None = None,
          llm: LLMClient | None = None, progress: Progress | None = None,
-         only_suites: list[str] | None = None) -> tuple[RunResult, "Path"]:
+         only_suites: list[str] | None = None, profile: str | None = None) -> tuple[RunResult, "Path"]:
+    """profile: None / 'full' = every built case; 'basic' = the free first check (radar/runner/profiles.py)."""
+    from radar.runner.profiles import filter_suites, settings_for_profile
     progress = progress or (lambda *_: None)
     base = normalize_url(url)
     site_id = site_id_from_url(base)
-    s = settings.for_site(site_id)
+    s = settings_for_profile(profile, settings).for_site(site_id)
     storage = storage or Storage(s.data_dir)
     llm = llm or make_client(s)
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + f"-{device[0]}-" + uuid.uuid4().hex[:4]
@@ -264,6 +266,7 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
             suites = build_suites(sm, s)
             if only_suites:
                 suites = [x for x in suites if x.id in only_suites]
+            suites = filter_suites(suites, profile)
             storage.save_json(site_id, "suites.json", [
                 {"id": x.id, "name": x.name, "description": x.description,
                  "cases": [c.__dict__ for c in x.cases]} for x in suites])
@@ -315,16 +318,18 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
 
 def scan_devices(url: str, settings: Settings, devices: tuple[str, ...] = DEFAULT_DEVICES,
                  progress: Progress | None = None, only_suites: list[str] | None = None,
-                 ) -> list[tuple[RunResult, "Path"]]:
+                 profile: str | None = None) -> list[tuple[RunResult, "Path"]]:
     """Run the scan on every device, in order (desktop first). Returns one (run, run_dir) per device that RAN.
     A later device is skipped when the first one could not test the store at all (blocked, unreachable, offline,
-    not Shopify): same answer, and a store that refused Radar is not asked again."""
+    not Shopify): same answer, and a store that refused Radar is not asked again.
+    profile 'basic' (the free scan page) runs on the desktop only, whatever devices says."""
+    from radar.runner.profiles import devices_for_profile
     progress = progress or (lambda *_: None)
     out: list[tuple[RunResult, "Path"]] = []
-    for dev in devices:
+    for dev in devices_for_profile(profile, devices):
         if out and out[0][0].verdict not in TESTED:
             progress("device_skipped", {"device": dev, "why": f"not tested on {devices[0]} ({out[0][0].verdict}), "
                                                                 "so not asked again"})
             continue
-        out.append(scan(url, settings, dev, progress=progress, only_suites=only_suites))
+        out.append(scan(url, settings, dev, progress=progress, only_suites=only_suites, profile=profile))
     return out
