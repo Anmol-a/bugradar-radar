@@ -833,14 +833,26 @@ def _main_buy_button(ctx: Ctx, product: dict):
         f = ctx.healer.find(page, "add_to_cart")
     except LocatorNotFound as e:
         # Say exactly what is (not) there, so nobody has to guess whose problem it is (mcaffeine.com, bench 3).
-        st = ctx.sess.evaluate("""(ids) => { const mine = new Set(ids.map(String)); let own = 0, other = 0;
+        # + what the product's own form holds (shopkara.store new30p, nubronicforte.com new30t: 'a form for this product
+        # but no buy button Radar could use' and nothing more to go on): its buttons, visible / disabled, and any
+        # [form=<id>] button outside it
+        st = ctx.sess.evaluate("""(ids) => { const mine = new Set(ids.map(String)); let own = 0, other = 0; const seen = [];
+            const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
             for (const f of document.querySelectorAll('form[action*="/cart/add"]')) {
-              const v = (f.querySelector('[name="id"]') || {}).value; if (mine.has(String(v))) own++; else other++; }
-            return {own, other}; }""", ids) or {"own": 0, "other": 0}
+              const v = (f.querySelector('[name="id"]') || {}).value; if (mine.has(String(v))) own++; else { other++; continue; }
+              const fid = f.getAttribute('id') || '';
+              const bs = [...f.querySelectorAll('button, input[type=submit], [role=button], a')]
+                .concat(fid ? [...document.querySelectorAll('[form="' + CSS.escape(fid) + '"]')] : []);
+              for (const b of bs.slice(0, 4)) seen.push('<' + b.tagName.toLowerCase() + '> ' + JSON.stringify(((b.innerText || b.value
+                || b.getAttribute('aria-label') || '').trim()).slice(0, 24)) + (vis(b) ? '' : ' hidden') + (b.disabled ? ' disabled' : ''));
+              if (!bs.length) seen.push('no button in the form' + (vis(f) ? '' : ' (form hidden)'));
+            }
+            return {own, other, seen: seen.slice(0, 5)}; }""", ids) or {"own": 0, "other": 0, "seen": []}
         # verdict rule (13 Oct): no buy control Radar can find is not proof there is none: NOT JUDGED with the facts
         raise NotJudged("add-to-cart control for THIS product on its page: "
                         + ("none: no add-to-cart form for this product" if not st["own"]
-                           else f"{st['own']} add-to-cart form(s) for this product, but no buy button Radar could use")
+                           else f"{st['own']} add-to-cart form(s) for this product, but no buy button Radar could use"
+                           + (f" (the form holds: {'; '.join(st.get('seen') or [])})" if st.get("seen") else ""))
                         + (f" ({st['other']} such forms belong to other products' cards)" if st["other"] else "")
                         + "; no other buy control found" + ("; LLM healing disabled" if "LLM healing disabled" in str(e) else "")) from e
     try:

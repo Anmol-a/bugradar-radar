@@ -37,7 +37,9 @@ NAV_JS = r"""() => {
     const text = (a.textContent || a.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
     if (!href || seen.has(href) || !text || href.startsWith('javascript:')) continue;
     const u = new URL(href);
-    if (/\/(cart|account|search|checkout)(\/|$|\?)|#/.test(u.pathname + u.hash) || /\/products\//.test(u.pathname)) continue;
+    // sign-in links are not pages: Shopify's new customer accounts link '/customer_authentication/redirect' (krkjewels.com
+    // new30t, 15 Oct: 404 for a robot, a login hand-off for a shopper) and /account/login are judged by the account test
+    if (/\/(cart|account|search|checkout|customer_authentication|login|logout)(\/|$|\?)|#/.test(u.pathname + u.hash) || /\/products\//.test(u.pathname)) continue;
     const r = a.getBoundingClientRect();
     seen.add(href); out.push({text: text.slice(0, 60), url: href, visible: r.width > 0 && r.height > 0});
   }
@@ -157,9 +159,11 @@ def same_site(a: str, b: str) -> bool:
 
 
 # + checkout add-ons sold as products: 'Free Returns + Package Protection' (saturn.health, new30m 14 Oct: NOT JUDGED on
-#   both devices, its page has no buy button a shopper uses) and shipping / order protection or insurance apps
+#   both devices, its page has no buy button a shopper uses) and shipping / order protection or insurance apps;
+#   extended-warranty add-ons (izicart.com new30u: '1 Year Extended Warranty for …' pages show no such product)
 NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift|sampler|tester|\bsample\b|dummy|test[-_ ]product|"
-                           r"(package|shipping|order|returns?|delivery|parcel)[-_ ]?(protection|insurance)|route[-_ ]?protection",
+                           r"(package|shipping|order|returns?|delivery|parcel)[-_ ]?(protection|insurance)|route[-_ ]?protection|"
+                           r"extended[-_ ]?warranty|warranty[-_ ]?(extension|plan|upgrade)|\b\d[-_ ]?years?[-_ ]?(extended[-_ ]?)?warranty",
                            re.I)
 
 
