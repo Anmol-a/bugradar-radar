@@ -200,3 +200,32 @@ def test_supabase_queue_scan_functions(monkeypatch):
     fn, body = calls[1]
     assert fn == "finish_scan" and body["scan_id"] == "s1" and body["score"] == 97 and body["run_id"] == "run-uuid"
     assert body["failed"] is False and len(body["note"]) == 300
+
+
+def test_scan_progress_drives_the_loading_screen_list():
+    from types import SimpleNamespace as NS
+    sent = []
+    prog = w.ScanProgress(lambda st: sent.append(json.loads(json.dumps(st))), log=lambda *_: None)
+    prog("start", {})
+    assert sent[-1]["stage"] == "opening"
+    prog("discovered", {"sitemap": NS(platform="shopify", theme="Dawn", products=[1, 2, 3], collections=[1],
+                                       home_title="Tee Shop")})
+    cases = [NS(id="smoke.home_health", title="Homepage loads healthy"), NS(id="product.pdp.tee", title="PDP 'Tee'"),
+             NS(id="search.tee", title="Search for 'tee' returns products")]
+    prog("suites", {"suites": [NS(cases=cases[:2]), NS(cases=cases[2:])]})
+    st = sent[-1]
+    assert st["stage"] == "testing" and st["store"]["products"] == 3 and st["store"]["theme"] == "Dawn"
+    assert [(c["name"], c["state"]) for c in st["checks"]] == [
+        ("Homepage loads healthy", "running"), ("Product page 'Tee'", "waiting"), ("Search for 'tee' returns products", "waiting")]
+    prog("attempt", {"case": cases[0], "attempt": NS(ok=True, steps=[NS(status="warn")])})
+    assert [c["state"] for c in sent[-1]["checks"]] == ["warning", "running", "waiting"]
+    prog("attempt", {"case": cases[1], "attempt": NS(ok=False, steps=[])})          # first try failed: tried again
+    assert [c["state"] for c in sent[-1]["checks"]] == ["warning", "retrying", "waiting"]
+    run = NS(cases=[NS(case_id="smoke.home_health", verdict="pass"), NS(case_id="product.pdp.tee", verdict="confirmed_fail"),
+                    NS(case_id="search.tee", verdict="blocked")])
+    prog("done", {"run": run})
+    assert sent[-1]["stage"] == "finishing"
+    assert [c["state"] for c in sent[-1]["checks"]] == ["warning", "failed", "not_tested"]
+    # a progress write that fails never stops the scan
+    broken = w.ScanProgress(lambda st: (_ for _ in ()).throw(OSError("down")), log=lambda *_: None)
+    broken("start", {})

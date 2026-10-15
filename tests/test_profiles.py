@@ -45,6 +45,7 @@ def test_basic_settings_and_devices():
     assert p.devices_for_profile(None, ("desktop", "mobile")) == ("desktop", "mobile")
 
 
+@pytest.mark.e2e
 def test_basic_profile_on_the_mock_store_runs_only_the_free_checks(tmp_path):
     srv, url = serve("healthy")
     try:

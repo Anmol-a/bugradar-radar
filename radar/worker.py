@@ -80,6 +80,9 @@ class SupabaseQueue:
         rows = self._rpc("claim_scan", {"worker": worker}) or []
         return rows[0] if rows else None
 
+    def scan_progress(self, scan_id: str, progress: dict) -> None:
+        self._rpc("scan_progress", {"scan_id": scan_id, "progress": progress})
+
     def finish_scan(self, scan_id: str, verdict: str, score: int | None, summary: dict,
                     run_id: str | None, project_id: str | None, note: str, failed: bool = False) -> None:
         self._rpc("finish_scan", {"scan_id": scan_id, "verdict": verdict, "score": score, "summary": summary,
@@ -196,14 +199,79 @@ def summarize(run: dict) -> dict:
             "notes": [str(n)[:200] for n in (run.get("notes") or [])[:2]]}
 
 
-def run_scan(req: dict, base: Settings, upload: bool = True, log=print) -> dict:
+class ScanProgress:
+    """The loading screen's live list (15 Oct): Radar's progress events -> one small JSON on the scan_requests row.
+        {"stage": "opening" | "testing" | "finishing", "store": {platform, theme, products, collections},
+         "checks": [{"key", "name", "state": waiting | running | passed | warning | retrying | failed | not_tested}]}
+    Writes go through `send` (queue.scan_progress); a failed write never stops the scan."""
+
+    def __init__(self, send, log=print):
+        self.send, self.log = send, log
+        self.state: dict = {"stage": "opening", "store": {}, "checks": []}
+
+    def _push(self):
+        try:
+            self.send(self.state)
+        except Exception as e:  # noqa: BLE001
+            self.log(f"  progress not saved: {str(e)[:120]}")
+
+    def _mark_next_running(self):
+        for c in self.state["checks"]:
+            if c["state"] == "waiting":
+                c["state"] = "running"
+                return
+
+    def __call__(self, event: str, d: dict) -> None:
+        if event == "start":
+            self._push()
+        elif event == "discovered":
+            sm = d["sitemap"]
+            self.state["store"] = {"platform": sm.platform, "theme": sm.theme, "products": len(sm.products),
+                                   "collections": len(sm.collections), "title": (sm.home_title or "")[:120]}
+        elif event == "suites":
+            from tools.upload_dashboard import plain_name
+            self.state["stage"] = "testing"
+            self.state["checks"] = [{"key": c.id, "name": plain_name(c.title), "state": "waiting"}
+                                    for s in d["suites"] for c in s.cases]
+            self._mark_next_running()
+            self._push()
+        elif event == "attempt":
+            key, ar = d["case"].id, d["attempt"]
+            for c in self.state["checks"]:
+                if c["key"] == key:
+                    if ar.ok:
+                        c["state"] = "warning" if any(s.status == "warn" for s in ar.steps) else "passed"
+                    else:
+                        c["state"] = "retrying"
+                    break
+            if ar.ok:
+                self._mark_next_running()
+            self._push()
+        elif event == "done":
+            self.state["stage"] = "finishing"
+            run = d["run"]
+            final = {c.case_id: c.verdict for c in run.cases}
+            for c in self.state["checks"]:
+                v = final.get(c["key"])
+                if v == "confirmed_fail":
+                    c["state"] = "failed"
+                elif v in ("blocked", "skipped", "no_network"):
+                    c["state"] = "not_tested"
+                elif v in ("pass", "flaky") and c["state"] in ("waiting", "running", "retrying"):
+                    c["state"] = "passed"
+            self._push()
+
+
+def run_scan(req: dict, base: Settings, upload: bool = True, log=print, progress=None) -> dict:
     """One free basic check: desktop only, the 'basic' profile, uploaded like any run (so the result page can show the
-    dashboard's results + screenshots), then the verdict, score and summary for the scan_requests row. Never raises."""
+    dashboard's results + screenshots), then the verdict, score and summary for the scan_requests row. Never raises.
+    progress: a ScanProgress (or any callable taking Radar's progress events) for the live loading screen."""
     from radar.runner.executor import scan_devices
     url = req["url"]
     t0 = time.time()
     try:
-        results = scan_devices(url, replace(base, allow_cart_flow=False), ("desktop",), profile="basic")
+        results = scan_devices(url, replace(base, allow_cart_flow=False), ("desktop",), profile="basic",
+                               progress=progress)
     except Exception as e:  # noqa: BLE001
         log(f"  {url}: Radar crashed: {e}")
         traceback.print_exc()
@@ -232,7 +300,8 @@ def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log
     req = queue.claim_scan(worker) if hasattr(queue, "claim_scan") else None
     if req:
         log(f"[{_now()}] {worker}: free scan {req['url']} ({req['id']})")
-        r = run_scan(req, base, upload=upload, log=log)
+        prog = ScanProgress(lambda st: queue.scan_progress(req["id"], st), log) if hasattr(queue, "scan_progress") else None
+        r = run_scan(req, base, upload=upload, log=log, progress=prog)
         queue.finish_scan(req["id"], r["verdict"], r["score"], r["summary"], r["run_id"], r["project_id"],
                           r["note"], r["failed"])
         log(f"[{_now()}] {worker}: free scan {req['url']} -> {r['verdict']} score {r['score']} ({r['note']})")
