@@ -1,0 +1,3969 @@
+{
+  "run_id": "20261015T161241Z-d-23b8",
+  "site_id": "thelostproject.in",
+  "base_url": "https://thelostproject.in",
+  "device": "desktop",
+  "started_at": "2026-10-15T16:12:41+00:00",
+  "finished_at": "2026-10-15T16:16:36+00:00",
+  "verdict": "degraded",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.84s",
+              "error": null,
+              "secs": 6.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1829 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/video-production (13 products)",
+              "error": null,
+              "secs": 7.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/video-production ('Video Production')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/video-production",
+                  "actual": "/collections/video-production",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "13",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 37 candidates \u2192 /products/the-three-day-campaign-master-package-3-x-8-hours (via its card)",
+              "error": null,
+              "secs": 5.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/the-three-day-campaign-master-package-3-x-8-hours ('The Three-Day Campaign Master Package (3 x 8 Hours)')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/the-three-day-campaign-master-package-3-x-8-hours",
+                  "actual": "/products/the-three-day-campaign-master-package-3-x-8-hours",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'The Three-Day Campaign Master Package (3 x 8 Hours)', selected variant 43538463096941 at \u20b970,000.00",
+              "error": null,
+              "secs": 0.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/the-three-day-campaign-master-package-3-x-8-hours",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/the-three-day-campaign-master-package-3-x-8-hours.js with variants",
+                  "actual": "'The Three-Day Campaign Master Package (3 x 8 Hours)', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "The Three-Day Campaign Master Package (3 x 8 Hours)",
+                  "actual": "'The Three-Day Campaign Master Package (3 x 8 Hours)' (h1, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b970,000.00",
+                  "actual": "\u20b970,000.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 638x798)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "The Three-Day Campaign Master Package (3 x 8 Hours)",
+                  "actual": "'The Three-Day Campaign Master Package (3 x 8 Hours)' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "The Three-Day Campaign Master Package (3 x 8 Hours)",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "70000.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.07-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 22.38,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1573011634.1792080775&dt=The%20Lost%20Project&tid=AW-11311168613&en=page_view&dl=https%3A%2",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=888207c5-472a-4f5d-b9f5-d970f",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1573011634.1792080775&dt=Video%20Production%20%E2%80%93%20The%20Lost%20Project&tid=AW-11311",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=34881d25-f593-4df2-9721-ff359",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1573011634.1792080775&dt=3-Day%20Video%20Production%20Campaign%20Package%20%7C%20The%20Lost",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=760fb133-2bb8-40b8-86f0-7d1aa"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 1.66,
+              "load": 4.26,
+              "lcp": 0.74
+            },
+            {
+              "url": "/collections/video-production",
+              "ttfb": 0.05,
+              "dcl": 3.69,
+              "load": 5.32,
+              "lcp": 3.44
+            },
+            {
+              "url": "/products/the-three-day-campaign-master-package-3-x-8-hours",
+              "ttfb": 0.15,
+              "dcl": 1.69,
+              "load": 2.87,
+              "lcp": 1.42
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.46s",
+              "error": null,
+              "secs": 5.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1829 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.46s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.46s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.62s, CLS 0.0",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.62s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "180 scripts, at least 1.2 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), www.googletagmanager.com (7), connect.facebook.net (2), chimpstatic.com (1)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "180 scripts, at least 1.2 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), ww\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.41,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=773966234.1792080797&dt=The%20Lost%20Project&tid=AW-11311168613&en=page_view&dl=https%3A%2",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=53b9a5c3-f364-469a-965d-66705",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry",
+            "GET https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/action?jwt=eyJhbGciOiJIUzI1NiIsImtpZCI6InNrMSIsInR5cCI6IkpXVCJ9.eyJhZGlkIjoiMXVyOGp"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.13,
+              "load": 3.81,
+              "lcp": 0.62
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.39s",
+              "error": null,
+              "secs": 6.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1865 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/video-production",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.83s",
+              "error": null,
+              "secs": 5.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Video Production \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1399 chars, 13 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/social-media",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.71s",
+              "error": null,
+              "secs": 5.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Social Media \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "689 chars, 4 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/design",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.13s",
+              "error": null,
+              "secs": 3.79,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Design \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "735 chars, 6 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/tshirts",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.22s",
+              "error": null,
+              "secs": 3.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Tshirts \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "825 chars, 6 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/quirky-sarcastic-laptop-sti",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.47s",
+              "error": null,
+              "secs": 4.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Quirky & Sarcastic Laptop Stickers India | The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1453 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.28s",
+              "error": null,
+              "secs": 5.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "875 chars, 2 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "7 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 33.37,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0xf2c109c3200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://newassets.hcaptcha.com/captcha/v1/86591f996c36877668d253e353e36fac021db33b/static/hcaptcha.html#frame=challenge&id=0umbpaj0jwff&host"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=463353501.1792080805&dt=The%20Lost%20Project&tid=AW-11311168613&en=page_view&dl=https%3A%2F",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=8933b317-358e-4a21-985f-ca105",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry",
+            "GET https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/action?jwt=eyJhbGciOiJIUzI1NiIsImtpZCI6InNrMSIsInR5cCI6IkpXVCJ9.eyJhZGlkIjoiMXVyOGp",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=463353501.1792080805&dt=Video%20Production%20%E2%80%93%20The%20Lost%20Project&tid=AW-113111",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=44cd2724-8b8f-49a2-a33a-39200",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=463353501.1792080805&dt=Social%20Media%20%E2%80%93%20The%20Lost%20Project&tid=AW-1131116861",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=54cd2a9b-0c67-4ef0-8b34-f4dd6",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=463353501.1792080805&dt=Design%20%E2%80%93%20The%20Lost%20Project&tid=AW-11311168613&en=pag",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=174a5768-e116-4f98-8f60-a3b96",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=463353501.1792080805&dt=Tshirts%20%E2%80%93%20The%20Lost%20Project&tid=AW-11311168613&en=pa",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=c866182b-b3ff-4d12-8e9b-38769",
+            "GET https://shop.app/accounts/pre_auth?client_id=0b31c6ba-5a09-4cf8-9388-d455ec059a10&analytics_trace_id=c866182b-b3ff-4d12-8e9b-38769c7fa940&flow=embed&f",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=463353501.1792080805&dt=Quirky%20%26%20Sarcastic%20Laptop%20Stickers%20India%20%7C%20The%2",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=3731d82f-e424-461c-bea0-07685",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=463353501.1792080805&dt=Contact%20%E2%80%93%20The%20Lost%20Project&tid=AW-11311168613&en=pa",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=efadaf08-d0a0-47cb-b66e-17062",
+            "GET https://e46895620e47.w.hcaptcha.com/logo.png"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.08,
+              "dcl": 1.21,
+              "load": 3.68,
+              "lcp": 0.58
+            },
+            {
+              "url": "/collections/video-production",
+              "ttfb": 0.22,
+              "dcl": 1.62,
+              "load": 3.24,
+              "lcp": 1.02
+            },
+            {
+              "url": "/collections/social-media",
+              "ttfb": 0.22,
+              "dcl": 1.36,
+              "load": 3.34,
+              "lcp": 1.02
+            },
+            {
+              "url": "/collections/design",
+              "ttfb": 0.2,
+              "dcl": 1.01,
+              "load": 2.5,
+              "lcp": 1.32
+            },
+            {
+              "url": "/collections/tshirts",
+              "ttfb": 0.16,
+              "dcl": 1.06,
+              "load": 2.4,
+              "lcp": 1.48
+            },
+            {
+              "url": "/collections/quirky-sarcastic-laptop-stickers-india-the-lost-project",
+              "ttfb": 0.15,
+              "dcl": 1.22,
+              "load": 2.86,
+              "lcp": 0.96
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.17,
+              "dcl": 1.15,
+              "load": 3.33,
+              "lcp": 0.82
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.57s",
+              "error": null,
+              "secs": 5.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1829 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.8,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1751038076.1792080838&dt=The%20Lost%20Project&tid=AW-11311168613&en=page_view&dl=https%3A%2",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 2.33,
+              "load": 3.87,
+              "lcp": 0.68
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/wedding-films",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.36s",
+              "error": null,
+              "secs": 5.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Wedding Films \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "548 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Wedding Films \u2013 The Lost Project', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/wedding-films",
+                  "actual": "/collections/wedding-films",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /work/punecomedyfestival",
+              "status": "warn",
+              "detail": null,
+              "error": "HTTP status: expected < 400, got 404",
+              "secs": 4.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "404",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "fail",
+              "detail": null,
+              "error": "links beyond the menu that fail to open: expected 0, got 1: homepage section /work/punecomedyfestival ('View case study')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "1: homepage section /work/punecomedyfestival ('View case study')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "all_links_ok",
+          "error": "links beyond the menu that fail to open: expected 0, got 1: homepage section /work/punecomedyfestival ('View case study')",
+          "screenshot": "smoke.more_links.a1.png",
+          "trace": "smoke.more_links.a1_trace.zip",
+          "secs": 12.03,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.thelostproject.in/work/punecomedyfestival"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1981575977.1792080844&dt=Wedding%20Films%20%E2%80%93%20The%20Lost%20Project&tid=AW-11311168",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=ae206442-904a-4e9f-a1c3-fa55c",
+            "GET https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/action?jwt=eyJhbGciOiJIUzI1NiIsImtpZCI6InNrMSIsInR5cCI6IkpXVCJ9.eyJhZGlkIjoiMXVyOGp",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1981575977.1792080844&dt=404%20Not%20Found%20%E2%80%93%20The%20Lost%20Project&tid=AW-113111",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=449a8f18-5be2-4d92-8663-719f0"
+          ],
+          "loads": [
+            {
+              "url": "/collections/wedding-films",
+              "ttfb": 0.19,
+              "dcl": 1.09,
+              "load": 3.4,
+              "lcp": 0.73
+            },
+            {
+              "url": "/work/punecomedyfestival",
+              "ttfb": 0.15,
+              "dcl": 1.44,
+              "load": 3.55,
+              "lcp": 1.09
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/wedding-films",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.21s",
+              "error": null,
+              "secs": 4.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Wedding Films \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "559 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Wedding Films \u2013 The Lost Project', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/wedding-films",
+                  "actual": "/collections/wedding-films",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /work/punecomedyfestival",
+              "status": "warn",
+              "detail": null,
+              "error": "HTTP status: expected < 400, got 404",
+              "secs": 3.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "404",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "fail",
+              "detail": null,
+              "error": "links beyond the menu that fail to open: expected 0, got 1: homepage section /work/punecomedyfestival ('View case study')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "1: homepage section /work/punecomedyfestival ('View case study')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "all_links_ok",
+          "error": "links beyond the menu that fail to open: expected 0, got 1: homepage section /work/punecomedyfestival ('View case study')",
+          "screenshot": "smoke.more_links.a2.png",
+          "trace": "smoke.more_links.a2_trace.zip",
+          "secs": 10.0,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.thelostproject.in/work/punecomedyfestival"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=155354457.1792080855&dt=Wedding%20Films%20%E2%80%93%20The%20Lost%20Project&tid=AW-113111686",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=4fbc5111-9df6-4005-b253-bca98",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=155354457.1792080855&dt=404%20Not%20Found%20%E2%80%93%20The%20Lost%20Project&tid=AW-113111",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=790016f8-78fd-4175-aac7-e2b13"
+          ],
+          "loads": [
+            {
+              "url": "/collections/wedding-films",
+              "ttfb": 0.19,
+              "dcl": 1.09,
+              "load": 3.14,
+              "lcp": 0.68
+            },
+            {
+              "url": "/work/punecomedyfestival",
+              "ttfb": 0.15,
+              "dcl": 0.82,
+              "load": 2.04,
+              "lcp": 0.65
+            }
+          ]
+        }
+      ],
+      "incident_signature": "thelostproject.in|smoke.more_links|all_links_ok",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_changed_or_down",
+        "reason": "The link under test leads to a 404-style 'Page not found' message, which is direct evidence a shopper cannot reach the expected case study page.",
+        "evidence": "Visible page text includes: \"Page not found\nThe link may be incorrect, or the page has been removed.\" and the robot reported the homepage section link /work/punecomedyfestival ('View case study') returned that page."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.video-production",
+      "suite": "catalog",
+      "title": "Collection 'Video Production' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.3s",
+              "error": null,
+              "secs": 4.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Video Production \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1273 chars, 13 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "13 products listed",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "13",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.72s, CLS 0.0",
+              "error": null,
+              "secs": 0.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.72s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "176 scripts, at least 1.1 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), www.googletagmanager.com (7), connect.facebook.net (2), chimpstatic.com (1)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "176 scripts, at least 1.1 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), ww\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.9,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=219218177.1792080868&dt=Video%20Production%20%E2%80%93%20The%20Lost%20Project&tid=AW-11311",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=371ea387-ec58-4cd5-9b41-92026",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/collections/video-production",
+              "ttfb": 0.19,
+              "dcl": 1.13,
+              "load": 3.29,
+              "lcp": 0.72
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.quirky-sarcastic-laptop-stickers-india-t",
+      "suite": "catalog",
+      "title": "Collection 'Quirky & Sarcastic Laptop Stickers India | The Lost Project' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.49s",
+              "error": null,
+              "secs": 4.84,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Quirky & Sarcastic Laptop Stickers India | The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1442 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "9 products listed",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "9",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.69s, CLS 0.009",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.69s, CLS 0.009",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "182 scripts, at least 1.2 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), www.googletagmanager.com (7), connect.facebook.net (2), chimpstatic.com (1)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "182 scripts, at least 1.2 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), ww\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.61,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1567462944.1792080875&dt=Quirky%20%26%20Sarcastic%20Laptop%20Stickers%20India%20%7C%20The%",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=fb040a42-61ce-49bb-9366-0bb85",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/collections/quirky-sarcastic-laptop-stickers-india-the-lost-project",
+              "ttfb": 0.18,
+              "dcl": 1.16,
+              "load": 3.26,
+              "lcp": 0.69
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.meta-shop",
+      "suite": "catalog",
+      "title": "Collection 'The Lost Project \u2014 Shop on Meta' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.67s",
+              "error": null,
+              "secs": 6.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Funny Desi Stickers & Tees India \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1805 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "14 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "more_products_not_judged",
+              "status": "info",
+              "detail": "the first page shows the collection (14 shown, 13 in stock in the store's data, 2 not shown)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.87,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1697553181.1792080881&dt=Funny%20Desi%20Stickers%20%26%20Tees%20India%20%E2%80%93%20The%20L",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=43443de1-8326-4f5d-b06e-1e8b7",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/collections/meta-shop",
+              "ttfb": 0.17,
+              "dcl": 1.36,
+              "load": 5.05,
+              "lcp": 0.65
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.meta-shop",
+      "suite": "catalog",
+      "title": "Filtering collection 'The Lost Project \u2014 Shop on Meta' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.8s",
+              "error": null,
+              "secs": 4.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Funny Desi Stickers & Tees India \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1690 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_not_judged",
+              "status": "info",
+              "detail": "this collection offers no filters (no storefront filter options on the page)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.2,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'sessionId')",
+              "url": "https://www.thelostproject.in/collections/meta-shop"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1956356126.1792080889&dt=Funny%20Desi%20Stickers%20%26%20Tees%20India%20%E2%80%93%20The%20L",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=1a35c694-5b62-4386-9982-0c5ef",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/collections/meta-shop",
+              "ttfb": 0.19,
+              "dcl": 1.57,
+              "load": 3.77,
+              "lcp": 0.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.paiise-retro-typography-sticker",
+      "suite": "product",
+      "title": "PDP 'PAIISE Retro Typography Laptop Sticker \u2013 Desi Desi'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.32s",
+              "error": null,
+              "secs": 7.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "PAIISE Retro Typography Laptop Sticker \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1001 chars, 3 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/paiise-retro-typography-sticker",
+                  "actual": "/products/paiise-retro-typography-sticker",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'PAIISE Retro Typography Laptop Sticker \u2013 Desi Design India', selected variant 45354493837421 at \u20b965.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/paiise-retro-typography-sticker",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/paiise-retro-typography-sticker.js with variants",
+                  "actual": "'PAIISE Retro Typography Laptop Sticker \u2013 Desi Design India', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "PAIISE Retro Typography Laptop Sticker \u2013 Desi Design India",
+                  "actual": "'PAIISE Retro Typography Laptop Sticker \u2013 Desi Design India' (h1, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b965.00",
+                  "actual": "\u20b965.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 798x798)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "PAIISE Retro Typography Laptop Sticker \u2013 Desi Design India",
+                  "actual": "'PAIISE Retro Typography Laptop Sticker \u2013 Desi Design India' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "PAIISE Retro Typography Laptop Sticker \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "65.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 45354493837421 (1x1.5 Inches) selected, in stock",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #BuyButtons-ProductForm-template--21297337434221__main (variant 45354493837421, button 'Add to cart')",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.88s, CLS 0.0",
+              "error": null,
+              "secs": 0.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.88s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "214 scripts, at least 1.3 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), www.googletagmanager.com (7), connect.facebook.net (2), chimpstatic.com (1)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "214 scripts, at least 1.3 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), ww\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.33,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=0b31c6ba-5a09-4cf8-9388-d455ec059a10&analytics_trace_id=d92364be-83a5-4098-abe6-a56b41e4c9b4&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1228450823.1792080895&dt=PAIISE%20Retro%20Typography%20Laptop%20Sticker%20%E2%80%93%20The%2",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=d92364be-83a5-4098-abe6-a56b4",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/products/paiise-retro-typography-sticker?variant=45354493837421",
+              "ttfb": 0.21,
+              "dcl": 1.14,
+              "load": 2.71,
+              "lcp": 0.88
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.bas-minimalist-barcode-sticker",
+      "suite": "product",
+      "title": "PDP 'Bas Minimalist Hindi Laptop Sticker \u2013 Funny Indian'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.7s, redirected to /products/bas-%E0%A4%AC%E0%A4%B8-minimalist-barcode-sticker",
+              "error": null,
+              "secs": 8.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bas Hindi Minimalist Laptop Sticker \u2013 The Lost Project India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1011 chars, 3 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "warn",
+              "detail": null,
+              "error": "final URL: expected /products/bas-\u092c\u0938-minimalist-barcode-sticker, got /products/bas-%E0%A4%AC%E0%A4%B8-minimalist-barcode-sticker",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/bas-\u092c\u0938-minimalist-barcode-sticker",
+                  "actual": "/products/bas-%E0%A4%AC%E0%A4%B8-minimalist-barcode-sticker",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Bas Minimalist Hindi Laptop Sticker \u2013 Funny Indian Design', selected variant 45354493804653 at \u20b965.00",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/bas-%E0%A4%AC%E0%A4%B8-minimalist-barcode-sticker",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/bas-%E0%A4%AC%E0%A4%B8-minimalist-barcode-sticker.js with variants",
+                  "actual": "'Bas Minimalist Hindi Laptop Sticker \u2013 Funny Indian Design', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Bas Minimalist Hindi Laptop Sticker \u2013 Funny Indian Design",
+                  "actual": "'Bas Minimalist Hindi Laptop Sticker \u2013 Funny Indian Design' (h1, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b965.00",
+                  "actual": "\u20b965.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 798x798)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Bas Minimalist Hindi Laptop Sticker \u2013 Funny Indian Design",
+                  "actual": "'Bas Minimalist Hindi Laptop Sticker \u2013 Funny Indian Design' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Bas Hindi Minimalist Laptop Sticker \u2013 The Lost Project India",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "65.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 45354493804653 (1x1.5 Inches) selected, in stock",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #BuyButtons-ProductForm-template--21297337434221__main (variant 45354493804653, button 'Add to cart')",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.01s, CLS 0.0",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.01s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "225 scripts, at least 1.3 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), www.googletagmanager.com (7), connect.facebook.net (2), chimpstatic.com (1)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "225 scripts, at least 1.3 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), ww\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.36,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=0b31c6ba-5a09-4cf8-9388-d455ec059a10&analytics_trace_id=cc711ed3-9a75-43ea-8973-bd48c3a8df4c&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=625016628.1792080904&dt=Bas%20Hindi%20Minimalist%20Laptop%20Sticker%20%E2%80%93%20The%20Lo",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=cc711ed3-9a75-43ea-8973-bd48c",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/products/bas-%E0%A4%AC%E0%A4%B8-minimalist-barcode-sticker?variant=45354493804653",
+              "ttfb": 0.19,
+              "dcl": 1.53,
+              "load": 3.73,
+              "lcp": 1.01
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.no-dhumrapan-vintage-desi-sign-sticker",
+      "suite": "product",
+      "title": "PDP 'No Dhumrapan Vintage Desi Laptop Sticker \u2013 Funny I'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.63s",
+              "error": null,
+              "secs": 8.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "No Dhumrapan Vintage Desi Laptop Sticker \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1013 chars, 3 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/no-dhumrapan-vintage-desi-sign-sticker",
+                  "actual": "/products/no-dhumrapan-vintage-desi-sign-sticker",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'No Dhumrapan Vintage Desi Laptop Sticker \u2013 Funny India', selected variant 45354493771885 at \u20b965.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/no-dhumrapan-vintage-desi-sign-sticker",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/no-dhumrapan-vintage-desi-sign-sticker.js with variants",
+                  "actual": "'No Dhumrapan Vintage Desi Laptop Sticker \u2013 Funny India', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "No Dhumrapan Vintage Desi Laptop Sticker \u2013 Funny India",
+                  "actual": "'No Dhumrapan Vintage Desi Laptop Sticker \u2013 Funny India' (h1, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b965.00",
+                  "actual": "\u20b965.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 798x798)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "No Dhumrapan Vintage Desi Laptop Sticker \u2013 Funny India",
+                  "actual": "'No Dhumrapan Vintage Desi Laptop Sticker \u2013 Funny India' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "No Dhumrapan Vintage Desi Laptop Sticker \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "65.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 45354493771885 (1x1.5 Inches) selected, in stock",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #BuyButtons-ProductForm-template--21297337434221__main (variant 45354493771885, button 'Add to cart')",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.9s, CLS 0.0",
+              "error": null,
+              "secs": 0.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.9s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "219 scripts, at least 1.3 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), www.googletagmanager.com (7), connect.facebook.net (2), chimpstatic.com (1)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "219 scripts, at least 1.3 MB of JavaScript, 7 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (11), mcjs.prd.a.intuit.com (10), ww\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.06,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=0b31c6ba-5a09-4cf8-9388-d455ec059a10&analytics_trace_id=e588ce78-93b2-4ed4-8a2b-916142344271&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=280410710.1792080913&dt=No%20Dhumrapan%20Vintage%20Desi%20Laptop%20Sticker%20%E2%80%93%20Th",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=e588ce78-93b2-4ed4-8a2b-91614",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/products/no-dhumrapan-vintage-desi-sign-sticker?variant=45354493771885",
+              "ttfb": 0.19,
+              "dcl": 1.36,
+              "load": 3.78,
+              "lcp": 0.9
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'Gnarlboro' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.94s",
+              "error": null,
+              "secs": 5.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Gnarlboro \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1884 chars, 16 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "3 variants; selected 45354474471533 (s, \u20b9554.00); switch to 45354474504301 (m, \u20b9554.00); sold-out variant: none",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/gnarlboro",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/gnarlboro.js with variants",
+                  "actual": "'Gnarlboro', 3 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_switch",
+              "status": "pass",
+              "detail": "chose option \"m\": page selects 45354474504301 (m, \u20b9554.00); address now ?variant=45354474504301",
+              "error": null,
+              "secs": 1.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "option control for the other variant",
+                  "expected": "m",
+                  "actual": "option \"m\"",
+                  "ok": true
+                },
+                {
+                  "what": "page selects the picked variant",
+                  "expected": "45354474504301 (m, \u20b9554.00)",
+                  "actual": "45354474504301 (the product form's variant id) after choosing option \"m\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.86,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=966257774.1792080923&dt=Gnarlboro%20%E2%80%93%20The%20Lost%20Project&tid=AW-11311168613&en=",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=9791c944-f1ee-4cce-989f-65467",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://www.google.com/rmkt/collect/11311168613/?random=1792080925560&cv=11&fst=1792080925560&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45je6a",
+            "POST https://www.google.com/measurement/conversion?random=1792080925589&cv=11&tid=G-0Y9XQJVGZS&fst=1792080925589&fmt=8&en=form_start&gtm=45je6ae0h2v9175403",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/products/gnarlboro?variant=45354474471533",
+              "ttfb": 0.2,
+              "dcl": 1.7,
+              "load": 3.78,
+              "lcp": 1.76
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'PAIISE Retro Typography Laptop Sticker \u2013' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.61s",
+              "error": null,
+              "secs": 4.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "PAIISE Retro Typography Laptop Sticker \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1001 chars, 3 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.62,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=796348329.1792080929&dt=PAIISE%20Retro%20Typography%20Laptop%20Sticker%20%E2%80%93%20The%20",
+            "POST https://www.thelostproject.in/api/event/collect",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=0b0d0bb0-8fce-48b2-9ef4-625fe",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/products/paiise-retro-typography-sticker?variant=45354493837421",
+              "ttfb": 0.2,
+              "dcl": 1.42,
+              "load": 3.1,
+              "lcp": 0.8
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.paiise",
+      "suite": "search",
+      "title": "Search for 'paiise' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.91s",
+              "error": null,
+              "secs": 6.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1865 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "no visible search box; opened /search: 2 results, 1 mention 'paiise'",
+              "error": null,
+              "secs": 6.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 1 result found for \"paiise\" \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "760 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "2",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'paiise'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "1 of 2",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.63,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'sessionId')",
+              "url": "https://www.thelostproject.in/"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=342986867.1792080934&dt=The%20Lost%20Project&tid=AW-11311168613&en=page_view&dl=https%3A%2",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=fc67bea6-af4e-4321-bd63-f8d68",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry",
+            "GET https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/action?jwt=eyJhbGciOiJIUzI1NiIsImtpZCI6InNrMSIsInR5cCI6IkpXVCJ9.eyJhZGlkIjoiMXVyOGp",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=be0ca2b4-bf28-48c4-b24d-30a8f",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=342986867.1792080934&dt=Search%3A%201%20result%20found%20for%20%22paiise%22%20%E2%80%93%20"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 1.56,
+              "load": 4.55,
+              "lcp": 0.76
+            },
+            {
+              "url": "/search?q=paiise&type=product",
+              "ttfb": 0.28,
+              "dcl": 1.94,
+              "load": 4.23,
+              "lcp": 1.04
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.21s",
+              "error": null,
+              "secs": 8.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\" \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3201 chars, 34 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "says 'Search results Search No results found for \"qzxvbugradar\". Check the spe'",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "message 'Search results Search No results found for \"qzxvbugradar\". Check the spe'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.45,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1013200696.1792080949&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22%20%E2%",
+            "POST https://www.thelostproject.in/api/event/collect",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=d4275bde-8926-488b-83b4-32440",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.27,
+              "dcl": 2.73,
+              "load": 5.49,
+              "lcp": 1.1
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'paiise' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.85s",
+              "error": null,
+              "secs": 6.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1865 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "not judged: no visible search box on the homepage",
+              "error": null,
+              "secs": 0.93,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.3,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=265376730.1792080956&dt=The%20Lost%20Project&tid=AW-11311168613&en=page_view&dl=https%3A%2",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=a88c3d73-1bce-487e-b6fd-48287",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.59,
+              "load": 4.67,
+              "lcp": 0.75
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.98s",
+              "error": null,
+              "secs": 6.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1865 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "The Lost Project",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "16: 'The Lost Project'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Professional video production and social media marketing services for ",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "149: 'Professional video production and social media marketing ser'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.thelostproject.in/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.thelostproject.in/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.thelostproject.in/cdn/shop/files/tlp_logo_90779483-f854-445d-86fe-82cadbe1c4f9.png?v=1760303888",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.35,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1491486022.1792080964&dt=The%20Lost%20Project&tid=AW-11311168613&en=page_view&dl=https%3A%",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=d6ed29c8-fe78-49a2-b5e7-3a3d4",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.86,
+              "load": 4.02,
+              "lcp": 0.91
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.51s",
+              "error": null,
+              "secs": 7.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "PAIISE Retro Typography Laptop Sticker \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1001 chars, 3 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "PAIISE Retro Typography Laptop Sticker \u2013 The Lost Project",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "57: 'PAIISE Retro Typography Laptop Sticker \u2013 The Lost Project'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Shop the PAIISE retro typography laptop sticker from The Lost Project.",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "134: 'Shop the PAIISE retro typography laptop sticker from The Los'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.thelostproject.in/products/paiise-retro-typography-sticker",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.thelostproject.in/products/paiise-retro-typography-sticker",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "PAIISE Retro Typography Laptop Sticker \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.thelostproject.in/cdn/shop/files/paiseWB_0f8a964a-e9a0-4d4d-a002-a01d37c04a1b.jpg?v=1781843934",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.56,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=571508088.1792080969&dt=PAIISE%20Retro%20Typography%20Laptop%20Sticker%20%E2%80%93%20The%20",
+            "GET https://www.thelostproject.in/a/msba/api/v1/init?canvas=Storefront&clientId=7f33600b-0e14-4020-ae8a-7d6ab56aa03d&lang=en&countryCode=IN&currencyCode=I",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=50d33c91-3cfc-4f43-ae39-5dfc0",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry"
+          ],
+          "loads": [
+            {
+              "url": "/products/paiise-retro-typography-sticker",
+              "ttfb": 0.18,
+              "dcl": 1.27,
+              "load": 2.86,
+              "lcp": 0.76
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 5.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.49,
+          "note": null,
+          "console": [],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=270592129.1792080978&dt=404%20Not%20Found%20%E2%80%93%20The%20Lost%20Project&tid=AW-1131116",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=9e2c910c-79b3-4108-852b-88ad5",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "GET https://www.thelostproject.in/a/msba/api/v1/init?canvas=Storefront&clientId=a8784b71-0f47-4927-b02a-1d73ce368740&lang=en&countryCode=IN&currencyCode=I",
+            "GET https://shop.app/accounts/pre_auth?client_id=0b31c6ba-5a09-4cf8-9388-d455ec059a10&analytics_trace_id=9e2c910c-79b3-4108-852b-88ad50cd8041&flow=embed&f"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.19,
+              "dcl": 1.66,
+              "load": 4.09,
+              "lcp": 0.99
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /policies/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.41s",
+              "error": null,
+              "secs": 5.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund policy \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "458 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Refund policy \u2013 The Lost Project', heading 'Refund policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/refund-policy",
+                  "actual": "/policies/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "689 chars of policy text",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "689 chars under 'Refund policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /policies/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.37s",
+              "error": null,
+              "secs": 4.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "14867 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy \u2013 The Lost Project', heading 'Privacy policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/privacy-policy",
+                  "actual": "/policies/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "15052 chars of policy text",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "15052 chars under 'Privacy policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /policies/terms-of-service",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.04s",
+              "error": null,
+              "secs": 3.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms of service \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "21930 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms of service \u2013 The Lost Project', heading 'Terms of service'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/terms-of-service",
+                  "actual": "/policies/terms-of-service",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "22123 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "22123 chars under 'Terms of service'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /policies/contact-information",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.09s",
+              "error": null,
+              "secs": 2.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact information \u2013 The Lost Project",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "708 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact information \u2013 The Lost Project', heading 'Contact information'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/contact-information",
+                  "actual": "/policies/contact-information",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "email / phone shown",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "email / phone shown",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 16.46,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/shop-js/modules/v2/chunk.utils_gaUnm3wc.esm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.thelostproject.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=581228671.1792080983&dt=Refund%20policy%20%E2%80%93%20The%20Lost%20Project&tid=AW-11311168",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=08e1f561-3d8b-412f-ad34-14511",
+            "POST https://chimpstatic.com/pixel/v1/track",
+            "POST https://adsagentserverprod-ekd5fygyhpbvh9bd.b01.azurefd.net/api/v1/telemetry",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=581228671.1792080983&dt=Privacy%20policy%20%E2%80%93%20The%20Lost%20Project&tid=AW-1131116",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=192fb0f4-908d-4d79-bb20-ba2a1",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=581228671.1792080983&dt=Terms%20of%20service%20%E2%80%93%20The%20Lost%20Project&tid=AW-113",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=52120f91-042f-4ca4-bb1b-52224",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=581228671.1792080983&dt=Contact%20information%20%E2%80%93%20The%20Lost%20Project&tid=AW-11",
+            "GET https://www.thelostproject.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=e06ba9b7-602a-45e3-8913-bbf7d"
+          ],
+          "loads": [
+            {
+              "url": "/policies/refund-policy",
+              "ttfb": 0.21,
+              "dcl": 1.05,
+              "load": 4.24,
+              "lcp": 0.8
+            },
+            {
+              "url": "/policies/privacy-policy",
+              "ttfb": 0.27,
+              "dcl": 1.07,
+              "load": 2.86,
+              "lcp": 0.8
+            },
+            {
+              "url": "/policies/terms-of-service",
+              "ttfb": 0.25,
+              "dcl": 0.93,
+              "load": 1.91,
+              "lcp": 0.68
+            },
+            {
+              "url": "/policies/contact-information",
+              "ttfb": 0.22,
+              "dcl": 0.99,
+              "load": 1.8,
+              "lcp": 0.65
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 1,
+    "input_tokens": 2270,
+    "output_tokens": 108,
+    "est_usd": 0.000783,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "The Lost Project",
+    "theme": "Horizon (store copy: Updated copy of Updated copy of Updated )",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 7,
+    "collections": 6,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "9 product(s) not listed in the browsed collections are tested last (e.g. gnarlboro)"
+  ],
+  "perf": {
+    "pages": 23,
+    "median_load_secs": 3.33,
+    "slowest": {
+      "url": "/search?q=qzxvbugradar&type=product",
+      "load_secs": 5.49
+    },
+    "console_errors": 2,
+    "console_warnings": 3,
+    "failed_requests": 81
+  },
+  "counts": {
+    "pass": 20,
+    "flaky": 0,
+    "confirmed_fail": 1,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
