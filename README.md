@@ -19,6 +19,8 @@ python3 -m pytest -q -m "not e2e"    # 165 fast unit tests only
 # The LIVE runner (14 Oct): one always-on process on our own machine watches the dashboard's `monitors` table,
 # scans each store on its schedule and uploads the results. Set up with cloud/setup-worker.sh; run by hand with
 #   python3 -m radar worker --once     # BUGRADAR_SUPABASE_URL, BUGRADAR_SERVICE_KEY, BUGRADAR_KEY in the environment
+# Since 15 Oct the same worker also serves the free scan page: a visitor's "check my store" click is a row in the
+# dashboard's `scan_requests` table, claimed BEFORE any daily monitor and run with the 'basic' profile (below).
 ```
 
 ## Use
@@ -28,6 +30,9 @@ python3 -m radar scan moxiebeauty.in --device desktop  # one screen size only (o
 python3 -m radar scan moxiebeauty.in --headed          # watch the browser (slowed to 400 ms per action)
 python3 -m radar scan moxiebeauty.in --headed --slowmo 1000   # slower still
 python3 -m radar scan palmonas.com --no-cart           # skip add-to-cart (prospects)
+python3 -m radar scan palmonas.com --profile basic     # the free scan page's first check: desktop, 7 read-only
+                                                       # checks (home, menu, 1 collection, 1 product, search, 404,
+                                                       # meta), never a cart; ~1-2 min. radar/runner/profiles.py
 python3 -m radar scan moxiebeauty.in --suites smoke,cart
 python3 -m radar sites                                 # everything scanned so far
 python3 -m radar open moxiebeauty.in                   # site history page
