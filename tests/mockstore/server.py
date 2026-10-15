@@ -376,6 +376,8 @@ Modes (to prove Radar catches and heals what it should):
                    404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
   hidden_form_app_button  the product's cart form is hidden and holds no button; the buy control is an app's element
                    outside it (shopkara.store, nubronicforte.com) -> found, the cart check adds the right product, PASSES
+  cod_form_only    hidden buttonless cart form + only an 'Order Now - Cash on Delivery' order-form app button
+                   (shopkara.store) -> product BLOCKED 'not tested: sold only through an order-form app'
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
@@ -1899,6 +1901,12 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      '<style>#product-form-template__main button{display:none}</style>'
                      '<script>addEventListener("scroll", () => { if (scrollY > 300) document.getElementById("sticky-atc")'
                      '.style.display = "block"; });</script>')
+        if self.mode == "cod_form_only":
+            # shopkara.store (new30p/t): a hidden, buttonless cart form; the only buy control is a COD order-form app's
+            # 'Order Now - Cash on Delivery' popup button
+            body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
+                                     f'name="id" value="{vid}"></form><div class="es-popup-button" style="cursor:pointer;'
+                                     f'padding:10px;background:#0a0;color:#fff;width:260px">Order Now - Cash on Delivery</div>')
         if self.mode == "hidden_form_app_button":
             # shopkara.store (new30p) / nubronicforte.com (new30t): the product's own cart form is there but hidden and
             # holds no button; the buy control a shopper uses is an app's element outside the form

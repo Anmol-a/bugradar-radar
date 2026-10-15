@@ -973,6 +973,15 @@ def test_hidden_buttonless_form_falls_back_to_the_pages_own_buy_control(tmp_path
     assert "pdp-addtobag-btn" in _steps(_case(run, "product.pdp."))["buy_button_ready"].detail
 
 
+def test_product_sold_only_through_a_cod_order_form_is_not_tested(tmp_path):
+    """shopkara.store (new30p + new30t): no cart button, only 'Order Now - Cash on Delivery' (an order-form app popup).
+    Radar never fills forms: 'not tested' with the reason, not 'not judged'."""
+    run = _product_only("cod_form_only", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "sold only through an order-form app" in vase.attempts[-1].error, \
+        (vase.verdict, vase.attempts[-1].error)
+
+
 # ---------- desktop + mobile in every run (7 Oct) ----------
 def _both(mode, tmp_path, **kw):
     from radar.runner.executor import scan_devices

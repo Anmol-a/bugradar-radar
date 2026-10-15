@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 16 Oct 00:05 IST (evidence re-test 38783xxx):** shopkara.store has no cart button at all: its only buy control
+  is an order-form app's 'Order Now - Cash on Delivery' popup. A product sold only through such a form = BLOCKED 'not
+  tested' with the reason (Radar never fills forms), not 'not judged' (mock `cod_form_only`). nubronicforte.com still
+  shows no buy-like control on its page (evidence kept; queue).
 - **v0.20 15 Oct 22:55 IST (re-test 38774216198: krkjewels healthy):** the buy-button evidence showed the cause on
   shopkara.store + nubronicforte.com: the product's own cart form is hidden and holds no button, while an app's element is
   the real buy control. A hidden, buttonless form no longer blocks the page's-own-control rule (mock

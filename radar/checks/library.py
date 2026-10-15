@@ -844,7 +844,7 @@ def _main_buy_button(ctx: Ctx, product: dict):
         # + what the product's own form holds (shopkara.store new30p, nubronicforte.com new30t: 'a form for this product
         # but no buy button Radar could use' and nothing more to go on): its buttons, visible / disabled, and any
         # [form=<id>] button outside it
-        st = ctx.sess.evaluate("""(ids) => { const mine = new Set(ids.map(String)); let own = 0, other = 0; const seen = [];
+        st = ctx.sess.evaluate("""([ids, quick]) => { const mine = new Set(ids.map(String)); let own = 0, other = 0; const seen = [];
             const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
             for (const f of document.querySelectorAll('form[action*="/cart/add"]')) {
               const v = (f.querySelector('[name="id"]') || {}).value; if (mine.has(String(v))) own++; else { other++; continue; }
@@ -855,12 +855,18 @@ def _main_buy_button(ctx: Ctx, product: dict):
                 || b.getAttribute('aria-label') || '').trim()).slice(0, 24)) + (vis(b) ? '' : ' hidden') + (b.disabled ? ' disabled' : ''));
               if (!bs.length) seen.push('no button in the form' + (vis(f) ? '' : ' (form hidden)'));
             }
-            const ctl = [...document.querySelectorAll('button, a, [role=button], [onclick], input[type=submit], [class*="btn" i]')]
-              .filter(e => vis(e) && !e.closest('header, footer, nav, cart-drawer, [id*="cart-drawer" i]')
+            const ctl = [...document.querySelectorAll('button, a, [role=button], [onclick], input[type=submit], [class*="btn" i], [class*="button" i]')]
+              .filter(e => vis(e) && !e.closest('header, footer, nav, cart-drawer, [id*="cart-drawer" i]') && !e.closest(quick)
                       && /cart|bag|basket|buy|order|checkout|add/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
               .slice(0, 5).map(e => '<' + e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className.trim()
                 ? '.' + e.className.trim().split(/\s+/)[0] : '') + '> ' + JSON.stringify((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 24)));
-            return {own, other, seen: seen.slice(0, 5), ctl}; }""", ids) or {"own": 0, "other": 0, "seen": [], "ctl": []}
+            return {own, other, seen: seen.slice(0, 5), ctl}; }""", [ids, QUICK_SEL]) or {"own": 0, "other": 0, "seen": [], "ctl": []}
+        # shopkara.store (new30p/t, 15 Oct): no cart button at all, only an order-form app's 'Order Now - Cash on
+        # Delivery' (a popup the shopper fills in): the product is sold through a form Radar never fills = not tested
+        cod = [c for c in (st.get("ctl") or []) if re.search(r"cash on deliver|\bcod\b|order now|place order", c, re.I)]
+        if cod and len(cod) == len(st.get("ctl") or []):
+            raise CatalogOnly(f"not tested: this product is sold only through an order-form app ({cod[0]}): the shopper "
+                              "fills in a form instead of using a cart, and Radar never fills or submits forms")
         # verdict rule (13 Oct): no buy control Radar can find is not proof there is none: NOT JUDGED with the facts
         raise NotJudged("add-to-cart control for THIS product on its page: "
                         + ("none: no add-to-cart form for this product" if not st["own"]
