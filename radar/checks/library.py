@@ -695,6 +695,15 @@ CHOOSE_JS = r"""([values, quick]) => {
               && e.closest('[class*="variant" i], [class*="swatch" i], [class*="option" i], variant-selects, variant-radios')
               && ((e.getAttribute('data-value') || e.getAttribute('data-option-value') || e.innerText || '').trim().toLowerCase() === low));
     if (btn) { btn.click(); used.add(btn); done.push('button ' + v); return true; }
+    // a picker row whose box names neither 'variant' nor 'option' (sntvl.com, new30r: sizes as plain <button>s in a
+    // 'pdp-sizes' box): a visible button whose own text is the value, beside at least one sibling button of the same
+    // kind, never in the header / nav / footer / cart drawer
+    const row = [...document.querySelectorAll('button, [role="radio"], [role="button"], label, li')]
+      .find(e => ok(e) && vis(e) && !used.has(e) && !e.closest('header, nav, footer, form[action*="/search"], cart-drawer, [id*="cart-drawer" i]')
+              && (e.innerText || '').trim().toLowerCase() === low && e.parentElement
+              && [...e.parentElement.children].filter(x => x !== e && x.tagName === e.tagName && vis(x)
+                                                           && (x.innerText || '').trim().length <= 24).length >= 1);
+    if (row) { row.click(); used.add(row); done.push('button ' + v); return true; }
     return false; };
   for (const val of values) {
     const v = String(val).trim();

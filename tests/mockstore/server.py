@@ -365,6 +365,9 @@ Modes (to prove Radar catches and heals what it should):
                    -> Radar reads the data under the page's market path, journey PASSES first try
   wishlist_404     the header links /pages/wishlist, which answers HTTP 404 with a wishlist app drawn into it
                    (countryflora / kotart / swornyfashion, new30p) -> smoke.nav_links PASSES, the app page noted
+  plain_size_buttons  the vase has Size x Colour; colour swatch in a 'swatches' box, sizes as plain buttons in a
+                   'pdp-sizes' box, nothing chosen on load (form id empty, 'Choose your size' disabled) (sntvl.com
+                   new30r) -> Radar taps the colour AND the size, product PASSES
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
@@ -678,6 +681,21 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "plain_size_buttons" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
+            # sntvl.com (new30r, 15 Oct, both devices, 3 products): colour swatches in a 'swatch' box, sizes as plain
+            # <button>s in a box whose class names neither 'variant' nor 'option'; no size chosen on load, the form's id
+            # is empty and the button disabled ('Choose your size') until the shopper taps a size
+            body = re.sub(r'(<form id="product-form-template__main"[^>]*>)<input type="hidden" name="id" value="\d+">'
+                          r'<button type="submit" name="add">Add to cart</button>',
+                          r'<div class="swatches"><button type="button" class="swatch" data-value="Natural">Natural</button></div>'
+                          r'<div class="pdp-sizes"><button type="button" class="sz" data-id="201">Small</button>'
+                          r'<button type="button" class="sz" data-id="202">Large</button></div>'
+                          r'\1<input type="hidden" name="id" value=""><button type="submit" name="add" disabled>Choose your size</button>'
+                          r'<script>document.querySelectorAll(".sz").forEach(b => b.onclick = () => {'
+                          r' const f = document.getElementById("product-form-template__main");'
+                          r' f.querySelector("[name=id]").value = b.dataset.id; const a = f.querySelector("[name=add]");'
+                          r' a.disabled = false; a.textContent = "Add to cart"; });</script>', body, count=1)
         if self.mode == "wishlist_404" and isinstance(body, str) and ctype.startswith("text/html"):
             body = body.replace('<a href="/pages/about">About</a>', '<a href="/pages/about">About</a> <a href="/pages/wishlist">Wishlist</a>', 1)
         if self.mode == "market_path" and getattr(self, "market", False) and isinstance(body, str):
@@ -1645,6 +1663,8 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
     def _variants(self, p, catalog: bool = False):
         """The product's variants as this mode serves them (journey 22: the vase gains a sold-out size). catalog=True:
         as the store-wide /products.json lists them."""
+        if self.mode == "plain_size_buttons" and p["handle"] == "ceramic-vase":
+            return [dict(v, option2="Natural", title=f"{v['option1']} / Natural") for v in p["variants"]]
         if self.mode == "pack_of_two" and p["handle"] == "ceramic-vase":
             return PACK_VARIANTS
         if self.mode == "stale_catalog_all" and not catalog:

@@ -1373,6 +1373,11 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 loop 15 Oct 19:15 IST (new30r run 38741032636, 20 min):** sntvl.com variant_ready failed on 3 products, both
+  devices: colour tapped, but sizes are plain <button>s in a box whose class names neither 'variant' nor 'option', and no
+  size is chosen on load. CHOOSE_JS now also takes a visible button whose own text is the value beside sibling buttons
+  of the same kind (outside header / nav / footer / cart drawer); mock `plain_size_buttons`. Open: mungu.in product
+  click stays on the collection (3 tries, no evidence of why); weaveanddesign cards not judged.
 - **v0.20 loop 15 Oct 13:45 IST (new30p run 38700347159, 20 min):** 3 stores (countryflora, kotart, swornyfashion)
   'degraded' because the header's wishlist link answers HTTP 404 while a wishlist app draws the page into the 404
   template. Such app pages (`APP_PAGE_ON_404`: wishlist / favourites / compare) are noted, not counted as broken nav

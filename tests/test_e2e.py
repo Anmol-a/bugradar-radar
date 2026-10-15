@@ -2409,6 +2409,15 @@ def test_wishlist_app_page_on_the_404_template_is_not_a_broken_nav_link(tmp_path
     assert nav.verdict == "pass", nav.attempts[-1].error
     assert any("app page /pages/wishlist" in s.name for s in nav.attempts[-1].steps), [s.name for s in nav.attempts[-1].steps]
 
+def test_size_as_plain_buttons_outside_a_variant_box_is_picked(tmp_path):
+    """sntvl.com (new30r, 15 Oct, both devices, 3 products failed): the colour was tapped, but the sizes are plain
+    buttons in a box whose class names neither 'variant' nor 'option', so no size was chosen and the form stayed
+    empty ('Choose your size'). A row of buttons showing the option's values is a picker too."""
+    run = _product_only("plain_size_buttons", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass" and len(vase.attempts) == 1, (vase.verdict, vase.attempts[-1].error)
+    assert "button Small" in str(_steps(vase)["variant_ready"].checks), _steps(vase)["variant_ready"].checks
+
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 
 def _buy_now_only(mode, tmp_path, strict=False, **kw):
