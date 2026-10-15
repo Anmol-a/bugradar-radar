@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 15 Oct 21:50 IST (new30t run 38764016282, 19 min):** krkjewels.com 'degraded' on both devices: the header's
+  Login is Shopify's new customer accounts link '/customer_authentication/redirect' (404 to a robot). NAV_JS skips
+  customer_authentication / login / logout links like /account (mock `customer_auth_link`). Evidence: the 'form for this
+  product but no buy button' not-judged now lists what the form holds (shopkara, nubronicforte: 2 stores, cause unknown).
 - **v0.20 15 Oct 20:30 IST (Anmol's decisions):** (1) finish line = rolling target (≤ 1 false per 30 over the last 90
   never-seen stores, met 15 Oct): the loop goes to weekly monitor mode. (2) A product page that shows no price near the
   product's name and has no buy button of its own = BLOCKED 'not tested' (enquiry-only; somuchliving, tastycrafts), never

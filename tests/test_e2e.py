@@ -2438,6 +2438,14 @@ def test_price_minus_a_named_prepaid_offer_is_a_warning(tmp_path):
         (vase.verdict, st.status, st.error)
 
 
+def test_customer_accounts_login_link_is_not_a_menu_page(tmp_path):
+    """krkjewels.com (new30t, 15 Oct, both devices 'degraded'): the header's Login is Shopify's new customer accounts
+    link '/customer_authentication/redirect', which answers 404 to a robot. A sign-in hand-off is not a menu page."""
+    run, _ = _scan("customer_auth_link", tmp_path, max_products=1, max_collections=1, max_nav_links=6)
+    nav = _case(run, "smoke.nav_links")
+    assert nav.verdict == "pass", nav.attempts[-1].error
+    assert not any("customer_authentication" in s.name for s in nav.attempts[-1].steps)
+
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 
 def _buy_now_only(mode, tmp_path, strict=False, **kw):

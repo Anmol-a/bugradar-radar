@@ -37,7 +37,9 @@ NAV_JS = r"""() => {
     const text = (a.textContent || a.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
     if (!href || seen.has(href) || !text || href.startsWith('javascript:')) continue;
     const u = new URL(href);
-    if (/\/(cart|account|search|checkout)(\/|$|\?)|#/.test(u.pathname + u.hash) || /\/products\//.test(u.pathname)) continue;
+    // sign-in links are not pages: Shopify's new customer accounts link '/customer_authentication/redirect' (krkjewels.com
+    // new30t, 15 Oct: 404 for a robot, a login hand-off for a shopper) and /account/login are judged by the account test
+    if (/\/(cart|account|search|checkout|customer_authentication|login|logout)(\/|$|\?)|#/.test(u.pathname + u.hash) || /\/products\//.test(u.pathname)) continue;
     const r = a.getBoundingClientRect();
     seen.add(href); out.push({text: text.slice(0, 60), url: href, visible: r.width > 0 && r.height > 0});
   }

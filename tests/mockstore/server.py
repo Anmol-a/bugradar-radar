@@ -372,6 +372,8 @@ Modes (to prove Radar catches and heals what it should):
                    placeholder price; somuchliving / tastycrafts 15 Oct) -> product BLOCKED 'not tested', never DOWN
   prepaid_price    product pages show the price minus 5% under 'EXTRA 5% OFF ON ALL PREPAID ORDERS' (rasayanam.in)
                    -> shows_title_price_image WARNS (Anmol, 15 Oct), never fails
+  customer_auth_link  the header links '/customer_authentication/redirect' (Shopify new customer accounts), which answers
+                   404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
@@ -685,6 +687,10 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "customer_auth_link" and isinstance(body, str) and ctype.startswith("text/html"):
+            # krkjewels.com (new30t, 15 Oct): the header's 'Login' is Shopify's new-accounts hand-off link, 404 for a robot
+            body = body.replace('<a href="/pages/about">About</a>',
+                                '<a href="/pages/about">About</a> <a href="/customer_authentication/redirect?locale=en">Login</a>', 1)
         if self.mode == "prepaid_price" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/products/"):
             # rasayanam.in (new30m, 14 Oct): 'EXTRA 5% OFF ON ALL PREPAID ORDERS', and the page shows the price minus 5%
