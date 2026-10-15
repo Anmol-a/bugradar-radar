@@ -1,0 +1,3780 @@
+{
+  "run_id": "20261015T133710Z-d-042d",
+  "site_id": "novunaari.com",
+  "base_url": "https://novunaari.com",
+  "device": "desktop",
+  "started_at": "2026-10-15T13:37:10+00:00",
+  "finished_at": "2026-10-15T13:43:00+00:00",
+  "verdict": "blocked",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.83s",
+              "error": null,
+              "secs": 12.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8976 chars, 102 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/tops (16 products)",
+              "error": null,
+              "secs": 6.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "https://novunaari.com/collections/tops ('')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/tops",
+                  "actual": "/collections/tops",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 16 candidates \u2192 /products/vera-collared-tee-copy",
+              "error": null,
+              "secs": 9.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/vera-collared-tee-copy ('Solene Embroidered Blouse')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/vera-collared-tee-copy",
+                  "actual": "/products/vera-collared-tee-copy",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Solene Embroidered Blouse', selected variant 52116566507795 at \u20b92,875.00",
+              "error": null,
+              "secs": 0.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/vera-collared-tee-copy",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/vera-collared-tee-copy.js with variants",
+                  "actual": "'Solene Embroidered Blouse', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$30.23'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 2.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Solene Embroidered Blouse",
+                  "actual": "'Solene Embroidered Blouse' (h1, 22px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$30.23'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 33.58,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/collections/tops"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/collections/tops"
+            },
+            {
+              "type": "error",
+              "text": "Moment Timezone requires Moment.js. See https://momentjs.com/timezone/docs/#/use-it/browser/",
+              "url": "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.28/moment-timezone-with-data.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'version')",
+              "url": "https://novunaari.com/products/vera-collared-tee-copy"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'guess')",
+              "url": "https://novunaari.com/products/vera-collared-tee-copy"
+            }
+          ],
+          "failed_requests": [
+            "GET https://images.unsplash.com/photo-1520920860111-e283f8d0ee3d",
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 3.38,
+              "load": 9.96,
+              "lcp": 2.2
+            },
+            {
+              "url": "/collections/tops",
+              "ttfb": 0.16,
+              "dcl": 1.5,
+              "load": 3.34,
+              "lcp": 1.64
+            },
+            {
+              "url": "/products/vera-collared-tee-copy",
+              "ttfb": 0.01,
+              "dcl": 2.07,
+              "load": 5.74,
+              "lcp": 1.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.17s",
+              "error": null,
+              "secs": 9.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8976 chars, 102 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "3.17s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "3.17s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Identifier 'origFetch' has already been declared",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Identifier 'origFetch' has already been declared",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.41s, CLS 0.0",
+              "error": null,
+              "secs": 0.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.41s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "143 scripts, at least 1.7 MB of JavaScript, 14 third-party script hosts: www.googletagmanager.com (5), magic-plugins.razorpay.com (2), connect.facebook.net (2), cdnjs.cloudflare.com (2), cdn.nfcube.com (1)",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "143 scripts, at least 1.7 MB of JavaScript, 14 third-party script hosts: www.googletagmanager.com (5), magic-plugins.razorpay.com (2), connect.facebook.net (2)\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.98,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://images.unsplash.com/photo-1520920860111-e283f8d0ee3d",
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.46,
+              "load": 7.57,
+              "lcp": 1.41
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.07s",
+              "error": null,
+              "secs": 10.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8976 chars, 102 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/edit-of-ease",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.29s",
+              "error": null,
+              "secs": 6.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Edit of Ease Collection | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2018 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/parisian-penache",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.1s",
+              "error": null,
+              "secs": 5.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Parisian Penache Collection | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2281 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/resort-dreams",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.48s",
+              "error": null,
+              "secs": 6.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Resort Dreams Collection | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2174 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/the-snuggle-edit",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.22s",
+              "error": null,
+              "secs": 6.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Snuggle Edit | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2113 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/new-arrivals",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.84s",
+              "error": null,
+              "secs": 5.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "New Arrivals for Women | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1994 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/tops",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.85s",
+              "error": null,
+              "secs": 4.84,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Chic Women\u2019s Tops Online | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2054 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/bottoms",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.52s",
+              "error": null,
+              "secs": 5.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Women\u2019s Bottoms Online | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1382 chars, 18 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/co-ords-set",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.27s",
+              "error": null,
+              "secs": 5.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Women\u2019s Co-ord Sets Online | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1296 chars, 22 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/sweaters",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.55s",
+              "error": null,
+              "secs": 4.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Women\u2019s Sweaters Online | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2105 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "10 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 61.13,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/collections/parisian-penache"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/collections/parisian-penache"
+            },
+            {
+              "type": "error",
+              "text": "Moment Timezone requires Moment.js. See https://momentjs.com/timezone/docs/#/use-it/browser/",
+              "url": "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.28/moment-timezone-with-data.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'version')",
+              "url": "https://novunaari.com/collections/sweaters"
+            }
+          ],
+          "failed_requests": [
+            "GET https://images.unsplash.com/photo-1520920860111-e283f8d0ee3d",
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 2.68,
+              "load": 8.12,
+              "lcp": 1.3
+            },
+            {
+              "url": "/collections/edit-of-ease",
+              "ttfb": 0.18,
+              "dcl": 1.87,
+              "load": 3.82,
+              "lcp": 1.73
+            },
+            {
+              "url": "/collections/parisian-penache",
+              "ttfb": 0.16,
+              "dcl": 1.71,
+              "load": 3.75,
+              "lcp": 1.37
+            },
+            {
+              "url": "/collections/resort-dreams",
+              "ttfb": 0.14,
+              "dcl": 2.07,
+              "load": 4.32,
+              "lcp": 2.04
+            },
+            {
+              "url": "/collections/the-snuggle-edit",
+              "ttfb": 0.22,
+              "dcl": 1.85,
+              "load": 3.64,
+              "lcp": 1.73
+            },
+            {
+              "url": "/collections/new-arrivals",
+              "ttfb": 0.15,
+              "dcl": 1.38,
+              "load": 3.64,
+              "lcp": 1.32
+            },
+            {
+              "url": "/collections/tops",
+              "ttfb": 0.16,
+              "dcl": 1.52,
+              "load": 2.98,
+              "lcp": 1.05
+            },
+            {
+              "url": "/collections/bottoms",
+              "ttfb": 0.2,
+              "dcl": 1.93,
+              "load": 4.12,
+              "lcp": 1.83
+            },
+            {
+              "url": "/collections/co-ords-set",
+              "ttfb": 0.15,
+              "dcl": 1.02,
+              "load": 2.9,
+              "lcp": 1.3
+            },
+            {
+              "url": "/collections/sweaters",
+              "ttfb": 0.14,
+              "dcl": 1.23,
+              "load": 2.59,
+              "lcp": 1.05
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.46s",
+              "error": null,
+              "secs": 10.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8976 chars, 102 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.45,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://images.unsplash.com/photo-1520920860111-e283f8d0ee3d",
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 3.14,
+              "load": 8.11,
+              "lcp": 2.08
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "announcement bar: opens /collections/all",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.21s",
+              "error": null,
+              "secs": 7.74,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "All Women\u2019s Wear Online | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1998 chars, 38 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'All Women\u2019s Wear Online | Novu Naari \u2013 Novunaari', heading 'COLLECTION:\\nSHOP\\xa0ALL'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/faqs",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.52s",
+              "error": null,
+              "secs": 4.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "FAQs \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "816 chars, 6 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'FAQs \u2013 Novunaari', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/faqs",
+                  "actual": "/pages/faqs",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "2 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.71,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/collections/all"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Moment Timezone requires Moment.js. See https://momentjs.com/timezone/docs/#/use-it/browser/",
+              "url": "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.28/moment-timezone-with-data.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'version')",
+              "url": "https://novunaari.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.57,
+              "dcl": 2.78,
+              "load": 5.64,
+              "lcp": 2.38
+            },
+            {
+              "url": "/pages/faqs",
+              "ttfb": 0.43,
+              "dcl": 1.23,
+              "load": 2.94,
+              "lcp": 1.22
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.tops",
+      "suite": "catalog",
+      "title": "Collection 'Tops' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.51s",
+              "error": null,
+              "secs": 6.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Chic Women\u2019s Tops Online | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2054 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "16 products listed",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 7: Identifier 'origFetch' has already been declared",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "7: Identifier 'origFetch' has already been declared",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.69s, CLS 0.001",
+              "error": null,
+              "secs": 0.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.69s, CLS 0.001",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "164 scripts, at least 1.7 MB of JavaScript, 12 third-party script hosts: www.googletagmanager.com (5), magic-plugins.razorpay.com (2), connect.facebook.net (2), cdnjs.cloudflare.com (2), cdn.nfcube.com (1)",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "164 scripts, at least 1.7 MB of JavaScript, 12 third-party script hosts: www.googletagmanager.com (5), magic-plugins.razorpay.com (2), connect.facebook.net (2)\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.48,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/collections/tops"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/collections/tops"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/collections/tops"
+            },
+            {
+              "type": "error",
+              "text": "Moment Timezone requires Moment.js. See https://momentjs.com/timezone/docs/#/use-it/browser/",
+              "url": "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.28/moment-timezone-with-data.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'version')",
+              "url": "https://novunaari.com/collections/tops"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/collections/tops",
+              "ttfb": 0.19,
+              "dcl": 2.15,
+              "load": 4.83,
+              "lcp": 1.69
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.resort-dreams",
+      "suite": "catalog",
+      "title": "Collection 'SUMMER\u00a0SERENO' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.54s",
+              "error": null,
+              "secs": 6.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Resort Dreams Collection | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2174 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "16 products listed",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 7: Identifier 'origFetch' has already been declared",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "7: Identifier 'origFetch' has already been declared",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.16s, CLS 0.001",
+              "error": null,
+              "secs": 0.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.16s, CLS 0.001",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "153 scripts, at least 1.7 MB of JavaScript, 12 third-party script hosts: www.googletagmanager.com (5), magic-plugins.razorpay.com (2), connect.facebook.net (2), cdnjs.cloudflare.com (2), cdn.nfcube.com (1)",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "153 scripts, at least 1.7 MB of JavaScript, 12 third-party script hosts: www.googletagmanager.com (5), magic-plugins.razorpay.com (2), connect.facebook.net (2)\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.38,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/collections/resort-dreams"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/collections/resort-dreams"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/collections/resort-dreams"
+            },
+            {
+              "type": "error",
+              "text": "Moment Timezone requires Moment.js. See https://momentjs.com/timezone/docs/#/use-it/browser/",
+              "url": "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.28/moment-timezone-with-data.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'version')",
+              "url": "https://novunaari.com/collections/resort-dreams"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/collections/resort-dreams",
+              "ttfb": 0.15,
+              "dcl": 1.99,
+              "load": 5.05,
+              "lcp": 1.16
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.without-gift",
+      "suite": "catalog",
+      "title": "Collection 'Without Gift' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.46s",
+              "error": null,
+              "secs": 7.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Without Gift Collection | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2221 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "16 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.09s",
+              "error": null,
+              "secs": 6.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Without Gift Collection | Novu Naari \u2013 Page 2 \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2244 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 16 more products",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "16",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.92,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/collections/without-gift"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/collections/without-gift"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/collections/without-gift"
+            },
+            {
+              "type": "error",
+              "text": "Moment Timezone requires Moment.js. See https://momentjs.com/timezone/docs/#/use-it/browser/",
+              "url": "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.28/moment-timezone-with-data.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'version')",
+              "url": "https://novunaari.com/collections/without-gift"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/without-gift",
+              "ttfb": 0.33,
+              "dcl": 2.08,
+              "load": 5.38,
+              "lcp": 1.74
+            },
+            {
+              "url": "/collections/without-gift?page=2",
+              "ttfb": 0.16,
+              "dcl": 1.72,
+              "load": 4.29,
+              "lcp": 1.19
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.without-gift",
+      "suite": "catalog",
+      "title": "Filtering collection 'Without Gift' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.87s",
+              "error": null,
+              "secs": 6.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Without Gift Collection | Novu Naari \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2221 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_not_judged",
+              "status": "info",
+              "detail": "this collection offers no filters (no storefront filter options on the page)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "sorting not checked: the store's robots.txt disallows /collections/without-gift?sort_by=\u2026 (Shopify's default) and Radar always respects robots.txt",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.92,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/collections/without-gift"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/collections/without-gift"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/collections/without-gift"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/collections/without-gift",
+              "ttfb": 0.19,
+              "dcl": 2.33,
+              "load": 5.23,
+              "lcp": 1.68
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.vera-collared-tee-copy",
+      "suite": "product",
+      "title": "PDP 'Solene Embroidered Blouse'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.36s",
+              "error": null,
+              "secs": 12.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Solene Embroidered Blouse \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5173 chars, 49 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/vera-collared-tee-copy",
+                  "actual": "/products/vera-collared-tee-copy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Solene Embroidered Blouse', selected variant 52116566507795 at \u20b92,875.00",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/vera-collared-tee-copy",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/vera-collared-tee-copy.js with variants",
+                  "actual": "'Solene Embroidered Blouse', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$30.23'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 2.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Solene Embroidered Blouse",
+                  "actual": "'Solene Embroidered Blouse' (h1, 22px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$30.23'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.28,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/products/vera-collared-tee-copy?variant=52116566507795"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/products/vera-collared-tee-copy?variant=52116566507795",
+              "ttfb": 0.05,
+              "dcl": 1.99,
+              "load": 7.37,
+              "lcp": 1.63
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.cherry-blossom-pleat-detail-top",
+      "suite": "product",
+      "title": "PDP 'Cherry Blossom Pleat Detail Top'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.31s",
+              "error": null,
+              "secs": 12.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Cherry Blossom Pleat Detail Top \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5298 chars, 49 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/cherry-blossom-pleat-detail-top",
+                  "actual": "/products/cherry-blossom-pleat-detail-top",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Cherry Blossom Pleat Detail Top', selected variant 52104366784787 at \u20b92,156.00",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/cherry-blossom-pleat-detail-top",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/cherry-blossom-pleat-detail-top.js with variants",
+                  "actual": "'Cherry Blossom Pleat Detail Top', 10 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$30.23'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 2.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Cherry Blossom Pleat Detail Top",
+                  "actual": "'Cherry Blossom Pleat Detail Top' (h1, 22px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$30.23'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.07,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/products/cherry-blossom-pleat-detail-top?variant=52104366784787"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/products/cherry-blossom-pleat-detail-top?variant=52104366784787"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/products/cherry-blossom-pleat-detail-top?variant=52104366784787"
+            },
+            {
+              "type": "error",
+              "text": "Moment Timezone requires Moment.js. See https://momentjs.com/timezone/docs/#/use-it/browser/",
+              "url": "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.28/moment-timezone-with-data.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'version')",
+              "url": "https://novunaari.com/products/cherry-blossom-pleat-detail-top?variant=52104366784787"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/products/cherry-blossom-pleat-detail-top?variant=52104366784787",
+              "ttfb": 0.04,
+              "dcl": 2.75,
+              "load": 7.53,
+              "lcp": 2.02
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.paloma-shirt",
+      "suite": "product",
+      "title": "PDP 'Paloma Shirt'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.38s",
+              "error": null,
+              "secs": 11.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Paloma Shirt \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5149 chars, 49 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/paloma-shirt",
+                  "actual": "/products/paloma-shirt",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Paloma Shirt', selected variant 52094472814867 at \u20b92,156.00",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/paloma-shirt",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/paloma-shirt.js with variants",
+                  "actual": "'Paloma Shirt', 10 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$30.23'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 2.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Paloma Shirt",
+                  "actual": "'Paloma Shirt' (h1, 22px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$30.23'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.02,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/products/paloma-shirt?variant=52094472814867"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/products/paloma-shirt?variant=52094472814867",
+              "ttfb": 0.04,
+              "dcl": 2.02,
+              "load": 6.03,
+              "lcp": 1.78
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'Solene Embroidered Blouse' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.65s",
+              "error": null,
+              "secs": 9.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Solene Embroidered Blouse \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5173 chars, 49 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "5 variants; selected 52116566507795 (Off White / S, \u20b92,875.00); switch to 52116566540563 (Off White / M, \u20b92,875.00); sold-out variant: none",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/vera-collared-tee-copy",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/vera-collared-tee-copy.js with variants",
+                  "actual": "'Solene Embroidered Blouse', 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_switch",
+              "status": "pass",
+              "detail": "chose dropdown option \"M\": page selects 52116566540563 (Off White / M, \u20b92,875.00); address now ?variant=52116566540563",
+              "error": null,
+              "secs": 1.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "option control for the other variant",
+                  "expected": "Off White / M",
+                  "actual": "dropdown option \"M\"",
+                  "ok": true
+                },
+                {
+                  "what": "page selects the picked variant",
+                  "expected": "52116566540563 (Off White / M, \u20b92,875.00)",
+                  "actual": "52116566540563 (the product form's variant id) after choosing dropdown option \"M\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.37,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/products/vera-collared-tee-copy?variant=52116566507795"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/products/vera-collared-tee-copy?variant=52116566507795",
+              "ttfb": 0.11,
+              "dcl": 2.33,
+              "load": 7.46,
+              "lcp": 1.34
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'Solene Embroidered Blouse' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.11s",
+              "error": null,
+              "secs": 8.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Solene Embroidered Blouse \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5173 chars, 49 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.22,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/products/vera-collared-tee-copy?variant=52116566507795"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/vera-collared-tee-copy?variant=52116566507795",
+              "ttfb": 0.04,
+              "dcl": 1.82,
+              "load": 5.89,
+              "lcp": 1.33
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.vera",
+      "suite": "search",
+      "title": "Search for 'vera' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.77s",
+              "error": null,
+              "secs": 10.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8976 chars, 102 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 24 results, 1 mention 'vera'",
+              "error": null,
+              "secs": 12.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "24",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'vera'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "1 of 24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 22.51,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://images.unsplash.com/photo-1520920860111-e283f8d0ee3d",
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh",
+            "GET https://cdn.shopify.com/s/files/1/0877/8668/4691/files/Asset_32_3x_d11c76af-bb1a-405b-8f6f-cbffef14f2dd.png?v=1718103375",
+            "POST https://novunaari.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.32,
+              "load": 7.8,
+              "lcp": 1.29
+            },
+            {
+              "url": "/search?q=vera&options%5Bprefix%5D=last",
+              "ttfb": 0.27,
+              "dcl": 1.56,
+              "load": 3.85,
+              "lcp": 1.33
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.75s",
+              "error": null,
+              "secs": 7.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 8 results found for \"qzxvbugradar\" \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1264 chars, 15 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "warn",
+              "detail": null,
+              "error": "shopper is told nothing matched: expected a 'no results' message, or no products listed, got no message, 8 products listed",
+              "secs": 6.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 8 products listed",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.09,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.26,
+              "dcl": 1.34,
+              "load": 5.79,
+              "lcp": 1.06
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'vera' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.16s",
+              "error": null,
+              "secs": 10.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8976 chars, 102 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "8 product suggestion(s) while typing 'vera', e.g. 'Vera Collared Tee'",
+              "error": null,
+              "secs": 8.71,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.66,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'className')",
+              "url": "https://novunaari.com/"
+            }
+          ],
+          "failed_requests": [
+            "GET https://images.unsplash.com/photo-1520920860111-e283f8d0ee3d",
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh",
+            "GET https://cdn.shopify.com/s/files/1/0877/8668/4691/files/Asset_32_3x_d11c76af-bb1a-405b-8f6f-cbffef14f2dd.png?v=1718103375",
+            "GET https://cdn.shopify.com/videos/c/o/v/4fe1c4886d0b4ef88b50256fb28ddcdd.mp4"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.78,
+              "load": 8.56,
+              "lcp": 1.17
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.51s",
+              "error": null,
+              "secs": 7.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8976 chars, 102 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "66: 'Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms '",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 173: \"Discover timeless style with Novunaari's curated collections\"",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "173: \"Discover timeless style with Novunaari's curated collections\"",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://novunaari.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://novunaari.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://novunaari.com/cdn/shop/files/Asset_8_1_929611e2-4b53-4975-9cd7-fe139705e552.png?v=1728011445",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.73,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://images.unsplash.com/photo-1520920860111-e283f8d0ee3d",
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.09,
+              "dcl": 2.21,
+              "load": 5.21,
+              "lcp": 1.3
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.9s",
+              "error": null,
+              "secs": 9.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Solene Embroidered Blouse \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5173 chars, 49 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Solene Embroidered Blouse \u2013 Novunaari",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "37: 'Solene Embroidered Blouse \u2013 Novunaari'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Material: Our cotton slub fabric is crafted from 100% natura'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Material: Our cotton slub fabric is crafted from 100% natura'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://novunaari.com/products/vera-collared-tee-copy",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://novunaari.com/products/vera-collared-tee-copy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Solene Embroidered Blouse",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://novunaari.com/cdn/shop/files/IMG_8140copy.jpg?v=1753698388",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.7,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/products/vera-collared-tee-copy"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/products/vera-collared-tee-copy"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/products/vera-collared-tee-copy"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_rzKF4GwP1jSjPh"
+          ],
+          "loads": [
+            {
+              "url": "/products/vera-collared-tee-copy",
+              "ttfb": 0.03,
+              "dcl": 1.6,
+              "load": 4.54,
+              "lcp": 1.38
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 4.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.54,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://api.razorpay.com/v1/checkout/public?traffic_env=production&build=1d80e7d70bb31773207ff386b9b0866c49fd9be0&build_v1=6a5a8ca6fb9f42d9f5b1052e3e4"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.19,
+              "dcl": 0.89,
+              "load": 3.41,
+              "lcp": 0.94
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /policies/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.43s",
+              "error": null,
+              "secs": 4.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund policy \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2389 chars, 6 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Refund policy \u2013 Novunaari', heading 'REFUND POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/refund-policy",
+                  "actual": "/policies/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "4718 chars of policy text",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "4718 chars under 'REFUND POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /policies/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.01s",
+              "error": null,
+              "secs": 3.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping policy \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1611 chars, 6 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping policy \u2013 Novunaari', heading 'SHIPPING POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/shipping-policy",
+                  "actual": "/policies/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "3969 chars of policy text",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "3969 chars under 'SHIPPING POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /policies/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.1s",
+              "error": null,
+              "secs": 3.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "16976 chars, 6 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy \u2013 Novunaari', heading 'PRIVACY POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/privacy-policy",
+                  "actual": "/policies/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "19185 chars of policy text",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "19185 chars under 'PRIVACY POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /policies/terms-of-service",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.1s",
+              "error": null,
+              "secs": 3.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms of service \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "19305 chars, 6 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms of service \u2013 Novunaari', heading 'TERMS OF SERVICE'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/terms-of-service",
+                  "actual": "/policies/terms-of-service",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "21560 chars of policy text",
+              "error": null,
+              "secs": 0.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "21560 chars under 'TERMS OF SERVICE'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.44s",
+              "error": null,
+              "secs": 3.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact \u2013 Novunaari",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "698 chars, 6 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact \u2013 Novunaari', heading 'CONTACT'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.72,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Identifier 'origFetch' has already been declared",
+              "url": "https://novunaari.com/policies/refund-policy"
+            },
+            {
+              "type": "error",
+              "text": "IconList is not defined",
+              "url": "https://cdn.shopify.com/extensions/019a15d4-71d4-7279-8062-f2f76f98d8e1/musbu-49/assets/cx_whatsapp_button.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "jQuery(...)[_0x28000b(...)] is not a function",
+              "url": "https://novunaari.com/policies/refund-policy"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://novunaari.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "error",
+              "text": "Moment Timezone requires Moment.js. See https://momentjs.com/timezone/docs/#/use-it/browser/",
+              "url": "https://cdnjs.cloudflare.com/ajax/libs/moment-timezone/0.5.28/moment-timezone-with-data.min.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of undefined (reading 'version')",
+              "url": "https://novunaari.com/policies/refund-policy"
+            },
+            {
+              "type": "pageerror",
+              "text": "done is not a function",
+              "url": "https://novunaari.com/policies/refund-policy"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://novunaari.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://api.razorpay.com/v1/checkout/public?traffic_env=production&build=1d80e7d70bb31773207ff386b9b0866c49fd9be0&build_v1=6a5a8ca6fb9f42d9f5b1052e3e4",
+            "GET https://api.razorpay.com/v1/checkout/public?traffic_env=canary&build=9ffa898c1346fa31ad41f01077ab96dc0ed109b4&build_v1=6a5a8ca6fb9f42d9f5b1052e3e4ccbe"
+          ],
+          "loads": [
+            {
+              "url": "/policies/refund-policy",
+              "ttfb": 0.33,
+              "dcl": 1.24,
+              "load": 3.13,
+              "lcp": 0.93
+            },
+            {
+              "url": "/policies/shipping-policy",
+              "ttfb": 0.27,
+              "dcl": 0.87,
+              "load": 2.12,
+              "lcp": 0.85
+            },
+            {
+              "url": "/policies/privacy-policy",
+              "ttfb": 0.26,
+              "dcl": 0.81,
+              "load": 2.05,
+              "lcp": 0.78
+            },
+            {
+              "url": "/policies/terms-of-service",
+              "ttfb": 0.32,
+              "dcl": 0.91,
+              "load": 2.07,
+              "lcp": 0.94
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.16,
+              "dcl": 1.28,
+              "load": 2.51,
+              "lcp": 1.21
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Novunaari \u2013 Fashion for Every Occasion | Chic Tops, Bottoms & More",
+    "theme": "Dawn (store copy:  Banner iphone sorted-TBE- Magic)",
+    "checkout_app": "Shopflo + Razorpay Magic Checkout",
+    "access": "open",
+    "nav": 15,
+    "collections": 19,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [],
+  "perf": {
+    "pages": 26,
+    "median_load_secs": 3.83,
+    "slowest": {
+      "url": "/",
+      "load_secs": 9.96
+    },
+    "console_errors": 8,
+    "console_warnings": 2,
+    "failed_requests": 10
+  },
+  "counts": {
+    "pass": 17,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 4,
+    "skipped": 0
+  }
+}
