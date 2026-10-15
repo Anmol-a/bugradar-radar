@@ -855,14 +855,21 @@ def _main_buy_button(ctx: Ctx, product: dict):
                 || b.getAttribute('aria-label') || '').trim()).slice(0, 24)) + (vis(b) ? '' : ' hidden') + (b.disabled ? ' disabled' : ''));
               if (!bs.length) seen.push('no button in the form' + (vis(f) ? '' : ' (form hidden)'));
             }
-            return {own, other, seen: seen.slice(0, 5)}; }""", ids) or {"own": 0, "other": 0, "seen": []}
+            const ctl = [...document.querySelectorAll('button, a, [role=button], [onclick], input[type=submit], [class*="btn" i]')]
+              .filter(e => vis(e) && !e.closest('header, footer, nav, cart-drawer, [id*="cart-drawer" i]')
+                      && /cart|bag|basket|buy|order|checkout|add/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
+              .slice(0, 5).map(e => '<' + e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className.trim()
+                ? '.' + e.className.trim().split(/\s+/)[0] : '') + '> ' + JSON.stringify((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 24)));
+            return {own, other, seen: seen.slice(0, 5), ctl}; }""", ids) or {"own": 0, "other": 0, "seen": [], "ctl": []}
         # verdict rule (13 Oct): no buy control Radar can find is not proof there is none: NOT JUDGED with the facts
         raise NotJudged("add-to-cart control for THIS product on its page: "
                         + ("none: no add-to-cart form for this product" if not st["own"]
                            else f"{st['own']} add-to-cart form(s) for this product, but no buy button Radar could use"
                            + (f" (the form holds: {'; '.join(st.get('seen') or [])})" if st.get("seen") else ""))
                         + (f" ({st['other']} such forms belong to other products' cards)" if st["other"] else "")
-                        + "; no other buy control found" + ("; LLM healing disabled" if "LLM healing disabled" in str(e) else "")) from e
+                        + "; no other buy control found"
+                        + (f"; buy-like controls on the page: {', '.join(st.get('ctl') or [])}" if st.get("ctl") else "")
+                        + ("; LLM healing disabled" if "LLM healing disabled" in str(e) else "")) from e
     try:
         healed_on = f.locator.is_enabled()
     except Exception:  # noqa: BLE001  detached
