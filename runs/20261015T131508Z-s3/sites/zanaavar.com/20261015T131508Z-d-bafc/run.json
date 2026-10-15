@@ -1,0 +1,3700 @@
+{
+  "run_id": "20261015T131508Z-d-bafc",
+  "site_id": "zanaavar.com",
+  "base_url": "https://zanaavar.com",
+  "device": "desktop",
+  "started_at": "2026-10-15T13:15:08+00:00",
+  "finished_at": "2026-10-15T13:19:01+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.81s",
+              "error": null,
+              "secs": 6.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5516 chars, 32 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/vendors (5 products)",
+              "error": null,
+              "secs": 5.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/vendors?q=Zanaavar ('ZANAAVAR')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/vendors",
+                  "actual": "/collections/vendors",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "5",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 12 candidates \u2192 /products/gray-and-yellow-bag",
+              "error": null,
+              "secs": 7.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/gray-and-yellow-bag ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/gray-and-yellow-bag",
+                  "actual": "/products/gray-and-yellow-bag",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Z-SPIKES Yellow and Gray', selected variant 42426506215495 at \u20b91,499.00",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/gray-and-yellow-bag",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/gray-and-yellow-bag.js with variants",
+                  "actual": "'Z-SPIKES Yellow and Gray', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Z-SPIKES Yellow and Gray",
+                  "actual": "'Z-SPIKES Yellow And Gray' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,499.00",
+                  "actual": "\u20b91,499.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 571x571)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Z-SPIKES Yellow and Gray",
+                  "actual": "'Z-SPIKES Yellow And Gray' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Z-SPIKES Yellow and Gray",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1499.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.07-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.91,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://zanaavar.com/products/gray-and-yellow-bag"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'offsetHeight')",
+              "url": "https://zanaavar.com/products/gray-and-yellow-bag"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/c6507478169c486ebef42e5eb688910c/c6507478169c486ebef42e5eb688910c.HD-720p-1.6Mbps-82751170.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/24e55084ca7f40d3895f760b72b4a45c/24e55084ca7f40d3895f760b72b4a45c.HD-720p-1.6Mbps-82751808.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/a8042a0f5b6e4de286def4e50596c9ba/a8042a0f5b6e4de286def4e50596c9ba.HD-1080p-3.3Mbps-79680873.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/c34ad00ba529411ebc1b94cc357a24a0/c34ad00ba529411ebc1b94cc357a24a0.HD-720p-1.6Mbps-79680876.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/5d4759221a6945baa1c80f0cb167bd4a/5d4759221a6945baa1c80f0cb167bd4a.HD-1080p-3.3Mbps-79680874.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/7592eefbe83846d58f34755b3f9b5bdc/7592eefbe83846d58f34755b3f9b5bdc.HD-720p-1.6Mbps-82751006.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/2c8a0832e0a543299cb1b722134fd022/2c8a0832e0a543299cb1b722134fd022.HD-720p-1.6Mbps-82751005.mp4?v=0"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.09,
+              "dcl": 1.63,
+              "load": 3.07,
+              "lcp": 0.84
+            },
+            {
+              "url": "/collections/vendors?q=Zanaavar",
+              "ttfb": 0.11,
+              "dcl": 1.4,
+              "load": 2.84,
+              "lcp": 2.78
+            },
+            {
+              "url": "/products/gray-and-yellow-bag",
+              "ttfb": 0.2,
+              "dcl": 2.15,
+              "load": 4.54,
+              "lcp": 2.27
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.23s",
+              "error": null,
+              "secs": 7.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5516 chars, 32 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.23s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.23s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "warn",
+              "detail": null,
+              "error": "broken images: expected 0, got 10",
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "10",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "5%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "5%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.98s, CLS 0.005",
+              "error": null,
+              "secs": 0.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.98s, CLS 0.005",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "97 scripts, at least 1.5 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "97 scripts, at least 1.5 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.07,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.0,
+              "load": 4.3,
+              "lcp": 0.98
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.07s",
+              "error": null,
+              "secs": 6.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5516 chars, 32 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/about-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.92s",
+              "error": null,
+              "secs": 2.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About US \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2414 chars, 7 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /blogs/news",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.16s",
+              "error": null,
+              "secs": 3.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "News \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1197 chars, 3 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /apps/track123",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.1s",
+              "error": null,
+              "secs": 4.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "985 chars, 2 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 17.06,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.72,
+              "load": 3.81,
+              "lcp": 1.03
+            },
+            {
+              "url": "/pages/about-us",
+              "ttfb": 0.03,
+              "dcl": 0.76,
+              "load": 1.79,
+              "lcp": 0.98
+            },
+            {
+              "url": "/blogs/news",
+              "ttfb": 0.18,
+              "dcl": 1.02,
+              "load": 2.31,
+              "lcp": 1.45
+            },
+            {
+              "url": "/apps/track123",
+              "ttfb": 0.9,
+              "dcl": 1.9,
+              "load": 3.51,
+              "lcp": 3.81
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.9s",
+              "error": null,
+              "secs": 5.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5516 chars, 32 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.81,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.59,
+              "load": 3.26,
+              "lcp": 0.87
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/vendors",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.65s",
+              "error": null,
+              "secs": 5.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1530 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Zanaavar', heading 'Zanaavar'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/vendors",
+                  "actual": "/collections/vendors",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "1 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.7,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/collections/vendors?q=Zanaavar",
+              "ttfb": 0.18,
+              "dcl": 2.46,
+              "load": 3.18,
+              "lcp": 2.66
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.bags",
+      "suite": "catalog",
+      "title": "Collection 'Bags' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.25s",
+              "error": null,
+              "secs": 6.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bags \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1511 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "5 products listed",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "5",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "4%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "4%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 2.94s, CLS 0.011",
+              "error": null,
+              "secs": 0.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 2.94s, CLS 0.011",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "108 scripts, at least 1.5 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "108 scripts, at least 1.5 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.39,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.15,
+              "dcl": 2.06,
+              "load": 4.16,
+              "lcp": 2.94
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.bags",
+      "suite": "catalog",
+      "title": "Collection 'Bags' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.75s",
+              "error": null,
+              "secs": 6.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bags \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1511 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "5 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "more_products_not_judged",
+              "status": "info",
+              "detail": "the first page shows the collection (5 shown, 5 in stock in the store's data, 0 not shown)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.72,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.07,
+              "dcl": 2.39,
+              "load": 3.85,
+              "lcp": 3.3
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.bags",
+      "suite": "catalog",
+      "title": "Filtering collection 'Bags' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.03s",
+              "error": null,
+              "secs": 6.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bags \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1511 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "1 filter options (e.g. In Stock(5)); applying 'In Stock(5)' = filter.v.availability=1",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "pass",
+              "detail": "opened /collections/bags?filter.v.availability=1 directly: the theme's own request (?filter.v.availability=1&filter.v.price.gte=&filter.v.price.lte=&sort_by=manual) is disallowed by robots.txt",
+              "error": null,
+              "secs": 10.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bags \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1481 chars, 12 images",
+                  "ok": true
+                },
+                {
+                  "what": "filters in the page address",
+                  "expected": "exactly one: filter.v.availability=1",
+                  "actual": "filter.v.availability=1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_narrows_results",
+              "status": "pass",
+              "detail": "'In Stock(5)': 5 products listed (5 without the filter), all match it in the store's data",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed with the filter on",
+                  "expected": "\u2265 1 (the store's own filter says 5)",
+                  "actual": "5",
+                  "ok": true
+                },
+                {
+                  "what": "products listed: filtered vs unfiltered",
+                  "expected": "\u2264 5",
+                  "actual": "5",
+                  "ok": true
+                },
+                {
+                  "what": "listed products matching 'In Stock(5)' (store's data)",
+                  "expected": "all 5",
+                  "actual": "5 of 5",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "sorting not checked: the store's robots.txt disallows /collections/bags?sort_by=\u2026 (Shopify's default) and Radar always respects robots.txt",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 20.69,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.05,
+              "dcl": 2.89,
+              "load": 3.64,
+              "lcp": 3.49
+            },
+            {
+              "url": "/collections/bags?filter.v.availability=1",
+              "ttfb": 0.02,
+              "dcl": 2.09,
+              "load": 3.32,
+              "lcp": 2.81
+            },
+            {
+              "url": "/collections/bags",
+              "ttfb": 0.03,
+              "dcl": 0.96,
+              "load": 2.22,
+              "lcp": 2.62
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.gray-and-yellow-bag",
+      "suite": "product",
+      "title": "PDP 'Z-SPIKES Yellow and Gray'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.97s",
+              "error": null,
+              "secs": 10.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Z-SPIKES Yellow and Gray \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5702 chars, 24 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/gray-and-yellow-bag",
+                  "actual": "/products/gray-and-yellow-bag",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Z-SPIKES Yellow and Gray', selected variant 42426506215495 at \u20b91,499.00",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/gray-and-yellow-bag",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/gray-and-yellow-bag.js with variants",
+                  "actual": "'Z-SPIKES Yellow and Gray', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Z-SPIKES Yellow and Gray",
+                  "actual": "'Z-SPIKES Yellow And Gray' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,499.00",
+                  "actual": "\u20b91,499.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 571x571)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Z-SPIKES Yellow and Gray",
+                  "actual": "'Z-SPIKES Yellow And Gray' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Z-SPIKES Yellow and Gray",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1499.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 42426506215495 (Default Title) selected, in stock",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-7407591129159 (variant 42426506215495, button 'ADD TO CART')",
+              "error": null,
+              "secs": 0.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 2: Cannot read properties of null (reading 'classList')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "2: Cannot read properties of null (reading 'classList')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "4%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "4%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 2.42s, CLS 0.088",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 2.42s, CLS 0.088",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "192 scripts, at least 2.0 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "192 scripts, at least 2.0 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.38,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://zanaavar.com/products/gray-and-yellow-bag?variant=42426506215495"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'offsetHeight')",
+              "url": "https://zanaavar.com/products/gray-and-yellow-bag?variant=42426506215495"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/24e55084ca7f40d3895f760b72b4a45c/24e55084ca7f40d3895f760b72b4a45c.HD-720p-1.6Mbps-82751808.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/a8042a0f5b6e4de286def4e50596c9ba/a8042a0f5b6e4de286def4e50596c9ba.HD-1080p-3.3Mbps-79680873.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/7592eefbe83846d58f34755b3f9b5bdc/7592eefbe83846d58f34755b3f9b5bdc.HD-720p-1.6Mbps-82751006.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/c34ad00ba529411ebc1b94cc357a24a0/c34ad00ba529411ebc1b94cc357a24a0.HD-720p-1.6Mbps-79680876.mp4?v=0",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/2c8a0832e0a543299cb1b722134fd022/2c8a0832e0a543299cb1b722134fd022.HD-720p-1.6Mbps-82751005.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/5d4759221a6945baa1c80f0cb167bd4a/5d4759221a6945baa1c80f0cb167bd4a.HD-1080p-3.3Mbps-79680874.mp4?v=0"
+          ],
+          "loads": [
+            {
+              "url": "/products/gray-and-yellow-bag?variant=42426506215495",
+              "ttfb": 0.21,
+              "dcl": 2.35,
+              "load": 5.26,
+              "lcp": 2.42
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.z-spikes-purple-and-pink",
+      "suite": "product",
+      "title": "PDP 'Z-SPIKES Pink and Purple'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.15s",
+              "error": null,
+              "secs": 11.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Z-SPIKES Pink and Purple \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6400 chars, 32 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/z-spikes-purple-and-pink",
+                  "actual": "/products/z-spikes-purple-and-pink",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Z-SPIKES Pink and Purple', selected variant 42426513817671 at \u20b91,499.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/z-spikes-purple-and-pink",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/z-spikes-purple-and-pink.js with variants",
+                  "actual": "'Z-SPIKES Pink and Purple', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Z-SPIKES Pink and Purple",
+                  "actual": "'Z-SPIKES Pink And Purple' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,499.00",
+                  "actual": "\u20b91,499.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 571x571)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Z-SPIKES Pink and Purple",
+                  "actual": "'Z-SPIKES Pink And Purple' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Z-SPIKES Pink and Purple",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1499.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 42426513817671 (Default Title) selected, in stock",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-7407596601415 (variant 42426513817671, button 'ADD TO CART')",
+              "error": null,
+              "secs": 0.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 2: Cannot read properties of null (reading 'classList')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "2: Cannot read properties of null (reading 'classList')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "4%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "4%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 3.38s, CLS 0.019",
+              "error": null,
+              "secs": 0.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 3.38s, CLS 0.019",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "183 scripts, at least 2.0 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "183 scripts, at least 2.0 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.21,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://zanaavar.com/products/z-spikes-purple-and-pink?variant=42426513817671"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'offsetHeight')",
+              "url": "https://zanaavar.com/products/z-spikes-purple-and-pink?variant=42426513817671"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/7592eefbe83846d58f34755b3f9b5bdc/7592eefbe83846d58f34755b3f9b5bdc.HD-720p-1.6Mbps-82751006.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/24e55084ca7f40d3895f760b72b4a45c/24e55084ca7f40d3895f760b72b4a45c.HD-720p-1.6Mbps-82751808.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/c34ad00ba529411ebc1b94cc357a24a0/c34ad00ba529411ebc1b94cc357a24a0.HD-720p-1.6Mbps-79680876.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/a8042a0f5b6e4de286def4e50596c9ba/a8042a0f5b6e4de286def4e50596c9ba.HD-1080p-3.3Mbps-79680873.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/2c8a0832e0a543299cb1b722134fd022/2c8a0832e0a543299cb1b722134fd022.HD-720p-1.6Mbps-82751005.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/5d4759221a6945baa1c80f0cb167bd4a/5d4759221a6945baa1c80f0cb167bd4a.HD-1080p-3.3Mbps-79680874.mp4?v=0",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/z-spikes-purple-and-pink?variant=42426513817671",
+              "ttfb": 0.23,
+              "dcl": 2.61,
+              "load": 5.5,
+              "lcp": 3.38
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.z-spikes-gray-and-green",
+      "suite": "product",
+      "title": "PDP 'Z-SPIKES Neon Green and Gray'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.82s",
+              "error": null,
+              "secs": 11.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Z-SPIKES Neon Green and Gray \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6432 chars, 30 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/z-spikes-gray-and-green",
+                  "actual": "/products/z-spikes-gray-and-green",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Z-SPIKES Neon Green and Gray', selected variant 42426508050503 at \u20b91,499.00",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/z-spikes-gray-and-green",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/z-spikes-gray-and-green.js with variants",
+                  "actual": "'Z-SPIKES Neon Green and Gray', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Z-SPIKES Neon Green and Gray",
+                  "actual": "'Z-SPIKES Neon Green And Gray' (h1, 20px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,499.00",
+                  "actual": "\u20b91,499.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 571x571)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "Z-SPIKES Neon Green and Gray",
+                  "actual": "'Z-SPIKES Neon Green And Gray' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "Z-SPIKES Neon Green and Gray",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1499.0",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 42426508050503 (Default Title) selected, in stock",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-7407592636487 (variant 42426508050503, button 'ADD TO CART')",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 2: Cannot read properties of null (reading 'classList')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "2: Cannot read properties of null (reading 'classList')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "4%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "4%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 3.62s, CLS 0.019",
+              "error": null,
+              "secs": 0.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 3.62s, CLS 0.019",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "192 scripts, at least 2.0 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "192 scripts, at least 2.0 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (3), d1639lhkj5l89m.cloudfront.net (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.2,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://zanaavar.com/products/z-spikes-gray-and-green?variant=42426508050503"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'offsetHeight')",
+              "url": "https://zanaavar.com/products/z-spikes-gray-and-green?variant=42426508050503"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/24e55084ca7f40d3895f760b72b4a45c/24e55084ca7f40d3895f760b72b4a45c.HD-720p-1.6Mbps-82751808.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/7592eefbe83846d58f34755b3f9b5bdc/7592eefbe83846d58f34755b3f9b5bdc.HD-720p-1.6Mbps-82751006.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/a8042a0f5b6e4de286def4e50596c9ba/a8042a0f5b6e4de286def4e50596c9ba.HD-1080p-3.3Mbps-79680873.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/c34ad00ba529411ebc1b94cc357a24a0/c34ad00ba529411ebc1b94cc357a24a0.HD-720p-1.6Mbps-79680876.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/5d4759221a6945baa1c80f0cb167bd4a/5d4759221a6945baa1c80f0cb167bd4a.HD-1080p-3.3Mbps-79680874.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/2c8a0832e0a543299cb1b722134fd022/2c8a0832e0a543299cb1b722134fd022.HD-720p-1.6Mbps-82751005.mp4?v=0",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/z-spikes-gray-and-green?variant=42426508050503",
+              "ttfb": 0.07,
+              "dcl": 2.83,
+              "load": 5.53,
+              "lcp": 3.62
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'Z-SPIKES Yellow and Gray' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.91s",
+              "error": null,
+              "secs": 9.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Z-SPIKES Yellow and Gray \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5702 chars, 24 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.43,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://zanaavar.com/products/gray-and-yellow-bag?variant=42426506215495"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'offsetHeight')",
+              "url": "https://zanaavar.com/products/gray-and-yellow-bag?variant=42426506215495"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/7592eefbe83846d58f34755b3f9b5bdc/7592eefbe83846d58f34755b3f9b5bdc.HD-720p-1.6Mbps-82751006.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/24e55084ca7f40d3895f760b72b4a45c/24e55084ca7f40d3895f760b72b4a45c.HD-720p-1.6Mbps-82751808.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/2c8a0832e0a543299cb1b722134fd022/2c8a0832e0a543299cb1b722134fd022.HD-720p-1.6Mbps-82751005.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/a8042a0f5b6e4de286def4e50596c9ba/a8042a0f5b6e4de286def4e50596c9ba.HD-1080p-3.3Mbps-79680873.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/c34ad00ba529411ebc1b94cc357a24a0/c34ad00ba529411ebc1b94cc357a24a0.HD-720p-1.6Mbps-79680876.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/5d4759221a6945baa1c80f0cb167bd4a/5d4759221a6945baa1c80f0cb167bd4a.HD-1080p-3.3Mbps-79680874.mp4?v=0",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/gray-and-yellow-bag?variant=42426506215495",
+              "ttfb": 1.48,
+              "dcl": 4.25,
+              "load": 6.5,
+              "lcp": 4.3
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.gray",
+      "suite": "search",
+      "title": "Search for 'gray' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.89s",
+              "error": null,
+              "secs": 6.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5516 chars, 32 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 5 results, 2 mention 'gray'",
+              "error": null,
+              "secs": 8.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "5",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'gray'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "2 of 5",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.44,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of null (reading 'dataset') at https://zanaavar.com/cdn/shop/t/2/assets/halo.search-by-all-types.js?v=169681584649925462271767852293:1:1087",
+              "url": "https://zanaavar.com/cdn/shop/t/2/assets/halo.search-by-all-types.js?v=169681584649925462271767852293"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://zanaavar.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 2.63,
+              "load": 4.38,
+              "lcp": 1.55
+            },
+            {
+              "url": "/search?q=gray&options%5Bprefix%5D=last&type=product",
+              "ttfb": 0.06,
+              "dcl": 1.81,
+              "load": 3.93,
+              "lcp": 2.9
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.1s",
+              "error": null,
+              "secs": 5.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 1 result found for \"qzxvbugradar\" \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1505 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "warn",
+              "detail": null,
+              "error": "shopper is told nothing matched: expected a 'no results' message, or no products listed, got no message, 3 products listed",
+              "secs": 6.63,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 3 products listed",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.56,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "TypeError: Cannot read properties of null (reading 'dataset') at https://zanaavar.com/cdn/shop/t/2/assets/halo.search-by-all-types.js?v=169681584649925462271767852293:1:1087",
+              "url": "https://zanaavar.com/cdn/shop/t/2/assets/halo.search-by-all-types.js?v=169681584649925462271767852293"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.06,
+              "dcl": 1.7,
+              "load": 3.58,
+              "lcp": 2.74
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'gray' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.67s",
+              "error": null,
+              "secs": 5.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5516 chars, 32 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "6 product suggestion(s) while typing 'gray', e.g. 'z-spikes-gray-and-green'",
+              "error": null,
+              "secs": 4.28,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.08,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.19,
+              "load": 3.41,
+              "lcp": 0.76
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.31s",
+              "error": null,
+              "secs": 5.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5516 chars, 32 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 8: 'Zanaavar'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "8: 'Zanaavar'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 183: 'ZANAAVAR creates luxury wildlife-inspired backpacks crafted '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "183: 'ZANAAVAR creates luxury wildlife-inspired backpacks crafted '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://zanaavar.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://zanaavar.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://zanaavar.com/cdn/shop/files/Zanavar_logo_checkout_80096851-5238-4833-9638-870d4cc99f1c.jpg?v=1770788899",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.86,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 1.95,
+              "load": 2.83,
+              "lcp": 0.94
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.44s",
+              "error": null,
+              "secs": 10.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Z-SPIKES Yellow and Gray \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5701 chars, 24 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Z-SPIKES Yellow and Gray \u2013 Zanaavar",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "35: 'Z-SPIKES Yellow and Gray \u2013 Zanaavar'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Z-SPIKES product description Crafted with premium materials '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Z-SPIKES product description Crafted with premium materials '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://zanaavar.com/products/gray-and-yellow-bag",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://zanaavar.com/products/gray-and-yellow-bag",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Z-SPIKES Yellow and Gray",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://zanaavar.com/cdn/shop/files/grayandyellowsize.png?v=1769083287",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.49,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'classList')",
+              "url": "https://zanaavar.com/products/gray-and-yellow-bag"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'offsetHeight')",
+              "url": "https://zanaavar.com/products/gray-and-yellow-bag"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/a8042a0f5b6e4de286def4e50596c9ba/a8042a0f5b6e4de286def4e50596c9ba.HD-1080p-3.3Mbps-79680873.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/2c8a0832e0a543299cb1b722134fd022/2c8a0832e0a543299cb1b722134fd022.HD-720p-1.6Mbps-82751005.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/5d4759221a6945baa1c80f0cb167bd4a/5d4759221a6945baa1c80f0cb167bd4a.HD-1080p-3.3Mbps-79680874.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/c34ad00ba529411ebc1b94cc357a24a0/c34ad00ba529411ebc1b94cc357a24a0.HD-720p-1.6Mbps-79680876.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/7592eefbe83846d58f34755b3f9b5bdc/7592eefbe83846d58f34755b3f9b5bdc.HD-720p-1.6Mbps-82751006.mp4?v=0",
+            "GET https://zanaavar.com/cdn/shop/videos/c/vp/24e55084ca7f40d3895f760b72b4a45c/24e55084ca7f40d3895f760b72b4a45c.HD-720p-1.6Mbps-82751808.mp4?v=0",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/gray-and-yellow-bag",
+              "ttfb": 0.2,
+              "dcl": 1.76,
+              "load": 4.41,
+              "lcp": 1.85
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 4.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.55,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.23,
+              "dcl": 1.62,
+              "load": 3.63,
+              "lcp": 1.51
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /policies/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.25s",
+              "error": null,
+              "secs": 4.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund policy \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1861 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked 'No, thanks' on: 'limited time festival sale \u2013 flat 40% off limited time offer'",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Refund policy \u2013 Zanaavar', heading 'Refund policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/refund-policy",
+                  "actual": "/policies/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "1734 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "1734 chars under 'Refund policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /policies/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.28s",
+              "error": null,
+              "secs": 3.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping policy \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1653 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping policy \u2013 Zanaavar', heading 'Shipping policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/shipping-policy",
+                  "actual": "/policies/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "1604 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "1604 chars under 'Shipping policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /policies/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.87s",
+              "error": null,
+              "secs": 2.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "15270 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy \u2013 Zanaavar', heading 'Privacy policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/privacy-policy",
+                  "actual": "/policies/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "15122 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "15122 chars under 'Privacy policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /policies/terms-of-service",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.55s",
+              "error": null,
+              "secs": 3.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms of service \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "22735 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms of service \u2013 Zanaavar', heading 'Terms of service'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/terms-of-service",
+                  "actual": "/policies/terms-of-service",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "22590 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "22590 chars under 'Terms of service'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.26s",
+              "error": null,
+              "secs": 4.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact \u2013 Zanaavar",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1108 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact \u2013 Zanaavar', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.35,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://zanaavar.com/cdn/wpm/sb5acf91awd18c8882p8c792781mb6692debm.js"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid PixelID: a non-numeric string.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://zanaavar.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://zanaavar.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/policies/refund-policy",
+              "ttfb": 0.31,
+              "dcl": 0.96,
+              "load": 2.64,
+              "lcp": 0.65
+            },
+            {
+              "url": "/policies/shipping-policy",
+              "ttfb": 0.45,
+              "dcl": 1.1,
+              "load": 2.46,
+              "lcp": 1.21
+            },
+            {
+              "url": "/policies/privacy-policy",
+              "ttfb": 0.24,
+              "dcl": 0.76,
+              "load": 1.49,
+              "lcp": 0.57
+            },
+            {
+              "url": "/policies/terms-of-service",
+              "ttfb": 0.26,
+              "dcl": 1.32,
+              "load": 2.65,
+              "lcp": 0.85
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.17,
+              "dcl": 1.07,
+              "load": 3.23,
+              "lcp": 1.15
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Zanaavar",
+    "theme": "Meta 3 Infotech (store copy: meta-3-infotech123)",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 4,
+    "collections": 1,
+    "products": 5,
+    "in_stock": 5,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "account login is hosted elsewhere (shopify.com, Shopify customer accounts): not opened"
+  ],
+  "perf": {
+    "pages": 19,
+    "median_load_secs": 3.51,
+    "slowest": {
+      "url": "/products/gray-and-yellow-bag?variant=42426506215495",
+      "load_secs": 6.5
+    },
+    "console_errors": 3,
+    "console_warnings": 2,
+    "failed_requests": 12
+  },
+  "counts": {
+    "pass": 19,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
