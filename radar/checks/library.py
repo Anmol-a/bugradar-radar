@@ -1025,6 +1025,12 @@ def page_health(ctx: Ctx, url: str, max_load_secs: float = 8):
     layout_steps(ctx)
 
 
+# Wishlist / compare apps serve their page on the store's 404 template: the header's heart icon opens /pages/wishlist
+# (or /wishlist), the server answers 404, the app's script draws the wishlist. Shoppers see a working page; search
+# engines see a missing one. new30p (15 Oct): countryflora.com, kotart.in, swornyfashion.com all 'degraded' for this.
+APP_PAGE_ON_404 = re.compile(r"^/(pages/|apps/)?(wish-?lists?|my-wishlist|favou?rites|compare|saved-items)/?$", re.I)
+
+
 def links_resolve(ctx: Ctx, urls: list[str], max_links: int = 10):
     """Open each navigation link in the real browser: loads, not an error page, not blank."""
     bad, opened, skipped = [], 0, 0
@@ -1034,6 +1040,11 @@ def links_resolve(ctx: Ctx, urls: list[str], max_links: int = 10):
             continue
         opened += 1
         if ctx.steps.run(f"open {_path(u)[:40]}", lambda u=u: _load(ctx, u), soft=True) is None:
+            if APP_PAGE_ON_404.match(_path(u)):
+                ctx.steps.info(f"app page {_path(u)[:40]}", f"{_path(u)} answers HTTP 404 and a wishlist / compare app "
+                                                            "draws the page on the store's 404 template: shoppers see the "
+                                                            "app, search engines see a missing page (not counted as broken)")
+                continue
             bad.append(_path(u))
     ctx.steps.run("all_links_ok", lambda: ctx.expect(
         "broken navigation pages", 0, f"{len(bad)}" + (f": {', '.join(bad[:5])}" if bad else ""), not bad)

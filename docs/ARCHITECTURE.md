@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 loop 15 Oct 13:45 IST (new30p run 38700347159, 20 min):** 3 stores (countryflora, kotart, swornyfashion)
+  'degraded' because the header's wishlist link answers HTTP 404 while a wishlist app draws the page into the 404
+  template. Such app pages (`APP_PAGE_ON_404`: wishlist / favourites / compare) are noted, not counted as broken nav
+  links (mock `wishlist_404`). Open: shopkara.store desktop NOT JUDGED on the buy button (3 products, form found).
 - **v0.20 loop 14 Oct 23:55 IST (new30n):** 'Price on Request' / 'Enquire' pages (houseofquadri, artoftimeindia) and
   'no longer accepting online orders' (banjarakasuti) with no buy button = BLOCKED 'not tested' (MARKETPLACE_JS 'ask',
   mock price_on_request), never DOWN. Mock href_space: an e2e journey test for the trailing-space href fix below.
