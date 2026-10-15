@@ -40,7 +40,7 @@ class CatalogOnly(Exception):
     BLOCKED with the reason, never a store failure (Shopify's products.json still lists prices)."""
 
 
-MARKETPLACE_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
   const scope = [...document.querySelectorAll('a[href]')].filter(a => vis(a) && !a.closest('footer, header, nav'));
   const mk = scope.filter(a => /(^|\.)(amazon\.(in|com)|amzn\.(in|to)|flipkart\.com|myntra\.com|nykaa\.com|ajio\.com|meesho\.com|jiomart\.com|tatacliq\.com|blinkit\.com|zeptonow\.com|swiggy\.com|bigbasket\.com)$/i
@@ -51,7 +51,15 @@ MARKETPLACE_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRec
   const main = document.querySelector('main, [role=main], #MainContent') || document.body;
   const so = ((main.innerText || '').match(/\b(shop (now )?on|available on|buy (it )?on|also available on)\s*:/i) || [])[0];
   const ask = (((document.body.innerText || '').match(/\b(price (up)?on request|request (a |the )?price|(enquire|inquire|call|contact us) for (the )?price|no longer (accepting|taking) (online )?orders|not (accepting|taking) online orders)\b/i) || [])[0]);
-  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, shop_on: so || null, ask: ask || null}; }"""
+  // the product's own block = the text from its name to 600 characters after it (related products further down show
+  // their own prices): no ₹ / Rs / INR price there = the store shows no price for this product at all
+  const flat = (main.innerText || '').replace(/\s+/g, ' '), low = flat.toLowerCase();
+  const at = TITLE ? low.indexOf(TITLE.toLowerCase().replace(/\s+/g, ' ').slice(0, 40)) : -1;
+  let near = at >= 0 ? flat.slice(at, at + 600) : '';
+  const cut = near.search(/you may also like|related products|recommended|customers also|frequently bought|similar products|complete the (look|set)/i);
+  if (cut > 0) near = near.slice(0, cut);
+  const no_price = at >= 0 && !/(?:₹|Rs\.?|INR)\s?\d/i.test(near);
+  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, shop_on: so || null, ask: ask || null, no_price}; }"""
 
 
 def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
@@ -79,7 +87,7 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
         raise OtherMarket(f"location (US runner): the store shows this visitor prices in {active or 'another currency'}{shown}, "
                           f"market {cur.get('country') or '?'}, rate {cur.get('rate', 1):g}; the catalog price in ₹ is not on "
                           "the page. Radar's cloud machines are in the US: check from India")
-    m = ctx.sess.evaluate(MARKETPLACE_JS) or {}
+    m = ctx.sess.evaluate(MARKETPLACE_JS, title or "") or {}
     if m.get("own_buy"):
         return
     if m.get("marketplaces"):
@@ -92,6 +100,10 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
         raise CatalogOnly(        # online orders' (new30n 14 Oct): the price is hidden on purpose, nothing to buy here
             f"not tested: the product page shows no price and no buy button, only {m['ask']!r}: the store does not "
             "sell this product online at a listed price")
+    if m.get("no_price"):        # Anmol, 15 Oct: somuchliving.com (beds) and tastycrafts.in (₹1,00,000 placeholder):
+        raise CatalogOnly(        # no price anywhere near the product's name and no buy button = enquiry-only, not DOWN
+            "not tested: the product page shows no price for this product and no buy button (the store's data holds a "
+            "placeholder price): it is not sold online at a listed price")
 
 
 class OtherMarket(Exception):
@@ -1866,6 +1878,26 @@ HIDDEN_PRICE_JS = r"""() => { const out = [];
   } return out; }"""
 
 
+DISCOUNT_WORDS = re.compile(r"prepaid|pre-paid|online payment|pay online|upi|extra\s+\d{1,2}\s?%\s?off|\d{1,2}\s?%\s?off", re.I)
+
+
+def store_wide_discount(want: float, nums, text: str) -> str | None:
+    """The page shows the product's price minus a store-wide percentage (an 'extra 5% off on prepaid orders' price)
+    instead of the price itself: rasayanam.in (new30m, 14 Oct) showed ₹1,092 for ₹1,149 under 'EXTRA 5% OFF ON ALL
+    PREPAID ORDERS'. A price 1-20 % below, matching a whole percentage to the rupee, on a page that names such an offer.
+    Returns the evidence, else None. Pure, unit-tested."""
+    if not want or not DISCOUNT_WORDS.search(text or ""):
+        return None
+    for n in nums:
+        if not (0.79 * want <= n < want):
+            continue
+        for pct in range(1, 21):
+            if abs(want * (100 - pct) / 100 - n) <= 1.0:
+                return (f"₹{n:,.0f} = the price minus {pct}% (a store-wide offer the page names: "
+                        f"{DISCOUNT_WORDS.search(text).group(0)!r}); the shopper pays ₹{want:,.2f} without it")
+    return None
+
+
 def price_shown(want: float, nums) -> tuple[bool, str]:
     """Is the variant's price on the page? Exact, or rounded to whole rupees the way many themes display it
     (thelabellife.com shows ₹3,392 for ₹3,391.50, salty.co.in ₹727 for ₹727.18: held-out run 9 Oct). Pure."""
@@ -1971,9 +2003,12 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         ok, how = price_shown(want, nums)
         if not ok:
             _raise_if_catalog_only(ctx, p["title"])
-        where = "" if ok else _hidden_price(ctx, want)
-        ctx.expect("selected variant price shown", rupees(v["price"]),
-                   how if ok else f"not on page{where}", ok)
+            # Anmol, 15 Oct (rasayanam.in 'EXTRA 5% OFF ON ALL PREPAID ORDERS'): a WARNING, not a failure
+            state["price_warn"] = store_wide_discount(want, nums, text)
+        if not state.get("price_warn"):
+            where = "" if ok else _hidden_price(ctx, want)
+            ctx.expect("selected variant price shown", rupees(v["price"]),
+                       how if ok else f"not on page{where}", ok)
         img = ctx.sess.evaluate(MAIN_IMAGE_JS)
         for _ in range(8):            # lazy galleries decode the first slide a moment after the price shows
             if img and img.get("ok"):
@@ -1988,6 +2023,9 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
                             f"missing for a shopper (largest seen: {(img or {}).get('seen') or 'none'})")
         ctx.expect("main product image loaded", "image ≥150px rendered",
                    f"yes ({img.get('how')})" if ok_img else f"a large image failed to load: {img.get('broken')}", ok_img)
+        if state.get("price_warn"):
+            raise StoreWarning(f"selected variant price shown: expected {rupees(v['price'])}, the page shows "
+                               f"{state['price_warn']}")
         return "title, price and image visible"
     ctx.steps.run("shows_title_price_image", shown)
 

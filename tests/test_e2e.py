@@ -2418,6 +2418,26 @@ def test_size_as_plain_buttons_outside_a_variant_box_is_picked(tmp_path):
     assert vase.verdict == "pass" and len(vase.attempts) == 1, (vase.verdict, vase.attempts[-1].error)
     assert "button Small" in str(_steps(vase)["variant_ready"].checks), _steps(vase)["variant_ready"].checks
 
+def test_page_with_no_price_at_all_is_not_tested_never_down(tmp_path):
+    """Anmol, 15 Oct: somuchliving.com (beds) and tastycrafts.in (₹1,00,000 placeholder) show no price near the product
+    name and no buy button: enquiry-only, 'not tested' with the reason, like 'Price on Request'; never DOWN."""
+    run = _product_only("hidden_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "shows no price for this product" in vase.attempts[-1].error, \
+        (vase.verdict, vase.attempts[-1].error)
+    assert run.verdict != "down", run.verdict
+
+
+def test_price_minus_a_named_prepaid_offer_is_a_warning(tmp_path):
+    """Anmol, 15 Oct: rasayanam.in shows ₹1,092 for ₹1,149 under 'EXTRA 5% OFF ON ALL PREPAID ORDERS'. A page price
+    that is the price minus a store-wide percentage the page names is a WARNING, not a failure."""
+    run = _product_only("prepaid_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert vase.verdict != "confirmed_fail" and st.status == "warn" and "the price minus 5%" in st.error, \
+        (vase.verdict, st.status, st.error)
+
+
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 
 def _buy_now_only(mode, tmp_path, strict=False, **kw):

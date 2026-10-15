@@ -1320,3 +1320,11 @@ def test_builder_adds_the_store_feature_cases():
     no_cart = build_suites(_sm(), replace(Settings(), allow_cart_flow=False))
     assert not any(c.id == "cart.discount_code" for x in no_cart for c in x.cases)     # cart flow off = no cart tests
     assert any(c.id == "product.pincode" for x in no_cart for c in x.cases)            # the pincode box is read-only
+
+
+def test_store_wide_prepaid_discount_is_recognised():
+    from radar.checks.library import store_wide_discount
+    assert "minus 5%" in store_wide_discount(1149.0, {1092.0, 1697.0}, "EXTRA 5% OFF ON ALL PREPAID ORDERS")
+    assert store_wide_discount(1149.0, {1092.0}, "Free shipping on all orders") is None      # no offer named
+    assert store_wide_discount(1149.0, {700.0}, "extra 5% off prepaid") is None              # 39% below: not an offer
+    assert store_wide_discount(1149.0, {1149.0}, "5% off prepaid") is None                   # not below
