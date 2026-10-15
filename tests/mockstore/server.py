@@ -374,6 +374,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> shows_title_price_image WARNS (Anmol, 15 Oct), never fails
   customer_auth_link  the header links '/customer_authentication/redirect' (Shopify new customer accounts), which answers
                    404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
+  hidden_form_app_button  the product's cart form is hidden and holds no button; the buy control is an app's element
+                   outside it (shopkara.store, nubronicforte.com) -> found, the cart check adds the right product, PASSES
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
@@ -1897,6 +1899,13 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      '<style>#product-form-template__main button{display:none}</style>'
                      '<script>addEventListener("scroll", () => { if (scrollY > 300) document.getElementById("sticky-atc")'
                      '.style.display = "block"; });</script>')
+        if self.mode == "hidden_form_app_button":
+            # shopkara.store (new30p) / nubronicforte.com (new30t): the product's own cart form is there but hidden and
+            # holds no button; the buy control a shopper uses is an app's element outside the form
+            body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
+                                     f'name="id" value="{vid}"></form><div class="pdp-addtobag-btn active" '
+                                     f'data-product-handle="{p["handle"]}" onclick="addToCart({vid})" style="cursor:pointer;'
+                                     f'padding:10px;background:#222;color:#fff;width:200px"><span class="atc-text">ADD TO CART</span></div>')
         if self.mode == "div_buy_control":
             others = [x for x in PRODUCTS if x["handle"] != p["handle"] and float(x["price"]) > 0][:3]
             recs = "".join(f'<div class="rec-card"><a href="/products/{x["handle"]}">{x["title"]}</a>'

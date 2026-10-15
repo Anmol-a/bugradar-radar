@@ -163,7 +163,8 @@ def same_site(a: str, b: str) -> bool:
 #   extended-warranty add-ons (izicart.com new30u: '1 Year Extended Warranty for …' pages show no such product)
 NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift|sampler|tester|\bsample\b|dummy|test[-_ ]product|"
                            r"(package|shipping|order|returns?|delivery|parcel)[-_ ]?(protection|insurance)|route[-_ ]?protection|"
-                           r"extended[-_ ]?warranty|warranty[-_ ]?(extension|plan|upgrade)|\b\d[-_ ]?years?[-_ ]?(extended[-_ ]?)?warranty",
+                           r"extended[-_ ]?warranty|warranty[-_ ]?(extension|plan|upgrade)|\b\d[-_ ]?years?[-_ ]?(extended[-_ ]?)?warranty|"
+                           r"\b\d[-_ ]?years?[-_ ]?accidental[-_ ]?(damage[-_ ]?)?protection|accidental[-_ ]?damage[-_ ]?(protection|cover)",
                            re.I)
 
 
