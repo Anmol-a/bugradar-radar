@@ -798,8 +798,16 @@ def _main_buy_button(ctx: Ctx, product: dict):
     ctx.buy_evidence = ""
     # A page WITH a Shopify form for this product keeps the old path (healer for a renamed/moved button); the
     # page's-own-control rule is only for pages that have no such form at all (nicobar.com's div control).
+    # A form for this product that is hidden AND holds no button (and no [form=id] button outside it) is no buy control:
+    # shopkara.store (new30p) / nubronicforte.com (new30t) keep such a form while an app's element is the real button
     has_form = ctx.sess.evaluate("""(ids) => { const mine = new Set(ids.map(String));
-        return [...document.querySelectorAll('[name="id"]')].some(i => mine.has(String(i.value || ''))); }""", ids)
+        const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+        return [...document.querySelectorAll('[name="id"]')].some(i => { if (!mine.has(String(i.value || ''))) return false;
+          const f = i.closest('form'); if (!f) return true;
+          const fid = f.getAttribute('id') || '';
+          const btn = f.querySelector('button, input[type=submit], [role=button]')
+                      || (fid && document.querySelector('[form="' + CSS.escape(fid) + '"]'));
+          return !!btn || vis(f); }); }""", ids)
     # Not visible yet? A shopper scrolls: themes show the buy button in a sticky bar only after scrolling
     # (true-elements.com, held-out run 7 Oct: the form's own button is hidden on desktop).
     for step in range(5):

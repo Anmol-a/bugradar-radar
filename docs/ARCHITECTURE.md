@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 15 Oct 22:55 IST (re-test 38774216198: krkjewels healthy):** the buy-button evidence showed the cause on
+  shopkara.store + nubronicforte.com: the product's own cart form is hidden and holds no button, while an app's element is
+  the real buy control. A hidden, buttonless form no longer blocks the page's-own-control rule (mock
+  `hidden_form_app_button`). izicart also sells 'N Year Accidental Protection' add-ons: skipped like warranties.
 - **v0.20 15 Oct 22:10 IST (new30u run 38766823085, 18 min):** izicart.com 'degraded' on both devices: Radar tested
   '1 Year Extended Warranty for …' add-on products (pages show the drone, not the warranty). NOT_FOR_TESTS skips
   extended-warranty / warranty-plan add-ons like package protection (unit test). Real findings: silawat search HTTP 422

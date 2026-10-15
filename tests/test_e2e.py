@@ -963,6 +963,16 @@ def test_div_buy_control_named_for_this_product_is_found_and_adds_the_right_prod
         st["buy_button_ready"].detail
 
 
+def test_hidden_buttonless_form_falls_back_to_the_pages_own_buy_control(tmp_path):
+    """shopkara.store (new30p) + nubronicforte.com (new30t): NOT JUDGED 'a form for this product but no buy button Radar
+    could use (the form holds: no button in the form (form hidden))'. The page's own buy control rule ran only when the
+    page had no form at all; a hidden, buttonless form now counts as none."""
+    run, _ = _scan("hidden_form_app_button", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    assert not bad, bad
+    assert "pdp-addtobag-btn" in _steps(_case(run, "product.pdp."))["buy_button_ready"].detail
+
+
 # ---------- desktop + mobile in every run (7 Oct) ----------
 def _both(mode, tmp_path, **kw):
     from radar.runner.executor import scan_devices
