@@ -1373,6 +1373,11 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 15 Oct 20:30 IST (Anmol's decisions):** (1) finish line = rolling target (≤ 1 false per 30 over the last 90
+  never-seen stores, met 15 Oct): the loop goes to weekly monitor mode. (2) A product page that shows no price near the
+  product's name and has no buy button of its own = BLOCKED 'not tested' (enquiry-only; somuchliving, tastycrafts), never
+  DOWN (mock `hidden_price`). (3) A page price that is the price minus a store-wide percentage the page names ('extra 5%
+  off on prepaid orders', rasayanam.in) = WARNING (`store_wide_discount`, mock `prepaid_price`, unit test).
 - **v0.20 loop 15 Oct 19:15 IST (new30r run 38741032636, 20 min):** sntvl.com variant_ready failed on 3 products, both
   devices: colour tapped, but sizes are plain <button>s in a box whose class names neither 'variant' nor 'option', and no
   size is chosen on load. CHOOSE_JS now also takes a visible button whose own text is the value beside sibling buttons

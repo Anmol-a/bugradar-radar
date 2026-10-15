@@ -368,6 +368,10 @@ Modes (to prove Radar catches and heals what it should):
   plain_size_buttons  the vase has Size x Colour; colour swatch in a 'swatches' box, sizes as plain buttons in a
                    'pdp-sizes' box, nothing chosen on load (form id empty, 'Choose your size' disabled) (sntvl.com
                    new30r) -> Radar taps the colour AND the size, product PASSES
+  hidden_price     product pages show no price near the name and only a disabled 'Unavailable' button (the data has a
+                   placeholder price; somuchliving / tastycrafts 15 Oct) -> product BLOCKED 'not tested', never DOWN
+  prepaid_price    product pages show the price minus 5% under 'EXTRA 5% OFF ON ALL PREPAID ORDERS' (rasayanam.in)
+                   -> shows_title_price_image WARNS (Anmol, 15 Oct), never fails
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
@@ -681,6 +685,12 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "prepaid_price" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/products/"):
+            # rasayanam.in (new30m, 14 Oct): 'EXTRA 5% OFF ON ALL PREPAID ORDERS', and the page shows the price minus 5%
+            body = body.replace("<main>", '<main><div class="announcement">EXTRA 5% OFF ON ALL PREPAID ORDERS</div>', 1)
+            body = re.sub(r'(<div class="price">)₹([\d,]+\.\d\d)',
+                          lambda m: f"{m.group(1)}₹{round(float(m.group(2).replace(',', '')) * 0.95):,}", body)
         if self.mode == "plain_size_buttons" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
             # sntvl.com (new30r, 15 Oct, both devices, 3 products): colour swatches in a 'swatch' box, sizes as plain
@@ -1746,6 +1756,15 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         "  const v = V.find(x => x.option1 === r.value); if (!v) return;\n  " + act + " })); })();</script>")
 
     def _pdp(self, p):
+        if self.mode == "hidden_price":
+            # somuchliving.com / tastycrafts.in (new30q/s, 15 Oct): the page shows the product, its options and a
+            # disabled 'Unavailable' button, but no price anywhere near the name; the data holds a placeholder price
+            return page(f"{p['title']} | Mock Store",
+                        f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
+                        '<p>Delivery in 3 weeks. Free design customisation.</p><p>Variant sold out or unavailable</p>'
+                        '<button type="button" disabled>Unavailable</button>'
+                        '<div style="height:900px"></div><section class="related"><h2>You may also like</h2>'
+                        '<p>Another piece Rs. 4,500.00</p></section>')
         if self.mode == "price_on_request":
             body = (f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">')
             if p["handle"] == "wooden-spoon-set":     # banjarakasuti.com: no price, no buy, a store-wide notice
