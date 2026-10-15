@@ -363,6 +363,8 @@ Modes (to prove Radar catches and heals what it should):
   market_path      Shopify Markets: / sends the shopper to /en-us/, links carry the prefix, prices are +20% there and so is
                    /en-us/products/<h>.js; the default /products/<h>.js says the base price (amayrajewellery.com 14 Oct)
                    -> Radar reads the data under the page's market path, journey PASSES first try
+  wishlist_404     the header links /pages/wishlist, which answers HTTP 404 with a wishlist app drawn into it
+                   (countryflora / kotart / swornyfashion, new30p) -> smoke.nav_links PASSES, the app page noted
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
@@ -676,6 +678,8 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "wishlist_404" and isinstance(body, str) and ctype.startswith("text/html"):
+            body = body.replace('<a href="/pages/about">About</a>', '<a href="/pages/about">About</a> <a href="/pages/wishlist">Wishlist</a>', 1)
         if self.mode == "market_path" and getattr(self, "market", False) and isinstance(body, str):
             if ctype.startswith("text/html"):
                 body = re.sub(r'href="/(?!en-us)', 'href="/en-us/', body).replace('href="/en-us/"', 'href="/en-us"')
@@ -1162,6 +1166,11 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
+        if self.mode == "wishlist_404" and path == "/pages/wishlist":
+            # countryflora.com / kotart.in / swornyfashion.com (new30p, 15 Oct): the wishlist app's page is the 404
+            # template with the app drawing the list into it
+            return self._send(404, page("Wishlist | Mock Store", '<div id="wishlist-app"><h1>My Wishlist</h1>'
+                                        '<p>Your wishlist is empty. Tap the heart on any product to save it here.</p></div>'))
         if self.mode == "market_path":
             # amayrajewellery.com (new30n, 14 Oct): Shopify Markets sends the visitor to /en-us/, where every page link
             # carries the prefix and prices are the US market's (+20%); the default market's /products/<h>.js says less

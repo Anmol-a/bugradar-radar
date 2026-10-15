@@ -2401,6 +2401,14 @@ def test_product_handle_ignores_a_trailing_space_in_the_href():
     assert _market_prefix("https://s.in/fr/products/x") == "/fr"
     assert _market_prefix("https://s.in/products/x") == "" and _market_prefix("https://s.in/cart") == ""
 
+def test_wishlist_app_page_on_the_404_template_is_not_a_broken_nav_link(tmp_path):
+    """new30p (15 Oct): countryflora.com, kotart.in and swornyfashion.com were 'degraded' because the header's wishlist
+    link answers HTTP 404 while a wishlist app draws the page into the store's 404 template. Shoppers see the app."""
+    run, _ = _scan("wishlist_404", tmp_path, max_products=1, max_collections=1, max_nav_links=4)
+    nav = _case(run, "smoke.nav_links")
+    assert nav.verdict == "pass", nav.attempts[-1].error
+    assert any("app page /pages/wishlist" in s.name for s in nav.attempts[-1].steps), [s.name for s in nav.attempts[-1].steps]
+
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 
 def _buy_now_only(mode, tmp_path, strict=False, **kw):
