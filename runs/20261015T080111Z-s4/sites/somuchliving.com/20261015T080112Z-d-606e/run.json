@@ -1,0 +1,4122 @@
+{
+  "run_id": "20261015T080112Z-d-606e",
+  "site_id": "somuchliving.com",
+  "base_url": "https://somuchliving.com",
+  "device": "desktop",
+  "started_at": "2026-10-15T08:01:12+00:00",
+  "finished_at": "2026-10-15T08:04:58+00:00",
+  "verdict": "down",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.87s",
+              "error": null,
+              "secs": 4.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4846 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/beds (12 products)",
+              "error": null,
+              "secs": 4.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/beds ('Beds')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/beds",
+                  "actual": "/collections/beds",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 24 candidates \u2192 /products/amore-upholstered-bed-bengaluru",
+              "error": null,
+              "secs": 4.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/amore-upholstered-bed-bengaluru ('Amore Upholstered Bed')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/amore-upholstered-bed-bengaluru",
+                  "actual": "/products/amore-upholstered-bed-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Amore Upholstered Bed', selected variant 50802397413623 at \u20b92,277.00",
+              "error": null,
+              "secs": 0.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/amore-upholstered-bed-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/amore-upholstered-bed-bengaluru.js with variants",
+                  "actual": "'Amore Upholstered Bed', 48 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,277.00, got not on page",
+              "secs": 2.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Amore Upholstered Bed",
+                  "actual": "'Amore Upholstered Bed' (h2, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,277.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a1.04-shows_title_price_image.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,277.00, got not on page",
+          "screenshot": "journey.shopper.a1.png",
+          "trace": "journey.shopper.a1_trace.zip",
+          "secs": 19.61,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.19,
+              "dcl": 1.2,
+              "load": 2.75,
+              "lcp": 1.31
+            },
+            {
+              "url": "/collections/beds",
+              "ttfb": 0.11,
+              "dcl": 1.5,
+              "load": 2.32,
+              "lcp": 0.89
+            },
+            {
+              "url": "/products/amore-upholstered-bed-bengaluru",
+              "ttfb": 0.15,
+              "dcl": 1.17,
+              "load": 2.72,
+              "lcp": 1.48
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.9s",
+              "error": null,
+              "secs": 3.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4846 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/beds (12 products)",
+              "error": null,
+              "secs": 3.7,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/beds ('Beds')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/beds",
+                  "actual": "/collections/beds",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 24 candidates \u2192 /products/amore-upholstered-bed-bengaluru",
+              "error": null,
+              "secs": 4.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/amore-upholstered-bed-bengaluru ('Amore Upholstered Bed')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/amore-upholstered-bed-bengaluru",
+                  "actual": "/products/amore-upholstered-bed-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Amore Upholstered Bed', selected variant 50802397413623 at \u20b92,277.00",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/amore-upholstered-bed-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/amore-upholstered-bed-bengaluru.js with variants",
+                  "actual": "'Amore Upholstered Bed', 48 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,277.00, got not on page",
+              "secs": 2.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Amore Upholstered Bed",
+                  "actual": "'Amore Upholstered Bed' (h2, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,277.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a2.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,277.00, got not on page",
+          "screenshot": "journey.shopper.a2.png",
+          "trace": "journey.shopper.a2_trace.zip",
+          "secs": 16.74,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.17,
+              "dcl": 1.71,
+              "load": 2.53,
+              "lcp": 1.04
+            },
+            {
+              "url": "/collections/beds",
+              "ttfb": 0.1,
+              "dcl": 1.19,
+              "load": 2.07,
+              "lcp": 0.79
+            },
+            {
+              "url": "/products/amore-upholstered-bed-bengaluru",
+              "ttfb": 0.12,
+              "dcl": 1.3,
+              "load": 2.23,
+              "lcp": 1.22
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.27s",
+              "error": null,
+              "secs": 2.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4846 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/beds (12 products)",
+              "error": null,
+              "secs": 3.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/beds ('Beds')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/beds",
+                  "actual": "/collections/beds",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 24 candidates \u2192 /products/amore-upholstered-bed-bengaluru",
+              "error": null,
+              "secs": 4.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/amore-upholstered-bed-bengaluru ('Amore Upholstered Bed')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/amore-upholstered-bed-bengaluru",
+                  "actual": "/products/amore-upholstered-bed-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Amore Upholstered Bed', selected variant 50802397413623 at \u20b92,277.00",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/amore-upholstered-bed-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/amore-upholstered-bed-bengaluru.js with variants",
+                  "actual": "'Amore Upholstered Bed', 48 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,277.00, got not on page",
+              "secs": 2.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Amore Upholstered Bed",
+                  "actual": "'Amore Upholstered Bed' (h2, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,277.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": "journey.shopper.a3.03-click_into_product.jpg"
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,277.00, got not on page",
+          "screenshot": "journey.shopper.a3.png",
+          "trace": "journey.shopper.a3_trace.zip",
+          "secs": 15.59,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.1,
+              "load": 2.11,
+              "lcp": 1.05
+            },
+            {
+              "url": "/collections/beds",
+              "ttfb": 0.12,
+              "dcl": 1.04,
+              "load": 1.61,
+              "lcp": 0.81
+            },
+            {
+              "url": "/products/amore-upholstered-bed-bengaluru",
+              "ttfb": 0.13,
+              "dcl": 0.79,
+              "load": 1.78,
+              "lcp": 0.82
+            }
+          ]
+        }
+      ],
+      "incident_signature": "somuchliving.com|journey.shopper|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The page contains no visible price text where the robot looked, so the check likely targeted the wrong element or area (price not present in the visible page text rather than a shopper-facing error).",
+        "evidence": "Visible page text includes product name, variant options, and multiple occurrences of \"Variant sold out or unavailable\"; there is no price or price element text (the robot expected \"\u20b92,277.00\" but page text shows no price)."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.49s",
+              "error": null,
+              "secs": 3.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4846 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.49s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.49s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 3: Cannot read properties of null (reading 'setAttribute')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "3: Cannot read properties of null (reading 'setAttribute')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.17s, CLS 0.064",
+              "error": null,
+              "secs": 0.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.17s, CLS 0.064",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "85 scripts, at least 1.1 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (2), www.googletagmanager.com (1)",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "85 scripts, at least 1.1 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (2), www.googletagmanager.com (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.91,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.25,
+              "load": 2.34,
+              "lcp": 1.17
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/all",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 2.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Products \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2665 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /blogs/furniture-guides/balancing-form-a",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.69s",
+              "error": null,
+              "secs": 1.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Balancing Form and Function in Furniture Design \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1283 chars, 4 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /blogs/furniture-guides/the-essential-gu",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.61s",
+              "error": null,
+              "secs": 2.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Essential Guide to Choose the Perfect Sofa \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "757 chars, 4 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /blogs/furniture-guides/maximise-small-s",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.64s",
+              "error": null,
+              "secs": 1.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Maximise Small Spaces: Choosing the Right Furniture \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1291 chars, 4 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /blogs/furniture-guides/create-your-home",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.76s",
+              "error": null,
+              "secs": 2.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Create your home office with comfortable chairs \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1283 chars, 4 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/sofas",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.13s",
+              "error": null,
+              "secs": 2.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Sofas Online in Bengaluru | Modular & L-Shape \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4649 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/recliners",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.77s",
+              "error": null,
+              "secs": 2.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Electric & Manual Recliner Sofas Online \u2013 SoMuch Living Bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3697 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/coffee-tables",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.75s",
+              "error": null,
+              "secs": 2.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Coffee Tables Online in Bengaluru \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4928 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/accent-chairs",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.48s",
+              "error": null,
+              "secs": 3.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Accent Chairs Online in Bengaluru \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4747 chars, 34 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/beds",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 2.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Upholstered Beds Online \u2013 SoMuch Living Bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4710 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "10 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 23.48,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.2,
+              "dcl": 0.82,
+              "load": 1.73,
+              "lcp": 1.18
+            },
+            {
+              "url": "/blogs/furniture-guides/balancing-form-and-function-in-furniture-design",
+              "ttfb": 0.13,
+              "dcl": 0.63,
+              "load": 1.14,
+              "lcp": 1.5
+            },
+            {
+              "url": "/blogs/furniture-guides/the-essential-guide-to-choose-the-perfect-sofa",
+              "ttfb": 0.13,
+              "dcl": 0.56,
+              "load": 1.25,
+              "lcp": 1.58
+            },
+            {
+              "url": "/blogs/furniture-guides/maximise-small-spaces-choosing-the-right-furniture",
+              "ttfb": 0.13,
+              "dcl": 0.54,
+              "load": 1.06,
+              "lcp": 1.58
+            },
+            {
+              "url": "/blogs/furniture-guides/create-your-home-office-with-comfortable-chairs",
+              "ttfb": 0.13,
+              "dcl": 0.62,
+              "load": 1.61,
+              "lcp": 1.07
+            },
+            {
+              "url": "/collections/sofas",
+              "ttfb": 0.13,
+              "dcl": 0.97,
+              "load": 1.88,
+              "lcp": 0.73
+            },
+            {
+              "url": "/collections/recliners",
+              "ttfb": 0.18,
+              "dcl": 0.7,
+              "load": 1.29,
+              "lcp": 0.56
+            },
+            {
+              "url": "/collections/coffee-tables",
+              "ttfb": 0.12,
+              "dcl": 0.67,
+              "load": 1.55,
+              "lcp": 0.52
+            },
+            {
+              "url": "/collections/accent-chairs",
+              "ttfb": 0.15,
+              "dcl": 1.32,
+              "load": 2.07,
+              "lcp": 0.82
+            },
+            {
+              "url": "/collections/beds",
+              "ttfb": 0.15,
+              "dcl": 0.82,
+              "load": 1.43,
+              "lcp": 0.58
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 2.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4846 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.04,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 0.79,
+              "load": 1.81,
+              "lcp": 0.81
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/chairs",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.4s",
+              "error": null,
+              "secs": 3.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Dining Chairs Online in Bengaluru \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2059 chars, 28 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Dining Chairs Online in Bengaluru \u2013 SoMuch Living', heading 'Chairs'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/chairs",
+                  "actual": "/collections/chairs",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections/dining-table",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.84s",
+              "error": null,
+              "secs": 1.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Dining Tables Online in Bengaluru \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3561 chars, 36 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Custom Dining Tables Online in Bengaluru \u2013 SoMuch Living', heading 'Dining Chairs To Complete Your Table'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/dining-table",
+                  "actual": "/collections/dining-table",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/about-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.51s",
+              "error": null,
+              "secs": 1.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About us \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2638 chars, 4 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'About us \u2013 SoMuch Living', heading 'Made-to-Order,\\nDirect to Home.'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/about-us",
+                  "actual": "/pages/about-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "3 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.73,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/collections/chairs"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/chairs",
+              "ttfb": 0.18,
+              "dcl": 1.26,
+              "load": 2.15,
+              "lcp": 1.07
+            },
+            {
+              "url": "/collections/dining-table",
+              "ttfb": 0.12,
+              "dcl": 0.74,
+              "load": 1.23,
+              "lcp": 0.61
+            },
+            {
+              "url": "/pages/about-us",
+              "ttfb": 0.12,
+              "dcl": 0.4,
+              "load": 0.89,
+              "lcp": 0.38
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.beds",
+      "suite": "catalog",
+      "title": "Collection 'Beds' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.91s",
+              "error": null,
+              "secs": 2.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Upholstered Beds Online \u2013 SoMuch Living Bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4710 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "12 products listed",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of null (reading 'setAttribute')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of null (reading 'setAttribute')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.41s, CLS 0.009",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.41s, CLS 0.009",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "116 scripts, at least 1.2 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (2), www.googletagmanager.com (1)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "116 scripts, at least 1.2 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (2), www.googletagmanager.com (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.98,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/collections/beds"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/beds",
+              "ttfb": 0.14,
+              "dcl": 0.57,
+              "load": 1.63,
+              "lcp": 0.41
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.furnishings",
+      "suite": "catalog",
+      "title": "Collection 'Furnishings' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.91s",
+              "error": null,
+              "secs": 3.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Curtains Online in Bengaluru | Sheer & Blackout \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4876 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "12 products listed",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of null (reading 'setAttribute')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of null (reading 'setAttribute')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.54s, CLS 0.025",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.54s, CLS 0.025",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "119 scripts, at least 1.2 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (2), www.googletagmanager.com (1)",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "119 scripts, at least 1.2 MB of JavaScript, 2 third-party script hosts: connect.facebook.net (2), www.googletagmanager.com (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.72,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/collections/furnishings"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://somuchliving.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/collections/furnishings",
+              "ttfb": 0.18,
+              "dcl": 0.73,
+              "load": 2.19,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.beds",
+      "suite": "catalog",
+      "title": "Collection 'Beds' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.47s",
+              "error": null,
+              "secs": 2.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Upholstered Beds Online \u2013 SoMuch Living Bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4710 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "12 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.09s",
+              "error": null,
+              "secs": 2.76,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Upholstered Beds Online \u2013 SoMuch Living Bengaluru \u2013 Page 2",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4737 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 12 more products",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.81,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/collections/beds"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/beds",
+              "ttfb": 0.07,
+              "dcl": 1.33,
+              "load": 2.02,
+              "lcp": 0.76
+            },
+            {
+              "url": "/collections/beds?page=2",
+              "ttfb": 0.02,
+              "dcl": 0.91,
+              "load": 2.0,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.beds",
+      "suite": "catalog",
+      "title": "Filtering collection 'Beds' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.8s",
+              "error": null,
+              "secs": 2.21,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Custom Upholstered Beds Online \u2013 SoMuch Living Bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4710 chars, 36 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "2 filter options (e.g. Made to Order); applying 'Made to Order' = filter.p.m.custom.fulfillment_type=Made to Order",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "skip",
+              "detail": null,
+              "error": "robots.txt disallows https://somuchliving.com/collections/beds?filter.p.m.custom.fulfillment_type=Made+to+Order",
+              "secs": 0.02,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": "applies_filter",
+          "error": "robots.txt disallows https://somuchliving.com/collections/beds?filter.p.m.custom.fulfillment_type=Made+to+Order",
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.97,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/collections/beds"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/collections/beds",
+              "ttfb": 0.06,
+              "dcl": 0.68,
+              "load": 1.44,
+              "lcp": 0.53
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.aria-arc-l-shape-corner-sofa-bengaluru",
+      "suite": "product",
+      "title": "PDP 'Aria Arc L-Shape Corner Sofa'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 5.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aria Arc L-Shape Corner Sofa \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3827 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aria-arc-l-shape-corner-sofa-bengaluru",
+                  "actual": "/products/aria-arc-l-shape-corner-sofa-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aria Arc L-Shape Corner Sofa', selected variant 50838023569655 at \u20b92,977.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aria-arc-l-shape-corner-sofa-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aria-arc-l-shape-corner-sofa-bengaluru.js with variants",
+                  "actual": "'Aria Arc L-Shape Corner Sofa', 24 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,977.00, got not on page",
+              "secs": 2.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aria Arc L-Shape Corner Sofa",
+                  "actual": "'Aria Arc L-Shape Corner Sofa' (h2, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,977.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,977.00, got not on page",
+          "screenshot": "product.pdp.aria-arc-l-shape-corner-sofa-bengaluru.a1.png",
+          "trace": "product.pdp.aria-arc-l-shape-corner-sofa-bengaluru.a1_trace.zip",
+          "secs": 8.91,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aria-arc-l-shape-corner-sofa-bengaluru?variant=50838023569655"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aria-arc-l-shape-corner-sofa-bengaluru?variant=50838023569655",
+              "ttfb": 0.16,
+              "dcl": 0.74,
+              "load": 1.92,
+              "lcp": 1.19
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.24s",
+              "error": null,
+              "secs": 5.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aria Arc L-Shape Corner Sofa \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3827 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aria-arc-l-shape-corner-sofa-bengaluru",
+                  "actual": "/products/aria-arc-l-shape-corner-sofa-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aria Arc L-Shape Corner Sofa', selected variant 50838023569655 at \u20b92,977.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aria-arc-l-shape-corner-sofa-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aria-arc-l-shape-corner-sofa-bengaluru.js with variants",
+                  "actual": "'Aria Arc L-Shape Corner Sofa', 24 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b92,977.00, got not on page",
+              "secs": 2.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aria Arc L-Shape Corner Sofa",
+                  "actual": "'Aria Arc L-Shape Corner Sofa' (h2, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b92,977.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b92,977.00, got not on page",
+          "screenshot": "product.pdp.aria-arc-l-shape-corner-sofa-bengaluru.a2.png",
+          "trace": "product.pdp.aria-arc-l-shape-corner-sofa-bengaluru.a2_trace.zip",
+          "secs": 8.79,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aria-arc-l-shape-corner-sofa-bengaluru?variant=50838023569655"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://somuchliving.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/products/aria-arc-l-shape-corner-sofa-bengaluru?variant=50838023569655",
+              "ttfb": 0.2,
+              "dcl": 0.97,
+              "load": 2.09,
+              "lcp": 0.94
+            }
+          ]
+        }
+      ],
+      "incident_signature": "somuchliving.com|product.pdp.aria-arc-l-shape-corner-sofa-bengaluru|shows_title_price_image",
+      "triage": {
+        "verdict": "real_store_problem",
+        "category": "store_bug",
+        "reason": "The product page as rendered to the robot shows the product and variant controls but no visible price for the selected variant, so a shopper would not see the expected price on the product page.",
+        "evidence": "Visible page text includes the product name and variant options but contains no price text anywhere in the captured viewport: (excerpt) \"Aria Arc L-Shape Corner Sofa\" ... \"Color: Beige\" ... \"Size: Double Seaters / Three Seaters / Four Seaters / Corner without armrests four seaters / ...\" \u2014 no price "
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.aurora-bellissima-walnut-leg-modular-sof",
+      "suite": "product",
+      "title": "PDP 'Aurora Bellissima Walnut Leg Modular Sofa'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 5.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aurora Bellissima Walnut Leg Modular Sofa \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3503 chars, 35 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru",
+                  "actual": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aurora Bellissima Walnut Leg Modular Sofa', selected variant 50806448455927 at \u20b91,237.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru.js with variants",
+                  "actual": "'Aurora Bellissima Walnut Leg Modular Sofa', 16 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "product name shown on the page: expected Aurora Bellissima Walnut Leg Modular Sofa, got none: no visible text matching the product name, and no main heading",
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aurora Bellissima Walnut Leg Modular Sofa",
+                  "actual": "none: no visible text matching the product name, and no main heading",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "product name shown on the page: expected Aurora Bellissima Walnut Leg Modular Sofa, got none: no visible text matching the product name, and no main heading",
+          "screenshot": "product.pdp.aurora-bellissima-walnut-leg-modular-sof.a1.png",
+          "trace": "product.pdp.aurora-bellissima-walnut-leg-modular-sof.a1_trace.zip",
+          "secs": 6.45,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru?variant=50806448455927"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru?variant=50806448455927",
+              "ttfb": 0.17,
+              "dcl": 0.92,
+              "load": 1.79,
+              "lcp": 1.14
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.39s",
+              "error": null,
+              "secs": 5.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aurora Bellissima Walnut Leg Modular Sofa \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3503 chars, 35 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru",
+                  "actual": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aurora Bellissima Walnut Leg Modular Sofa', selected variant 50806448455927 at \u20b91,237.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru.js with variants",
+                  "actual": "'Aurora Bellissima Walnut Leg Modular Sofa', 16 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "product name shown on the page: expected Aurora Bellissima Walnut Leg Modular Sofa, got none: no visible text matching the product name, and no main heading",
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aurora Bellissima Walnut Leg Modular Sofa",
+                  "actual": "none: no visible text matching the product name, and no main heading",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "product name shown on the page: expected Aurora Bellissima Walnut Leg Modular Sofa, got none: no visible text matching the product name, and no main heading",
+          "screenshot": "product.pdp.aurora-bellissima-walnut-leg-modular-sof.a2.png",
+          "trace": "product.pdp.aurora-bellissima-walnut-leg-modular-sof.a2_trace.zip",
+          "secs": 6.65,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru?variant=50806448455927"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru?variant=50806448455927",
+              "ttfb": 0.2,
+              "dcl": 1.2,
+              "load": 2.02,
+              "lcp": 1.09
+            }
+          ]
+        },
+        {
+          "n": 3,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.3s",
+              "error": null,
+              "secs": 5.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aurora Bellissima Walnut Leg Modular Sofa \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3503 chars, 35 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru",
+                  "actual": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aurora Bellissima Walnut Leg Modular Sofa', selected variant 50806448455927 at \u20b91,237.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru.js with variants",
+                  "actual": "'Aurora Bellissima Walnut Leg Modular Sofa', 16 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "product name shown on the page: expected Aurora Bellissima Walnut Leg Modular Sofa, got none: no visible text matching the product name, and no main heading",
+              "secs": 1.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aurora Bellissima Walnut Leg Modular Sofa",
+                  "actual": "none: no visible text matching the product name, and no main heading",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "product name shown on the page: expected Aurora Bellissima Walnut Leg Modular Sofa, got none: no visible text matching the product name, and no main heading",
+          "screenshot": "product.pdp.aurora-bellissima-walnut-leg-modular-sof.a3.png",
+          "trace": "product.pdp.aurora-bellissima-walnut-leg-modular-sof.a3_trace.zip",
+          "secs": 7.26,
+          "note": "re-check with LLM help after triage",
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru?variant=50806448455927"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aurora-bellissima-walnut-leg-modular-sofa-bengaluru?variant=50806448455927",
+              "ttfb": 0.18,
+              "dcl": 0.86,
+              "load": 1.94,
+              "lcp": 0.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": "somuchliving.com|product.pdp.aurora-bellissima-walnut-leg-modular-sof|shows_title_price_image",
+      "triage": {
+        "verdict": "radar_problem",
+        "category": "locator",
+        "reason": "The product name is present in the visible page text, so the robot searched the wrong place or used the wrong selector to find the title (false alarm).",
+        "evidence": "Visible page text includes: 'Aurora Bellissima Walnut Leg Modular Sofa' and full product heading text 'Aurora Bellissima Fleece Elegant Sofa Walnut Curved Leg Modular Sofa For Living Room | Custom Made Direct From Manufacturer' (see page text and screenshot)."
+      },
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.aida-walnut-tone-wood-sherpa-elegant-cha",
+      "suite": "product",
+      "title": "PDP 'Aida Walnut Tone Wood Sherpa Elegant Chair'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "confirmed_fail",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.38s",
+              "error": null,
+              "secs": 5.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aida Walnut Tone Wood Sherpa Elegant Chair \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2856 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru",
+                  "actual": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aida Walnut Tone Wood Sherpa Elegant Chair', selected variant 50802376212727 at \u20b91,277.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru.js with variants",
+                  "actual": "'Aida Walnut Tone Wood Sherpa Elegant Chair', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b91,277.00, got not on page",
+              "secs": 2.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aida Walnut Tone Wood Sherpa Elegant Chair",
+                  "actual": "'Aida Walnut Tone Wood Sherpa Elegant Chair' (h2, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,277.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b91,277.00, got not on page",
+          "screenshot": "product.pdp.aida-walnut-tone-wood-sherpa-elegant-cha.a1.png",
+          "trace": "product.pdp.aida-walnut-tone-wood-sherpa-elegant-cha.a1_trace.zip",
+          "secs": 8.91,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru?variant=50802376212727"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru?variant=50802376212727",
+              "ttfb": 0.21,
+              "dcl": 1.14,
+              "load": 2.01,
+              "lcp": 1.12
+            }
+          ]
+        },
+        {
+          "n": 2,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.92s",
+              "error": null,
+              "secs": 5.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aida Walnut Tone Wood Sherpa Elegant Chair \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2856 chars, 21 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru",
+                  "actual": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Aida Walnut Tone Wood Sherpa Elegant Chair', selected variant 50802376212727 at \u20b91,277.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru.js with variants",
+                  "actual": "'Aida Walnut Tone Wood Sherpa Elegant Chair', 2 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "fail",
+              "detail": null,
+              "error": "selected variant price shown: expected \u20b91,277.00, got not on page",
+              "secs": 2.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Aida Walnut Tone Wood Sherpa Elegant Chair",
+                  "actual": "'Aida Walnut Tone Wood Sherpa Elegant Chair' (h2, 32px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,277.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "selected variant price shown: expected \u20b91,277.00, got not on page",
+          "screenshot": "product.pdp.aida-walnut-tone-wood-sherpa-elegant-cha.a2.png",
+          "trace": "product.pdp.aida-walnut-tone-wood-sherpa-elegant-cha.a2_trace.zip",
+          "secs": 7.99,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru?variant=50802376212727"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aida-walnut-tone-wood-sherpa-elegant-chair-bengaluru?variant=50802376212727",
+              "ttfb": 0.19,
+              "dcl": 0.7,
+              "load": 1.55,
+              "lcp": 0.72
+            }
+          ]
+        }
+      ],
+      "incident_signature": "somuchliving.com|product.pdp.aida-walnut-tone-wood-sherpa-elegant-cha|shows_title_price_image",
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'Aria Arc L-Shape Corner Sofa' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.36s",
+              "error": null,
+              "secs": 2.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aria Arc L-Shape Corner Sofa \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3827 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "24 variants; selected 50838023569655 (Beige / Double Seaters, \u20b92,977.00); switch to 50802353602807 (Custom Color / Three Seaters, \u20b93,577.00); sold-out variant: none",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/aria-arc-l-shape-corner-sofa-bengaluru",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/aria-arc-l-shape-corner-sofa-bengaluru.js with variants",
+                  "actual": "'Aria Arc L-Shape Corner Sofa', 24 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_switch",
+              "status": "warn",
+              "detail": null,
+              "error": "new variant's price shown: expected \u20b93,577.00, got not on page",
+              "secs": 5.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "option control for the other variant",
+                  "expected": "Custom Color / Three Seaters",
+                  "actual": "option \"Custom Color\", option \"Three Seaters\\nVariant sold out or unavailable\"",
+                  "ok": true
+                },
+                {
+                  "what": "page selects the picked variant",
+                  "expected": "50802353602807 (Custom Color / Three Seaters, \u20b93,577.00)",
+                  "actual": "50802353602807 (the product form's variant id) after choosing option \"Custom Color\", option \"Three Seaters\\nVariant sold out or unavailable\"",
+                  "ok": true
+                },
+                {
+                  "what": "new variant's price shown",
+                  "expected": "\u20b93,577.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.23,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aria-arc-l-shape-corner-sofa-bengaluru?variant=50838023569655"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://somuchliving.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/products/aria-arc-l-shape-corner-sofa-bengaluru?variant=50838023569655",
+              "ttfb": 0.17,
+              "dcl": 0.98,
+              "load": 2.08,
+              "lcp": 0.88
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'Aria Arc L-Shape Corner Sofa' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.0s",
+              "error": null,
+              "secs": 2.6,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aria Arc L-Shape Corner Sofa \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3827 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.72,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aria-arc-l-shape-corner-sofa-bengaluru?variant=50838023569655"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://somuchliving.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/products/aria-arc-l-shape-corner-sofa-bengaluru?variant=50838023569655",
+              "ttfb": 0.05,
+              "dcl": 0.79,
+              "load": 1.81,
+              "lcp": 0.69
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.aria",
+      "suite": "search",
+      "title": "Search for 'aria' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.15s",
+              "error": null,
+              "secs": 2.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4846 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 7 results, 1 mention 'aria'",
+              "error": null,
+              "secs": 4.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "7",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'aria'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "1 of 7",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.67,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://somuchliving.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.97,
+              "load": 1.96,
+              "lcp": 0.76
+            },
+            {
+              "url": "/search?q=aria&options%5Bprefix%5D=last",
+              "ttfb": 0.3,
+              "dcl": 1.03,
+              "load": 1.68,
+              "lcp": 1.26
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.76s",
+              "error": null,
+              "secs": 1.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 4 results found for \"qzxvbugradar\" \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1151 chars, 7 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "warn",
+              "detail": null,
+              "error": "shopper is told nothing matched: expected a 'no results' message, or no products listed, got no message, 4 products listed",
+              "secs": 6.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 4 products listed",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.33,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.28,
+              "dcl": 0.61,
+              "load": 1.25,
+              "lcp": 0.68
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'aria' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.26s",
+              "error": null,
+              "secs": 2.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4846 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "16 product suggestion(s) while typing 'aria', e.g. 'Aria Arc L-Shape Corner Sofa'",
+              "error": null,
+              "secs": 2.81,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.78,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.09,
+              "load": 1.83,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.99s",
+              "error": null,
+              "secs": 2.55,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4846 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 74: 'Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "74: 'Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Shop luxury, made-to-order furniture direct from the manufacturer. Cus",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "147: 'Shop luxury, made-to-order furniture direct from the manufac'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://somuchliving.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://somuchliving.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.71,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "The play() request was interrupted by a call to pause(). https://goo.gl/LdLk22",
+              "url": "https://somuchliving.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.76,
+              "load": 1.54,
+              "lcp": 0.68
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.24s",
+              "error": null,
+              "secs": 5.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Aria Arc L-Shape Corner Sofa \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3827 chars, 38 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Aria Arc L-Shape Corner Sofa \u2013 SoMuch Living",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "44: 'Aria Arc L-Shape Corner Sofa \u2013 SoMuch Living'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Aria Arc Cloud Cushion Corner L-Shape Sofa Stylish Setup\\xa0| C'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Aria Arc Cloud Cushion Corner L-Shape Sofa Stylish Setup\\xa0| C'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://somuchliving.com/products/aria-arc-l-shape-corner-sofa-bengaluru",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://somuchliving.com/products/aria-arc-l-shape-corner-sofa-bengaluru",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Aria Arc L-Shape Corner Sofa",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://somuchliving.com/cdn/shop/files/11_992ee6e0-89fe-4df2-8f01-0c1213ef58a4.jpg?v=1779612561",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.41,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/products/aria-arc-l-shape-corner-sofa-bengaluru"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/aria-arc-l-shape-corner-sofa-bengaluru",
+              "ttfb": 0.06,
+              "dcl": 0.88,
+              "load": 1.89,
+              "lcp": 0.86
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 1.81,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 1.89,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.18,
+              "dcl": 0.53,
+              "load": 1.13,
+              "lcp": 0.39
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (privacy)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "privacy: opens /policies/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.66s",
+              "error": null,
+              "secs": 1.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy \u2013 SoMuch Living",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "14926 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy \u2013 SoMuch Living', heading 'Privacy policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/privacy-policy",
+                  "actual": "/policies/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "14390 chars of policy text",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "14390 chars under 'Privacy policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "1 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.04,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'setAttribute')",
+              "url": "https://somuchliving.com/policies/privacy-policy"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://somuchliving.com/.well-known/shopify/monorail/unstable/produce_batch"
+          ],
+          "loads": [
+            {
+              "url": "/policies/privacy-policy",
+              "ttfb": 0.2,
+              "dcl": 0.6,
+              "load": 1.28,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 5,
+    "input_tokens": 12383,
+    "output_tokens": 657,
+    "est_usd": 0.00441,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Luxury Furniture Online India | Custom Sofas, Beds & D\u00e9cor \u2013 SoMuch Living",
+    "theme": "Minimalista (store copy: Minimalista V2)",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 14,
+    "collections": 10,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [],
+  "perf": {
+    "pages": 25,
+    "median_load_secs": 1.68,
+    "slowest": {
+      "url": "/",
+      "load_secs": 2.34
+    },
+    "console_errors": 2,
+    "console_warnings": 1,
+    "failed_requests": 2
+  },
+  "counts": {
+    "pass": 16,
+    "flaky": 0,
+    "confirmed_fail": 4,
+    "blocked": 1,
+    "skipped": 0
+  }
+}
