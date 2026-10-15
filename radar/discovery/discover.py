@@ -159,9 +159,11 @@ def same_site(a: str, b: str) -> bool:
 
 
 # + checkout add-ons sold as products: 'Free Returns + Package Protection' (saturn.health, new30m 14 Oct: NOT JUDGED on
-#   both devices, its page has no buy button a shopper uses) and shipping / order protection or insurance apps
+#   both devices, its page has no buy button a shopper uses) and shipping / order protection or insurance apps;
+#   extended-warranty add-ons (izicart.com new30u: '1 Year Extended Warranty for …' pages show no such product)
 NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift|sampler|tester|\bsample\b|dummy|test[-_ ]product|"
-                           r"(package|shipping|order|returns?|delivery|parcel)[-_ ]?(protection|insurance)|route[-_ ]?protection",
+                           r"(package|shipping|order|returns?|delivery|parcel)[-_ ]?(protection|insurance)|route[-_ ]?protection|"
+                           r"extended[-_ ]?warranty|warranty[-_ ]?(extension|plan|upgrade)|\b\d[-_ ]?years?[-_ ]?(extended[-_ ]?)?warranty",
                            re.I)
 
 

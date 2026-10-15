@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 15 Oct 22:10 IST (new30u run 38766823085, 18 min):** izicart.com 'degraded' on both devices: Radar tested
+  '1 Year Extended Warranty for …' add-on products (pages show the drone, not the warranty). NOT_FOR_TESTS skips
+  extended-warranty / warranty-plan add-ons like package protection (unit test). Real findings: silawat search HTTP 422
+  (the same theme bug as pehnavri), cartcount /pages/contact 404, joyeekolkata / arganframes / thelostproject dead links.
 - **v0.20 15 Oct 21:50 IST (new30t run 38764016282, 19 min):** krkjewels.com 'degraded' on both devices: the header's
   Login is Shopify's new customer accounts link '/customer_authentication/redirect' (404 to a robot). NAV_JS skips
   customer_authentication / login / logout links like /account (mock `customer_auth_link`). Evidence: the 'form for this
