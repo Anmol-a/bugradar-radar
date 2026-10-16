@@ -139,6 +139,9 @@ def _watch_server_errors(ctx: Ctx) -> list[str]:
 BUSY_RX = re.compile(r"checking|loading|please wait|fetching|verifying|\.\.\.|…", re.I)
 
 
+INVALID_PIN_RX = re.compile(r"(enter|valid|correct)\b[^.]{0,20}\bpin ?code|pin ?code[^.]{0,20}\b(invalid|not valid)", re.I)
+
+
 def _answer_after(ctx: Ctx, snap: dict, rx: re.Pattern, secs: float = 8.0, busy_secs: float = 25.0) -> tuple[str | None, str]:
     """Poll the page for text matching rx (holder text that was not there before, or a message element). Returns
     (matched text or None, what was seen last). While the widget says it is still working ('Checking servicability
@@ -170,6 +173,14 @@ def _type_into(ctx: Ctx, kind: str, text: str) -> None:
     except Exception:  # noqa: BLE001  covered by a sticky bar: focus it directly, typing still goes through the page
         _el(ctx, kind, "box").focus()
     _el(ctx, kind, "box").fill(text)
+    # an app-rendered widget that redraws itself can drop the text typed into the node it just replaced: type again
+    for _ in range(3):
+        try:
+            if _el(ctx, kind, "box").input_value(timeout=2000) == text:
+                break
+            _el(ctx, kind, "box").fill(text)
+        except Exception:  # noqa: BLE001  redrawn mid-read: read the new node
+            pass
 
 
 def _press(ctx: Ctx, kind: str) -> str:
@@ -209,6 +220,12 @@ def pincode_check(ctx: Ctx, url: str, probe: str = PROBE_PINCODE, strict: bool =
         _type_into(ctx, "pin", probe)
         how = _press(ctx, "pin")
         hit, seen = _answer_after(ctx, found, PIN_ANSWER_RX)
+        if hit and INVALID_PIN_RX.search(hit):
+            # a real 6-digit pincode called invalid: the widget redrew and lost the text between typing and the press
+            # (pincode_rerender, radar-tests 38891961164): type and press once more, like a shopper would
+            _type_into(ctx, "pin", probe)
+            how = _press(ctx, "pin") + " (typed again: the first press said the pincode was not valid)"
+            hit, seen = _answer_after(ctx, found, PIN_ANSWER_RX)
         if hit:
             ctx.expect(f"pincode checker answers for {probe}", "a delivery answer", hit, True)
             return f"typed {probe}, {how}: {hit!r}"

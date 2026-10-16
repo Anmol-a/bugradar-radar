@@ -2144,7 +2144,7 @@ def test_checkout_summary_is_read_past_a_big_inline_script(tmp_path):
     assert st.status == "pass" and all(ch["ok"] for ch in st.checks), (st.status, st.error, st.checks)
 
 
-@pytest.mark.parametrize("mode", ["other_market", "other_market_norate", "other_market_offer"])
+@pytest.mark.parametrize("mode", ["other_market", "other_market_norate", "other_market_offer", "other_market_price_above"])
 def test_prices_converted_for_another_country_are_location_never_down(tmp_path, mode):
     """theindianethnicco.com ($62.91) + saltattire.com ($24.23), new30h 11 Oct, and tilfi.com ($497), new30g: Shopify
     Markets shows a US visitor converted dollar prices, so the catalog's ₹ price is 'not on page' and Radar said DOWN.
@@ -2168,6 +2168,8 @@ def test_verdict_rule_no_clickable_card_is_not_judged_never_down(tmp_path):
     st = _steps(j)["click_into_product"]
     assert st.status == "skip" and st.error.startswith("not judged: product card a shopper can click") \
         and "covered by div.veil" in st.error and "not proof" in st.error, st.error
+    # evidence for fixing from facts: the first covered link's box, the hit point, the cover's style + box, the scroll
+    assert "first covered: a" in st.error and "hit div.veil{" in st.error and "scroll " in st.error, st.error
     assert run.verdict == "blocked", run.verdict
     assert j.attempts[-1].screenshot, "the not-judged attempt keeps its screenshot as evidence"
 
@@ -2453,6 +2455,28 @@ def test_market_path_product_data_is_read_under_the_pages_market(tmp_path, devic
     assert "/en-us/products/" in _steps(j)["click_into_product"].detail, _steps(j)["click_into_product"].detail
 
 
+def test_product_url_sent_to_the_same_product_under_a_market_path_is_reachable(tmp_path):
+    """khushbujewellers.com (new30x, 16 Oct): every product URL sent the US runner to /en-us/products/<same handle>;
+    Radar warned 'catalog product page reachable: redirects to /en-us/products/... (hidden from shoppers)'. The same
+    product under the store's market path is the product page."""
+    run = _scan_small("market_redirect_all", tmp_path, suites=["product"])
+    pdp = [c for c in run.cases if c.case_id.startswith("product.pdp.")]
+    assert pdp, [c.case_id for c in run.cases]
+    for c in pdp:
+        assert "hidden from shoppers" not in str([(s.name, s.error) for a in c.attempts for s in a.steps]), _fails(c)
+        assert c.verdict == "pass", (c.case_id, c.verdict, _fails(c))
+
+
+def test_collection_tile_that_does_nothing_when_tapped_goes_on_via_the_menu(tmp_path):
+    """amchongtea.com phone (new30x, 16 Oct): the homepage's only visible collection link ('Explore Now') did nothing
+    when tapped and the homepage lists no products: 'not judged: no product card'. A shopper opens the ☰ menu and
+    picks a collection there; the dead tile is named as a warning-free note, the journey passes."""
+    j = _case(_scan_small("dead_tile_menu", tmp_path, device="mobile", suites=["journey"]), "journey.")
+    st = _steps(j)["click_into_collection"]
+    assert st.status == "pass" and "did nothing" in (st.detail or ""), (st.status, st.detail, st.error)
+    assert j.verdict == "pass", _fails(j)
+
+
 def test_product_handle_ignores_a_trailing_space_in_the_href():
     """thechumbakwala.com (new30n, 14 Oct): the card's href ended in a space; the page opened without it and
     'opened the product that was clicked' compared 'x ' with 'x'."""
@@ -2487,6 +2511,16 @@ def test_page_with_no_price_at_all_is_not_tested_never_down(tmp_path):
     vase = _case(run, "product.pdp.ceramic")
     assert vase.verdict == "blocked" and "shows no price for this product" in vase.attempts[-1].error, \
         (vase.verdict, vase.attempts[-1].error)
+    assert run.verdict != "down", run.verdict
+
+
+def test_price_hidden_until_a_choice_with_a_disabled_buy_button_is_not_tested(tmp_path):
+    """myop.in (new30x, 16 Oct, desktop DOWN): a personalised perfume hides its price and keeps 'Add to cart' disabled
+    until the shopper picks a perfume. No price near the name and no buy button a shopper can use = 'not tested'."""
+    run = _product_only("price_after_choice", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error \
+        and "disabled" in vase.attempts[-1].error, (vase.verdict, vase.attempts[-1].error)
     assert run.verdict != "down", run.verdict
 
 
