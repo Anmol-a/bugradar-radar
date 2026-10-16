@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 17 Oct 05:00 IST (new30z2 run 38974875193: 38/50 healthy):** (1) daantwale.com: a homepage banner links
+  /discount/WOWDEAL; Shopify applies the code and sends the shopper home, not a deleted page (mock discount_link).
+  (2) orbiz.in: a build-your-crew product whose only button 'Pick 6 buddies' stays disabled until six picks: a disabled
+  buy button whose words ask for picks = 'not tested' (mock bundle_builder).
 - **v0.20 17 Oct 04:30 IST (new30z1 run 38974724813, 34 min: 42/55 healthy):** (1) adachikan.com phone: the form's
   'BUY IT NOW' was disabled; the enabled 'ADD TO CART' bar shows only after scrolling: the enabled-add-to-cart search
   scrolls like a shopper (mock disabled_form_bar_on_scroll). (2) hunnit.com desktop: cards in a marquee that never

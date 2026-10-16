@@ -1014,6 +1014,15 @@ def test_disabled_form_button_with_an_enabled_add_to_cart_elsewhere_passes(tmp_p
     assert not bad, bad
 
 
+def test_buy_button_waiting_for_the_shoppers_picks_is_not_tested(tmp_path):
+    """orbiz.in (new30z2, both devices DEGRADED): a 'build your crew' product whose only button, 'Pick 6 buddies', stays
+    disabled until the shopper picks six figures. Not a broken buy button: 'not tested' with the reason."""
+    run = _product_only("bundle_builder", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error and "Pick 6" in vase.attempts[-1].error, \
+        (vase.verdict, vase.attempts[-1].error)
+
+
 def test_disabled_form_button_with_an_add_to_cart_bar_shown_after_scrolling_passes(tmp_path):
     """adachikan.com phone (new30z1, 3 products): the form's 'BUY IT NOW' was disabled and Radar failed the buy button,
     while an enabled 'ADD TO CART' bar appears once the shopper scrolls. A shopper scrolls and uses it."""
@@ -1603,6 +1612,15 @@ def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_p
     assert "sent to the homepage" in _steps(c)["announcement bar: opens /pages/offers"].error
     assert "homepage section malformed link 'Sale'" in err, err
     assert "starts with '/http'" in _steps(c)["homepage section: malformed link"].detail
+
+
+def test_discount_link_that_applies_its_code_and_goes_home_is_not_a_broken_link(tmp_path):
+    """daantwale.com (new30z2, both devices DEGRADED): a homepage banner links /discount/WOWDEAL; Shopify applies the code
+    and sends the shopper to the homepage, which is how discount links work, not a deleted page."""
+    run = _info("discount_link", tmp_path, suites=("smoke",))
+    c = _case(run, "smoke.more_links")
+    assert c.verdict == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert any("/discount/WOWDEAL" in s.name for s in c.attempts[-1].steps), [s.name for s in c.attempts[-1].steps]
 
 
 def test_app_proxy_page_drawn_in_a_shadow_root_is_not_blank(tmp_path):
