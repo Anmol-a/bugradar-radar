@@ -1373,6 +1373,11 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 16 Oct 18:35 IST (new30y run 38899856830, 25 min: 44/55 healthy):** nakshatrakids.com (both devices) and
+  tribalornaments.com DOWN 'price not on page' while the screenshot shows '$46.45 USD' under the name: a currency-converter
+  app (Shopify currency INR, rate 1) draws the converted price where the page's text does not carry it, with a 'USD'
+  switcher on screen. A foreign currency code shown on screen (a switcher) = 'location (US runner)' (mock
+  other_market_switcher).
 - **v0.20 16 Oct 17:45 IST (new30x run 38891734931, 26 min: 40/54 healthy):** (1) khushbujewellers.com DOWN on both
   devices: the US runner was sent to /en-us/products/<same handle> ('hidden from shoppers' warning) and saw '$24.00'
   ABOVE the product name while an 'INR' note elsewhere broke 'no ₹ anywhere': the same product under a market path is

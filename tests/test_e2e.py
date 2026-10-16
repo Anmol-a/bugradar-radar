@@ -2144,7 +2144,8 @@ def test_checkout_summary_is_read_past_a_big_inline_script(tmp_path):
     assert st.status == "pass" and all(ch["ok"] for ch in st.checks), (st.status, st.error, st.checks)
 
 
-@pytest.mark.parametrize("mode", ["other_market", "other_market_norate", "other_market_offer", "other_market_price_above"])
+@pytest.mark.parametrize("mode", ["other_market", "other_market_norate", "other_market_offer", "other_market_price_above",
+                                  "other_market_switcher"])
 def test_prices_converted_for_another_country_are_location_never_down(tmp_path, mode):
     """theindianethnicco.com ($62.91) + saltattire.com ($24.23), new30h 11 Oct, and tilfi.com ($497), new30g: Shopify
     Markets shows a US visitor converted dollar prices, so the catalog's ₹ price is 'not on page' and Radar said DOWN.

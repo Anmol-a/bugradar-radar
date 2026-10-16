@@ -87,6 +87,14 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
         // elsewhere): the 120 characters before the name, with no ₹ price in them, count too
         if (!foreign && at >= 0) { const b = t.replace(/\s+/g, ' ').slice(Math.max(0, at - 120), at);
           const m = b.match(new RegExp(fx.source, 'g')); if (m && !rx.test(b)) foreign = m[m.length - 1]; }
+        // a currency-converter app (not Shopify Markets: currency INR, rate 1) may draw the converted price where the
+        // page's text does not carry it (nakshatrakids.com, new30y: '$46.45 USD' on screen, 'not on page' in the text);
+        // its switcher showing a foreign currency code on screen is the evidence
+        if (!foreign) for (const e of document.querySelectorAll('body *')) {
+          if (e.children.length > 2) continue; const x = (e.innerText || '').trim();
+          if (!/^(?:\S{1,4}\s)?(USD|EUR|GBP|AED|CAD|AUD|SGD)(?:\s?[$€£])?$/.test(x)) continue;
+          const r = e.getBoundingClientRect(), st = getComputedStyle(e);
+          if (r.width > 0 && r.height > 0 && st.visibility !== 'hidden') { foreign = x.match(/USD|EUR|GBP|AED|CAD|AUD|SGD/)[0] + ' (currency switcher on screen)'; break; } }
         return {active: c.active || '', rate: parseFloat(c.rate || '1') || 1, country: (window.Shopify || {}).country || '',
                 foreign}; }""", title) or {}
     active = (cur.get("active") or "").upper()
