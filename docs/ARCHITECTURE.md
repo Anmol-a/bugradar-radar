@@ -1373,6 +1373,11 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 17 Oct 04:30 IST (new30z1 run 38974724813, 34 min: 42/55 healthy):** (1) adachikan.com phone: the form's
+  'BUY IT NOW' was disabled; the enabled 'ADD TO CART' bar shows only after scrolling: the enabled-add-to-cart search
+  scrolls like a shopper (mock disabled_form_bar_on_scroll). (2) hunnit.com desktop: cards in a marquee that never
+  stops; Playwright's click waited for a still card and timed out 3×: Radar taps the card where its hit-test finds it
+  right now (mock marquee_cards). (3) cforcover.com stopped after 25 min (open).
 - **v0.20 16 Oct 18:35 IST (new30y run 38899856830, 25 min: 44/55 healthy):** nakshatrakids.com (both devices) and
   tribalornaments.com DOWN 'price not on page' while the screenshot shows '$46.45 USD' under the name: a currency-converter
   app (Shopify currency INR, rate 1) draws the converted price where the page's text does not carry it, with a 'USD'

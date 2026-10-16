@@ -801,7 +801,7 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
     if right and st["disabled"]:
         # arabianaroma.in (new30v, both devices, 3 products): the form's own button stays disabled while the page shows
         # an enabled 'Add to cart' a shopper uses (the buy-button step and the cart check judge that one)
-        enabled_elsewhere = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+        enabled_elsewhere = _enabled_add(ctx)
     ctx.expect("variant selected like a shopper", f"{target['id']} ({' / '.join(values) or target.get('title')})",
                f"{got} after choosing {', '.join(picked) or 'nothing (no matching picker)'}"
                + (f"; the form's own button is disabled, the page's enabled <{enabled_elsewhere['tag']}> "
@@ -809,6 +809,20 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
                   else "; but the buy button is still disabled" if right and st["disabled"] else ""),
                right and (not st["disabled"] or bool(enabled_elsewhere)))
     return target
+
+
+def _enabled_add(ctx: Ctx):
+    """The page's enabled 'Add to cart' for this product, scrolling like a shopper when none shows yet: adachikan.com
+    phone (new30z1) shows its enabled 'ADD TO CART' bar only once the shopper scrolls, while the form's own
+    'BUY IT NOW' is disabled."""
+    alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+    for _ in range(3):
+        if alt:
+            break
+        ctx.sess.page.evaluate("() => window.scrollBy(0, Math.round(innerHeight * 0.6))")
+        ctx.sess.page.wait_for_timeout(400)
+        alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+    return alt
 
 
 def _expect_buy_enabled(ctx: Ctx, loc):
@@ -861,7 +875,7 @@ def _main_buy_button(ctx: Ctx, product: dict):
         if not form_on:
             # arabianaroma.in (new30v): the form's own button stays disabled while the page's enabled 'Add to cart'
             # (a sticky bar / app button) is the one a shopper uses; the cart check verifies what it adds
-            alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+            alt = _enabled_add(ctx)
             if alt:
                 ctx.buy_evidence = (f"form #{found['form'][-24:]} button {found['text']!r} is disabled; the page's enabled "
                                     f"<{alt['tag']}> {alt['text']!r} is used")
@@ -3623,11 +3637,11 @@ def _click_picked(ctx: Ctx, got: dict | None = None) -> None:
 
 def _click_at(ctx: Ctx, page, loc, got: dict | None, before: str, opened: list) -> None:
     clicked = False
+    last = aim = None
     if got and got.get("x") is not None:
         # The pick scrolled the card into view. Some stores re-lay out right after a scroll (boat-lifestyle.com,
         # bench 5: the header changes ~20 ms after scrolling and a click 30 ms after the pick landed on the NEXT
         # card). So wait until the target stops moving, then aim again at where it is now.
-        last = None
         for _ in range(6):
             page.wait_for_timeout(150)
             aim = ctx.sess.evaluate(AIM_JS, got.get("via") or "link")
@@ -3647,6 +3661,20 @@ def _click_at(ctx: Ctx, page, loc, got: dict | None, before: str, opened: list) 
                 clicked = False
             if not clicked and opened:
                 return                              # it opened a new tab: the caller follows it (no second click)
+    if not clicked and got and got.get("x") is not None and last is not None:
+        # still moving after 6 looks: a marquee / auto-scrolling row that never stops (hunnit.com, new30z1: Playwright's
+        # click waited for a still card until it timed out, 3 times). A shopper taps the card where it is right now.
+        for _ in range(3):              # AIM_JS hit-tests the target where it is now; tap there at once
+            now = ctx.sess.evaluate(AIM_JS, got.get("via") or "link")
+            if now:
+                page.mouse.click(now["x"], now["y"])
+                try:
+                    page.wait_for_url(lambda u: u != before, timeout=2500)
+                except Exception:  # noqa: BLE001  the tap landed beside it: aim again
+                    pass
+                if page.url != before or opened:
+                    clicked = True
+                    break
     if not clicked:
         try:
             loc.click(timeout=6000)
