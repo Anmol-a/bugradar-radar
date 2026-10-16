@@ -907,6 +907,16 @@ def test_popup_inside_shadow_dom_is_closed_by_its_x_and_the_journey_passes_first
     assert closed and closed[0]["actual"].startswith("clicked 'close' on:") and "bomb size" in closed[0]["actual"], closed
 
 
+def test_card_name_that_opens_another_product_goes_on_via_its_other_link_with_a_warning(tmp_path):
+    """faritha.com phone (new30x, 4 runs DOWN) + bytheleaf.in phone (new30z3, flaky): tapping a card's name opened the
+    neighbouring product. A shopper goes back and taps the product again (its picture): the journey goes on, and the
+    miswired link is a store WARNING with the evidence."""
+    j = _case(_scan_small("title_opens_neighbour", tmp_path, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    w = _steps(j)["every_product_link_opens_the_product"]
+    assert w.status == "warn" and "opened another product" in w.error, (w.status, w.error)
+
+
 def test_product_card_in_a_marquee_that_never_stops_moving_is_clicked(tmp_path):
     """hunnit.com desktop (new30z1, 3 attempts DOWN): the cards ride a marquee that never stops, and the click waited for
     a still card until it timed out. A shopper taps the card where it is."""

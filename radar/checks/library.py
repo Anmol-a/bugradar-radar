@@ -3893,6 +3893,29 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                     dead["link"] = (f"{first or 'a product link'} on {_path(listing)} did nothing when clicked (twice); "
                                     f"the product's other link ({got3['text']!r}) opened it")
                     again = " (its first link did nothing; the product name opened it)"
+        if _handle(page.url) != clicked and _handle(page.url) and "/products/" in page.url and clicked:
+            # The tap opened ANOTHER product (faritha.com phone new30x 4 runs, bytheleaf.in phone new30z3): a shopper goes
+            # back and taps the product again by its other link (its picture). If that opens it, the journey goes on and
+            # the miswired link is a store WARNING with the evidence.
+            wrong = _path(page.url)
+            try:
+                page.go_back(wait_until="domcontentloaded", timeout=15000)
+                _wait_stable(ctx, PRODUCT_HREF)
+                if _path(page.url) == _path(listing):
+                    # the page came back fresh: set aside the link that was tapped (same product, same words)
+                    ctx.sess.evaluate("""([h, t]) => document.querySelectorAll('a[href*="/products/' + h + '"]').forEach(e => {
+                        if ((e.innerText || '').trim().replace(/\\s+/g, ' ').slice(0, 60) === t) e.setAttribute('data-radar-tried', '1'); })""",
+                                      [clicked, got.get("text") or ""])
+                    got4 = _pick(ctx, "a[href]", rf"/products/{re.escape(clicked)}(?:[/?#]|$)", [f"/products/{clicked}"],
+                                 exclude=NOT_SHOPPING + ", [data-radar-tried]", second_pass=False)
+                    if not got4.get("none"):
+                        try_click(got4)
+                        if _handle(page.url) == clicked:
+                            dead["link"] = (f"{first or 'a product link'} on {_path(listing)} opened another product "
+                                            f"({wrong}) when tapped; the product's other link ({got4['text']!r}) opened it")
+                            again = " (its first link opened another product; its other link opened it)"
+            except Exception:  # noqa: BLE001  could not go back: judged as before
+                pass
         if _handle(page.url) != clicked and errors:
             raise AssertionError(errors[0])           # same evidence as before when nothing worked
         ctx.expect("opened the product that was clicked", f"/products/{clicked}",

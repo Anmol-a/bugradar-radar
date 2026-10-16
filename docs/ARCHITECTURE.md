@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 17 Oct 05:40 IST (new30z3 run 38980915441: 44/55 healthy):** bytheleaf.in phone (flaky) and faritha.com phone
+  (new30x, 4 runs DOWN): tapping a card's name opened ANOTHER product. A shopper goes back and taps the product by its
+  other link; if that opens it, the journey goes on and the miswired link is a store WARNING (mock title_opens_neighbour).
+  kulina.in desktop flaky: a late popup iframe intercepted the first tap (open).
 - **v0.20 17 Oct 05:00 IST (new30z2 run 38974875193: 38/50 healthy):** (1) daantwale.com: a homepage banner links
   /discount/WOWDEAL; Shopify applies the code and sends the shopper home, not a deleted page (mock discount_link).
   (2) orbiz.in: a build-your-crew product whose only button 'Pick 6 buddies' stays disabled until six picks: a disabled
