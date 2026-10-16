@@ -376,6 +376,10 @@ Modes (to prove Radar catches and heals what it should):
                    404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
   hidden_form_app_button  the product's cart form is hidden and holds no button; the buy control is an app's element
                    outside it (shopkara.store, nubronicforte.com) -> found, the cart check adds the right product, PASSES
+  span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
+                   the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
+  disabled_form_enabled_bar  the form's own button is disabled, an enabled sticky 'Add to cart' adds the product
+                   (arabianaroma.in) -> variant_ready + buy PASS
   gift_only_product  hidden, empty cart form and no buy control anywhere (a gift the store auto-adds; nubronicforte
                    'Performance Kit') -> product BLOCKED 'not tested: offers no way to buy it'
   cod_form_only    hidden buttonless cart form + only an 'Order Now - Cash on Delivery' order-form app button
@@ -1903,6 +1907,19 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      '<style>#product-form-template__main button{display:none}</style>'
                      '<script>addEventListener("scroll", () => { if (scrollY > 300) document.getElementById("sticky-atc")'
                      '.style.display = "block"; });</script>')
+        if self.mode == "span_add_to_cart":
+            # costosoitaliano.com (new30v): hidden, empty cart form; the theme's buy control is a
+            # <span class="custom-add-to-cart-btn">Add to Cart</span> far below the name, with no product handle on it
+            body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
+                                     f'name="id" value="{vid}"></form><div style="height:700px"><p>Hand-finished. Ships in 3 days.</p></div>'
+                                     f'<div class="custom-actions"><span class="custom-add-to-cart-btn" onclick="addToCart({vid})" '
+                                     f'style="display:inline-block;padding:10px;background:#222;color:#fff;cursor:pointer">Add to Cart</span></div>')
+        if self.mode == "disabled_form_enabled_bar":
+            # arabianaroma.in (new30v): the form's own button stays disabled; an enabled sticky 'Add to cart' is the real one
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" disabled>Add to cart</button>', 1)
+            body += (f'<div class="sticky-atc" style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px">'
+                     f'<button type="button" class="sticky-atc__btn" onclick="addToCart({vid})">Add to cart</button></div>')
         if self.mode == "gift_only_product":
             # nubronicforte.com (new30t): the 'Performance Kit' gift's page: a hidden, empty cart form, no buy control
             body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '

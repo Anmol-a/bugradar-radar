@@ -1373,6 +1373,11 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 16 Oct 12:45 IST (new30v run 38861147423, 41 min incl. one stuck store):** costosoitaliano.com NOT JUDGED (its
+  buy control is '<span class="custom-add-to-cart-btn">Add to Cart</span>', hidden empty form): ENABLED_ADD_JS also takes
+  span/div/a buttons whose class names a button or the cart, and the page's ONLY enabled exact 'Add to cart' is used
+  before giving up (mock `span_add_to_cart`). arabianaroma.in failed 3 products ('buy button still disabled') while an
+  enabled 'Add to cart' was on the page: the form's disabled button gives way to it (mock `disabled_form_enabled_bar`).
 - **v0.20 16 Oct (Anmol's screenshot of nubronicforte):** the main product has a working 'ADD TO CART(19% OFF)'; Radar had
   picked the 'Performance Kit', a gift the store auto-adds ('Complimentary Performance Kit', 'Free Gift Auto Added'),
   whose page has a hidden, empty cart form and no buy control. Such a page = not tested with the reason, never not-judged

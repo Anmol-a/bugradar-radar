@@ -630,8 +630,11 @@ ENABLED_ADD_JS = r"""([quick]) => {
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
   const fixed = e => { for (let a = e; a && a !== document.body; a = a.parentElement) {
       const p = getComputedStyle(a).position; if (p === 'fixed' || p === 'sticky') return 1; } return 0; };
-  const c = [...document.querySelectorAll('button, input[type=submit], [role="button"]')]
-    .filter(e => /^add to (cart|bag|basket)$/i.test(txt(e)) && vis(e)
+  // + a theme's own <span>/<div>/<a> button ('<span class="custom-add-to-cart-btn">Add to Cart</span>',
+  // costosoitaliano.com new30v): exact wording, and a class that names a button or the cart
+  const c = [...document.querySelectorAll('button, input[type=submit], [role="button"], span[class*="cart" i], span[class*="btn" i], '
+                                       + 'div[class*="cart" i], div[class*="btn" i], a[class*="cart" i], a[class*="btn" i]')]
+    .filter(e => /^add to (cart|bag|basket)$/i.test(txt(e)) && vis(e) && !(e.parentElement && /^add to (cart|bag|basket)$/i.test(txt(e.parentElement)) && e.parentElement.matches('button, [role="button"], [class*="cart" i], [class*="btn" i]'))
       && !(e.disabled || e.getAttribute('aria-disabled') === 'true')
       && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
       && !otherCard(e, quick))
@@ -774,10 +777,17 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
                        f"{got} after choosing {', '.join(picked) or 'nothing'}; buy button disabled until the shopper "
                        f"checks a delivery pincode", True)
             return dict(target, _pincode_gate=gate)
+    enabled_elsewhere = None
+    if right and st["disabled"]:
+        # arabianaroma.in (new30v, both devices, 3 products): the form's own button stays disabled while the page shows
+        # an enabled 'Add to cart' a shopper uses (the buy-button step and the cart check judge that one)
+        enabled_elsewhere = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
     ctx.expect("variant selected like a shopper", f"{target['id']} ({' / '.join(values) or target.get('title')})",
                f"{got} after choosing {', '.join(picked) or 'nothing (no matching picker)'}"
-               + ("; but the buy button is still disabled" if right and st["disabled"] else ""),
-               right and not st["disabled"])
+               + (f"; the form's own button is disabled, the page's enabled <{enabled_elsewhere['tag']}> "
+                  f"{enabled_elsewhere['text']!r} is the one a shopper uses" if enabled_elsewhere
+                  else "; but the buy button is still disabled" if right and st["disabled"] else ""),
+               right and (not st["disabled"] or bool(enabled_elsewhere)))
     return target
 
 
@@ -824,6 +834,21 @@ def _main_buy_button(ctx: Ctx, product: dict):
         found = ctx.sess.evaluate(MAIN_BUY_JS, [ids, QUICK_SEL])
     if found:
         loc = page.locator('[data-radar-target="buy"]').first
+        try:
+            form_on = loc.is_enabled()
+        except Exception:  # noqa: BLE001
+            form_on = True
+        if not form_on:
+            # arabianaroma.in (new30v): the form's own button stays disabled while the page's enabled 'Add to cart'
+            # (a sticky bar / app button) is the one a shopper uses; the cart check verifies what it adds
+            alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+            if alt:
+                ctx.buy_evidence = (f"form #{found['form'][-24:]} button {found['text']!r} is disabled; the page's enabled "
+                                    f"<{alt['tag']}> {alt['text']!r} is used")
+                return (page.locator('[data-radar-target="buy"]').first,
+                        f"enabled <{alt['tag']}> {alt['text']!r}" + (" (sticky bar)" if alt["sticky"] else "")
+                        + f"; the product form's own button is disabled — the cart check verifies what it adds", None)
+
         # enabled others FIRST: the evidence is clipped to 160 chars in run.json (crossbeats.com, loop cycle 8: the
         # enabled button's text was cut off behind a 47-char form id)
         ctx.buy_evidence = ((f"enabled for this product but not add-to-cart wording: {', '.join(found['enabled_others'])}; "
@@ -840,6 +865,12 @@ def _main_buy_button(ctx: Ctx, product: dict):
     try:
         f = ctx.healer.find(page, "add_to_cart")
     except LocatorNotFound as e:
+        alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+        if alt and alt.get("count") == 1:     # one enabled 'Add to cart' on the page, not on another product's card
+            ctx.buy_evidence = f"the page's only enabled add-to-cart <{alt['tag']}> {alt['text']!r}"
+            return (page.locator('[data-radar-target="buy"]').first,
+                    f"the page's only enabled <{alt['tag']}> {alt['text']!r}" + (" (sticky bar)" if alt["sticky"] else "")
+                    + " (no Shopify cart button; the cart check verifies what it adds)", None)
         # Say exactly what is (not) there, so nobody has to guess whose problem it is (mcaffeine.com, bench 3).
         # + what the product's own form holds (shopkara.store new30p, nubronicforte.com new30t: 'a form for this product
         # but no buy button Radar could use' and nothing more to go on): its buttons, visible / disabled, and any
