@@ -907,6 +907,13 @@ def test_popup_inside_shadow_dom_is_closed_by_its_x_and_the_journey_passes_first
     assert closed and closed[0]["actual"].startswith("clicked 'close' on:") and "bomb size" in closed[0]["actual"], closed
 
 
+def test_product_card_in_a_marquee_that_never_stops_moving_is_clicked(tmp_path):
+    """hunnit.com desktop (new30z1, 3 attempts DOWN): the cards ride a marquee that never stops, and the click waited for
+    a still card until it timed out. A shopper taps the card where it is."""
+    j = _case(_scan_small("marquee_cards", tmp_path, suites=["journey"]), "journey.")
+    assert j.verdict == "pass", _fails(j)
+
+
 def test_dead_product_image_link_the_name_opens_it_journey_passes_with_a_store_warning(tmp_path):
     """thefunclab.com (bench 10): on the homepage slider the product IMAGE link does nothing when clicked (the theme's
     script cancels mousedown/click); the product NAME opens it. v0.14 clicked the image twice and failed the journey
@@ -1005,6 +1012,14 @@ def test_disabled_form_button_with_an_enabled_add_to_cart_elsewhere_passes(tmp_p
     run, _ = _scan("disabled_form_enabled_bar", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
     assert not bad, bad
+
+
+def test_disabled_form_button_with_an_add_to_cart_bar_shown_after_scrolling_passes(tmp_path):
+    """adachikan.com phone (new30z1, 3 products): the form's 'BUY IT NOW' was disabled and Radar failed the buy button,
+    while an enabled 'ADD TO CART' bar appears once the shopper scrolls. A shopper scrolls and uses it."""
+    run = _product_only("disabled_form_bar_on_scroll", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
 
 
 def test_gift_only_product_page_without_any_buy_control_is_not_tested(tmp_path):

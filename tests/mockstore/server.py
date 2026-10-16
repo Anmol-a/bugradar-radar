@@ -113,6 +113,7 @@ Modes (to prove Radar catches and heals what it should):
   shadow_popup     the same YourLio-style promo popup, but rendered INSIDE a shadow root (#chat-widget), appearing
                    300 ms after collection pages load (soulflower.in, bench 9: the popup sat over the product card and
                    v0.13's finder could not see into shadow DOM) -> popup closed by its x, journey PASSES first try
+  marquee_cards    collection cards sit in a marquee that never stops moving (hunnit.com, new30z1) -> journey PASSES
   dead_image_link  collection cards have an IMAGE link and a NAME link; the theme's slider script cancels mousedown/click on
                    the image (thefunclab.com, bench 10) -> journey clicks the name, PASSES, store WARNING names the dead link
   slider_over_image  collection cards: a slider layer (not a link) sits OVER the product image link and swallows clicks;
@@ -392,6 +393,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
   span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
                    the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
+  disabled_form_bar_on_scroll  the form's 'Buy it now' is disabled, the enabled 'ADD TO CART' sticky bar shows only after
+                   scrolling (adachikan.com phone, new30z1) -> PASSES
   disabled_form_enabled_bar  the form's own button is disabled, an enabled sticky 'Add to cart' adds the product
                    (arabianaroma.in) -> variant_ready + buy PASS
   gift_only_product  hidden, empty cart form and no buy control anywhere (a gift the store auto-adds; nubronicforte
@@ -1094,6 +1097,11 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   if (document.cookie.includes('geo=stay')) { m.remove(); return; }
   const stay = e => { e.preventDefault(); document.cookie = 'geo=stay;path=/'; m.remove(); };
   m.querySelector('.geo-stay').onclick = stay; m.querySelector('.geo-x').onclick = stay; })();</script></header>""", 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "marquee_cards" and path_now.startswith("/collections/"):
+            # hunnit.com desktop (new30z1): product cards ride a marquee that never stops moving; Playwright's click waits
+            # for the card to be still and timed out ('could not click: Locator.click: Timeout 6000ms') 3 times
+            body = body.replace("<main>", '<main><style>@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-300px)}}'
+                                '.mq{animation:mq 1.2s linear infinite alternate;padding-left:420px}</style><div class="mq">', 1).replace("</main>", "</div></main>", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "dead_image_link" and path_now.startswith("/collections/"):
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
                 f'<div class="card-wrapper" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
@@ -1975,6 +1983,15 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                      f'name="id" value="{vid}"></form><div style="height:700px"><p>Hand-finished. Ships in 3 days.</p></div>'
                                      f'<div class="custom-actions"><span class="custom-add-to-cart-btn" onclick="addToCart({vid})" '
                                      f'style="display:inline-block;padding:10px;background:#222;color:#fff;cursor:pointer">Add to Cart</span></div>')
+        if self.mode == "disabled_form_bar_on_scroll":
+            # adachikan.com phone (new30z1): the form's 'BUY IT NOW' is disabled; the enabled 'ADD TO CART' sits in a
+            # sticky bar that only appears once the shopper scrolls
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" disabled>Buy it now</button>', 1)
+            body += (f'<div style="height:1600px"></div><div class="sticky-atc" style="display:none;position:fixed;bottom:0;left:0;right:0;'
+                     f'background:#fff;padding:8px"><button type="button" class="sticky-atc__btn" onclick="addToCart({vid})">'
+                     'ADD TO CART</button></div><script>addEventListener("scroll", () => { document.querySelector(".sticky-atc")'
+                     '.style.display = scrollY > 150 ? "block" : "none"; });</script>')
         if self.mode == "disabled_form_enabled_bar":
             # arabianaroma.in (new30v): the form's own button stays disabled; an enabled sticky 'Add to cart' is the real one
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
