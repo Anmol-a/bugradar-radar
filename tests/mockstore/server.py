@@ -376,6 +376,8 @@ Modes (to prove Radar catches and heals what it should):
                    404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
   hidden_form_app_button  the product's cart form is hidden and holds no button; the buy control is an app's element
                    outside it (shopkara.store, nubronicforte.com) -> found, the cart check adds the right product, PASSES
+  per_unit_price   the vase page shows '₹649.50 / piece' + 'Pack of 2 pieces' for the ₹1,299 variant (ayamveda.com)
+                   -> price shown PASSES (per-unit evidence)
   no_product_images  product pages show no picture and /products/<h>.js lists no image (kalamkitaab, lucentpublication)
                    -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
   span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
@@ -699,6 +701,11 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "per_unit_price" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
+            # ayamveda.com (new30w) / nubronicforte.com: the page shows the price per unit of a multi-unit variant
+            body = re.sub(r'<div class="price">₹1,299\.00</div>', '<div class="price">₹649.50 / piece</div><p>Pack of 2 pieces</p>',
+                          body, count=1)
         if self.mode == "no_product_images" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/products/"):
             # kalamkitaab.com / lucentpublication.com: book pages with no product picture at all

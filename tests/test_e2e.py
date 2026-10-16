@@ -973,6 +973,14 @@ def test_hidden_buttonless_form_falls_back_to_the_pages_own_buy_control(tmp_path
     assert "pdp-addtobag-btn" in _steps(_case(run, "product.pdp."))["buy_button_ready"].detail
 
 
+def test_per_unit_price_of_a_multi_unit_variant_counts_as_shown(tmp_path):
+    """ayamveda.com (new30w, both devices DOWN): '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298."""
+    run = _product_only("per_unit_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
+    assert "per-unit price" in str(_steps(vase)["shows_title_price_image"].checks)
+
+
 def test_product_without_any_image_in_its_data_is_a_warning(tmp_path):
     """kalamkitaab.com (new30v) + lucentpublication.com (new30u): NOT JUDGED 'no image ≥150px' on book pages that have
     no picture at all; the store's own product data lists no image either = a WARNING with that evidence."""

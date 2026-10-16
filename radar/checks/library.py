@@ -1948,6 +1948,26 @@ HIDDEN_PRICE_JS = r"""() => { const out = [];
   } return out; }"""
 
 
+PER_UNIT_WORDS = re.compile(r"/\s?(bottle|pack|unit|piece|pc|jar|box|tin|sachet|pouch|kg|month)\b|per\s(bottle|pack|unit|piece|jar|box|month)\b",
+                            re.I)
+
+
+def per_unit_price(want: float, nums, text: str) -> str | None:
+    """The page shows the price PER UNIT of a multi-unit variant ('₹1,649 / Bottle' for the 2-bottle pack at ₹3,298):
+    ayamveda.com + nubronicforte.com (new30w / Anmol's screenshot, 16 Oct). A page price × k (2-12) equals the variant
+    price to the rupee, the page says '/ bottle' (or pack, unit, piece…) and names k of them. Returns the evidence, else
+    None. Pure, unit-tested."""
+    if not want or not PER_UNIT_WORDS.search(text or ""):
+        return None
+    low = (text or "").lower()
+    for n in sorted(nums):
+        for k in range(2, 13):
+            if abs(n * k - want) <= 1.0 and re.search(rf"\b{k}\s?(x\s)?(bottles?|packs?|units?|pieces?|pcs|jars?|boxes|tins?|"
+                                                     rf"sachets?|pouches|months?)\b", low):
+                return f"₹{n:,.2f} {PER_UNIT_WORDS.search(text).group(0).strip()} × {k} = ₹{want:,.2f} (the page shows the per-unit price)"
+    return None
+
+
 DISCOUNT_WORDS = re.compile(r"prepaid|pre-paid|online payment|pay online|upi|extra\s+\d{1,2}\s?%\s?off|\d{1,2}\s?%\s?off", re.I)
 
 
@@ -2071,6 +2091,10 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             nums = prices_in_text(text)
             ctx.sess.evaluate("() => scrollTo(0, 0)")
         ok, how = price_shown(want, nums)
+        if not ok:
+            unit = per_unit_price(want, nums, text)
+            if unit:
+                ok, how = True, unit
         if not ok:
             _raise_if_catalog_only(ctx, p["title"])
             # Anmol, 15 Oct (rasayanam.in 'EXTRA 5% OFF ON ALL PREPAID ORDERS'): a WARNING, not a failure

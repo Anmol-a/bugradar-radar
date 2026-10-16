@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 16 Oct 13:20 IST (new30w run 38865228472, 25 min: 44/53 healthy):** ayamveda.com DOWN on both devices: the
+  page shows '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298 (nubronicforte does the same). `per_unit_price` accepts
+  a page price × k = the variant price when the page says '/ bottle' (pack, unit, piece…) and names k of them (mock
+  `per_unit_price`, unit test). Rest of new30w: real dead sale links (aarahboutique, thayyilsports).
 - **v0.20 16 Oct 13:10 IST:** (1) hathimasala.com lost as 'error: database is locked': parallel scans switching a fresh
   radar.db to WAL at once; Storage retries the first-time setup (unit test). (2) kalamkitaab.com + lucentpublication.com
   book pages NOT JUDGED 'no image ≥150px' while the product data lists no image: now a WARNING with that evidence
