@@ -1,0 +1,4704 @@
+{
+  "run_id": "20261016T221649Z-d-1e30",
+  "site_id": "monabindia.com",
+  "base_url": "https://monabindia.com",
+  "device": "desktop",
+  "started_at": "2026-10-16T22:16:49+00:00",
+  "finished_at": "2026-10-16T22:23:09+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.21s",
+              "error": null,
+              "secs": 13.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6635 chars, 104 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "warn",
+              "detail": null,
+              "error": "could not click: Locator.click: Timeout 6000ms exceeded.",
+              "secs": 14.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/duffle-bags ('')",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 80 candidates \u2192 /products/the-urban-duo-crossbody-rust",
+              "error": null,
+              "secs": 10.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/the-urban-duo-crossbody-rust ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/the-urban-duo-crossbody-rust",
+                  "actual": "/products/the-urban-duo-crossbody-rust",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'The Urban Duo Crossbody: Rust', selected variant 51876085825826 at \u20b91,274.15",
+              "error": null,
+              "secs": 0.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/the-urban-duo-crossbody-rust",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/the-urban-duo-crossbody-rust.js with variants",
+                  "actual": "'The Urban Duo Crossbody: Rust', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "The Urban Duo Crossbody: Rust",
+                  "actual": "'The Urban Duo Crossbody: Rust' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,274.15",
+                  "actual": "\u20b91,274 (the page rounds \u20b91,274.15 to whole rupees)",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 590x590)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "The Urban Duo Crossbody: Rust",
+                  "actual": "'The Urban Duo Crossbody: Rust' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "The Urban Duo Crossbody: Rust",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1274.15",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 51.45,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=3605662&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x372401e0c400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1985130591.1792189025&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189024774&cv=11&fst=1792189024774&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1985130591.1792189025&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&auid=1985130591.1792189025&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1985130591.1792189025&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189053246&cv=11&fst=1792189053246&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=1985130591.1792189025&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1985130591.1792189025&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-837014277&en=page_",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189064759&cv=11&fst=1792189064759&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&auid=1985130591.1792189025&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-837014277&en=page_",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=1985130591.1792189025&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-11289164681&en=page"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.89,
+              "load": 3.4,
+              "lcp": 1.43
+            },
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 1.95,
+              "load": 3.13,
+              "lcp": 1.6
+            },
+            {
+              "url": "/products/the-urban-duo-crossbody-rust",
+              "ttfb": 0.0,
+              "dcl": 1.45,
+              "load": 2.95,
+              "lcp": 1.14
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.94s",
+              "error": null,
+              "secs": 11.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6635 chars, 104 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.94s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.94s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 9: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "9: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.26s, CLS 0.006",
+              "error": null,
+              "secs": 0.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.26s, CLS 0.006",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "88 scripts, at least 1.1 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (6), cdn-air-reviews.avada.io (4), sr-cdn.shiprocket.in (3), magic-plugins.razorpay.com (2), www.clarity.ms (2)",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "88 scripts, at least 1.1 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (6), cdn-air-reviews.avada.io (4), sr-cdn.shiprocket.in (3), m\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.22,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x372401d5f200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=2095682768.1792189076&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189076075&cv=11&fst=1792189076075&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&auid=2095682768.1792189076&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=2095682768.1792189076&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.7,
+              "load": 3.41,
+              "lcp": 1.26
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.98s",
+              "error": null,
+              "secs": 11.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6635 chars, 104 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/new-arrivals",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.54s",
+              "error": null,
+              "secs": 6.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "New Arrivals: Backpack, Laptop Bag, Handbag, Travel Accessories & More - Mona B India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2356 chars, 33 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/backpacks",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.19s",
+              "error": null,
+              "secs": 8.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Backpack for Men & Women Online",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9685 chars, 87 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/diaper-bag",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.93s",
+              "error": null,
+              "secs": 4.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Diaper Bag",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1151 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/duffle-bags",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.28s",
+              "error": null,
+              "secs": 7.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Canvas Duffle Bags for Men & Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "13007 chars, 69 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/laptop-bags",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 4.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Designer Laptop Bags For Men and Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3050 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/womens-handbags",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.56s",
+              "error": null,
+              "secs": 6.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Handbags for Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6109 chars, 59 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/crossbodies",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.42s",
+              "error": null,
+              "secs": 5.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Crossbody Bag for Mens & Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9493 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/messengers",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.83s",
+              "error": null,
+              "secs": 6.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Messenger Bags for Men & Women | Tech, Canvas, Laptop",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8622 chars, 5 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/weekender",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.78s",
+              "error": null,
+              "secs": 4.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Best Weekender Bags For Men and Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2995 chars, 13 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "10 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 65.44,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=4309669&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x372403799c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189092177&cv=11&fst=1792189092177&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1008330390.1792189092&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=1008330390.1792189092&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=1008330390.1792189092&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189101680&cv=11&fst=1792189101680&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1008330390.1792189092&dt=New%20Arrivals%3A%20Backpack%2C%20Laptop%20Bag%2C%20Handbag%2C%20",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=1008330390.1792189092&dt=New%20Arrivals%3A%20Backpack%2C%20Laptop%20Bag%2C%20Handbag%2C%20",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1008330390.1792189092&dt=New%20Arrivals%3A%20Backpack%2C%20Laptop%20Bag%2C%20Handbag%2C%20",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189107897&cv=11&fst=1792189107897&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1008330390.1792189092&dt=Buy%20Backpack%20for%20Men%20%26%20Women%20Online&tid=AW-837014277",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=1008330390.1792189092&dt=Buy%20Backpack%20for%20Men%20%26%20Women%20Online&tid=AW-837014277",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1008330390.1792189092&dt=Buy%20Backpack%20for%20Men%20%26%20Women%20Online&tid=AW-112891646",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189116142&cv=11&fst=1792189116142&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1008330390.1792189092&dt=Diaper%20Bag&tid=AW-837014277&en=page_view&dl=https%3A%2F%2Fwww.mo",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&auid=1008330390.1792189092&dt=Diaper%20Bag&tid=AW-837014277&en=page_view&dl=https%3A%2F%2Fwww.mo",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&auid=1008330390.1792189092&dt=Diaper%20Bag&tid=AW-11289164681&en=page_view&dl=https%3A%2F%2Fwww",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189120409&cv=11&fst=1792189120409&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1008330390.1792189092&dt=Canvas%20Duffle%20Bags%20for%20Men%20%26%20Women&tid=AW-837014277",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=1008330390.1792189092&dt=Canvas%20Duffle%20Bags%20for%20Men%20%26%20Women&tid=AW-837014277",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=1008330390.1792189092&dt=Canvas%20Duffle%20Bags%20for%20Men%20%26%20Women&tid=AW-112891646",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1008330390.1792189092&dt=Buy%20Designer%20Laptop%20Bags%20For%20Men%20and%20Women&tid=AW-83",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189127697&cv=11&fst=1792189127697&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=1008330390.1792189092&dt=Buy%20Designer%20Laptop%20Bags%20For%20Men%20and%20Women&tid=AW-83"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.78,
+              "load": 3.52,
+              "lcp": 1.25
+            },
+            {
+              "url": "/collections/new-arrivals",
+              "ttfb": 0.05,
+              "dcl": 1.3,
+              "load": 2.18,
+              "lcp": 1.12
+            },
+            {
+              "url": "/collections/backpacks",
+              "ttfb": 0.05,
+              "dcl": 1.82,
+              "load": 2.9,
+              "lcp": 1.46
+            },
+            {
+              "url": "/collections/diaper-bag",
+              "ttfb": 0.18,
+              "dcl": 0.76,
+              "load": 1.45,
+              "lcp": 0.7
+            },
+            {
+              "url": "/collections/duffle-bags",
+              "ttfb": 0.03,
+              "dcl": 1.11,
+              "load": 1.85,
+              "lcp": 0.94
+            },
+            {
+              "url": "/collections/laptop-bags",
+              "ttfb": 0.12,
+              "dcl": 0.89,
+              "load": 1.64,
+              "lcp": 0.81
+            },
+            {
+              "url": "/collections/womens-handbags",
+              "ttfb": 0.15,
+              "dcl": 1.42,
+              "load": 2.18,
+              "lcp": 1.24
+            },
+            {
+              "url": "/collections/crossbodies",
+              "ttfb": 0.17,
+              "dcl": 1.11,
+              "load": 1.77,
+              "lcp": 1.04
+            },
+            {
+              "url": "/collections/messengers",
+              "ttfb": 0.03,
+              "dcl": 2.74,
+              "load": 3.34,
+              "lcp": 2.69
+            },
+            {
+              "url": "/collections/weekender",
+              "ttfb": 0.15,
+              "dcl": 0.66,
+              "load": 1.33,
+              "lcp": 1.02
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.13s",
+              "error": null,
+              "secs": 9.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6635 chars, 104 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.95,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=3605662&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189155789&cv=11&fst=1792189155789&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=2041626035.1792189156&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=2041626035.1792189156&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.9,
+              "load": 3.14,
+              "lcp": 1.34
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/home-decor",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.24s",
+              "error": null,
+              "secs": 8.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Eco-Friendly Home Decor Products Online in India | Rugs, Planters, Placemats & More",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "12051 chars, 101 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Eco-Friendly Home Decor Products Online in India | Rugs, Pla', heading 'Home Decor'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/home-decor",
+                  "actual": "/collections/home-decor",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections/shop-999",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.61s",
+              "error": null,
+              "secs": 7.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop @ 999 | Exclusive Sustainable Bags Collection | MonaB",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7885 chars, 103 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shop @ 999 | Exclusive Sustainable Bags Collection | MonaB', heading 'Shop 999'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/shop-999",
+                  "actual": "/collections/shop-999",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /customer_authentication/redirect",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.19s, redirected to /authentication/74777329954/login",
+              "error": null,
+              "secs": 3.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sign in - Mona B India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "337 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Sign in - Mona B India', heading 'Sign in'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/customer_authentication/redirect",
+                  "actual": "/authentication/74777329954/login",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /collections/city-slicker",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.05s",
+              "error": null,
+              "secs": 5.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy City Slicker Collection From MonaB India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3307 chars, 9 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Buy City Slicker Collection From MonaB India', heading 'City Slicker'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/city-slicker",
+                  "actual": "/collections/city-slicker",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 23.99,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/collections/home-decor"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/collections/home-decor"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/home-decor"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/home-decor"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/collections/home-decor"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "error",
+              "text": "Unsafe attempt to load URL https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg from frame with URL https://shopify.com/authentication/74777329954/login?analytics_trace_id=7c5de1e",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/index.DSWtUm2j.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/ShopLoginButtonInner.nGrEKWwH.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1786663415.1792189166&dt=Eco-Friendly%20Home%20Decor%20Products%20Online%20in%20India%20%7C",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189165663&cv=11&fst=1792189165663&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&auid=1786663415.1792189166&dt=Eco-Friendly%20Home%20Decor%20Products%20Online%20in%20India%20%7C",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=1786663415.1792189166&dt=Eco-Friendly%20Home%20Decor%20Products%20Online%20in%20India%20%7C",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1786663415.1792189166&dt=Shop%20%40%20999%20%7C%20Exclusive%20Sustainable%20Bags%20Collecti",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189173672&cv=11&fst=1792189173672&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1786663415.1792189166&dt=Shop%20%40%20999%20%7C%20Exclusive%20Sustainable%20Bags%20Collecti",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=1786663415.1792189166&dt=Shop%20%40%20999%20%7C%20Exclusive%20Sustainable%20Bags%20Collecti",
+            "GET https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://www.monabindia.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=7c5de1e5-f47d-4c57-875b-e95fc515",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189184328&cv=11&fst=1792189184328&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1786663415.1792189166&dt=Buy%20City%20Slicker%20Collection%20From%20MonaB%20India&tid=AW-83",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=1786663415.1792189166&dt=Buy%20City%20Slicker%20Collection%20From%20MonaB%20India&tid=AW-83",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&auid=1786663415.1792189166&dt=Buy%20City%20Slicker%20Collection%20From%20MonaB%20India&tid=AW-1"
+          ],
+          "loads": [
+            {
+              "url": "/collections/home-decor",
+              "ttfb": 0.25,
+              "dcl": 2.09,
+              "load": 2.9,
+              "lcp": 1.73
+            },
+            {
+              "url": "/collections/shop-999",
+              "ttfb": 0.15,
+              "dcl": 1.33,
+              "load": 2.16,
+              "lcp": 1.41
+            },
+            {
+              "url": "/authentication/74777329954/login?analytics_trace_id=7c5de1e5-f47d-4c57-875b-e95fc51564c8&client_id=",
+              "ttfb": 0.56,
+              "dcl": 1.03,
+              "load": 1.03,
+              "lcp": 1.22
+            },
+            {
+              "url": "/collections/city-slicker",
+              "ttfb": 0.03,
+              "dcl": 0.97,
+              "load": 1.56,
+              "lcp": 0.8
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.crossbodies",
+      "suite": "catalog",
+      "title": "Collection 'Crossbodies' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.24s",
+              "error": null,
+              "secs": 7.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Crossbody Bag for Mens & Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9461 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "18 products listed",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "18",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 3: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "3: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.92s, CLS 0.003",
+              "error": null,
+              "secs": 0.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.92s, CLS 0.003",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "134 scripts, at least 1.5 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (6), cdn-air-reviews.avada.io (4), sr-cdn.shiprocket.in (3), magic-plugins.razorpay.com (2), www.clarity.ms (2)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "134 scripts, at least 1.5 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (6), cdn-air-reviews.avada.io (4), sr-cdn.shiprocket.in (3), \u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.12,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=4309669&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189189591&cv=11&fst=1792189189591&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=871999412.1792189190&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-837014277&en=page",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=871999412.1792189190&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-837014277&en=page",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=871999412.1792189190&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-11289164681&en=p",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/collections/crossbodies",
+              "ttfb": 0.24,
+              "dcl": 1.13,
+              "load": 1.82,
+              "lcp": 0.92
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.womens-handbags",
+      "suite": "catalog",
+      "title": "Collection 'Handbags for Women' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.37s",
+              "error": null,
+              "secs": 5.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Handbags for Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6109 chars, 59 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "28 products listed",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 3: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "3: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.98s, CLS 0.003",
+              "error": null,
+              "secs": 0.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.98s, CLS 0.003",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "126 scripts, at least 1.5 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (6), cdn-air-reviews.avada.io (4), sr-cdn.shiprocket.in (3), magic-plugins.razorpay.com (2), www.clarity.ms (2)",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "126 scripts, at least 1.5 MB of JavaScript, 15 third-party script hosts: www.googletagmanager.com (6), cdn-air-reviews.avada.io (4), sr-cdn.shiprocket.in (3), \u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.42,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/collections/womens-handbags"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/collections/womens-handbags"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/womens-handbags"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/womens-handbags"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/collections/womens-handbags"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=837129042.1792189199&dt=Buy%20Handbags%20for%20Women&tid=AW-837014277&en=page_view&dl=https",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189198607&cv=11&fst=1792189198607&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=837129042.1792189199&dt=Buy%20Handbags%20for%20Women&tid=AW-837014277&en=page_view&dl=https",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=837129042.1792189199&dt=Buy%20Handbags%20for%20Women&tid=AW-11289164681&en=page_view&dl=htt",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/collections/womens-handbags",
+              "ttfb": 0.17,
+              "dcl": 1.14,
+              "load": 1.78,
+              "lcp": 0.98
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.crossbodies",
+      "suite": "catalog",
+      "title": "Collection 'Crossbodies' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.6s",
+              "error": null,
+              "secs": 7.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Crossbody Bag for Mens & Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9461 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "18 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "more_products_not_judged",
+              "status": "info",
+              "detail": "the first page shows the collection (18 shown, 18 in stock in the store's data, 0 not shown)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.51,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189206163&cv=11&fst=1792189206163&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=617184199.1792189206&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-837014277&en=page",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=617184199.1792189206&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-837014277&en=page",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=617184199.1792189206&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-11289164681&en=pa",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/collections/crossbodies",
+              "ttfb": 0.21,
+              "dcl": 1.4,
+              "load": 2.43,
+              "lcp": 1.08
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.crossbodies",
+      "suite": "catalog",
+      "title": "Filtering collection 'Crossbodies' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.37s",
+              "error": null,
+              "secs": 7.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Crossbody Bag for Mens & Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9461 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "4 filter options (e.g. In stock only); applying 'In stock only' = filter.v.availability=1",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "pass",
+              "detail": "opened /collections/crossbodies?filter.v.availability=1 directly: the theme's own request (?page=&filter.v.price.gte=&filter.v.price.lte=&filter.v.availability=1&page=&filter.v.pric\u2026) is disallowed by robots.txt",
+              "error": null,
+              "secs": 12.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Crossbody Bag for Mens & Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9502 chars, 39 images",
+                  "ok": true
+                },
+                {
+                  "what": "filters in the page address",
+                  "expected": "exactly one: filter.v.availability=1",
+                  "actual": "filter.v.availability=1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_narrows_results",
+              "status": "pass",
+              "detail": "'In stock only': 18 products listed (18 without the filter), all match it in the store's data",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed with the filter on",
+                  "expected": "\u2265 1",
+                  "actual": "18",
+                  "ok": true
+                },
+                {
+                  "what": "products listed: filtered vs unfiltered",
+                  "expected": "\u2264 19",
+                  "actual": "18",
+                  "ok": true
+                },
+                {
+                  "what": "listed products matching 'In stock only' (store's data)",
+                  "expected": "all 18",
+                  "actual": "18 of 18",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 25.25,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=4309669&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/collections/crossbodies"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189214510&cv=11&fst=1792189214510&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=1295997731.1792189215&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-837014277&en=pa",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=1295997731.1792189215&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-837014277&en=pa",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=1295997731.1792189215&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-11289164681&en=",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1295997731.1792189215&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-837014277&en=pag",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189222868&cv=11&fst=1792189222868&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=1295997731.1792189215&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-837014277&en=pag",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1295997731.1792189215&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-11289164681&en=p",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189234727&cv=11&fst=1792189234727&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&auid=1295997731.1792189215&dt=Crossbody%20Bag%20for%20Mens%20%26%20Women&tid=AW-11289164681&en=p"
+          ],
+          "loads": [
+            {
+              "url": "/collections/crossbodies",
+              "ttfb": 0.18,
+              "dcl": 1.24,
+              "load": 1.89,
+              "lcp": 0.96
+            },
+            {
+              "url": "/collections/crossbodies?filter.v.availability=1",
+              "ttfb": 0.58,
+              "dcl": 1.67,
+              "load": 2.55,
+              "lcp": 1.52
+            },
+            {
+              "url": "/collections/crossbodies",
+              "ttfb": 0.19,
+              "dcl": 1.11,
+              "load": 1.74,
+              "lcp": 1.06
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.the-urban-duo-crossbody-rust",
+      "suite": "product",
+      "title": "PDP 'The Urban Duo Crossbody: Rust'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.91s",
+              "error": null,
+              "secs": 13.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Urban Duo Crossbody: Rust",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5520 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/the-urban-duo-crossbody-rust",
+                  "actual": "/products/the-urban-duo-crossbody-rust",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'The Urban Duo Crossbody: Rust', selected variant 51876085825826 at \u20b91,274.15",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/the-urban-duo-crossbody-rust",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/the-urban-duo-crossbody-rust.js with variants",
+                  "actual": "'The Urban Duo Crossbody: Rust', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "The Urban Duo Crossbody: Rust",
+                  "actual": "'The Urban Duo Crossbody: Rust' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,274.15",
+                  "actual": "\u20b91,274 (the page rounds \u20b91,274.15 to whole rupees)",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 590x590)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "The Urban Duo Crossbody: Rust",
+                  "actual": "'The Urban Duo Crossbody: Rust' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "The Urban Duo Crossbody: Rust",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1274.15",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 51876085825826 (Default Title) selected, in stock",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-10215888191778-template--27501794623778__main (variant 51876085825826, button 'Add to cart')",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 5: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "5: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.2s, CLS 0.034",
+              "error": null,
+              "secs": 0.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.2s, CLS 0.034",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "187 scripts, at least 1.7 MB of JavaScript, 16 third-party script hosts: cdn-air-reviews.avada.io (14), www.googletagmanager.com (6), sr-cdn.shiprocket.in (3), magic-plugins.razorpay.com (2), www.clarity.ms (2)",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "187 scripts, at least 1.7 MB of JavaScript, 16 third-party script hosts: cdn-air-reviews.avada.io (14), www.googletagmanager.com (6), sr-cdn.shiprocket.in (3),\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.27,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=4309669&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=2052806814.1792189240&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-837014277&en=page_v",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189240074&cv=11&fst=1792189240074&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&auid=2052806814.1792189240&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-837014277&en=page_v",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=2052806814.1792189240&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-11289164681&en=page",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/products/the-urban-duo-crossbody-rust?variant=51876085825826",
+              "ttfb": 0.08,
+              "dcl": 1.66,
+              "load": 3.59,
+              "lcp": 1.2
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.the-urban-duo-crossbody-teal",
+      "suite": "product",
+      "title": "PDP 'The Urban Duo Crossbody: Teal'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.88s",
+              "error": null,
+              "secs": 13.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Urban Duo Crossbody: Teal",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5055 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/the-urban-duo-crossbody-teal",
+                  "actual": "/products/the-urban-duo-crossbody-teal",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'The Urban Duo Crossbody: Teal', selected variant 51876046733602 at \u20b91,274.15",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/the-urban-duo-crossbody-teal",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/the-urban-duo-crossbody-teal.js with variants",
+                  "actual": "'The Urban Duo Crossbody: Teal', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "The Urban Duo Crossbody: Teal",
+                  "actual": "'The Urban Duo Crossbody: Teal' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,274.15",
+                  "actual": "\u20b91,274 (the page rounds \u20b91,274.15 to whole rupees)",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 590x590)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "The Urban Duo Crossbody: Teal",
+                  "actual": "'The Urban Duo Crossbody: Teal' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "The Urban Duo Crossbody: Teal",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1274.15",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 51876046733602 (Default Title) selected, in stock",
+              "error": null,
+              "secs": 0.14,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-10215848575266-template--27501794623778__main (variant 51876046733602, button 'Add to cart')",
+              "error": null,
+              "secs": 0.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 5: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "5: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.1s, CLS 0.037",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.1s, CLS 0.037",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "197 scripts, at least 1.7 MB of JavaScript, 16 third-party script hosts: cdn-air-reviews.avada.io (14), www.googletagmanager.com (6), sr-cdn.shiprocket.in (3), magic-plugins.razorpay.com (2), www.clarity.ms (2)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "197 scripts, at least 1.7 MB of JavaScript, 16 third-party script hosts: cdn-air-reviews.avada.io (14), www.googletagmanager.com (6), sr-cdn.shiprocket.in (3),\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.72,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-teal?variant=51876046733602"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-teal?variant=51876046733602"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-teal?variant=51876046733602"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-teal?variant=51876046733602"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=4309669&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-teal?variant=51876046733602"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1096543792.1792189256&dt=The%20Urban%20Duo%20Crossbody%3A%20Teal&tid=AW-837014277&en=page_",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189255679&cv=11&fst=1792189255679&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1096543792.1792189256&dt=The%20Urban%20Duo%20Crossbody%3A%20Teal&tid=AW-837014277&en=sourc",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&auid=1096543792.1792189256&dt=The%20Urban%20Duo%20Crossbody%3A%20Teal&tid=AW-837014277&en=page_",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=1096543792.1792189256&dt=The%20Urban%20Duo%20Crossbody%3A%20Teal&tid=AW-11289164681&en=pag",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/products/the-urban-duo-crossbody-teal?variant=51876046733602",
+              "ttfb": 0.07,
+              "dcl": 1.65,
+              "load": 3.39,
+              "lcp": 1.1
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.the-urban-duo-crossbody-mustard",
+      "suite": "product",
+      "title": "PDP 'The Urban Duo Crossbody: Mustard'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.65s",
+              "error": null,
+              "secs": 13.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Urban Duo Crossbody: Mustard",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5130 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/the-urban-duo-crossbody-mustard",
+                  "actual": "/products/the-urban-duo-crossbody-mustard",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'The Urban Duo Crossbody: Mustard', selected variant 51875995844898 at \u20b91,274.15",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/the-urban-duo-crossbody-mustard",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/the-urban-duo-crossbody-mustard.js with variants",
+                  "actual": "'The Urban Duo Crossbody: Mustard', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "The Urban Duo Crossbody: Mustard",
+                  "actual": "'The Urban Duo Crossbody: Mustard' (h1, 22px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,274.15",
+                  "actual": "\u20b91,274 (the page rounds \u20b91,274.15 to whole rupees)",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 590x590)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "The Urban Duo Crossbody: Mustard",
+                  "actual": "'The Urban Duo Crossbody: Mustard' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via json-ld",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "The Urban Duo Crossbody: Mustard",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1274.15",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 51875995844898 (Default Title) selected, in stock",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 1 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-10215799062818-template--27501794623778__main (variant 51875995844898, button 'Add to cart')",
+              "error": null,
+              "secs": 0.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 5: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "5: Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.97s, CLS 0.037",
+              "error": null,
+              "secs": 0.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.97s, CLS 0.037",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "194 scripts, at least 1.7 MB of JavaScript, 16 third-party script hosts: cdn-air-reviews.avada.io (14), www.googletagmanager.com (6), sr-cdn.shiprocket.in (3), magic-plugins.razorpay.com (2), www.clarity.ms (2)",
+              "error": null,
+              "secs": 0.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "194 scripts, at least 1.7 MB of JavaScript, 16 third-party script hosts: cdn-air-reviews.avada.io (14), www.googletagmanager.com (6), sr-cdn.shiprocket.in (3),\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.91,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-mustard?variant=51875995844898"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-mustard?variant=51875995844898"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-mustard?variant=51875995844898"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-mustard?variant=51875995844898"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-mustard?variant=51875995844898"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1750888379.1792189271&dt=The%20Urban%20Duo%20Crossbody%3A%20Mustard&tid=AW-837014277&en=pag",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189270873&cv=11&fst=1792189270873&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=1750888379.1792189271&dt=The%20Urban%20Duo%20Crossbody%3A%20Mustard&tid=AW-837014277&en=pag",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=1750888379.1792189271&dt=The%20Urban%20Duo%20Crossbody%3A%20Mustard&tid=AW-11289164681&en=p",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/products/the-urban-duo-crossbody-mustard?variant=51875995844898",
+              "ttfb": 0.05,
+              "dcl": 1.49,
+              "load": 3.43,
+              "lcp": 0.97
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'The Urban Duo Crossbody: Rust' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.65s",
+              "error": null,
+              "secs": 8.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Urban Duo Crossbody: Rust",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5520 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.7,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust?variant=51876085825826"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=2110093962.1792189287&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-837014277&en=page_v",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189286866&cv=11&fst=1792189286866&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=2110093962.1792189287&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-837014277&en=page_v",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=2110093962.1792189287&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-11289164681&en=pag",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/products/the-urban-duo-crossbody-rust?variant=51876085825826",
+              "ttfb": 0.08,
+              "dcl": 1.46,
+              "load": 3.02,
+              "lcp": 1.05
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.urban",
+      "suite": "search",
+      "title": "Search for 'urban' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.27s",
+              "error": null,
+              "secs": 9.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6635 chars, 104 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 46 results, 4 mention 'urban'",
+              "error": null,
+              "secs": 9.7,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "46",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'urban'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "4 of 46",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.81,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189295556&cv=11&fst=1792189295556&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1843233602.1792189296&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=1843233602.1792189296&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=1843233602.1792189296&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189307895&cv=11&fst=1792189307895&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6ae1",
+            "POST https://www.google.com/rmkt/collect/11289164681/?random=1792189307981&cv=11&fst=1792189307981&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45je6a",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189308106&cv=11&fst=1792189308106&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/11289164681/?random=1792189308256&cv=11&fst=1792189308256&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45je6",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189309219&cv=11&fst=1792189309219&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1843233602.1792189296&dt=Search%3A%20158%20results%20found%20for%20%22urban%22&tid=AW-83701",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&auid=1843233602.1792189296&dt=Search%3A%20158%20results%20found%20for%20%22urban%22&tid=AW-83701",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=1843233602.1792189296&dt=Search%3A%20158%20results%20found%20for%20%22urban%22&tid=AW-1128"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.98,
+              "load": 3.46,
+              "lcp": 1.52
+            },
+            {
+              "url": "/search?q=urban",
+              "ttfb": 0.09,
+              "dcl": 1.79,
+              "load": 3.75,
+              "lcp": 1.52
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.82s",
+              "error": null,
+              "secs": 5.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 2 results found for \"qzxvbugradar\"",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1235 chars, 7 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "warn",
+              "detail": null,
+              "error": "shopper is told nothing matched: expected a 'no results' message, or no products listed, got no message, 2 products listed",
+              "secs": 6.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 2 products listed",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.95,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'assignedNodes')",
+              "url": "https://www.monabindia.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189315287&cv=11&fst=1792189315287&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=541104376.1792189315&dt=Search%3A%202%20results%20found%20for%20%22qzxvbugradar%22&tid=AW-8",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=541104376.1792189315&dt=Search%3A%202%20results%20found%20for%20%22qzxvbugradar%22&tid=AW-8",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=541104376.1792189315&dt=Search%3A%202%20results%20found%20for%20%22qzxvbugradar%22&tid=AW-",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.05,
+              "dcl": 1.58,
+              "load": 4.06,
+              "lcp": 1.04
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'urban' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.67s",
+              "error": null,
+              "secs": 9.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6635 chars, 104 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "10 product suggestion(s) while typing 'urban', e.g. 'the-urban-duo-crossbody-mustard'",
+              "error": null,
+              "secs": 5.44,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.25,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189329002&cv=11&fst=1792189329002&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1187110535.1792189329&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=1187110535.1792189329&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&auid=1187110535.1792189329&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 1.45,
+              "load": 2.83,
+              "lcp": 1.07
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.99s",
+              "error": null,
+              "secs": 11.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6635 chars, 104 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "59: 'MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 176: 'Leading Sustainable & Eco-Friendly Bags Manufacturers in Ind'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "176: 'Leading Sustainable & Eco-Friendly Bags Manufacturers in Ind'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.monabindia.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.monabindia.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.monabindia.com/cdn/shop/files/logo_-_Copy.png?v=1726124583&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.45,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=4309669&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=1122924489.1792189345&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189344537&cv=11&fst=1792189344537&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&auid=1122924489.1792189345&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&auid=1122924489.1792189345&dt=MonaB%20India%3A%20Buy%20Sustainable%2C%20Recycled%20%26%20Vegan%2",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.09,
+              "dcl": 1.71,
+              "load": 3.47,
+              "lcp": 1.2
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.53s",
+              "error": null,
+              "secs": 13.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "The Urban Duo Crossbody: Rust",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5520 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "The Urban Duo Crossbody: Rust",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "29: 'The Urban Duo Crossbody: Rust'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: 'Designed for comfort and ease, this red and cream crossbody '",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: 'Designed for comfort and ease, this red and cream crossbody '",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "The Urban Duo Crossbody: Rust",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.monabindia.com/cdn/shop/files/IMG_5461.jpg?v=1783065067&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.98,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/products/the-urban-duo-crossbody-rust"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189355678&cv=11&fst=1792189355678&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1384290907.1792189356&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-837014277&en=page_",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&auid=1384290907.1792189356&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-837014277&en=page_",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&auid=1384290907.1792189356&dt=The%20Urban%20Duo%20Crossbody%3A%20Rust&tid=AW-11289164681&en=page",
+            "POST https://lumberjack.razorpay.com/v1/track?key_id=rzp_live_MpQ5pKDIAFIokx"
+          ],
+          "loads": [
+            {
+              "url": "/products/the-urban-duo-crossbody-rust",
+              "ttfb": 0.14,
+              "dcl": 1.33,
+              "load": 3.31,
+              "lcp": 0.85
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 4.69,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.86,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://app.flash-speed.com/static/increase-pagespeed-min.js?shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=5085787&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1782931654.1792189368&dt=404%20Not%20Found&tid=AW-837014277&en=page_view&dl=https%3A%2F%2F",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189367926&cv=11&fst=1792189367926&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&auid=1782931654.1792189368&dt=404%20Not%20Found&tid=AW-837014277&en=page_view&dl=https%3A%2F%2F",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&auid=1782931654.1792189368&dt=404%20Not%20Found&tid=AW-11289164681&en=page_view&dl=https%3A%2F%2",
+            "GET https://www.monabindia.com/products/bugradar-check-does-not-exist.js"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.22,
+              "dcl": 0.98,
+              "load": 3.45,
+              "lcp": 0.84
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /pages/return-and-replacement-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.02s",
+              "error": null,
+              "secs": 5.93,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping, Replacement & Refund Policy | MonaB India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8519 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping, Replacement & Refund Policy | MonaB India', heading 'SHIPPING, REPLACEMENT & REFUND POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/return-and-replacement-policy",
+                  "actual": "/pages/return-and-replacement-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "7763 chars of policy text",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "7763 chars under 'SHIPPING, REPLACEMENT & REFUND POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /pages/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.97s",
+              "error": null,
+              "secs": 4.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy & Policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11533 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy & Policy', heading 'PRIVACY & POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/privacy-policy",
+                  "actual": "/pages/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "10738 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "10738 chars under 'PRIVACY & POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /pages/terms-conditions",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.84s",
+              "error": null,
+              "secs": 3.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms & Conditions",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11231 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms & Conditions', heading 'TERMS & CONDITIONS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/terms-conditions",
+                  "actual": "/pages/terms-conditions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "10491 chars of policy text",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "10491 chars under 'TERMS & CONDITIONS'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.92s",
+              "error": null,
+              "secs": 2.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact Us",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "816 chars, 3 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact Us', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 16.8,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "<link rel=preload> must have a valid `as` value",
+              "url": "https://www.monabindia.com/pages/return-and-replacement-policy"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'querySelectorAll' on 'Element': 'img[loading=\"eager\" fetchpriority=\"high\"]' is not a valid selector.",
+              "url": "https://www.monabindia.com/pages/return-and-replacement-policy"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [require, ec] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/pages/return-and-replacement-policy"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [set, currencyCode, INR] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.monabindia.com/pages/return-and-replacement-policy"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=4309669&shop=monabindia-bags.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "Failed to execute 'appendChild' on 'Node': Unexpected token ':'",
+              "url": "https://www.monabindia.com/pages/return-and-replacement-policy"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://www.monabindia.com/a/popper/popups?status=1"
+            },
+            {
+              "type": "warning",
+              "text": "Unrecognized feature: 'web-share'.",
+              "url": "https://checkout.razorpay.com/v1/magic-checkout.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189372708&cv=11&fst=1792189372708&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=628405216.1792189373&dt=Shipping%2C%20Replacement%20%26%20Refund%20Policy%20%7C%20MonaB%20I",
+            "POST https://www.monabindia.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=628405216.1792189373&dt=Shipping%2C%20Replacement%20%26%20Refund%20Policy%20%7C%20MonaB%20I",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&auid=628405216.1792189373&dt=Shipping%2C%20Replacement%20%26%20Refund%20Policy%20%7C%20MonaB%20",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189378800&cv=11&fst=1792189378800&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=628405216.1792189373&dt=Privacy%20%26%20Policy&tid=AW-837014277&en=page_view&dl=https%3A%2",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&auid=628405216.1792189373&dt=Privacy%20%26%20Policy&tid=AW-11289164681&en=page_view&dl=https%3A",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=628405216.1792189373&dt=Terms%20%26%20Conditions&tid=AW-837014277&en=page_view&dl=https%3A",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189383056&cv=11&fst=1792189383056&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&auid=628405216.1792189373&dt=Terms%20%26%20Conditions&tid=AW-837014277&en=page_view&dl=https%3A",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&auid=628405216.1792189373&dt=Terms%20%26%20Conditions&tid=AW-11289164681&en=page_view&dl=https%",
+            "POST https://www.google.com/rmkt/collect/837014277/?random=1792189386593&cv=11&fst=1792189386593&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=628405216.1792189373&dt=Contact%20Us&tid=AW-837014277&en=page_view&dl=https%3A%2F%2Fwww.mon",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&auid=628405216.1792189373&dt=Contact%20Us&tid=AW-837014277&en=page_view&dl=https%3A%2F%2Fwww.mon",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&auid=628405216.1792189373&dt=Contact%20Us&tid=AW-11289164681&en=page_view&dl=https%3A%2F%2Fwww."
+          ],
+          "loads": [
+            {
+              "url": "/pages/return-and-replacement-policy",
+              "ttfb": 0.18,
+              "dcl": 0.86,
+              "load": 1.76,
+              "lcp": 0.68
+            },
+            {
+              "url": "/pages/privacy-policy",
+              "ttfb": 0.03,
+              "dcl": 0.88,
+              "load": 1.57,
+              "lcp": 0.87
+            },
+            {
+              "url": "/pages/terms-conditions",
+              "ttfb": 0.03,
+              "dcl": 0.72,
+              "load": 1.18,
+              "lcp": 0.78
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.21,
+              "dcl": 0.79,
+              "load": 1.79,
+              "lcp": 0.76
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "MonaB India: Buy Sustainable, Recycled & Vegan Leather Bags",
+    "theme": "Prestige (store copy: Mona B - Jan'26 (Improve Speed))",
+    "checkout_app": "Razorpay Magic Checkout + Simpl",
+    "access": "open",
+    "nav": 25,
+    "collections": 46,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "8 product(s) not listed in the browsed collections are tested last (e.g. mona-b-verde-diaper-backpack-rust)"
+  ],
+  "perf": {
+    "pages": 26,
+    "median_load_secs": 2.31,
+    "slowest": {
+      "url": "/search?q=qzxvbugradar&type=product",
+      "load_secs": 4.06
+    },
+    "console_errors": 7,
+    "console_warnings": 7,
+    "failed_requests": 145
+  },
+  "counts": {
+    "pass": 20,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
