@@ -203,6 +203,8 @@ Modes (to prove Radar catches and heals what it should):
   cart_dawn_rows   Dawn's real cart rows: hidden 'Decrease quantity for <title>' text inside the quantity box, the price in
                    its own table cell, a discount code (regular price struck, sale price 10% lower) -> journey 23's
                    cart line price PASSES ('discounted in the cart'), not 'line shows no price' (12 theme demos, cycle 28)
+  other_market_switcher  product pages show the price only as converted '$… USD' drawn by a converter app (not in the
+                   page's text) and a 'USD' currency switcher (nakshatrakids.com, new30y) -> BLOCKED 'location'
   other_market_price_above  dollar prices with no Shopify.currency, the price ABOVE the product's name and an 'INR 999'
                    shipping note on the page (khushbujewellers.com, new30x) -> BLOCKED 'location'
   other_market_offer  dollar prices with no Shopify.currency, plus an offer block in ₹ ('Flat ₹250 off, min. order ₹2,500')
@@ -912,6 +914,14 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market_offer" and "/products/" in self.path:
             body = body.replace("</body>", '<div class="offers">Flat ₹250 off | Use code FIRSTBUY. Valid on 1st order only, '
                                 'min. order value ₹2,500</div></body>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market_switcher" and "/products/" in self.path:
+            # nakshatrakids.com / tribalornaments.com (new30y, 16 Oct, DOWN): a currency-converter app (not Shopify
+            # Markets: currency INR, rate 1) shows the US visitor '$46.45 USD' in a way the page's text does not carry,
+            # and a 'USD' currency switcher sits in the corner
+            body = re.sub(r'<div class="price">₹([\d,]+\.\d\d)</div>', lambda m: '<div class="price" data-money-convertible></div>'
+                          f'<style>.price::after{{content:"${float(m.group(1).replace(",", "")) * 0.012:,.2f} USD"}}</style>', body, count=1)
+            body = body.replace("</body>", '<div class="currency-switcher" style="position:fixed;left:20px;bottom:20px;background:#fff;'
+                                'padding:6px"><span class="flag">&#127482;&#127480;</span> <span class="code">USD</span></div></body>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market":
             body = body.replace("</head>", "<script>window.Shopify = window.Shopify || {}; Shopify.country = 'US'; "
                                 "Shopify.currency = {active: 'USD', rate: '0.012'};</script></head>", 1)
