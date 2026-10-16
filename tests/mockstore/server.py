@@ -393,6 +393,10 @@ Modes (to prove Radar catches and heals what it should):
                    -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
   span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
                    the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
+  discount_link    a homepage section links /discount/WOWDEAL, which applies the code and redirects to the homepage
+                   (Shopify's own behaviour; daantwale.com, new30z2) -> smoke.more_links PASSES
+  bundle_builder   the product's only button 'Pick 6 buddies' is disabled until a choice (orbiz.in, new30z2) -> product
+                   BLOCKED 'not tested', never DOWN
   disabled_form_bar_on_scroll  the form's 'Buy it now' is disabled, the enabled 'ADD TO CART' sticky bar shows only after
                    scrolling (adachikan.com phone, new30z1) -> PASSES
   disabled_form_enabled_bar  the form's own button is disabled, an enabled sticky 'Add to cart' adds the product
@@ -1384,8 +1388,17 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                               if self.mode == "broken_section_link" else "") + '</section>'
                                            if self.mode in J15_MODES else "")
                                         + ('<section class="quiz-banner"><a href="/tools/product-finder/match-me">Match me '
-                                           'a cup</a></section>' if self.mode == "app_proxy_page" else ""),
+                                           'a cup</a></section>' if self.mode == "app_proxy_page" else "")
+                                        + ('<section class="deal-banner"><a href="/discount/WOWDEAL">Get 10% off</a></section>'
+                                           if self.mode == "discount_link" else ""),
                                         shopify=self.mode != "not_shopify"), set_cart=new)
+        if path.startswith("/discount/") and self.mode == "discount_link":
+            # daantwale.com (new30z2): a Shopify discount link applies the code and sends the shopper to the homepage
+            self.send_response(302)
+            self.send_header("Location", "/")
+            self.send_header("Set-Cookie", "discount_code=WOWDEAL; Path=/")
+            self.end_headers()
+            return
         if path == "/pages/blank":       # HTTP 200 with a title but nothing on screen (JS crash style)
             return self._send(200, "<!doctype html><html><head><title>Blank | Mock Store</title></head><body><div id=app></div></body></html>")
         if path == "/tools/product-finder/match-me" and self.mode == "app_proxy_page":
@@ -1983,6 +1996,12 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                      f'name="id" value="{vid}"></form><div style="height:700px"><p>Hand-finished. Ships in 3 days.</p></div>'
                                      f'<div class="custom-actions"><span class="custom-add-to-cart-btn" onclick="addToCart({vid})" '
                                      f'style="display:inline-block;padding:10px;background:#222;color:#fff;cursor:pointer">Add to Cart</span></div>')
+        if self.mode == "bundle_builder":
+            # orbiz.in (new30z2, both devices): a 'build your crew' product; its only button 'Pick 6 buddies' stays
+            # disabled until the shopper picks six figures
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<div class="odb-tray"><span></span><span></span></div>'
+                                '<button type="button" id="odb-go" disabled>Pick 6 buddies<br><small>Crew of 6</small></button>', 1)
         if self.mode == "disabled_form_bar_on_scroll":
             # adachikan.com phone (new30z1): the form's 'BUY IT NOW' is disabled; the enabled 'ADD TO CART' sits in a
             # sticky bar that only appears once the shopper scrolls

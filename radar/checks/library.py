@@ -811,6 +811,18 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
     return target
 
 
+# A buy button that waits for the shopper's picks ('Pick 6 buddies': orbiz.in new30z2; 'Choose your flavours'): disabled
+# until a choice is made, so it is not a broken button but a product Radar cannot buy without choosing for the shopper
+CHOICE_RX = re.compile(r"^\s*(pick|choose|select)\b|\b(pick|choose|select)\s+(\d+|any \d+|a|an|your)\b", re.I)
+
+
+def _raise_if_waits_for_choice(text: str) -> None:
+    t = re.sub(r"\s+", " ", text or "").strip()
+    if t and CHOICE_RX.search(t[:60]):
+        raise CatalogOnly(f"not tested: this product's buy button {t[:40]!r} stays disabled until the shopper makes "
+                          "their picks (a build-your-own bundle): no single product to put in the cart without choosing")
+
+
 def _enabled_add(ctx: Ctx):
     """The page's enabled 'Add to cart' for this product, scrolling like a shopper when none shows yet: adachikan.com
     phone (new30z1) shows its enabled 'ADD TO CART' bar only once the shopper scrolls, while the form's own
@@ -829,6 +841,13 @@ def _expect_buy_enabled(ctx: Ctx, loc):
     """'buy button enabled', and when it is NOT: name the button Radar read and any enabled one for the same
     product, so a disabled-button failure is diagnosable from run.json alone (littleboxindia.com mobile)."""
     en = loc.is_enabled()
+    if not en:
+        try:
+            _raise_if_waits_for_choice(loc.inner_text(timeout=2000))
+        except CatalogOnly:
+            raise
+        except Exception:  # noqa: BLE001  detached: judged as before
+            pass
     ctx.expect("buy button enabled", True, True if en else f"False ({ctx.buy_evidence or 'button found by the healer'})", en)
 
 
@@ -938,6 +957,12 @@ def _main_buy_button(ctx: Ctx, product: dict):
         if st["own"] and not st.get("ctl") and all("no button in the form (form hidden)" in x for x in (st.get("seen") or ["?"])):
             raise CatalogOnly("not tested: this product's page offers no way to buy it (its cart form is hidden and "
                               "empty, and the page shows no buy control): a gift or add-on the store adds by itself")
+        waits = ctx.sess.evaluate("""() => [...document.querySelectorAll('button, [role=button], input[type=submit]')]
+            .filter(b => (b.disabled || b.getAttribute('aria-disabled') === 'true') && b.getBoundingClientRect().width > 0
+                         && !b.closest('header, footer, nav'))
+            .map(b => (b.innerText || b.value || '').trim()).slice(0, 8)""") or []
+        for w in waits:
+            _raise_if_waits_for_choice(w)
         # verdict rule (13 Oct): no buy control Radar can find is not proof there is none: NOT JUDGED with the facts
         raise NotJudged("add-to-cart control for THIS product on its page: "
                         + ("none: no add-to-cart form for this product" if not st["own"]
@@ -2782,8 +2807,13 @@ def _open_info_page(ctx: Ctx, url: str) -> str:
     h1 = (ctx.sess.evaluate("() => ((document.querySelector('main h1, h1') || {}).innerText || '').trim()") or "")[:80]
     ctx.expect("not the store's 'page not found' page", "the page itself", f"title {title[:60]!r}, heading {h1!r}",
                not (SOFT_404.search(title) or SOFT_404.search(h1)))
-    ctx.expect("stays on the page (not sent to the homepage)", _path(url), ctx.redirected_to or _path(url),
-               ctx.redirected_to != "/")
+    # a Shopify discount link (/discount/<code>) applies the code and sends the shopper home: that is how it works
+    # (daantwale.com, new30z2: '/discount/WOWDEAL' failed as 'sent to the homepage')
+    is_discount = bool(re.match(r"^/discount/[^/]+$", _path(url)))
+    ctx.expect("stays on the page (not sent to the homepage)", _path(url),
+               (ctx.redirected_to or _path(url)) + (" (a discount link: applies its code, then the homepage)"
+                                                    if is_discount and ctx.redirected_to == "/" else ""),
+               ctx.redirected_to != "/" or is_discount)
     return out
 
 
