@@ -1,0 +1,3630 @@
+{
+  "run_id": "20261016T232111Z-d-477b",
+  "site_id": "theshellhair.com",
+  "base_url": "https://theshellhair.com",
+  "device": "desktop",
+  "started_at": "2026-10-16T23:21:11+00:00",
+  "finished_at": "2026-10-16T23:26:58+00:00",
+  "verdict": "blocked",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.48s",
+              "error": null,
+              "secs": 8.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5899 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/hair-extensions-for-thinning (35 products)",
+              "error": null,
+              "secs": 6.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/hair-extensions-for-thinning ('SHOP NOW')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/hair-extensions-for-thinning",
+                  "actual": "/collections/hair-extensions-for-thinning",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "35",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 70 candidates \u2192 /products/t-shape-lace-base-topper",
+              "error": null,
+              "secs": 7.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/t-shape-lace-base-topper ('')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/t-shape-lace-base-topper",
+                  "actual": "/products/t-shape-lace-base-topper",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'T-Shape Lace Base Topper', selected variant 54361019711798 at \u20b96,985.17",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/t-shape-lace-base-topper",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/t-shape-lace-base-topper.js with variants",
+                  "actual": "'T-Shape Lace Base Topper', 3 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$74'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "T-Shape Lace Base Topper",
+                  "actual": "'T-SHAPE LACE BASE TOPPER' (h1, 22px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$74'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 27.15,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=564467125.1792192890&dt=Best%20Clip%20in%20Hair%20Extensions%20-%20The%20Shell%20Hair%20%7C",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=564467125.1792192890&dt=Buy%20Human%20Hair%20Extensions%20for%20Thinning%20%7C%20100%25%20",
+            "GET https://theshellhair.com/cdn/shop/videos/c/vp/b2c373db22834e4a94e4790fece28801/b2c373db22834e4a94e4790fece28801.HD-1080p-4.8Mbps-94582839.mp4?v=0",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=564467125.1792192890&dt=Buy%20T-Shape%20Lace%20Base%20Topper%20for%20Women%20%7C%20100%25%2"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.16,
+              "load": 6.51,
+              "lcp": 1.12
+            },
+            {
+              "url": "/collections/hair-extensions-for-thinning",
+              "ttfb": 0.17,
+              "dcl": 1.53,
+              "load": 3.97,
+              "lcp": 4.24
+            },
+            {
+              "url": "/products/t-shape-lace-base-topper",
+              "ttfb": 0.23,
+              "dcl": 1.23,
+              "load": 4.05,
+              "lcp": 0.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.49s",
+              "error": null,
+              "secs": 8.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5899 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.49s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.49s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.95s, CLS 0.0",
+              "error": null,
+              "secs": 0.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.95s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "104 scripts, at least 1.9 MB of JavaScript, 12 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (10), www.googletagmanager.com (5), cdnjs.cloudflare.com (3), www.google.com (2), connect.facebook.net (2)",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "104 scripts, at least 1.9 MB of JavaScript, 12 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (10), www.googletagmanager.com (5),\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.13,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Framing 'https://www.google.com/' violates the following report-only Content Security Policy directive: \"frame-ancestors 'self'\". The violation has been logged, but no further action has been taken.",
+              "url": "https://theshellhair.com/"
+            },
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=956889826.1792192917&dt=Best%20Clip%20in%20Hair%20Extensions%20-%20The%20Shell%20Hair%20%7",
+            "POST https://csp.withgoogle.com/csp/frame-ancestors/38fac9d5b82543fc4729580d18ff2d3d",
+            "POST https://theshellhair.com/api/event/collect"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 1.94,
+              "load": 6.04,
+              "lcp": 0.95
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.58s",
+              "error": null,
+              "secs": 8.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5899 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /pages/about-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.97s",
+              "error": null,
+              "secs": 5.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About Us",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3459 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair-extensions",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.13s",
+              "error": null,
+              "secs": 5.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Extensions India | Clip-In, Straight, Wavy & Curly | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8131 chars, 58 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/volumizers",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.43s",
+              "error": null,
+              "secs": 5.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "100% Human Volumizer Hair Extensions | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "13353 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/clip-in-ponytail",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.35s",
+              "error": null,
+              "secs": 5.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clip-In Ponytail Extensions | Wrap Around Ponytail | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "11203 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/messy-bun-scrunchie",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.09s",
+              "error": null,
+              "secs": 4.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Messy Bun Scrunchie | Human Hair Bun Extensions for Women | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4136 chars, 20 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/clip-in-bangs",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.18s",
+              "error": null,
+              "secs": 3.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clip-In Bangs India | Curtain, Wispy & Side Bangs | As Seen on Shark Tank | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8018 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/clip-in-streaks",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.15s",
+              "error": null,
+              "secs": 4.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Coloured Hair Extensions India | Balayage, Ombre & Highlights | As Seen on Shark Tank | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5653 chars, 28 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/accessories",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.72s",
+              "error": null,
+              "secs": 5.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Accessories for Women | Wig & Extension Accessories | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2815 chars, 39 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair-extensions-for-thinnin",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.46s",
+              "error": null,
+              "secs": 5.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Human Hair Extensions for Thinning | 100% Natural Hair Extensions",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "12977 chars, 58 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "10 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 54.73,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=634672107.1792192928&dt=Best%20Clip%20in%20Hair%20Extensions%20-%20The%20Shell%20Hair%20%7",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=634672107.1792192928&dt=About%20Us&tid=AW-16572700185&en=page_view&dl=https%3A%2F%2Ftheshe",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=634672107.1792192928&dt=Hair%20Extensions%20India%20%7C%20Clip-In%2C%20Straight%2C%20Wavy%",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=634672107.1792192928&dt=100%25%20Human%20Volumizer%20Hair%20Extensions%20%7C%20The%20Shell",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=634672107.1792192928&dt=Clip-In%20Ponytail%20Extensions%20%7C%20Wrap%20Around%20Ponytail%2",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=634672107.1792192928&dt=Messy%20Bun%20Scrunchie%20%7C%20Human%20Hair%20Bun%20Extensions%20",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=634672107.1792192928&dt=Clip-In%20Bangs%20India%20%7C%20Curtain%2C%20Wispy%20%26%20Side%20B",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=634672107.1792192928&dt=Coloured%20Hair%20Extensions%20India%20%7C%20Balayage%2C%20Ombre%2",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=634672107.1792192928&dt=Hair%20Accessories%20for%20Women%20%7C%20Wig%20%26%20Extension%20A",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=634672107.1792192928&dt=Buy%20Human%20Hair%20Extensions%20for%20Thinning%20%7C%20100%25%20N"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 2.24,
+              "load": 6.32,
+              "lcp": 1.0
+            },
+            {
+              "url": "/pages/about-us",
+              "ttfb": 0.18,
+              "dcl": 0.82,
+              "load": 3.8,
+              "lcp": 0.89
+            },
+            {
+              "url": "/collections/hair-extensions",
+              "ttfb": 0.22,
+              "dcl": 1.8,
+              "load": 4.4,
+              "lcp": 4.74
+            },
+            {
+              "url": "/collections/volumizers",
+              "ttfb": 0.03,
+              "dcl": 1.22,
+              "load": 4.26,
+              "lcp": 4.49
+            },
+            {
+              "url": "/collections/clip-in-ponytail",
+              "ttfb": 0.19,
+              "dcl": 1.11,
+              "load": 3.67,
+              "lcp": 0.64
+            },
+            {
+              "url": "/collections/messy-bun-scrunchie",
+              "ttfb": 0.18,
+              "dcl": 0.96,
+              "load": 3.54,
+              "lcp": 3.71
+            },
+            {
+              "url": "/collections/clip-in-bangs",
+              "ttfb": 0.19,
+              "dcl": 1.0,
+              "load": 2.92,
+              "lcp": 3.09
+            },
+            {
+              "url": "/collections/clip-in-streaks",
+              "ttfb": 0.24,
+              "dcl": 1.01,
+              "load": 3.39,
+              "lcp": 3.52
+            },
+            {
+              "url": "/collections/accessories",
+              "ttfb": 0.19,
+              "dcl": 1.52,
+              "load": 4.06,
+              "lcp": 4.21
+            },
+            {
+              "url": "/collections/hair-extensions-for-thinning",
+              "ttfb": 0.22,
+              "dcl": 1.27,
+              "load": 4.15,
+              "lcp": 4.51
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.12s",
+              "error": null,
+              "secs": 7.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5899 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.08,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1607895285.1792192982&dt=Best%20Clip%20in%20Hair%20Extensions%20-%20The%20Shell%20Hair%20%7",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.84,
+              "load": 5.23,
+              "lcp": 0.87
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.2s",
+              "error": null,
+              "secs": 5.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Collections",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1933 chars, 17 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Collections', heading 'ALL COLLECTIONS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections",
+                  "actual": "/collections",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections/bangs-buns-and-ponytail",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.42s",
+              "error": null,
+              "secs": 5.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Clip-In Bangs, Buns & Ponytail Extensions | Instant Hair Styling | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4147 chars, 38 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Clip-In Bangs, Buns & Ponytail Extensions | Instant Hair Sty', heading 'BANGS, BUNS AND PONYTAIL'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/bangs-buns-and-ponytail",
+                  "actual": "/collections/bangs-buns-and-ponytail",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /customer_authentication/redirect",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.54s, redirected to /authentication/login",
+              "error": null,
+              "secs": 3.42,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sign in - The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "339 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Sign in - The Shell Hair', heading 'Sign in'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/customer_authentication/redirect",
+                  "actual": "/authentication/login",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/frequently-asked-questions",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.81s",
+              "error": null,
+              "secs": 4.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Extensions FAQ - The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3152 chars, 8 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Hair Extensions FAQ - The Shell Hair', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/frequently-asked-questions",
+                  "actual": "/pages/frequently-asked-questions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.86,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            },
+            {
+              "type": "error",
+              "text": "Unsafe attempt to load URL https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg from frame with URL https://account.theshellhair.com/authentication/login?analytics_trace_id=b45dc9",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/index.DSWtUm2j.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/ShopLoginButtonInner.nGrEKWwH.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1031273657.1792192989&dt=Collections&tid=AW-16572700185&en=page_view&dl=https%3A%2F%2Fthes",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1031273657.1792192989&dt=Clip-In%20Bangs%2C%20Buns%20%26%20Ponytail%20Extensions%20%7C%20I",
+            "GET https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://theshellhair.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=b45dc947-c3bc-4c8a-a916-c1819c1dc8",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1031273657.1792192989&dt=Hair%20Extensions%20FAQ%20-%20The%20Shell%20Hair&tid=AW-165727001"
+          ],
+          "loads": [
+            {
+              "url": "/collections",
+              "ttfb": 0.17,
+              "dcl": 1.08,
+              "load": 3.88,
+              "lcp": 0.57
+            },
+            {
+              "url": "/collections/bangs-buns-and-ponytail",
+              "ttfb": 0.18,
+              "dcl": 1.06,
+              "load": 4.43,
+              "lcp": 4.64
+            },
+            {
+              "url": "/authentication/login?analytics_trace_id=b45dc947-c3bc-4c8a-a916-c1819c1dc810&client_id=554227fa-360",
+              "ttfb": 1.03,
+              "dcl": 1.33,
+              "load": 1.33,
+              "lcp": 1.59
+            },
+            {
+              "url": "/pages/frequently-asked-questions",
+              "ttfb": 0.17,
+              "dcl": 0.69,
+              "load": 2.94,
+              "lcp": 0.5
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.female-hair-extensions-bestsellers",
+      "suite": "catalog",
+      "title": "Collection 'Female Hair Extensions (Bestsellers)' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.13s",
+              "error": null,
+              "secs": 8.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Female Hair Extensions | Bestselling Hair Extensions for Women | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8832 chars, 50 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "49 products listed",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "49",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "warn",
+              "detail": null,
+              "error": "Core Web Vitals: expected LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner), got LCP 6.54s (poor > 4.0s)",
+              "secs": 0.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 6.54s (poor > 4.0s)",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "107 scripts, at least 1.9 MB of JavaScript, 12 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (10), www.googletagmanager.com (5), cdnjs.cloudflare.com (3), www.google.com (2), connect.facebook.net (2)",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "107 scripts, at least 1.9 MB of JavaScript, 12 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (10), www.googletagmanager.com (5),\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.46,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=274366050.1792193010&dt=Female%20Hair%20Extensions%20%7C%20Bestselling%20Hair%20Extensions",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/collections/female-hair-extensions-bestsellers",
+              "ttfb": 0.24,
+              "dcl": 1.77,
+              "load": 6.14,
+              "lcp": 6.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.hair-extensions",
+      "suite": "catalog",
+      "title": "Collection 'Hair Extensions' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.77s",
+              "error": null,
+              "secs": 8.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Extensions India | Clip-In, Straight, Wavy & Curly | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8124 chars, 58 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "50 products listed",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "50",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 3.33s, CLS 0.0",
+              "error": null,
+              "secs": 0.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 3.33s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "102 scripts, at least 1.8 MB of JavaScript, 12 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (10), www.googletagmanager.com (5), cdnjs.cloudflare.com (3), www.google.com (2), connect.facebook.net (2)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "102 scripts, at least 1.8 MB of JavaScript, 12 third-party script hosts: adsagentclientafd-b7hqhjdrf3fpeqh2.b01.azurefd.net (10), www.googletagmanager.com (5),\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.11,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=874783021.1792193020&dt=Hair%20Extensions%20India%20%7C%20Clip-In%2C%20Straight%2C%20Wavy%2",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/collections/hair-extensions",
+              "ttfb": 0.19,
+              "dcl": 2.42,
+              "load": 6.19,
+              "lcp": 3.33
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.female-hair-extensions-bestsellers",
+      "suite": "catalog",
+      "title": "Collection 'Female Hair Extensions (Bestsellers)' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.8s",
+              "error": null,
+              "secs": 7.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Female Hair Extensions | Bestselling Hair Extensions for Women | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8832 chars, 58 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "49 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.41s",
+              "error": null,
+              "secs": 5.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Female Hair Extensions | Bestselling Hair Extensions for Women | The Shell Hair \u2013 Page 2",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6288 chars, 56 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 27 more products",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "27",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.82,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=2064833153.1792193031&dt=Female%20Hair%20Extensions%20%7C%20Bestselling%20Hair%20Extension",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/collections/female-hair-extensions-bestsellers",
+              "ttfb": 0.18,
+              "dcl": 2.22,
+              "load": 6.16,
+              "lcp": 3.16
+            },
+            {
+              "url": "/collections/female-hair-extensions-bestsellers?page=2",
+              "ttfb": 0.15,
+              "dcl": 1.14,
+              "load": 3.88,
+              "lcp": 4.07
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.female-hair-extensions-bestsellers",
+      "suite": "catalog",
+      "title": "Filtering collection 'Female Hair Extensions (Bestsellers)' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.0s",
+              "error": null,
+              "secs": 7.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Female Hair Extensions | Bestselling Hair Extensions for Women | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8832 chars, 58 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "30 filter options (e.g. In stock only); applying 'In stock only' = filter.v.availability=1",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "pass",
+              "detail": "opened /collections/female-hair-extensions-bestsellers?filter.v.availability=1 directly: the theme's own request (?page=&filter.v.price.gte=&filter.v.price.lte=&filter.v.availability=1) is disallowed by robots.txt",
+              "error": null,
+              "secs": 13.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Female Hair Extensions | Bestselling Hair Extensions for Women | The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8852 chars, 58 images",
+                  "ok": true
+                },
+                {
+                  "what": "filters in the page address",
+                  "expected": "exactly one: filter.v.availability=1",
+                  "actual": "filter.v.availability=1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_narrows_results",
+              "status": "pass",
+              "detail": "'In stock only': 49 products listed (49 without the filter), all match it in the store's data; 1 of them not in the store's data Radar read (75 products)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed with the filter on",
+                  "expected": "\u2265 1",
+                  "actual": "49",
+                  "ok": true
+                },
+                {
+                  "what": "products listed: filtered vs unfiltered",
+                  "expected": "\u2264 75",
+                  "actual": "49",
+                  "ok": true
+                },
+                {
+                  "what": "listed products matching 'In stock only' (store's data)",
+                  "expected": "all 48",
+                  "actual": "48 of 48",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 28.07,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1273509608.1792193045&dt=Female%20Hair%20Extensions%20%7C%20Bestselling%20Hair%20Extension",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1273509608.1792193045&dt=Female%20Hair%20Extensions%20%7C%20Bestselling%20Hair%20Extension",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1273509608.1792193045&dt=Female%20Hair%20Extensions%20%7C%20Bestselling%20Hair%20Extensions"
+          ],
+          "loads": [
+            {
+              "url": "/collections/female-hair-extensions-bestsellers",
+              "ttfb": 0.21,
+              "dcl": 1.71,
+              "load": 5.85,
+              "lcp": 6.22
+            },
+            {
+              "url": "/collections/female-hair-extensions-bestsellers?filter.v.availability=1",
+              "ttfb": 0.22,
+              "dcl": 1.57,
+              "load": 4.99,
+              "lcp": 5.26
+            },
+            {
+              "url": "/collections/female-hair-extensions-bestsellers",
+              "ttfb": 0.15,
+              "dcl": 1.15,
+              "load": 4.33,
+              "lcp": 4.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.invisible-light-curtain-bangs",
+      "suite": "product",
+      "title": "PDP 'Invisible-light Curtain Bangs'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.09s",
+              "error": null,
+              "secs": 10.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Invisible Light Curtain Bangs | 100% Human Hair Light Curtain Bangs",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4487 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/invisible-light-curtain-bangs",
+                  "actual": "/products/invisible-light-curtain-bangs",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Invisible-light Curtain Bangs', selected variant 54361012764982 at \u20b92,536.02",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/invisible-light-curtain-bangs",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/invisible-light-curtain-bangs.js with variants",
+                  "actual": "'Invisible-light Curtain Bangs', 3 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$27'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Invisible-light Curtain Bangs",
+                  "actual": "'INVISIBLE-LIGHT CURTAIN BANGS' (h1, 22px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$27'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.57,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://theshellhair.com/cdn/shop/videos/c/vp/9a3882303ffc4ce9973d7b8ace641ef3/9a3882303ffc4ce9973d7b8ace641ef3.HD-1080p-2.5Mbps-94587081.mp4?v=0",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1752349421.1792193073&dt=Invisible%20Light%20Curtain%20Bangs%20%7C%20100%25%20Human%20Hair%"
+          ],
+          "loads": [
+            {
+              "url": "/products/invisible-light-curtain-bangs?variant=54361012764982",
+              "ttfb": 0.05,
+              "dcl": 1.58,
+              "load": 5.67,
+              "lcp": 0.74
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.t-shape-lace-base-topper",
+      "suite": "product",
+      "title": "PDP 'T-Shape Lace Base Topper'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.79s",
+              "error": null,
+              "secs": 10.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy T-Shape Lace Base Topper for Women | 100% Human Hair - The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4253 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/t-shape-lace-base-topper",
+                  "actual": "/products/t-shape-lace-base-topper",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'T-Shape Lace Base Topper', selected variant 54361019711798 at \u20b96,985.17",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/t-shape-lace-base-topper",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/t-shape-lace-base-topper.js with variants",
+                  "actual": "'T-Shape Lace Base Topper', 3 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$74'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "T-Shape Lace Base Topper",
+                  "actual": "'T-SHAPE LACE BASE TOPPER' (h1, 22px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$74'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.64,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://theshellhair.com/cdn/shop/videos/c/vp/b2c373db22834e4a94e4790fece28801/b2c373db22834e4a94e4790fece28801.HD-1080p-4.8Mbps-94582839.mp4?v=0",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=725928158.1792193088&dt=Buy%20T-Shape%20Lace%20Base%20Topper%20for%20Women%20%7C%20100%25%2"
+          ],
+          "loads": [
+            {
+              "url": "/products/t-shape-lace-base-topper?variant=54361019711798",
+              "ttfb": 0.22,
+              "dcl": 1.5,
+              "load": 5.64,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.two-set-curly-hair-volumizer",
+      "suite": "product",
+      "title": "PDP 'Two Set Curly Hair Volumizer'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.96s",
+              "error": null,
+              "secs": 10.82,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Two Set Curly Hair Volumizer | Side Hair Extensions for Volume",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4450 chars, 33 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/two-set-curly-hair-volumizer",
+                  "actual": "/products/two-set-curly-hair-volumizer",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Two Set Curly Hair Volumizer', selected variant 54360921440566 at \u20b96,730.93",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/two-set-curly-hair-volumizer",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/two-set-curly-hair-volumizer.js with variants",
+                  "actual": "'Two Set Curly Hair Volumizer', 21 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$71'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.55,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Two Set Curly Hair Volumizer",
+                  "actual": "'TWO SET CURLY HAIR VOLUMIZER' (h1, 22px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$71'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.6,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=532696038.1792193102&dt=Two%20Set%20Curly%20Hair%20Volumizer%20%7C%20Side%20Hair%20Extensi",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/two-set-curly-hair-volumizer?variant=54360921440566",
+              "ttfb": 0.24,
+              "dcl": 1.63,
+              "load": 5.66,
+              "lcp": 0.81
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'Invisible-light Curtain Bangs' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.56s",
+              "error": null,
+              "secs": 7.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Invisible Light Curtain Bangs | 100% Human Hair Light Curtain Bangs",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4487 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "3 variants; selected 54361012764982 (Natural Black, \u20b92,536.02); switch to 54361012830518 (Jet Black, \u20b92,917.37); sold-out variant: none",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/invisible-light-curtain-bangs",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/invisible-light-curtain-bangs.js with variants",
+                  "actual": "'Invisible-light Curtain Bangs', 3 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_switch",
+              "status": "pass",
+              "detail": "chose option \"Jet Black\": page selects 54361012830518 (Jet Black, \u20b92,917.37); address now ?variant=54361012830518; price \u20b92,536.02 \u2192 \u20b92,917.37",
+              "error": null,
+              "secs": 1.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "option control for the other variant",
+                  "expected": "Jet Black",
+                  "actual": "option \"Jet Black\"",
+                  "ok": true
+                },
+                {
+                  "what": "page selects the picked variant",
+                  "expected": "54361012830518 (Jet Black, \u20b92,917.37)",
+                  "actual": "54361012830518 (the product form's variant id) after choosing option \"Jet Black\"",
+                  "ok": true
+                },
+                {
+                  "what": "new variant's price shown",
+                  "expected": "\u20b92,917.37",
+                  "actual": "\u20b92,917.37",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.08,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LeHG2ApAAAAAO4rPaDW-qVpPKPOBfjbCpzJB9ey&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://theshellhair.com/cdn/shop/videos/c/vp/9a3882303ffc4ce9973d7b8ace641ef3/9a3882303ffc4ce9973d7b8ace641ef3.HD-1080p-2.5Mbps-94587081.mp4?v=0",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=2104278102.1792193116&dt=Invisible%20Light%20Curtain%20Bangs%20%7C%20100%25%20Human%20Hair%",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/16572700185/?random=1792193121211&cv=11&fst=1792193121211&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/products/invisible-light-curtain-bangs?variant=54361012764982",
+              "ttfb": 0.05,
+              "dcl": 1.08,
+              "load": 5.54,
+              "lcp": 0.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'Invisible-light Curtain Bangs' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.56s",
+              "error": null,
+              "secs": 7.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Invisible Light Curtain Bangs | 100% Human Hair Light Curtain Bangs",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4487 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.79,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://theshellhair.com/cdn/shop/videos/c/vp/9a3882303ffc4ce9973d7b8ace641ef3/9a3882303ffc4ce9973d7b8ace641ef3.HD-1080p-2.5Mbps-94587081.mp4?v=0",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1813417503.1792193125&dt=Invisible%20Light%20Curtain%20Bangs%20%7C%20100%25%20Human%20Hair",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/invisible-light-curtain-bangs?variant=54361012764982",
+              "ttfb": 0.05,
+              "dcl": 1.35,
+              "load": 5.36,
+              "lcp": 0.78
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.invisible",
+      "suite": "search",
+      "title": "Search for 'invisible' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.1s",
+              "error": null,
+              "secs": 7.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5899 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 34 results, 1 mention 'invisible'",
+              "error": null,
+              "secs": 8.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "34",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'invisible'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "1 of 34",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.91,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LeHG2ApAAAAAO4rPaDW-qVpPKPOBfjbCpzJB9ey&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://o4508131579002880.ingest.us.sentry.io/api/4508131592241152/envelope/?sentry_version=7&sentry_key=d97a825a449bcf2e640608e705016d56&se"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1395835708.1792193133&dt=Best%20Clip%20in%20Hair%20Extensions%20-%20The%20Shell%20Hair%20%7",
+            "POST https://www.google.com/rmkt/collect/16572700185/?random=1792193139667&cv=11&fst=1792193139667&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/16572700185/?random=1792193139639&cv=11&fst=1792193139639&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1395835708.1792193133&dt=Search%3A%2034%20results%20found%20for%20%22invisible%22&tid=AW-1"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.56,
+              "load": 5.58,
+              "lcp": 0.5
+            },
+            {
+              "url": "/search?q=invisible",
+              "ttfb": 0.02,
+              "dcl": 1.57,
+              "load": 3.64,
+              "lcp": 3.84
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.84s",
+              "error": null,
+              "secs": 6.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 3 results found for \"qzxvbugradar\"",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1950 chars, 14 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "warn",
+              "detail": null,
+              "error": "shopper is told nothing matched: expected a 'no results' message, or no products listed, got no message, 3 products listed",
+              "secs": 6.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 3 products listed",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.75,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=210549836.1792193149&dt=Search%3A%203%20results%20found%20for%20%22qzxvbugradar%22&tid=AW-",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.04,
+              "dcl": 1.24,
+              "load": 4.94,
+              "lcp": 2.02
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'invisible' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.68s",
+              "error": null,
+              "secs": 7.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5899 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "8 product suggestion(s) while typing 'invisible', e.g. 'seamless-blind-patch-cover-up-patch-wavy-texture'",
+              "error": null,
+              "secs": 4.43,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.12,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1999887838.1792193161&dt=Best%20Clip%20in%20Hair%20Extensions%20-%20The%20Shell%20Hair%20%7",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.03,
+              "dcl": 1.38,
+              "load": 5.28,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.55s",
+              "error": null,
+              "secs": 8.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5899 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "63: 'Best Clip in Hair Extensions - The Shell Hair | 100% Human H'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Get the hair you've always wanted with The Shell Hair's clip in hair e",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "155: \"Get the hair you've always wanted with The Shell Hair's clip\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theshellhair.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theshellhair.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theshellhair.com/cdn/shop/files/Clip_in_Volumizers_1.jpg?v=1719045075&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.56,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=2002485501.1792193174&dt=Best%20Clip%20in%20Hair%20Extensions%20-%20The%20Shell%20Hair%20%7",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.2,
+              "load": 6.33,
+              "lcp": 0.83
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.6s",
+              "error": null,
+              "secs": 10.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Invisible Light Curtain Bangs | 100% Human Hair Light Curtain Bangs",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4487 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Invisible Light Curtain Bangs | 100% Human Hair Light Curtain Bangs",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "67: 'Invisible Light Curtain Bangs | 100% Human Hair Light Curtai'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 322: 'Shop Invisible Light Curtain Bangs made with 100% human hair'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "322: 'Shop Invisible Light Curtain Bangs made with 100% human hair'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://theshellhair.com/products/invisible-light-curtain-bangs",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://theshellhair.com/products/invisible-light-curtain-bangs",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Invisible-light Curtain Bangs",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://theshellhair.com/cdn/shop/files/Bangs_for_girls.webp?v=1787818960&width=2048",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.66,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://theshellhair.com/cdn/shop/videos/c/vp/9a3882303ffc4ce9973d7b8ace641ef3/9a3882303ffc4ce9973d7b8ace641ef3.HD-1080p-2.5Mbps-94587081.mp4?v=0",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1222596529.1792193183&dt=Invisible%20Light%20Curtain%20Bangs%20%7C%20100%25%20Human%20Hair",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/invisible-light-curtain-bangs",
+              "ttfb": 0.03,
+              "dcl": 1.33,
+              "load": 5.77,
+              "lcp": 0.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 5.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.74,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=816695366.1792193192&dt=404%20Not%20Found&tid=AW-16572700185&en=page_view&dl=https%3A%2F%2F",
+            "GET https://theshellhair.com/products/bugradar-check-does-not-exist.json",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.23,
+              "dcl": 1.01,
+              "load": 4.54,
+              "lcp": 0.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /policies/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.74s",
+              "error": null,
+              "secs": 6.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9185 chars, 8 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Refund policy', heading 'REFUND POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/refund-policy",
+                  "actual": "/policies/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "8559 chars of policy text",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "8559 chars under 'REFUND POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /policies/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.1s",
+              "error": null,
+              "secs": 3.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5260 chars, 8 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping policy', heading 'SHIPPING POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/shipping-policy",
+                  "actual": "/policies/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "4709 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "4709 chars under 'SHIPPING POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /policies/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.81s",
+              "error": null,
+              "secs": 4.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17932 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy', heading 'PRIVACY POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/privacy-policy",
+                  "actual": "/policies/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "17279 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "17279 chars under 'PRIVACY POLICY'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /policies/terms-of-service",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.99s",
+              "error": null,
+              "secs": 4.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms of service",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "20344 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms of service', heading 'TERMS OF SERVICE'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/terms-of-service",
+                  "actual": "/policies/terms-of-service",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "19725 chars of policy text",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "19725 chars under 'TERMS OF SERVICE'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.28,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "requestStorageAccess: Permission denied.",
+              "url": "https://www.google.com/recaptcha/enterprise/anchor?ar=1&k=6LdEwsYnAAAAAL9T92sOraT4CDI-QIVuDYAGwdOy&co=aHR0cHM6Ly90aGVzaGVsbGhhaXIuY29tOjQ0Mw"
+            }
+          ],
+          "failed_requests": [
+            "POST https://theshellhair.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=37780252.1792193198&dt=Refund%20policy&tid=AW-16572700185&en=page_view&dl=https%3A%2F%2Fthe",
+            "POST https://k6-e4e4123be8e54363900a90353991ca93.ecs.us-west-1.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=37780252.1792193198&dt=Shipping%20policy&tid=AW-16572700185&en=page_view&dl=https%3A%2F%2Ft",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=37780252.1792193198&dt=Privacy%20policy&tid=AW-16572700185&en=page_view&dl=https%3A%2F%2Ft",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=37780252.1792193198&dt=Terms%20of%20service&tid=AW-16572700185&en=page_view&dl=https%3A%2F%"
+          ],
+          "loads": [
+            {
+              "url": "/policies/refund-policy",
+              "ttfb": 0.04,
+              "dcl": 1.42,
+              "load": 4.84,
+              "lcp": 0.72
+            },
+            {
+              "url": "/policies/shipping-policy",
+              "ttfb": 0.32,
+              "dcl": 0.99,
+              "load": 2.87,
+              "lcp": 0.62
+            },
+            {
+              "url": "/policies/privacy-policy",
+              "ttfb": 0.24,
+              "dcl": 0.71,
+              "load": 3.04,
+              "lcp": 0.51
+            },
+            {
+              "url": "/policies/terms-of-service",
+              "ttfb": 0.27,
+              "dcl": 0.81,
+              "load": 3.08,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.account_page",
+      "suite": "info",
+      "title": "Account login page loads",
+      "check": "account_page",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.73s, redirected to /authentication/login",
+              "error": null,
+              "secs": 3.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sign in - The Shell Hair",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "339 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Sign in - The Shell Hair', heading 'Sign in'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/account/login",
+                  "actual": "/authentication/login",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_sign_in",
+              "status": "pass",
+              "detail": "not judged: the account link hands sign-in to account.theshellhair.com",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.52,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Unsafe attempt to load URL https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg from frame with URL https://account.theshellhair.com/authentication/login?analytics_trace_id=09e4b1",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/index.DSWtUm2j.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/ShopLoginButtonInner.nGrEKWwH.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://theshellhair.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=09e4b1a5-15f7-4d7f-8d40-86877c1bf5"
+          ],
+          "loads": [
+            {
+              "url": "/authentication/login?analytics_trace_id=09e4b1a5-15f7-4d7f-8d40-86877c1bf520&client_id=554227fa-360",
+              "ttfb": 1.29,
+              "dcl": 1.55,
+              "load": 1.56,
+              "lcp": 1.82
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Best Clip in Hair Extensions - The Shell Hair | 100% Human Hair",
+    "theme": null,
+    "checkout_app": "Shopflo",
+    "access": "open",
+    "nav": 17,
+    "collections": 45,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "14 product(s) not listed in the browsed collections are tested last (e.g. hair-extensions-hanger)"
+  ],
+  "perf": {
+    "pages": 30,
+    "median_load_secs": 4.05,
+    "slowest": {
+      "url": "/",
+      "load_secs": 6.51
+    },
+    "console_errors": 4,
+    "console_warnings": 1,
+    "failed_requests": 55
+  },
+  "counts": {
+    "pass": 18,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 4,
+    "skipped": 0
+  }
+}
