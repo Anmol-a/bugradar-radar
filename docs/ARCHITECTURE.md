@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 16 Oct (Anmol's screenshot of nubronicforte):** the main product has a working 'ADD TO CART(19% OFF)'; Radar had
+  picked the 'Performance Kit', a gift the store auto-adds ('Complimentary Performance Kit', 'Free Gift Auto Added'),
+  whose page has a hidden, empty cart form and no buy control. Such a page = not tested with the reason, never not-judged
+  (mock `gift_only_product`).
 - **v0.20 16 Oct 00:05 IST (evidence re-test 38783xxx):** shopkara.store has no cart button at all: its only buy control
   is an order-form app's 'Order Now - Cash on Delivery' popup. A product sold only through such a form = BLOCKED 'not
   tested' with the reason (Radar never fills forms), not 'not judged' (mock `cod_form_only`). nubronicforte.com still
