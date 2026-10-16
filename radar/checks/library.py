@@ -46,8 +46,12 @@ MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClie
   const mk = scope.filter(a => /(^|\.)(amazon\.(in|com)|amzn\.(in|to)|flipkart\.com|myntra\.com|nykaa\.com|ajio\.com|meesho\.com|jiomart\.com|tatacliq\.com|blinkit\.com|zeptonow\.com|swiggy\.com|bigbasket\.com)$/i
                                .test((() => { try { return new URL(a.href).hostname; } catch (e) { return ''; } })()))
                  .map(a => (a.innerText || a.getAttribute('aria-label') || new URL(a.href).hostname).trim().slice(0, 30));
-  const own = [...document.querySelectorAll('form[action*="/cart/add"] button, form[action*="/cart/add"] input[type=submit], button, [role=button]')]
-    .some(b => vis(b) && !b.closest('header, footer, nav') && /add to (cart|bag|basket)|buy (it )?now|^add$|^buy$/i.test((b.innerText || b.value || '').trim()));
+  const buys = [...document.querySelectorAll('form[action*="/cart/add"] button, form[action*="/cart/add"] input[type=submit], button, [role=button]')]
+    .filter(b => vis(b) && !b.closest('header, footer, nav') && /add to (cart|bag|basket)|buy (it )?now|^add$|^buy$/i.test((b.innerText || b.value || '').trim()));
+  // a buy button a shopper cannot press is no buy button (myop.in, new30x: price hidden and 'Add to cart' disabled
+  // until a perfume is chosen)
+  const off = b => b.disabled || b.getAttribute('aria-disabled') === 'true';
+  const own = buys.some(b => !off(b)), own_disabled = !own && buys.length > 0;
   const main = document.querySelector('main, [role=main], #MainContent') || document.body;
   const so = ((main.innerText || '').match(/\b(shop (now )?on|available on|buy (it )?on|also available on)\s*:/i) || [])[0];
   const ask = (((document.body.innerText || '').match(/\b(price (up)?on request|request (a |the )?price|(enquire|inquire|call|contact us) for (the )?price|no longer (accepting|taking) (online )?orders|not (accepting|taking) online orders)\b/i) || [])[0]);
@@ -59,7 +63,7 @@ MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClie
   const cut = near.search(/you may also like|related products|recommended|customers also|frequently bought|similar products|complete the (look|set)/i);
   if (cut > 0) near = near.slice(0, cut);
   const no_price = at >= 0 && !/(?:₹|Rs\.?|INR)\s?\d/i.test(near);
-  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, shop_on: so || null, ask: ask || null, no_price}; }"""
+  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, own_disabled, shop_on: so || null, ask: ask || null, no_price}; }"""
 
 
 def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
@@ -79,6 +83,10 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
         const at = title ? norm(t).indexOf(norm(title)) : -1;
         if (!foreign && at >= 0) { const w = t.replace(/\s+/g, ' ').slice(at, at + title.length + 160);
           const m = w.match(fx); if (m && !rx.test(w.slice(0, w.indexOf(m[0])))) foreign = m[0]; }
+        // the price can sit ABOVE the name (khushbujewellers.com, new30x: '$24.00' then the name; an 'INR' note
+        // elsewhere): the 120 characters before the name, with no ₹ price in them, count too
+        if (!foreign && at >= 0) { const b = t.replace(/\s+/g, ' ').slice(Math.max(0, at - 120), at);
+          const m = b.match(new RegExp(fx.source, 'g')); if (m && !rx.test(b)) foreign = m[m.length - 1]; }
         return {active: c.active || '', rate: parseFloat(c.rate || '1') || 1, country: (window.Shopify || {}).country || '',
                 foreign}; }""", title) or {}
     active = (cur.get("active") or "").upper()
@@ -100,6 +108,10 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
         raise CatalogOnly(        # online orders' (new30n 14 Oct): the price is hidden on purpose, nothing to buy here
             f"not tested: the product page shows no price and no buy button, only {m['ask']!r}: the store does not "
             "sell this product online at a listed price")
+    if m.get("no_price") and m.get("own_disabled"):
+        raise CatalogOnly(
+            "not tested: the product page shows no price for this product and its buy button is disabled (the store "
+            "shows both only after the shopper makes a choice, such as a personalised product): no listed price to check")
     if m.get("no_price"):        # Anmol, 15 Oct: somuchliving.com (beds) and tastycrafts.in (₹1,00,000 placeholder):
         raise CatalogOnly(        # no price anywhere near the product's name and no buy button = enquiry-only, not DOWN
             "not tested: the product page shows no price for this product and no buy button (the store's data holds a "
@@ -2176,7 +2188,10 @@ def _load_product(ctx: Ctx, url: str) -> str:
     product. A product listed in Shopify's catalog whose page redirects to the homepage or says
     'Page Not Found' is a CATALOG finding (boldcare.in, foxtale.in, bench 3), not a broken product page."""
     out = _load(ctx, url)
-    final = _path(ctx.sess.page.url)
+    # the same product under the store's market path (khushbujewellers.com, new30x: every product URL sent the US
+    # runner to /en-us/products/<handle>) is the product page, not a redirect away from it
+    unmarket = lambda u: _path(u)[len(_market_prefix(u)):] or "/"
+    final = unmarket(ctx.sess.page.url)
     if not final.startswith("/products/"):
         ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
                    f"redirects to {final} (in the store's catalog but hidden from shoppers)", False)
@@ -2200,7 +2215,7 @@ def _load_product(ctx: Ctx, url: str) -> str:
     # The page is given 2.5 s to settle; leaving the product page in that time is the same catalog finding.
     for _ in range(5):
         ctx.sess.page.wait_for_timeout(500)
-        later = _path(ctx.sess.page.url)
+        later = unmarket(ctx.sess.page.url)
         if not later.startswith("/products/"):
             ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
                        f"redirects to {later} shortly after loading (in the store's catalog but hidden from shoppers)", False)
@@ -3357,6 +3372,7 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   const why = {}; const note = k => { why[k] = (why[k] || 0) + 1; }; let firstCover = null;
   const usable = e => {
     if (re && !re.test(e.getAttribute('href') || '')) return false;
+    if (e.hasAttribute('data-radar-dead')) { note('did nothing when tapped'); return false; }
     if (!vis(e)) { note('not visible'); invis.push(e); return false; }
     if (exclude && e.closest(exclude)) { note('inside cart drawer / quick-add'); return false; }
     if (e.getAttribute('aria-disabled') === 'true') { note('disabled'); return false; }
@@ -3680,7 +3696,7 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                 got = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
                 if not got.get("none"):
                     got["overlay"] = closed
-        if got.get("none"):                                 # links inside closed dropdowns / hamburger
+        def via_menus():
             toggles = page.locator(MENU_TOGGLES)
             for i in range(min(toggles.count(), 6)):
                 tg = toggles.nth(i)
@@ -3690,10 +3706,14 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                     _click(ctx, tg)
                 except Exception:  # noqa: BLE001
                     continue
-                got = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
-                if not got.get("none"):
-                    how = "opened a menu, then link"
-                    break
+                g = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
+                if not g.get("none"):
+                    return g
+            return None
+        if got.get("none"):                                 # links inside closed dropdowns / hamburger
+            g = via_menus()
+            if g:
+                got, how = g, "opened a menu, then link"
         if got.get("none"):                                 # menus that open on hover (fresh page: no drawer left open)
             _load(ctx, home)
             hov, hhow = _hover_menus_for(ctx, COLLECTION_HREF, prefer_coll)
@@ -3709,6 +3729,19 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
         ctx.expect("collection link a shopper can click on the homepage", "found",
                    f"{got['href']} ({got['text']!r})" if found else "none (menus opened too)", found)
         _click_picked(ctx, got)
+        if "/collections/" not in page.url and _path(page.url) == _path(home):
+            # amchongtea.com phone (new30x): the only visible collection link ('Explore Now') did nothing when tapped. A
+            # shopper tries the menu: the dead link is set aside, the menus are opened and a collection picked there
+            ctx.sess.evaluate("""() => { const t = document.querySelector('[data-radar-target="click"]');
+                if (t) t.setAttribute('data-radar-dead', '1'); }""")
+            g = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
+            g = g if not g.get("none") else via_menus()
+            if g:
+                dead = got
+                _click_picked(ctx, g)
+                if "/collections/" in page.url:
+                    got = g
+                    how += f" ({dead['text'][:30]!r} {_path(dead['href'])} did nothing when tapped; went on via {g['text'][:30]!r})"
         ctx.expect("landed on that collection", _path(got["href"]), _path(page.url), "/collections/" in page.url)
 
         def listed() -> int:
@@ -3796,7 +3829,12 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                     again = " (its first link did nothing; the product name opened it)"
         if _handle(page.url) != clicked and errors:
             raise AssertionError(errors[0])           # same evidence as before when nothing worked
-        ctx.expect("opened the product that was clicked", f"/products/{clicked}", _path(page.url),
+        ctx.expect("opened the product that was clicked", f"/products/{clicked}",
+                   _path(page.url) if _handle(page.url) == clicked or "/products/" not in page.url else
+                   # faritha.com phone (new30x): the Sony card opened the Samsung product 3 times; evidence for the fix:
+                   # what was tapped, where, and how (the link itself or its card)
+                   f"{_path(page.url)} (tapped {first or 'the link'} via its {got.get('via') or 'link'} at "
+                   f"{got.get('x')},{got.get('y')} on {_path(listing)})",
                    _handle(page.url) == clicked)
         known = "known in-stock product" if clicked in product_handles else "first clickable product"
         return (f"clicked {known} on {got.get('considered')} candidates → {_path(page.url)}{again}"

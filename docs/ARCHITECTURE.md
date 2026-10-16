@@ -1373,6 +1373,17 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 16 Oct 17:45 IST (new30x run 38891734931, 26 min: 40/54 healthy):** (1) khushbujewellers.com DOWN on both
+  devices: the US runner was sent to /en-us/products/<same handle> ('hidden from shoppers' warning) and saw '$24.00'
+  ABOVE the product name while an 'INR' note elsewhere broke 'no ₹ anywhere': the same product under a market path is
+  the product page, and a foreign price in the 120 characters before the name = 'location (US runner)' (mocks
+  market_redirect_all, other_market_price_above). (2) myop.in desktop DOWN: a personalised perfume hides its price and
+  keeps 'Add to cart' disabled until a choice: a disabled buy button is no buy button, so no price + disabled button =
+  'not tested' (mock price_after_choice). (3) amchongtea.com phone NOT JUDGED: the homepage's only visible collection
+  link ('Explore Now') did nothing when tapped; the dead link is set aside and the ☰ menu tried (mock dead_tile_menu).
+  (4) Evidence only: the first covered card's box / hit / scroll (hathimasala.com phone) and the tap point when a card
+  opens another product (faritha.com phone). (5) radar-tests: the redrawing pincode widget could drop the typed text
+  between typing and pressing; re-typed and pressed once more.
 - **v0.20 16 Oct 13:20 IST (new30w run 38865228472, 25 min: 44/53 healthy):** ayamveda.com DOWN on both devices: the
   page shows '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298 (nubronicforte does the same). `per_unit_price` accepts
   a page price × k = the variant price when the page says '/ bottle' (pack, unit, piece…) and names k of them (mock

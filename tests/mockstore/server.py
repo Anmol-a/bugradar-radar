@@ -203,6 +203,8 @@ Modes (to prove Radar catches and heals what it should):
   cart_dawn_rows   Dawn's real cart rows: hidden 'Decrease quantity for <title>' text inside the quantity box, the price in
                    its own table cell, a discount code (regular price struck, sale price 10% lower) -> journey 23's
                    cart line price PASSES ('discounted in the cart'), not 'line shows no price' (12 theme demos, cycle 28)
+  other_market_price_above  dollar prices with no Shopify.currency, the price ABOVE the product's name and an 'INR 999'
+                   shipping note on the page (khushbujewellers.com, new30x) -> BLOCKED 'location'
   other_market_offer  dollar prices with no Shopify.currency, plus an offer block in ₹ ('Flat ₹250 off, min. order ₹2,500')
                    lower on the product page (theindianethnicco.com, cycle 28 round 2 still DOWN) -> BLOCKED 'location'
   marketplace_only product pages show no price and no cart, only 'Buy on Amazon / Flipkart' links (antesports, beyondsnack)
@@ -249,6 +251,8 @@ Modes (to prove Radar catches and heals what it should):
   account_broken   same, but /account/login answers 404 -> info.account_page FAILS
   hamburger_menu   phones only: the header menu hides behind a ☰ button (aria-label Menu) opening a drawer (journey 16)
                    -> smoke.mobile_menu PASSES 'tapped the menu button'; desktop / healthy -> not judged / links shown
+  dead_tile_menu   phones: hamburger_menu, and the homepage's only visible collection link is an 'Explore Now' tile whose
+                   tap does nothing, no product cards (amchongtea.com, new30x) -> journey goes via the ☰ menu, PASSES
   hamburger_broken same, but the button's script throws and the drawer never opens -> smoke.mobile_menu WARNS
   late_cards       collection grids are rendered by a script 1.5 s after the page loads -> the collection test and
                    catalog.more wait for the cards and PASS (they failed at once on the old code)
@@ -363,6 +367,8 @@ Modes (to prove Radar catches and heals what it should):
   market_path      Shopify Markets: / sends the shopper to /en-us/, links carry the prefix, prices are +20% there and so is
                    /en-us/products/<h>.js; the default /products/<h>.js says the base price (amayrajewellery.com 14 Oct)
                    -> Radar reads the data under the page's market path, journey PASSES first try
+  market_redirect_all  market_path, and every /products/<h> URL also sends the visitor to /en-us/products/<h>
+                   (khushbujewellers.com, new30x) -> product pages PASS, no 'hidden from shoppers' warning
   wishlist_404     the header links /pages/wishlist, which answers HTTP 404 with a wishlist app drawn into it
                    (countryflora / kotart / swornyfashion, new30p) -> smoke.nav_links PASSES, the app page noted
   plain_size_buttons  the vase has Size x Colour; colour swatch in a 'swatches' box, sizes as plain buttons in a
@@ -370,6 +376,8 @@ Modes (to prove Radar catches and heals what it should):
                    new30r) -> Radar taps the colour AND the size, product PASSES
   hidden_price     product pages show no price near the name and only a disabled 'Unavailable' button (the data has a
                    placeholder price; somuchliving / tastycrafts 15 Oct) -> product BLOCKED 'not tested', never DOWN
+  price_after_choice  product pages hide the price and keep 'Add to cart' disabled until a choice is made (myop.in,
+                   new30x) -> product BLOCKED 'not tested', never DOWN
   prepaid_price    product pages show the price minus 5% under 'EXTRA 5% OFF ON ALL PREPAID ORDERS' (rasayanam.in)
                    -> shows_title_price_image WARNS (Anmol, 15 Oct), never fails
   customer_auth_link  the header links '/customer_authentication/redirect' (Shopify new customer accounts), which answers
@@ -737,7 +745,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                           r' a.disabled = false; a.textContent = "Add to cart"; });</script>', body, count=1)
         if self.mode == "wishlist_404" and isinstance(body, str) and ctype.startswith("text/html"):
             body = body.replace('<a href="/pages/about">About</a>', '<a href="/pages/about">About</a> <a href="/pages/wishlist">Wishlist</a>', 1)
-        if self.mode == "market_path" and getattr(self, "market", False) and isinstance(body, str):
+        if self.mode in ("market_path", "market_redirect_all") and getattr(self, "market", False) and isinstance(body, str):
             if ctype.startswith("text/html"):
                 body = re.sub(r'href="/(?!en-us)', 'href="/en-us/', body).replace('href="/en-us/"', 'href="/en-us"')
                 body = re.sub(r'action="/(cart|search)', r'action="/en-us/\1', body)
@@ -810,7 +818,14 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             # navigation and must not get an extra link to follow)
             body = body.replace("<main>", '<div class="announcement-bar"><a href="/pages/offers">Festive offers: up to 20% '
                                 'off</a></div><main>', 1)
-        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("hamburger_menu", "hamburger_broken") \
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "dead_tile_menu" and self.path in ("/", "") \
+                and "Mobile" in (self.headers.get("User-Agent") or ""):
+            # amchongtea.com phone (new30x, 16 Oct): a brand homepage with no product cards; its only visible collection
+            # link is an 'Explore Now' tile whose tap does nothing (an animation script swallows it); the collections
+            # are in the ☰ menu. Radar tapped the tile, stayed on '/', found no product card: 'not judged'.
+            body = re.sub(r"<main>.*?</main>", '<main><h1>Where land, legacy and craft come together</h1><a class="explore" '
+                          'href="/collections/kitchen" onclick="event.preventDefault()">Explore Now</a></main>', body, count=1, flags=re.S)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("hamburger_menu", "hamburger_broken", "dead_tile_menu") \
                 and "Mobile" in (self.headers.get("User-Agent") or ""):
             # journey 16, phones only: the header menu hides behind a ☰ button that opens a drawer with the links
             # (hamburger_broken: the button's script throws, the drawer never opens)
@@ -891,7 +906,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                           r'<img class="gallery-slide" data-src="\1" width="300" height="300"', body, count=1)
             body = body.replace("</body>", "<script>setTimeout(() => document.querySelectorAll('img.gallery-slide').forEach("
                                 "i => i.src = i.dataset.src), 2000);</script></body>", 1)
-        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("other_market", "other_market_norate", "other_market_offer"):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("other_market", "other_market_norate", "other_market_offer", "other_market_price_above"):
             body = re.sub(r"₹\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
             body = re.sub(r"Rs\.\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market_offer" and "/products/" in self.path:
@@ -1228,13 +1243,17 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             # template with the app drawing the list into it
             return self._send(404, page("Wishlist | Mock Store", '<div id="wishlist-app"><h1>My Wishlist</h1>'
                                         '<p>Your wishlist is empty. Tap the heart on any product to save it here.</p></div>'))
-        if self.mode == "market_path":
+        if self.mode in ("market_path", "market_redirect_all"):
             # amayrajewellery.com (new30n, 14 Oct): Shopify Markets sends the visitor to /en-us/, where every page link
             # carries the prefix and prices are the US market's (+20%); the default market's /products/<h>.js says less
             self.market = path == "/en-us" or path.startswith("/en-us/")
-            if path == "/" and not self.market:
+            # market_redirect_all: khushbujewellers.com (new30x, 16 Oct): every product URL sends the US visitor to the same
+            # product under /en-us/ (Radar warned 'redirects to /en-us/products/... hidden from shoppers')
+            prod = (self.mode == "market_redirect_all" and path.startswith("/products/")
+                    and not path.endswith((".js", ".json")))
+            if (path == "/" or prod) and not self.market:
                 self.send_response(302)
-                self.send_header("Location", "/en-us")
+                self.send_header("Location", "/en-us" + (path if prod else ""))
                 self.end_headers()
                 return
             if self.market:
@@ -1798,6 +1817,16 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         '<button type="button" disabled>Unavailable</button>'
                         '<div style="height:900px"></div><section class="related"><h2>You may also like</h2>'
                         '<p>Another piece Rs. 4,500.00</p></section>')
+        if self.mode == "price_after_choice":
+            # myop.in (new30x, 16 Oct, desktop DOWN): a personalised product hides its price (class 'myop-hidden') and
+            # keeps 'Add to cart' disabled until the shopper picks a perfume and writes a text
+            return page(f"{p['title']} | Mock Store",
+                        f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
+                        f'<div class="product__price my-hidden" style="display:none">₹{float(p["price"]):,.2f}</div>'
+                        '<select name="perfume"><option value="">Choose Perfume</option><option>Oud</option></select>'
+                        '<input type="text" placeholder="Write your text here..."><button type="button" disabled>Add to cart</button>'
+                        '<div style="height:900px"></div><section class="related"><h2>You may also like</h2>'
+                        '<p>Another bottle Rs. 1,500.00</p></section>')
         if self.mode == "price_on_request":
             body = (f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">')
             if p["handle"] == "wooden-spoon-set":     # banjarakasuti.com: no price, no buy, a store-wide notice
@@ -1905,6 +1934,11 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
 </script>"""
         body = (f'{quick}<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="300" height="300" alt="">'
                 f'<div class="price">₹{float(p["price"]):,.2f}</div>{buy}')
+        if self.mode == "other_market_price_above":
+            # khushbujewellers.com (new30x, 16 Oct, both devices DOWN): the converted '$24.00' sits ABOVE the product's
+            # name, and a note in INR elsewhere on the page means 'no ₹ anywhere' never holds
+            body = re.sub(r'(<h1>.*?</h1>)(.*?)(<div class="price">[^<]*</div>)', r'\3\1\2', body, count=1, flags=re.S)
+            body += '<p class="ship-note">Free shipping on orders above INR 999 across India</p>'
         if self.mode in VARIANT_MODES and available and len(self._variants(p)) > 1 and 'id="product-form-template__main"' in buy:
             pills = self._size_pills(p, vid)
             if self.mode == "variant_no_url_push":        # an app-built buy box: no form, no id field
