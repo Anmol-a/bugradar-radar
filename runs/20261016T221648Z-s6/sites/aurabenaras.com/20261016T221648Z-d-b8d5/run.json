@@ -1,0 +1,4079 @@
+{
+  "run_id": "20261016T221648Z-d-b8d5",
+  "site_id": "aurabenaras.com",
+  "base_url": "https://aurabenaras.com",
+  "device": "desktop",
+  "started_at": "2026-10-16T22:16:48+00:00",
+  "finished_at": "2026-10-16T22:21:03+00:00",
+  "verdict": "blocked",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.07s, redirected to /en-us",
+              "error": null,
+              "secs": 5.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Online | Authentic Handloom Silk | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8411 chars, 57 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /en-us/collections/sarees (41 products)",
+              "error": null,
+              "secs": 6.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/en-us/collections/sarees ('Sarees')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/en-us/collections/sarees",
+                  "actual": "/en-us/collections/sarees",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "41",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 41 candidates \u2192 /en-us/collections/sarees/products/rose-gold-onion-shade-banarasi-handloom-pure-khaddi-chiffon-georgette-silk-saree",
+              "error": null,
+              "secs": 5.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/en-us/collections/sarees/products/rose-gold-onion-shade-banarasi-handloom-pure-khaddi-chiffon-georgette-silk-saree ('Onion Shade Khaddi Chiffon Banarasi Handl\u2026",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/rose-gold-onion-shade-banarasi-handloom-pure-khaddi-chiffon-georgette-silk-saree",
+                  "actual": "/en-us/collections/sarees/products/rose-gold-onion-shade-banarasi-handloom-pure-khaddi-chiffon-georgette-silk-saree",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Onion Shade Khaddi Chiffon Banarasi Handloom Saree', selected variant 36899814113440 at \u20b99,780.00",
+              "error": null,
+              "secs": 0.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/en-us/collections/sarees/products/rose-gold-onion-shade-banarasi-handloom-pure-khaddi-chiffon-georgette-silk-saree",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/rose-gold-onion-shade-banarasi-handloom-pure-khaddi-chiffon-georgette-silk-saree.js with variants",
+                  "actual": "'Onion Shade Khaddi Chiffon Banarasi Handloom Saree', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$103.28'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 2.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Onion Shade Khaddi Chiffon Banarasi Handloom Saree",
+                  "actual": "'ONION SHADE KHADDI CHIFFON BANARASI HANDLOOM SAREE' (h1, 26px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$103.28'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.44,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189024627&cv=11&fst=1792189024627&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=1022390705.1792189025&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=1&auid=1509793161.1792189025&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189025481&cv=11&fst=1792189025481&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=2&apvc=1&auid=1509793161.1792189025&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189030325&cv=11&fst=1792189030325&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=1509793161.1792189025&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189030773&cv=11&fst=1792189030773&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189030898&cv=11&fst=1792189030898&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=0&auid=1509793161.1792189025&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=2&apvc=1&auid=1509793161.1792189025&dt=Onion%20Shade%20Khaddi%20Chiffon%20Banarasi%20Handloom%20Saree%20-",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189037493&cv=11&fst=1792189037493&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=1&auid=1509793161.1792189025&dt=Onion%20Shade%20Khaddi%20Chiffon%20Banarasi%20Handloom%20Saree%20",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189038087&cv=11&fst=1792189038087&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6ae1h",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189038047&cv=11&fst=1792189038047&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=0&auid=1509793161.1792189025&dt=Onion%20Shade%20Khaddi%20Chiffon%20Banarasi%20Handloom%20Saree%20"
+          ],
+          "loads": [
+            {
+              "url": "/en-us",
+              "ttfb": 0.18,
+              "dcl": 1.77,
+              "load": 4.15,
+              "lcp": 2.0
+            },
+            {
+              "url": "/en-us/collections/sarees",
+              "ttfb": 0.01,
+              "dcl": 2.23,
+              "load": 2.75,
+              "lcp": 1.72
+            },
+            {
+              "url": "/en-us/collections/sarees/products/rose-gold-onion-shade-banarasi-handloom-pure-khaddi-chiffon-georg",
+              "ttfb": 0.24,
+              "dcl": 0.92,
+              "load": 2.26,
+              "lcp": 0.57
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.3s, redirected to /en-us",
+              "error": null,
+              "secs": 4.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Online | Authentic Handloom Silk | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8411 chars, 57 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.3s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.3s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.53s, CLS 0.0",
+              "error": null,
+              "secs": 0.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.53s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "103 scripts, at least 1.0 MB of JavaScript, 2 third-party script hosts: cdn.nfcube.com (1), app.interakt.ai (1)",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "103 scripts, at least 1.0 MB of JavaScript, 2 third-party script hosts: cdn.nfcube.com (1), app.interakt.ai (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.38,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=2&apvc=1&auid=1113208868.1792189045&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189045242&cv=11&fst=1792189045242&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=1113208868.1792189045&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189045743&cv=11&fst=1792189045743&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+          ],
+          "loads": [
+            {
+              "url": "/en-us",
+              "ttfb": 0.16,
+              "dcl": 1.01,
+              "load": 2.87,
+              "lcp": 1.53
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /en-us/pages/shop-handloom-sarees-suits-",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.04s",
+              "error": null,
+              "secs": 3.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shop Sarees, Suits, Dupattas & Co-ord Sets Online \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3892 chars, 24 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /en-us/collections/sarees",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.4s",
+              "error": null,
+              "secs": 4.93,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Collection | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17287 chars, 76 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /en-us/collections/suits",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.28s",
+              "error": null,
+              "secs": 5.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Banarasi Suits \u2013 Elegant Silk Suits Online | AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "16004 chars, 76 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /en-us/collections/co-ord-sets",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.22s",
+              "error": null,
+              "secs": 4.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ethnic Co-ord Sets | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "13793 chars, 27 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /en-us/collections/pure-banarasi-dupatta",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.53s",
+              "error": null,
+              "secs": 4.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Pure Banarasi Dupattas \u2013 Silk & Georgette | AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "15252 chars, 44 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /en-us/collections/banarasi-silk-sarees",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.46s",
+              "error": null,
+              "secs": 4.97,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Pure Banarasi Silk Sarees Online | AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17907 chars, 74 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /en-us/collections/kora-silk-sarees",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.35s",
+              "error": null,
+              "secs": 4.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Pure Kora Silk Banarasi Sarees Online - AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "16054 chars, 74 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /en-us/collections/katan-silk-saree",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.4s",
+              "error": null,
+              "secs": 5.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Pure Katan Silk Banarasi Sarees | Pure Silk Bridal Sarees \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "15801 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /en-us/collections/pure-chiffon-saree",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.0s",
+              "error": null,
+              "secs": 5.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Pure Khaddi Chiffon Banarasi Sarees | Lightweight Khaddi Sarees \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "16191 chars, 76 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /en-us/collections/pure-khaddi-georgette",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.24s",
+              "error": null,
+              "secs": 4.24,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Khaddi Georgette Sarees | Pure Banarasi Weaves | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17944 chars, 76 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "10 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 48.74,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/pages/shop-handloom-sarees-suits-dupattas-co-ord-sets"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/pages/shop-handloom-sarees-suits-dupattas-co-ord-sets"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189052465&cv=11&fst=1792189052465&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=2&apvc=1&auid=256872204.1792189052&dt=Shop%20Sarees%2C%20Suits%2C%20Dupattas%20%26%20Co-ord%20Sets%20Onli",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189052624&cv=11&fst=1792189052624&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=2&apvc=1&auid=1292326094.1792189053&dt=Shop%20Sarees%2C%20Suits%2C%20Dupattas%20%26%20Co-ord%20Sets%20On",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189055309&cv=11&fst=1792189055309&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=1292326094.1792189053&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=2&apvc=1&auid=1292326094.1792189053&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189055629&cv=11&fst=1792189055629&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189055733&cv=11&fst=1792189055733&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=2&apvc=0&auid=1292326094.1792189053&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93",
+            "GET https://interaktdevweb.z1.web.core.windows.net/assets/svg/close.svg",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=1292326094.1792189053&dt=Buy%20Banarasi%20Suits%20%E2%80%93%20Elegant%20Silk%20Suits%20Onli",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189061219&cv=11&fst=1792189061219&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=1&auid=1292326094.1792189053&dt=Buy%20Banarasi%20Suits%20%E2%80%93%20Elegant%20Silk%20Suits%20Onl",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189061555&cv=11&fst=1792189061555&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189061655&cv=11&fst=1792189061655&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=0&auid=1292326094.1792189053&dt=Buy%20Banarasi%20Suits%20%E2%80%93%20Elegant%20Silk%20Suits%20Onl",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=1292326094.1792189053&dt=Ethnic%20Co-ord%20Sets%20%7C%20Aura%20Benaras%20%E2%80%93%20AuraBe",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189066366&cv=11&fst=1792189066366&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=2&apvc=1&auid=1292326094.1792189053&dt=Ethnic%20Co-ord%20Sets%20%7C%20Aura%20Benaras%20%E2%80%93%20AuraBe"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/pages/shop-handloom-sarees-suits-dupattas-co-ord-sets",
+              "ttfb": 0.37,
+              "dcl": 0.79,
+              "load": 2.2,
+              "lcp": 1.2
+            },
+            {
+              "url": "/en-us/collections/sarees",
+              "ttfb": 0.03,
+              "dcl": 1.06,
+              "load": 2.45,
+              "lcp": 1.41
+            },
+            {
+              "url": "/en-us/collections/suits",
+              "ttfb": 0.02,
+              "dcl": 1.93,
+              "load": 3.28,
+              "lcp": 2.33
+            },
+            {
+              "url": "/en-us/collections/co-ord-sets",
+              "ttfb": 0.02,
+              "dcl": 0.99,
+              "load": 1.95,
+              "lcp": 1.6
+            },
+            {
+              "url": "/en-us/collections/pure-banarasi-dupattas",
+              "ttfb": 0.04,
+              "dcl": 1.3,
+              "load": 2.45,
+              "lcp": 1.62
+            },
+            {
+              "url": "/en-us/collections/banarasi-silk-sarees",
+              "ttfb": 0.03,
+              "dcl": 1.22,
+              "load": 2.39,
+              "lcp": 1.59
+            },
+            {
+              "url": "/en-us/collections/kora-silk-sarees",
+              "ttfb": 0.02,
+              "dcl": 1.11,
+              "load": 2.23,
+              "lcp": 1.47
+            },
+            {
+              "url": "/en-us/collections/katan-silk-saree",
+              "ttfb": 0.02,
+              "dcl": 1.17,
+              "load": 2.71,
+              "lcp": 1.41
+            },
+            {
+              "url": "/en-us/collections/pure-chiffon-saree",
+              "ttfb": 0.03,
+              "dcl": 1.78,
+              "load": 3.19,
+              "lcp": 2.43
+            },
+            {
+              "url": "/en-us/collections/pure-khaddi-georgette",
+              "ttfb": 0.02,
+              "dcl": 1.0,
+              "load": 2.11,
+              "lcp": 1.28
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.11s, redirected to /en-us",
+              "error": null,
+              "secs": 3.53,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Online | Authentic Handloom Silk | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8411 chars, 57 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.74,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189100065&cv=11&fst=1792189100065&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=1&auid=1111554852.1792189100&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189100440&cv=11&fst=1792189100440&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=1065311562.1792189100&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20"
+          ],
+          "loads": [
+            {
+              "url": "/en-us",
+              "ttfb": 0.16,
+              "dcl": 0.92,
+              "load": 2.38,
+              "lcp": 1.18
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /en-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.32s",
+              "error": null,
+              "secs": 5.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Online | Authentic Handloom Silk | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8411 chars, 57 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Banarasi Sarees Online | Authentic Handloom Silk | Aura Bena', heading 'AURABENARAS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/en-us",
+                  "actual": "/en-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /en-us/collections/festive-banarasi-sare",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.64s",
+              "error": null,
+              "secs": 5.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Festive Banarasi Sarees | Pure Silk Sarees for Celebrations \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17149 chars, 76 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Festive Banarasi Sarees | Pure Silk Sarees for Celebrations ', heading 'FESTIVE BANARASI SAREES'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/en-us/collections/festive-banarasi-sarees",
+                  "actual": "/en-us/collections/festive-banarasi-sarees",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /en-us/collections/additional-services",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.76s",
+              "error": null,
+              "secs": 3.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Additional Services - AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4069 chars, 25 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Additional Services - AuraBenaras', heading 'ADDITIONAL SERVICES'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/en-us/collections/additional-services",
+                  "actual": "/en-us/collections/additional-services",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /en-us/pages/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.75s",
+              "error": null,
+              "secs": 3.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund Policy | Aura Benaras Official Store \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2410 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Refund Policy | Aura Benaras Official Store \u2013 AuraBenaras', heading 'REFUND POLICY'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/en-us/pages/refund-policy",
+                  "actual": "/en-us/pages/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.02,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189104487&cv=11&fst=1792189104487&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=2&apvc=1&auid=72594968.1792189104&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%7C",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=1&auid=1099393480.1792189105&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189104888&cv=11&fst=1792189104888&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://interaktdevweb.z1.web.core.windows.net/assets/svg/close.svg",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=2&apvc=1&auid=1099393480.1792189105&dt=Festive%20Banarasi%20Sarees%20%7C%20Pure%20Silk%20Sarees%20for%20C",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189109582&cv=11&fst=1792189109582&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=1099393480.1792189105&dt=Festive%20Banarasi%20Sarees%20%7C%20Pure%20Silk%20Sarees%20for%20",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189109854&cv=11&fst=1792189109854&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189109902&cv=11&fst=1792189109902&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=0&auid=1099393480.1792189105&dt=Festive%20Banarasi%20Sarees%20%7C%20Pure%20Silk%20Sarees%20for%20",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=1&auid=1099393480.1792189105&dt=Additional%20Services%20-%20AuraBenaras&tid=AW-647061935&en=page_v",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189113798&cv=11&fst=1792189113798&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189114007&cv=11&fst=1792189114007&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=1&auid=1099393480.1792189105&dt=Additional%20Services%20-%20AuraBenaras&tid=AW-647061935&en=page_",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=0&auid=1099393480.1792189105&dt=Additional%20Services%20-%20AuraBenaras&tid=AW-647061935&en=view_",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189114042&cv=11&fst=1792189114042&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=2&apvc=1&auid=1099393480.1792189105&dt=Refund%20Policy%20%7C%20Aura%20Benaras%20Official%20Store%20%E2%80",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189117545&cv=11&fst=1792189117545&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189117679&cv=11&fst=1792189117679&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae"
+          ],
+          "loads": [
+            {
+              "url": "/en-us",
+              "ttfb": 0.06,
+              "dcl": 1.06,
+              "load": 3.66,
+              "lcp": 1.35
+            },
+            {
+              "url": "/en-us/collections/festive-banarasi-sarees",
+              "ttfb": 0.03,
+              "dcl": 1.38,
+              "load": 2.69,
+              "lcp": 1.64
+            },
+            {
+              "url": "/en-us/collections/additional-services",
+              "ttfb": 0.02,
+              "dcl": 0.59,
+              "load": 1.35,
+              "lcp": 0.79
+            },
+            {
+              "url": "/en-us/pages/refund-policy",
+              "ttfb": 0.25,
+              "dcl": 0.61,
+              "load": 1.63,
+              "lcp": 0.52
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.sarees",
+      "suite": "catalog",
+      "title": "Collection 'Handloom Banarasi Sarees Collection' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.91s, redirected to /en-us/collections/sarees",
+              "error": null,
+              "secs": 4.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Collection | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17287 chars, 76 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "41 products listed",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "41",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.93s, CLS 0.247",
+              "error": null,
+              "secs": 0.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.93s, CLS 0.247",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "114 scripts, at least 1.0 MB of JavaScript, 2 third-party script hosts: cdn.nfcube.com (1), app.interakt.ai (1)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "114 scripts, at least 1.0 MB of JavaScript, 2 third-party script hosts: cdn.nfcube.com (1), app.interakt.ai (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.11,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/collections/sarees"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/collections/sarees"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=1&auid=394137223.1792189123&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%2",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189122767&cv=11&fst=1792189122767&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189123168&cv=11&fst=1792189123168&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=1&auid=1786094955.1792189123&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189123363&cv=11&fst=1792189123363&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=0&auid=1786094955.1792189123&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://interaktdevweb.z1.web.core.windows.net/assets/svg/close.svg"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/collections/sarees",
+              "ttfb": 0.2,
+              "dcl": 1.58,
+              "load": 3.07,
+              "lcp": 1.93
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.kora-silk-sarees",
+      "suite": "catalog",
+      "title": "Collection 'Kora Silk Sarees Collection' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.59s, redirected to /en-us/collections/kora-silk-sarees",
+              "error": null,
+              "secs": 4.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Pure Kora Silk Banarasi Sarees Online - AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "16054 chars, 74 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "41 products listed",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "41",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.71s, CLS 0.108",
+              "error": null,
+              "secs": 0.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.71s, CLS 0.108",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "123 scripts, at least 1.1 MB of JavaScript, 2 third-party script hosts: cdn.nfcube.com (1), app.interakt.ai (1)",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "123 scripts, at least 1.1 MB of JavaScript, 2 third-party script hosts: cdn.nfcube.com (1), app.interakt.ai (1)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.47,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/collections/kora-silk-sarees"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/collections/kora-silk-sarees"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=2&apvc=1&auid=260378182.1792189129&dt=Buy%20Pure%20Kora%20Silk%20Banarasi%20Sarees%20Online%20-%20AuraBe",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189128597&cv=11&fst=1792189128597&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189129398&cv=11&fst=1792189129398&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=2&apvc=1&auid=1412390154.1792189129&dt=Buy%20Pure%20Kora%20Silk%20Banarasi%20Sarees%20Online%20-%20AuraBe",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=2&apvc=0&auid=1412390154.1792189129&dt=Buy%20Pure%20Kora%20Silk%20Banarasi%20Sarees%20Online%20-%20AuraBe",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189129594&cv=11&fst=1792189129594&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "GET https://interaktdevweb.z1.web.core.windows.net/assets/svg/whatsapp-icon.svg"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/collections/kora-silk-sarees",
+              "ttfb": 0.16,
+              "dcl": 1.34,
+              "load": 3.56,
+              "lcp": 1.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.sarees",
+      "suite": "catalog",
+      "title": "Collection 'Handloom Banarasi Sarees Collection' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.55s, redirected to /en-us/collections/sarees",
+              "error": null,
+              "secs": 3.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Collection | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17287 chars, 76 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "41 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.17s",
+              "error": null,
+              "secs": 4.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Collection | Aura Benaras \u2013 Page 2 \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17293 chars, 76 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 40 more products",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "40",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.92,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/collections/sarees"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/collections/sarees"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189134789&cv=11&fst=1792189134789&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=1&auid=319725281.1792189135&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189135352&cv=11&fst=1792189135352&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=1&auid=1591219191.1792189135&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=0&auid=1591219191.1792189135&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189135456&cv=11&fst=1792189135456&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://aurabenaras.com/api/event/collect",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189138897&cv=11&fst=1792189138897&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=2&apvc=1&auid=1591219191.1792189135&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189139211&cv=11&fst=1792189139211&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=2&apvc=1&auid=1591219191.1792189135&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=2&apvc=0&auid=1591219191.1792189135&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189139330&cv=11&fst=1792189139330&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/collections/sarees",
+              "ttfb": 0.16,
+              "dcl": 1.3,
+              "load": 3.01,
+              "lcp": 1.58
+            },
+            {
+              "url": "/en-us/collections/sarees?page=2",
+              "ttfb": 0.01,
+              "dcl": 0.99,
+              "load": 2.06,
+              "lcp": 1.25
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.sarees",
+      "suite": "catalog",
+      "title": "Filtering collection 'Handloom Banarasi Sarees Collection' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.75s, redirected to /en-us/collections/sarees",
+              "error": null,
+              "secs": 4.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Collection | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17287 chars, 76 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "64 filter options (e.g. In stock (3996), Out of stock (4)); applying 'In stock (3996)' = filter.v.availability=1",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "pass",
+              "detail": "opened /en-us/collections/sarees?filter.v.availability=1 directly: the theme's own request (?filter.v.availability=1&filter.v.price.gte=&filter.v.price.lte=&filter.v.price.gte=&filte\u2026) is disallowed by robots.txt",
+              "error": null,
+              "secs": 11.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Collection | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "17296 chars, 76 images",
+                  "ok": true
+                },
+                {
+                  "what": "filters in the page address",
+                  "expected": "exactly one: filter.v.availability=1",
+                  "actual": "filter.v.availability=1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_narrows_results",
+              "status": "pass",
+              "detail": "'In stock (3996)': 41 products listed (41 without the filter), all match it in the store's data; 1 of them not in the store's data Radar read (250 products)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed with the filter on",
+                  "expected": "\u2265 1 (the store's own filter says 3996)",
+                  "actual": "41",
+                  "ok": true
+                },
+                {
+                  "what": "products listed: filtered vs unfiltered",
+                  "expected": "\u2264 250",
+                  "actual": "41",
+                  "ok": true
+                },
+                {
+                  "what": "listed products matching 'In stock (3996)' (store's data)",
+                  "expected": "all 40",
+                  "actual": "40 of 40",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 22.61,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/collections/sarees"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/collections/sarees"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=2&apvc=1&auid=312106538.1792189144&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189144002&cv=11&fst=1792189144002&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=733493139.1792189145&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189144505&cv=11&fst=1792189144505&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=0&auid=733493139.1792189145&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189144711&cv=11&fst=1792189144711&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189149177&cv=11&fst=1792189149177&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=2&apvc=1&auid=733493139.1792189145&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%2",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=1&auid=733493139.1792189145&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189149510&cv=11&fst=1792189149510&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189149575&cv=11&fst=1792189149575&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=2&apvc=0&auid=733493139.1792189145&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189159129&cv=11&fst=1792189159129&fmt=8&bg=ffffff&guid=ON&async=1&en=user_engagement&gtm=45b",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=2&apvc=1&auid=733493139.1792189145&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189161053&cv=11&fst=1792189161053&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189161435&cv=11&fst=1792189161435&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=2&apvc=1&auid=733493139.1792189145&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=2&apvc=0&auid=733493139.1792189145&dt=Banarasi%20Sarees%20Collection%20%7C%20Aura%20Benaras%20%E2%80%93%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189161632&cv=11&fst=1792189161632&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item_list&gtm=45be"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/collections/sarees",
+              "ttfb": 0.16,
+              "dcl": 1.25,
+              "load": 3.4,
+              "lcp": 1.49
+            },
+            {
+              "url": "/en-us/collections/sarees?filter.v.availability=1",
+              "ttfb": 0.02,
+              "dcl": 1.6,
+              "load": 2.77,
+              "lcp": 1.94
+            },
+            {
+              "url": "/collections/sarees",
+              "ttfb": 0.58,
+              "dcl": 1.67,
+              "load": 2.91,
+              "lcp": 1.9
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.purple-pure-kora-silk-handloom-banarasi-",
+      "suite": "product",
+      "title": "PDP 'Purple Pure Kora Silk Handloom Banarasi Saree'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.58s, redirected to /en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+              "error": null,
+              "secs": 8.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Purple Banarasi Handloom Kora Silk Saree - Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4829 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "warn",
+              "detail": null,
+              "error": "final URL: expected /products/purple-pure-kora-silk-handloom-banarasi-saree-38, got /en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+                  "actual": "/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Purple Pure Kora Silk Handloom Banarasi Saree', selected variant 50760978759938 at \u20b912,380.00",
+              "error": null,
+              "secs": 0.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/purple-pure-kora-silk-handloom-banarasi-saree-38.js with variants",
+                  "actual": "'Purple Pure Kora Silk Handloom Banarasi Saree', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$130.74'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 2.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Purple Pure Kora Silk Handloom Banarasi Saree",
+                  "actual": "'PURPLE PURE KORA SILK HANDLOOM BANARASI SAREE' (h1, 26px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$130.74'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.88,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38?variant=50760978759938"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38?variant=50760978759938"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189166841&cv=11&fst=1792189166841&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=1805323004.1792189167&dt=Purple%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aura%20B",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=1&auid=1241265935.1792189167&dt=Purple%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aura%20Be",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189167448&cv=11&fst=1792189167448&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189167613&cv=11&fst=1792189167613&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6af0h",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=0&auid=1241265935.1792189167&dt=Purple%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aura%20Be",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "GET https://interaktdevweb.z1.web.core.windows.net/assets/svg/close.svg",
+            "GET https://interaktdevweb.z1.web.core.windows.net/assets/svg/whatsapp-icon.svg"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38?variant=50760978759938",
+              "ttfb": 0.17,
+              "dcl": 1.13,
+              "load": 3.77,
+              "lcp": 0.95
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.royal-blue-banarasi-handloom-kora-silk-s",
+      "suite": "product",
+      "title": "PDP 'Royal Blue Banarasi Handloom Kora Silk Saree'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.33s, redirected to /en-us/products/royal-blue-banarasi-handloom-kora-silk-saree-11",
+              "error": null,
+              "secs": 6.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Royal Blue Banarasi Handloom Kora Silk Saree - Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4803 chars, 35 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "warn",
+              "detail": null,
+              "error": "final URL: expected /products/royal-blue-banarasi-handloom-kora-silk-saree-11, got /en-us/products/royal-blue-banarasi-handloom-kora-silk-saree-11",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/royal-blue-banarasi-handloom-kora-silk-saree-11",
+                  "actual": "/en-us/products/royal-blue-banarasi-handloom-kora-silk-saree-11",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Royal Blue Banarasi Handloom Kora Silk Saree', selected variant 50750188290306 at \u20b914,500.00",
+              "error": null,
+              "secs": 0.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/en-us/products/royal-blue-banarasi-handloom-kora-silk-saree-11",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/royal-blue-banarasi-handloom-kora-silk-saree-11.js with variants",
+                  "actual": "'Royal Blue Banarasi Handloom Kora Silk Saree', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$153.12'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 2.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Royal Blue Banarasi Handloom Kora Silk Saree",
+                  "actual": "'ROYAL BLUE BANARASI HANDLOOM KORA SILK SAREE' (h1, 26px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$153.12'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 9.22,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/royal-blue-banarasi-handloom-kora-silk-saree-11?variant=50750188290306"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/royal-blue-banarasi-handloom-kora-silk-saree-11?variant=50750188290306"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=588744636.1792189178&dt=Royal%20Blue%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aur",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189177563&cv=11&fst=1792189177563&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189177808&cv=11&fst=1792189177808&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189177821&cv=11&fst=1792189177821&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6ae1v",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=1&auid=1046168918.1792189178&dt=Royal%20Blue%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Au",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=0&auid=1046168918.1792189178&dt=Royal%20Blue%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Au",
+            "POST https://aurabenaras.com/api/event/collect",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/products/royal-blue-banarasi-handloom-kora-silk-saree-11?variant=50750188290306",
+              "ttfb": 0.43,
+              "dcl": 0.99,
+              "load": 2.98,
+              "lcp": 1.55
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.bottle-green-pure-kora-silk-handloom-ban",
+      "suite": "product",
+      "title": "PDP 'Bottle Green Pure Kora Silk Handloom Banarasi Sare'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.69s, redirected to /en-us/products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34",
+              "error": null,
+              "secs": 8.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Bottle Green Kora Silk Banarasi Saree with Kadwa Jaal \u2013 Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4846 chars, 37 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "warn",
+              "detail": null,
+              "error": "final URL: expected /products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34, got /en-us/products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34",
+                  "actual": "/en-us/products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Bottle Green Pure Kora Silk Handloom Banarasi Saree', selected variant 50750146117890 at \u20b913,975.00",
+              "error": null,
+              "secs": 0.21,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/en-us/products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34.js with variants",
+                  "actual": "'Bottle Green Pure Kora Silk Handloom Banarasi Saree', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$147.58'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 2.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Bottle Green Pure Kora Silk Handloom Banarasi Saree",
+                  "actual": "'BOTTLE GREEN PURE KORA SILK HANDLOOM BANARASI SAREE' (h1, 26px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$147.58'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.02,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34?variant=50750146117890"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34?variant=50750146117890"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=2&apvc=1&auid=1694766604.1792189187&dt=Bottle%20Green%20Kora%20Silk%20Banarasi%20Saree%20with%20Kadwa%20",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189187290&cv=11&fst=1792189187290&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189187743&cv=11&fst=1792189187743&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=349009943.1792189188&dt=Bottle%20Green%20Kora%20Silk%20Banarasi%20Saree%20with%20Kadwa%20Ja",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189187958&cv=11&fst=1792189187958&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6ae1v",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=0&auid=349009943.1792189188&dt=Bottle%20Green%20Kora%20Silk%20Banarasi%20Saree%20with%20Kadwa%20Ja",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/products/bottle-green-pure-kora-silk-handloom-banarasi-saree-34?variant=50750146117890",
+              "ttfb": 0.45,
+              "dcl": 1.37,
+              "load": 3.93,
+              "lcp": 1.83
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'Purple Pure Kora Silk Handloom Banarasi ' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.18s, redirected to /en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+              "error": null,
+              "secs": 4.83,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Purple Banarasi Handloom Kora Silk Saree - Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4829 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.02,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38?variant=50760978759938"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38?variant=50760978759938"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=1&auid=781416337.1792189198&dt=Purple%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aura%20Be",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189198046&cv=11&fst=1792189198046&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189199191&cv=11&fst=1792189199191&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189199220&cv=11&fst=1792189199220&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6ae1v",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=1&auid=1308773489.1792189199&dt=Purple%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aura%20B",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=2&apvc=0&auid=1308773489.1792189199&dt=Purple%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aura%20B"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38?variant=50760978759938",
+              "ttfb": 0.15,
+              "dcl": 0.81,
+              "load": 3.23,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.purple",
+      "suite": "search",
+      "title": "Search for 'purple' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.46s, redirected to /en-us",
+              "error": null,
+              "secs": 4.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Online | Authentic Handloom Silk | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8411 chars, 57 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 27 results, 26 mention 'purple'",
+              "error": null,
+              "secs": 7.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "27",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'purple'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "26 of 27",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.63,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=217635602.1792189203&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%7",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189202543&cv=11&fst=1792189202543&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=2075044098.1792189203&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189203210&cv=11&fst=1792189203210&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189208449&cv=11&fst=1792189208449&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=2&apvc=1&auid=2075044098.1792189203&dt=Search%3A%20988%20results%20found%20for%20%22purple%22%20%E2%80%93",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189208732&cv=11&fst=1792189208732&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=2075044098.1792189203&dt=Search%3A%20988%20results%20found%20for%20%22purple%22%20%E2%80%9",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189208855&cv=11&fst=1792189208855&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=0&auid=2075044098.1792189203&dt=Search%3A%20988%20results%20found%20for%20%22purple%22%20%E2%80%9"
+          ],
+          "loads": [
+            {
+              "url": "/en-us",
+              "ttfb": 0.17,
+              "dcl": 1.17,
+              "load": 3.02,
+              "lcp": 1.53
+            },
+            {
+              "url": "/en-us/search?q=purple&options%5Bprefix%5D=last",
+              "ttfb": 0.01,
+              "dcl": 1.09,
+              "load": 2.27,
+              "lcp": 1.38
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.9s, redirected to /en-us/search",
+              "error": null,
+              "secs": 3.55,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 1000 results found for \"qzxvbugradar\" \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2732 chars, 57 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "warn",
+              "detail": null,
+              "error": "shopper is told nothing matched: expected a 'no results' message, or no products listed, got no message, 29 products listed",
+              "secs": 6.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 29 products listed",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.07,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=1&auid=458115902.1792189215&dt=Search%3A%201000%20results%20found%20for%20%22qzxvbugradar%22%20%E",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189214688&cv=11&fst=1792189214688&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=1&auid=857170431.1792189215&dt=Search%3A%201000%20results%20found%20for%20%22qzxvbugradar%22%20%E2",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189215055&cv=11&fst=1792189215055&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189215083&cv=11&fst=1792189215083&fmt=8&bg=ffffff&guid=ON&async=1&en=view_search_results&gtm",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=0&auid=857170431.1792189215&dt=Search%3A%201000%20results%20found%20for%20%22qzxvbugradar%22%20%E2",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.18,
+              "dcl": 1.65,
+              "load": 2.59,
+              "lcp": 2.01
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'purple' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.48s, redirected to /en-us",
+              "error": null,
+              "secs": 3.89,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Online | Authentic Handloom Silk | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8411 chars, 57 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "3 product suggestion(s) while typing 'purple', e.g. 'Purple Banarasi Handloom Kora Silk Saree \u20b9 9,900.00'",
+              "error": null,
+              "secs": 3.23,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.29,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=842573234.1792189224&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%7",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189224178&cv=11&fst=1792189224178&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=892916846.1792189225&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189224629&cv=11&fst=1792189224629&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+          ],
+          "loads": [
+            {
+              "url": "/en-us",
+              "ttfb": 0.17,
+              "dcl": 1.2,
+              "load": 2.89,
+              "lcp": 1.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.77s, redirected to /en-us",
+              "error": null,
+              "secs": 4.44,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Banarasi Sarees Online | Authentic Handloom Silk | Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8411 chars, 57 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 77: 'Banarasi Sarees Online | Authentic Handloom Silk | Aura Bena'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "77: 'Banarasi Sarees Online | Authentic Handloom Silk | Aura Bena'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Shop authentic handwoven Banarasi silk sarees from Aura Benaras. Disco",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "159: 'Shop authentic handwoven Banarasi silk sarees from Aura Bena'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://aurabenaras.com/en-us",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://aurabenaras.com/en-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Banarasi Sarees Online | Authentic Handloom Silk | Aura Benaras",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://aurabenaras.com/cdn/shop/files/Aura_Banaras128_Large_6665ee01-f2fb-4676-b87b-522ae81a3b1b.jpg?v=1776261455",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.63,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189231897&cv=11&fst=1792189231897&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=2&apvc=1&auid=46798816.1792189232&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20%7C",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189232351&cv=11&fst=1792189232351&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=2&apvc=1&auid=1914756541.1792189232&dt=Banarasi%20Sarees%20Online%20%7C%20Authentic%20Handloom%20Silk%20"
+          ],
+          "loads": [
+            {
+              "url": "/en-us",
+              "ttfb": 0.16,
+              "dcl": 1.59,
+              "load": 3.34,
+              "lcp": 2.48
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.35s, redirected to /en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+              "error": null,
+              "secs": 8.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Purple Banarasi Handloom Kora Silk Saree - Aura Benaras \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4829 chars, 32 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Purple Banarasi Handloom Kora Silk Saree - Aura Benaras \u2013 AuraBenaras",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "69: 'Purple Banarasi Handloom Kora Silk Saree - Aura Benaras \u2013 Au'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Shop this Purple Banarasi Handloom Kora Silk Saree. This vintage piece",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "144: 'Shop this Purple Banarasi Handloom Kora Silk Saree. This vin'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://aurabenaras.com/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://aurabenaras.com/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Purple Pure Kora Silk Handloom Banarasi Saree",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://aurabenaras.com/cdn/shop/files/Nayanthara_0072de69-5ab1-4e45-8484-1f90a20cbc53.png?v=1792046600",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.26,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189236480&cv=11&fst=1792189236480&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=2&apvc=1&auid=454609475.1792189236&dt=Purple%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aura%20Ben",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=1&auid=744372771.1792189237&dt=Purple%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aura%20Ben",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189237109&cv=11&fst=1792189237109&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189237207&cv=11&fst=1792189237207&fmt=8&bg=ffffff&guid=ON&async=1&en=view_item&gtm=45be6ae1v",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=0&auid=744372771.1792189237&dt=Purple%20Banarasi%20Handloom%20Kora%20Silk%20Saree%20-%20Aura%20Ben",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "GET https://interaktdevweb.z1.web.core.windows.net/assets/svg/close.svg"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/products/purple-pure-kora-silk-handloom-banarasi-saree-38",
+              "ttfb": 0.16,
+              "dcl": 1.03,
+              "load": 3.6,
+              "lcp": 0.64
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 2.59,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404 (redirected to /en-us/products/bugradar-check-does-not-exist)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.72,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=2&apvc=1&auid=583688224.1792189244&dt=404%20Not%20Found%20%E2%80%93%20AuraBenaras&tid=AW-647061935&en=pag",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189244211&cv=11&fst=1792189244211&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=2&apvc=1&auid=323262132.1792189245&dt=404%20Not%20Found%20%E2%80%93%20AuraBenaras&tid=AW-647061935&en=pa",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189244520&cv=11&fst=1792189244520&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/products/bugradar-check-does-not-exist",
+              "ttfb": 0.4,
+              "dcl": 0.77,
+              "load": 1.89,
+              "lcp": 0.66
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /en-us/pages/returns-and-cancellation",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.31s",
+              "error": null,
+              "secs": 3.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Easy Returns & Collections | Hassle-Free Returns \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2667 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Easy Returns & Collections | Hassle-Free Returns \u2013 AuraBenar', heading 'RETURNS AND CANCELLATION'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/en-us/pages/returns-and-cancellation",
+                  "actual": "/en-us/pages/returns-and-cancellation",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "2604 chars of policy text",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "2604 chars under 'RETURNS AND CANCELLATION'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /en-us/pages/shipping-and-delivery-polic",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.63s",
+              "error": null,
+              "secs": 3.54,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping & Delivery Information \u2013 AuraBenaras | Fast & Reliable Shippi",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1863 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping & Delivery Information \u2013 AuraBenaras | Fast & Relia', heading 'SHIPPING & DELIVERY INFORMATION \u2013 AURABENARAS | FAST & RELIABLE SHIPPING'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/en-us/pages/shipping-and-delivery-policy",
+                  "actual": "/en-us/pages/shipping-and-delivery-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "1818 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "1818 chars under 'SHIPPING & DELIVERY INFORMATION \u2013 AURABENARAS | FAST & RELIABLE SHIPPING'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /en-us/pages/privacy-policy-aura-benaras",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.8s",
+              "error": null,
+              "secs": 3.88,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy Policy | Aura Benaras Official Store \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3781 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy Policy | Aura Benaras Official Store \u2013 AuraBenaras', heading 'PRIVACY POLICY | AURA BENARAS OFFICIAL STORE'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/en-us/pages/privacy-policy-aura-benaras-official-store",
+                  "actual": "/en-us/pages/privacy-policy-aura-benaras-official-store",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "3694 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "3694 chars under 'PRIVACY POLICY | AURA BENARAS OFFICIAL STORE'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /en-us/pages/terms-and-conditions",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.67s",
+              "error": null,
+              "secs": 2.84,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms & Conditions | Aura Benaras Official Store \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6502 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms & Conditions | Aura Benaras Official Store \u2013 AuraBenar', heading 'TERMS AND CONDITIONS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/en-us/pages/terms-and-conditions",
+                  "actual": "/en-us/pages/terms-and-conditions",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "6463 chars of policy text",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "6463 chars under 'TERMS AND CONDITIONS'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /en-us/pages/contact-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.66s",
+              "error": null,
+              "secs": 3.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact Aura\u202fBenaras \u2013 Banarasi Saree Store in Varanasi \u2013 AuraBenaras",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1040 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact Aura\\u202fBenaras \u2013 Banarasi Saree Store in Varanasi \u2013 Au', heading 'CONTACT AURA BENARAS'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/en-us/pages/contact-us",
+                  "actual": "/en-us/pages/contact-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "email / phone shown",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "email / phone shown",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 17.53,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "Refused to apply style from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468' because its MIME type ('text/html') is not a supported stylesheet MIME type, and strict MIME checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/pages/returns-and-cancellation"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468"
+            },
+            {
+              "type": "error",
+              "text": "Refused to execute script from 'https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468' because its MIME type ('text/html') is not executable, and strict MIME type checking is enabled.",
+              "url": "https://aurabenaras.com/en-us/pages/returns-and-cancellation"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://aurabenaras.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 429 ()",
+              "url": "https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 400 ()",
+              "url": "https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi"
+            }
+          ],
+          "failed_requests": [
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-style.css?v=163468",
+            "GET https://aurabenaras.com/cdn/shop/files/mlveda-currencies-switcher.js?v=163468",
+            "POST https://aurabenaras.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189247213&cv=11&fst=1792189247213&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=2&apvc=1&auid=305084684.1792189247&dt=Easy%20Returns%20%26%20Collections%20%7C%20Hassle-Free%20Returns%20",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=2&apvc=1&auid=305084684.1792189247&dt=Easy%20Returns%20%26%20Collections%20%7C%20Hassle-Free%20Returns%2",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189247753&cv=11&fst=1792189247753&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=2&apvc=1&auid=305084684.1792189247&dt=Shipping%20%26%20Delivery%20Information%20%E2%80%93%20AuraBenaras%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189249513&cv=11&fst=1792189249513&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189249759&cv=11&fst=1792189249759&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=2&apvc=1&auid=305084684.1792189247&dt=Shipping%20%26%20Delivery%20Information%20%E2%80%93%20AuraBenaras%2",
+            "GET https://www.instagram.com/accounts/login/?next=https%3A%2F%2Fwww.instagram.com%2Faura_benaras&is_from_rle",
+            "GET https://www.facebook.com/login/?next=https%3A%2F%2Fwww.facebook.com%2Faura.benarasi",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=1&auid=305084684.1792189247&dt=Privacy%20Policy%20%7C%20Aura%20Benaras%20Official%20Store%20%E2%8",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189253609&cv=11&fst=1792189253609&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6af",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=2&apvc=1&auid=305084684.1792189247&dt=Privacy%20Policy%20%7C%20Aura%20Benaras%20Official%20Store%20%E2%80",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189253667&cv=11&fst=1792189253667&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=2&apvc=1&auid=305084684.1792189247&dt=Terms%20%26%20Conditions%20%7C%20Aura%20Benaras%20Official%20Store%",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189257001&cv=11&fst=1792189257001&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189257175&cv=11&fst=1792189257175&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=2&apvc=1&auid=305084684.1792189247&dt=Terms%20%26%20Conditions%20%7C%20Aura%20Benaras%20Official%20Store",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=2&apvc=1&auid=305084684.1792189247&dt=Contact%20Aura%E2%80%AFBenaras%20%E2%80%93%20Banarasi%20Saree%20St",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189260053&cv=11&fst=1792189260053&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=2&apvc=1&auid=305084684.1792189247&dt=Contact%20Aura%E2%80%AFBenaras%20%E2%80%93%20Banarasi%20Saree%20St",
+            "POST https://www.google.com/rmkt/collect/647061935/?random=1792189260565&cv=11&fst=1792189260565&fmt=8&bg=ffffff&guid=ON&async=1&en=gtag.config&gtm=45be6ae"
+          ],
+          "loads": [
+            {
+              "url": "/en-us/pages/returns-and-cancellation",
+              "ttfb": 0.24,
+              "dcl": 0.92,
+              "load": 2.25,
+              "lcp": 0.78
+            },
+            {
+              "url": "/en-us/pages/shipping-and-delivery-policy",
+              "ttfb": 0.22,
+              "dcl": 0.53,
+              "load": 1.51,
+              "lcp": 0.48
+            },
+            {
+              "url": "/en-us/pages/privacy-policy-aura-benaras-official-store",
+              "ttfb": 0.25,
+              "dcl": 0.69,
+              "load": 1.92,
+              "lcp": 0.7
+            },
+            {
+              "url": "/en-us/pages/terms-and-conditions",
+              "ttfb": 0.02,
+              "dcl": 0.54,
+              "load": 0.99,
+              "lcp": 0.52
+            },
+            {
+              "url": "/en-us/pages/contact-us",
+              "ttfb": 0.21,
+              "dcl": 0.55,
+              "load": 1.49,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Banarasi Sarees Online | Authentic Handloom Silk | Aura Benaras \u2013 AuraBenaras",
+    "theme": "Impulse (store copy: Impulse | Speed Up)",
+    "checkout_app": "GoKwik",
+    "access": "open",
+    "nav": 25,
+    "collections": 50,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "account page /en-us/account not opened: robots.txt disallows it"
+  ],
+  "perf": {
+    "pages": 30,
+    "median_load_secs": 2.42,
+    "slowest": {
+      "url": "/en-us",
+      "load_secs": 4.15
+    },
+    "console_errors": 5,
+    "console_warnings": 1,
+    "failed_requests": 193
+  },
+  "counts": {
+    "pass": 16,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 4,
+    "skipped": 0
+  }
+}
