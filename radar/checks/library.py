@@ -867,6 +867,12 @@ def _main_buy_button(ctx: Ctx, product: dict):
         if cod and len(cod) == len(st.get("ctl") or []):
             raise CatalogOnly(f"not tested: this product is sold only through an order-form app ({cod[0]}): the shopper "
                               "fills in a form instead of using a cart, and Radar never fills or submits forms")
+        # nubronicforte.com (new30t, 15 Oct): Radar picked the 'Performance Kit', a gift the store adds to orders on its
+        # own ('Complimentary Performance Kit', 'Free Gift Auto Added' on the main product); its page has a hidden, empty
+        # cart form and no buy control anywhere = the store does not sell it on its own: not tested, never not-judged
+        if st["own"] and not st.get("ctl") and all("no button in the form (form hidden)" in x for x in (st.get("seen") or ["?"])):
+            raise CatalogOnly("not tested: this product's page offers no way to buy it (its cart form is hidden and "
+                              "empty, and the page shows no buy control): a gift or add-on the store adds by itself")
         # verdict rule (13 Oct): no buy control Radar can find is not proof there is none: NOT JUDGED with the facts
         raise NotJudged("add-to-cart control for THIS product on its page: "
                         + ("none: no add-to-cart form for this product" if not st["own"]

@@ -376,6 +376,8 @@ Modes (to prove Radar catches and heals what it should):
                    404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
   hidden_form_app_button  the product's cart form is hidden and holds no button; the buy control is an app's element
                    outside it (shopkara.store, nubronicforte.com) -> found, the cart check adds the right product, PASSES
+  gift_only_product  hidden, empty cart form and no buy control anywhere (a gift the store auto-adds; nubronicforte
+                   'Performance Kit') -> product BLOCKED 'not tested: offers no way to buy it'
   cod_form_only    hidden buttonless cart form + only an 'Order Now - Cash on Delivery' order-form app button
                    (shopkara.store) -> product BLOCKED 'not tested: sold only through an order-form app'
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
@@ -1901,6 +1903,10 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      '<style>#product-form-template__main button{display:none}</style>'
                      '<script>addEventListener("scroll", () => { if (scrollY > 300) document.getElementById("sticky-atc")'
                      '.style.display = "block"; });</script>')
+        if self.mode == "gift_only_product":
+            # nubronicforte.com (new30t): the 'Performance Kit' gift's page: a hidden, empty cart form, no buy control
+            body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
+                                     f'name="id" value="{vid}"></form><p>Complimentary with every order. Auto-added at checkout.</p>')
         if self.mode == "cod_form_only":
             # shopkara.store (new30p/t): a hidden, buttonless cart form; the only buy control is a COD order-form app's
             # 'Order Now - Cash on Delivery' popup button
