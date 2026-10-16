@@ -1,0 +1,3691 @@
+{
+  "run_id": "20261016T133026Z-d-be67",
+  "site_id": "nakshatrakids.com",
+  "base_url": "https://nakshatrakids.com",
+  "device": "desktop",
+  "started_at": "2026-10-16T13:30:26+00:00",
+  "finished_at": "2026-10-16T13:36:04+00:00",
+  "verdict": "blocked",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.23s",
+              "error": null,
+              "secs": 6.98,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Top Kidswear Brand in India \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "15797 chars, 103 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/ready-to-ship (36 products)",
+              "error": null,
+              "secs": 6.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/ready-to-ship ('Ready to Ship')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/ready-to-ship",
+                  "actual": "/collections/ready-to-ship",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "36",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 72 candidates \u2192 /products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+              "error": null,
+              "secs": 9.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540 ('Dusty Rose Laser Organza Handworked Birthday Frock for Baby ')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+                  "actual": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Dusty Rose Laser Organza Handworked Birthday Frock for Baby Girl [6540]', selected variant 46025688809541 at \u20b94,399.00",
+              "error": null,
+              "secs": 0.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540.js with variants",
+                  "actual": "'Dusty Rose Laser Organza Handworked Birthday Frock for Baby Girl [6540]', 10 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Dusty Rose Laser Organza Handworked Birthday Frock for Baby Girl [6540]",
+                  "actual": "'Dusty Rose Laser Organza Handworked Birthday Frock for Baby Girl [6540]' (h1, 28px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 27.1,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=885878138.1792157439&dt=Top%20Kidswear%20Brand%20in%20India%20%E2%80%93%20NakshatraKids%20",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=885878138.1792157439&dt=Ready%20To%20Ship%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-16911415",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=885878138.1792157439&dt=Dusty%20Rose%20Laser%20Organza%20Handworked%20Birthday%20Frock%20%"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.3,
+              "dcl": 2.71,
+              "load": 5.63,
+              "lcp": 1.16
+            },
+            {
+              "url": "/collections/ready-to-ship",
+              "ttfb": 0.2,
+              "dcl": 1.72,
+              "load": 4.91,
+              "lcp": 1.02
+            },
+            {
+              "url": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+              "ttfb": 0.4,
+              "dcl": 1.9,
+              "load": 6.55,
+              "lcp": 1.35
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.47s",
+              "error": null,
+              "secs": 6.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Top Kidswear Brand in India \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4642 chars, 103 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.47s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.47s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of null (reading 'addEventListener')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of null (reading 'addEventListener')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.18s, CLS 0.02",
+              "error": null,
+              "secs": 0.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.18s, CLS 0.02",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "132 scripts, at least 1.6 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (10), connect.facebook.net (4), www.gstatic.com (1), insurance-widget.parcelwill.com (1), www.clarity.ms (1)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "132 scripts, at least 1.6 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (10), connect.facebook.net (4), www.gstatic.com (1), insurance\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 8.62,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1051223390.1792157466&dt=Top%20Kidswear%20Brand%20in%20India%20%E2%80%93%20NakshatraKids%2",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.36,
+              "dcl": 1.94,
+              "load": 4.79,
+              "lcp": 1.18
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /pages/find-a-store",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.52s",
+              "error": null,
+              "secs": 4.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Find A Store \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3001 chars, 3 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/boy-baptism-baptism",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.74s",
+              "error": null,
+              "secs": 4.69,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Baptism Outfit for Baby Boy | Rompers & Gowns \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4780 chars, 26 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/girl-baptism-baptism",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.78s",
+              "error": null,
+              "secs": 5.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Baptism Dress for Baby Girl | Gowns & Sets | Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7847 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/baptism-accessories",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.33s",
+              "error": null,
+              "secs": 5.56,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Baptism Accessories for Baby | Handcrafted | Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6453 chars, 62 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/onam-vishu",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.47s",
+              "error": null,
+              "secs": 5.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Kids Onam & Vishu Dresses | Traditional Kerala Wear - Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8292 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/diwali-pongal",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.68s",
+              "error": null,
+              "secs": 6.35,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Diwali/Pongal \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8407 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/x-mas-dress",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.91s",
+              "error": null,
+              "secs": 4.81,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "X Mas Dress \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3903 chars, 12 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair-accessories",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.64s",
+              "error": null,
+              "secs": 5.22,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Accessories \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3350 chars, 6 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/ready-to-ship",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.34s",
+              "error": null,
+              "secs": 7.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ready To Ship \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8168 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/pre-order",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.8s",
+              "error": null,
+              "secs": 6.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Pre Order \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8826 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "10 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 56.38,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/pages/find-a-store"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1598811472.1792157473&dt=Find%20A%20Store%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-1691141",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=1598811472.1792157473&dt=Baptism%20Outfit%20for%20Baby%20Boy%20%7C%20Rompers%20%26%20Gowns%",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=1598811472.1792157473&dt=Baptism%20Dress%20for%20Baby%20Girl%20%7C%20Gowns%20%26%20Sets%20",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1598811472.1792157473&dt=Baptism%20Accessories%20for%20Baby%20%7C%20Handcrafted%20%7C%20Na",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1598811472.1792157473&dt=Kids%20Onam%20%26%20Vishu%20Dresses%20%7C%20Traditional%20Kerala%",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1598811472.1792157473&dt=Diwali%2FPongal%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-169114159",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1598811472.1792157473&dt=X%20Mas%20Dress%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-169114159",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1598811472.1792157473&dt=Hair%20Accessories%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-16911",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1598811472.1792157473&dt=Ready%20To%20Ship%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-169114",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1598811472.1792157473&dt=Pre%20Order%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-16911415989&"
+          ],
+          "loads": [
+            {
+              "url": "/pages/find-a-store",
+              "ttfb": 0.23,
+              "dcl": 1.22,
+              "load": 3.76,
+              "lcp": 1.93
+            },
+            {
+              "url": "/collections/boy-baptism-baptism",
+              "ttfb": 0.24,
+              "dcl": 1.04,
+              "load": 3.8,
+              "lcp": 1.64
+            },
+            {
+              "url": "/collections/girl-baptism-baptism",
+              "ttfb": 0.21,
+              "dcl": 0.99,
+              "load": 4.26,
+              "lcp": 1.01
+            },
+            {
+              "url": "/collections/baptism-accessories",
+              "ttfb": 0.32,
+              "dcl": 1.65,
+              "load": 4.57,
+              "lcp": 1.07
+            },
+            {
+              "url": "/collections/onam-vishu",
+              "ttfb": 0.37,
+              "dcl": 1.76,
+              "load": 4.72,
+              "lcp": 1.22
+            },
+            {
+              "url": "/collections/diwali-pongal",
+              "ttfb": 0.25,
+              "dcl": 1.76,
+              "load": 5.26,
+              "lcp": 1.01
+            },
+            {
+              "url": "/collections/x-mas-dress",
+              "ttfb": 0.2,
+              "dcl": 1.32,
+              "load": 3.89,
+              "lcp": 1.3
+            },
+            {
+              "url": "/collections/hair-accessories",
+              "ttfb": 0.21,
+              "dcl": 0.85,
+              "load": 4.33,
+              "lcp": 0.8
+            },
+            {
+              "url": "/collections/ready-to-ship",
+              "ttfb": 0.2,
+              "dcl": 2.1,
+              "load": 6.06,
+              "lcp": 1.16
+            },
+            {
+              "url": "/collections/pre-order",
+              "ttfb": 0.24,
+              "dcl": 1.81,
+              "load": 5.58,
+              "lcp": 1.78
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.57s",
+              "error": null,
+              "secs": 6.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Top Kidswear Brand in India \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4642 chars, 101 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.54,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1725586539.1792157531&dt=Top%20Kidswear%20Brand%20in%20India%20%E2%80%93%20NakshatraKids%2",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.31,
+              "dcl": 2.15,
+              "load": 4.64,
+              "lcp": 1.33
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/50-off",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.7s",
+              "error": null,
+              "secs": 5.92,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "50% OFF | Nakshatra Kids Sale \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7751 chars, 73 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title '50% OFF | Nakshatra Kids Sale \u2013 NakshatraKids LLP', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/50-off",
+                  "actual": "/collections/50-off",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections/all",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.19s",
+              "error": null,
+              "secs": 5.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Products \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "7826 chars, 72 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Products \u2013 NakshatraKids LLP', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/all",
+                  "actual": "/collections/all",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /customer_authentication/redirect",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.37s, redirected to /authentication/62022975557/login",
+              "error": null,
+              "secs": 3.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Sign in - NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "312 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Sign in - NakshatraKids LLP', heading 'Sign in'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/customer_authentication/redirect",
+                  "actual": "/authentication/62022975557/login",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/about-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.24s",
+              "error": null,
+              "secs": 4.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About Us \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3520 chars, 16 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'About Us \u2013 NakshatraKids LLP', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/about-us",
+                  "actual": "/pages/about-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.59,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/collections/50-off"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            },
+            {
+              "type": "error",
+              "text": "Unsafe attempt to load URL https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg from frame with URL https://shopify.com/authentication/62022975557/login?analytics_trace_id=639dc20",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/index.DSWtUm2j.js"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pay.shopify.com') does not match the recipient window's origin ('https://shop.app').",
+              "url": "https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/assets/ShopLoginButtonInner.nGrEKWwH.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1258317559.1792157538&dt=50%25%20OFF%20%7C%20Nakshatra%20Kids%20Sale%20%E2%80%93%20Nakshatr",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1258317559.1792157538&dt=Products%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-16911415989&en=",
+            "GET https://cdn.shopify.com/shopifycloud/customer-authentication-web/production/sprite-86bf53.svg",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "GET https://nakshatrakids.com/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=639dc209-fcfe-4a35-b35e-df16abacb",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1258317559.1792157538&dt=About%20Us%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-16911415989&en"
+          ],
+          "loads": [
+            {
+              "url": "/collections/50-off",
+              "ttfb": 0.27,
+              "dcl": 1.24,
+              "load": 4.82,
+              "lcp": 3.14
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.28,
+              "dcl": 1.66,
+              "load": 4.26,
+              "lcp": 0.95
+            },
+            {
+              "url": "/authentication/62022975557/login?analytics_trace_id=639dc209-fcfe-4a35-b35e-df16abacb7ee&client_id=",
+              "ttfb": 1.11,
+              "dcl": 1.27,
+              "load": 1.27,
+              "lcp": 1.43
+            },
+            {
+              "url": "/pages/about-us",
+              "ttfb": 0.21,
+              "dcl": 1.05,
+              "load": 3.26,
+              "lcp": 0.74
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.ready-to-ship",
+      "suite": "catalog",
+      "title": "Collection 'Ready to Ship' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.22s",
+              "error": null,
+              "secs": 6.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ready To Ship \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8168 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "36 products listed",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "36",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of null (reading 'addEventListener')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of null (reading 'addEventListener')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.08s, CLS 0.004",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.08s, CLS 0.004",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "156 scripts, at least 1.5 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (11), connect.facebook.net (4), www.gstatic.com (1), insurance-widget.parcelwill.com (1), ajax.googleapis.com (1)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "156 scripts, at least 1.5 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (11), connect.facebook.net (4), www.gstatic.com (1), insurance\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.72,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/collections/ready-to-ship"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1520925617.1792157556&dt=Ready%20To%20Ship%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-169114",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/collections/ready-to-ship",
+              "ttfb": 0.34,
+              "dcl": 1.68,
+              "load": 5.12,
+              "lcp": 1.08
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.birthday-frock",
+      "suite": "catalog",
+      "title": "Collection 'Birthday frock' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.36s",
+              "error": null,
+              "secs": 5.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Birthday Frocks for Baby Girl | Buy Online | Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8757 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "36 products listed",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "36",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: Cannot read properties of null (reading 'addEventListener')",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: Cannot read properties of null (reading 'addEventListener')",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.7s, CLS 0.004",
+              "error": null,
+              "secs": 0.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.7s, CLS 0.004",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "155 scripts, at least 1.5 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (10), connect.facebook.net (4), www.gstatic.com (1), insurance-widget.parcelwill.com (1), www.clarity.ms (1)",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "155 scripts, at least 1.5 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (10), connect.facebook.net (4), www.gstatic.com (1), insurance\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.23,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/collections/birthday-frock"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=156827420.1792157564&dt=Birthday%20Frocks%20for%20Baby%20Girl%20%7C%20Buy%20Online%20%7C%2",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/collections/birthday-frock",
+              "ttfb": 0.44,
+              "dcl": 1.85,
+              "load": 4.64,
+              "lcp": 1.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.ready-to-ship",
+      "suite": "catalog",
+      "title": "Collection 'Ready to Ship' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.97s",
+              "error": null,
+              "secs": 5.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ready To Ship \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8168 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "36 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.04s",
+              "error": null,
+              "secs": 5.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ready To Ship \u2013 Page 2 \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8196 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 36 more products (page-2 link found in the page head)",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "36",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.19,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/collections/ready-to-ship"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1852107306.1792157571&dt=Ready%20To%20Ship%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-169114",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1852107306.1792157571&dt=Ready%20To%20Ship%20%E2%80%93%20Page%202%20%E2%80%93%20NakshatraK"
+          ],
+          "loads": [
+            {
+              "url": "/collections/ready-to-ship",
+              "ttfb": 0.26,
+              "dcl": 1.58,
+              "load": 4.51,
+              "lcp": 1.22
+            },
+            {
+              "url": "/collections/ready-to-ship?page=2",
+              "ttfb": 0.32,
+              "dcl": 1.52,
+              "load": 4.33,
+              "lcp": 1.1
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.ready-to-ship",
+      "suite": "catalog",
+      "title": "Filtering collection 'Ready to Ship' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.33s",
+              "error": null,
+              "secs": 5.58,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ready To Ship \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8168 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "20 filter options (e.g. In stock 235, Out of stock 229); applying 'In stock 235' = filter.v.availability=1",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "pass",
+              "detail": "opened /collections/ready-to-ship?filter.v.availability=1 directly: the theme's own request (?page=&filter.v.price.gte=&filter.v.price.lte=&filter.v.availability=1&page=&filter.v.pric\u2026) is disallowed by robots.txt",
+              "error": null,
+              "secs": 12.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Ready To Ship \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8120 chars, 69 images",
+                  "ok": true
+                },
+                {
+                  "what": "filters in the page address",
+                  "expected": "exactly one: filter.v.availability=1",
+                  "actual": "filter.v.availability=1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_narrows_results",
+              "status": "pass",
+              "detail": "'In stock 235': 36 products listed (36 without the filter), all match it in the store's data",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed with the filter on",
+                  "expected": "\u2265 1",
+                  "actual": "36",
+                  "ok": true
+                },
+                {
+                  "what": "products listed: filtered vs unfiltered",
+                  "expected": "\u2264 235",
+                  "actual": "36",
+                  "ok": true
+                },
+                {
+                  "what": "listed products matching 'In stock 235' (store's data)",
+                  "expected": "all 36",
+                  "actual": "36 of 36",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "sorting not checked: the store's robots.txt disallows /collections/ready-to-ship?sort_by=\u2026 (Shopify's default) and Radar always respects robots.txt",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 24.73,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/collections/ready-to-ship"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1134769027.1792157583&dt=Ready%20To%20Ship%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-169114",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=1134769027.1792157583&dt=Ready%20To%20Ship%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-1691141",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1134769027.1792157583&dt=Ready%20To%20Ship%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-1691141"
+          ],
+          "loads": [
+            {
+              "url": "/collections/ready-to-ship",
+              "ttfb": 0.25,
+              "dcl": 1.82,
+              "load": 4.57,
+              "lcp": 0.98
+            },
+            {
+              "url": "/collections/ready-to-ship?filter.v.availability=1",
+              "ttfb": 0.29,
+              "dcl": 1.55,
+              "load": 5.14,
+              "lcp": 1.5
+            },
+            {
+              "url": "/collections/ready-to-ship",
+              "ttfb": 0.25,
+              "dcl": 1.65,
+              "load": 4.34,
+              "lcp": 1.16
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.dusty-rose-laser-organza-handworked-birt",
+      "suite": "product",
+      "title": "PDP 'Dusty Rose Laser Organza Handworked Birthday Frock'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.28s",
+              "error": null,
+              "secs": 10.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Dusty Rose Laser Organza Handworked Birthday Frock | Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9616 chars, 47 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+                  "actual": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Dusty Rose Laser Organza Handworked Birthday Frock for Baby Girl [6540]', selected variant 46025688809541 at \u20b94,399.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540.js with variants",
+                  "actual": "'Dusty Rose Laser Organza Handworked Birthday Frock for Baby Girl [6540]', 10 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.49,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Dusty Rose Laser Organza Handworked Birthday Frock for Baby Girl [6540]",
+                  "actual": "'Dusty Rose Laser Organza Handworked Birthday Frock for Baby Girl [6540]' (h1, 28px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.35,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/products/dusty-rose-laser-organza-handworked-birthday-frock-6540?variant=46025688809541"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=1854992434.1792157608&dt=Dusty%20Rose%20Laser%20Organza%20Handworked%20Birthday%20Frock%20%",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540?variant=46025688809541",
+              "ttfb": 0.31,
+              "dcl": 1.78,
+              "load": 6.34,
+              "lcp": 0.74
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.navy-blue-laser-organza-handworked-birth",
+      "suite": "product",
+      "title": "PDP 'Navy Blue Laser Organza Handworked Birthday Frock '",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.32s",
+              "error": null,
+              "secs": 10.38,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Navy Blue Laser Organza Handworked Birthday Frock | Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9350 chars, 46 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/navy-blue-laser-organza-handworked-birthday-frock-6538",
+                  "actual": "/products/navy-blue-laser-organza-handworked-birthday-frock-6538",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Navy Blue Laser Organza Handworked Birthday Frock for Baby Girl [6538]', selected variant 46025649553477 at \u20b94,399.00",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/navy-blue-laser-organza-handworked-birthday-frock-6538",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/navy-blue-laser-organza-handworked-birthday-frock-6538.js with variants",
+                  "actual": "'Navy Blue Laser Organza Handworked Birthday Frock for Baby Girl [6538]', 10 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.43,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Navy Blue Laser Organza Handworked Birthday Frock for Baby Girl [6538]",
+                  "actual": "'Navy Blue Laser Organza Handworked Birthday Frock for Baby Girl [6538]' (h1, 28px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.95,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/products/navy-blue-laser-organza-handworked-birthday-frock-6538?variant=46025649553477"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=1022313923.1792157623&dt=Navy%20Blue%20Laser%20Organza%20Handworked%20Birthday%20Frock%20%",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/navy-blue-laser-organza-handworked-birthday-frock-6538?variant=46025649553477",
+              "ttfb": 0.33,
+              "dcl": 1.76,
+              "load": 6.2,
+              "lcp": 0.78
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.lavender-tulle-net-handworked-birthday-f",
+      "suite": "product",
+      "title": "PDP 'Lavender Tulle Net Handworked Birthday Frock for B'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.26s",
+              "error": null,
+              "secs": 10.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Lavender Tulle Net Handworked Birthday Frock | Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9314 chars, 46 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/lavender-tulle-net-handworked-birthday-frock-6573",
+                  "actual": "/products/lavender-tulle-net-handworked-birthday-frock-6573",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Lavender Tulle Net Handworked Birthday Frock for Baby Girl [6573]', selected variant 46023460356165 at \u20b94,399.00",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/lavender-tulle-net-handworked-birthday-frock-6573",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/lavender-tulle-net-handworked-birthday-frock-6573.js with variants",
+                  "actual": "'Lavender Tulle Net Handworked Birthday Frock for Baby Girl [6573]', 10 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.41,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Lavender Tulle Net Handworked Birthday Frock for Baby Girl [6573]",
+                  "actual": "'Lavender Tulle Net Handworked Birthday Frock for Baby Girl [6573]' (h1, 28px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.7,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/products/lavender-tulle-net-handworked-birthday-frock-6573?variant=46023460356165"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=613541471.1792157637&dt=Lavender%20Tulle%20Net%20Handworked%20Birthday%20Frock%20%7C%20Naks",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/lavender-tulle-net-handworked-birthday-frock-6573?variant=46023460356165",
+              "ttfb": 0.27,
+              "dcl": 1.68,
+              "load": 6.01,
+              "lcp": 0.88
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'Dusty Rose Laser Organza Handworked Birt' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.37s",
+              "error": null,
+              "secs": 7.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Dusty Rose Laser Organza Handworked Birthday Frock | Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9532 chars, 46 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "10 variants; selected 46025688809541 (16 (6 to 11M), \u20b94,399.00); switch to 46025688875077 (20 (2 to 3Yrs), \u20b94,599.00); sold-out variant: 46025688744005 (12 (0 to 3 M), \u20b94,399.00)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540.js with variants",
+                  "actual": "'Dusty Rose Laser Organza Handworked Birthday Frock for Baby Girl [6540]', 10 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_switch",
+              "status": "warn",
+              "detail": null,
+              "error": "new variant's price shown: expected \u20b94,599.00, got not on page",
+              "secs": 7.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "option control for the other variant",
+                  "expected": "20 (2 to 3Yrs)",
+                  "actual": "option \"20 (2 to 3Yrs)\"",
+                  "ok": true
+                },
+                {
+                  "what": "page selects the picked variant",
+                  "expected": "46025688875077 (20 (2 to 3Yrs), \u20b94,599.00)",
+                  "actual": "46025688875077 (the product form's variant id) after choosing option \"20 (2 to 3Yrs)\"",
+                  "ok": true
+                },
+                {
+                  "what": "new variant's price shown",
+                  "expected": "\u20b94,599.00",
+                  "actual": "not on page",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sold_out_blocks_buy",
+              "status": "warn",
+              "detail": null,
+              "error": "page selects the sold-out variant: expected 46025688744005 (12 (0 to 3 M), \u20b94,399.00), got 46025688875077 (the product form's variant id) after choosing span \"12 (0 to 3 M),\"",
+              "secs": 9.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page selects the sold-out variant",
+                  "expected": "46025688744005 (12 (0 to 3 M), \u20b94,399.00)",
+                  "actual": "46025688875077 (the product form's variant id) after choosing span \"12 (0 to 3 M),\"",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 23.89,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/products/dusty-rose-laser-organza-handworked-birthday-frock-6540?variant=46025688809541"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1328508581.1792157650&dt=Dusty%20Rose%20Laser%20Organza%20Handworked%20Birthday%20Frock%20%",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/16911415989/?random=1792157654220&cv=11&fst=1792157654220&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://www.google.com/rmkt/collect/16911415989/?random=1792157654686&cv=11&fst=1792157654686&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a"
+          ],
+          "loads": [
+            {
+              "url": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540?variant=46025688809541",
+              "ttfb": 0.34,
+              "dcl": 1.76,
+              "load": 5.91,
+              "lcp": 0.88
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'Dusty Rose Laser Organza Handworked Birt' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.42s",
+              "error": null,
+              "secs": 7.46,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Dusty Rose Laser Organza Handworked Birthday Frock | Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8976 chars, 47 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 7.64,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/products/dusty-rose-laser-organza-handworked-birthday-frock-6540?variant=46025688809541"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1437485607.1792157674&dt=Dusty%20Rose%20Laser%20Organza%20Handworked%20Birthday%20Frock%20%",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540?variant=46025688809541",
+              "ttfb": 0.26,
+              "dcl": 1.76,
+              "load": 6.23,
+              "lcp": 0.79
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.dusty",
+      "suite": "search",
+      "title": "Search for 'dusty' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.8s",
+              "error": null,
+              "secs": 6.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Top Kidswear Brand in India \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4642 chars, 98 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 14 results, 8 mention 'dusty'",
+              "error": null,
+              "secs": 7.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "14",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'dusty'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "8 of 14",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.0,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=885423748.1792157682&dt=Top%20Kidswear%20Brand%20in%20India%20%E2%80%93%20NakshatraKids%20L",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no",
+            "POST https://www.google.com/rmkt/collect/16911415989/?random=1792157685210&cv=11&fst=1792157685210&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://www.google.com/rmkt/collect/16911415989/?random=1792157685389&cv=11&fst=1792157685389&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=885423748.1792157682&dt=Search%3A%2041%20results%20found%20for%20%22dusty%22%20%E2%80%93%20"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.25,
+              "dcl": 2.28,
+              "load": 4.93,
+              "lcp": 1.05
+            },
+            {
+              "url": "/search?options%5Bprefix%5D=last&q=dusty",
+              "ttfb": 0.39,
+              "dcl": 1.64,
+              "load": 4.61,
+              "lcp": 1.11
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.91s",
+              "error": null,
+              "secs": 5.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 145 results found for \"qzxvbugradar\" \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5845 chars, 34 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "warn",
+              "detail": null,
+              "error": "shopper is told nothing matched: expected a 'no results' message, or no products listed, got no message, 16 products listed",
+              "secs": 6.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "no message, 16 products listed",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.18,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1162275603.1792157695&dt=Search%3A%20145%20results%20found%20for%20%22qzxvbugradar%22%20%E2",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.34,
+              "dcl": 1.52,
+              "load": 4.68,
+              "lcp": 1.24
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'dusty' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.46s",
+              "error": null,
+              "secs": 7.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Top Kidswear Brand in India \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4642 chars, 94 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "warn",
+              "detail": null,
+              "error": "product suggestions while typing 'dusty': expected \u2265 1 (the store has search-as-you-type), got none after 6 s; Shopify's own search finds 6, e.g. 'Dusty Pink Embroidery Work Material A-Line Frock for Baby Girl [6254]'",
+              "secs": 8.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product suggestions while typing 'dusty'",
+                  "expected": "\u2265 1 (the store has search-as-you-type)",
+                  "actual": "none after 6 s; Shopify's own search finds 6, e.g. 'Dusty Pink Embroidery Work Material A-Line Frock for Baby Girl [6254]'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 15.72,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=1174652495.1792157708&dt=Top%20Kidswear%20Brand%20in%20India%20%E2%80%93%20NakshatraKids%2",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.28,
+              "dcl": 2.92,
+              "load": 5.51,
+              "lcp": 2.04
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.29s",
+              "error": null,
+              "secs": 5.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Top Kidswear Brand in India \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4642 chars, 103 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Top Kidswear Brand in India \u2013 NakshatraKids LLP",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "47: 'Top Kidswear Brand in India \u2013 NakshatraKids LLP'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 193: 'Shop top baby girl kidswear at Nakshatra Kids, Thrissur. Pre'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "193: 'Shop top baby girl kidswear at Nakshatra Kids, Thrissur. Pre'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://nakshatrakids.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://nakshatrakids.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Top Kidswear Brand in India",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://nakshatrakids.com/cdn/shop/files/logo_1_1_f1c2994b-1694-41cc-ae47-f123c8212bd1.png?v=1778134748",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.19,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=2126625016.1792157724&dt=Top%20Kidswear%20Brand%20in%20India%20%E2%80%93%20NakshatraKids%20"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.21,
+              "dcl": 1.7,
+              "load": 4.37,
+              "lcp": 1.07
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.3s",
+              "error": null,
+              "secs": 10.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Dusty Rose Laser Organza Handworked Birthday Frock | Nakshatra Kids \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9537 chars, 46 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "warn",
+              "detail": null,
+              "error": "<title> length: expected 10\u201370 chars, got 87: 'Dusty Rose Laser Organza Handworked Birthday Frock | Nakshat'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "87: 'Dusty Rose Laser Organza Handworked Birthday Frock | Nakshat'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Shop this dusty rose laser organza handwork frock for baby girls. Feat",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "136: 'Shop this dusty rose laser organza handwork frock for baby g'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://nakshatrakids.com/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://nakshatrakids.com/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Dusty Rose Laser Organza Handworked Birthday Frock | Nakshatra Kids",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://nakshatrakids.com/cdn/shop/files/www.nakshatrakids.com654001.webp?v=1792154159",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.45,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/products/dusty-rose-laser-organza-handworked-birthday-frock-6540"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=551201444.1792157730&dt=Dusty%20Rose%20Laser%20Organza%20Handworked%20Birthday%20Frock%20%7",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+              "ttfb": 0.25,
+              "dcl": 1.74,
+              "load": 6.04,
+              "lcp": 0.78
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 4.33,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.39,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1943307394.1792157739&dt=404%20Not%20Found%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-169114",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.26,
+              "dcl": 1.4,
+              "load": 3.64,
+              "lcp": 0.69
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /policies/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.36s",
+              "error": null,
+              "secs": 4.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund policy \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4978 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Refund policy \u2013 NakshatraKids LLP', heading 'Refund policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/refund-policy",
+                  "actual": "/policies/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "4599 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "4599 chars under 'Refund policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /policies/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.31s",
+              "error": null,
+              "secs": 4.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping policy \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4772 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping policy \u2013 NakshatraKids LLP', heading 'Shipping policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/shipping-policy",
+                  "actual": "/policies/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "4394 chars of policy text",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "4394 chars under 'Shipping policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /policies/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.4s",
+              "error": null,
+              "secs": 4.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5641 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy \u2013 NakshatraKids LLP', heading 'Privacy policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/privacy-policy",
+                  "actual": "/policies/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "5244 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "5244 chars under 'Privacy policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /policies/terms-of-service",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.86s",
+              "error": null,
+              "secs": 4.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms of service \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "13615 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms of service \u2013 NakshatraKids LLP', heading 'Terms of service'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/terms-of-service",
+                  "actual": "/policies/terms-of-service",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "13177 chars of policy text",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "13177 chars under 'Terms of service'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.64s",
+              "error": null,
+              "secs": 4.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact \u2013 NakshatraKids LLP",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3946 chars, 2 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact \u2013 NakshatraKids LLP', heading 'Contact'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.87,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "Cannot read properties of null (reading 'addEventListener')",
+              "url": "https://nakshatrakids.com/policies/refund-policy"
+            },
+            {
+              "type": "warning",
+              "text": "[Meta Pixel] - Invalid parameter format for currency. Please refer https://developers.facebook.com/docs/meta-pixel/reference/ for valid parameter specifications.",
+              "url": "https://connect.facebook.net/en_US/fbevents.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://nakshatrakids.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1050979744.1792157743&dt=Refund%20policy%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-169114159",
+            "POST https://sl-11a463aaedf44600a99367660fd6fa70.ecs.us-east-1.on.aws/events?cee=no",
+            "POST https://m6-211026f8a25b42c08fc190458268b30e.ecs.us-east-2.on.aws/events?cee=no",
+            "POST https://bded8a3c6ae-1-1053047382554.us-central1.run.app/events?cee=no",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1050979744.1792157743&dt=Shipping%20policy%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-1691141",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1050979744.1792157743&dt=Privacy%20policy%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-16911415",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1050979744.1792157743&dt=Terms%20of%20service%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-1691",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1050979744.1792157743&dt=Contact%20%E2%80%93%20NakshatraKids%20LLP&tid=AW-16911415989&en=p"
+          ],
+          "loads": [
+            {
+              "url": "/policies/refund-policy",
+              "ttfb": 0.36,
+              "dcl": 1.19,
+              "load": 3.48,
+              "lcp": 0.55
+            },
+            {
+              "url": "/policies/shipping-policy",
+              "ttfb": 0.42,
+              "dcl": 0.83,
+              "load": 3.18,
+              "lcp": 0.73
+            },
+            {
+              "url": "/policies/privacy-policy",
+              "ttfb": 0.32,
+              "dcl": 1.12,
+              "load": 3.19,
+              "lcp": 0.49
+            },
+            {
+              "url": "/policies/terms-of-service",
+              "ttfb": 0.43,
+              "dcl": 1.5,
+              "load": 3.74,
+              "lcp": 0.6
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.18,
+              "dcl": 1.1,
+              "load": 3.86,
+              "lcp": 1.4
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Top Kidswear Brand in India \u2013 NakshatraKids LLP",
+    "theme": "Hyper",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 24,
+    "collections": 46,
+    "products": 20,
+    "in_stock": 20,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "8 product(s) not listed in the browsed collections are tested last (e.g. off-white-handwork-baptism-set-6621)"
+  ],
+  "perf": {
+    "pages": 30,
+    "median_load_secs": 4.45,
+    "slowest": {
+      "url": "/products/dusty-rose-laser-organza-handworked-birthday-frock-6540",
+      "load_secs": 6.55
+    },
+    "console_errors": 2,
+    "console_warnings": 2,
+    "failed_requests": 54
+  },
+  "counts": {
+    "pass": 17,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 4,
+    "skipped": 0
+  }
+}
