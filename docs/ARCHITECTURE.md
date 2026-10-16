@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 16 Oct 13:10 IST:** (1) hathimasala.com lost as 'error: database is locked': parallel scans switching a fresh
+  radar.db to WAL at once; Storage retries the first-time setup (unit test). (2) kalamkitaab.com + lucentpublication.com
+  book pages NOT JUDGED 'no image ≥150px' while the product data lists no image: now a WARNING with that evidence
+  (mock `no_product_images`).
 - **v0.20 16 Oct 12:45 IST (new30v run 38861147423, 41 min incl. one stuck store):** costosoitaliano.com NOT JUDGED (its
   buy control is '<span class="custom-add-to-cart-btn">Add to Cart</span>', hidden empty form): ENABLED_ADD_JS also takes
   span/div/a buttons whose class names a button or the cart, and the page's ONLY enabled exact 'Add to cart' is used

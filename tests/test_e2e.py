@@ -973,6 +973,16 @@ def test_hidden_buttonless_form_falls_back_to_the_pages_own_buy_control(tmp_path
     assert "pdp-addtobag-btn" in _steps(_case(run, "product.pdp."))["buy_button_ready"].detail
 
 
+def test_product_without_any_image_in_its_data_is_a_warning(tmp_path):
+    """kalamkitaab.com (new30v) + lucentpublication.com (new30u): NOT JUDGED 'no image ≥150px' on book pages that have
+    no picture at all; the store's own product data lists no image either = a WARNING with that evidence."""
+    run = _product_only("no_product_images", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert vase.verdict != "blocked" and st.status == "warn" and "no image in the store's own data" in st.error, \
+        (vase.verdict, st.status, st.error)
+
+
 def test_theme_span_add_to_cart_is_used_when_the_form_is_hidden(tmp_path):
     """costosoitaliano.com (new30v): 'not judged ... buy-like controls on the page: <span.custom-add-to-cart-btn> "Add to
     Cart"'. The page's only enabled exact 'Add to cart' is used; the cart check proves what it adds."""

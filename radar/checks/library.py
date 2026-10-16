@@ -2086,6 +2086,12 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             ctx.sess.page.wait_for_timeout(600)
             img = ctx.sess.evaluate(MAIN_IMAGE_JS)
         ok_img = bool(img and img.get("ok"))
+        if not ok_img and not (img or {}).get("broken") and "images" in p and not p.get("images") \
+                and not p.get("featured_image"):
+            # kalamkitaab.com (new30v) + lucentpublication.com (new30u): book pages with no picture, and the store's own
+            # product data lists NO image: positive evidence, a merchandising WARNING (never a failure, never not-judged)
+            raise StoreWarning("main product image: the product has no image in the store's own data, so shoppers see "
+                               f"no picture (largest image on the page: {(img or {}).get('seen') or 'none'})")
         if not ok_img and not (img or {}).get("broken"):
             # verdict rule (13 Oct): a large image that FAILED to load is evidence (below); no large image Radar can
             # find is not (galleries in canvas / video / app widgets): NOT JUDGED with what was seen

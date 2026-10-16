@@ -376,6 +376,8 @@ Modes (to prove Radar catches and heals what it should):
                    404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
   hidden_form_app_button  the product's cart form is hidden and holds no button; the buy control is an app's element
                    outside it (shopkara.store, nubronicforte.com) -> found, the cart check adds the right product, PASSES
+  no_product_images  product pages show no picture and /products/<h>.js lists no image (kalamkitaab, lucentpublication)
+                   -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
   span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
                    the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
   disabled_form_enabled_bar  the form's own button is disabled, an enabled sticky 'Add to cart' adds the product
@@ -697,6 +699,10 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "no_product_images" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/products/"):
+            # kalamkitaab.com / lucentpublication.com: book pages with no product picture at all
+            body = re.sub(r'<img src="/cdn/shop/files/[^"]+\.svg" width="(300|400)" height="(300|400)"[^>]*>', '', body)
         if self.mode == "customer_auth_link" and isinstance(body, str) and ctype.startswith("text/html"):
             # krkjewels.com (new30t, 15 Oct): the header's 'Login' is Shopify's new-accounts hand-off link, 404 for a robot
             body = body.replace('<a href="/pages/about">About</a>',
@@ -1505,6 +1511,10 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                     if h not in seen:
                         seen.add(h)
                         return self._send(200, "", "text/html")
+                if self.mode == "no_product_images":
+                    return self._json({"id": p["id"], "handle": p["handle"], "title": p["title"], "images": [],
+                                       "featured_image": None,
+                                       "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in self._variants(p)]})
                 return self._json({"id": p["id"], "handle": p["handle"], "title": p["title"],
                                    "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in self._variants(p)]})
             if self.mode == "freebie_type" and h == "free-fabric":      # suta.in: a gift SKU's page, no product image

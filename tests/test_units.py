@@ -1330,3 +1330,19 @@ def test_store_wide_prepaid_discount_is_recognised():
     assert store_wide_discount(1149.0, {1092.0}, "Free shipping on all orders") is None      # no offer named
     assert store_wide_discount(1149.0, {700.0}, "extra 5% off prepaid") is None              # 39% below: not an offer
     assert store_wide_discount(1149.0, {1149.0}, "5% off prepaid") is None                   # not below
+
+
+def test_storage_opens_concurrently_on_a_fresh_database(tmp_path):
+    """hathimasala.com (new30v): parallel scans opening a new radar.db at once hit 'database is locked'."""
+    import threading
+    from radar.core.storage import Storage
+    errs = []
+    def go():
+        try:
+            Storage(tmp_path / "data").upsert_site("x.in", "https://x.in", "shopify")
+        except Exception as e:  # noqa: BLE001
+            errs.append(repr(e))
+    ts = [threading.Thread(target=go) for _ in range(12)]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
+    assert not errs, errs
