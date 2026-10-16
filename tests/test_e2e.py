@@ -973,6 +973,40 @@ def test_hidden_buttonless_form_falls_back_to_the_pages_own_buy_control(tmp_path
     assert "pdp-addtobag-btn" in _steps(_case(run, "product.pdp."))["buy_button_ready"].detail
 
 
+def test_per_unit_price_of_a_multi_unit_variant_counts_as_shown(tmp_path):
+    """ayamveda.com (new30w, both devices DOWN): '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298."""
+    run = _product_only("per_unit_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
+    assert "per-unit price" in str(_steps(vase)["shows_title_price_image"].checks)
+
+
+def test_product_without_any_image_in_its_data_is_a_warning(tmp_path):
+    """kalamkitaab.com (new30v) + lucentpublication.com (new30u): NOT JUDGED 'no image ≥150px' on book pages that have
+    no picture at all; the store's own product data lists no image either = a WARNING with that evidence."""
+    run = _product_only("no_product_images", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert vase.verdict != "blocked" and st.status == "warn" and "no image in the store's own data" in st.error, \
+        (vase.verdict, st.status, st.error)
+
+
+def test_theme_span_add_to_cart_is_used_when_the_form_is_hidden(tmp_path):
+    """costosoitaliano.com (new30v): 'not judged ... buy-like controls on the page: <span.custom-add-to-cart-btn> "Add to
+    Cart"'. The page's only enabled exact 'Add to cart' is used; the cart check proves what it adds."""
+    run, _ = _scan("span_add_to_cart", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    assert not bad, bad
+
+
+def test_disabled_form_button_with_an_enabled_add_to_cart_elsewhere_passes(tmp_path):
+    """arabianaroma.in (new30v, 3 products, both devices): 'variant selected ... but the buy button is still disabled'
+    while the page shows an enabled Add to cart. The enabled one is what a shopper uses."""
+    run, _ = _scan("disabled_form_enabled_bar", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    assert not bad, bad
+
+
 def test_gift_only_product_page_without_any_buy_control_is_not_tested(tmp_path):
     """nubronicforte.com (new30t): Radar picked the 'Performance Kit', a gift auto-added to orders; its page has a hidden,
     empty cart form and no buy control at all. Not tested with the reason, never 'not judged'."""

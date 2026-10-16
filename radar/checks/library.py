@@ -630,8 +630,11 @@ ENABLED_ADD_JS = r"""([quick]) => {
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
   const fixed = e => { for (let a = e; a && a !== document.body; a = a.parentElement) {
       const p = getComputedStyle(a).position; if (p === 'fixed' || p === 'sticky') return 1; } return 0; };
-  const c = [...document.querySelectorAll('button, input[type=submit], [role="button"]')]
-    .filter(e => /^add to (cart|bag|basket)$/i.test(txt(e)) && vis(e)
+  // + a theme's own <span>/<div>/<a> button ('<span class="custom-add-to-cart-btn">Add to Cart</span>',
+  // costosoitaliano.com new30v): exact wording, and a class that names a button or the cart
+  const c = [...document.querySelectorAll('button, input[type=submit], [role="button"], span[class*="cart" i], span[class*="btn" i], '
+                                       + 'div[class*="cart" i], div[class*="btn" i], a[class*="cart" i], a[class*="btn" i]')]
+    .filter(e => /^add to (cart|bag|basket)$/i.test(txt(e)) && vis(e) && !(e.parentElement && /^add to (cart|bag|basket)$/i.test(txt(e.parentElement)) && e.parentElement.matches('button, [role="button"], [class*="cart" i], [class*="btn" i]'))
       && !(e.disabled || e.getAttribute('aria-disabled') === 'true')
       && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
       && !otherCard(e, quick))
@@ -774,10 +777,17 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
                        f"{got} after choosing {', '.join(picked) or 'nothing'}; buy button disabled until the shopper "
                        f"checks a delivery pincode", True)
             return dict(target, _pincode_gate=gate)
+    enabled_elsewhere = None
+    if right and st["disabled"]:
+        # arabianaroma.in (new30v, both devices, 3 products): the form's own button stays disabled while the page shows
+        # an enabled 'Add to cart' a shopper uses (the buy-button step and the cart check judge that one)
+        enabled_elsewhere = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
     ctx.expect("variant selected like a shopper", f"{target['id']} ({' / '.join(values) or target.get('title')})",
                f"{got} after choosing {', '.join(picked) or 'nothing (no matching picker)'}"
-               + ("; but the buy button is still disabled" if right and st["disabled"] else ""),
-               right and not st["disabled"])
+               + (f"; the form's own button is disabled, the page's enabled <{enabled_elsewhere['tag']}> "
+                  f"{enabled_elsewhere['text']!r} is the one a shopper uses" if enabled_elsewhere
+                  else "; but the buy button is still disabled" if right and st["disabled"] else ""),
+               right and (not st["disabled"] or bool(enabled_elsewhere)))
     return target
 
 
@@ -824,6 +834,21 @@ def _main_buy_button(ctx: Ctx, product: dict):
         found = ctx.sess.evaluate(MAIN_BUY_JS, [ids, QUICK_SEL])
     if found:
         loc = page.locator('[data-radar-target="buy"]').first
+        try:
+            form_on = loc.is_enabled()
+        except Exception:  # noqa: BLE001
+            form_on = True
+        if not form_on:
+            # arabianaroma.in (new30v): the form's own button stays disabled while the page's enabled 'Add to cart'
+            # (a sticky bar / app button) is the one a shopper uses; the cart check verifies what it adds
+            alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+            if alt:
+                ctx.buy_evidence = (f"form #{found['form'][-24:]} button {found['text']!r} is disabled; the page's enabled "
+                                    f"<{alt['tag']}> {alt['text']!r} is used")
+                return (page.locator('[data-radar-target="buy"]').first,
+                        f"enabled <{alt['tag']}> {alt['text']!r}" + (" (sticky bar)" if alt["sticky"] else "")
+                        + f"; the product form's own button is disabled — the cart check verifies what it adds", None)
+
         # enabled others FIRST: the evidence is clipped to 160 chars in run.json (crossbeats.com, loop cycle 8: the
         # enabled button's text was cut off behind a 47-char form id)
         ctx.buy_evidence = ((f"enabled for this product but not add-to-cart wording: {', '.join(found['enabled_others'])}; "
@@ -840,6 +865,12 @@ def _main_buy_button(ctx: Ctx, product: dict):
     try:
         f = ctx.healer.find(page, "add_to_cart")
     except LocatorNotFound as e:
+        alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+        if alt and alt.get("count") == 1:     # one enabled 'Add to cart' on the page, not on another product's card
+            ctx.buy_evidence = f"the page's only enabled add-to-cart <{alt['tag']}> {alt['text']!r}"
+            return (page.locator('[data-radar-target="buy"]').first,
+                    f"the page's only enabled <{alt['tag']}> {alt['text']!r}" + (" (sticky bar)" if alt["sticky"] else "")
+                    + " (no Shopify cart button; the cart check verifies what it adds)", None)
         # Say exactly what is (not) there, so nobody has to guess whose problem it is (mcaffeine.com, bench 3).
         # + what the product's own form holds (shopkara.store new30p, nubronicforte.com new30t: 'a form for this product
         # but no buy button Radar could use' and nothing more to go on): its buttons, visible / disabled, and any
@@ -1917,6 +1948,26 @@ HIDDEN_PRICE_JS = r"""() => { const out = [];
   } return out; }"""
 
 
+PER_UNIT_WORDS = re.compile(r"/\s?(bottle|pack|unit|piece|pc|jar|box|tin|sachet|pouch|kg|month)\b|per\s(bottle|pack|unit|piece|jar|box|month)\b",
+                            re.I)
+
+
+def per_unit_price(want: float, nums, text: str) -> str | None:
+    """The page shows the price PER UNIT of a multi-unit variant ('₹1,649 / Bottle' for the 2-bottle pack at ₹3,298):
+    ayamveda.com + nubronicforte.com (new30w / Anmol's screenshot, 16 Oct). A page price × k (2-12) equals the variant
+    price to the rupee, the page says '/ bottle' (or pack, unit, piece…) and names k of them. Returns the evidence, else
+    None. Pure, unit-tested."""
+    if not want or not PER_UNIT_WORDS.search(text or ""):
+        return None
+    low = (text or "").lower()
+    for n in sorted(nums):
+        for k in range(2, 13):
+            if abs(n * k - want) <= 1.0 and re.search(rf"\b{k}\s?(x\s)?(bottles?|packs?|units?|pieces?|pcs|jars?|boxes|tins?|"
+                                                     rf"sachets?|pouches|months?)\b", low):
+                return f"₹{n:,.2f} {PER_UNIT_WORDS.search(text).group(0).strip()} × {k} = ₹{want:,.2f} (the page shows the per-unit price)"
+    return None
+
+
 DISCOUNT_WORDS = re.compile(r"prepaid|pre-paid|online payment|pay online|upi|extra\s+\d{1,2}\s?%\s?off|\d{1,2}\s?%\s?off", re.I)
 
 
@@ -2041,6 +2092,10 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             ctx.sess.evaluate("() => scrollTo(0, 0)")
         ok, how = price_shown(want, nums)
         if not ok:
+            unit = per_unit_price(want, nums, text)
+            if unit:
+                ok, how = True, unit
+        if not ok:
             _raise_if_catalog_only(ctx, p["title"])
             # Anmol, 15 Oct (rasayanam.in 'EXTRA 5% OFF ON ALL PREPAID ORDERS'): a WARNING, not a failure
             state["price_warn"] = store_wide_discount(want, nums, text)
@@ -2055,6 +2110,12 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             ctx.sess.page.wait_for_timeout(600)
             img = ctx.sess.evaluate(MAIN_IMAGE_JS)
         ok_img = bool(img and img.get("ok"))
+        if not ok_img and not (img or {}).get("broken") and "images" in p and not p.get("images") \
+                and not p.get("featured_image"):
+            # kalamkitaab.com (new30v) + lucentpublication.com (new30u): book pages with no picture, and the store's own
+            # product data lists NO image: positive evidence, a merchandising WARNING (never a failure, never not-judged)
+            raise StoreWarning("main product image: the product has no image in the store's own data, so shoppers see "
+                               f"no picture (largest image on the page: {(img or {}).get('seen') or 'none'})")
         if not ok_img and not (img or {}).get("broken"):
             # verdict rule (13 Oct): a large image that FAILED to load is evidence (below); no large image Radar can
             # find is not (galleries in canvas / video / app widgets): NOT JUDGED with what was seen

@@ -1330,3 +1330,27 @@ def test_store_wide_prepaid_discount_is_recognised():
     assert store_wide_discount(1149.0, {1092.0}, "Free shipping on all orders") is None      # no offer named
     assert store_wide_discount(1149.0, {700.0}, "extra 5% off prepaid") is None              # 39% below: not an offer
     assert store_wide_discount(1149.0, {1149.0}, "5% off prepaid") is None                   # not below
+
+
+def test_storage_opens_concurrently_on_a_fresh_database(tmp_path):
+    """hathimasala.com (new30v): parallel scans opening a new radar.db at once hit 'database is locked'."""
+    import threading
+    from radar.core.storage import Storage
+    errs = []
+    def go():
+        try:
+            Storage(tmp_path / "data").upsert_site("x.in", "https://x.in", "shopify")
+        except Exception as e:  # noqa: BLE001
+            errs.append(repr(e))
+    ts = [threading.Thread(target=go) for _ in range(12)]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
+    assert not errs, errs
+
+
+def test_per_unit_price_of_a_multi_unit_variant():
+    from radar.checks.library import per_unit_price
+    t = "1 Month ₹ 1,799 / Bottle 1 Bottle · 30 sachets 2 Months ₹ 1,649 / Bottle 2 Bottles · 60 sachets"
+    assert "× 2" in per_unit_price(3298.0, {1799.0, 1649.0, 1499.0}, t)
+    assert per_unit_price(3298.0, {1649.0}, "Only ₹1,649 today") is None          # no per-unit wording
+    assert per_unit_price(3298.0, {1000.0}, "₹1,000 / bottle, 2 bottles") is None  # does not multiply out
