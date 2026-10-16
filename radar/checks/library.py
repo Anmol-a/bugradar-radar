@@ -3354,7 +3354,7 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
     const c = e.firstElementChild; return depth > 0 && c ? me + ' > ' + desc(c, depth - 1) : me; };
   const tag = e => e ? (e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' && e.className.trim()
                     ? '.' + e.className.trim().split(/\s+/)[0] : '')).slice(0, 40) : 'nothing';
-  const why = {}; const note = k => { why[k] = (why[k] || 0) + 1; };
+  const why = {}; const note = k => { why[k] = (why[k] || 0) + 1; }; let firstCover = null;
   const usable = e => {
     if (re && !re.test(e.getAttribute('href') || '')) return false;
     if (!vis(e)) { note('not visible'); invis.push(e); return false; }
@@ -3393,13 +3393,19 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
     const si = hits.findIndex(h => selfHit(e, h));                  // the link itself first
     const ci = si < 0 ? hits.findIndex(h => cardHit(e, card, h)) : -1;   // else its card (image slider over the link)
     if (si >= 0) at = pts[si]; else if (ci >= 0) { at = pts[ci]; via = 'card'; }
-    if (!at) { cover = hits.find(h => h) || null; note('covered by ' + tag(cover)); continue; }
+    if (!at) { cover = hits.find(h => h) || null; note('covered by ' + tag(cover));
+      if (!firstCover) { const R = n => { const b = n.getBoundingClientRect(); return Math.round(b.left) + ',' + Math.round(b.top) + ' ' + Math.round(b.width) + 'x' + Math.round(b.height); };
+        const cs = cover ? getComputedStyle(cover) : null, [px, py] = pts[0], stack = document.elementsFromPoint(px, py);
+        firstCover = tag(e) + ' box ' + R({getBoundingClientRect: () => r}) + ' at ' + Math.round(px) + ',' + Math.round(py) + ' hit ' + tag(cover)
+          + (cs ? '{' + cs.position + ',z ' + cs.zIndex + ',' + R(cover) + '}' : '') + '; link in stack at ' + stack.findIndex(n => n === e || e.contains(n))
+          + ' of ' + stack.length + '; scroll ' + Math.round(scrollY) + '/' + (document.scrollingElement || document.documentElement).scrollHeight + ' vh ' + innerHeight; }
+      continue; }
     e.setAttribute('data-radar-target', 'click');
     if (card !== e) card.setAttribute('data-radar-target', 'card');
     return {href: e.getAttribute('href') || '', text: (e.innerText || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 60),
             considered: cands.length, x: Math.round(at[0]), y: Math.round(at[1]), via};
   }
-  return {none: true, total: all.length, why, refused: invis.length ? desc(invis[0], 3).slice(0, 300) : null};
+  return {none: true, total: all.length, why, refused: invis.length ? desc(invis[0], 3).slice(0, 300) : null, covered: firstCover};
 }"""
 
 AIM_JS = r"""(via) => { const t = document.querySelector('[data-radar-target="click"]'); if (!t) return null;
@@ -3430,7 +3436,8 @@ def _why_none(got: dict | None, where: str) -> str:
     if not got or not got.get("total"):
         return f"none on {where} (no matching links on the page)"
     why = ", ".join(f"{n} {k}" for k, n in sorted(got.get("why", {}).items(), key=lambda kv: -kv[1])[:3])
-    return f"none on {where} ({got['total']} links: {why})" + (f"; first refused: {got['refused']}" if got.get("refused") else "")
+    return f"none on {where} ({got['total']} links: {why})" + (f"; first refused: {got['refused']}" if got.get("refused") else "") \
+        + (f"; first covered: {got['covered'][:400]}" if got.get("covered") else "")
 
 
 BIG_FIXED_LAYER_JS = r"""() => { const vw = innerWidth, vh = innerHeight;

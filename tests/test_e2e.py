@@ -2168,6 +2168,8 @@ def test_verdict_rule_no_clickable_card_is_not_judged_never_down(tmp_path):
     st = _steps(j)["click_into_product"]
     assert st.status == "skip" and st.error.startswith("not judged: product card a shopper can click") \
         and "covered by div.veil" in st.error and "not proof" in st.error, st.error
+    # evidence for fixing from facts: the first covered link's box, the hit point, the cover's style + box, the scroll
+    assert "first covered: a" in st.error and "hit div.veil{" in st.error and "scroll " in st.error, st.error
     assert run.verdict == "blocked", run.verdict
     assert j.attempts[-1].screenshot, "the not-judged attempt keeps its screenshot as evidence"
 
