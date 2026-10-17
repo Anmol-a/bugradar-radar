@@ -994,9 +994,12 @@ def _main_buy_button(ctx: Ctx, product: dict):
         # nubronicforte.com (new30t, 15 Oct): Radar picked the 'Performance Kit', a gift the store adds to orders on its
         # own ('Complimentary Performance Kit', 'Free Gift Auto Added' on the main product); its page has a hidden, empty
         # cart form and no buy control anywhere = the store does not sell it on its own: not tested, never not-judged
-        if st["own"] and not st.get("ctl") and all("no button in the form (form hidden)" in x for x in (st.get("seen") or ["?"])):
+        if st["own"] and not st.get("ctl") and all("no button in the form (form hidden)" in x or x.endswith(" hidden")
+                                                   for x in (st.get("seen") or ["?"])):
+            # + saralhome.com (new31c): 'FREE TABLE MAT', a freebie whose form keeps its buttons, all hidden
             raise CatalogOnly("not tested: this product's page offers no way to buy it (its cart form is hidden and "
-                              "empty, and the page shows no buy control): a gift or add-on the store adds by itself")
+                              "empty or its buttons are all hidden, and the page shows no buy control): a gift or add-on "
+                              "the store adds by itself")
         # saumyasstores.com (new31a): the cart buttons are hidden and the only buy control is 'View On Amazon'
         mk = ctx.sess.evaluate(MARKETPLACE_JS, product.get("title") or "") or {}
         if mk.get("marketplaces"):          # this product has no usable buy button (established above)

@@ -409,6 +409,8 @@ Modes (to prove Radar catches and heals what it should):
   emoji_cookie     a page script sets a cookie holding an emoji (paramountchess.com) -> product data still read, PASSES
   discount_link    a homepage section links /discount/WOWDEAL, which applies the code and redirects to the homepage
                    (Shopify's own behaviour; daantwale.com, new30z2) -> smoke.more_links PASSES
+  hidden_buttons_product  the product's cart form keeps its buttons, all hidden, and no other buy control (saralhome.com
+                   freebie, new31c) -> product BLOCKED 'not tested', never not judged
   needs_dimensions  'Add to cart' stays disabled until the shopper types the wall's width and height (giffywalls.in,
                    new30z5) -> product BLOCKED 'not tested', never DOWN
   bundle_builder   the product's only button 'Pick 6 buddies' is disabled until a choice (orbiz.in, new30z2) -> product
@@ -2121,6 +2123,12 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" name="add" disabled>Add to cart</button>', 1)
             body += (f'<div class="sticky-atc" style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px">'
                      f'<button type="button" class="sticky-atc__btn" onclick="addToCart({vid})">Add to cart</button></div>')
+        if self.mode == "hidden_buttons_product":
+            # saralhome.com (new31c, NOT JUDGED): 'FREE TABLE MAT', a freebie; its cart form keeps Add to Cart / BUY NOW,
+            # all hidden, and the page shows no other buy control
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" style="display:none">Add to Cart</button>'
+                                '<button type="button" style="display:none">BUY NOW</button>', 1)
         if self.mode == "gift_only_product":
             # nubronicforte.com (new30t): the 'Performance Kit' gift's page: a hidden, empty cart form, no buy control
             body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '

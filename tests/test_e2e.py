@@ -1084,10 +1084,12 @@ def test_disabled_form_button_with_an_add_to_cart_bar_shown_after_scrolling_pass
     assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
 
 
-def test_gift_only_product_page_without_any_buy_control_is_not_tested(tmp_path):
+@pytest.mark.parametrize("mode", ["gift_only_product", "hidden_buttons_product"])
+def test_gift_only_product_page_without_any_buy_control_is_not_tested(tmp_path, mode):
     """nubronicforte.com (new30t): Radar picked the 'Performance Kit', a gift auto-added to orders; its page has a hidden,
     empty cart form and no buy control at all. Not tested with the reason, never 'not judged'."""
-    run = _product_only("gift_only_product", tmp_path, max_products=1)
+    # + saralhome.com (new31c): a freebie whose form keeps its buttons, all hidden (hidden_buttons_product)
+    run = _product_only(mode, tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
     assert vase.verdict == "blocked" and "offers no way to buy it" in vase.attempts[-1].error, \
         (vase.verdict, vase.attempts[-1].error)
