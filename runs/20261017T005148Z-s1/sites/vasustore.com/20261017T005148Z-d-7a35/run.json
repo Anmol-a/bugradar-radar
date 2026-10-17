@@ -1,0 +1,4289 @@
+{
+  "run_id": "20261017T005148Z-d-7a35",
+  "site_id": "vasustore.com",
+  "base_url": "https://vasustore.com",
+  "device": "desktop",
+  "started_at": "2026-10-17T00:51:48+00:00",
+  "finished_at": "2026-10-17T01:01:21+00:00",
+  "verdict": "blocked",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.03s",
+              "error": null,
+              "secs": 13.45,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6894 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/hair-care-products (29 products)",
+              "error": null,
+              "secs": 12.64,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/hair-care-products ('Hair Care')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/hair-care-products",
+                  "actual": "/collections/hair-care-products",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "29",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked first clickable product on 49 candidates \u2192 /products/vasu-swarna-naari-drops",
+              "error": null,
+              "secs": 13.62,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "https://vasustore.com/products/vasu-swarna-naari-drops ('New Launches')",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/vasu-swarna-naari-drops",
+                  "actual": "/products/vasu-swarna-naari-drops",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Vasu Swarna Naari Drops 50ml', selected variant 48090446037251 at \u20b91,367.00",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/vasu-swarna-naari-drops",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/vasu-swarna-naari-drops.js with variants",
+                  "actual": "'Vasu Swarna Naari Drops 50ml', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows '$14'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 5.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Vasu Swarna Naari Drops 50ml",
+                  "actual": "'Vasu Swarna Naari Drops 50ml' (h1, 32px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows '$14'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 47.32,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/"
+            },
+            {
+              "type": "pageerror",
+              "text": "pInfScrNode is not defined",
+              "url": "https://vasustore.com/collections/hair-care-products"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=551598684.1792198332&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%26%20",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198332342&cv=11&fst=1792198332342&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=551598684.1792198332&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=551598684.1792198332&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198333618&cv=11&fst=1792198333618&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v910091343",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198334951&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198347271&cv=11&fst=1792198347271&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v9178841401z",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=551598684.1792198332&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wome",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=551598684.1792198332&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Women%20-",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=551598684.1792198332&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wome",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198348236&cv=11&fst=1792198348236&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v910091343",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198348284&ec=3",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198360370&cv=11&fst=1792198360370&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v9178841401z",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=551598684.1792198332&dt=Vasu%20Swarna%20Naari%20Drops%20%E2%80%93%20Boost%20Energy%20%26%20",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=0&ae=g&auid=551598684.1792198332&dt=Vasu%20Swarna%20Naari%20Drops%20%E2%80%93%20Boost%20Energy%20%",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198361233&cv=11&fst=1792198361233&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=551598684.1792198332&dt=Vasu%20Swarna%20Naari%20Drops%20%E2%80%93%20Boost%20Energy%20",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198361634&ec=4"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.09,
+              "dcl": 2.36,
+              "load": 11.88,
+              "lcp": 0.93
+            },
+            {
+              "url": "/collections/hair-care-products",
+              "ttfb": 0.12,
+              "dcl": 1.75,
+              "load": 10.0,
+              "lcp": 2.56
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.45s",
+              "error": null,
+              "secs": 8.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6412 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "2.45s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "2.45s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: oaiq is not defined",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: oaiq is not defined",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "0%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "0%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.96s, CLS 0.002",
+              "error": null,
+              "secs": 0.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.96s, CLS 0.002",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "204 scripts, at least 1.6 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (9), pdp.gokwik.co (4), connect.facebook.net (2), sdk.gokwik.co (2), googleads.g.doubleclick.net (2)",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "204 scripts, at least 1.6 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (9), pdp.gokwik.co (4), connect.facebook.net (2), sdk.gokwik.\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.03,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=188923004.1792198380&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=188923004.1792198380&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%26%20",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198379826&cv=11&fst=1792198379826&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&ae=g&auid=188923004.1792198380&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198381454&cv=11&fst=1792198381454&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198382651&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.08,
+              "dcl": 2.09,
+              "load": 6.73,
+              "lcp": 0.96
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/hair-care-products",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.89s",
+              "error": null,
+              "secs": 12.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Hair Care Products Online for Men & Women - Best Hair Care Combo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5838 chars, 91 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair-oils",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.19s",
+              "error": null,
+              "secs": 9.72,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Oils",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4440 chars, 70 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/shampoos",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.95s",
+              "error": null,
+              "secs": 12.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shampoos",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5873 chars, 91 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked \"clicked 'close icon' inside the popup frame\" on: 'iframe popup 4'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/conditioners",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.43s",
+              "error": null,
+              "secs": 9.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Conditioners",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2938 chars, 37 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair-creams",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.71s",
+              "error": null,
+              "secs": 8.96,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Cream for Damage Repair, Hair Fall, Anti Dandruff, Non-sticky for Men & Women",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4546 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair-masks",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.34s",
+              "error": null,
+              "secs": 8.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Masks",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4914 chars, 75 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair-serums",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.18s",
+              "error": null,
+              "secs": 8.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Hair Serums",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3046 chars, 40 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.48s",
+              "error": null,
+              "secs": 11.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6894 chars, 79 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/hair-fall",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.21s",
+              "error": null,
+              "secs": 10.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Anti Hair Fall Concern Products Online at VasuStore",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4783 chars, 76 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/dandruff",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.86s",
+              "error": null,
+              "secs": 9.8,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Dandruff",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3168 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "10 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 103.04,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "pInfScrNode is not defined",
+              "url": "https://vasustore.com/collections/hair-care-products"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/collections/hair-care-produ"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/collections/hair-care-products"
+            },
+            {
+              "type": "warning",
+              "text": "Failed to execute 'postMessage' on 'DOMWindow': The target origin provided ('https://pdp.gokwik.co') does not match the recipient window's origin ('https://vasustore.com').",
+              "url": "https://pdp.gokwik.co/kwikpass/plugin/build/kp-main/chunks/app-72604266.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=884661612.1792198391&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wom",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=884661612.1792198391&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Women%20",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198390536&cv=11&fst=1792198390536&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198392356&cv=11&fst=1792198392356&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=884661612.1792198391&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wome",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198394140&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=884661612.1792198391&dt=Hair%20Oils&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fvasustor",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=884661612.1792198391&dt=Hair%20Oils&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.com%2F",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198402674&cv=11&fst=1792198402674&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=884661612.1792198391&dt=Hair%20Oils&tid=AW-11076951961&dl=https%3A%2F%2Fvasustore.com",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198403525&cv=11&fst=1792198403525&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198404344&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=884661612.1792198391&dt=Shampoos&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.com%2Fcol",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198412463&cv=11&fst=1792198412463&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=884661612.1792198391&dt=Shampoos&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fvasustore.c",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198413332&ec=2",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=884661612.1792198391&dt=Shampoos&tid=AW-11076951961&dl=https%3A%2F%2Fvasustore.com%2Fc",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198413730&cv=11&fst=1792198413730&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v910091343",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198417728&ec=1",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198424670&cv=11&fst=1792198424670&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=884661612.1792198391&dt=Conditioners&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.com%2",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=884661612.1792198391&dt=Conditioners&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fvasusto",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=884661612.1792198391&dt=Conditioners&tid=AW-11076951961&dl=https%3A%2F%2Fvasustore.co"
+          ],
+          "loads": [
+            {
+              "url": "/collections/hair-care-products",
+              "ttfb": 0.19,
+              "dcl": 2.25,
+              "load": 10.95,
+              "lcp": 3.26
+            },
+            {
+              "url": "/collections/hair-oils",
+              "ttfb": 0.21,
+              "dcl": 1.75,
+              "load": 8.48,
+              "lcp": 1.2
+            },
+            {
+              "url": "/collections/shampoos",
+              "ttfb": 0.19,
+              "dcl": 1.42,
+              "load": 9.53,
+              "lcp": 1.38
+            },
+            {
+              "url": "/collections/conditioners",
+              "ttfb": 0.19,
+              "dcl": 1.2,
+              "load": 8.44,
+              "lcp": 1.11
+            },
+            {
+              "url": "/collections/hair-creams",
+              "ttfb": 0.19,
+              "dcl": 1.38,
+              "load": 7.47,
+              "lcp": 1.2
+            },
+            {
+              "url": "/collections/hair-masks",
+              "ttfb": 0.18,
+              "dcl": 0.95,
+              "load": 7.72,
+              "lcp": 1.12
+            },
+            {
+              "url": "/collections/hair-serums",
+              "ttfb": 0.18,
+              "dcl": 0.91,
+              "load": 6.75,
+              "lcp": 1.03
+            },
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 3.0,
+              "load": 9.67,
+              "lcp": 0.96
+            },
+            {
+              "url": "/collections/hair-fall",
+              "ttfb": 0.2,
+              "dcl": 1.75,
+              "load": 8.54,
+              "lcp": 1.49
+            },
+            {
+              "url": "/collections/dandruff",
+              "ttfb": 0.22,
+              "dcl": 1.47,
+              "load": 8.44,
+              "lcp": 1.38
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.74s",
+              "error": null,
+              "secs": 12.99,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6404 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 13.38,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=54977390.1792198494&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%26%20",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=54977390.1792198494&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198494040&cv=11&fst=1792198494040&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=54977390.1792198494&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198494336&cv=11&fst=1792198494336&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198498200&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 1.99,
+              "load": 11.12,
+              "lcp": 1.02
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/baby-care",
+              "status": "pass",
+              "detail": "HTTP 200 in 3.32s",
+              "error": null,
+              "secs": 14.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Baby Care",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6323 chars, 83 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Baby Care', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/baby-care",
+                  "actual": "/collections/baby-care",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections/womens-care",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.52s",
+              "error": null,
+              "secs": 10.91,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Women's Care",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3803 chars, 49 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Women's Care\", heading \"Women's Care\"",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/womens-care",
+                  "actual": "/collections/womens-care",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/about-us",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.99s",
+              "error": null,
+              "secs": 10.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "About Us",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6024 chars, 37 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'About Us', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/about-us",
+                  "actual": "/pages/about-us",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/blogs",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.56s",
+              "error": null,
+              "secs": 9.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Blogs",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2104 chars, 17 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Blogs', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/blogs",
+                  "actual": "/pages/blogs",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 44.61,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "pInfScrNode is not defined",
+              "url": "https://vasustore.com/collections/baby-care"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/collections/baby-care"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/collections/baby-care"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1080103941.1792198507&dt=Baby%20Care&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fvasust",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1080103941.1792198507&dt=Baby%20Care&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.com%",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198507471&cv=11&fst=1792198507471&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=1080103941.1792198507&dt=Baby%20Care&tid=AW-11076951961&dl=https%3A%2F%2Fvasustore.co",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198507848&cv=11&fst=1792198507848&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198511386&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198520897&cv=11&fst=1792198520897&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=1080103941.1792198507&dt=Women%27s%20Care&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1080103941.1792198507&dt=Women%27s%20Care&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fva",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=1080103941.1792198507&dt=Women%27s%20Care&tid=AW-11076951961&dl=https%3A%2F%2Fvasusto",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198522073&cv=11&fst=1792198522073&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v910091343",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198522359&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=1080103941.1792198507&dt=About%20Us&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.com%2",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198531847&cv=11&fst=1792198531847&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1080103941.1792198507&dt=About%20Us&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fvasusto",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=1080103941.1792198507&dt=About%20Us&tid=AW-11076951961&dl=https%3A%2F%2Fvasustore.com",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198532439&cv=11&fst=1792198532439&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198533270&ec=3",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198541310&cv=11&fst=1792198541310&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=1080103941.1792198507&dt=Blogs&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.com%2Fpage",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1080103941.1792198507&dt=Blogs&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fvasustore.co",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=1080103941.1792198507&dt=Blogs&tid=AW-11076951961&dl=https%3A%2F%2Fvasustore.com%2Fpag",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198541855&cv=11&fst=1792198541855&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z"
+          ],
+          "loads": [
+            {
+              "url": "/collections/baby-care",
+              "ttfb": 0.21,
+              "dcl": 2.78,
+              "load": 12.23,
+              "lcp": 3.66
+            },
+            {
+              "url": "/collections/womens-care",
+              "ttfb": 0.25,
+              "dcl": 1.26,
+              "load": 9.28,
+              "lcp": 1.4
+            },
+            {
+              "url": "/pages/about-us",
+              "ttfb": 0.22,
+              "dcl": 1.67,
+              "load": 8.33,
+              "lcp": 1.51
+            },
+            {
+              "url": "/pages/blogs",
+              "ttfb": 0.22,
+              "dcl": 1.15,
+              "load": 7.77,
+              "lcp": 1.24
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.hair-care-products",
+      "suite": "catalog",
+      "title": "Collection 'Hair Care' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.73s",
+              "error": null,
+              "secs": 14.9,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Hair Care Products Online for Men & Women - Best Hair Care Combo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5348 chars, 91 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "29 products listed",
+              "error": null,
+              "secs": 0.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "29",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 2: pInfScrNode is not defined",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "2: pInfScrNode is not defined",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "warn",
+              "detail": null,
+              "error": "screen covered by fixed bars: expected \u2264 35%, got 100%: iframe#iframe-kp.iframe-kp 100%",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "100%: iframe#iframe-kp.iframe-kp 100%",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 3.26s, CLS 0.002",
+              "error": null,
+              "secs": 0.39,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 3.26s, CLS 0.002",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "213 scripts, at least 1.5 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (9), pdp.gokwik.co (4), connect.facebook.net (2), googleads.g.doubleclick.net (2), sc-static.net (2)",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "213 scripts, at least 1.5 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (9), pdp.gokwik.co (4), connect.facebook.net (2), googleads.g\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 17.69,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "pInfScrNode is not defined",
+              "url": "https://vasustore.com/collections/hair-care-products"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/collections/hair-care-produ"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/collections/hair-care-products"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1176442667.1792198552&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Women%2",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=1176442667.1792198552&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wo",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198552007&cv=11&fst=1792198552007&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198552878&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=1176442667.1792198552&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wo",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198553481&cv=11&fst=1792198553481&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/collections/hair-care-products",
+              "ttfb": 0.26,
+              "dcl": 1.9,
+              "load": 13.7,
+              "lcp": 3.26
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.face-creams-gels",
+      "suite": "catalog",
+      "title": "Collection 'Face Creams & Gels' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.62s",
+              "error": null,
+              "secs": 12.69,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Face Creams & Gels",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3171 chars, 44 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "12 products listed",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "12",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.08,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 2: pInfScrNode is not defined",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "2: pInfScrNode is not defined",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.21,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.4s, CLS 0.002",
+              "error": null,
+              "secs": 0.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.4s, CLS 0.002",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "227 scripts, at least 1.8 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (9), pdp.gokwik.co (4), connect.facebook.net (2), googleads.g.doubleclick.net (2), sc-static.net (2)",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "227 scripts, at least 1.8 MB of JavaScript, 16 third-party script hosts: www.googletagmanager.com (9), pdp.gokwik.co (4), connect.facebook.net (2), googleads.g\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.85,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "pInfScrNode is not defined",
+              "url": "https://vasustore.com/collections/face-creams-gels"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/collections/face-creams-gel"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/collections/face-creams-gels"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=1496540490.1792198569&dt=Face%20Creams%20%26%20Gels&tid=AW-805908365&dl=https%3A%2F%2",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1496540490.1792198569&dt=Face%20Creams%20%26%20Gels&tid=AW-805908365&en=page_view&dl=https",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198569474&cv=11&fst=1792198569474&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6af0h2v9178841401z",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&ae=g&auid=1496540490.1792198569&dt=Face%20Creams%20%26%20Gels&tid=AW-11076951961&dl=https%3A%2F",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198570984&cv=11&fst=1792198570984&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v910091343",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198572814&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/collections/face-creams-gels",
+              "ttfb": 0.23,
+              "dcl": 2.12,
+              "load": 10.92,
+              "lcp": 1.4
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.hair-care-products",
+      "suite": "catalog",
+      "title": "Collection 'Hair Care' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 4.36s",
+              "error": null,
+              "secs": 9.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Hair Care Products Online for Men & Women - Best Hair Care Combo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5356 chars, 91 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "29 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.19s",
+              "error": null,
+              "secs": 10.47,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Hair Care Products Online for Men & Women - Best Hair Care Combo \u2013 Page 2",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5005 chars, 91 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 24 more products (page-2 link found in the page head)",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 21.03,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "pInfScrNode is not defined",
+              "url": "https://vasustore.com/collections/hair-care-products"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/collections/hair-care-produ"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/collections/hair-care-products"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=2004887622.1792198584&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Women%2",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=2004887622.1792198584&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wo",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198584255&cv=11&fst=1792198584255&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v9178841401z",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=2004887622.1792198584&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wom",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198586187&cv=11&fst=1792198586187&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v910091343",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198587627&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198595006&cv=11&fst=1792198595006&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v9178841401z",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=2004887622.1792198584&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wom",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=2004887622.1792198584&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Women%20",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=0&ae=g&auid=2004887622.1792198584&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wom",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198595701&cv=11&fst=1792198595701&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198596829&ec=3"
+          ],
+          "loads": [
+            {
+              "url": "/collections/hair-care-products",
+              "ttfb": 0.24,
+              "dcl": 3.59,
+              "load": 7.71,
+              "lcp": 4.46
+            },
+            {
+              "url": "/collections/hair-care-products?page=2",
+              "ttfb": 0.22,
+              "dcl": 1.77,
+              "load": 8.48,
+              "lcp": 2.92
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.hair-care-products",
+      "suite": "catalog",
+      "title": "Filtering collection 'Hair Care' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.31s",
+              "error": null,
+              "secs": 11.2,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Hair Care Products Online for Men & Women - Best Hair Care Combo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5348 chars, 91 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "2 filter options (e.g. In stock (54)\u200e, Out of stock (11)\u200e); applying 'In stock (54)\\u200e' = filter.v.availability=1",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "pass",
+              "detail": "opened /collections/hair-care-products?filter.v.availability=1 directly: the theme's own request (?sort_by=manual&filter.v.availability=1&filter.v.price.gte=&filter.v.price.lte=) is disallowed by robots.txt",
+              "error": null,
+              "secs": 18.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Buy Hair Care Products Online for Men & Women - Best Hair Care Combo",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "5974 chars, 92 images",
+                  "ok": true
+                },
+                {
+                  "what": "filters in the page address",
+                  "expected": "exactly one: filter.v.availability=1",
+                  "actual": "filter.v.availability=1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_narrows_results",
+              "status": "pass",
+              "detail": "'In stock (54)\\u200e': 29 products listed (29 without the filter), all match it in the store's data; 5 of them not in the store's data Radar read (65 products)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed with the filter on",
+                  "expected": "\u2265 1 (the store's own filter says 54)",
+                  "actual": "29",
+                  "ok": true
+                },
+                {
+                  "what": "products listed: filtered vs unfiltered",
+                  "expected": "\u2264 65",
+                  "actual": "29",
+                  "ok": true
+                },
+                {
+                  "what": "listed products matching 'In stock (54)\\u200e' (store's data)",
+                  "expected": "all 24",
+                  "actual": "24 of 24",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "no sort control on the page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 40.07,
+          "note": null,
+          "console": [
+            {
+              "type": "pageerror",
+              "text": "pInfScrNode is not defined",
+              "url": "https://vasustore.com/collections/hair-care-products"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/collections/hair-care-produ"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/collections/hair-care-products"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=868927783.1792198605&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Women%20",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=868927783.1792198605&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wom",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198604701&cv=11&fst=1792198604701&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=0&ae=g&auid=868927783.1792198605&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wom",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198606729&cv=11&fst=1792198606729&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6af0h2v910091343",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198608093&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198617592&cv=11&fst=1792198617592&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=868927783.1792198605&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wome",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=868927783.1792198605&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Women%20-",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=868927783.1792198605&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wome",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198618376&cv=11&fst=1792198618376&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198619190&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=868927783.1792198605&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wom",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198634833&cv=11&fst=1792198634833&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=868927783.1792198605&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Women%20",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198635422&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=0&ae=g&auid=868927783.1792198605&dt=Buy%20Hair%20Care%20Products%20Online%20for%20Men%20%26%20Wome",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198635627&cv=11&fst=1792198635627&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z"
+          ],
+          "loads": [
+            {
+              "url": "/collections/hair-care-products",
+              "ttfb": 0.2,
+              "dcl": 2.08,
+              "load": 9.27,
+              "lcp": 2.91
+            },
+            {
+              "url": "/collections/hair-care-products?filter.v.availability=1",
+              "ttfb": 0.09,
+              "dcl": 1.68,
+              "load": 9.26,
+              "lcp": 2.06
+            },
+            {
+              "url": "/collections/hair-care-products",
+              "ttfb": 0.04,
+              "dcl": 1.28,
+              "load": 8.21,
+              "lcp": 2.33
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.vasu-baby-combo-for-kids-vasu-suvarna-po",
+      "suite": "product",
+      "title": "PDP 'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Pow'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.25s",
+              "error": null,
+              "secs": 15.96,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6581 chars, 98 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml",
+                  "actual": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarna Malish Tailam Baby Massage Oil - (200ml)', selected variant 49807877177603 at \u20b92,399.00",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml.js with variants",
+                  "actual": "'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarna Malish Tailam Baby Massage Oil - (200ml)', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.93,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarna Malish Tailam Baby Massage Oil - (200ml)",
+                  "actual": "'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarna Malish Tailam Baby Massage Oil - (200ml)' (h1, 32px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 20.29,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/products/vasu-baby-combo-fo"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml?"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1435962619.1792198646&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna%20Po",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=1435962619.1792198646&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198645516&cv=11&fst=1792198645516&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198647320&cv=11&fst=1792198647320&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=1435962619.1792198646&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198648749&ec=4",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby",
+              "ttfb": 0.05,
+              "dcl": 1.81,
+              "load": 10.75,
+              "lcp": 0.77
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.vasu-baby-combo-for-kids-vasu-suvarna-po",
+      "suite": "product",
+      "title": "PDP 'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Pow'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.03s",
+              "error": null,
+              "secs": 14.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6539 chars, 96 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-10g-pack-swarnaprashan-drops-30ml",
+                  "actual": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-10g-pack-swarnaprashan-drops-30ml",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarnaprashan Drops (30ml)', selected variant 49807824748803 at \u20b92,599.00",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-10g-pack-swarnaprashan-drops-30ml",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-10g-pack-swarnaprashan-drops-30ml.js with variants",
+                  "actual": "'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarnaprashan Drops (30ml)', 1 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.67,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarnaprashan Drops (30ml)",
+                  "actual": "'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarnaprashan Drops (30ml)' (h1, 32px, exact name)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.49,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/products/vasu-baby-combo-fo"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-10g-pack-swarnaprashan-drops-30ml?variant=498078247488"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=0&ae=g&auid=938805493.1792198666&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=938805493.1792198666&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna%20Po",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198665644&cv=11&fst=1792198665644&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=938805493.1792198666&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna%",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198666964&cv=11&fst=1792198666964&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198668041&ec=4",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-10g-pack-swarnaprashan-drops-30ml?v",
+              "ttfb": 0.06,
+              "dcl": 1.72,
+              "load": 9.43,
+              "lcp": 0.96
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.vasu-baby-combo-for-kids-vasu-suvarna-po",
+      "suite": "product",
+      "title": "PDP 'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Pow'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "blocked",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": false,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.33s",
+              "error": null,
+              "secs": 17.87,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6109 chars, 110 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml-swarnaprashan-drops-30ml",
+                  "actual": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml-swarnaprashan-drops-30ml",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarna Malish Tailam Baby Massage Oil - (200ml) &  Swarnaprashan Drops (30ml)', selected variant 49807883665667 at \u20b93,699.00",
+              "error": null,
+              "secs": 0.15,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml-swarnaprashan-drops-30ml",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml-swarnaprashan-drops-30ml.js with variants",
+                  "actual": "'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarna Malish Tailam Baby Massage Oil - (200ml) &  Swarnaprashan Drops (30ml)', 1 vari\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "skip",
+              "detail": null,
+              "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+              "secs": 3.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarna Malish Tailam Baby Massage Oil - (200ml) &  Swarnaprashan Drops (30ml)",
+                  "actual": "'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarna Malish Tailam Baby Massage Oil - (200ml) & Swarnaprashan Drops (30ml)' (h1, 32p\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": "shows_title_price_image",
+          "error": "location (US runner): the store shows this visitor prices in INR (page shows 'USD (currency switcher on screen)'), market US, rate 1; the catalog price in \u20b9 is not on the page. Radar's cloud machines are in the US: check from India",
+          "screenshot": null,
+          "trace": null,
+          "secs": 22.07,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/products/vasu-baby-combo-fo"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml-"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=1775898492.1792198684&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1775898492.1792198684&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna%20Po",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198684484&cv=11&fst=1792198684484&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198685582&ec=4",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198686400&cv=11&fst=1792198686400&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=0&ae=g&auid=1775898492.1792198684&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198690114&ec=1",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby",
+              "ttfb": 0.07,
+              "dcl": 1.91,
+              "load": 13.28,
+              "lcp": 0.9
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'Vasu Baby Combo for Kids \u2013 Vasu Suvarna ' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.35s",
+              "error": null,
+              "secs": 9.78,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6059 chars, 98 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.05,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/products/vasu-baby-combo-fo"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml?"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=1361259741.1792198706&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna%20Po",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=1361259741.1792198706&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198705915&cv=11&fst=1792198705915&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198707987&cv=11&fst=1792198707987&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6af0h2v910091343",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=1361259741.1792198706&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarn",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198709414&ec=4",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby",
+              "ttfb": 0.05,
+              "dcl": 2.1,
+              "load": 7.92,
+              "lcp": 0.69
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.baby",
+      "suite": "search",
+      "title": "Search for 'baby' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.9s",
+              "error": null,
+              "secs": 11.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6404 chars, 77 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 23 results, 6 mention 'baby'",
+              "error": null,
+              "secs": 13.75,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "23",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'baby'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "6 of 23",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 25.53,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=1557552790.1792198716&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%2",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198716145&cv=11&fst=1792198716145&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1557552790.1792198716&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%26%",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198717472&cv=11&fst=1792198717472&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v910091343",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=0&ae=g&auid=1557552790.1792198716&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%2",
+            "GET https://www.google.com/sorry/index?continue=https://translate.google.com/translate_a/element.js%3Fcb%3DgoogleTranslateElementInit&q=EgQUYoWuGL2Qy9YGIj",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198718813&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198725380&cv=11&fst=1792198725380&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6ae1",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198725472&cv=11&fst=1792198725472&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198725646&cv=11&fst=1792198725646&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6ae",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198725676&cv=11&fst=1792198725676&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198729483&cv=11&fst=1792198729483&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=0&ae=g&auid=1557552790.1792198716&dt=Search%3A%2046%20results%20found%20for%20%22baby%22&tid=AW-80",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=1557552790.1792198716&dt=Search%3A%2046%20results%20found%20for%20%22baby%22&tid=AW-8059083",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=1557552790.1792198716&dt=Search%3A%2046%20results%20found%20for%20%22baby%22&tid=AW-11",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198730447&cv=11&fst=1792198730447&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198732179&ec=3"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.09,
+              "dcl": 2.2,
+              "load": 8.83,
+              "lcp": 0.79
+            },
+            {
+              "url": "/search?q=baby",
+              "ttfb": 0.07,
+              "dcl": 1.55,
+              "load": 9.51,
+              "lcp": 1.48
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.06s",
+              "error": null,
+              "secs": 12.26,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\"",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2044 chars, 11 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "says 'Results for \"qzxvbugradar\" No results could be found.'",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "message 'Results for \"qzxvbugradar\" No results could be found.'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.49,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/search?q=qzxvbugradar&type="
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=1373090065.1792198742&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22&t",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=1373090065.1792198742&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22&tid=AW",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198741948&cv=11&fst=1792198741948&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=1373090065.1792198742&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22&t",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198743364&cv=11&fst=1792198743364&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198744757&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.06,
+              "dcl": 1.83,
+              "load": 11.29,
+              "lcp": 0.76
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'baby' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.75s",
+              "error": null,
+              "secs": 12.12,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6404 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "6 product suggestion(s) while typing 'baby', e.g. 'Vasu Baby Combo for Kids \u2013 Swarna Malish Tailam Baby Massage'",
+              "error": null,
+              "secs": 4.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 16.41,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=0&ae=g&auid=2074355012.1792198754&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%2",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=2074355012.1792198754&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%26%",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198754091&cv=11&fst=1792198754091&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6af0h2v9178841401z",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=2074355012.1792198754&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198756401&cv=11&fst=1792198756401&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v910091343",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198757480&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 1.99,
+              "load": 10.11,
+              "lcp": 0.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.69s",
+              "error": null,
+              "secs": 12.25,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6404 chars, 73 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "70: 'Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellne'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Buy Best Ayurvedic Hair Oil, Herbal Shampoo, Hair Creams, Serum, Hair ",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "158: 'Buy Best Ayurvedic Hair Oil, Herbal Shampoo, Hair Creams, Se'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://vasustore.com/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://vasustore.com/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "warn",
+              "detail": null,
+              "error": "og:image (link previews): expected present, got missing",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "missing",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 12.71,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=0&ae=g&auid=2117575989.1792198770&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20",
+            "POST https://www.google.com/ccm/collect?rcb=1&frm=0&apvc=1&auid=2117575989.1792198770&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%26%2",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198770333&cv=11&fst=1792198770333&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=0&ae=g&auid=2117575989.1792198770&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198770892&cv=11&fst=1792198770892&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198774400&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 2.3,
+              "load": 9.88,
+              "lcp": 1.03
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.44s",
+              "error": null,
+              "secs": 18.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6091 chars, 98 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "69: 'Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "pass",
+              "detail": "Shop Vasu Suvarna Poshan Powder, an Ayurvedic nutritional supplement f",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "145: 'Shop Vasu Suvarna Poshan Powder, an Ayurvedic nutritional su'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://vasustore.com/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://vasustore.com/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "Vasu Baby Combo for Kids \u2013 Vasu Suvarna Poshan Powder (30 \u00d71 0g) Pack & Swarna Malish Tailam Baby Massage Oil - (200ml)",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://vasustore.com/cdn/shop/files/VSPP_VSMTcopy.jpg?v=1791975536&width=1024",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 18.32,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/products/vasu-baby-combo-fo"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby-massage-oil-200ml"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=168177646.1792198783&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna%20Po",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=0&ae=g&auid=168177646.1792198783&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198783066&cv=11&fst=1792198783066&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=168177646.1792198783&dt=Vasu%20Baby%20Combo%20for%20Kids%20%E2%80%93%20Vasu%20Suvarna",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198785637&cv=11&fst=1792198785637&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6af0h2v910091343",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198787318&ec=4",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/products/vasu-baby-combo-for-kids-vasu-suvarna-poshan-powder-30-1-0g-pack-swarna-malish-tailam-baby",
+              "ttfb": 0.05,
+              "dcl": 1.95,
+              "load": 12.87,
+              "lcp": 0.71
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 16.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404 (redirected to /)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 16.37,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://www.google.com/sorry/index?continue=https://translate.google.com/translate_a/element.js%3Fcb%3DgoogleTranslateElementInit&q=EgQUYoWuGJCRy9YGIj",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198801615&cv=11&fst=1792198801615&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=937269778.1792198802&dt=404%20Not%20Found&tid=AW-805908365&dl=https%3A%2F%2Fvasustore",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=937269778.1792198802&dt=404%20Not%20Found&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fv",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=937269778.1792198802&dt=404%20Not%20Found&tid=AW-11076951961&dl=https%3A%2F%2Fvasusto",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198801850&cv=11&fst=1792198801850&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198802600&ec=3",
+            "GET https://tr.snapchat.com/cm/i?pid=2149939a-13c0-4afa-96be-5edf0cdb528c&u_scsid=20d20575-a1e8-49dc-89ac-bc720b5f3263&u_sclid=0b526ced-2315-479a-afd3-bbf",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=0&ae=g&auid=937269778.1792198802&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=937269778.1792198802&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20%26%2",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198807265&cv=11&fst=1792198807265&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=937269778.1792198802&dt=Best%20Ayurvedic%20%26%20Herbal%20Hair%20and%20Skin%20Care%20",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198808541&cv=11&fst=1792198808541&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198810029&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 2.46,
+              "load": 9.06,
+              "lcp": 0.9
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /policies/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.23s",
+              "error": null,
+              "secs": 10.57,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2957 chars, 11 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Refund policy', heading 'Refund policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/refund-policy",
+                  "actual": "/policies/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "2393 chars of policy text",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "2393 chars under 'Refund policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /policies/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.11s",
+              "error": null,
+              "secs": 10.28,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2215 chars, 11 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Shipping policy', heading 'Shipping policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/shipping-policy",
+                  "actual": "/policies/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "1629 chars of policy text",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "1629 chars under 'Shipping policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /policies/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.91s",
+              "error": null,
+              "secs": 10.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy policy",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6302 chars, 11 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Privacy policy', heading 'Privacy policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/privacy-policy",
+                  "actual": "/policies/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "5686 chars of policy text",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "5686 chars under 'Privacy policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /policies/terms-of-service",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.65s",
+              "error": null,
+              "secs": 9.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms of service",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "9938 chars, 11 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Terms of service', heading 'Terms of service'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/policies/terms-of-service",
+                  "actual": "/policies/terms-of-service",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "9225 chars of policy text",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "9225 chars under 'Terms of service'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/contact",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.63s",
+              "error": null,
+              "secs": 9.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2414 chars, 11 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title 'Contact', heading 'Reach Out for Support'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/contact",
+                  "actual": "/pages/contact",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 50.55,
+          "note": null,
+          "console": [
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-159809795@5/sandbox/modern/policies/refund-policy"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/policies/refund-policy"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198817901&cv=11&fst=1792198817901&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&ae=g&auid=462821488.1792198818&dt=Refund%20policy&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.c",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=462821488.1792198818&dt=Refund%20policy&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fvas",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198819723&cv=11&fst=1792198819723&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=462821488.1792198818&dt=Refund%20policy&tid=AW-11076951961&dl=https%3A%2F%2Fvasustore.",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198821087&ec=3",
+            "POST https://tr.snapchat.com/scs/shopify",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=0&ae=g&auid=462821488.1792198818&dt=Shipping%20policy&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198828146&cv=11&fst=1792198828146&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=462821488.1792198818&dt=Shipping%20policy&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fva",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198829208&cv=11&fst=1792198829208&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=0&ae=g&auid=462821488.1792198818&dt=Shipping%20policy&tid=AW-11076951961&dl=https%3A%2F%2Fvasustor",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198830195&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=462821488.1792198818&dt=Privacy%20policy&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fva",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=0&ae=g&auid=462821488.1792198818&dt=Privacy%20policy&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198838881&cv=11&fst=1792198838881&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=462821488.1792198818&dt=Privacy%20policy&tid=AW-11076951961&dl=https%3A%2F%2Fvasustor",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198839340&cv=11&fst=1792198839340&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198839427&ec=3",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198848497&cv=11&fst=1792198848497&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1h1v9178841401z",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=0&ae=g&auid=462821488.1792198818&dt=Terms%20of%20service&tid=AW-805908365&dl=https%3A%2F%2Fvasusto",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=462821488.1792198818&dt=Terms%20of%20service&tid=AW-805908365&en=page_view&dl=https%3A%2F%2",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=0&ae=g&auid=462821488.1792198818&dt=Terms%20of%20service&tid=AW-11076951961&dl=https%3A%2F%2Fvasu",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198848963&cv=11&fst=1792198848963&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z"
+          ],
+          "loads": [
+            {
+              "url": "/policies/refund-policy",
+              "ttfb": 0.32,
+              "dcl": 1.98,
+              "load": 9.51,
+              "lcp": 0.93
+            },
+            {
+              "url": "/policies/shipping-policy",
+              "ttfb": 0.32,
+              "dcl": 0.95,
+              "load": 8.65,
+              "lcp": 1.0
+            },
+            {
+              "url": "/policies/privacy-policy",
+              "ttfb": 0.36,
+              "dcl": 1.57,
+              "load": 8.8,
+              "lcp": 1.22
+            },
+            {
+              "url": "/policies/terms-of-service",
+              "ttfb": 0.3,
+              "dcl": 1.28,
+              "load": 8.12,
+              "lcp": 0.78
+            },
+            {
+              "url": "/pages/contact",
+              "ttfb": 0.24,
+              "dcl": 1.42,
+              "load": 8.11,
+              "lcp": 0.94
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.account_page",
+      "suite": "info",
+      "title": "Account login page loads",
+      "check": "account_page",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 2.45s, redirected to blank",
+              "error": null,
+              "secs": 14.3,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Account",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2133 chars, 11 images",
+                  "ok": true
+                },
+                {
+                  "what": "popup (iframe) popup closed",
+                  "expected": "closed without accepting or subscribing",
+                  "actual": "clicked \"clicked 'close icon' inside the popup frame\" on: 'iframe popup 4'",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title '', heading ''",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/account/login",
+                  "actual": "blank",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_sign_in",
+              "status": "pass",
+              "detail": "not judged: the account link hands sign-in to another app (the page went blank)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 14.69,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://vasustore.com/cdn/wpm/s9f5e2762wb720532ap19708c42m93b2bec3m.js"
+            },
+            {
+              "type": "warning",
+              "text": "gk_analytics_sdk_unavailable_after_retry: init_threw",
+              "url": "https://pdp.gokwik.co/merchant-integration/build/merchant.integration.js?v4"
+            },
+            {
+              "type": "pageerror",
+              "text": "oaiq is not defined",
+              "url": "https://vasustore.com/account/login"
+            },
+            {
+              "type": "error",
+              "text": "[gokwik-sdk] init failed Error: gokwik.init already called with merchantId=\"19g6ill6g9g2h\" host=\"https://gkx.gokwik.co/gke\"; cannot re-init with merchantId=\"19g6ill6g9g2h\" host=\"https://hits.gokwik.co/gke\" at Object.init",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Failed to load resource: the server responded with a status of 404 ()",
+              "url": "https://vasustore.com/variants/43510270591235.js"
+            },
+            {
+              "type": "warning",
+              "text": "Error checking availability for variant 43510270591235:",
+              "url": "https://kwikcart.gokwik.co/kwikcart/side-cart.js"
+            },
+            {
+              "type": "error",
+              "text": "Provider's accounts list is empty.",
+              "url": "https://vasustore.com/account/login"
+            },
+            {
+              "type": "warning",
+              "text": "The resource https://shop.app/pay/assets/sprite.svg was preloaded using link preload but not used within a few seconds from the window's load event. Please make sure it has an appropriate `as` value and it is preloaded i",
+              "url": "https://shop.app/accounts/pre_auth?client_id=2f02d68d-5173-4bf0-8aeb-a2eb1edb70d9&analytics_trace_id=1b5697f8-da0e-45d1-aeae-11335d4e70f2&fl"
+            }
+          ],
+          "failed_requests": [
+            "POST https://vasustore.com/.well-known/shopify/monorail/unstable/produce_batch",
+            "GET https://shop.app/accounts/pre_auth?client_id=2f02d68d-5173-4bf0-8aeb-a2eb1edb70d9&analytics_trace_id=1b5697f8-da0e-45d1-aeae-11335d4e70f2&flow=classic",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=0&ae=g&auid=1079557007.1792198869&dt=Account&tid=AW-805908365&dl=https%3A%2F%2Fvasustore.com%2Fac",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1079557007.1792198869&dt=Account&tid=AW-805908365&en=page_view&dl=https%3A%2F%2Fvasustore.",
+            "POST https://www.google.com/rmkt/collect/805908365/?random=1792198868975&cv=11&fst=1792198868975&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9178841401z88",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198869707&ec=3",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1079557007.1792198869&dt=Account&tid=AW-805908365&en=source_update&dl=https%3A%2F%2Fvasust",
+            "POST https://www.google.com/rmkt/collect/11076951961/?random=1792198870296&cv=11&fst=1792198870296&fmt=8&bg=ffffff&guid=ON&async=1&gtm=45be6ae1v9100913433z",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=0&ae=g&auid=1079557007.1792198869&dt=Account&tid=AW-11076951961&dl=https%3A%2F%2Fvasustore.com%2F",
+            "GET https://fonts.googleapis.com/css?family=unset:400,500,600,700",
+            "POST https://bzr.openai.com/v1/sdk/events?pid=WrGvcS3PEVn6Leh2SZTUdC&st=oaiq-web&sv=0.1.41&t=1792198874281&ec=1",
+            "POST https://tr.snapchat.com/scs/shopify"
+          ],
+          "loads": [
+            {
+              "url": "/account/login",
+              "ttfb": 0.32,
+              "dcl": 2.12,
+              "load": 11.05,
+              "lcp": 4.0
+            },
+            {
+              "url": "blank",
+              "ttfb": 0.0,
+              "dcl": 0.17,
+              "load": 0.17,
+              "lcp": null
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "Best Ayurvedic & Herbal Hair and Skin Care & Health & Wellness Product",
+    "theme": "Focal (store copy: New Website | D2Cbox | 18/02/026)",
+    "checkout_app": "GoKwik",
+    "access": "open",
+    "nav": 25,
+    "collections": 48,
+    "products": 15,
+    "in_stock": 15,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "3 gift-app clone / gift card / sample / free-gift product(s) skipped (e.g. r-g-skin-clear-face-wash-for-women-men)",
+    "2 product(s) priced like a free gift next to the store's other prices (e.g. vasu-naturals-total-moisture-lip-care-strawberry-10g at 40.00) are not used for tests",
+    "2 product(s) priced 0 (free samples/gifts, e.g. \ud83c\udf81-vasu-naturals-total-moisture-lip-care-strawberry-10g) are not used for product or cart tests"
+  ],
+  "perf": {
+    "pages": 28,
+    "median_load_secs": 8.73,
+    "slowest": {
+      "url": "/collections/hair-care-products",
+      "load_secs": 13.7
+    },
+    "console_errors": 5,
+    "console_warnings": 5,
+    "failed_requests": 233
+  },
+  "counts": {
+    "pass": 17,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 4,
+    "skipped": 0
+  }
+}
