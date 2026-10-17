@@ -2117,7 +2117,12 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" disabled>Add to cart</button>', 1)
             body += ('<div class="personalizer"><label class="upload-btn" style="display:inline-block;padding:10px;border:1px dashed #999">'
-                     'Upload your photo<input type="file" accept="image/*" style="display:none"></label></div>')
+                     'Upload your photo<input type="file" accept="image/*" style="display:none"></label></div>'
+                     # cartwala.in re-test: the app's real file input sits hidden deep inside a hidden step panel
+                     '<div class="cl-app"><div class="cl-step" style="display:none"><div><input type="file" accept="image/*"></div></div>'
+                     '<button type="button" class="cl-open">Personalise</button></div>')
+            body = body.replace('Upload your photo<input type="file" accept="image/*" style="display:none"></label>',
+                                'Upload your photo</label>', 1) if self.mode == "needs_photo_upload" else body
         if self.mode == "needs_dimensions":
             # giffywalls.in (new30z5, both devices): a wallpaper mural sold by the square foot; 'Add to cart' stays
             # disabled until the shopper types the wall's width and height

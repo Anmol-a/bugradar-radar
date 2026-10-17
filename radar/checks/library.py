@@ -798,8 +798,11 @@ NEEDS_INPUT_JS = r"""(ids) => { const mine = new Set(ids.map(String));
   // in the page's main area whose label / container is on screen
   for (const f of document.querySelectorAll('input[type=file]')) {
     if (f.files && f.files.length) continue;
-    const host = f.closest('label') || f.parentElement; if (!host || host.closest('header, footer, nav')) continue;
-    if (!vis(host) && !vis(f)) continue;
+    let host = f.closest('label') || f.parentElement; if (!host || host.closest('header, footer, nav')) continue;
+    // a personaliser app hides its file input deep inside its own panel (cartwala.in re-test: 'input:file hidden'):
+    // the nearest visible box up to 6 levels above stands for it
+    for (let k = 0; host && !vis(host) && k < 6; k++) host = host.parentElement;
+    if (!host || host === document.body || (!vis(host) && !vis(f))) continue;
     out.push(JSON.stringify(((host.innerText || '').trim().replace(/\s+/g, ' ') || 'a photo upload').slice(0, 30)) + ' (a photo upload)');
     break; }
   return out.length ? out : null; }"""
@@ -1005,7 +1008,7 @@ def _main_buy_button(ctx: Ctx, product: dict):
             const ctl = [...document.querySelectorAll('button, a, [role=button], [onclick], input[type=submit], [class*="btn" i], [class*="button" i]')]
               .filter(e => vis(e) && !e.closest('header, footer, nav, cart-drawer, [id*="cart-drawer" i]:not(body):not(html)') && !e.closest(quick)
                       // whole words: 'Additional Information' is not 'add' (saralhome.com freebie, new31c re-test)
-                      && /\b(cart|bag|basket|buy|order|checkout|add)\b/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
+                      && /\\b(cart|bag|basket|buy|order|checkout|add)\\b/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
               .slice(0, 5).map(e => '<' + e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className.trim()
                 ? '.' + e.className.trim().split(/\s+/)[0] : '') + '> ' + JSON.stringify((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 24)));
             return {own, other, seen: seen.slice(0, 5), ctl}; }""", [ids, QUICK_SEL]) or {"own": 0, "other": 0, "seen": [], "ctl": []}
