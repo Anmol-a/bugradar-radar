@@ -1373,6 +1373,8 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 18 Oct 01:00 IST (new31e run 39060018670: 48/56 healthy):** sahnibakery.com: 'Quick Shop' buttons carry
+  href='javascript void(0)' (no colon) = '/javascript%20void(0)': a script control, not a page to open (unit test).
 - **v0.20 18 Oct 01:00 IST (new31d run 39058549062: 43/53 healthy):** cartwala.in both devices DEGRADED: personalised
   mouse pads whose 'Add to cart' waits for the shopper's photo (a file input under a styled label): an empty photo upload
   on the page with the buy button disabled = 'not tested' (mock needs_photo_upload).

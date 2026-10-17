@@ -1365,3 +1365,12 @@ def test_more_links_skip_slideshow_controls():
              {"where": "homepage section", "text": "Our story", "url": "https://s.in/pages/our-story"}]
     got = [x["url"] for x in more_links(links, "https://s.in", [])]
     assert got == ["https://s.in/pages/our-story"], got
+
+
+def test_more_links_skip_broken_javascript_hrefs():
+    """sahnibakery.com (new31e): 'Quick Shop' buttons carry href='javascript void(0)' (no colon), which resolves to
+    /javascript%20void(0); a script control, not a page to open."""
+    from radar.discovery.discover import more_links
+    links = [{"where": "homepage section", "text": "Quick Shop", "url": "https://s.in/javascript%20void(0)"},
+             {"where": "homepage section", "text": "Our story", "url": "https://s.in/pages/our-story"}]
+    assert [x["url"] for x in more_links(links, "https://s.in", [])] == ["https://s.in/pages/our-story"]
