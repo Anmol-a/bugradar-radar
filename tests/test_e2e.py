@@ -917,6 +917,13 @@ def test_card_name_that_opens_another_product_goes_on_via_its_other_link_with_a_
     assert w.status == "warn" and "opened another product" in w.error, (w.status, w.error)
 
 
+def test_cart_drawer_words_in_the_body_class_do_not_hide_every_card(tmp_path):
+    """dhaagaweaves.in (new31b, both devices NOT JUDGED, '44 links: 44 inside cart drawer / quick-add') + cmartian.com
+    (new31a): the theme puts 'quick-add-enabled cart-drawer-active' on <body>, so every card matched the drawer rule."""
+    j = _case(_scan_small("body_drawer_class", tmp_path, suites=["journey"]), "journey.")
+    assert j.verdict == "pass", _fails(j)
+
+
 def test_product_card_in_a_marquee_that_never_stops_moving_is_clicked(tmp_path):
     """hunnit.com desktop (new30z1, 3 attempts DOWN): the cards ride a marquee that never stops, and the click waited for
     a still card until it timed out. A shopper taps the card where it is."""
@@ -1026,6 +1033,20 @@ def test_disabled_form_button_with_an_enabled_add_to_cart_elsewhere_passes(tmp_p
     assert not bad, bad
 
 
+def test_product_name_hidden_on_phones_is_a_warning_not_a_failure(tmp_path):
+    """zarfstudios.com phone (new31c, DOWN 3 attempts): the name is in a desktop-only heading, phones see a tagline;
+    price, picture and data are right. On a phone that is a WARNING with the reason, never a failure."""
+    srv, url = serve("name_hidden_on_phone")
+    try:
+        run = scan(url, _settings(tmp_path, allow_cart_flow=False, max_products=1), device="mobile", only_suites=["product"])[0]
+    finally:
+        srv.shutdown()
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert vase.verdict != "confirmed_fail" and st.status == "warn" and "hidden on this screen size" in st.error, \
+        (vase.verdict, st.status, st.error)
+
+
 def test_buy_button_waiting_for_the_shoppers_own_measurements_is_not_tested(tmp_path):
     """giffywalls.in (new30z5, both devices DEGRADED): a wallpaper mural whose 'Add to cart' stays disabled until the
     shopper types the wall's width and height. Radar never fills forms: 'not tested' with the fields named."""
@@ -1063,10 +1084,12 @@ def test_disabled_form_button_with_an_add_to_cart_bar_shown_after_scrolling_pass
     assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
 
 
-def test_gift_only_product_page_without_any_buy_control_is_not_tested(tmp_path):
+@pytest.mark.parametrize("mode", ["gift_only_product", "hidden_buttons_product"])
+def test_gift_only_product_page_without_any_buy_control_is_not_tested(tmp_path, mode):
     """nubronicforte.com (new30t): Radar picked the 'Performance Kit', a gift auto-added to orders; its page has a hidden,
     empty cart form and no buy control at all. Not tested with the reason, never 'not judged'."""
-    run = _product_only("gift_only_product", tmp_path, max_products=1)
+    # + saralhome.com (new31c): a freebie whose form keeps its buttons, all hidden (hidden_buttons_product)
+    run = _product_only(mode, tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
     assert vase.verdict == "blocked" and "offers no way to buy it" in vase.attempts[-1].error, \
         (vase.verdict, vase.attempts[-1].error)

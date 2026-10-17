@@ -25,7 +25,7 @@ from radar.core.models import StepResult
 from radar.discovery.shopify_data import (parse_product_data, price_ok, assess_add, parse_sent_variant_ids,
                                           rupees, norm_text, prices_in_text)
 from radar.core.overlays import dismiss_overlays, AgeGate
-from radar.healing.locator import Healer, QUICK_SEL, LocatorNotFound, OTHER_CARD_FN
+from radar.healing.locator import Healer, QUICK_SEL, LocatorNotFound, OTHER_CARD_FN, not_page
 
 
 class PincodeGate(Exception):
@@ -634,7 +634,7 @@ OWN_CONTROL_JS = r"""([handle, ids, pid, quick]) => {
     return false; };
   const all = [...document.querySelectorAll('button, a, [role="button"], input[type=submit], div, span')]
     .filter(e => words.test(txt(e)) && txt(e).length <= 25 && vis(e)
-      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), [class*="mini-cart" i]:not(body):not(html)')
       && !otherCard(e, quick));
   const inner = all.filter(e => !all.some(o => o !== e && e.contains(o)));
   for (const e of inner) {
@@ -668,7 +668,7 @@ ENABLED_ADD_JS = r"""([quick]) => {
                   && /add[-_ ]?to[-_ ]?(cart|bag)|addtocart|\batc\b|[-_]atc/i.test((typeof e.className === 'string' ? e.className : '') + ' ' + (e.id || '') + ' ' + (e.name || ''))))
       && vis(e) && !(e.parentElement && /^add to (cart|bag|basket)$/i.test(txt(e.parentElement)) && e.parentElement.matches('button, [role="button"], [class*="cart" i], [class*="btn" i]'))
       && !(e.disabled || e.getAttribute('aria-disabled') === 'true')
-      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), [class*="mini-cart" i]:not(body):not(html)')
       && !otherCard(e, quick))
     .sort((x, y) => fixed(y) - fixed(x));
   if (!c.length) return null;
@@ -746,7 +746,7 @@ CHOOSE_JS = r"""([values, quick]) => {
     // 'pdp-sizes' box): a visible button whose own text is the value, beside at least one sibling button of the same
     // kind, never in the header / nav / footer / cart drawer
     const row = [...document.querySelectorAll('button, [role="radio"], [role="button"], label, li')]
-      .find(e => ok(e) && vis(e) && !used.has(e) && !e.closest('header, nav, footer, form[action*="/search"], cart-drawer, [id*="cart-drawer" i]')
+      .find(e => ok(e) && vis(e) && !used.has(e) && !e.closest('header, nav, footer, form[action*="/search"], cart-drawer, [id*="cart-drawer" i]:not(body):not(html)')
               && (e.innerText || '').trim().toLowerCase() === low && e.parentElement
               && [...e.parentElement.children].filter(x => x !== e && x.tagName === e.tagName && vis(x)
                                                            && (x.innerText || '').trim().length <= 24).length >= 1);
@@ -980,7 +980,7 @@ def _main_buy_button(ctx: Ctx, product: dict):
               if (!bs.length) seen.push('no button in the form' + (vis(f) ? '' : ' (form hidden)'));
             }
             const ctl = [...document.querySelectorAll('button, a, [role=button], [onclick], input[type=submit], [class*="btn" i], [class*="button" i]')]
-              .filter(e => vis(e) && !e.closest('header, footer, nav, cart-drawer, [id*="cart-drawer" i]') && !e.closest(quick)
+              .filter(e => vis(e) && !e.closest('header, footer, nav, cart-drawer, [id*="cart-drawer" i]:not(body):not(html)') && !e.closest(quick)
                       && /cart|bag|basket|buy|order|checkout|add/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
               .slice(0, 5).map(e => '<' + e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className.trim()
                 ? '.' + e.className.trim().split(/\s+/)[0] : '') + '> ' + JSON.stringify((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 24)));
@@ -994,9 +994,12 @@ def _main_buy_button(ctx: Ctx, product: dict):
         # nubronicforte.com (new30t, 15 Oct): Radar picked the 'Performance Kit', a gift the store adds to orders on its
         # own ('Complimentary Performance Kit', 'Free Gift Auto Added' on the main product); its page has a hidden, empty
         # cart form and no buy control anywhere = the store does not sell it on its own: not tested, never not-judged
-        if st["own"] and not st.get("ctl") and all("no button in the form (form hidden)" in x for x in (st.get("seen") or ["?"])):
+        if st["own"] and not st.get("ctl") and all("no button in the form (form hidden)" in x or x.endswith(" hidden")
+                                                   for x in (st.get("seen") or ["?"])):
+            # + saralhome.com (new31c): 'FREE TABLE MAT', a freebie whose form keeps its buttons, all hidden
             raise CatalogOnly("not tested: this product's page offers no way to buy it (its cart form is hidden and "
-                              "empty, and the page shows no buy control): a gift or add-on the store adds by itself")
+                              "empty or its buttons are all hidden, and the page shows no buy control): a gift or add-on "
+                              "the store adds by itself")
         # saumyasstores.com (new31a): the cart buttons are hidden and the only buy control is 'View On Amazon'
         mk = ctx.sess.evaluate(MARKETPLACE_JS, product.get("title") or "") or {}
         if mk.get("marketplaces"):          # this product has no usable buy button (established above)
@@ -1140,7 +1143,7 @@ def _add_and_verify(ctx: Ctx, product: dict, variant: dict):
 DRAWER_JS = r"""() => {
   document.querySelectorAll('[data-radar-target="drawer"]').forEach(e => e.removeAttribute('data-radar-target'));
   // most specific first: a generic "active drawer" could be the menu
-  const sels = ['cart-drawer', '#CartDrawer', '[id*="cart-drawer" i]', '[class*="cart-drawer" i]', 'cart-notification',
+  const sels = ['cart-drawer', '#CartDrawer', '[id*="cart-drawer" i]:not(body):not(html)', '[class*="cart-drawer" i]:not(body):not(html)', 'cart-notification',
                 'aside[class*="cart" i]', '[role="dialog"][aria-modal="true"]', '[class*="drawer" i][class*="active" i]'];
   const vis = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
     return r.width > 150 && r.height > 150 && s.visibility !== 'hidden' && s.display !== 'none' && s.opacity !== '0'; };
@@ -1987,8 +1990,8 @@ TITLE_JS = r"""(title) => {
   const want = norm(title), wt = want.split(' ').filter(w => w.length > 2);
   const m = location.pathname.match(/\/products\/([^/?#]+)/), handle = m ? decodeURIComponent(m[1]) : null;
   const CHROME = 'body > header, #shopify-section-header, [id*="header-group" i], .shopify-section-group-header-group, ' +
-    'footer, [id*="footer" i], nav, [role="navigation"], [role="dialog"], cart-drawer, [id*="cart-drawer" i], ' +
-    '[class*="cart-drawer" i], button, label, option, select, [class*="breadcrumb" i], [class*="visually-hidden" i], .sr-only';
+    'footer, [id*="footer" i], nav, [role="navigation"], [role="dialog"], cart-drawer, [id*="cart-drawer" i]:not(body):not(html), ' +
+    '[class*="cart-drawer" i]:not(body):not(html), button, label, option, select, [class*="breadcrumb" i], [class*="visually-hidden" i], .sr-only';
   const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 2 && r.height > 2 && s.visibility !== 'hidden' && parseFloat(s.opacity || 1) > 0.05; };
   // Another product's card = the nearest box holding product links, when those links all go to a
@@ -2185,9 +2188,22 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         t = ctx.sess.evaluate(TITLE_JS, p["title"]) or _llm_find_name(ctx, p["title"]) or {}
         heading = t.get("text") or ""
         state["heading"] = heading
-        ctx.expect("product name shown on the page", p["title"],
-                   f"{heading!r} ({t.get('tag')}, {t.get('size')}, {t.get('how')})" if heading
-                   else "none: no visible text matching the product name, and no main heading", bool(heading))
+        if heading:
+            ctx.expect("product name shown on the page", p["title"],
+                       f"{heading!r} ({t.get('tag')}, {t.get('size')}, {t.get('how')})", True)
+        else:
+            # zarfstudios.com phone (new31c, DOWN 3x): the page leads with a tagline ('The Fluffiest Cooling AC Comforter
+            # Set On Earth') and shows only the variant 'Poppy' by the price, while the name sits in the page HIDDEN on
+            # this screen size. Name in the page but hidden here, with price, picture and data right = a merchandising
+            # WARNING. A name that is nowhere in the page stays a failure (and goes to triage) as before.
+            hidden_name = ctx.sess.evaluate("""(title) => { const n = s => (s || '').toLowerCase().replace(/\\s+/g, ' ').trim();
+                const want = n(title); if (!want) return false;
+                return [...document.querySelectorAll('h1, h2, h3, [class*="title" i], [class*="name" i]')].some(e =>
+                  n(e.textContent) === want || n(e.textContent).startsWith(want)); }""", p["title"])
+            if not hidden_name:
+                ctx.expect("product name shown on the page", p["title"],
+                           "none: no visible text matching the product name, and no main heading", False)
+            state["name_warn"] = True
         want = round(int(v["price"]) / 100, 2)
         nums = prices_in_text(text)
         if not price_shown(want, nums)[0]:        # price in a sticky bar / lazy block that appears on scroll (supplysix.com, bench 3)
@@ -2233,6 +2249,9 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         if state.get("price_warn"):
             raise StoreWarning(f"selected variant price shown: expected {rupees(v['price'])}, the page shows "
                                f"{state['price_warn']}")
+        if state.get("name_warn"):
+            raise StoreWarning(f"product name shown on the page: expected {p['title']!r}: the name is in the page but hidden "
+                               "on this screen size (its price, picture and product data are right)")
         return "title, price and image visible"
     ctx.steps.run("shows_title_price_image", shown)
 
@@ -3181,7 +3200,7 @@ def mobile_menu(ctx: Ctx, home: str):
 
 NAME_CANDIDATES_JS = r"""() => {
   const CHROME = 'body > header, #shopify-section-header, [id*="header-group" i], footer, nav, [role="dialog"], ' +
-                 'cart-drawer, [class*="cart-drawer" i], button, label, option, select';
+                 'cart-drawer, [class*="cart-drawer" i]:not(body):not(html), button, label, option, select';
   const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 2 && r.height > 2 && r.top < innerHeight * 2 && s.visibility !== 'hidden' && parseFloat(s.opacity || 1) > 0.05; };
   document.querySelectorAll('[data-radar-name]').forEach(e => e.removeAttribute('data-radar-name'));
@@ -3441,8 +3460,8 @@ MENU_TOGGLES = ("header details > summary, header [aria-haspopup='true'], header
                 "button[aria-label*='menu' i], summary[aria-label*='menu' i], .header__icon--menu, .menu-toggle, "
                 ".hamburger, button[class*='burger' i]")
 
-NOT_SHOPPING = ("cart-drawer, cart-notification, [id*='cart-drawer' i], [class*='cart-drawer' i], [id*='CartDrawer'], "
-                "[class*='quick-add' i], [data-radar-target='drawer']")
+NOT_SHOPPING = not_page("cart-drawer, cart-notification, [id*='cart-drawer' i], [class*='cart-drawer' i], [id*='CartDrawer'], "
+                        "[class*='quick-add' i], [data-radar-target='drawer']")
 
 PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   document.querySelectorAll('[data-radar-target]').forEach(e => { if (e.getAttribute('data-radar-target') !== 'drawer') e.removeAttribute('data-radar-target'); });
@@ -4441,7 +4460,7 @@ BUY_NOW_JS = r"""([ids, quick]) => {
   const c = [...document.querySelectorAll('button, a, [role="button"], input[type=submit], input[type=button]')]
     .filter(e => vis(e) && txt(e).length <= 30 && !wallet.test(txt(e))
       && (/^buy\s*(it\s*)?now\b/i.test(txt(e)) || (e.closest('.shopify-payment-button, [data-shopify="payment-button"]') && /\bbuy\b/i.test(txt(e))))
-      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), [class*="mini-cart" i]:not(body):not(html)')
       && !otherCard(e, quick));
   const own = e => { const f = e.closest('form') || (e.getAttribute('form') && document.getElementById(e.getAttribute('form')));
     const i = f && f.querySelector('[name="id"]'); return i && mine.has(String(i.value || '')) ? 1 : 0; };
@@ -4555,7 +4574,7 @@ OPTION_CONTROL_JS = r"""([value, quick]) => {
   const same = t => norm(t) === want;
   const near = t => { t = norm(t); return t.length > want.length && t.startsWith(want) && !/[a-z0-9]/.test(t[want.length]); };
   const away = e => !!(e.closest(quick) || otherCard(e, quick) || e.closest('header, nav, footer, cart-drawer, ' +
-    '[id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i], [role="dialog"]'));
+    '[id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), [class*="mini-cart" i]:not(body):not(html), [role="dialog"]'));
   const off = e => !!(e && (e.disabled || e.getAttribute('aria-disabled') === 'true'));
   const mark = (e, kind, how, extra) => { e.setAttribute('data-radar-variant', 'opt');
     return Object.assign({kind, how, disabled: off(e)}, extra || {}); };
@@ -5110,8 +5129,8 @@ SOLD_OUT_TEXT_JS = r"""([quick]) => {
   const otherCard = __OTHER_CARD__;
   const m = location.pathname.match(/\/products\/([^/?#]+)/), here = m ? decodeURIComponent(m[1]) : null;
   const prodOf = a => { const x = (a.getAttribute('href') || '').match(/\/products\/([^/?#]+)/); return x ? decodeURIComponent(x[1]) : null; };
-  const CHROME = 'header, nav, footer, [role="dialog"], cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], ' +
-                 '[class*="mini-cart" i], script, style, noscript, template';
+  const CHROME = 'header, nav, footer, [role="dialog"], cart-drawer, [id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), ' +
+                 '[class*="mini-cart" i]:not(body):not(html), script, style, noscript, template';
   const shown = e => { const r = e.getBoundingClientRect(), st = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && st.visibility !== 'hidden' && st.display !== 'none' && parseFloat(st.opacity || 1) > 0.05; };
   const other = e => { const a = e.closest('a[href*="/products/"]'); if (a && prodOf(a) && prodOf(a) !== here) return true;

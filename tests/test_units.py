@@ -1354,3 +1354,14 @@ def test_per_unit_price_of_a_multi_unit_variant():
     assert "× 2" in per_unit_price(3298.0, {1799.0, 1649.0, 1499.0}, t)
     assert per_unit_price(3298.0, {1649.0}, "Only ₹1,649 today") is None          # no per-unit wording
     assert per_unit_price(3298.0, {1000.0}, "₹1,000 / bottle, 2 bottles") is None  # does not multiply out
+
+
+def test_more_links_skip_slideshow_controls():
+    """zenvistapackagings.in (new31b): the hero slideshow's dots are links ('Slide 1, current', 'Load slide 1' ->
+    /Hero-slideshow); Radar opened them as pages and failed them. They are carousel controls."""
+    from radar.discovery.discover import more_links
+    links = [{"where": "homepage section", "text": "Slide 1, current", "url": "https://s.in/Hero-slideshow"},
+             {"where": "homepage section", "text": "Load slide 2", "url": "https://s.in/Hero-slideshow-2"},
+             {"where": "homepage section", "text": "Our story", "url": "https://s.in/pages/our-story"}]
+    got = [x["url"] for x in more_links(links, "https://s.in", [])]
+    assert got == ["https://s.in/pages/our-story"], got

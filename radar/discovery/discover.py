@@ -91,6 +91,11 @@ NOT_MORE = re.compile(r"/(products|cart|account|search|checkout|policies)(/|$)|/
                       re.I)
 
 
+# A slideshow's own dots / arrows are links on some themes ('Slide 1, current', 'Load slide 1' -> '/Hero-slideshow':
+# zenvistapackagings.in, new31b, both devices DEGRADED): carousel controls, never pages to open
+SLIDE_CONTROL = re.compile(r"^\s*((load|go to|show|view) )?slide \d+|^\s*(next|previous|prev) slide|^\s*slide \d+ of \d+", re.I)
+
+
 def _norm_url(u: str) -> str:
     p = urlparse(u)
     return ((p.hostname or "").lower().removeprefix("www.") + (p.path.rstrip("/") or "/")).lower()
@@ -105,7 +110,7 @@ def more_links(links: list[dict], base: str, known: list[str], per_place: int = 
     for link in links:
         url = (link.get("url") or "").split("#")[0]
         if not url or not _same_origin(url, base) or NOT_MORE.search(urlparse(url).path) \
-                or NOT_INFO_TEXT.search(link.get("text") or ""):
+                or NOT_INFO_TEXT.search(link.get("text") or "") or SLIDE_CONTROL.search(link.get("text") or ""):
             continue
         key = _norm_url(url)
         if key in seen:
