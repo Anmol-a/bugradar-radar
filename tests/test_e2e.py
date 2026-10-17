@@ -1035,6 +1035,17 @@ def test_buy_button_waiting_for_the_shoppers_own_measurements_is_not_tested(tmp_
         (vase.verdict, vase.attempts[-1].error)
 
 
+@pytest.mark.parametrize("mode,why", [("marketplace_hidden_cart", "amazon"), ("customiser_product", "customi")])
+def test_products_sold_elsewhere_or_through_a_builder_are_not_tested(tmp_path, mode, why):
+    """saumyasstores.com (new31a, NOT JUDGED): the price shows but the cart buttons are hidden and the only buy control is
+    'View On Amazon'. aesthesy.com (new31a, DOWN): the product page is a custom-art builder with no price and a disabled
+    'Continue to Customize'. Both are 'not tested' with the reason."""
+    run = _product_only(mode, tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error \
+        and why in vase.attempts[-1].error.lower(), (vase.verdict, vase.attempts[-1].error)
+
+
 def test_buy_button_waiting_for_the_shoppers_picks_is_not_tested(tmp_path):
     """orbiz.in (new30z2, both devices DEGRADED): a 'build your crew' product whose only button, 'Pick 6 buddies', stays
     disabled until the shopper picks six figures. Not a broken buy button: 'not tested' with the reason."""
@@ -1262,6 +1273,15 @@ def test_a_real_outage_is_still_confirmed(tmp_path, monkeypatch):
 
 def test_popup_closed_by_a_bare_x_in_a_div(tmp_path):
     run, _ = _scan("div_x_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    j = _case(run, "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
+
+
+def test_popup_closed_by_an_icon_only_x_in_the_dialogs_corner(tmp_path):
+    """thinkitchen.in (new30z6, both devices NOT JUDGED): 'no stay/close control in [div | SUBMIT | Powered by zoko.io]':
+    the popup's close is an icon with no words in the dialog's top-right corner. Radar closes it with that icon and
+    never presses SUBMIT."""
+    run, _ = _scan("icon_x_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     j = _case(run, "journey.")
     assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
 

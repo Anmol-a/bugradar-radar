@@ -258,6 +258,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> smoke.mobile_menu PASSES 'tapped the menu button'; desktop / healthy -> not judged / links shown
   dead_tile_menu   phones: hamburger_menu, and the homepage's only visible collection link is an 'Explore Now' tile whose
                    tap does nothing, no product cards (amchongtea.com, new30x) -> journey goes via the ☰ menu, PASSES
+  icon_x_popup     a full-screen sign-up popup whose only close is an icon with no words in the dialog's top-right
+                   corner (thinkitchen.in, new30z6) -> closed with that icon, never SUBMIT; journey PASSES
   hamburger_broken same, but the button's script throws and the drawer never opens -> smoke.mobile_menu WARNS
   late_cards       collection grids are rendered by a script 1.5 s after the page loads -> the collection test and
                    catalog.more wait for the cards and PASS (they failed at once on the old code)
@@ -381,6 +383,10 @@ Modes (to prove Radar catches and heals what it should):
                    new30r) -> Radar taps the colour AND the size, product PASSES
   hidden_price     product pages show no price near the name and only a disabled 'Unavailable' button (the data has a
                    placeholder price; somuchliving / tastycrafts 15 Oct) -> product BLOCKED 'not tested', never DOWN
+  marketplace_hidden_cart  the price shows, cart buttons are hidden, the only buy control is 'View On Amazon'
+                   (saumyasstores.com, new31a) -> product BLOCKED 'not tested', never not judged
+  customiser_product  the product page is an art builder (upload, disabled 'Continue to Customize'), no price, no cart
+                   button (aesthesy.com, new31a) -> BLOCKED 'not tested', never DOWN
   price_after_choice  product pages hide the price and keep 'Add to cart' disabled until a choice is made (myop.in,
                    new30x) -> product BLOCKED 'not tested', never DOWN
   prepaid_price    product pages show the price minus 5% under 'EXTRA 5% OFF ON ALL PREPAID ORDERS' (rasayanam.in)
@@ -669,6 +675,21 @@ if (!document.cookie.includes('bday=1')) setTimeout(() => {
     + '<span class="reveal" style="text-decoration:underline;cursor:pointer">Reveal my reward</span></div>';
   d.querySelector('.bd-x').onclick = () => { document.cookie = 'bday=1;path=/'; d.remove(); };
   d.querySelector('.reveal').onclick = () => { location.href = '/pages/tried-it'; };
+  document.body.appendChild(d); }, 300);
+</script>""",
+        "icon_x_popup": """<script>
+// thinkitchen.in (new30z6, both devices NOT JUDGED): a WhatsApp sign-up popup (zoko) over the whole page; its close is an
+// icon in the dialog's top-right corner with no words and no label; the only words are SUBMIT and 'Powered by zoko.io'
+if (!document.cookie.includes('zk=1')) setTimeout(() => {
+  const d = document.createElement('div'); d.className = 'zoko_popup_campaign';
+  d.style.cssText = 'position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center';
+  d.innerHTML = '<div style="position:relative;background:#fff;width:420px;height:600px;border-radius:8px;box-shadow:0 0 20px #0004">'
+    + '<div><div class="zk-x" style="position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:11px;background:#fff;cursor:pointer">'
+    + '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1L11 11M11 1L1 11" stroke="#000" stroke-width="2"/></svg></div></div>'
+    + '<div style="height:260px;background:#f4c9a0"></div><h2>Join the Inner Circle!</h2><p>Add your WhatsApp number and get 5% OFF.</p>'
+    + '<input type="tel" value="91"><button type="button" class="zk-sub">SUBMIT</button><small>Powered by zoko.io</small></div>';
+  d.querySelector('.zk-x').onclick = () => { document.cookie = 'zk=1;path=/'; d.remove(); };
+  d.querySelector('.zk-sub').onclick = () => { window.SUBSCRIBED = true; d.remove(); };
   document.body.appendChild(d); }, 300);
 </script>""",
         "newsletter_popup": """<script>
@@ -1881,6 +1902,18 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         '<button type="button" disabled>Unavailable</button>'
                         '<div style="height:900px"></div><section class="related"><h2>You may also like</h2>'
                         '<p>Another piece Rs. 4,500.00</p></section>')
+        if self.mode == "customiser_product":
+            # aesthesy.com (new31a, desktop DOWN): a custom-art product whose page is a builder: 'Create Art That's
+            # Entirely Yours', upload a photo, a disabled 'Continue to Customize'; no price, no cart button, no product name
+            return page(f"{p['title']} | Mock Store",
+                        '<h1>Create Art That\'s Entirely Yours</h1><p>Upload a photo. Choose your style.</p>'
+                        f'<img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
+                        '<div class="upload">Upload one or more photos <input type="file"></div>'
+                        '<textarea placeholder="Got a wild idea? Describe it"></textarea>'
+                        '<button type="button" disabled>Continue to Customize</button>'
+                        f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" name="id" '
+                        f'value="{self._variants(p)[0]["id"]}"></form>'
+                        '<footer><div class="cf-footer" style="display:none">₹' + f'{float(p["price"]):,.2f}' + '</div></footer>')
         if self.mode == "price_after_choice":
             # myop.in (new30x, 16 Oct, desktop DOWN): a personalised product hides its price (class 'myop-hidden') and
             # keeps 'Add to cart' disabled until the shopper picks a perfume and writes a text
@@ -2029,6 +2062,12 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                      f'name="id" value="{vid}"></form><div style="height:700px"><p>Hand-finished. Ships in 3 days.</p></div>'
                                      f'<div class="custom-actions"><span class="custom-add-to-cart-btn" onclick="addToCart({vid})" '
                                      f'style="display:inline-block;padding:10px;background:#222;color:#fff;cursor:pointer">Add to Cart</span></div>')
+        if self.mode == "marketplace_hidden_cart":
+            # saumyasstores.com (new31a, both devices): the price shows, the cart buttons are hidden, and the only buy
+            # control is 'View On Amazon'
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" style="display:none">Add to cart</button>'
+                                '<a class="amz" href="https://www.amazon.in/dp/B0MOCK123" target="_blank">View On Amazon</a>', 1)
         if self.mode == "needs_dimensions":
             # giffywalls.in (new30z5, both devices): a wallpaper mural sold by the square foot; 'Add to cart' stays
             # disabled until the shopper types the wall's width and height

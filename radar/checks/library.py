@@ -52,6 +52,11 @@ MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClie
   // until a perfume is chosen)
   const off = b => b.disabled || b.getAttribute('aria-disabled') === 'true';
   const own = buys.some(b => !off(b)), own_disabled = !own && buys.length > 0;
+  // a builder page (aesthesy.com, new31a: upload a photo, then a disabled 'Continue to Customize'): the product is made
+  // from the shopper's own material, priced after the builder
+  const builder = [...document.querySelectorAll('button, [role=button], a, input[type=submit]')].find(b => vis(b)
+    && !b.closest('header, footer, nav') && /customi[sz]e|personali[sz]e|upload|design (it|yours)|create (yours|your)/i.test((b.innerText || b.value || '').trim().slice(0, 40)));
+  const upload = !!document.querySelector('input[type=file]');
   const main = document.querySelector('main, [role=main], #MainContent') || document.body;
   const so = ((main.innerText || '').match(/\b(shop (now )?on|available on|buy (it )?on|also available on)\s*:/i) || [])[0];
   const ask = (((document.body.innerText || '').match(/\b(price (up)?on request|request (a |the )?price|(enquire|inquire|call|contact us) for (the )?price|no longer (accepting|taking) (online )?orders|not (accepting|taking) online orders)\b/i) || [])[0]);
@@ -63,7 +68,8 @@ MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClie
   const cut = near.search(/you may also like|related products|recommended|customers also|frequently bought|similar products|complete the (look|set)/i);
   if (cut > 0) near = near.slice(0, cut);
   const no_price = at >= 0 && !/(?:₹|Rs\.?|INR)\s?\d/i.test(near);
-  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, own_disabled, shop_on: so || null, ask: ask || null, no_price}; }"""
+  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, own_disabled, shop_on: so || null, ask: ask || null, no_price,
+          builder: builder && (upload || builder.disabled) ? (builder.innerText || builder.value || '').trim().slice(0, 40) : null}; }"""
 
 
 def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
@@ -116,6 +122,9 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
         raise CatalogOnly(        # online orders' (new30n 14 Oct): the price is hidden on purpose, nothing to buy here
             f"not tested: the product page shows no price and no buy button, only {m['ask']!r}: the store does not "
             "sell this product online at a listed price")
+    if m.get("builder"):
+        raise CatalogOnly(f"not tested: this product is made from the shopper's own material through a builder "
+                          f"({m['builder']!r}); its price comes after the builder, and Radar never uploads or fills forms")
     if m.get("no_price") and m.get("own_disabled"):
         raise CatalogOnly(
             "not tested: the product page shows no price for this product and its buy button is disabled (the store "
@@ -988,6 +997,11 @@ def _main_buy_button(ctx: Ctx, product: dict):
         if st["own"] and not st.get("ctl") and all("no button in the form (form hidden)" in x for x in (st.get("seen") or ["?"])):
             raise CatalogOnly("not tested: this product's page offers no way to buy it (its cart form is hidden and "
                               "empty, and the page shows no buy control): a gift or add-on the store adds by itself")
+        # saumyasstores.com (new31a): the cart buttons are hidden and the only buy control is 'View On Amazon'
+        mk = ctx.sess.evaluate(MARKETPLACE_JS, product.get("title") or "") or {}
+        if mk.get("marketplaces"):          # this product has no usable buy button (established above)
+            raise CatalogOnly("not tested: this product's own cart buttons are hidden and the page sends shoppers to "
+                              f"marketplaces ({', '.join(mk['marketplaces'])}): the store sells it there, not on its own site")
         waits = ctx.sess.evaluate("""() => [...document.querySelectorAll('button, [role=button], input[type=submit]')]
             .filter(b => (b.disabled || b.getAttribute('aria-disabled') === 'true') && b.getBoundingClientRect().width > 0
                          && !b.closest('header, footer, nav'))
@@ -3460,7 +3474,7 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
     if (re && !re.test(e.getAttribute('href') || '')) return false;
     if (e.hasAttribute('data-radar-dead')) { note('did nothing when tapped'); return false; }
     if (!vis(e)) { note('not visible'); invis.push(e); return false; }
-    if (exclude && e.closest(exclude)) { note('inside cart drawer / quick-add'); return false; }
+    if (exclude && e.closest(exclude)) { note('inside cart drawer / quick-add (' + tag(e.closest(exclude)) + ')'); return false; }
     if (e.getAttribute('aria-disabled') === 'true') { note('disabled'); return false; }
     if (e.closest('[aria-hidden="true"], [inert]')) { note('hidden from shoppers (aria-hidden/inert)'); return false; }
     return true; };
@@ -3586,8 +3600,25 @@ COVER_CLOSE_JS = r"""() => {
         || (getComputedStyle(e).cursor === 'pointer' && e.children.length <= 2 && SAFE.test(text(e)));
       const cands = [...root.querySelectorAll('button, a, [role="button"], [aria-label]')]
         .concat([...root.querySelectorAll('div, span, p, li, label, input')].filter(tappable)).filter(shown);
-      const btn = cands.find(c =>
+      let btn = cands.find(c =>
         !BAD.test(text(c)) && (SAFE.test(text(c)) || /close|dismiss/i.test(c.getAttribute('aria-label') || '')));
+      // thinkitchen.in (new30z6): the close is an ICON with no words in the dialog's top-right corner ('no stay/close
+      // control in [div | SUBMIT | Powered by zoko.io]'). A small (≤ 48 px) wordless tappable element whose centre sits
+      // within 60 px of a top corner of the dialog box (the nearest ancestor ≥ 200x150 smaller than the layer) closes it.
+      if (!btn) {
+        const lr = root.getBoundingClientRect();
+        const icon = [...root.querySelectorAll('*')].filter(shown).find(e => {
+          const r = e.getBoundingClientRect(); if (r.width > 48 || r.height > 48 || r.width < 8 || r.height < 8) return false;
+          if (text(e) || e.closest('a[href]:not([href="#"]), form button[type=submit], input')) return false;
+          if (getComputedStyle(e).cursor !== 'pointer' && !e.matches('button, [role="button"]')) return false;
+          let box = e.parentElement;
+          while (box && box !== root) { const b = box.getBoundingClientRect();
+            if (b.width >= 200 && b.height >= 150 && b.width * b.height < 0.9 * lr.width * lr.height) break; box = box.parentElement; }
+          if (!box || box === root) return false;
+          const b = box.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+          return cy - b.top <= 60 && (b.right - cx <= 60 || cx - b.left <= 60); });
+        if (icon) btn = icon;
+      }
       if (!btn) { why.push(tag + ': no stay/close control in [' + cands.slice(0, 6).map(c => text(c).slice(0, 20) || c.tagName.toLowerCase()).join(' | ') + ']'); continue; }
       const b = btn.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
       if (!hit || !(hit === btn || btn.contains(hit))) { why.push(tag + ': ' + text(btn).slice(0, 20) + ' covered'); continue; }
