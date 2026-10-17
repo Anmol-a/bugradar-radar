@@ -60,6 +60,8 @@ MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClie
   const main = document.querySelector('main, [role=main], #MainContent') || document.body;
   const so = ((main.innerText || '').match(/\b(shop (now )?on|available on|buy (it )?on|also available on)\s*:/i) || [])[0];
   const ask = (((document.body.innerText || '').match(/\b(price (up)?on request|request (a |the )?price|(enquire|inquire|call|contact us) for (the )?price|no longer (accepting|taking) (online )?orders|not (accepting|taking) online orders)\b/i) || [])[0]);
+  // a pre-launch product (atovio.in, new31f: 'Coming Soon' badge, no price, 'Notify me'): not on sale yet
+  const soon = (((main.innerText || '').match(/\b(coming soon|launching soon|notify me when (it'?s )?available|pre-?launch)\b/i) || [])[0]) || null;
   // the product's own block = the text from its name to 600 characters after it (related products further down show
   // their own prices): no ₹ / Rs / INR price there = the store shows no price for this product at all
   const flat = (main.innerText || '').replace(/\s+/g, ' '), low = flat.toLowerCase();
@@ -68,7 +70,7 @@ MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClie
   const cut = near.search(/you may also like|related products|recommended|customers also|frequently bought|similar products|complete the (look|set)/i);
   if (cut > 0) near = near.slice(0, cut);
   const no_price = at >= 0 && !/(?:₹|Rs\.?|INR)\s?\d/i.test(near);
-  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, own_disabled, shop_on: so || null, ask: ask || null, no_price,
+  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, own_disabled, shop_on: so || null, ask: ask || null, no_price, soon,
           builder: builder && (upload || builder.disabled) ? (builder.innerText || builder.value || '').trim().slice(0, 40) : null}; }"""
 
 
@@ -110,6 +112,8 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
                           f"market {cur.get('country') or '?'}, rate {cur.get('rate', 1):g}; the catalog price in ₹ is not on "
                           "the page. Radar's cloud machines are in the US: check from India")
     m = ctx.sess.evaluate(MARKETPLACE_JS, title or "") or {}
+    if m.get("soon") and (m.get("no_price") or not m.get("own_buy")):
+        raise CatalogOnly(f"not tested: the product page shows no price and says {m['soon']!r}: it is not on sale yet")
     if m.get("own_buy"):
         return
     if m.get("marketplaces"):
@@ -2089,6 +2093,20 @@ def per_unit_price(want: float, nums, text: str) -> str | None:
 DISCOUNT_WORDS = re.compile(r"prepaid|pre-paid|online payment|pay online|upi|extra\s+\d{1,2}\s?%\s?off|\d{1,2}\s?%\s?off", re.I)
 
 
+GST_RATES = (3, 5, 12, 18, 28)
+
+
+def gst_inclusive(want: float, nums) -> str | None:
+    """The page shows the price PLUS an Indian GST rate (kanchisilver.com, new31f: ₹32,000 in Shopify, 'Rs. 32,960 INR'
+    on the page = +3%, the jewellery rate): the store keeps tax-exclusive prices and shows tax-inclusive ones. Matches a
+    GST rate to the rupee. Pure, unit-tested."""
+    for n in nums:
+        for r in GST_RATES:
+            if want > 0 and abs(want * (100 + r) / 100 - n) <= 1.0:
+                return f"₹{n:,.0f} = the price plus {r}% GST (the store's catalog price excludes tax)"
+    return None
+
+
 def store_wide_discount(want: float, nums, text: str) -> str | None:
     """The page shows the product's price minus a store-wide percentage (an 'extra 5% off on prepaid orders' price)
     instead of the price itself: rasayanam.in (new30m, 14 Oct) showed ₹1,092 for ₹1,149 under 'EXTRA 5% OFF ON ALL
@@ -2229,7 +2247,7 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         if not ok:
             _raise_if_catalog_only(ctx, p["title"])
             # Anmol, 15 Oct (rasayanam.in 'EXTRA 5% OFF ON ALL PREPAID ORDERS'): a WARNING, not a failure
-            state["price_warn"] = store_wide_discount(want, nums, text)
+            state["price_warn"] = store_wide_discount(want, nums, text) or gst_inclusive(want, nums)
         if not state.get("price_warn"):
             where = "" if ok else _hidden_price(ctx, want)
             ctx.expect("selected variant price shown", rupees(v["price"]),

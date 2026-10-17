@@ -2641,6 +2641,23 @@ def test_price_hidden_until_a_choice_with_a_disabled_buy_button_is_not_tested(tm
     assert run.verdict != "down", run.verdict
 
 
+def test_price_shown_with_gst_added_is_a_warning(tmp_path):
+    """kanchisilver.com (new31f, both devices DOWN): Shopify holds ₹32,000, the page shows 'Rs. 32,960 INR' = +3% GST
+    (jewellery). The price the shopper sees is the catalog price plus a GST rate: a WARNING, never a failure."""
+    run = _product_only("gst_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert st.status == "warn" and "GST" in st.error, (vase.verdict, st.status, st.error)
+
+
+def test_coming_soon_product_is_not_tested(tmp_path):
+    """atovio.in (new31f, both devices DEGRADED): a pre-launch product page says 'Coming Soon' with no price and a
+    'Notify me' button: not sold yet, 'not tested' with the reason."""
+    run = _product_only("coming_soon_product", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "coming soon" in vase.attempts[-1].error.lower(), (vase.verdict, vase.attempts[-1].error)
+
+
 def test_price_minus_a_named_prepaid_offer_is_a_warning(tmp_path):
     """Anmol, 15 Oct: rasayanam.in shows ₹1,092 for ₹1,149 under 'EXTRA 5% OFF ON ALL PREPAID ORDERS'. A page price
     that is the price minus a store-wide percentage the page names is a WARNING, not a failure."""

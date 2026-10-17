@@ -1374,3 +1374,11 @@ def test_more_links_skip_broken_javascript_hrefs():
     links = [{"where": "homepage section", "text": "Quick Shop", "url": "https://s.in/javascript%20void(0)"},
              {"where": "homepage section", "text": "Our story", "url": "https://s.in/pages/our-story"}]
     assert [x["url"] for x in more_links(links, "https://s.in", [])] == ["https://s.in/pages/our-story"]
+
+
+def test_gst_inclusive_price():
+    """kanchisilver.com (new31f): ₹32,000 in Shopify, 'Rs. 32,960 INR' on the page = +3% GST."""
+    from radar.checks.library import gst_inclusive
+    assert "3% GST" in gst_inclusive(32000.0, [32960.0])
+    assert "18% GST" in gst_inclusive(1000.0, [1180.0])
+    assert gst_inclusive(32000.0, [33500.0]) is None
