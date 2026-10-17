@@ -3586,8 +3586,25 @@ COVER_CLOSE_JS = r"""() => {
         || (getComputedStyle(e).cursor === 'pointer' && e.children.length <= 2 && SAFE.test(text(e)));
       const cands = [...root.querySelectorAll('button, a, [role="button"], [aria-label]')]
         .concat([...root.querySelectorAll('div, span, p, li, label, input')].filter(tappable)).filter(shown);
-      const btn = cands.find(c =>
+      let btn = cands.find(c =>
         !BAD.test(text(c)) && (SAFE.test(text(c)) || /close|dismiss/i.test(c.getAttribute('aria-label') || '')));
+      // thinkitchen.in (new30z6): the close is an ICON with no words in the dialog's top-right corner ('no stay/close
+      // control in [div | SUBMIT | Powered by zoko.io]'). A small (≤ 48 px) wordless tappable element whose centre sits
+      // within 60 px of a top corner of the dialog box (the nearest ancestor ≥ 200x150 smaller than the layer) closes it.
+      if (!btn) {
+        const lr = root.getBoundingClientRect();
+        const icon = [...root.querySelectorAll('*')].filter(shown).find(e => {
+          const r = e.getBoundingClientRect(); if (r.width > 48 || r.height > 48 || r.width < 8 || r.height < 8) return false;
+          if (text(e) || e.closest('a[href]:not([href="#"]), form button[type=submit], input')) return false;
+          if (getComputedStyle(e).cursor !== 'pointer' && !e.matches('button, [role="button"]')) return false;
+          let box = e.parentElement;
+          while (box && box !== root) { const b = box.getBoundingClientRect();
+            if (b.width >= 200 && b.height >= 150 && b.width * b.height < 0.9 * lr.width * lr.height) break; box = box.parentElement; }
+          if (!box || box === root) return false;
+          const b = box.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+          return cy - b.top <= 60 && (b.right - cx <= 60 || cx - b.left <= 60); });
+        if (icon) btn = icon;
+      }
       if (!btn) { why.push(tag + ': no stay/close control in [' + cands.slice(0, 6).map(c => text(c).slice(0, 20) || c.tagName.toLowerCase()).join(' | ') + ']'); continue; }
       const b = btn.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
       if (!hit || !(hit === btn || btn.contains(hit))) { why.push(tag + ': ' + text(btn).slice(0, 20) + ' covered'); continue; }

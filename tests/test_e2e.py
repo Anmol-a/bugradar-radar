@@ -1266,6 +1266,15 @@ def test_popup_closed_by_a_bare_x_in_a_div(tmp_path):
     assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
 
 
+def test_popup_closed_by_an_icon_only_x_in_the_dialogs_corner(tmp_path):
+    """thinkitchen.in (new30z6, both devices NOT JUDGED): 'no stay/close control in [div | SUBMIT | Powered by zoko.io]':
+    the popup's close is an icon with no words in the dialog's top-right corner. Radar closes it with that icon and
+    never presses SUBMIT."""
+    run, _ = _scan("icon_x_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    j = _case(run, "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
+
+
 def test_login_popup_in_a_cross_origin_iframe_is_closed_inside_the_frame(tmp_path):
     """GoKwik KwikPass (bonkerscorner.com, boldcare.in, consciouschemist.com, 7-9 Oct): a full-screen iframe from
     another origin with no popup-like name (id 'iframe-kp' in div#d2c-pass) and its × inside the frame blocked every

@@ -258,6 +258,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> smoke.mobile_menu PASSES 'tapped the menu button'; desktop / healthy -> not judged / links shown
   dead_tile_menu   phones: hamburger_menu, and the homepage's only visible collection link is an 'Explore Now' tile whose
                    tap does nothing, no product cards (amchongtea.com, new30x) -> journey goes via the ☰ menu, PASSES
+  icon_x_popup     a full-screen sign-up popup whose only close is an icon with no words in the dialog's top-right
+                   corner (thinkitchen.in, new30z6) -> closed with that icon, never SUBMIT; journey PASSES
   hamburger_broken same, but the button's script throws and the drawer never opens -> smoke.mobile_menu WARNS
   late_cards       collection grids are rendered by a script 1.5 s after the page loads -> the collection test and
                    catalog.more wait for the cards and PASS (they failed at once on the old code)
@@ -669,6 +671,21 @@ if (!document.cookie.includes('bday=1')) setTimeout(() => {
     + '<span class="reveal" style="text-decoration:underline;cursor:pointer">Reveal my reward</span></div>';
   d.querySelector('.bd-x').onclick = () => { document.cookie = 'bday=1;path=/'; d.remove(); };
   d.querySelector('.reveal').onclick = () => { location.href = '/pages/tried-it'; };
+  document.body.appendChild(d); }, 300);
+</script>""",
+        "icon_x_popup": """<script>
+// thinkitchen.in (new30z6, both devices NOT JUDGED): a WhatsApp sign-up popup (zoko) over the whole page; its close is an
+// icon in the dialog's top-right corner with no words and no label; the only words are SUBMIT and 'Powered by zoko.io'
+if (!document.cookie.includes('zk=1')) setTimeout(() => {
+  const d = document.createElement('div'); d.className = 'zoko_popup_campaign';
+  d.style.cssText = 'position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center';
+  d.innerHTML = '<div style="position:relative;background:#fff;width:420px;height:600px;border-radius:8px;box-shadow:0 0 20px #0004">'
+    + '<div><div class="zk-x" style="position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:11px;background:#fff;cursor:pointer">'
+    + '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1L11 11M11 1L1 11" stroke="#000" stroke-width="2"/></svg></div></div>'
+    + '<div style="height:260px;background:#f4c9a0"></div><h2>Join the Inner Circle!</h2><p>Add your WhatsApp number and get 5% OFF.</p>'
+    + '<input type="tel" value="91"><button type="button" class="zk-sub">SUBMIT</button><small>Powered by zoko.io</small></div>';
+  d.querySelector('.zk-x').onclick = () => { document.cookie = 'zk=1;path=/'; d.remove(); };
+  d.querySelector('.zk-sub').onclick = () => { window.SUBSCRIBED = true; d.remove(); };
   document.body.appendChild(d); }, 300);
 </script>""",
         "newsletter_popup": """<script>

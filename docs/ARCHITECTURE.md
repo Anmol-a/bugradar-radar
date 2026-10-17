@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 17 Oct 23:10 IST:** thinkitchen.in (new30z6, both devices NOT JUDGED): a full-screen WhatsApp sign-up popup
+  whose only close is a wordless icon in the dialog's top-right corner ('no stay/close control in [div | SUBMIT |
+  Powered by zoko.io]'). A small wordless tappable element within 60 px of a top corner of the dialog box closes the
+  layer; SUBMIT is never pressed (mock icon_x_popup).
 - **v0.20 17 Oct 06:45 IST (new30z5 run 38986412618: 49/56 healthy):** (1) giffywalls.in: a mural's 'Add to cart' waits
   for the wall width / height the shopper types: empty visible fields of the product's form with the button disabled =
   'not tested', fields named (mock needs_dimensions). (2) popees.com phone: the sticky bar's add-to-cart is an icon with
