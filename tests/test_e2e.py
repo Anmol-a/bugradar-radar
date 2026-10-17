@@ -1047,6 +1047,15 @@ def test_product_name_hidden_on_phones_is_a_warning_not_a_failure(tmp_path):
         (vase.verdict, st.status, st.error)
 
 
+def test_buy_button_waiting_for_the_shoppers_photo_is_not_tested(tmp_path):
+    """cartwala.in (new31d, both devices DEGRADED): a personalised mouse pad whose 'Add to cart' stays disabled until the
+    shopper uploads a photo. Radar never uploads: 'not tested' with the reason."""
+    run = _product_only("needs_photo_upload", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error and "photo" in vase.attempts[-1].error.lower(), \
+        (vase.verdict, vase.attempts[-1].error)
+
+
 def test_buy_button_waiting_for_the_shoppers_own_measurements_is_not_tested(tmp_path):
     """giffywalls.in (new30z5, both devices DEGRADED): a wallpaper mural whose 'Add to cart' stays disabled until the
     shopper types the wall's width and height. Radar never fills forms: 'not tested' with the fields named."""

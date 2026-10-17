@@ -780,6 +780,14 @@ NEEDS_INPUT_JS = r"""(ids) => { const mine = new Set(ids.map(String));
     const lab = (e.labels && e.labels[0] && e.labels[0].innerText) || e.placeholder || e.getAttribute('aria-label') || e.name;
     out.push(JSON.stringify((lab || '').trim().replace(/\s+/g, ' ').slice(0, 30)));
   }
+  // cartwala.in (new31d): a personalised product waits for a photo: a file input (often hidden under a styled label)
+  // in the page's main area whose label / container is on screen
+  for (const f of document.querySelectorAll('input[type=file]')) {
+    if (f.files && f.files.length) continue;
+    const host = f.closest('label') || f.parentElement; if (!host || host.closest('header, footer, nav')) continue;
+    if (!vis(host) && !vis(f)) continue;
+    out.push(JSON.stringify(((host.innerText || '').trim().replace(/\s+/g, ' ') || 'a photo upload').slice(0, 30)) + ' (a photo upload)');
+    break; }
   return out.length ? out : null; }"""
 
 
