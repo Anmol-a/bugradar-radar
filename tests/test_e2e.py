@@ -907,6 +907,16 @@ def test_popup_inside_shadow_dom_is_closed_by_its_x_and_the_journey_passes_first
     assert closed and closed[0]["actual"].startswith("clicked 'close' on:") and "bomb size" in closed[0]["actual"], closed
 
 
+def test_card_name_that_opens_another_product_goes_on_via_its_other_link_with_a_warning(tmp_path):
+    """faritha.com phone (new30x, 4 runs DOWN) + bytheleaf.in phone (new30z3, flaky): tapping a card's name opened the
+    neighbouring product. A shopper goes back and taps the product again (its picture): the journey goes on, and the
+    miswired link is a store WARNING with the evidence."""
+    j = _case(_scan_small("title_opens_neighbour", tmp_path, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    w = _steps(j)["every_product_link_opens_the_product"]
+    assert w.status == "warn" and "opened another product" in w.error, (w.status, w.error)
+
+
 def test_product_card_in_a_marquee_that_never_stops_moving_is_clicked(tmp_path):
     """hunnit.com desktop (new30z1, 3 attempts DOWN): the cards ride a marquee that never stops, and the click waited for
     a still card until it timed out. A shopper taps the card where it is."""
@@ -1612,6 +1622,16 @@ def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_p
     assert "sent to the homepage" in _steps(c)["announcement bar: opens /pages/offers"].error
     assert "homepage section malformed link 'Sale'" in err, err
     assert "starts with '/http'" in _steps(c)["homepage section: malformed link"].detail
+
+
+@pytest.mark.parametrize("mode", ["devanagari_title", "emoji_cookie"])
+def test_non_latin_names_and_non_ascii_cookies_do_not_break_product_checks(tmp_path, mode):
+    """prashantpublications.com (new30z4): Marathi titles were 'not shown' (name matching kept only a-z0-9).
+    paramountchess.com (new30z4): a cookie holding an emoji made every product-data request fail ('Invalid character in
+    header content [cookie]'). Both product pages pass."""
+    run = _product_only(mode, tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
 
 
 def test_discount_link_that_applies_its_code_and_goes_home_is_not_a_broken_link(tmp_path):

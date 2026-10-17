@@ -1373,6 +1373,16 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 17 Oct 06:10 IST (new30z4 run 38983526214: 48/58 healthy):** (1) prashantpublications.com: Marathi titles
+  were 'not shown': name matching kept only a-z0-9; it now keeps any script's letters (mock devanagari_title).
+  (2) paramountchess.com: a cookie holding an emoji broke every product-data request ('Invalid character in header
+  content [cookie]'); the data is then asked from inside the page (mock emoji_cookie). (3) happyaza.com phone: a card
+  opened another product (fixed by the z3 change). Open: varrocaftermarket phone not judged (cards inside a drawer /
+  quick-add); lavanyathelabel phone 'ADD TO CART' stays disabled after the size (maybe real).
+- **v0.20 17 Oct 05:40 IST (new30z3 run 38980915441: 44/55 healthy):** bytheleaf.in phone (flaky) and faritha.com phone
+  (new30x, 4 runs DOWN): tapping a card's name opened ANOTHER product. A shopper goes back and taps the product by its
+  other link; if that opens it, the journey goes on and the miswired link is a store WARNING (mock title_opens_neighbour).
+  kulina.in desktop flaky: a late popup iframe intercepted the first tap (open).
 - **v0.20 17 Oct 05:00 IST (new30z2 run 38974875193: 38/50 healthy):** (1) daantwale.com: a homepage banner links
   /discount/WOWDEAL; Shopify applies the code and sends the shopper home, not a deleted page (mock discount_link).
   (2) orbiz.in: a build-your-crew product whose only button 'Pick 6 buddies' stays disabled until six picks: a disabled

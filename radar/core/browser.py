@@ -422,6 +422,17 @@ class Session:
                 r = self.page.context.request.get(url, timeout=20000, headers=self.sign(url) or None)
             except Exception as e:  # noqa: BLE001  timeout, reset, DNS
                 last = f"no answer ({str(e).splitlines()[0][:120]})"
+                if "Invalid character in header" in str(e):
+                    # a store cookie holding an emoji (paramountchess.com, new30z4) breaks the browser context's request
+                    # headers: ask from inside the page instead, as the store's own scripts do
+                    try:
+                        got = self.page.evaluate("""async (u) => { const r = await fetch(u, {credentials: 'same-origin'});
+                            return {status: r.status, text: await r.text()}; }""", url)
+                        if got and got.get("status", 0) < 400:
+                            return json.loads(got.get("text") or "")
+                        last = f"HTTP {got.get('status')} (asked from the page)"
+                    except Exception as e2:  # noqa: BLE001
+                        last = f"no answer ({str(e2).splitlines()[0][:120]})"
                 continue
             if r.status == 429:
                 limited += 1
