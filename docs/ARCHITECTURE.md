@@ -1373,6 +1373,11 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 17 Oct 06:45 IST (new30z5 run 38986412618: 49/56 healthy):** (1) giffywalls.in: a mural's 'Add to cart' waits
+  for the wall width / height the shopper types: empty visible fields of the product's form with the button disabled =
+  'not tested', fields named (mock needs_dimensions). (2) popees.com phone: the sticky bar's add-to-cart is an icon with
+  no words: an icon-only button in a fixed bar whose class names add-to-cart counts (mock disabled_form_icon_bar).
+  nisargorganicfarm.com nav flaky once (open).
 - **v0.20 17 Oct 06:10 IST (new30z4 run 38983526214: 48/58 healthy):** (1) prashantpublications.com: Marathi titles
   were 'not shown': name matching kept only a-z0-9; it now keeps any script's letters (mock devanagari_title).
   (2) paramountchess.com: a cookie holding an emoji broke every product-data request ('Invalid character in header

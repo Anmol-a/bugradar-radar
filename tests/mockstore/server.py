@@ -399,8 +399,12 @@ Modes (to prove Radar catches and heals what it should):
   emoji_cookie     a page script sets a cookie holding an emoji (paramountchess.com) -> product data still read, PASSES
   discount_link    a homepage section links /discount/WOWDEAL, which applies the code and redirects to the homepage
                    (Shopify's own behaviour; daantwale.com, new30z2) -> smoke.more_links PASSES
+  needs_dimensions  'Add to cart' stays disabled until the shopper types the wall's width and height (giffywalls.in,
+                   new30z5) -> product BLOCKED 'not tested', never DOWN
   bundle_builder   the product's only button 'Pick 6 buddies' is disabled until a choice (orbiz.in, new30z2) -> product
                    BLOCKED 'not tested', never DOWN
+  disabled_form_icon_bar  the form's button is disabled; the sticky bar's add-to-cart is an icon with no words (popees.com
+                   phone, new30z5) -> PASSES
   disabled_form_bar_on_scroll  the form's 'Buy it now' is disabled, the enabled 'ADD TO CART' sticky bar shows only after
                    scrolling (adachikan.com phone, new30z1) -> PASSES
   disabled_form_enabled_bar  the form's own button is disabled, an enabled sticky 'Add to cart' adds the product
@@ -2025,12 +2029,29 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                      f'name="id" value="{vid}"></form><div style="height:700px"><p>Hand-finished. Ships in 3 days.</p></div>'
                                      f'<div class="custom-actions"><span class="custom-add-to-cart-btn" onclick="addToCart({vid})" '
                                      f'style="display:inline-block;padding:10px;background:#222;color:#fff;cursor:pointer">Add to Cart</span></div>')
+        if self.mode == "needs_dimensions":
+            # giffywalls.in (new30z5, both devices): a wallpaper mural sold by the square foot; 'Add to cart' stays
+            # disabled until the shopper types the wall's width and height
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<label>Wall width (ft) <input type="number" class="dim" name="properties[Width]" placeholder="Width"></label>'
+                                '<label>Wall height (ft) <input type="number" class="dim" name="properties[Height]" placeholder="Height"></label>'
+                                '<button type="submit" name="add" disabled>Add to cart</button>'
+                                '<script>document.addEventListener("input", () => { const d = [...document.querySelectorAll(".dim")]; '
+                                'document.querySelector("[name=add]").disabled = !d.every(i => i.value); });</script>', 1)
         if self.mode == "bundle_builder":
             # orbiz.in (new30z2, both devices): a 'build your crew' product; its only button 'Pick 6 buddies' stays
             # disabled until the shopper picks six figures
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<div class="odb-tray"><span></span><span></span></div>'
                                 '<button type="button" id="odb-go" disabled>Pick 6 buddies<br><small>Crew of 6</small></button>', 1)
+        if self.mode == "disabled_form_icon_bar":
+            # popees.com phone (new30z5): the form's button stays disabled; the sticky bar's add-to-cart is a bag icon
+            # with no words, only its class says what it does
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" disabled>Add to cart</button>', 1)
+            body += (f'<div class="sticky-bar" style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px">'
+                     f'<span>9-12 M</span><button type="button" class="sticky-bar__add-to-cart" onclick="addToCart({vid})">'
+                     '<svg width="24" height="24"><rect width="20" height="16" y="6" fill="#e91e63"/></svg></button></div>')
         if self.mode == "disabled_form_bar_on_scroll":
             # adachikan.com phone (new30z1): the form's 'BUY IT NOW' is disabled; the enabled 'ADD TO CART' sits in a
             # sticky bar that only appears once the shopper scrolls
