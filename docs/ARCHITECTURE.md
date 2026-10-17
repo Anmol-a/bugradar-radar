@@ -1373,6 +1373,12 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 18 Oct 02:20 IST (re-test 39064184208 of new31a-e fixes: 6 of 10 confirmed):** (1) dhaagaweaves / cmartian
+  still 'inside quick-add (div.product-grid-container / ul.grid)': the GRID's container carries a quick-add class. A
+  quick-add container holding more than 2 products' links is the grid, not a quick-add box (mock grid_quick_add_class).
+  (2) saralhome freebie: 'Additional Information' counted as an 'add' control: buy-like words are whole words now
+  (mock hidden_buttons_product + accordion). (3) cartwala: the disabled-buy failure now lists the page's fields and
+  app frames (evidence for the photo-upload app).
 - **v0.20 18 Oct 02:00 IST (new31f run 39064100372: 50/56 healthy):** (1) kanchisilver.com both devices DOWN: Shopify
   holds tax-exclusive prices, the page shows them plus GST ('Rs. 32,960 INR' for ₹32,000 = +3%): a price equal to the
   catalog price plus an Indian GST rate (3/5/12/18/28 %) = WARNING (mock gst_price, unit test). (2) atovio.in: a

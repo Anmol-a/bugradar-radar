@@ -917,10 +917,12 @@ def test_card_name_that_opens_another_product_goes_on_via_its_other_link_with_a_
     assert w.status == "warn" and "opened another product" in w.error, (w.status, w.error)
 
 
-def test_cart_drawer_words_in_the_body_class_do_not_hide_every_card(tmp_path):
+@pytest.mark.parametrize("mode", ["body_drawer_class", "grid_quick_add_class"])
+def test_cart_drawer_words_in_the_body_class_do_not_hide_every_card(tmp_path, mode):
     """dhaagaweaves.in (new31b, both devices NOT JUDGED, '44 links: 44 inside cart drawer / quick-add') + cmartian.com
     (new31a): the theme puts 'quick-add-enabled cart-drawer-active' on <body>, so every card matched the drawer rule."""
-    j = _case(_scan_small("body_drawer_class", tmp_path, suites=["journey"]), "journey.")
+    # + the grid's own container carrying a 'quick-add' class (re-test: 'div.product-grid-container', 'ul.grid')
+    j = _case(_scan_small(mode, tmp_path, suites=["journey"]), "journey.")
     assert j.verdict == "pass", _fails(j)
 
 

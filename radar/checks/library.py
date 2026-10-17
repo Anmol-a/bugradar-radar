@@ -769,6 +769,16 @@ CHOOSE_JS = r"""([values, quick]) => {
 # Empty fields the shopper fills in before the buy button wakes up (giffywalls.in: wall width / height): visible,
 # empty text / number inputs or unchosen selects in THIS product's cart form (or line-item properties[...] fields
 # anywhere), never a pincode / email / search / quantity box
+# evidence when the buy button stays disabled and no empty field was found (cartwala.in re-test, new31d): what the
+# product area holds in the way of fields, uploads and app frames
+FIELDS_EVIDENCE_JS = r"""() => { const m = document.querySelector('main, [role=main], #MainContent') || document.body;
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const f = [...m.querySelectorAll('input, select, textarea')].filter(e => !/^(hidden|submit|button|radio|checkbox)$/i.test(e.type || ''))
+    .slice(0, 6).map(e => (e.tagName.toLowerCase() + ':' + (e.type || '') + (vis(e) ? '' : ' hidden') + ' ' + (e.name || e.placeholder || '').slice(0, 20)).trim());
+  const fr = [...m.querySelectorAll('iframe')].filter(vis).map(i => (i.src || '').replace(/^https?:\/\//, '').slice(0, 30));
+  return (f.length || fr.length) ? ' (fields on the page: ' + (f.join(', ') || 'none') + (fr.length ? '; app frames: ' + fr.slice(0, 3).join(', ') : '') + ')' : ''; }"""
+
+
 NEEDS_INPUT_JS = r"""(ids) => { const mine = new Set(ids.map(String));
   const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; };
   const forms = [...document.querySelectorAll('form[action*="/cart/add"]')].filter(f => mine.has(String((f.querySelector('[name="id"]') || {}).value)));
@@ -858,7 +868,8 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
                f"{got} after choosing {', '.join(picked) or 'nothing (no matching picker)'}"
                + (f"; the form's own button is disabled, the page's enabled <{enabled_elsewhere['tag']}> "
                   f"{enabled_elsewhere['text']!r} is the one a shopper uses" if enabled_elsewhere
-                  else "; but the buy button is still disabled" if right and st["disabled"] else ""),
+                  else "; but the buy button is still disabled" + (ctx.sess.evaluate(FIELDS_EVIDENCE_JS) or "")
+                  if right and st["disabled"] else ""),
                right and (not st["disabled"] or bool(enabled_elsewhere)))
     return target
 
@@ -993,7 +1004,8 @@ def _main_buy_button(ctx: Ctx, product: dict):
             }
             const ctl = [...document.querySelectorAll('button, a, [role=button], [onclick], input[type=submit], [class*="btn" i], [class*="button" i]')]
               .filter(e => vis(e) && !e.closest('header, footer, nav, cart-drawer, [id*="cart-drawer" i]:not(body):not(html)') && !e.closest(quick)
-                      && /cart|bag|basket|buy|order|checkout|add/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
+                      // whole words: 'Additional Information' is not 'add' (saralhome.com freebie, new31c re-test)
+                      && /\b(cart|bag|basket|buy|order|checkout|add)\b/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
               .slice(0, 5).map(e => '<' + e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className.trim()
                 ? '.' + e.className.trim().split(/\s+/)[0] : '') + '> ' + JSON.stringify((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 24)));
             return {own, other, seen: seen.slice(0, 5), ctl}; }""", [ids, QUICK_SEL]) or {"own": 0, "other": 0, "seen": [], "ctl": []}
@@ -3515,11 +3527,17 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   const tag = e => e ? (e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' && e.className.trim()
                     ? '.' + e.className.trim().split(/\s+/)[0] : '')).slice(0, 40) : 'nothing';
   const why = {}; const note = k => { why[k] = (why[k] || 0) + 1; }; let firstCover = null;
+  const CART_SEL = "cart-drawer, cart-notification, [id*='cart-drawer' i], [class*='cart-drawer' i], [id*='CartDrawer'], [data-radar-target='drawer']";
   const usable = e => {
     if (re && !re.test(e.getAttribute('href') || '')) return false;
     if (e.hasAttribute('data-radar-dead')) { note('did nothing when tapped'); return false; }
     if (!vis(e)) { note('not visible'); invis.push(e); return false; }
-    if (exclude && e.closest(exclude)) { note('inside cart drawer / quick-add (' + tag(e.closest(exclude)) + ')'); return false; }
+    const ex = exclude && e.closest(exclude);
+    // a 'quick-add' named container holding MANY products' links is the grid itself (dhaagaweaves.in
+    // 'div.product-grid-container', cmartian.com 'ul.grid', new31a/b re-test: every card 'inside quick-add'), not a
+    // quick-add box: only a cart drawer, or a quick-add box about one product, sets a card aside
+    const many = x => new Set([...x.querySelectorAll('a[href*="/products/"]')].map(a => path(a.getAttribute('href') || ''))).size > 2;
+    if (ex && (ex.matches(CART_SEL) || !many(ex))) { note('inside cart drawer / quick-add (' + tag(ex) + ')'); return false; }
     if (e.getAttribute('aria-disabled') === 'true') { note('disabled'); return false; }
     if (e.closest('[aria-hidden="true"], [inert]')) { note('hidden from shoppers (aria-hidden/inert)'); return false; }
     return true; };

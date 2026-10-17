@@ -405,6 +405,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
   span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
                    the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
+  grid_quick_add_class  the collection grid's container carries a 'quick-add' class (dhaagaweaves.in, cmartian.com)
+                   -> its cards are still cards, journey PASSES
   body_drawer_class  <body> carries 'quick-add-enabled cart-drawer-active' (dhaagaweaves.in, cmartian.com, new31a/b) ->
                    cards are still cards, journey PASSES
   name_hidden_on_phone  product names sit in a desktop-only <h1>; phones see a tagline (zarfstudios.com, new31c) -> phone
@@ -759,6 +761,12 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "grid_quick_add_class" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/collections/"):
+            # dhaagaweaves.in / cmartian.com (new31a/b re-test: '44 links: 44 inside cart drawer / quick-add
+            # (div.product-grid-container)'): the grid's own container carries a 'quick-add' class
+            body = body.replace("<main>", '<main><div class="product-grid-container quick-add-enabled-grid">', 1).replace(
+                "</main>", "</div></main>", 1)
         if self.mode == "body_drawer_class" and isinstance(body, str) and ctype.startswith("text/html"):
             # dhaagaweaves.in (new31b, both devices: '44 links: 44 inside cart drawer / quick-add') + cmartian.com: the
             # theme names its settings on <body> ('quick-add-enabled cart-drawer-active'), so every card on the page sat
@@ -2154,6 +2162,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" style="display:none">Add to Cart</button>'
                                 '<button type="button" style="display:none">BUY NOW</button>', 1)
+            body += '<button type="button" class="accordion-header">Additional Information</button>'   # not an 'add' button
         if self.mode == "gift_only_product":
             # nubronicforte.com (new30t): the 'Performance Kit' gift's page: a hidden, empty cart form, no buy control
             body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
