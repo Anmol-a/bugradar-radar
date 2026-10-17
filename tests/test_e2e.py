@@ -1624,6 +1624,16 @@ def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_p
     assert "starts with '/http'" in _steps(c)["homepage section: malformed link"].detail
 
 
+@pytest.mark.parametrize("mode", ["devanagari_title", "emoji_cookie"])
+def test_non_latin_names_and_non_ascii_cookies_do_not_break_product_checks(tmp_path, mode):
+    """prashantpublications.com (new30z4): Marathi titles were 'not shown' (name matching kept only a-z0-9).
+    paramountchess.com (new30z4): a cookie holding an emoji made every product-data request fail ('Invalid character in
+    header content [cookie]'). Both product pages pass."""
+    run = _product_only(mode, tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
+
+
 def test_discount_link_that_applies_its_code_and_goes_home_is_not_a_broken_link(tmp_path):
     """daantwale.com (new30z2, both devices DEGRADED): a homepage banner links /discount/WOWDEAL; Shopify applies the code
     and sends the shopper to the homepage, which is how discount links work, not a deleted page."""

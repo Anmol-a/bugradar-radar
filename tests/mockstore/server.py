@@ -395,6 +395,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
   span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
                    the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
+  devanagari_title  the vase is named in Marathi in its data and on its pages (prashantpublications.com) -> PASSES
+  emoji_cookie     a page script sets a cookie holding an emoji (paramountchess.com) -> product data still read, PASSES
   discount_link    a homepage section links /discount/WOWDEAL, which applies the code and redirects to the homepage
                    (Shopify's own behaviour; daantwale.com, new30z2) -> smoke.more_links PASSES
   bundle_builder   the product's only button 'Pick 6 buddies' is disabled until a choice (orbiz.in, new30z2) -> product
@@ -720,6 +722,17 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "devanagari_title" and isinstance(body, str):
+            # prashantpublications.com (new30z4): Marathi book titles; Radar's name matching kept only a-z0-9, so the
+            # name was 'not shown' on every product page
+            body = body.replace("Ceramic Flower Vase", "घुमान मधील बाबा नामदेवजी")
+            if ctype.startswith("text/html"):     # its theme shows the name in a styled div, no <h1>
+                body = body.replace("<h1>घुमान मधील बाबा नामदेवजी</h1>",
+                                    '<div class="product__title" style="font-size:28px;font-weight:600">घुमान मधील बाबा नामदेवजी</div>')
+        if self.mode == "emoji_cookie" and isinstance(body, str) and ctype.startswith("text/html"):
+            # paramountchess.com (new30z4): an app stores the last product's handle (with an emoji) in a cookie; Radar's
+            # data request sent the browser's cookies and failed ('Invalid character in header content ["cookie"]')
+            body = body.replace("</head>", "<script>document.cookie = 'recent=\\u{1F451}-royal-set; path=/'.replace('\\u{1F451}', String.fromCodePoint(0x1F451));</script></head>", 1)
         if self.mode == "per_unit_price" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
             # ayamveda.com (new30w) / nubronicforte.com: the page shows the price per unit of a multi-unit variant
