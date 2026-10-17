@@ -1,0 +1,4582 @@
+{
+  "run_id": "20261017T005147Z-d-eb40",
+  "site_id": "johns.in",
+  "base_url": "https://johns.in",
+  "device": "desktop",
+  "started_at": "2026-10-17T00:51:47+00:00",
+  "finished_at": "2026-10-17T00:54:24+00:00",
+  "verdict": "healthy",
+  "platform": "shopify",
+  "cases": [
+    {
+      "case_id": "journey.shopper",
+      "suite": "journey",
+      "title": "Home \u2192 collection \u2192 product",
+      "check": "shopper_journey",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.02s",
+              "error": null,
+              "secs": 2.55,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2268 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.01-open_homepage.jpg"
+            },
+            {
+              "name": "click_into_collection",
+              "status": "pass",
+              "detail": "clicked visible link \u2192 /collections/3-fold (37 products)",
+              "error": null,
+              "secs": 3.79,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "collection link a shopper can click on the homepage",
+                  "expected": "found",
+                  "actual": "/collections/3-fold ('3 Fold Umbrella')",
+                  "ok": true
+                },
+                {
+                  "what": "landed on that collection",
+                  "expected": "/collections/3-fold",
+                  "actual": "/collections/3-fold",
+                  "ok": true
+                },
+                {
+                  "what": "products listed in collection",
+                  "expected": "\u2265 1",
+                  "actual": "37",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.02-click_into_collection.jpg"
+            },
+            {
+              "name": "click_into_product",
+              "status": "pass",
+              "detail": "clicked known in-stock product on 36 candidates \u2192 /products/545-johns-cool",
+              "error": null,
+              "secs": 4.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product card a shopper can click",
+                  "expected": "found",
+                  "actual": "/products/545-johns-cool (\"545 John's Cool\")",
+                  "ok": true
+                },
+                {
+                  "what": "opened the product that was clicked",
+                  "expected": "/products/545-johns-cool",
+                  "actual": "/products/545-johns-cool",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.03-click_into_product.jpg"
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "\"545 John's Cool\", selected variant 41749032894558 at \u20b9599.00",
+              "error": null,
+              "secs": 0.23,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/545-johns-cool",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/545-johns-cool.js with variants",
+                  "actual": "\"545 John's Cool\", 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.04-product_identified.jpg"
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.1,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "545 John's Cool",
+                  "actual": "\"545 John's Cool\" (h1, 46px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b9599.00",
+                  "actual": "\u20b9599.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 150x150)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.05-shows_title_price_image.jpg"
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "545 John's Cool",
+                  "actual": "\"545 John's Cool\" (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.06-title_matches_catalog.jpg"
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "545 John's Cool",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "599.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": "journey.shopper.a1.07-structured_data_valid.jpg"
+            },
+            {
+              "name": "cart_steps",
+              "status": "info",
+              "detail": "skipped (--no-cart / allow_cart_flow: false)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 11.89,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x39640119f400]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=13&frm=0&apvc=1&auid=1328328812.1792198316&dt=John%27s%20Umbrella%20Mart&tid=AW-17120962445&en=page_view&dl=htt",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=1e2d0f17-e1cb-49f9-818e-1db306cfdf6e&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "GET https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/RumMetrics-CImA9thh.js",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://www.google.com/ccm/collect?rcb=0&frm=0&apvc=1&auid=1328328812.1792198316&dt=3%20Fold%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-171209624",
+            "GET https://timer.good-apps.co/storage/js/good_apps_timer-johns-umbrella.myshopify.com.js?ver=12&shop=johns-umbrella.myshopify.com",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=84aa504d-cd34-46c4-a9ec-1bcd594ab115&c",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1328328812.1792198316&dt=545%20John%27s%20Cool%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=dc2a2e11-2f43-46d7-b4dc-32e65fb084ce&c"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 0.89,
+              "load": 1.82,
+              "lcp": 0.43
+            },
+            {
+              "url": "/collections/3-fold",
+              "ttfb": 0.15,
+              "dcl": 1.4,
+              "load": 2.44,
+              "lcp": 1.8
+            },
+            {
+              "url": "/products/545-johns-cool",
+              "ttfb": 0.14,
+              "dcl": 1.08,
+              "load": 1.9,
+              "lcp": 1.36
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.home_health",
+      "suite": "smoke",
+      "title": "Homepage loads healthy",
+      "check": "page_health",
+      "severity": "critical",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.04s",
+              "error": null,
+              "secs": 3.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2232 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "load_time",
+              "status": "pass",
+              "detail": "1.04s",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "DOM ready time",
+                  "expected": "\u2264 8s",
+                  "actual": "1.04s",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "pass",
+              "detail": "none",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.38s, CLS 0.0",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.38s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "175 scripts, at least 1.2 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.googleapis.com (1), popup.lifterapps.com (1)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "175 scripts, at least 1.2 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.goo\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.32,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x396401307a00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1276333497.1792198328&dt=John%27s%20Umbrella%20Mart&tid=AW-17120962445&en=page_view&dl=http",
+            "GET https://timer.good-apps.co/storage/js/good_apps_timer-johns-umbrella.myshopify.com.js?ver=12&shop=johns-umbrella.myshopify.com",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=fc4412a5-a764-424e-bd0b-4fad564ca8de&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.07,
+              "dcl": 0.92,
+              "load": 2.27,
+              "lcp": 0.38
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.nav_links",
+      "suite": "smoke",
+      "title": "Navigation links resolve",
+      "check": "links_resolve",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open /collections/1-fold",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.2s",
+              "error": null,
+              "secs": 3.66,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "1 Fold \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3900 chars, 49 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/2-fold",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.11s",
+              "error": null,
+              "secs": 2.36,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "2 Fold \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1063 chars, 1 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/3-fold",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.11s",
+              "error": null,
+              "secs": 2.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "3 Fold \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4844 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/5-fold",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.22s",
+              "error": null,
+              "secs": 2.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "5 Fold \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1439 chars, 7 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/kids-umbrella",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 2.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Kids Umbrella \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1435 chars, 9 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /collections/travel-accessories/Neck-pil",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.2s, redirected to /collections/travel-accessories",
+              "error": null,
+              "secs": 2.48,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Travel Accessories \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1111 chars, 1 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "open /blogs/news/how-to-buy-the-best-umbrella",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.94s",
+              "error": null,
+              "secs": 2.61,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "How to Buy the Best Umbrella ;A Complete Guide to Buying the Best One \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "6704 chars, 5 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "7 pages open and show content",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken navigation pages",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 19.35,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/collections/1-fold"
+            },
+            {
+              "type": "warning",
+              "text": "[.WebGL-0x3964039f3c00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/iframe.html"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2807611&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/collections/1-fold"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-70562003-2, auto, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.johns.in/collections/kids-umbrella"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [PopUpWindow.send, event, Script Load Sample version 2, johns-umbrella.myshopify.com] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for",
+              "url": "https://www.johns.in/collections/kids-umbrella"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=445623293.1792198333&dt=1%20Fold%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-171209624",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=76880043-74c1-4f94-ad6e-9e704c430856&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=445623293.1792198333&dt=2%20Fold%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-171209624",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=911b6842-f48a-4f45-be46-ce499e03825c&c",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=445623293.1792198333&dt=3%20Fold%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-171209624",
+            "GET https://timer.good-apps.co/storage/js/good_apps_timer-johns-umbrella.myshopify.com.js?ver=12&shop=johns-umbrella.myshopify.com",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=ed693c61-d894-482c-aede-29536613f107&c",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=445623293.1792198333&dt=5%20Fold%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-171209624",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=8d5e56e9-7406-4b4f-a04d-7648d94cb767&c",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=445623293.1792198333&dt=Kids%20Umbrella%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-17",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=94340ba7-6c1c-4250-8cd1-383c97a12840&c",
+            "GET https://shop.app/pay/assets/sprite.svg",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=445623293.1792198333&dt=Travel%20Accessories%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=26f7bdd7-5cc5-42a3-b4da-f2c42986c2ee&c",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=445623293.1792198333&dt=How%20to%20Buy%20the%20Best%20Umbrella%20%3BA%20Complete%20Guide%2",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=ef5f3511-33dc-40e6-8b2b-819de799b749&c"
+          ],
+          "loads": [
+            {
+              "url": "/collections/1-fold",
+              "ttfb": 0.2,
+              "dcl": 1.05,
+              "load": 2.41,
+              "lcp": 1.46
+            },
+            {
+              "url": "/collections/2-fold",
+              "ttfb": 0.19,
+              "dcl": 0.97,
+              "load": 1.65,
+              "lcp": 0.53
+            },
+            {
+              "url": "/collections/3-fold",
+              "ttfb": 0.17,
+              "dcl": 0.96,
+              "load": 1.67,
+              "lcp": 0.7
+            },
+            {
+              "url": "/collections/5-fold",
+              "ttfb": 0.16,
+              "dcl": 1.1,
+              "load": 1.86,
+              "lcp": 1.02
+            },
+            {
+              "url": "/collections/kids-umbrella",
+              "ttfb": 0.16,
+              "dcl": 0.86,
+              "load": 1.6,
+              "lcp": 0.97
+            },
+            {
+              "url": "/collections/travel-accessories",
+              "ttfb": 0.37,
+              "dcl": 1.1,
+              "load": 1.73,
+              "lcp": 0.57
+            },
+            {
+              "url": "/blogs/news/how-to-buy-the-best-umbrella-a-complete-guide-to-buying-the-best-one",
+              "ttfb": 0.2,
+              "dcl": 0.85,
+              "load": 1.9,
+              "lcp": 0.62
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.mobile_menu",
+      "suite": "smoke",
+      "title": "Menu opens on phones",
+      "check": "mobile_menu",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.24s",
+              "error": null,
+              "secs": 3.37,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2268 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "menu_opens",
+              "status": "pass",
+              "detail": "not judged: desktop-sized screen, the menu sits in the header (judged on phones)",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.52,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2807611&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=17&frm=0&apvc=1&auid=1908175823.1792198352&dt=John%27s%20Umbrella%20Mart&tid=AW-17120962445&en=page_view&dl=htt",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=12655a24-93fa-4769-b08f-f57cedb37d07&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.95,
+              "load": 2.05,
+              "lcp": 0.36
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "smoke.more_links",
+      "suite": "smoke",
+      "title": "Links beyond the menu open (announcement bar, homepage, footer)",
+      "check": "more_links_resolve",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "homepage section: opens /collections/onam-offer",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.02s",
+              "error": null,
+              "secs": 2.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "ONAM OFFER \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1747 chars, 11 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"ONAM OFFER \u2013 John's Umbrella Mart\", heading 'Collection:\\nONAM OFFER'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections/onam-offer",
+                  "actual": "/collections/onam-offer",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "homepage section: opens /collections",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.88s",
+              "error": null,
+              "secs": 2.71,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Collections \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1585 chars, 14 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Collections \u2013 John's Umbrella Mart\", heading 'Collections'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/collections",
+                  "actual": "/collections",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/cancellation-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.95s",
+              "error": null,
+              "secs": 2.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Cancellation Policy \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1475 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Cancellation Policy \u2013 John's Umbrella Mart\", heading 'Cancellation Policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/cancellation-policy",
+                  "actual": "/pages/cancellation-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "footer: opens /pages/deliveries-and-returns",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.89s",
+              "error": null,
+              "secs": 2.52,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Deliveries and Returns \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3669 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Deliveries and Returns \u2013 John's Umbrella Mart\", heading 'Deliveries and Returns'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/deliveries-and-returns",
+                  "actual": "/pages/deliveries-and-returns",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_links_ok",
+              "status": "pass",
+              "detail": "4 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "links beyond the menu that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.35,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/collections/onam-offer"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=2&frm=0&apvc=1&auid=2077798376.1792198356&dt=ONAM%20OFFER%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-17120",
+            "GET https://timer.good-apps.co/storage/js/good_apps_timer-johns-umbrella.myshopify.com.js?ver=12&shop=johns-umbrella.myshopify.com",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=ca1d066d-00bc-4b99-bff0-6b87cfc05865&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "GET https://shop.app/accounts/pre_auth?client_id=719afaa9-13dc-4740-985d-e13f3edb6c38&analytics_trace_id=ca1d066d-00bc-4b99-bff0-6b87cfc05865&flow=embed&f",
+            "POST https://www.google.com/ccm/collect?rcb=14&frm=0&apvc=1&auid=2077798376.1792198356&dt=Collections%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-17120",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=568d6726-38b6-4fb6-8cf8-f2c12d4f0a6b&c",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=2077798376.1792198356&dt=Cancellation%20Policy%20%E2%80%93%20John%27s%20Umbrella%20Mart&ti",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=67c8ab21-30e3-40c3-a98a-18f7c8f2c087&c",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=2077798376.1792198356&dt=Deliveries%20and%20Returns%20%E2%80%93%20John%27s%20Umbrella%20Ma",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=e361b3a0-a442-485e-ba3c-ae2f57bfd1b0&c"
+          ],
+          "loads": [
+            {
+              "url": "/collections/onam-offer",
+              "ttfb": 0.19,
+              "dcl": 0.93,
+              "load": 1.72,
+              "lcp": 0.68
+            },
+            {
+              "url": "/collections",
+              "ttfb": 0.17,
+              "dcl": 0.83,
+              "load": 1.75,
+              "lcp": 1.14
+            },
+            {
+              "url": "/pages/cancellation-policy",
+              "ttfb": 0.19,
+              "dcl": 0.88,
+              "load": 1.41,
+              "lcp": 0.48
+            },
+            {
+              "url": "/pages/deliveries-and-returns",
+              "ttfb": 0.17,
+              "dcl": 0.78,
+              "load": 1.82,
+              "lcp": 0.32
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.3-fold",
+      "suite": "catalog",
+      "title": "Collection '3 Fold' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.54s",
+              "error": null,
+              "secs": 3.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "3 Fold \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4844 chars, 43 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "37 products listed",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "37",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: goodtTriggerEvents.includes is not a function",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: goodtTriggerEvents.includes is not a function",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.13,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.98s, CLS 0.0",
+              "error": null,
+              "secs": 0.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.98s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "161 scripts, at least 1.2 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.googleapis.com (1), popup.lifterapps.com (1)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "161 scripts, at least 1.2 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.goo\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.72,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/collections/3-fold"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/collections/3-fold"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=1598662298.1792198367&dt=3%20Fold%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-17120962",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=2517f67d-a6bd-41e2-a002-d2ecea2882d3&c",
+            "POST https://otlp-http-production.shopifysvc.com/v1/metrics",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/collections/3-fold",
+              "ttfb": 0.17,
+              "dcl": 1.26,
+              "load": 2.18,
+              "lcp": 0.98
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.collection.1-fold",
+      "suite": "catalog",
+      "title": "Collection '1 Fold' lists products",
+      "check": "collection_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.2s",
+              "error": null,
+              "secs": 2.86,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "1 Fold \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3936 chars, 49 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "pass",
+              "detail": "28 products listed",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed",
+                  "expected": "\u2265 1",
+                  "actual": "28",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "images_load",
+              "status": "pass",
+              "detail": "all visible images loaded",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "broken images",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: goodtTriggerEvents.includes is not a function",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: goodtTriggerEvents.includes is not a function",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 0.91s, CLS 0.0",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 0.91s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "168 scripts, at least 1.2 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.googleapis.com (1), popup.lifterapps.com (1)",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "168 scripts, at least 1.2 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.goo\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 4.5,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/collections/1-fold"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2807611&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-70562003-2, auto, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.johns.in/collections/1-fold"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [PopUpWindow.send, event, Script Load Sample version 2, johns-umbrella.myshopify.com] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for",
+              "url": "https://www.johns.in/collections/1-fold"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/collections/1-fold"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=9&frm=0&apvc=1&auid=1944683363.1792198371&dt=1%20Fold%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-171209624",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=2706376d-cf91-4698-b857-923c10e823ba&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "GET https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/RumMetrics-CImA9thh.js",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/"
+          ],
+          "loads": [
+            {
+              "url": "/collections/1-fold",
+              "ttfb": 0.21,
+              "dcl": 1.02,
+              "load": 1.99,
+              "lcp": 0.91
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.more.all",
+      "suite": "catalog",
+      "title": "Collection 'John's' shows products past the first page",
+      "check": "collection_more",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.31s",
+              "error": null,
+              "secs": 2.85,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4756 chars, 42 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "lists_products",
+              "status": "info",
+              "detail": "36 products on the first page",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "page_2_opens",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.31s",
+              "error": null,
+              "secs": 3.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's \u2013 Page 2 \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4546 chars, 35 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "page_2_shows_more",
+              "status": "pass",
+              "detail": "page 2 shows 36 more products",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "new products on page 2",
+                  "expected": "\u2265 1 product not on page 1",
+                  "actual": "36",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.6,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-70562003-2, auto, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.johns.in/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [PopUpWindow.send, event, Script Load Sample version 2, johns-umbrella.myshopify.com] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for",
+              "url": "https://www.johns.in/collections/all"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=621741374.1792198376&dt=John%27s%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-171209624",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=7e263cad-a573-40f8-854e-453490217ee7&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=621741374.1792198376&dt=John%27s%20%E2%80%93%20Page%202%20%E2%80%93%20John%27s%20Umbrella%",
+            "GET https://timer.good-apps.co/storage/js/good_apps_timer-johns-umbrella.myshopify.com.js?ver=12&shop=johns-umbrella.myshopify.com",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=e0e558b3-8872-4607-8fc2-9f4c656a74aa&c",
+            "GET https://shop.app/accounts/pre_auth?client_id=719afaa9-13dc-4740-985d-e13f3edb6c38&analytics_trace_id=e0e558b3-8872-4607-8fc2-9f4c656a74aa&flow=embed&f"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.17,
+              "dcl": 1.21,
+              "load": 1.95,
+              "lcp": 1.42
+            },
+            {
+              "url": "/collections/all?page=2",
+              "ttfb": 0.19,
+              "dcl": 1.18,
+              "load": 2.07,
+              "lcp": 1.85
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "catalog.filter.all",
+      "suite": "catalog",
+      "title": "Filtering collection 'John's' narrows its products",
+      "check": "collection_filter",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.63s",
+              "error": null,
+              "secs": 3.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "4756 chars, 42 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filters_offered",
+              "status": "info",
+              "detail": "4 filter options (e.g. In stock (18) In stock (18 products), Out of stock (86) Out of stock (86 products)); applying 'In stock (18) In stock (18 products)' = filter.v.availability=1",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            },
+            {
+              "name": "applies_filter",
+              "status": "pass",
+              "detail": "opened /collections/all?filter.v.availability=1 directly: the theme's own request (?filter.v.availability=1&filter.v.price.gte=&filter.v.price.lte=&sort_by=created-descendin\u2026) is disallowed by robots.txt",
+              "error": null,
+              "secs": 9.5,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3538 chars, 37 images",
+                  "ok": true
+                },
+                {
+                  "what": "filters in the page address",
+                  "expected": "exactly one: filter.v.availability=1",
+                  "actual": "filter.v.availability=1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "filter_narrows_results",
+              "status": "pass",
+              "detail": "'In stock (18) In stock (18 products)': 18 products listed (36 without the filter), all match it in the store's data",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "products listed with the filter on",
+                  "expected": "\u2265 1",
+                  "actual": "18",
+                  "ok": true
+                },
+                {
+                  "what": "products listed: filtered vs unfiltered",
+                  "expected": "\u2264 89",
+                  "actual": "18",
+                  "ok": true
+                },
+                {
+                  "what": "listed products matching 'In stock (18) In stock (18 products)' (store's data)",
+                  "expected": "all 18",
+                  "actual": "18 of 18",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sort_not_judged",
+              "status": "info",
+              "detail": "sorting not checked: the store's robots.txt disallows /collections/all?sort_by=\u2026 (Shopify's default) and Radar always respects robots.txt",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 16.71,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/collections/all"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/collections/all"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=1719057095.1792198382&dt=John%27s%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-17120962",
+            "GET https://timer.good-apps.co/storage/js/good_apps_timer-johns-umbrella.myshopify.com.js?ver=12&shop=johns-umbrella.myshopify.com",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=071e3036-c4fe-4d2b-bfda-8e39aa4ca4d7&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "GET https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/RumMetrics-CImA9thh.js",
+            "POST https://www.google.com/ccm/collect?rcb=12&frm=0&apvc=1&auid=1719057095.1792198382&dt=John%27s%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-17120962",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=e91b2800-d0ad-47f0-9404-34e5b83af7f4&c",
+            "POST https://www.google.com/ccm/collect?rcb=7&frm=0&apvc=1&auid=1719057095.1792198382&dt=John%27s%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-171209624",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=93b0e2e2-ba95-4f03-9b4b-cf63b5200759&c"
+          ],
+          "loads": [
+            {
+              "url": "/collections/all",
+              "ttfb": 0.19,
+              "dcl": 1.32,
+              "load": 2.64,
+              "lcp": 1.11
+            },
+            {
+              "url": "/collections/all?filter.v.availability=1",
+              "ttfb": 0.21,
+              "dcl": 1.48,
+              "load": 2.33,
+              "lcp": 1.64
+            },
+            {
+              "url": "/collections/all",
+              "ttfb": 0.16,
+              "dcl": 1.02,
+              "load": 1.89,
+              "lcp": 0.99
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.johns-635-walkmate",
+      "suite": "product",
+      "title": "PDP 'John's 635 Walkmate'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.06s",
+              "error": null,
+              "secs": 5.19,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's 635 Walkmate \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2344 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/johns-635-walkmate",
+                  "actual": "/products/johns-635-walkmate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "\"John's 635 Walkmate\", selected variant 41623566418014 at \u20b91,299.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/johns-635-walkmate",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/johns-635-walkmate.js with variants",
+                  "actual": "\"John's 635 Walkmate\", 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "John's 635 Walkmate",
+                  "actual": "\"John's 635 Walkmate\" (h1, 46px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,299.00",
+                  "actual": "\u20b91,299.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 150x150)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "John's 635 Walkmate",
+                  "actual": "\"John's 635 Walkmate\" (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "John's 635 Walkmate",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1,299.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 41623566418014 (O Blue) selected, in stock",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "1 of 6 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--17466717143134__main (variant 41623566418014, button 'Add to cart')",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: goodtTriggerEvents.includes is not a function",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: goodtTriggerEvents.includes is not a function",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.12s, CLS 0.0",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.12s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "232 scripts, at least 1.5 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.googleapis.com (1), popup.lifterapps.com (1)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "232 scripts, at least 1.5 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.goo\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.77,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/products/johns-635-walkmate?v"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/products/johns-635-walkmate?variant=41623566418014"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=471609114.1792198399&dt=John%27s%20635%20Walkmate%20%E2%80%93%20John%27s%20Umbrella%20Mart",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=2e8c5c2f-8c9b-4a7b-a7a4-a7974899e4fe&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella"
+          ],
+          "loads": [
+            {
+              "url": "/products/johns-635-walkmate?variant=41623566418014",
+              "ttfb": 0.2,
+              "dcl": 0.92,
+              "load": 1.68,
+              "lcp": 1.12
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.840-golf-frp-auto",
+      "suite": "product",
+      "title": "PDP '840 Golf FRP Auto'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.5s",
+              "error": null,
+              "secs": 6.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "840 Golf FRP Auto \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2645 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/840-golf-frp-auto",
+                  "actual": "/products/840-golf-frp-auto",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'840 Golf FRP Auto', selected variant 32282023297118 at \u20b91,099.00",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/840-golf-frp-auto",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/840-golf-frp-auto.js with variants",
+                  "actual": "'840 Golf FRP Auto', 11 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.07,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "840 Golf FRP Auto",
+                  "actual": "'840 Golf FRP Auto' (h1, 46px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,099.00",
+                  "actual": "\u20b91,099.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 150x150)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.02,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "840 Golf FRP Auto",
+                  "actual": "'840 Golf FRP Auto' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "840 Golf FRP Auto",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1,099.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 32282023297118 (840GFRP-BLK) selected, in stock",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "6 of 11 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--17466717143134__main (variant 32282023297118, button 'Add to cart')",
+              "error": null,
+              "secs": 0.11,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: goodtTriggerEvents.includes is not a function",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: goodtTriggerEvents.includes is not a function",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.53s, CLS 0.0",
+              "error": null,
+              "secs": 0.32,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.53s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "231 scripts, at least 1.4 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.googleapis.com (1), popup.lifterapps.com (1)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "231 scripts, at least 1.4 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.goo\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.78,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/products/840-golf-frp-auto?va"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/products/840-golf-frp-auto?variant=32282023297118"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=398178370.1792198405&dt=840%20Golf%20FRP%20Auto%20%E2%80%93%20John%27s%20Umbrella%20Mart&t",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=7b892901-8765-45c0-9e44-f95885b9c712&c",
+            "POST https://otlp-http-production.shopifysvc.com/v1/metrics"
+          ],
+          "loads": [
+            {
+              "url": "/products/840-golf-frp-auto?variant=32282023297118",
+              "ttfb": 0.19,
+              "dcl": 1.22,
+              "load": 2.18,
+              "lcp": 1.53
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pdp.610-pagoda",
+      "suite": "product",
+      "title": "PDP '610 Pagoda'",
+      "check": "product_page",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.12s",
+              "error": null,
+              "secs": 5.95,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "610 Pagoda \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2225 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "url_stable",
+              "status": "pass",
+              "detail": "no redirect",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "final URL",
+                  "expected": "/products/610-pagoda",
+                  "actual": "/products/610-pagoda",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "product_identified",
+              "status": "pass",
+              "detail": "'610 Pagoda', selected variant 32282212139102 at \u20b91,499.00",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/610-pagoda",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/610-pagoda.js with variants",
+                  "actual": "'610 Pagoda', 9 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_title_price_image",
+              "status": "pass",
+              "detail": "title, price and image visible",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product name shown on the page",
+                  "expected": "610 Pagoda",
+                  "actual": "'610 Pagoda' (h1, 46px, exact name)",
+                  "ok": true
+                },
+                {
+                  "what": "selected variant price shown",
+                  "expected": "\u20b91,499.00",
+                  "actual": "\u20b91,499.00",
+                  "ok": true
+                },
+                {
+                  "what": "main product image loaded",
+                  "expected": "image \u2265150px rendered",
+                  "actual": "yes (img 150x150)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title_matches_catalog",
+              "status": "pass",
+              "detail": "same title",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shown title matches catalog title",
+                  "expected": "610 Pagoda",
+                  "actual": "'610 Pagoda' (same title)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "structured_data_valid",
+              "status": "pass",
+              "detail": "via meta",
+              "error": null,
+              "secs": 0.03,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "structured data: name",
+                  "expected": "present",
+                  "actual": "610 Pagoda",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: price",
+                  "expected": "> 0",
+                  "actual": "1,499.00",
+                  "ok": true
+                },
+                {
+                  "what": "structured data: image",
+                  "expected": "present",
+                  "actual": "present",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_ready",
+              "status": "pass",
+              "detail": "variant 32282212139102 (610PGDA-BLK) selected, in stock",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "an in-stock variant exists",
+                  "expected": "\u2265 1 available variant",
+                  "actual": "5 of 9 available",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "buy_button_ready",
+              "status": "pass",
+              "detail": "main product form #product-form-template--17466717143134__main (variant 32282212139102, button 'Add to cart')",
+              "error": null,
+              "secs": 0.09,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "buy button enabled",
+                  "expected": "true",
+                  "actual": "true",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "no_js_errors",
+              "status": "warn",
+              "detail": null,
+              "error": "uncaught JavaScript errors: expected 0, got 1: goodtTriggerEvents.includes is not a function",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "uncaught JavaScript errors",
+                  "expected": "0",
+                  "actual": "1: goodtTriggerEvents.includes is not a function",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_fits_screen",
+              "status": "pass",
+              "detail": "fits (1366px)",
+              "error": null,
+              "secs": 0.04,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page scrolls sideways",
+                  "expected": "no, it fits the screen width (\u2264 10px of play)",
+                  "actual": "fits (1366px)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "layout_not_covered",
+              "status": "pass",
+              "detail": "1%",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "screen covered by fixed bars",
+                  "expected": "\u2264 35%",
+                  "actual": "1%",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "web_vitals",
+              "status": "pass",
+              "detail": "LCP 1.45s, CLS 0.0",
+              "error": null,
+              "secs": 0.31,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "Core Web Vitals",
+                  "expected": "LCP \u2264 4.0s and CLS \u2264 0.25 (from Radar's runner)",
+                  "actual": "LCP 1.45s, CLS 0.0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "scripts_weight",
+              "status": "pass",
+              "detail": "215 scripts, at least 1.4 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.googleapis.com (1), popup.lifterapps.com (1)",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "scripts the page loads",
+                  "expected": "< 4 MB of JavaScript and < 25 third-party script hosts",
+                  "actual": "215 scripts, at least 1.4 MB of JavaScript, 9 third-party script hosts: www.googletagmanager.com (7), cdn.ecomposer.app (2), sr-cdn.shiprocket.in (2), ajax.goo\u2026",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.59,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/products/610-pagoda?variant=3"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/products/610-pagoda?variant=32282212139102"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=1955307325.1792198411&dt=610%20Pagoda%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-17120",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=dd883069-b752-4995-92f4-40819d5a2fb8&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://otlp-http-production.shopifysvc.com/v1/metrics"
+          ],
+          "loads": [
+            {
+              "url": "/products/610-pagoda?variant=32282212139102",
+              "ttfb": 0.19,
+              "dcl": 1.0,
+              "load": 1.92,
+              "lcp": 1.45
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.variant_switch",
+      "suite": "product",
+      "title": "Picking another variant of 'John's 635 Walkmate' updates the page",
+      "check": "variant_switch",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.25s",
+              "error": null,
+              "secs": 2.94,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's 635 Walkmate \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2344 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "variant_options",
+              "status": "pass",
+              "detail": "6 variants; selected 41623566418014 (O Blue, \u20b91,299.00); switch to none (no other in-stock variant with other options); sold-out variant: 41623566352478 (Black, \u20b91,299.00)",
+              "error": null,
+              "secs": 0.06,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/johns-635-walkmate",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/johns-635-walkmate.js with variants",
+                  "actual": "\"John's 635 Walkmate\", 6 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sold_out_blocks_buy",
+              "status": "pass",
+              "detail": "chose option \"Black\\nVariant sold out or unavailable\": 41623566352478 (Black, \u20b91,299.00) selected, buy blocked ('Sold out' (disabled), 'Buy it now' (disabled)); buy never clicked",
+              "error": null,
+              "secs": 0.65,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "page selects the sold-out variant",
+                  "expected": "41623566352478 (Black, \u20b91,299.00)",
+                  "actual": "41623566352478 (the product form's variant id) after choosing option \"Black\\nVariant sold out or unavailable\"",
+                  "ok": true
+                },
+                {
+                  "what": "sold-out variant cannot be bought",
+                  "expected": "buy button disabled or saying sold out",
+                  "actual": "'Sold out' (disabled), 'Buy it now' (disabled)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.76,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/products/johns-635-walkmate?v"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/products/johns-635-walkmate?variant=41623566418014"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=3&frm=0&apvc=1&auid=341115654.1792198418&dt=John%27s%20635%20Walkmate%20%E2%80%93%20John%27s%20Umbrella%20Mart&",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=9dbf5496-7674-44db-9aaf-e548ee6c937f&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://www.google.com/rmkt/collect/17120962445/?random=1792198419626&cv=11&fst=1792198419626&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://www.google.com/rmkt/collect/17120962445/?random=1792198419856&cv=11&fst=1792198419856&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a"
+          ],
+          "loads": [
+            {
+              "url": "/products/johns-635-walkmate?variant=41623566418014",
+              "ttfb": 0.24,
+              "dcl": 1.05,
+              "load": 2.06,
+              "lcp": 0.7
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.sold_out",
+      "suite": "product",
+      "title": "Sold-out 'John's 545 H2O 3Fold' shows sold out, buy disabled",
+      "check": "sold_out_page",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.22s",
+              "error": null,
+              "secs": 3.27,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's 545 H2O 3Fold \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2030 chars, 31 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "sold_out_in_store_data",
+              "status": "pass",
+              "detail": "Shopify's product data: 0 of 5 variant(s) available",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "URL is a product page",
+                  "expected": "/products/<handle>",
+                  "actual": "/products/johns-545-h2o-3fold",
+                  "ok": true
+                },
+                {
+                  "what": "product data from Shopify",
+                  "expected": "/products/johns-545-h2o-3fold.js with variants",
+                  "actual": "\"John's 545 H2O 3Fold\", 5 variant(s)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shows_sold_out",
+              "status": "pass",
+              "detail": "buy button 'Sold out' disabled; page says 'Sold out'",
+              "error": null,
+              "secs": 0.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told the product is sold out",
+                  "expected": "buy button disabled or absent, or 'sold out' wording near it",
+                  "actual": "buy button 'Sold out' disabled; page says 'Sold out' (product form #product-form-template--17466717143134__m)",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 3.55,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/products/johns-545-h2o-3fold?"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/products/johns-545-h2o-3fold?variant=41664484507742"
+            }
+          ],
+          "failed_requests": [
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=15&frm=0&apvc=1&auid=2120117928.1792198422&dt=John%27s%20545%20H2O%203Fold%20%E2%80%93%20John%27s%20Umbrella%20",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=c39f6709-46fc-41c2-89f1-646b9b4311ea&c"
+          ],
+          "loads": [
+            {
+              "url": "/products/johns-545-h2o-3fold?variant=41664484507742",
+              "ttfb": 0.22,
+              "dcl": 1.06,
+              "load": 2.01,
+              "lcp": 1.54
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "product.pincode",
+      "suite": "product",
+      "title": "Pincode checker on 'John's 635 Walkmate' answers for a delivery pincode",
+      "check": "pincode_check",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "product_loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.14s",
+              "error": null,
+              "secs": 2.81,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's 635 Walkmate \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2308 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "pincode_not_judged",
+              "status": "info",
+              "detail": "no delivery-pincode checker on the product page (information only)",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.92,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/products/johns-635-walkmate?v"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=1864667480.1792198425&dt=John%27s%20635%20Walkmate%20%E2%80%93%20John%27s%20Umbrella%20Mar",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=337abf7e-301c-4694-96d2-3eded6b8f142&c",
+            "GET https://timer.good-apps.co/storage/js/good_apps_timer-johns-umbrella.myshopify.com.js?ver=12&shop=johns-umbrella.myshopify.com",
+            "POST https://otlp-http-production.shopifysvc.com/v1/metrics"
+          ],
+          "loads": [
+            {
+              "url": "/products/johns-635-walkmate?variant=41623566418014",
+              "ttfb": 0.21,
+              "dcl": 1.01,
+              "load": 1.99,
+              "lcp": 0.73
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.walkmate",
+      "suite": "search",
+      "title": "Search for 'walkmate' returns products",
+      "check": "search_results",
+      "severity": "major",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.83s",
+              "error": null,
+              "secs": 2.73,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2268 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "returns_relevant_products",
+              "status": "pass",
+              "detail": "typed into the store's search box: 2 results, 1 mention 'walkmate'",
+              "error": null,
+              "secs": 4.18,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "product results",
+                  "expected": "\u2265 1",
+                  "actual": "2",
+                  "ok": true
+                },
+                {
+                  "what": "results relevant to 'walkmate'",
+                  "expected": "\u2265 1 result mentions the term",
+                  "actual": "1 of 2",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.99,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=701426129.1792198428&dt=John%27s%20Umbrella%20Mart&tid=AW-17120962445&en=page_view&dl=https",
+            "GET https://timer.good-apps.co/storage/js/good_apps_timer-johns-umbrella.myshopify.com.js?ver=12&shop=johns-umbrella.myshopify.com",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=b1f55bf5-5f8c-4104-b315-4fd6c11d84f1&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/rmkt/collect/17120962445/?random=1792198430581&cv=11&fst=1792198430581&fmt=8&bg=ffffff&guid=ON&async=1&en=form_start&gtm=45be6a",
+            "POST https://www.google.com/rmkt/collect/17120962445/?random=1792198430620&cv=11&fst=1792198430620&fmt=8&bg=ffffff&guid=ON&async=1&en=form_submit&gtm=45be6",
+            "POST https://www.google.com/ccm/collect?rcb=11&frm=0&apvc=1&auid=701426129.1792198428&dt=Search%3A%202%20results%20found%20for%20%22walkmate%22%20%E2%80%93",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=4a9951b9-dc4b-4981-bf67-4e028b8b9c75&c"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.05,
+              "dcl": 0.7,
+              "load": 1.81,
+              "lcp": 0.31
+            },
+            {
+              "url": "/search?q=walkmate&options%5Bprefix%5D=last",
+              "ttfb": 0.03,
+              "dcl": 1.04,
+              "load": 1.39,
+              "lcp": 0.6
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.no_results",
+      "suite": "search",
+      "title": "Search for a word no store sells shows a 'no results' page",
+      "check": "search_no_results",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.05s",
+              "error": null,
+              "secs": 2.4,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Search: 0 results found for \"qzxvbugradar\" \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "977 chars, 1 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "says_no_results",
+              "status": "pass",
+              "detail": "says 'Search results Search No results found for \u201cqzxvbugradar\u201d. Check the spe'",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "shopper is told nothing matched",
+                  "expected": "a 'no results' message, or no products listed",
+                  "actual": "message 'Search results Search No results found for \u201cqzxvbugradar\u201d. Check the spe'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.48,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/search?q=qzxvbugradar&type=pr"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/search?q=qzxvbugradar&type=product"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2807611&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=8&frm=0&apvc=1&auid=498458958.1792198435&dt=Search%3A%200%20results%20found%20for%20%22qzxvbugradar%22%20%E2%80",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=ca0b5b0e-7328-4726-be1f-164cc288346b&c",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://otlp-http-production.shopifysvc.com/v1/metrics"
+          ],
+          "loads": [
+            {
+              "url": "/search?q=qzxvbugradar&type=product",
+              "ttfb": 0.05,
+              "dcl": 0.97,
+              "load": 1.63,
+              "lcp": 0.45
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "search.suggestions",
+      "suite": "search",
+      "title": "Typing 'walkmate' in the search box suggests products",
+      "check": "search_suggestions",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "open_homepage",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.96s",
+              "error": null,
+              "secs": 3.16,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2268 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "suggestions_while_typing",
+              "status": "pass",
+              "detail": "1 product suggestion(s) while typing 'walkmate', e.g. \"John's 635 Walkmate\"",
+              "error": null,
+              "secs": 3.19,
+              "healed": null,
+              "checks": [],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 6.44,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [create, UA-70562003-2, auto, Object] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for more information.",
+              "url": "https://www.johns.in/"
+            },
+            {
+              "type": "error",
+              "text": "Shopify's Google Analytics stub called with: [PopUpWindow.send, event, Script Load Sample version 2, johns-umbrella.myshopify.com] See https://help.shopify.com/manual/promoting-marketing/pixels/pixel-migration#google for",
+              "url": "https://www.johns.in/"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=4&frm=0&apvc=1&auid=1002851107.1792198438&dt=John%27s%20Umbrella%20Mart&tid=AW-17120962445&en=page_view&dl=http",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=ce30cc02-4208-4002-b8cf-36336ded05b6&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "POST https://otlp-http-production.shopifysvc.com/v1/metrics",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.04,
+              "dcl": 0.83,
+              "load": 2.08,
+              "lcp": 0.36
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.home",
+      "suite": "health",
+      "title": "Homepage meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.99s",
+              "error": null,
+              "secs": 2.77,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2268 chars, 17 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "John's Umbrella Mart",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "20: \"John's Umbrella Mart\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 20: \"John's Umbrella Mart\"",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "20: \"John's Umbrella Mart\"",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.johns.in/",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.johns.in/",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.johns.in/cdn/shop/files/logo_200x_a5fb3412-4d58-4b73-b116-2967b7ad5495.png?v=1590428414",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.89,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=16&frm=0&apvc=1&auid=113137424.1792198444&dt=John%27s%20Umbrella%20Mart&tid=AW-17120962445&en=page_view&dl=http",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=06373b9b-934a-46b0-a873-85ab9d439371&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella"
+          ],
+          "loads": [
+            {
+              "url": "/",
+              "ttfb": 0.06,
+              "dcl": 0.89,
+              "load": 1.84,
+              "lcp": 0.36
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.meta.pdp",
+      "suite": "health",
+      "title": "Product page meta tags",
+      "check": "meta_tags",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "loads",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.14s",
+              "error": null,
+              "secs": 5.29,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "John's 635 Walkmate \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "2344 chars, 23 images",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "title",
+              "status": "pass",
+              "detail": "John's 635 Walkmate \u2013 John's Umbrella Mart",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "<title> length",
+                  "expected": "10\u201370 chars",
+                  "actual": "42: \"John's 635 Walkmate \u2013 John's Umbrella Mart\"",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "meta_description",
+              "status": "warn",
+              "detail": null,
+              "error": "meta description length: expected 50\u2013170 chars, got 320: '635 Walkmate Umbrella A premium auto-open walking support um'",
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "meta description length",
+                  "expected": "50\u2013170 chars",
+                  "actual": "320: '635 Walkmate Umbrella A premium auto-open walking support um'",
+                  "ok": false
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "canonical",
+              "status": "pass",
+              "detail": "https://www.johns.in/products/johns-635-walkmate",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "canonical link",
+                  "expected": "present",
+                  "actual": "https://www.johns.in/products/johns-635-walkmate",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "og_tags",
+              "status": "pass",
+              "detail": "present",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "og:title (link previews)",
+                  "expected": "present",
+                  "actual": "John's 635 Walkmate",
+                  "ok": true
+                },
+                {
+                  "what": "og:image (link previews)",
+                  "expected": "present",
+                  "actual": "http://www.johns.in/cdn/shop/files/L_ff4dcc0b-cd79-4e38-995f-0fa031acde27.png?v=1744288568",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 5.37,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/products/johns-635-walkmate"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "pageerror",
+              "text": "goodtTriggerEvents.includes is not a function",
+              "url": "https://www.johns.in/products/johns-635-walkmate"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://error-analytics-sessions-production.shopifysvc.com/observeonly",
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=1179690898.1792198447&dt=John%27s%20635%20Walkmate%20%E2%80%93%20John%27s%20Umbrella%20Mart",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=e471758c-0f5c-4931-8b2e-15368acfafd8&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "GET https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/RumMetrics-CImA9thh.js"
+          ],
+          "loads": [
+            {
+              "url": "/products/johns-635-walkmate",
+              "ttfb": 0.21,
+              "dcl": 0.96,
+              "load": 1.85,
+              "lcp": 0.57
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "health.not_found",
+      "suite": "health",
+      "title": "Missing page returns 404",
+      "check": "not_found",
+      "severity": "seo",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "returns_404",
+              "status": "pass",
+              "detail": "HTTP 404",
+              "error": null,
+              "secs": 2.34,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status for a page that does not exist",
+                  "expected": "404",
+                  "actual": "404",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 2.42,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2841325&shop=johns-umbrella.myshopify.com"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=1568612998.1792198452&dt=404%20Not%20Found%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=17a7c495-b4ec-4629-a98a-0ec094fb639c&c"
+          ],
+          "loads": [
+            {
+              "url": "/products/bugradar-check-does-not-exist",
+              "ttfb": 0.23,
+              "dcl": 0.86,
+              "load": 1.67,
+              "lcp": 0.43
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    },
+    {
+      "case_id": "info.policy_pages",
+      "suite": "info",
+      "title": "Footer info pages load with real content (refund, shipping, privacy, terms, contact)",
+      "check": "info_pages",
+      "severity": "minor",
+      "verdict": "pass",
+      "attempts": [
+        {
+          "n": 1,
+          "ok": true,
+          "steps": [
+            {
+              "name": "refund: opens /pages/refund-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.79s",
+              "error": null,
+              "secs": 2.51,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Refund Policy \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "3327 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Refund Policy \u2013 John's Umbrella Mart\", heading 'Refund Policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/refund-policy",
+                  "actual": "/pages/refund-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "refund: has real content",
+              "status": "pass",
+              "detail": "2554 chars of policy text",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "2554 chars under 'Refund Policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: opens /pages/shipping-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.79s",
+              "error": null,
+              "secs": 2.05,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Shipping Policy - John's Umbrella Mart | Fast Delivery Across India",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1716 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Shipping Policy - John's Umbrella Mart | Fast Delivery Acros\", heading 'Shipping Policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/shipping-policy",
+                  "actual": "/pages/shipping-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "shipping: has real content",
+              "status": "pass",
+              "detail": "1011 chars of policy text",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "1011 chars under 'Shipping Policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: opens /pages/privacy-policy",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.9s",
+              "error": null,
+              "secs": 1.68,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Privacy Policy \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "8065 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Privacy Policy \u2013 John's Umbrella Mart\", heading 'Privacy Policy'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/privacy-policy",
+                  "actual": "/pages/privacy-policy",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "privacy: has real content",
+              "status": "pass",
+              "detail": "7249 chars of policy text",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "7249 chars under 'Privacy Policy'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: opens /pages/terms-of-service",
+              "status": "pass",
+              "detail": "HTTP 200 in 0.93s",
+              "error": null,
+              "secs": 1.84,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Terms of Service \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "19480 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Terms of Service \u2013 John's Umbrella Mart\", heading 'Terms of Service'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/terms-of-service",
+                  "actual": "/pages/terms-of-service",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "terms: has real content",
+              "status": "pass",
+              "detail": "18622 chars of policy text",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "policy text on the page",
+                  "expected": "\u2265 200 chars (not an empty page)",
+                  "actual": "18622 chars under 'Terms of Service'",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: opens /pages/enquiry",
+              "status": "pass",
+              "detail": "HTTP 200 in 1.02s, redirected to /pages/contact-us-1",
+              "error": null,
+              "secs": 2.17,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "HTTP status",
+                  "expected": "< 400",
+                  "actual": "200",
+                  "ok": true
+                },
+                {
+                  "what": "page <title>",
+                  "expected": "not empty",
+                  "actual": "Contact Us \u2013 John's Umbrella Mart",
+                  "ok": true
+                },
+                {
+                  "what": "page not blank",
+                  "expected": "\u2265 40 chars of text or an image",
+                  "actual": "1075 chars, 1 images",
+                  "ok": true
+                },
+                {
+                  "what": "not the store's 'page not found' page",
+                  "expected": "the page itself",
+                  "actual": "title \"Contact Us \u2013 John's Umbrella Mart\", heading 'Contact Us'",
+                  "ok": true
+                },
+                {
+                  "what": "stays on the page (not sent to the homepage)",
+                  "expected": "/pages/enquiry",
+                  "actual": "/pages/contact-us-1",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "contact: has real content",
+              "status": "pass",
+              "detail": "contact form shown",
+              "error": null,
+              "secs": 0.01,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "a way to contact the store",
+                  "expected": "a contact form, an email address or a phone number",
+                  "actual": "contact form",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            },
+            {
+              "name": "all_info_pages_open",
+              "status": "pass",
+              "detail": "5 pages open",
+              "error": null,
+              "secs": 0.0,
+              "healed": null,
+              "checks": [
+                {
+                  "what": "footer info pages that fail to open",
+                  "expected": "0",
+                  "actual": "0",
+                  "ok": true
+                }
+              ],
+              "shot": null
+            }
+          ],
+          "failed_step": null,
+          "error": null,
+          "screenshot": null,
+          "trace": null,
+          "secs": 10.4,
+          "note": null,
+          "console": [
+            {
+              "type": "warning",
+              "text": "In a sandboxed environment, addEventListener may not behave as expected.",
+              "url": "https://www.johns.in/web-pixels@9f5e2762wb720532ap19708c42m93b2bec3/custom/web-pixel-84017246@1/sandbox/modern/pages/refund-policy"
+            },
+            {
+              "type": "warning",
+              "text": "Universal Cookies script is already loaded",
+              "url": "https://sr-cdn.shiprocket.in/sr-promise/static/uc.js?channel_id=4&sr_company_id=2807611&shop=johns-umbrella.myshopify.com"
+            },
+            {
+              "type": "error",
+              "text": "Error producing monorail event MonorailRequestError: Error completing request. A network failure may have prevented the request from completing. Error: TypeError: Failed to fetch. Schemas: shopify_pay_page_load/2.7 at U.",
+              "url": "https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/checkout-DTJs6qRt.js"
+            }
+          ],
+          "failed_requests": [
+            "POST https://www.johns.in/.well-known/shopify/monorail/unstable/produce_batch",
+            "POST https://www.google.com/ccm/collect?rcb=18&frm=0&apvc=1&auid=2001427089.1792198454&dt=Refund%20Policy%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-1",
+            "GET https://timer.good-apps.co/storage/js/good_apps_timer-johns-umbrella.myshopify.com.js?ver=12&shop=johns-umbrella.myshopify.com",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=38237c4c-a487-4b5d-be78-3210b1cb673f&c",
+            "HEAD https://www.johns.in/apps/pushowl/sdks/service-worker.js?v=2&subdomain=johns-umbrella",
+            "GET https://shop.app/accounts/pre_auth?client_id=719afaa9-13dc-4740-985d-e13f3edb6c38&analytics_trace_id=38237c4c-a487-4b5d-be78-3210b1cb673f&flow=embed&f",
+            "POST https://www.google.com/ccm/collect?rcb=6&frm=0&apvc=1&auid=2001427089.1792198454&dt=Shipping%20Policy%20-%20John%27s%20Umbrella%20Mart%20%7C%20Fast%20",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=95af4e92-060f-47f3-8d0f-b14f8469a54c&c",
+            "POST https://error-analytics-sessions-production.shopifysvc.com/",
+            "GET https://cdn.shopify.com/shopifycloud/arrive-server/pay/vite-pay/assets/RumMetrics-CImA9thh.js",
+            "POST https://monorail-edge.shopifysvc.com/v1/produce",
+            "POST https://www.google.com/ccm/collect?rcb=19&frm=0&apvc=1&auid=2001427089.1792198454&dt=Privacy%20Policy%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=b32fd274-264b-4333-b1b1-dac5c5d87a01&c",
+            "POST https://www.google.com/ccm/collect?rcb=5&frm=0&apvc=1&auid=2001427089.1792198454&dt=Terms%20of%20Service%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=e10947f2-9a54-45f2-9ff5-43ab904ca44f&c",
+            "POST https://www.google.com/ccm/collect?rcb=10&frm=0&apvc=1&auid=2001427089.1792198454&dt=Contact%20Us%20%E2%80%93%20John%27s%20Umbrella%20Mart&tid=AW-1712",
+            "GET https://www.johns.in/services/login_with_shop/authorize?analytics_context=loginWithShopEmbed&analytics_trace_id=12fd5901-daf0-443a-8f3e-cd96fba8327d&c"
+          ],
+          "loads": [
+            {
+              "url": "/pages/refund-policy",
+              "ttfb": 0.19,
+              "dcl": 0.72,
+              "load": 1.58,
+              "lcp": 0.35
+            },
+            {
+              "url": "/pages/shipping-policy",
+              "ttfb": 0.15,
+              "dcl": 0.72,
+              "load": 1.34,
+              "lcp": 0.3
+            },
+            {
+              "url": "/pages/privacy-policy",
+              "ttfb": 0.18,
+              "dcl": 0.86,
+              "load": 0.97,
+              "lcp": 0.34
+            },
+            {
+              "url": "/pages/terms-of-service",
+              "ttfb": 0.19,
+              "dcl": 0.88,
+              "load": 1.04,
+              "lcp": 0.38
+            },
+            {
+              "url": "/pages/contact-us-1",
+              "ttfb": 0.33,
+              "dcl": 0.98,
+              "load": 1.4,
+              "lcp": 0.52
+            }
+          ]
+        }
+      ],
+      "incident_signature": null,
+      "triage": null,
+      "healed_after_triage": false
+    }
+  ],
+  "healing_events": [],
+  "llm_usage": {
+    "provider": "openai",
+    "model": "gpt-5-mini",
+    "calls": 0,
+    "input_tokens": 0,
+    "output_tokens": 0,
+    "est_usd": 0.0,
+    "errors": []
+  },
+  "sitemap_summary": {
+    "platform": "shopify",
+    "evidence": [
+      "cdn.shopify.com",
+      "/cdn/shop/",
+      "myshopify.com",
+      "shopify-digital-wallet",
+      "Shopify.theme",
+      "Shopify.shop",
+      "shopify-features"
+    ],
+    "home_title": "John's Umbrella Mart",
+    "theme": "Dawn (store copy: X'mas Theme)",
+    "checkout_app": "Shopify checkout",
+    "access": "open",
+    "nav": 7,
+    "collections": 17,
+    "products": 20,
+    "in_stock": 17,
+    "search_path": "/search",
+    "robots_loaded": true
+  },
+  "notes": [
+    "4 product(s) not listed in the browsed collections are tested last (e.g. johns-520-mini-upf)"
+  ],
+  "perf": {
+    "pages": 29,
+    "median_load_secs": 1.82,
+    "slowest": {
+      "url": "/collections/all",
+      "load_secs": 2.64
+    },
+    "console_errors": 4,
+    "console_warnings": 5,
+    "failed_requests": 98
+  },
+  "counts": {
+    "pass": 22,
+    "flaky": 0,
+    "confirmed_fail": 0,
+    "blocked": 0,
+    "skipped": 0
+  }
+}
