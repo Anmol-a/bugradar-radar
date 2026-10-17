@@ -1033,6 +1033,20 @@ def test_disabled_form_button_with_an_enabled_add_to_cart_elsewhere_passes(tmp_p
     assert not bad, bad
 
 
+def test_product_name_hidden_on_phones_is_a_warning_not_a_failure(tmp_path):
+    """zarfstudios.com phone (new31c, DOWN 3 attempts): the name is in a desktop-only heading, phones see a tagline;
+    price, picture and data are right. On a phone that is a WARNING with the reason, never a failure."""
+    srv, url = serve("name_hidden_on_phone")
+    try:
+        run = scan(url, _settings(tmp_path, allow_cart_flow=False, max_products=1), device="mobile", only_suites=["product"])[0]
+    finally:
+        srv.shutdown()
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert vase.verdict != "confirmed_fail" and st.status == "warn" and "hidden on this screen size" in st.error, \
+        (vase.verdict, st.status, st.error)
+
+
 def test_buy_button_waiting_for_the_shoppers_own_measurements_is_not_tested(tmp_path):
     """giffywalls.in (new30z5, both devices DEGRADED): a wallpaper mural whose 'Add to cart' stays disabled until the
     shopper types the wall's width and height. Radar never fills forms: 'not tested' with the fields named."""

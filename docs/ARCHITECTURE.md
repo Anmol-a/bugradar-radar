@@ -1373,6 +1373,11 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 18 Oct 00:30 IST (new31c run 39056290453: 49/54 healthy):** (1) zarfstudios.com phone DOWN 3×: the product's
+  name sits in a desktop-only heading, phones see a tagline; price, picture and data right. Name in the page but hidden
+  on this screen size = WARNING; a name nowhere in the page still fails and goes to triage (mock name_hidden_on_phone).
+  (2) saralhome.com: 'FREE TABLE MAT' (a freebie, buy buttons hidden) was tested as a product: handles starting
+  'free-' (not 'free-size') are not test products.
 - **v0.20 18 Oct 00:00 IST (new31b run 39053973214: 45/55 healthy):** (1) dhaagaweaves.in both devices (+ cmartian.com
   new31a): '44 links: 44 inside cart drawer / quick-add': the theme names its settings on <body> ('quick-add-enabled
   cart-drawer-active'). Drawer / quick-add container selectors never match <html>/<body> now (mock body_drawer_class).

@@ -2185,9 +2185,22 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         t = ctx.sess.evaluate(TITLE_JS, p["title"]) or _llm_find_name(ctx, p["title"]) or {}
         heading = t.get("text") or ""
         state["heading"] = heading
-        ctx.expect("product name shown on the page", p["title"],
-                   f"{heading!r} ({t.get('tag')}, {t.get('size')}, {t.get('how')})" if heading
-                   else "none: no visible text matching the product name, and no main heading", bool(heading))
+        if heading:
+            ctx.expect("product name shown on the page", p["title"],
+                       f"{heading!r} ({t.get('tag')}, {t.get('size')}, {t.get('how')})", True)
+        else:
+            # zarfstudios.com phone (new31c, DOWN 3x): the page leads with a tagline ('The Fluffiest Cooling AC Comforter
+            # Set On Earth') and shows only the variant 'Poppy' by the price, while the name sits in the page HIDDEN on
+            # this screen size. Name in the page but hidden here, with price, picture and data right = a merchandising
+            # WARNING. A name that is nowhere in the page stays a failure (and goes to triage) as before.
+            hidden_name = ctx.sess.evaluate("""(title) => { const n = s => (s || '').toLowerCase().replace(/\\s+/g, ' ').trim();
+                const want = n(title); if (!want) return false;
+                return [...document.querySelectorAll('h1, h2, h3, [class*="title" i], [class*="name" i]')].some(e =>
+                  n(e.textContent) === want || n(e.textContent).startsWith(want)); }""", p["title"])
+            if not hidden_name:
+                ctx.expect("product name shown on the page", p["title"],
+                           "none: no visible text matching the product name, and no main heading", False)
+            state["name_warn"] = True
         want = round(int(v["price"]) / 100, 2)
         nums = prices_in_text(text)
         if not price_shown(want, nums)[0]:        # price in a sticky bar / lazy block that appears on scroll (supplysix.com, bench 3)
@@ -2233,6 +2246,9 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         if state.get("price_warn"):
             raise StoreWarning(f"selected variant price shown: expected {rupees(v['price'])}, the page shows "
                                f"{state['price_warn']}")
+        if state.get("name_warn"):
+            raise StoreWarning(f"product name shown on the page: expected {p['title']!r}: the name is in the page but hidden "
+                               "on this screen size (its price, picture and product data are right)")
         return "title, price and image visible"
     ctx.steps.run("shows_title_price_image", shown)
 
