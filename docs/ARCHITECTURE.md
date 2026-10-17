@@ -1373,6 +1373,11 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 18 Oct 00:00 IST (new31b run 39053973214: 45/55 healthy):** (1) dhaagaweaves.in both devices (+ cmartian.com
+  new31a): '44 links: 44 inside cart drawer / quick-add': the theme names its settings on <body> ('quick-add-enabled
+  cart-drawer-active'). Drawer / quick-add container selectors never match <html>/<body> now (mock body_drawer_class).
+  (2) zenvistapackagings.in: the hero slideshow's dots are links ('Slide 1, current' -> /Hero-slideshow): carousel
+  controls are not pages to open (unit test).
 - **v0.20 17 Oct 23:40 IST (new31a run 39052745795: 43/53 healthy):** (1) saumyasstores.com: price shown, cart buttons
   hidden, the only buy control 'View On Amazon' → 'not tested' (sold on marketplaces) instead of not judged (mock
   marketplace_hidden_cart). (2) aesthesy.com desktop DOWN: a custom-art builder page (upload, disabled 'Continue to

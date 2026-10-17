@@ -401,6 +401,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
   span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
                    the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
+  body_drawer_class  <body> carries 'quick-add-enabled cart-drawer-active' (dhaagaweaves.in, cmartian.com, new31a/b) ->
+                   cards are still cards, journey PASSES
   devanagari_title  the vase is named in Marathi in its data and on its pages (prashantpublications.com) -> PASSES
   emoji_cookie     a page script sets a cookie holding an emoji (paramountchess.com) -> product data still read, PASSES
   discount_link    a homepage section links /discount/WOWDEAL, which applies the code and redirects to the homepage
@@ -747,6 +749,11 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "body_drawer_class" and isinstance(body, str) and ctype.startswith("text/html"):
+            # dhaagaweaves.in (new31b, both devices: '44 links: 44 inside cart drawer / quick-add') + cmartian.com: the
+            # theme names its settings on <body> ('quick-add-enabled cart-drawer-active'), so every card on the page sat
+            # 'inside' a cart drawer / quick-add by class
+            body = body.replace("<body>", '<body class="template-collection quick-add-enabled cart-drawer-active">', 1)
         if self.mode == "devanagari_title" and isinstance(body, str):
             # prashantpublications.com (new30z4): Marathi book titles; Radar's name matching kept only a-z0-9, so the
             # name was 'not shown' on every product page

@@ -917,6 +917,13 @@ def test_card_name_that_opens_another_product_goes_on_via_its_other_link_with_a_
     assert w.status == "warn" and "opened another product" in w.error, (w.status, w.error)
 
 
+def test_cart_drawer_words_in_the_body_class_do_not_hide_every_card(tmp_path):
+    """dhaagaweaves.in (new31b, both devices NOT JUDGED, '44 links: 44 inside cart drawer / quick-add') + cmartian.com
+    (new31a): the theme puts 'quick-add-enabled cart-drawer-active' on <body>, so every card matched the drawer rule."""
+    j = _case(_scan_small("body_drawer_class", tmp_path, suites=["journey"]), "journey.")
+    assert j.verdict == "pass", _fails(j)
+
+
 def test_product_card_in_a_marquee_that_never_stops_moving_is_clicked(tmp_path):
     """hunnit.com desktop (new30z1, 3 attempts DOWN): the cards ride a marquee that never stops, and the click waited for
     a still card until it timed out. A shopper taps the card where it is."""
