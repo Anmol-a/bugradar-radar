@@ -917,10 +917,12 @@ def test_card_name_that_opens_another_product_goes_on_via_its_other_link_with_a_
     assert w.status == "warn" and "opened another product" in w.error, (w.status, w.error)
 
 
-def test_cart_drawer_words_in_the_body_class_do_not_hide_every_card(tmp_path):
+@pytest.mark.parametrize("mode", ["body_drawer_class", "grid_quick_add_class"])
+def test_cart_drawer_words_in_the_body_class_do_not_hide_every_card(tmp_path, mode):
     """dhaagaweaves.in (new31b, both devices NOT JUDGED, '44 links: 44 inside cart drawer / quick-add') + cmartian.com
     (new31a): the theme puts 'quick-add-enabled cart-drawer-active' on <body>, so every card matched the drawer rule."""
-    j = _case(_scan_small("body_drawer_class", tmp_path, suites=["journey"]), "journey.")
+    # + the grid's own container carrying a 'quick-add' class (re-test: 'div.product-grid-container', 'ul.grid')
+    j = _case(_scan_small(mode, tmp_path, suites=["journey"]), "journey.")
     assert j.verdict == "pass", _fails(j)
 
 
@@ -2639,6 +2641,23 @@ def test_price_hidden_until_a_choice_with_a_disabled_buy_button_is_not_tested(tm
     assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error \
         and "disabled" in vase.attempts[-1].error, (vase.verdict, vase.attempts[-1].error)
     assert run.verdict != "down", run.verdict
+
+
+def test_price_shown_with_gst_added_is_a_warning(tmp_path):
+    """kanchisilver.com (new31f, both devices DOWN): Shopify holds ₹32,000, the page shows 'Rs. 32,960 INR' = +3% GST
+    (jewellery). The price the shopper sees is the catalog price plus a GST rate: a WARNING, never a failure."""
+    run = _product_only("gst_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert st.status == "warn" and "GST" in st.error, (vase.verdict, st.status, st.error)
+
+
+def test_coming_soon_product_is_not_tested(tmp_path):
+    """atovio.in (new31f, both devices DEGRADED): a pre-launch product page says 'Coming Soon' with no price and a
+    'Notify me' button: not sold yet, 'not tested' with the reason."""
+    run = _product_only("coming_soon_product", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "coming soon" in vase.attempts[-1].error.lower(), (vase.verdict, vase.attempts[-1].error)
 
 
 def test_price_minus_a_named_prepaid_offer_is_a_warning(tmp_path):

@@ -389,6 +389,10 @@ Modes (to prove Radar catches and heals what it should):
                    button (aesthesy.com, new31a) -> BLOCKED 'not tested', never DOWN
   price_after_choice  product pages hide the price and keep 'Add to cart' disabled until a choice is made (myop.in,
                    new30x) -> product BLOCKED 'not tested', never DOWN
+  gst_price        product pages show the price plus 3% GST ('Rs. 1,338 INR' for ₹1,299: kanchisilver.com, new31f)
+                   -> shows_title_price_image WARNS, never fails
+  coming_soon_product  product pages say 'Coming Soon', no price, a 'Notify me' button (atovio.in, new31f) -> BLOCKED
+                   'not tested', never DEGRADED
   prepaid_price    product pages show the price minus 5% under 'EXTRA 5% OFF ON ALL PREPAID ORDERS' (rasayanam.in)
                    -> shows_title_price_image WARNS (Anmol, 15 Oct), never fails
   customer_auth_link  the header links '/customer_authentication/redirect' (Shopify new customer accounts), which answers
@@ -401,6 +405,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
   span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
                    the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
+  grid_quick_add_class  the collection grid's container carries a 'quick-add' class (dhaagaweaves.in, cmartian.com)
+                   -> its cards are still cards, journey PASSES
   body_drawer_class  <body> carries 'quick-add-enabled cart-drawer-active' (dhaagaweaves.in, cmartian.com, new31a/b) ->
                    cards are still cards, journey PASSES
   name_hidden_on_phone  product names sit in a desktop-only <h1>; phones see a tagline (zarfstudios.com, new31c) -> phone
@@ -755,6 +761,12 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "grid_quick_add_class" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/collections/"):
+            # dhaagaweaves.in / cmartian.com (new31a/b re-test: '44 links: 44 inside cart drawer / quick-add
+            # (div.product-grid-container)'): the grid's own container carries a 'quick-add' class
+            body = body.replace("<main>", '<main><div class="product-grid-container quick-add-enabled-grid">', 1).replace(
+                "</main>", "</div></main>", 1)
         if self.mode == "body_drawer_class" and isinstance(body, str) and ctype.startswith("text/html"):
             # dhaagaweaves.in (new31b, both devices: '44 links: 44 inside cart drawer / quick-add') + cmartian.com: the
             # theme names its settings on <body> ('quick-add-enabled cart-drawer-active'), so every card on the page sat
@@ -790,6 +802,18 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             # krkjewels.com (new30t, 15 Oct): the header's 'Login' is Shopify's new-accounts hand-off link, 404 for a robot
             body = body.replace('<a href="/pages/about">About</a>',
                                 '<a href="/pages/about">About</a> <a href="/customer_authentication/redirect?locale=en">Login</a>', 1)
+        if self.mode == "gst_price" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/products/"):
+            # kanchisilver.com (new31f, both devices DOWN): silver jewellery priced without tax in Shopify, shown with 3% GST
+            # on the page (₹32,000 -> 'Rs. 32,960 INR')
+            body = re.sub(r'(<div class="price">)₹([\d,]+\.\d\d)',
+                          lambda m: f"{m.group(1)}Rs. {round(float(m.group(2).replace(',', '')) * 1.03):,} INR", body)
+        if self.mode == "coming_soon_product" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/products/"):
+            # atovio.in (new31f, both devices DEGRADED): a pre-launch product: 'Coming Soon', no price, 'Notify me'
+            body = re.sub(r'<div class="price">[^<]*</div>', '<span class="badge">Coming Soon</span>', body, count=1)
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="button" class="notify">Notify me when available</button>', 1)
         if self.mode == "prepaid_price" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/products/"):
             # rasayanam.in (new30m, 14 Oct): 'EXTRA 5% OFF ON ALL PREPAID ORDERS', and the page shows the price minus 5%
@@ -2138,6 +2162,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" style="display:none">Add to Cart</button>'
                                 '<button type="button" style="display:none">BUY NOW</button>', 1)
+            body += '<button type="button" class="accordion-header">Additional Information</button>'   # not an 'add' button
         if self.mode == "gift_only_product":
             # nubronicforte.com (new30t): the 'Performance Kit' gift's page: a hidden, empty cart form, no buy control
             body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '

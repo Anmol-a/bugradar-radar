@@ -60,6 +60,8 @@ MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClie
   const main = document.querySelector('main, [role=main], #MainContent') || document.body;
   const so = ((main.innerText || '').match(/\b(shop (now )?on|available on|buy (it )?on|also available on)\s*:/i) || [])[0];
   const ask = (((document.body.innerText || '').match(/\b(price (up)?on request|request (a |the )?price|(enquire|inquire|call|contact us) for (the )?price|no longer (accepting|taking) (online )?orders|not (accepting|taking) online orders)\b/i) || [])[0]);
+  // a pre-launch product (atovio.in, new31f: 'Coming Soon' badge, no price, 'Notify me'): not on sale yet
+  const soon = (((main.innerText || '').match(/\b(coming soon|launching soon|notify me when (it'?s )?available|pre-?launch)\b/i) || [])[0]) || null;
   // the product's own block = the text from its name to 600 characters after it (related products further down show
   // their own prices): no ₹ / Rs / INR price there = the store shows no price for this product at all
   const flat = (main.innerText || '').replace(/\s+/g, ' '), low = flat.toLowerCase();
@@ -68,7 +70,7 @@ MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClie
   const cut = near.search(/you may also like|related products|recommended|customers also|frequently bought|similar products|complete the (look|set)/i);
   if (cut > 0) near = near.slice(0, cut);
   const no_price = at >= 0 && !/(?:₹|Rs\.?|INR)\s?\d/i.test(near);
-  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, own_disabled, shop_on: so || null, ask: ask || null, no_price,
+  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, own_disabled, shop_on: so || null, ask: ask || null, no_price, soon,
           builder: builder && (upload || builder.disabled) ? (builder.innerText || builder.value || '').trim().slice(0, 40) : null}; }"""
 
 
@@ -110,6 +112,8 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
                           f"market {cur.get('country') or '?'}, rate {cur.get('rate', 1):g}; the catalog price in ₹ is not on "
                           "the page. Radar's cloud machines are in the US: check from India")
     m = ctx.sess.evaluate(MARKETPLACE_JS, title or "") or {}
+    if m.get("soon") and (m.get("no_price") or not m.get("own_buy")):
+        raise CatalogOnly(f"not tested: the product page shows no price and says {m['soon']!r}: it is not on sale yet")
     if m.get("own_buy"):
         return
     if m.get("marketplaces"):
@@ -765,6 +769,16 @@ CHOOSE_JS = r"""([values, quick]) => {
 # Empty fields the shopper fills in before the buy button wakes up (giffywalls.in: wall width / height): visible,
 # empty text / number inputs or unchosen selects in THIS product's cart form (or line-item properties[...] fields
 # anywhere), never a pincode / email / search / quantity box
+# evidence when the buy button stays disabled and no empty field was found (cartwala.in re-test, new31d): what the
+# product area holds in the way of fields, uploads and app frames
+FIELDS_EVIDENCE_JS = r"""() => { const m = document.querySelector('main, [role=main], #MainContent') || document.body;
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const f = [...m.querySelectorAll('input, select, textarea')].filter(e => !/^(hidden|submit|button|radio|checkbox)$/i.test(e.type || ''))
+    .slice(0, 6).map(e => (e.tagName.toLowerCase() + ':' + (e.type || '') + (vis(e) ? '' : ' hidden') + ' ' + (e.name || e.placeholder || '').slice(0, 20)).trim());
+  const fr = [...m.querySelectorAll('iframe')].filter(vis).map(i => (i.src || '').replace(/^https?:\/\//, '').slice(0, 30));
+  return (f.length || fr.length) ? ' (fields on the page: ' + (f.join(', ') || 'none') + (fr.length ? '; app frames: ' + fr.slice(0, 3).join(', ') : '') + ')' : ''; }"""
+
+
 NEEDS_INPUT_JS = r"""(ids) => { const mine = new Set(ids.map(String));
   const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; };
   const forms = [...document.querySelectorAll('form[action*="/cart/add"]')].filter(f => mine.has(String((f.querySelector('[name="id"]') || {}).value)));
@@ -854,7 +868,8 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
                f"{got} after choosing {', '.join(picked) or 'nothing (no matching picker)'}"
                + (f"; the form's own button is disabled, the page's enabled <{enabled_elsewhere['tag']}> "
                   f"{enabled_elsewhere['text']!r} is the one a shopper uses" if enabled_elsewhere
-                  else "; but the buy button is still disabled" if right and st["disabled"] else ""),
+                  else "; but the buy button is still disabled" + (ctx.sess.evaluate(FIELDS_EVIDENCE_JS) or "")
+                  if right and st["disabled"] else ""),
                right and (not st["disabled"] or bool(enabled_elsewhere)))
     return target
 
@@ -989,7 +1004,8 @@ def _main_buy_button(ctx: Ctx, product: dict):
             }
             const ctl = [...document.querySelectorAll('button, a, [role=button], [onclick], input[type=submit], [class*="btn" i], [class*="button" i]')]
               .filter(e => vis(e) && !e.closest('header, footer, nav, cart-drawer, [id*="cart-drawer" i]:not(body):not(html)') && !e.closest(quick)
-                      && /cart|bag|basket|buy|order|checkout|add/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
+                      // whole words: 'Additional Information' is not 'add' (saralhome.com freebie, new31c re-test)
+                      && /\b(cart|bag|basket|buy|order|checkout|add)\b/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
               .slice(0, 5).map(e => '<' + e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className.trim()
                 ? '.' + e.className.trim().split(/\s+/)[0] : '') + '> ' + JSON.stringify((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 24)));
             return {own, other, seen: seen.slice(0, 5), ctl}; }""", [ids, QUICK_SEL]) or {"own": 0, "other": 0, "seen": [], "ctl": []}
@@ -2089,6 +2105,20 @@ def per_unit_price(want: float, nums, text: str) -> str | None:
 DISCOUNT_WORDS = re.compile(r"prepaid|pre-paid|online payment|pay online|upi|extra\s+\d{1,2}\s?%\s?off|\d{1,2}\s?%\s?off", re.I)
 
 
+GST_RATES = (3, 5, 12, 18, 28)
+
+
+def gst_inclusive(want: float, nums) -> str | None:
+    """The page shows the price PLUS an Indian GST rate (kanchisilver.com, new31f: ₹32,000 in Shopify, 'Rs. 32,960 INR'
+    on the page = +3%, the jewellery rate): the store keeps tax-exclusive prices and shows tax-inclusive ones. Matches a
+    GST rate to the rupee. Pure, unit-tested."""
+    for n in nums:
+        for r in GST_RATES:
+            if want > 0 and abs(want * (100 + r) / 100 - n) <= 1.0:
+                return f"₹{n:,.0f} = the price plus {r}% GST (the store's catalog price excludes tax)"
+    return None
+
+
 def store_wide_discount(want: float, nums, text: str) -> str | None:
     """The page shows the product's price minus a store-wide percentage (an 'extra 5% off on prepaid orders' price)
     instead of the price itself: rasayanam.in (new30m, 14 Oct) showed ₹1,092 for ₹1,149 under 'EXTRA 5% OFF ON ALL
@@ -2229,7 +2259,7 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         if not ok:
             _raise_if_catalog_only(ctx, p["title"])
             # Anmol, 15 Oct (rasayanam.in 'EXTRA 5% OFF ON ALL PREPAID ORDERS'): a WARNING, not a failure
-            state["price_warn"] = store_wide_discount(want, nums, text)
+            state["price_warn"] = store_wide_discount(want, nums, text) or gst_inclusive(want, nums)
         if not state.get("price_warn"):
             where = "" if ok else _hidden_price(ctx, want)
             ctx.expect("selected variant price shown", rupees(v["price"]),
@@ -3497,11 +3527,17 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   const tag = e => e ? (e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' && e.className.trim()
                     ? '.' + e.className.trim().split(/\s+/)[0] : '')).slice(0, 40) : 'nothing';
   const why = {}; const note = k => { why[k] = (why[k] || 0) + 1; }; let firstCover = null;
+  const CART_SEL = "cart-drawer, cart-notification, [id*='cart-drawer' i], [class*='cart-drawer' i], [id*='CartDrawer'], [data-radar-target='drawer']";
   const usable = e => {
     if (re && !re.test(e.getAttribute('href') || '')) return false;
     if (e.hasAttribute('data-radar-dead')) { note('did nothing when tapped'); return false; }
     if (!vis(e)) { note('not visible'); invis.push(e); return false; }
-    if (exclude && e.closest(exclude)) { note('inside cart drawer / quick-add (' + tag(e.closest(exclude)) + ')'); return false; }
+    const ex = exclude && e.closest(exclude);
+    // a 'quick-add' named container holding MANY products' links is the grid itself (dhaagaweaves.in
+    // 'div.product-grid-container', cmartian.com 'ul.grid', new31a/b re-test: every card 'inside quick-add'), not a
+    // quick-add box: only a cart drawer, or a quick-add box about one product, sets a card aside
+    const many = x => new Set([...x.querySelectorAll('a[href*="/products/"]')].map(a => path(a.getAttribute('href') || ''))).size > 2;
+    if (ex && (ex.matches(CART_SEL) || !many(ex))) { note('inside cart drawer / quick-add (' + tag(ex) + ')'); return false; }
     if (e.getAttribute('aria-disabled') === 'true') { note('disabled'); return false; }
     if (e.closest('[aria-hidden="true"], [inert]')) { note('hidden from shoppers (aria-hidden/inert)'); return false; }
     return true; };
