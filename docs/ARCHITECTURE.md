@@ -1373,6 +1373,9 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 18 Oct 03:00 IST (re-test 39069374541: cmartian, dhaagaweaves, saralhome, kanchisilver, atovio confirmed):**
+  cartwala still DEGRADED; the new evidence showed 'input:file hidden' deep inside the personaliser's hidden panel: a
+  file input counts when a box up to 6 levels above it is on screen (mock needs_photo_upload updated).
 - **v0.20 18 Oct 02:20 IST (re-test 39064184208 of new31a-e fixes: 6 of 10 confirmed):** (1) dhaagaweaves / cmartian
   still 'inside quick-add (div.product-grid-container / ul.grid)': the GRID's container carries a quick-add class. A
   quick-add container holding more than 2 products' links is the grid, not a quick-add box (mock grid_quick_add_class).

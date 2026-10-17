@@ -798,8 +798,11 @@ NEEDS_INPUT_JS = r"""(ids) => { const mine = new Set(ids.map(String));
   // in the page's main area whose label / container is on screen
   for (const f of document.querySelectorAll('input[type=file]')) {
     if (f.files && f.files.length) continue;
-    const host = f.closest('label') || f.parentElement; if (!host || host.closest('header, footer, nav')) continue;
-    if (!vis(host) && !vis(f)) continue;
+    let host = f.closest('label') || f.parentElement; if (!host || host.closest('header, footer, nav')) continue;
+    // a personaliser app hides its file input deep inside its own panel (cartwala.in re-test: 'input:file hidden'):
+    // the nearest visible box up to 6 levels above stands for it
+    for (let k = 0; host && !vis(host) && k < 6; k++) host = host.parentElement;
+    if (!host || host === document.body || (!vis(host) && !vis(f))) continue;
     out.push(JSON.stringify(((host.innerText || '').trim().replace(/\s+/g, ' ') || 'a photo upload').slice(0, 30)) + ' (a photo upload)');
     break; }
   return out.length ? out : null; }"""
