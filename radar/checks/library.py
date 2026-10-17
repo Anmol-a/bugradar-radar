@@ -799,10 +799,12 @@ NEEDS_INPUT_JS = r"""(ids) => { const mine = new Set(ids.map(String));
   for (const f of document.querySelectorAll('input[type=file]')) {
     if (f.files && f.files.length) continue;
     let host = f.closest('label') || f.parentElement; if (!host || host.closest('header, footer, nav')) continue;
-    // a personaliser app hides its file input deep inside its own panel (cartwala.in re-test: 'input:file hidden'):
-    // the nearest visible box up to 6 levels above stands for it
+    // never a review / comment widget's photo field (they keep hidden file inputs on every product page)
+    if (f.closest('[class*="review" i], [id*="review" i], [class*="jdgm" i], [class*="comment" i], [class*="testimonial" i]')) continue;
+    // a personaliser app keeps its file input in a panel that opens from its own button (cartwala.in, 2 re-tests:
+    // 'input:file hidden', nothing visible above it): with the buy button disabled, the photo is what it waits for
     for (let k = 0; host && !vis(host) && k < 6; k++) host = host.parentElement;
-    if (!host || host === document.body || (!vis(host) && !vis(f))) continue;
+    if (!host || host === document.body) host = f;
     out.push(JSON.stringify(((host.innerText || '').trim().replace(/\s+/g, ' ') || 'a photo upload').slice(0, 30)) + ' (a photo upload)');
     break; }
   return out.length ? out : null; }"""
