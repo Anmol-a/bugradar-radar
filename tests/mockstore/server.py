@@ -2119,7 +2119,9 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body += ('<div class="personalizer"><label class="upload-btn" style="display:inline-block;padding:10px;border:1px dashed #999">'
                      'Upload your photo<input type="file" accept="image/*" style="display:none"></label></div>'
                      # cartwala.in re-test: the app's real file input sits hidden deep inside a hidden step panel
-                     '<div class="cl-app"><div class="cl-step" style="display:none"><div><input type="file" accept="image/*"></div></div>'
+                     # (cartwala.in, 2nd re-test: nothing above it is visible until 'Personalise' opens the app's modal)
+                     '<div class="cl-modal" style="display:none">' + '<div>' * 7 + '<input type="file" accept="image/*">' + '</div>' * 7 + '</div>'
+
                      '<button type="button" class="cl-open">Personalise</button></div>')
             body = body.replace('Upload your photo<input type="file" accept="image/*" style="display:none"></label>',
                                 'Upload your photo</label>', 1) if self.mode == "needs_photo_upload" else body

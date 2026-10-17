@@ -1373,6 +1373,12 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 18 Oct 04:30 IST:** (1) radar-tests runs 39054711928 (d3fd056) and 39067649593 (dfb8b86) were FAILURES whose
+  'verdict' job still said success; both were deployed believing them green. Since then the WHOLE run's conclusion is
+  read, never the verdict job alone. Causes fixed in 5126323: '\b' in a non-raw Python string became a backspace (COD
+  order-form test), and the pincode retry now waits for a NEW answer. (2) cartwala (3rd re-test): its personaliser's
+  file input sits in a modal that opens from its own button, nothing visible above it: with the buy button disabled, any
+  file input outside header/footer and review widgets means 'waits for the shopper's photo' (mock needs_photo_upload).
 - **v0.20 18 Oct 03:00 IST (re-test 39069374541: cmartian, dhaagaweaves, saralhome, kanchisilver, atovio confirmed):**
   cartwala still DEGRADED; the new evidence showed 'input:file hidden' deep inside the personaliser's hidden panel: a
   file input counts when a box up to 6 levels above it is on screen (mock needs_photo_upload updated).
