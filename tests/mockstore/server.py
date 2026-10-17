@@ -411,6 +411,8 @@ Modes (to prove Radar catches and heals what it should):
                    (Shopify's own behaviour; daantwale.com, new30z2) -> smoke.more_links PASSES
   hidden_buttons_product  the product's cart form keeps its buttons, all hidden, and no other buy control (saralhome.com
                    freebie, new31c) -> product BLOCKED 'not tested', never not judged
+  needs_photo_upload  'Add to cart' stays disabled until the shopper uploads a photo (cartwala.in, new31d) -> product
+                   BLOCKED 'not tested', never DEGRADED
   needs_dimensions  'Add to cart' stays disabled until the shopper types the wall's width and height (giffywalls.in,
                    new30z5) -> product BLOCKED 'not tested', never DOWN
   bundle_builder   the product's only button 'Pick 6 buddies' is disabled until a choice (orbiz.in, new30z2) -> product
@@ -2085,6 +2087,13 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" style="display:none">Add to cart</button>'
                                 '<a class="amz" href="https://www.amazon.in/dp/B0MOCK123" target="_blank">View On Amazon</a>', 1)
+        if self.mode == "needs_photo_upload":
+            # cartwala.in (new31d, both devices): a personalised mouse pad; 'Add to cart' stays disabled until the shopper
+            # uploads a photo (a styled 'Upload your photo' label over a hidden file input, outside the cart form)
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" disabled>Add to cart</button>', 1)
+            body += ('<div class="personalizer"><label class="upload-btn" style="display:inline-block;padding:10px;border:1px dashed #999">'
+                     'Upload your photo<input type="file" accept="image/*" style="display:none"></label></div>')
         if self.mode == "needs_dimensions":
             # giffywalls.in (new30z5, both devices): a wallpaper mural sold by the square foot; 'Add to cart' stays
             # disabled until the shopper types the wall's width and height
