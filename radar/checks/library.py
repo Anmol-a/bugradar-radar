@@ -654,7 +654,10 @@ ENABLED_ADD_JS = r"""([quick]) => {
   // costosoitaliano.com new30v): exact wording, and a class that names a button or the cart
   const c = [...document.querySelectorAll('button, input[type=submit], [role="button"], span[class*="cart" i], span[class*="btn" i], '
                                        + 'div[class*="cart" i], div[class*="btn" i], a[class*="cart" i], a[class*="btn" i]')]
-    .filter(e => /^add to (cart|bag|basket)$/i.test(txt(e)) && vis(e) && !(e.parentElement && /^add to (cart|bag|basket)$/i.test(txt(e.parentElement)) && e.parentElement.matches('button, [role="button"], [class*="cart" i], [class*="btn" i]'))
+    // + an icon-only add-to-cart in a sticky bar (popees.com phone, new30z5: a bag+ icon, no words): named by its class
+    .filter(e => (/^add to (cart|bag|basket)$/i.test(txt(e)) || (!txt(e) && e.matches('button, [role="button"]') && fixed(e)
+                  && /add[-_ ]?to[-_ ]?(cart|bag)|addtocart|\batc\b|[-_]atc/i.test((typeof e.className === 'string' ? e.className : '') + ' ' + (e.id || '') + ' ' + (e.name || ''))))
+      && vis(e) && !(e.parentElement && /^add to (cart|bag|basket)$/i.test(txt(e.parentElement)) && e.parentElement.matches('button, [role="button"], [class*="cart" i], [class*="btn" i]'))
       && !(e.disabled || e.getAttribute('aria-disabled') === 'true')
       && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
       && !otherCard(e, quick))
@@ -750,6 +753,27 @@ CHOOSE_JS = r"""([values, quick]) => {
 }"""
 
 
+# Empty fields the shopper fills in before the buy button wakes up (giffywalls.in: wall width / height): visible,
+# empty text / number inputs or unchosen selects in THIS product's cart form (or line-item properties[...] fields
+# anywhere), never a pincode / email / search / quantity box
+NEEDS_INPUT_JS = r"""(ids) => { const mine = new Set(ids.map(String));
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; };
+  const forms = [...document.querySelectorAll('form[action*="/cart/add"]')].filter(f => mine.has(String((f.querySelector('[name="id"]') || {}).value)));
+  const inForm = e => forms.some(f => f.contains(e) || (f.id && e.getAttribute('form') === f.id));
+  const out = [];
+  for (const e of document.querySelectorAll('input, select, textarea')) {
+    const n = (e.name || '') + ' ' + (e.placeholder || '') + ' ' + (e.id || '') + ' ' + (e.getAttribute('aria-label') || '');
+    if (!(inForm(e) || /^properties\[/.test(e.name || ''))) continue;
+    if (!vis(e) || e.disabled || /pin ?code|zip|postal|e-?mail|search|quantity|^ *qty|coupon|discount/i.test(n)) continue;
+    if (e.tagName === 'INPUT' && !/^(text|number|tel|)$/i.test(e.type || '')) continue;
+    if (e.tagName === 'SELECT' ? e.value : (e.value || '').trim()) continue;
+    if (e.tagName === 'SELECT' && /^id$/.test(e.name)) continue;
+    const lab = (e.labels && e.labels[0] && e.labels[0].innerText) || e.placeholder || e.getAttribute('aria-label') || e.name;
+    out.push(JSON.stringify((lab || '').trim().replace(/\s+/g, ' ').slice(0, 30)));
+  }
+  return out.length ? out : null; }"""
+
+
 def _ensure_variant(ctx: Ctx, product: dict) -> dict:
     """Make sure a purchasable variant is selected on the page (themes often require choosing a
     size/colour first). Picks the first in-stock variant's options like a shopper would and asserts
@@ -798,6 +822,13 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
                        f"checks a delivery pincode", True)
             return dict(target, _pincode_gate=gate)
     enabled_elsewhere = None
+    if right and st["disabled"]:
+        # giffywalls.in (new30z5): a mural's 'Add to cart' waits for the wall's width and height the shopper types in:
+        # Radar never fills forms, so the product is not tested (empty visible fields of the product form, named)
+        need = ctx.sess.evaluate(NEEDS_INPUT_JS, ids)
+        if need:
+            raise CatalogOnly(f"not tested: this product's buy button stays disabled until the shopper fills in "
+                              f"{', '.join(need[:3])} (made to measure / personalised); Radar never fills forms")
     if right and st["disabled"]:
         # arabianaroma.in (new30v, both devices, 3 products): the form's own button stays disabled while the page shows
         # an enabled 'Add to cart' a shopper uses (the buy-button step and the cart check judge that one)

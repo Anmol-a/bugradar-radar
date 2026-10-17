@@ -1016,12 +1016,23 @@ def test_theme_span_add_to_cart_is_used_when_the_form_is_hidden(tmp_path):
     assert not bad, bad
 
 
-def test_disabled_form_button_with_an_enabled_add_to_cart_elsewhere_passes(tmp_path):
+@pytest.mark.parametrize("mode", ["disabled_form_enabled_bar", "disabled_form_icon_bar"])
+def test_disabled_form_button_with_an_enabled_add_to_cart_elsewhere_passes(tmp_path, mode):
     """arabianaroma.in (new30v, 3 products, both devices): 'variant selected ... but the buy button is still disabled'
     while the page shows an enabled Add to cart. The enabled one is what a shopper uses."""
-    run, _ = _scan("disabled_form_enabled_bar", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    # popees.com phone (new30z5): the sticky bar's add-to-cart is an icon with no words (disabled_form_icon_bar)
+    run, _ = _scan(mode, tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
     assert not bad, bad
+
+
+def test_buy_button_waiting_for_the_shoppers_own_measurements_is_not_tested(tmp_path):
+    """giffywalls.in (new30z5, both devices DEGRADED): a wallpaper mural whose 'Add to cart' stays disabled until the
+    shopper types the wall's width and height. Radar never fills forms: 'not tested' with the fields named."""
+    run = _product_only("needs_dimensions", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error and "width" in vase.attempts[-1].error.lower(), \
+        (vase.verdict, vase.attempts[-1].error)
 
 
 def test_buy_button_waiting_for_the_shoppers_picks_is_not_tested(tmp_path):
