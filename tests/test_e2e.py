@@ -1035,6 +1035,17 @@ def test_buy_button_waiting_for_the_shoppers_own_measurements_is_not_tested(tmp_
         (vase.verdict, vase.attempts[-1].error)
 
 
+@pytest.mark.parametrize("mode,why", [("marketplace_hidden_cart", "amazon"), ("customiser_product", "customi")])
+def test_products_sold_elsewhere_or_through_a_builder_are_not_tested(tmp_path, mode, why):
+    """saumyasstores.com (new31a, NOT JUDGED): the price shows but the cart buttons are hidden and the only buy control is
+    'View On Amazon'. aesthesy.com (new31a, DOWN): the product page is a custom-art builder with no price and a disabled
+    'Continue to Customize'. Both are 'not tested' with the reason."""
+    run = _product_only(mode, tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error \
+        and why in vase.attempts[-1].error.lower(), (vase.verdict, vase.attempts[-1].error)
+
+
 def test_buy_button_waiting_for_the_shoppers_picks_is_not_tested(tmp_path):
     """orbiz.in (new30z2, both devices DEGRADED): a 'build your crew' product whose only button, 'Pick 6 buddies', stays
     disabled until the shopper picks six figures. Not a broken buy button: 'not tested' with the reason."""

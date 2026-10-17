@@ -1373,6 +1373,11 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 17 Oct 23:40 IST (new31a run 39052745795: 43/53 healthy):** (1) saumyasstores.com: price shown, cart buttons
+  hidden, the only buy control 'View On Amazon' → 'not tested' (sold on marketplaces) instead of not judged (mock
+  marketplace_hidden_cart). (2) aesthesy.com desktop DOWN: a custom-art builder page (upload, disabled 'Continue to
+  Customize', no price) → 'not tested' (mock customiser_product). (3) Evidence: which drawer / quick-add container a
+  refused card sits in (cmartian.com: 36 cards 'inside cart drawer / quick-add').
 - **v0.20 17 Oct 23:10 IST:** thinkitchen.in (new30z6, both devices NOT JUDGED): a full-screen WhatsApp sign-up popup
   whose only close is a wordless icon in the dialog's top-right corner ('no stay/close control in [div | SUBMIT |
   Powered by zoko.io]'). A small wordless tappable element within 60 px of a top corner of the dialog box closes the
