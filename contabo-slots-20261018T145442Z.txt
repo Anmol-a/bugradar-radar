@@ -1,0 +1,15 @@
+at 2026-10-18T14:54:41Z
+--- crontab:
+  * * * * * /home/radar/radar-worker.sh 1
+  * * * * * /home/radar/radar-worker.sh 2
+  * * * * * /home/radar/radar-worker.sh 3
+  0 22 * * * pkill -f 'radar worker' >/dev/null 2>&1
+--- workers:
+  274275 /home/radar/radar-venv/bin/python -u -m radar worker --scans-only --poll 15
+  275275 /home/radar/radar-venv/bin/python -u -m radar worker --scans-only --poll 15
+  275280 /home/radar/radar-venv/bin/python -u -m radar worker --scans-only --poll 15
+  275281 /home/radar/radar-venv/bin/python -u -m radar worker --scans-only --poll 15
+--- load:
+ 16:54:41 up 9 days, 19:16,  0 user,  load average: 0.11, 0.92, 0.98
+               total        used        free      shared  buff/cache   available
+Mem:           11960         827        9905          51        1601       11133
