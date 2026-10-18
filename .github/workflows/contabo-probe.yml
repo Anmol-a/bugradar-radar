@@ -1,5 +1,3 @@
-# 18 Oct 20:25 IST, Anmol: "run as much as you can on Contabo" -> 3 parallel free-scan workers (6 CPU / 12 GB; ~1 CPU +
-# 1 GB per scan). Each slot: its own lock, worker name and data folder; all three share the venv and the checkout.
 name: contabo-probe
 on:
   push:
@@ -8,39 +6,21 @@ on:
 permissions:
   contents: write
 jobs:
-  install:
+  restart:
     runs-on: [self-hosted, radar]
-    timeout-minutes: 10
+    timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Three worker slots
+      - name: Restart the workers so they pull the new main
         run: |
-          cat > "$HOME/radar-worker.sh" <<'SH'
-          #!/bin/bash
-          # free-scan worker slot $1 (1..3): one instance per slot, own data folder, shared code + venv
-          SLOT="${1:-1}"
-          exec 9>"$HOME/radar-worker-$SLOT.lock"; flock -n 9 || exit 0
-          if [ "$SLOT" = "1" ]; then cd "$HOME/radar-src" && git fetch -q origin main && git reset -q --hard origin/main \
-             && "$HOME/radar-venv/bin/python" -m pip install -q -r requirements.txt 2>/dev/null; else sleep 20; cd "$HOME/radar-src"; fi
-          set -a; . "$HOME/radar.env"; set +a
-          export RADAR_WORKER_NAME="contabo-$SLOT" RADAR_DATA_DIR="$HOME/radar-data-$SLOT"
-          L="$HOME/radar-worker-$SLOT.log"; [ -f "$L" ] && tail -c 2000000 "$L" > "$L.tmp" && mv "$L.tmp" "$L"
-          exec "$HOME/radar-venv/bin/python" -u -m radar worker --scans-only --poll 15 >> "$L" 2>&1
-          SH
-          chmod 700 "$HOME/radar-worker.sh"
-          set +e
-          { crontab -l 2>/dev/null | grep -v "radar-worker" | grep -v "radar worker"; } > /tmp/radar.cron
-          for s in 1 2 3; do echo "* * * * * $HOME/radar-worker.sh $s" >> /tmp/radar.cron; done
-          echo "0 22 * * * pkill -f 'radar worker' >/dev/null 2>&1" >> /tmp/radar.cron
-          crontab /tmp/radar.cron
-          # the old single worker (slot-less) keeps its scan; it is replaced at the nightly restart or when it exits.
-          # Rename its lock so slot 1 can start now without a second copy of the same slot.
-          sleep 70
-          { echo "at $(date -u +%FT%TZ)"; echo "--- crontab:"; crontab -l | sed 's/^/  /'; echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /';
-            echo "--- load:"; uptime; free -m | head -2; } | tee probe.txt
+          pkill -f 'radar worker' || true
+          sleep 100
+          { echo "at $(date -u +%FT%TZ)"; echo "--- code:"; git -C "$HOME/radar-src" log --oneline -1;
+            grep -c scan_request_id "$HOME/radar-src/radar/worker.py" | sed 's/^/  scan_request_id mentions in worker.py: /';
+            echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none"; } | tee probe.txt
       - name: Publish
         if: always()
         run: |
           git config user.name radar-probe && git config user.email probe@bugradar.in
           git fetch origin probe-results && git checkout probe-results
-          cp probe.txt contabo-slots-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-slots-*.txt && git commit -qm "contabo 3 slots" && git push -q origin probe-results
+          cp probe.txt contabo-restart-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-restart-*.txt && git commit -qm "contabo restart" && git push -q origin probe-results
