@@ -115,18 +115,18 @@ def main(argv=None):
     bp.add_argument("--plain-ua", action="store_true", help="send only 'BugRadar/0.1 (+bugradar.in)' as User-Agent")
     lp = sub.add_parser("llm-check", help="score the configured LLM on 21 known failure cases (needs an API key in .env)")
     lp.add_argument("--model", help="try another model of the same provider without editing .env")
-    wp = sub.add_parser("worker", help="the live runner: watch the dashboard's stores and scan them on schedule")
-    wp.add_argument("--once", action="store_true", help="run one due store (if any) and exit")
-    wp.add_argument("--poll", type=int, default=60, help="seconds between checks when nothing is due")
-    wp.add_argument("--no-upload", action="store_true", help="scan only; send nothing to the dashboard")
+    wp = sub.add_parser("worker", help="the live runner: watch the dashboard's stores and scan them on schedule",
+                        add_help=False)      # everything after `worker` goes to radar/worker.py's own parser
     sub.add_parser("sites", help="list scanned sites")
     op = sub.add_parser("open", help="open latest report for a site")
     op.add_argument("site")
-    a = ap.parse_args(argv)
+    a, rest = ap.parse_known_args(argv)
 
     if a.cmd == "worker":
         from radar.worker import main as worker_main
-        return worker_main(["--once"] * a.once + ["--poll", str(a.poll)] + ["--no-upload"] * a.no_upload)
+        return worker_main(rest)
+    if rest:
+        ap.error(f"unrecognized arguments: {' '.join(rest)}")
     s = load_settings()
     if a.cmd == "llm-check":
         from dataclasses import replace as _replace
