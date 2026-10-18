@@ -1,6 +1,4 @@
-# 18 Oct: the Contabo box (self-hosted runner `radar`, vmi3647713, Mumbai) as the free-scan worker, on trial.
-# Step 1 (08:13Z) showed Shopify lets it in again (10/10 stores). Step 2: serve the real free-scan queue from it for
-# up to 8 minutes with Radar's basic profile, signed requests on. Runs only on this branch.
+# 18 Oct: which Shopify endpoints does the Contabo IP get, HTML pages vs JSON data? (homepage 200, products.json 429?)
 name: contabo-probe
 on:
   push:
@@ -8,37 +6,27 @@ on:
   workflow_dispatch: {}
 permissions:
   contents: write
-concurrency:
-  group: free-scan-worker
-  cancel-in-progress: false
 jobs:
-  worker:
+  probe:
     runs-on: [self-hosted, radar]
-    timeout-minutes: 14
+    timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Install Radar + Chromium (a venv kept on the box, no sudo)
+      - name: Endpoint probe
         run: |
-          python3 --version
-          python3 -m venv "$HOME/radar-venv" || (python3 -m ensurepip --user; python3 -m venv --without-pip "$HOME/radar-venv")
-          . "$HOME/radar-venv/bin/activate"
-          python -m pip install -q --upgrade pip
-          python -m pip install -q -r requirements.txt
-          python -m playwright install chromium 2>&1 | tail -3
-          python -c "import playwright, sys; print('playwright ok', sys.version)"
-      - name: Serve the free-scan queue from Contabo (up to 8 minutes)
-        env:
-          BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
-          RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
-          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          RADAR_WORKER_NAME: contabo-${{ github.run_id }}
-        run: |
-          . "$HOME/radar-venv/bin/activate"
-          { echo "host: $(hostname)  ip: $(curl -s -4 --max-time 10 ifconfig.me || echo ?)  at $(date -u +%FT%TZ)";
-            python -m radar worker --scans-only --for 480 2>&1 | grep -vE "^\s*$|SyntaxWarning|st = ctx|m = ctx" | tail -80; } | tee probe.txt
-      - name: Publish the log to branch probe-results
+          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 BugRadar/0.1 (+bugradar.in)'
+          { echo "host: $(hostname)  ip: $(curl -s -4 --max-time 10 ifconfig.me)  at $(date -u +%FT%TZ)";
+            for s in theme-dawn-demo.myshopify.com bummer.in plumgoodness.com suta.in; do
+              for p in / /collections/all /products.json?limit=5 /collections/all/products.json?limit=5 /search?q=tee /robots.txt /sitemap.xml /cart.js /this-page-does-not-exist-radar; do
+                sleep 2; printf "%s %s %s\n" "$s" "$p" "$(curl -s -o /dev/null -w '%{http_code} %{size_download}B %{time_total}s' --max-time 25 -L -A "$UA" "https://$s$p")";
+              done;
+              h=$(curl -s -L -A "$UA" --max-time 25 "https://$s/collections/all" | grep -o 'href="/products/[a-z0-9-]*' | head -1 | sed 's/href="//');
+              [ -n "$h" ] && { sleep 2; printf "%s %s %s\n" "$s" "$h (HTML)" "$(curl -s -o /dev/null -w '%{http_code} %{size_download}B' --max-time 25 -L -A "$UA" "https://$s$h")"; sleep 2; printf "%s %s %s\n" "$s" "$h.js (JSON)" "$(curl -s -o /dev/null -w '%{http_code} %{size_download}B' --max-time 25 -L -A "$UA" "https://$s$h.js")"; sleep 2; printf "%s %s %s\n" "$s" "$h.json (JSON)" "$(curl -s -o /dev/null -w '%{http_code} %{size_download}B' --max-time 25 -L -A "$UA" "https://$s$h.json")"; };
+              echo;
+            done; } | tee probe.txt
+      - name: Publish to branch probe-results
         if: always()
         run: |
           git config user.name radar-probe && git config user.email probe@bugradar.in
           git fetch origin probe-results && git checkout probe-results
-          cp probe.txt contabo-worker-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-worker-*.txt && git commit -qm "contabo worker trial" && git push -q origin probe-results
+          cp probe.txt contabo-endpoints-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-endpoints-*.txt && git commit -qm "contabo endpoint probe" && git push -q origin probe-results
