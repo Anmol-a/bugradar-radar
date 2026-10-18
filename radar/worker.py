@@ -22,8 +22,15 @@ Environment (never in git):
     BUGRADAR_KEY            upload key brk_... (as in the cloud workflow)
     RADAR_WORKER_NAME       optional label, default = host name
 
-Why not GitHub Actions for this: cron there is late or skipped under load, minutes cost money once the repo is private,
-the machines are in the US, and there is no 'scan now'. GitHub keeps running the test suite; this runs the product.
+Free-scan worker WITHOUT the service key (18 Oct): with only BUGRADAR_KEY set, the worker serves the free-scan queue
+through the *_by_key functions (dashboard migration 09), which check the upload key the way ingest does. That is how
+the GitHub machines run free scans today (.github/workflows/free-scan-worker.yml, every 5 minutes, scans only):
+    python3 -m radar worker --scans-only --for 540
+Daily monitors still need the service key, and the product's own machine, when a store pays for one.
+
+Why not GitHub Actions for the daily monitors: cron there is late or skipped under load, minutes cost money once the
+repo is private, the machines are in the US, and there is no 'scan now'. For a free first check at zero cost it is
+good enough; the loading page says "within a few minutes".
 """
 from __future__ import annotations
 
@@ -54,11 +61,29 @@ class Queue(Protocol):
                     run_id: str | None, project_id: str | None, note: str, failed: bool = False) -> None: ...
 
 
-class SupabaseQueue:
-    """The two SQL functions over PostgREST. Standard library only."""
+# Supabase's public anon key for the BugRadar project: not a secret (every dashboard visitor's browser has it); it only
+# lets a caller reach the functions that are granted to anon, and the *_by_key ones demand the upload key on top.
+ANON_KEY = ("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9uaWp3cGd2cG9qcHZndW12ZmltIiwicm9sZSI6"
+            "ImFub24iLCJpYXQiOjE3OTE4MTk4MjQsImV4cCI6MjEwNzM5NTgyNH0.UDTcq7XN2mgp_YYxxFw5upLP78qqorgubVVS5HJQmKs")
 
-    def __init__(self, url: str, service_key: str, timeout: int = 30):
-        self.url, self.key, self.timeout = url.rstrip("/"), service_key, timeout
+
+class SupabaseQueue:
+    """The SQL functions over PostgREST. Standard library only.
+    service_key given: the full queue (monitors + free scans). upload_key only: free scans, through the *_by_key
+    functions, using the public anon key to reach PostgREST."""
+
+    def __init__(self, url: str, service_key: str | None, timeout: int = 30, upload_key: str | None = None):
+        self.url, self.timeout = url.rstrip("/"), timeout
+        self.upload_key = None if service_key else upload_key
+        self.key = service_key or ANON_KEY
+        if not service_key and not upload_key:
+            raise ValueError("a service key or an upload key is needed")
+
+    def _by_key(self, fn: str, body: dict):
+        """The *_by_key form when only the upload key is held."""
+        if self.upload_key:
+            return self._rpc(fn + "_by_key", {"brk": self.upload_key, **body})
+        return self._rpc(fn, body)
 
     def _rpc(self, fn: str, body: dict):
         req = urllib.request.Request(
@@ -70,6 +95,8 @@ class SupabaseQueue:
         return json.loads(raw) if raw.strip() else None
 
     def claim(self, worker: str) -> dict | None:
+        if self.upload_key:
+            return None                        # monitors need the service key
         rows = self._rpc("claim_monitor", {"worker": worker}) or []
         return rows[0] if rows else None
 
@@ -77,16 +104,16 @@ class SupabaseQueue:
         self._rpc("finish_monitor", {"monitor_id": monitor_id, "status": status, "note": note[:300]})
 
     def claim_scan(self, worker: str) -> dict | None:
-        rows = self._rpc("claim_scan", {"worker": worker}) or []
+        rows = self._by_key("claim_scan", {"worker": worker}) or []
         return rows[0] if rows else None
 
     def scan_progress(self, scan_id: str, progress: dict) -> None:
-        self._rpc("scan_progress", {"scan_id": scan_id, "progress": progress})
+        self._by_key("scan_progress", {"scan_id": scan_id, "progress": progress})
 
     def finish_scan(self, scan_id: str, verdict: str, score: int | None, summary: dict,
                     run_id: str | None, project_id: str | None, note: str, failed: bool = False) -> None:
-        self._rpc("finish_scan", {"scan_id": scan_id, "verdict": verdict, "score": score, "summary": summary,
-                                  "run_id": run_id, "project_id": project_id, "note": note[:300], "failed": failed})
+        self._by_key("finish_scan", {"scan_id": scan_id, "verdict": verdict, "score": score, "summary": summary,
+                                     "run_id": run_id, "project_id": project_id, "note": note[:300], "failed": failed})
 
 
 def settings_for(monitor: dict, base: Settings) -> Settings:
@@ -294,9 +321,9 @@ def run_scan(req: dict, base: Settings, upload: bool = True, log=print, progress
     return out
 
 
-def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log=print) -> dict | None:
+def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log=print, scans_only: bool = False) -> dict | None:
     """Claim one due job and run it: a free scan request first (a visitor is waiting), else one due monitor.
-    Returns the row that ran, or None when nothing was due."""
+    Returns the row that ran, or None when nothing was due. scans_only: never a monitor (the GitHub free-scan worker)."""
     req = queue.claim_scan(worker) if hasattr(queue, "claim_scan") else None
     if req:
         log(f"[{_now()}] {worker}: free scan {req['url']} ({req['id']})")
@@ -306,6 +333,8 @@ def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log
                           r["note"], r["failed"])
         log(f"[{_now()}] {worker}: free scan {req['url']} -> {r['verdict']} score {r['score']} ({r['note']})")
         return req
+    if scans_only:
+        return None
     m = queue.claim(worker)
     if not m:
         return None
@@ -329,10 +358,32 @@ def serve(queue: Queue, base: Settings, worker: str, poll_seconds: int = 60, upl
 
 
 def queue_from_env() -> SupabaseQueue:
-    url, key = os.environ.get("BUGRADAR_SUPABASE_URL", ""), os.environ.get("BUGRADAR_SERVICE_KEY", "")
-    if not url or not key:
-        raise SystemExit("BUGRADAR_SUPABASE_URL and BUGRADAR_SERVICE_KEY must be set (see radar/worker.py)")
-    return SupabaseQueue(url, key)
+    url = os.environ.get("BUGRADAR_SUPABASE_URL", "") or "https://onijwpgvpojpvgumvfim.supabase.co"
+    service, upload = os.environ.get("BUGRADAR_SERVICE_KEY", ""), os.environ.get("BUGRADAR_KEY", "")
+    if not service and not upload.startswith("brk_"):
+        raise SystemExit("set BUGRADAR_SERVICE_KEY (full worker) or BUGRADAR_KEY (free scans only); see radar/worker.py")
+    return SupabaseQueue(url, service or None, upload_key=upload or None)
+
+
+def serve_for(queue: Queue, base: Settings, worker: str, seconds: int, upload: bool = True, log=print,
+              scans_only: bool = False, poll_seconds: int = 15) -> int:
+    """Drain the queue for up to `seconds` (a GitHub job), then exit. Returns how many jobs ran."""
+    t_end, n = time.time() + seconds, 0
+    log(f"[{_now()}] Radar worker {worker}: serving for {seconds} s" + (" (free scans only)" if scans_only else ""))
+    while time.time() < t_end:
+        try:
+            ran = run_once(queue, base, worker, upload=upload, log=log, scans_only=scans_only)
+        except (urllib.error.URLError, OSError) as e:
+            log(f"[{_now()}] queue error: {e}")
+            ran = None
+        if ran:
+            n += 1
+        elif time.time() + poll_seconds < t_end:
+            time.sleep(poll_seconds)
+        else:
+            break
+    log(f"[{_now()}] Radar worker {worker}: {n} job(s) done")
+    return n
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -341,13 +392,19 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--once", action="store_true", help="run one due store (if any) and exit")
     ap.add_argument("--poll", type=int, default=60, help="seconds between checks when nothing is due")
     ap.add_argument("--no-upload", action="store_true", help="scan only; send nothing to the dashboard")
+    ap.add_argument("--scans-only", action="store_true", help="serve free scan requests only, never a daily monitor")
+    ap.add_argument("--for", dest="seconds", type=int, default=0, metavar="SECS",
+                    help="drain the queue for this many seconds, then exit (a GitHub job); 0 = run for ever")
     a = ap.parse_args(argv)
     worker = os.environ.get("RADAR_WORKER_NAME") or socket.gethostname()
     base = load_settings()
     q = queue_from_env()
     if a.once:
-        ran = run_once(q, base, worker, upload=not a.no_upload)
+        ran = run_once(q, base, worker, upload=not a.no_upload, scans_only=a.scans_only)
         print("nothing due" if ran is None else "done")
+        return 0
+    if a.seconds:
+        serve_for(q, base, worker, a.seconds, upload=not a.no_upload, scans_only=a.scans_only)
         return 0
     serve(q, base, worker, a.poll, upload=not a.no_upload)
     return 0
