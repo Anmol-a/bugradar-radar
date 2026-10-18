@@ -1,26 +1,39 @@
-# 18 Oct: is the Contabo box (self-hosted runner `radar`, vmi3647713) still alive, and does Shopify still throttle it?
-# Runs only on this branch. If no runner with label `radar` is online the job never starts: that is the answer too.
+# 18 Oct: the Contabo box (self-hosted runner `radar`, vmi3647713, Mumbai) as the free-scan worker, on trial.
+# Step 1 (08:13Z) showed Shopify lets it in again (10/10 stores). Step 2: serve the real free-scan queue from it for
+# up to 8 minutes with Radar's basic profile, signed requests on. Runs only on this branch.
 name: contabo-probe
 on:
   push:
     branches: [probe-contabo]
+  workflow_dispatch: {}
 permissions:
   contents: write
+concurrency:
+  group: free-scan-worker
+  cancel-in-progress: false
 jobs:
-  probe:
+  worker:
     runs-on: [self-hosted, radar]
-    timeout-minutes: 10
+    timeout-minutes: 14
     steps:
       - uses: actions/checkout@v4
-      - name: Probe Shopify from this machine
+      - name: Install Radar + Chromium (user site, no sudo)
+        run: |
+          python3 --version
+          python3 -m pip install -q --user -r requirements.txt 2>&1 | tail -2 || python3 -m pip install -q --user --break-system-packages -r requirements.txt 2>&1 | tail -2
+          python3 -m playwright install chromium 2>&1 | tail -2
+      - name: Serve the free-scan queue from Contabo (up to 8 minutes)
+        env:
+          BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
+          RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RADAR_WORKER_NAME: contabo-${{ github.run_id }}
         run: |
           { echo "host: $(hostname)  ip: $(curl -s -4 --max-time 10 ifconfig.me || echo ?)  at $(date -u +%FT%TZ)";
-            for s in theme-dawn-demo.myshopify.com bummer.in giva.co plumgoodness.com mcaffeine.com boat-lifestyle.com foxtale.in soulflower.in suta.in bellavitaorganic.com; do
-              sleep 3; echo "$s $(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -A 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 BugRadar/0.1 (+bugradar.in)' https://$s/)";
-            done; } | tee probe.txt
-      - name: Publish the answer to branch probe-results
+            python3 -m radar worker --scans-only --for 480 2>&1 | grep -vE "^\s*$" | tail -60; } | tee probe.txt
+      - name: Publish the log to branch probe-results
+        if: always()
         run: |
           git config user.name radar-probe && git config user.email probe@bugradar.in
-          git fetch origin probe-results 2>/dev/null && git checkout probe-results || git checkout --orphan probe-results
-          git rm -rfq --cached . 2>/dev/null || true
-          cp probe.txt contabo-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-*.txt && git commit -qm "contabo probe" && git push -q origin probe-results
+          git fetch origin probe-results && git checkout probe-results
+          cp probe.txt contabo-worker-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-worker-*.txt && git commit -qm "contabo worker trial" && git push -q origin probe-results
