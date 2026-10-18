@@ -1,0 +1,85 @@
+# Radar test lists on our own server in Mumbai (Contabo, self-hosted runner label `radar`), 18 Oct 2026.
+#
+# Why: GitHub's machines are in the US, so Indian stores often show US prices / US-market pages ('location (US runner)').
+# Contabo was unblocked again on 18 Oct (store data asked from inside the page). It is also the FREE-SCAN worker, so:
+#   - ONE store at a time (--workers 1): a light, steady load from one Indian IP, never a burst;
+#   - its own data folder (/home/radar/radar-bench-data), never the free-scan worker's;
+#   - while this job runs, free scans wait; the free-scan workflow sends a request to GitHub after 6 minutes.
+#   - results go to the cloud-results branch like radar-cloud; nothing is sent to the dashboard.
+# Started by a push to `cloud-runs` that changes cloud/request-contabo.txt ("bench <list>" only).
+name: radar-contabo
+
+on:
+  push:
+    branches: [cloud-runs]
+    paths: ["cloud/request-contabo.txt"]
+
+concurrency:
+  group: radar-contabo
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  radar:
+    runs-on: [self-hosted, radar]
+    timeout-minutes: 170
+    steps:
+      - name: Note the start time
+        id: t0
+        run: echo "since=$(date +%s)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+
+      - name: Install Radar + Chromium
+        run: |
+          python3 -m venv .venv
+          echo "$PWD/.venv/bin" >> "$GITHUB_PATH"
+          .venv/bin/pip install -q -r requirements.txt
+          .venv/bin/python -m playwright install chromium        # system libs were installed once by setup-runner.sh
+
+      - name: Read the request
+        id: req
+        run: |
+          args=$(grep -v '^[[:space:]]*#' cloud/request-contabo.txt | grep -v '^[[:space:]]*$' | head -1 | tr -s ' ')
+          if ! printf '%s' "$args" | grep -Eq '^bench [A-Za-z0-9_./-]+$'; then
+            echo "Refused: only 'bench <store list>' requests are allowed here, got: $args"; exit 1
+          fi
+          list=$(printf '%s' "$args" | awk '{print $2}')
+          [ -f "$list" ] || { echo "Refused: store list $list not found"; exit 1; }
+          echo "list=$list" >> "$GITHUB_OUTPUT"
+          echo "args=bench $list --workers 1" >> "$GITHUB_OUTPUT"
+          echo "Request: python3 -m radar bench $list --workers 1   (runner: ${{ runner.name }})"
+
+      - name: Run Radar
+        continue-on-error: true
+        timeout-minutes: 150
+        env:
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
+          RADAR_DATA_DIR: /home/radar/radar-bench-data
+          PYTHONUNBUFFERED: "1"
+        run: |
+          set -o pipefail
+          python3 -m radar.core.webbotauth check 2>&1 | tee bench.log || true
+          python3 -m radar ${{ steps.req.outputs.args }} 2>&1 | tee -a bench.log
+
+      - name: Publish results to the cloud-results branch
+        if: always()
+        run: |
+          git config user.name "bugradar-cloud"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          OUT="$RUNNER_TEMP/results"
+          rm -rf "$OUT"; git worktree prune
+          git fetch --depth=1 origin cloud-results
+          git worktree add -B cloud-results "$OUT" FETCH_HEAD
+          python3 tools/publish_cloud_results.py "$OUT" --data /home/radar/radar-bench-data --log bench.log \
+            --since "${{ steps.t0.outputs.since }}" --event "${{ github.event_name }}" --run-id "${{ github.run_id }}" \
+            --sha "${{ github.sha }}" --request "bench ${{ steps.req.outputs.list }} (contabo)" \
+            --runner "${{ runner.name }}" --shard 0 --shards 1
+          cd "$OUT"
+          git add -A
+          git commit -qm "contabo: $(cat LATEST) (run ${{ github.run_id }}, ${{ runner.name }})" || exit 0
+          for i in $(seq 1 8); do git push -q origin cloud-results && break; sleep $((RANDOM % 10 + 2)); git pull -q --rebase -X theirs origin cloud-results || { git checkout --theirs LATEST 2>/dev/null; git add -A; GIT_EDITOR=true git rebase --continue || git rebase --abort; }; done
+          cd - >/dev/null; git worktree remove --force "$OUT" || true
