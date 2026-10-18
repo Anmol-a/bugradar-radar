@@ -146,6 +146,7 @@ Modes (to prove Radar catches and heals what it should):
   div_buy_control  product pages: NO /cart/add form; the buy control is <div class="pdp-addtobag-btn"
                    data-product-handle=...> "ADD TO BAG", after 3 recommendation cards with their own "Add to Bag"
                    buttons for other products (nicobar.com, held-out 7 Oct) -> product + cart PASS, right product added
+  reworded_name    the vase's page (no cart form) shows it as 'VASE · Flower, ceramic' (nbdpowerlifting.com, 18 Oct)
   preselected_variant  the vase's page has NO cart form (headless-style div buy control) and pre-selects its SECOND
                    size ("Large", marked active + aria-checked); only that size's price is shown (foxtale.in, 9 Oct: the
                    200g Best Value size pre-selected, Radar read the first size's ₹349 and failed "price not on page")
@@ -2212,6 +2213,12 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body = body.replace(buy, f'<div class="pdp-addtobag-btn" data-product-handle="{p["handle"]}" '
                                      f'onclick="addToCart({pre["id"]})" style="cursor:pointer;padding:10px;background:#222;color:#fff;'
                                      f'width:200px">ADD TO BAG</div>')
+        if self.mode == "reworded_name" and p["handle"] == "ceramic-vase":
+            # nbdpowerlifting.com (Contabo probe, 18 Oct): a custom page with no cart form shows the product under a
+            # reworded name ('STRENGTH / Back Print Acid Wash Hoodie' for 'NBD STRENGTH — Back Print Acid Wash Hoodie')
+            body = body.replace(buy, f'<div class="pdp-addtobag-btn" data-product-handle="{p["handle"]}" '
+                                     f'onclick="addToCart({vid})" style="cursor:pointer;padding:10px;background:#222;color:#fff;'
+                                     f'width:200px">ADD TO CART</div>').replace(p["title"], "VASE · Flower, ceramic")
         if self.mode == "drawer_form_first":
             body = (f'<div class="drawer__scrollable" style="display:none"><form id="product_form_9{rec["id"]}" '
                     f'class="shopify-product-form" action="/cart/add" method="post"><input type="hidden" name="id" value="{rv}">'

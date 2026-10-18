@@ -2920,3 +2920,14 @@ def test_data_requests_come_from_inside_the_page_so_cloudflares_client_fingerpri
     assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
     assert not any("rate-limit" in n for n in run.notes), run.notes
     assert Handler.EDGE_429 == 0, f"{Handler.EDGE_429} data requests still came from the non-browser client"
+
+
+def test_product_shown_under_a_reworded_name_is_not_a_hidden_product(tmp_path):
+    """nbdpowerlifting.com (Contabo probe, 18 Oct, both devices): custom product pages with no cart form show the
+    product as 'STRENGTH / Back Print Acid Wash Hoodie' for the catalog's 'NBD STRENGTH — Back Print Acid Wash Hoodie';
+    every word of the name is there, in another order. Radar called each page 'other content' and failed the store."""
+    run = _product_only("reworded_name", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)
+    assert "other content" not in (st["loads"].error or ""), st["loads"].error
+    assert st["loads"].status == "pass", st["loads"].error
