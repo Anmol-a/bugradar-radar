@@ -229,3 +229,64 @@ def test_scan_progress_drives_the_loading_screen_list():
     # a progress write that fails never stops the scan
     broken = w.ScanProgress(lambda st: (_ for _ in ()).throw(OSError("down")), log=lambda *_: None)
     broken("start", {})
+
+
+def test_upload_key_mode_serves_free_scans_only_through_the_by_key_functions(monkeypatch):
+    calls = []
+
+    class Resp(io.BytesIO):
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+
+    def fake_urlopen(req, timeout=0):
+        calls.append((req.full_url.rsplit("/", 1)[1], json.loads(req.data), req.headers.get("Apikey")))
+        return Resp(json.dumps([{"id": "s1", "url": "https://x.in"}]).encode() if "claim_scan" in req.full_url else b"")
+    monkeypatch.setattr(w.urllib.request, "urlopen", fake_urlopen)
+    q = w.SupabaseQueue("https://ref.supabase.co", None, upload_key="brk_abc")
+    assert q.claim("box") is None and calls == []                     # monitors need the service key: never asked
+    assert q.claim_scan("box") == {"id": "s1", "url": "https://x.in"}
+    q.scan_progress("s1", {"stage": "testing"})
+    q.finish_scan("s1", "healthy", 100, {}, None, None, "ok")
+    assert [c[0] for c in calls] == ["claim_scan_by_key", "scan_progress_by_key", "finish_scan_by_key"]
+    assert all(c[1]["brk"] == "brk_abc" and c[2] == w.ANON_KEY for c in calls)
+    with pytest.raises(ValueError):
+        w.SupabaseQueue("https://ref.supabase.co", None)
+
+
+def test_serve_for_drains_scans_then_stops_at_the_deadline(monkeypatch, tmp_path):
+    monkeypatch.setattr("radar.runner.executor.scan_devices", lambda url, settings, devices, **kw: [(_fake_run(), tmp_path)])
+    q = ScanQueue([{"id": "s1", "url": "https://a.in"}, {"id": "s2", "url": "https://b.in"}],
+                  [{"id": "m1", "url": "https://y.in", "devices": ["desktop"]}])
+    n = w.serve_for(q, Settings(), "gh", seconds=5, upload=False, log=lambda *_: None, scans_only=True, poll_seconds=1)
+    assert n == 2 and [f["id"] for f in q.scan_finished] == ["s1", "s2"]
+    assert q.finished == []                                            # scans only: the monitor was never claimed
+
+
+def test_queue_from_env_accepts_either_key(monkeypatch):
+    monkeypatch.delenv("BUGRADAR_SERVICE_KEY", raising=False); monkeypatch.delenv("BUGRADAR_KEY", raising=False)
+    with pytest.raises(SystemExit):
+        w.queue_from_env()
+    monkeypatch.setenv("BUGRADAR_KEY", "brk_x")
+    q = w.queue_from_env()
+    assert q.upload_key == "brk_x" and q.key == w.ANON_KEY and q.url.endswith(".supabase.co")
+    monkeypatch.setenv("BUGRADAR_SERVICE_KEY", "service")
+    q = w.queue_from_env()
+    assert q.upload_key is None and q.key == "service"
+
+
+def test_queue_age_script_says_yes_only_for_an_old_waiting_request(monkeypatch, capsys):
+    import tools.queue_age as qa
+
+    class Resp(io.BytesIO):
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+    answers = iter([[{"queued": 2, "oldest_seconds": 400}], [{"queued": 1, "oldest_seconds": 30}], [{"queued": 0, "oldest_seconds": 0}]])
+    monkeypatch.setattr(qa.urllib.request, "urlopen", lambda req, timeout=0: Resp(json.dumps(next(answers)).encode()))
+    for want in ("yes", "no", "no"):
+        qa.main(["--older-than", "360"])
+        assert capsys.readouterr().out.strip() == want
+    def boom(req, timeout=0):
+        raise OSError("down")
+    monkeypatch.setattr(qa.urllib.request, "urlopen", boom)
+    qa.main([])
+    assert capsys.readouterr().out.strip() == "no"            # unknown = let the next run ask again, never crash

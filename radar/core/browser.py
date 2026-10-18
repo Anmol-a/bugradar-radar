@@ -18,6 +18,7 @@ import hashlib
 import platform
 import re
 import time
+from urllib.parse import urlparse
 from contextlib import contextmanager
 from pathlib import Path
 
@@ -406,6 +407,23 @@ class Session:
             Session._DATA_CACHE[key] = (time.time(), json.dumps(out))
         return out
 
+    def _fetch_in_page(self, url: str) -> dict | None:
+        """GET a store URL from inside the open page (same origin only). None = the page is not on that store (about:blank,
+        another host, closed), so the caller uses the context's request client instead."""
+        try:
+            here = urlparse(self.page.url)
+            there = urlparse(url)
+            if here.scheme not in ("http", "https") or (here.hostname or "").lower() != (there.hostname or "").lower():
+                return None
+            return self.page.evaluate("""async (u) => {
+                try {
+                    const r = await fetch(u, {credentials: 'same-origin', cache: 'no-store'});
+                    return {status: r.status, retry_after: r.headers.get('retry-after') || '', text: await r.text()};
+                } catch (e) { return {status: 0, retry_after: '', text: String(e)}; }
+            }""", url)
+        except Exception:  # noqa: BLE001  page navigating or gone: fall back
+            return None
+
     def _get_json(self, url: str):
         if not self.allowed(url):
             raise RobotsBlocked(f"robots.txt disallows {url}")
@@ -418,6 +436,31 @@ class Session:
                 break                       # the 2 extra, longer waits are only for HTTP 429 (rate limit)
             if wait:
                 self.page.wait_for_timeout(int(min(30000, max(wait, after * 1000)) * self.backoff_scale))
+            # Ask from INSIDE the page whenever it is on the store (18 Oct, Contabo vmi3647713): Cloudflare answers 429
+            # to Playwright's own HTTP client (context.request, a Node client with a non-browser network fingerprint)
+            # from datacenter addresses, every time, signed or not, while the very same URL fetched by the page the way
+            # the store's own scripts do answers 200. The browser route signs in-page requests too (Web Bot Auth).
+            got = self._fetch_in_page(url)
+            if got is not None:
+                st = got.get("status", 0)
+                if st == 429:
+                    limited += 1
+                    try:
+                        after = float(got.get("retry_after") or 0)
+                    except ValueError:
+                        after = 0
+                    last = "HTTP 429"
+                    continue
+                if st >= 500 or st == 0:
+                    last = f"HTTP {st}" if st else "no answer (from the page)"
+                    continue
+                if st >= 400:
+                    raise AssertionError(f"{url} returned HTTP {st}")
+                try:
+                    return json.loads(got.get("text") or "")
+                except ValueError:
+                    last = f"HTTP {st} but the body is not JSON ({(got.get('text') or '')[:60]!r})"
+                    continue
             try:
                 r = self.page.context.request.get(url, timeout=20000, headers=self.sign(url) or None)
             except Exception as e:  # noqa: BLE001  timeout, reset, DNS

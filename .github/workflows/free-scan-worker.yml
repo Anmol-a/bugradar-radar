@@ -1,0 +1,87 @@
+# The free-scan worker (18 Oct 2026). Zero new cost.
+#
+# A visitor's "check my store" on the dashboard (#/scan) is a row in the dashboard's scan_requests table. Every 5 minutes
+# a job drains that queue for up to 9 minutes with Radar's 'basic' profile (7 read-only checks, desktop, no cart),
+# uploading each result like any run. It authenticates with the UPLOAD KEY only (dashboard migration 09:
+# claim_scan_by_key / finish_scan_by_key). Daily monitors are never run here: those need the service key and the
+# product's own machine (radar/worker.py).
+#
+# Two machines, one queue:
+#   contabo   our own box in Mumbai (self-hosted runner, label `radar`, vmi3647713): an Indian address, so stores answer
+#             as they would to an Indian shopper. First choice. If the box is offline the job simply never starts.
+#   github    GitHub's machines (US): fallback. Starts only when the queue holds a request older than 6 minutes, i.e.
+#             Contabo has not picked it up. Reads the queue age through the public scan_live function, no key needed.
+# The claim is row-locked in SQL, so even if both run at once nothing is done twice.
+# GitHub starts schedules only from the default branch and may be a few minutes late: the page says "a few minutes".
+name: free-scan-worker
+
+on:
+  schedule:
+    - cron: "*/5 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: read
+
+jobs:
+  contabo:
+    name: free scans (Contabo, Mumbai)
+    runs-on: [self-hosted, radar]
+    timeout-minutes: 14
+    concurrency:
+      group: free-scan-worker
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Radar + Chromium (venv kept on the box)
+        run: |
+          python3 -m venv "$HOME/radar-venv"
+          . "$HOME/radar-venv/bin/activate"
+          python -m pip install -q -r requirements.txt
+          python -m playwright install chromium 2>&1 | tail -1
+      - name: Serve the free-scan queue (up to 9 minutes)
+        env:
+          BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
+          RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RADAR_WORKER_NAME: contabo-${{ github.run_id }}
+        run: |
+          . "$HOME/radar-venv/bin/activate"
+          python -m radar worker --scans-only --for 540 2>&1 | grep -vE "SyntaxWarning|st = ctx|m = ctx" | tee worker.log
+      - name: Summary
+        if: always()
+        run: |
+          { echo "### free scans (Contabo)"; echo; echo '```'; grep -E "free scan|job\(s\) done|error" worker.log | tail -40; echo '```'; } >> "$GITHUB_STEP_SUMMARY"
+
+  github:
+    name: free scans (GitHub fallback)
+    runs-on: ubuntu-latest
+    timeout-minutes: 14
+    steps:
+      - uses: actions/checkout@v4
+      - name: Is anything waiting for more than 6 minutes?
+        id: age
+        run: |
+          echo "waiting=$(python3 tools/queue_age.py --older-than 360)" >> "$GITHUB_OUTPUT"
+      - uses: actions/setup-python@v5
+        if: steps.age.outputs.waiting == 'yes'
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install Radar + Chromium
+        if: steps.age.outputs.waiting == 'yes'
+        run: |
+          python3 -m pip install -q -r requirements.txt
+          python3 -m playwright install --with-deps chromium
+      - name: Serve the free-scan queue (up to 9 minutes)
+        if: steps.age.outputs.waiting == 'yes'
+        env:
+          BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
+          RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RADAR_WORKER_NAME: github-${{ github.run_id }}
+        run: python3 -m radar worker --scans-only --for 540 2>&1 | tee worker.log
+      - name: Summary
+        if: always()
+        run: |
+          { echo "### free scans (GitHub fallback): waiting=${{ steps.age.outputs.waiting }}"; echo; echo '```'; [ -f worker.log ] && grep -E "free scan|job\(s\) done|error" worker.log | tail -40; echo '```'; } >> "$GITHUB_STEP_SUMMARY"

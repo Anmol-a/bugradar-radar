@@ -2907,3 +2907,16 @@ def test_discount_box_rejects_a_junk_code_and_a_silent_or_crashing_one_warns(tmp
     plain = _feature("healthy", tmp_path / "plain", ("cart",))
     st = _steps(_case(plain, "cart.discount_code"))
     assert "no discount / coupon box" in st["cart_page"].detail and "junk_code_rejected" not in st
+
+
+def test_data_requests_come_from_inside_the_page_so_cloudflares_client_fingerprint_block_does_not_bite(tmp_path, monkeypatch):
+    """Contabo vmi3647713, 18 Oct: from a datacenter address Cloudflare answered 429 to EVERY data request made with
+    Playwright's context.request client (a Node HTTP client), signed or not, while the same /products.json fetched from
+    inside the page answered 200 (as did a page load). The mock answers 429 to any data request without the browser's
+    Sec-Fetch-Mode header. Radar must pass as healthy, and the Node client must not have been the one asking."""
+    from tests.mockstore.server import Handler
+    Handler.EDGE_429 = 0
+    run, _ = _scan("edge_fingerprint", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    assert not any("rate-limit" in n for n in run.notes), run.notes
+    assert Handler.EDGE_429 == 0, f"{Handler.EDGE_429} data requests still came from the non-browser client"
