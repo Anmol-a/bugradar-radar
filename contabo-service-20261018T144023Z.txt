@@ -1,0 +1,30 @@
+at 2026-10-18T14:39:57Z user radar
+--- crontab:
+--- cron service:
+active
+--- files:
+  -rw------- 1 radar radar   0 Oct 18 16:32 /home/radar/radar-worker.lock
+  -rw------- 1 radar radar 401 Oct 18 16:32 /home/radar/radar-worker.log
+  -rwx------ 1 radar radar 627 Oct 18 16:32 /home/radar/radar-worker.sh
+  -rw------- 1 radar radar 318 Oct 18 16:32 /home/radar/radar.env
+  /home/radar/radar-src
+  /home/radar/radar-venv
+--- processes:
+  17969 /bin/bash /home/radar/actions-runner/runsvc.sh
+  17979 /home/radar/actions-runner/bin/Runner.Listener run --startuptype service
+  273599 /home/radar/actions-runner/bin/Runner.Worker spawnclient 156 159
+  273767 /usr/bin/bash -e /home/radar/actions-runner/_work/_temp/214c272b-5516-4255-a33d-43ab52d9fb56.sh
+  273768 /usr/bin/bash -e /home/radar/actions-runner/_work/_temp/214c272b-5516-4255-a33d-43ab52d9fb56.sh
+--- worker log tail:
+  /home/radar/radar-src/radar/checks/library.py:999: SyntaxWarning: invalid escape sequence '\s'
+    st = ctx.sess.evaluate("""([ids, quick]) => { const mine = new Set(ids.map(String)); let own = 0, other = 0; const seen = [];
+  /home/radar/radar-src/radar/checks/library.py:2173: SyntaxWarning: invalid escape sequence '\s'
+    m = ctx.sess.evaluate("""() => ({country: (window.Shopify || {}).country || '',
+--- try starting by hand (detached):
+--- processes after:
+  273785 /home/radar/radar-venv/bin/python -m radar worker --scans-only --poll 15
+--- log after:
+  /home/radar/radar-src/radar/checks/library.py:999: SyntaxWarning: invalid escape sequence '\s'
+    st = ctx.sess.evaluate("""([ids, quick]) => { const mine = new Set(ids.map(String)); let own = 0, other = 0; const seen = [];
+  /home/radar/radar-src/radar/checks/library.py:2173: SyntaxWarning: invalid escape sequence '\s'
+    m = ctx.sess.evaluate("""() => ({country: (window.Shopify || {}).country || '',
