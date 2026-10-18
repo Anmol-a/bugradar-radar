@@ -2415,6 +2415,11 @@ def _hidden_product_page(ctx: Ctx, url: str) -> str | None:
         return None
     if not title or norm_text(title) in norm_text(text):
         return None
+    # the name reworded: every word of it on the page, in any order (nbdpowerlifting.com, Contabo probe 18 Oct:
+    # 'STRENGTH / Back Print Acid Wash Hoodie' for 'NBD STRENGTH — Back Print Acid Wash Hoodie')
+    words = set(norm_text(title).split())
+    if len(words) >= 2 and words <= set(norm_text(text).split()):
+        return None
     m = UNAVAILABLE_RX.search(text)
     if m:
         return ("shows " + repr(text[max(0, m.start() - 20): m.end() + 30].strip())).replace("\n", " ")
