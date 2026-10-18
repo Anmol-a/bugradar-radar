@@ -42,8 +42,15 @@ INTENTS = {
     },
 }
 
-QUICK_SEL = ("[id*='quick-add' i], [class*='quick-add' i], [class*='quickadd' i], [class*='quick_add' i], "
-             "[class*='card' i] [class*='quick' i], .swiper-slide, [class*='upsell' i], [class*='recommend' i]")
+def not_page(sel: str) -> str:
+    """A container selector that never matches <html> / <body>: themes name their settings there ('quick-add-enabled
+    cart-drawer-active' on <body>: dhaagaweaves.in, cmartian.com, new31a/b), which made every element on the page
+    'inside a cart drawer / quick-add'."""
+    return ", ".join(p.strip() + ":not(html):not(body)" for p in sel.split(","))
+
+
+QUICK_SEL = not_page("[id*='quick-add' i], [class*='quick-add' i], [class*='quickadd' i], [class*='quick_add' i], "
+                     "[class*='card' i] [class*='quick' i], .swiper-slide, [class*='upsell' i], [class*='recommend' i]")
 
 # Is this element a buy control on ANOTHER product's card? Decided by where the nearest product links
 # point, never by class names alone: soulflower.in's MAIN buy button sits in a "quick-add-container"

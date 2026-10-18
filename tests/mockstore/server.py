@@ -113,6 +113,9 @@ Modes (to prove Radar catches and heals what it should):
   shadow_popup     the same YourLio-style promo popup, but rendered INSIDE a shadow root (#chat-widget), appearing
                    300 ms after collection pages load (soulflower.in, bench 9: the popup sat over the product card and
                    v0.13's finder could not see into shadow DOM) -> popup closed by its x, journey PASSES first try
+  title_opens_neighbour  tapping a collection card's NAME opens the next card's product; its image link opens the right
+                   one (faritha.com, bytheleaf.in) -> journey PASSES, store WARNING names the miswired link
+  marquee_cards    collection cards sit in a marquee that never stops moving (hunnit.com, new30z1) -> journey PASSES
   dead_image_link  collection cards have an IMAGE link and a NAME link; the theme's slider script cancels mousedown/click on
                    the image (thefunclab.com, bench 10) -> journey clicks the name, PASSES, store WARNING names the dead link
   slider_over_image  collection cards: a slider layer (not a link) sits OVER the product image link and swallows clicks;
@@ -203,6 +206,10 @@ Modes (to prove Radar catches and heals what it should):
   cart_dawn_rows   Dawn's real cart rows: hidden 'Decrease quantity for <title>' text inside the quantity box, the price in
                    its own table cell, a discount code (regular price struck, sale price 10% lower) -> journey 23's
                    cart line price PASSES ('discounted in the cart'), not 'line shows no price' (12 theme demos, cycle 28)
+  other_market_switcher  product pages show the price only as converted '$… USD' drawn by a converter app (not in the
+                   page's text) and a 'USD' currency switcher (nakshatrakids.com, new30y) -> BLOCKED 'location'
+  other_market_price_above  dollar prices with no Shopify.currency, the price ABOVE the product's name and an 'INR 999'
+                   shipping note on the page (khushbujewellers.com, new30x) -> BLOCKED 'location'
   other_market_offer  dollar prices with no Shopify.currency, plus an offer block in ₹ ('Flat ₹250 off, min. order ₹2,500')
                    lower on the product page (theindianethnicco.com, cycle 28 round 2 still DOWN) -> BLOCKED 'location'
   marketplace_only product pages show no price and no cart, only 'Buy on Amazon / Flipkart' links (antesports, beyondsnack)
@@ -249,6 +256,10 @@ Modes (to prove Radar catches and heals what it should):
   account_broken   same, but /account/login answers 404 -> info.account_page FAILS
   hamburger_menu   phones only: the header menu hides behind a ☰ button (aria-label Menu) opening a drawer (journey 16)
                    -> smoke.mobile_menu PASSES 'tapped the menu button'; desktop / healthy -> not judged / links shown
+  dead_tile_menu   phones: hamburger_menu, and the homepage's only visible collection link is an 'Explore Now' tile whose
+                   tap does nothing, no product cards (amchongtea.com, new30x) -> journey goes via the ☰ menu, PASSES
+  icon_x_popup     a full-screen sign-up popup whose only close is an icon with no words in the dialog's top-right
+                   corner (thinkitchen.in, new30z6) -> closed with that icon, never SUBMIT; journey PASSES
   hamburger_broken same, but the button's script throws and the drawer never opens -> smoke.mobile_menu WARNS
   late_cards       collection grids are rendered by a script 1.5 s after the page loads -> the collection test and
                    catalog.more wait for the cards and PASS (they failed at once on the old code)
@@ -363,8 +374,65 @@ Modes (to prove Radar catches and heals what it should):
   market_path      Shopify Markets: / sends the shopper to /en-us/, links carry the prefix, prices are +20% there and so is
                    /en-us/products/<h>.js; the default /products/<h>.js says the base price (amayrajewellery.com 14 Oct)
                    -> Radar reads the data under the page's market path, journey PASSES first try
+  market_redirect_all  market_path, and every /products/<h> URL also sends the visitor to /en-us/products/<h>
+                   (khushbujewellers.com, new30x) -> product pages PASS, no 'hidden from shoppers' warning
   wishlist_404     the header links /pages/wishlist, which answers HTTP 404 with a wishlist app drawn into it
                    (countryflora / kotart / swornyfashion, new30p) -> smoke.nav_links PASSES, the app page noted
+  plain_size_buttons  the vase has Size x Colour; colour swatch in a 'swatches' box, sizes as plain buttons in a
+                   'pdp-sizes' box, nothing chosen on load (form id empty, 'Choose your size' disabled) (sntvl.com
+                   new30r) -> Radar taps the colour AND the size, product PASSES
+  hidden_price     product pages show no price near the name and only a disabled 'Unavailable' button (the data has a
+                   placeholder price; somuchliving / tastycrafts 15 Oct) -> product BLOCKED 'not tested', never DOWN
+  marketplace_hidden_cart  the price shows, cart buttons are hidden, the only buy control is 'View On Amazon'
+                   (saumyasstores.com, new31a) -> product BLOCKED 'not tested', never not judged
+  customiser_product  the product page is an art builder (upload, disabled 'Continue to Customize'), no price, no cart
+                   button (aesthesy.com, new31a) -> BLOCKED 'not tested', never DOWN
+  price_after_choice  product pages hide the price and keep 'Add to cart' disabled until a choice is made (myop.in,
+                   new30x) -> product BLOCKED 'not tested', never DOWN
+  gst_price        product pages show the price plus 3% GST ('Rs. 1,338 INR' for ₹1,299: kanchisilver.com, new31f)
+                   -> shows_title_price_image WARNS, never fails
+  coming_soon_product  product pages say 'Coming Soon', no price, a 'Notify me' button (atovio.in, new31f) -> BLOCKED
+                   'not tested', never DEGRADED
+  prepaid_price    product pages show the price minus 5% under 'EXTRA 5% OFF ON ALL PREPAID ORDERS' (rasayanam.in)
+                   -> shows_title_price_image WARNS (Anmol, 15 Oct), never fails
+  customer_auth_link  the header links '/customer_authentication/redirect' (Shopify new customer accounts), which answers
+                   404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
+  hidden_form_app_button  the product's cart form is hidden and holds no button; the buy control is an app's element
+                   outside it (shopkara.store, nubronicforte.com) -> found, the cart check adds the right product, PASSES
+  per_unit_price   the vase page shows '₹649.50 / piece' + 'Pack of 2 pieces' for the ₹1,299 variant (ayamveda.com)
+                   -> price shown PASSES (per-unit evidence)
+  no_product_images  product pages show no picture and /products/<h>.js lists no image (kalamkitaab, lucentpublication)
+                   -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
+  span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
+                   the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
+  grid_quick_add_class  the collection grid's container carries a 'quick-add' class (dhaagaweaves.in, cmartian.com)
+                   -> its cards are still cards, journey PASSES
+  body_drawer_class  <body> carries 'quick-add-enabled cart-drawer-active' (dhaagaweaves.in, cmartian.com, new31a/b) ->
+                   cards are still cards, journey PASSES
+  name_hidden_on_phone  product names sit in a desktop-only <h1>; phones see a tagline (zarfstudios.com, new31c) -> phone
+                   shows_title_price_image WARNS, never fails
+  devanagari_title  the vase is named in Marathi in its data and on its pages (prashantpublications.com) -> PASSES
+  emoji_cookie     a page script sets a cookie holding an emoji (paramountchess.com) -> product data still read, PASSES
+  discount_link    a homepage section links /discount/WOWDEAL, which applies the code and redirects to the homepage
+                   (Shopify's own behaviour; daantwale.com, new30z2) -> smoke.more_links PASSES
+  hidden_buttons_product  the product's cart form keeps its buttons, all hidden, and no other buy control (saralhome.com
+                   freebie, new31c) -> product BLOCKED 'not tested', never not judged
+  needs_photo_upload  'Add to cart' stays disabled until the shopper uploads a photo (cartwala.in, new31d) -> product
+                   BLOCKED 'not tested', never DEGRADED
+  needs_dimensions  'Add to cart' stays disabled until the shopper types the wall's width and height (giffywalls.in,
+                   new30z5) -> product BLOCKED 'not tested', never DOWN
+  bundle_builder   the product's only button 'Pick 6 buddies' is disabled until a choice (orbiz.in, new30z2) -> product
+                   BLOCKED 'not tested', never DOWN
+  disabled_form_icon_bar  the form's button is disabled; the sticky bar's add-to-cart is an icon with no words (popees.com
+                   phone, new30z5) -> PASSES
+  disabled_form_bar_on_scroll  the form's 'Buy it now' is disabled, the enabled 'ADD TO CART' sticky bar shows only after
+                   scrolling (adachikan.com phone, new30z1) -> PASSES
+  disabled_form_enabled_bar  the form's own button is disabled, an enabled sticky 'Add to cart' adds the product
+                   (arabianaroma.in) -> variant_ready + buy PASS
+  gift_only_product  hidden, empty cart form and no buy control anywhere (a gift the store auto-adds; nubronicforte
+                   'Performance Kit') -> product BLOCKED 'not tested: offers no way to buy it'
+  cod_form_only    hidden buttonless cart form + only an 'Order Now - Cash on Delivery' order-form app button
+                   (shopkara.store) -> product BLOCKED 'not tested: sold only through an order-form app'
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
   grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
@@ -623,6 +691,21 @@ if (!document.cookie.includes('bday=1')) setTimeout(() => {
   d.querySelector('.reveal').onclick = () => { location.href = '/pages/tried-it'; };
   document.body.appendChild(d); }, 300);
 </script>""",
+        "icon_x_popup": """<script>
+// thinkitchen.in (new30z6, both devices NOT JUDGED): a WhatsApp sign-up popup (zoko) over the whole page; its close is an
+// icon in the dialog's top-right corner with no words and no label; the only words are SUBMIT and 'Powered by zoko.io'
+if (!document.cookie.includes('zk=1')) setTimeout(() => {
+  const d = document.createElement('div'); d.className = 'zoko_popup_campaign';
+  d.style.cssText = 'position:fixed;inset:0;z-index:999999;display:flex;align-items:center;justify-content:center';
+  d.innerHTML = '<div style="position:relative;background:#fff;width:420px;height:600px;border-radius:8px;box-shadow:0 0 20px #0004">'
+    + '<div><div class="zk-x" style="position:absolute;top:14px;right:14px;width:22px;height:22px;border-radius:11px;background:#fff;cursor:pointer">'
+    + '<svg width="12" height="12" viewBox="0 0 12 12"><path d="M1 1L11 11M11 1L1 11" stroke="#000" stroke-width="2"/></svg></div></div>'
+    + '<div style="height:260px;background:#f4c9a0"></div><h2>Join the Inner Circle!</h2><p>Add your WhatsApp number and get 5% OFF.</p>'
+    + '<input type="tel" value="91"><button type="button" class="zk-sub">SUBMIT</button><small>Powered by zoko.io</small></div>';
+  d.querySelector('.zk-x').onclick = () => { document.cookie = 'zk=1;path=/'; d.remove(); };
+  d.querySelector('.zk-sub').onclick = () => { window.SUBSCRIBED = true; d.remove(); };
+  document.body.appendChild(d); }, 300);
+</script>""",
         "newsletter_popup": """<script>
 if (!document.cookie.includes('nl_closed=1')) setTimeout(() => {
   const d = document.createElement('div');
@@ -678,9 +761,83 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 </script>"""
 
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode == "grid_quick_add_class" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/collections/"):
+            # dhaagaweaves.in / cmartian.com (new31a/b re-test: '44 links: 44 inside cart drawer / quick-add
+            # (div.product-grid-container)'): the grid's own container carries a 'quick-add' class
+            body = body.replace("<main>", '<main><div class="product-grid-container quick-add-enabled-grid">', 1).replace(
+                "</main>", "</div></main>", 1)
+        if self.mode == "body_drawer_class" and isinstance(body, str) and ctype.startswith("text/html"):
+            # dhaagaweaves.in (new31b, both devices: '44 links: 44 inside cart drawer / quick-add') + cmartian.com: the
+            # theme names its settings on <body> ('quick-add-enabled cart-drawer-active'), so every card on the page sat
+            # 'inside' a cart drawer / quick-add by class
+            body = body.replace("<body>", '<body class="template-collection quick-add-enabled cart-drawer-active">', 1)
+        if self.mode == "name_hidden_on_phone" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/products/"):
+            # zarfstudios.com phone (new31c, DOWN 3x): the product's name is in a desktop-only block; phones see a tagline
+            body = re.sub(r"<h1>([^<]*)</h1>", r'<h1 class="product__title desk-only">\1</h1><p class="tagline">The Fluffiest '
+                          r'Thing On Earth</p><style>@media (max-width: 700px) {.desk-only {display:none}}</style>', body, count=1)
+            body = body.replace("<head>", '<head><meta name="viewport" content="width=device-width, initial-scale=1">', 1)
+        if self.mode == "devanagari_title" and isinstance(body, str):
+            # prashantpublications.com (new30z4): Marathi book titles; Radar's name matching kept only a-z0-9, so the
+            # name was 'not shown' on every product page
+            body = body.replace("Ceramic Flower Vase", "घुमान मधील बाबा नामदेवजी")
+            if ctype.startswith("text/html"):     # its theme shows the name in a styled div, no <h1>
+                body = body.replace("<h1>घुमान मधील बाबा नामदेवजी</h1>",
+                                    '<div class="product__title" style="font-size:28px;font-weight:600">घुमान मधील बाबा नामदेवजी</div>')
+        if self.mode == "emoji_cookie" and isinstance(body, str) and ctype.startswith("text/html"):
+            # paramountchess.com (new30z4): an app stores the last product's handle (with an emoji) in a cookie; Radar's
+            # data request sent the browser's cookies and failed ('Invalid character in header content ["cookie"]')
+            body = body.replace("</head>", "<script>document.cookie = 'recent=\\u{1F451}-royal-set; path=/'.replace('\\u{1F451}', String.fromCodePoint(0x1F451));</script></head>", 1)
+        if self.mode == "per_unit_price" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
+            # ayamveda.com (new30w) / nubronicforte.com: the page shows the price per unit of a multi-unit variant
+            body = re.sub(r'<div class="price">₹1,299\.00</div>', '<div class="price">₹649.50 / piece</div><p>Pack of 2 pieces</p>',
+                          body, count=1)
+        if self.mode == "no_product_images" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/products/"):
+            # kalamkitaab.com / lucentpublication.com: book pages with no product picture at all
+            body = re.sub(r'<img src="/cdn/shop/files/[^"]+\.svg" width="(300|400)" height="(300|400)"[^>]*>', '', body)
+        if self.mode == "customer_auth_link" and isinstance(body, str) and ctype.startswith("text/html"):
+            # krkjewels.com (new30t, 15 Oct): the header's 'Login' is Shopify's new-accounts hand-off link, 404 for a robot
+            body = body.replace('<a href="/pages/about">About</a>',
+                                '<a href="/pages/about">About</a> <a href="/customer_authentication/redirect?locale=en">Login</a>', 1)
+        if self.mode == "gst_price" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/products/"):
+            # kanchisilver.com (new31f, both devices DOWN): silver jewellery priced without tax in Shopify, shown with 3% GST
+            # on the page (₹32,000 -> 'Rs. 32,960 INR')
+            body = re.sub(r'(<div class="price">)₹([\d,]+\.\d\d)',
+                          lambda m: f"{m.group(1)}Rs. {round(float(m.group(2).replace(',', '')) * 1.03):,} INR", body)
+        if self.mode == "coming_soon_product" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/products/"):
+            # atovio.in (new31f, both devices DEGRADED): a pre-launch product: 'Coming Soon', no price, 'Notify me'
+            body = re.sub(r'<div class="price">[^<]*</div>', '<span class="badge">Coming Soon</span>', body, count=1)
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="button" class="notify">Notify me when available</button>', 1)
+        if self.mode == "prepaid_price" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.startswith("/products/"):
+            # rasayanam.in (new30m, 14 Oct): 'EXTRA 5% OFF ON ALL PREPAID ORDERS', and the page shows the price minus 5%
+            body = body.replace("<main>", '<main><div class="announcement">EXTRA 5% OFF ON ALL PREPAID ORDERS</div>', 1)
+            body = re.sub(r'(<div class="price">)₹([\d,]+\.\d\d)',
+                          lambda m: f"{m.group(1)}₹{round(float(m.group(2).replace(',', '')) * 0.95):,}", body)
+        if self.mode == "plain_size_buttons" and isinstance(body, str) and ctype.startswith("text/html") \
+                and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
+            # sntvl.com (new30r, 15 Oct, both devices, 3 products): colour swatches in a 'swatch' box, sizes as plain
+            # <button>s in a box whose class names neither 'variant' nor 'option'; no size chosen on load, the form's id
+            # is empty and the button disabled ('Choose your size') until the shopper taps a size
+            body = re.sub(r'(<form id="product-form-template__main"[^>]*>)<input type="hidden" name="id" value="\d+">'
+                          r'<button type="submit" name="add">Add to cart</button>',
+                          r'<div class="swatches"><button type="button" class="swatch" data-value="Natural">Natural</button></div>'
+                          r'<div class="pdp-sizes"><button type="button" class="sz" data-id="201">Small</button>'
+                          r'<button type="button" class="sz" data-id="202">Large</button></div>'
+                          r'\1<input type="hidden" name="id" value=""><button type="submit" name="add" disabled>Choose your size</button>'
+                          r'<script>document.querySelectorAll(".sz").forEach(b => b.onclick = () => {'
+                          r' const f = document.getElementById("product-form-template__main");'
+                          r' f.querySelector("[name=id]").value = b.dataset.id; const a = f.querySelector("[name=add]");'
+                          r' a.disabled = false; a.textContent = "Add to cart"; });</script>', body, count=1)
         if self.mode == "wishlist_404" and isinstance(body, str) and ctype.startswith("text/html"):
             body = body.replace('<a href="/pages/about">About</a>', '<a href="/pages/about">About</a> <a href="/pages/wishlist">Wishlist</a>', 1)
-        if self.mode == "market_path" and getattr(self, "market", False) and isinstance(body, str):
+        if self.mode in ("market_path", "market_redirect_all") and getattr(self, "market", False) and isinstance(body, str):
             if ctype.startswith("text/html"):
                 body = re.sub(r'href="/(?!en-us)', 'href="/en-us/', body).replace('href="/en-us/"', 'href="/en-us"')
                 body = re.sub(r'action="/(cart|search)', r'action="/en-us/\1', body)
@@ -753,7 +910,14 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             # navigation and must not get an extra link to follow)
             body = body.replace("<main>", '<div class="announcement-bar"><a href="/pages/offers">Festive offers: up to 20% '
                                 'off</a></div><main>', 1)
-        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("hamburger_menu", "hamburger_broken") \
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "dead_tile_menu" and self.path in ("/", "") \
+                and "Mobile" in (self.headers.get("User-Agent") or ""):
+            # amchongtea.com phone (new30x, 16 Oct): a brand homepage with no product cards; its only visible collection
+            # link is an 'Explore Now' tile whose tap does nothing (an animation script swallows it); the collections
+            # are in the ☰ menu. Radar tapped the tile, stayed on '/', found no product card: 'not judged'.
+            body = re.sub(r"<main>.*?</main>", '<main><h1>Where land, legacy and craft come together</h1><a class="explore" '
+                          'href="/collections/kitchen" onclick="event.preventDefault()">Explore Now</a></main>', body, count=1, flags=re.S)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("hamburger_menu", "hamburger_broken", "dead_tile_menu") \
                 and "Mobile" in (self.headers.get("User-Agent") or ""):
             # journey 16, phones only: the header menu hides behind a ☰ button that opens a drawer with the links
             # (hamburger_broken: the button's script throws, the drawer never opens)
@@ -834,12 +998,20 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                           r'<img class="gallery-slide" data-src="\1" width="300" height="300"', body, count=1)
             body = body.replace("</body>", "<script>setTimeout(() => document.querySelectorAll('img.gallery-slide').forEach("
                                 "i => i.src = i.dataset.src), 2000);</script></body>", 1)
-        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("other_market", "other_market_norate", "other_market_offer"):
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode in ("other_market", "other_market_norate", "other_market_offer", "other_market_price_above"):
             body = re.sub(r"₹\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
             body = re.sub(r"Rs\.\s?([\d,]+(?:\.\d\d)?)", lambda m: f"${float(m.group(1).replace(',', '')) * 0.012:,.2f}", body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market_offer" and "/products/" in self.path:
             body = body.replace("</body>", '<div class="offers">Flat ₹250 off | Use code FIRSTBUY. Valid on 1st order only, '
                                 'min. order value ₹2,500</div></body>', 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market_switcher" and "/products/" in self.path:
+            # nakshatrakids.com / tribalornaments.com (new30y, 16 Oct, DOWN): a currency-converter app (not Shopify
+            # Markets: currency INR, rate 1) shows the US visitor '$46.45 USD' in a way the page's text does not carry,
+            # and a 'USD' currency switcher sits in the corner
+            body = re.sub(r'<div class="price">₹([\d,]+\.\d\d)</div>', lambda m: '<div class="price" data-money-convertible></div>'
+                          f'<style>.price::after{{content:"${float(m.group(1).replace(",", "")) * 0.012:,.2f} USD"}}</style>', body, count=1)
+            body = body.replace("</body>", '<div class="currency-switcher" style="position:fixed;left:20px;bottom:20px;background:#fff;'
+                                'padding:6px"><span class="flag">&#127482;&#127480;</span> <span class="code">USD</span></div></body>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market":
             body = body.replace("</head>", "<script>window.Shopify = window.Shopify || {}; Shopify.country = 'US'; "
                                 "Shopify.currency = {active: 'USD', rate: '0.012'};</script></head>", 1)
@@ -1012,6 +1184,25 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   if (document.cookie.includes('geo=stay')) { m.remove(); return; }
   const stay = e => { e.preventDefault(); document.cookie = 'geo=stay;path=/'; m.remove(); };
   m.querySelector('.geo-stay').onclick = stay; m.querySelector('.geo-x').onclick = stay; })();</script></header>""", 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "title_opens_neighbour" and path_now.startswith("/collections/"):
+            # faritha.com phone (new30x, 4 runs) + bytheleaf.in phone (new30z3): tapping a card's NAME opened the NEXT card's
+            # product; the card's image link opens the right one
+            hs = re.findall(r'<a class="card" href="/products/([^"]+)">', body)
+            nxt = {h: hs[i - 1] for i, h in enumerate(hs)} if hs else {}
+            body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
+                f'<div class="card-wrapper" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
+                f'<a class="card__title" href="/products/{m.group(1)}" data-go="/products/{nxt.get(m.group(1), m.group(1))}">{m.group(3)}</a>'
+                f'<a class="card__media" href="/products/{m.group(1)}" style="display:block;height:200px;background:#eee">{m.group(2)}</a>'
+                f'<a class="card__more" href="/products/{m.group(1)}">View</a></div>'),
+                body)
+            body = body.replace("</body>", "<script>document.addEventListener('click', e => { const a = e.target.closest("
+                                "'a.card__title'); if (!a) return; e.preventDefault(); e.stopImmediatePropagation(); "
+                                "location.href = a.dataset.go; }, true);</script></body>", 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "marquee_cards" and path_now.startswith("/collections/"):
+            # hunnit.com desktop (new30z1): product cards ride a marquee that never stops moving; Playwright's click waits
+            # for the card to be still and timed out ('could not click: Locator.click: Timeout 6000ms') 3 times
+            body = body.replace("<main>", '<main><style>@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-300px)}}'
+                                '.mq{animation:mq 1.2s linear infinite alternate;padding-left:420px}</style><div class="mq">', 1).replace("</main>", "</div></main>", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "dead_image_link" and path_now.startswith("/collections/"):
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
                 f'<div class="card-wrapper" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
@@ -1171,13 +1362,17 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             # template with the app drawing the list into it
             return self._send(404, page("Wishlist | Mock Store", '<div id="wishlist-app"><h1>My Wishlist</h1>'
                                         '<p>Your wishlist is empty. Tap the heart on any product to save it here.</p></div>'))
-        if self.mode == "market_path":
+        if self.mode in ("market_path", "market_redirect_all"):
             # amayrajewellery.com (new30n, 14 Oct): Shopify Markets sends the visitor to /en-us/, where every page link
             # carries the prefix and prices are the US market's (+20%); the default market's /products/<h>.js says less
             self.market = path == "/en-us" or path.startswith("/en-us/")
-            if path == "/" and not self.market:
+            # market_redirect_all: khushbujewellers.com (new30x, 16 Oct): every product URL sends the US visitor to the same
+            # product under /en-us/ (Radar warned 'redirects to /en-us/products/... hidden from shoppers')
+            prod = (self.mode == "market_redirect_all" and path.startswith("/products/")
+                    and not path.endswith((".js", ".json")))
+            if (path == "/" or prod) and not self.market:
                 self.send_response(302)
-                self.send_header("Location", "/en-us")
+                self.send_header("Location", "/en-us" + (path if prod else ""))
                 self.end_headers()
                 return
             if self.market:
@@ -1290,8 +1485,17 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                               if self.mode == "broken_section_link" else "") + '</section>'
                                            if self.mode in J15_MODES else "")
                                         + ('<section class="quiz-banner"><a href="/tools/product-finder/match-me">Match me '
-                                           'a cup</a></section>' if self.mode == "app_proxy_page" else ""),
+                                           'a cup</a></section>' if self.mode == "app_proxy_page" else "")
+                                        + ('<section class="deal-banner"><a href="/discount/WOWDEAL">Get 10% off</a></section>'
+                                           if self.mode == "discount_link" else ""),
                                         shopify=self.mode != "not_shopify"), set_cart=new)
+        if path.startswith("/discount/") and self.mode == "discount_link":
+            # daantwale.com (new30z2): a Shopify discount link applies the code and sends the shopper to the homepage
+            self.send_response(302)
+            self.send_header("Location", "/")
+            self.send_header("Set-Cookie", "discount_code=WOWDEAL; Path=/")
+            self.end_headers()
+            return
         if path == "/pages/blank":       # HTTP 200 with a title but nothing on screen (JS crash style)
             return self._send(200, "<!doctype html><html><head><title>Blank | Mock Store</title></head><body><div id=app></div></body></html>")
         if path == "/tools/product-finder/match-me" and self.mode == "app_proxy_page":
@@ -1461,6 +1665,10 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                     if h not in seen:
                         seen.add(h)
                         return self._send(200, "", "text/html")
+                if self.mode == "no_product_images":
+                    return self._json({"id": p["id"], "handle": p["handle"], "title": p["title"], "images": [],
+                                       "featured_image": None,
+                                       "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in self._variants(p)]})
                 return self._json({"id": p["id"], "handle": p["handle"], "title": p["title"],
                                    "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in self._variants(p)]})
             if self.mode == "freebie_type" and h == "free-fabric":      # suta.in: a gift SKU's page, no product image
@@ -1645,6 +1853,8 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
     def _variants(self, p, catalog: bool = False):
         """The product's variants as this mode serves them (journey 22: the vase gains a sold-out size). catalog=True:
         as the store-wide /products.json lists them."""
+        if self.mode == "plain_size_buttons" and p["handle"] == "ceramic-vase":
+            return [dict(v, option2="Natural", title=f"{v['option1']} / Natural") for v in p["variants"]]
         if self.mode == "pack_of_two" and p["handle"] == "ceramic-vase":
             return PACK_VARIANTS
         if self.mode == "stale_catalog_all" and not catalog:
@@ -1726,6 +1936,37 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         "  const v = V.find(x => x.option1 === r.value); if (!v) return;\n  " + act + " })); })();</script>")
 
     def _pdp(self, p):
+        if self.mode == "hidden_price":
+            # somuchliving.com / tastycrafts.in (new30q/s, 15 Oct): the page shows the product, its options and a
+            # disabled 'Unavailable' button, but no price anywhere near the name; the data holds a placeholder price
+            return page(f"{p['title']} | Mock Store",
+                        f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
+                        '<p>Delivery in 3 weeks. Free design customisation.</p><p>Variant sold out or unavailable</p>'
+                        '<button type="button" disabled>Unavailable</button>'
+                        '<div style="height:900px"></div><section class="related"><h2>You may also like</h2>'
+                        '<p>Another piece Rs. 4,500.00</p></section>')
+        if self.mode == "customiser_product":
+            # aesthesy.com (new31a, desktop DOWN): a custom-art product whose page is a builder: 'Create Art That's
+            # Entirely Yours', upload a photo, a disabled 'Continue to Customize'; no price, no cart button, no product name
+            return page(f"{p['title']} | Mock Store",
+                        '<h1>Create Art That\'s Entirely Yours</h1><p>Upload a photo. Choose your style.</p>'
+                        f'<img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
+                        '<div class="upload">Upload one or more photos <input type="file"></div>'
+                        '<textarea placeholder="Got a wild idea? Describe it"></textarea>'
+                        '<button type="button" disabled>Continue to Customize</button>'
+                        f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" name="id" '
+                        f'value="{self._variants(p)[0]["id"]}"></form>'
+                        '<footer><div class="cf-footer" style="display:none">₹' + f'{float(p["price"]):,.2f}' + '</div></footer>')
+        if self.mode == "price_after_choice":
+            # myop.in (new30x, 16 Oct, desktop DOWN): a personalised product hides its price (class 'myop-hidden') and
+            # keeps 'Add to cart' disabled until the shopper picks a perfume and writes a text
+            return page(f"{p['title']} | Mock Store",
+                        f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
+                        f'<div class="product__price my-hidden" style="display:none">₹{float(p["price"]):,.2f}</div>'
+                        '<select name="perfume"><option value="">Choose Perfume</option><option>Oud</option></select>'
+                        '<input type="text" placeholder="Write your text here..."><button type="button" disabled>Add to cart</button>'
+                        '<div style="height:900px"></div><section class="related"><h2>You may also like</h2>'
+                        '<p>Another bottle Rs. 1,500.00</p></section>')
         if self.mode == "price_on_request":
             body = (f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">')
             if p["handle"] == "wooden-spoon-set":     # banjarakasuti.com: no price, no buy, a store-wide notice
@@ -1833,6 +2074,11 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
 </script>"""
         body = (f'{quick}<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="300" height="300" alt="">'
                 f'<div class="price">₹{float(p["price"]):,.2f}</div>{buy}')
+        if self.mode == "other_market_price_above":
+            # khushbujewellers.com (new30x, 16 Oct, both devices DOWN): the converted '$24.00' sits ABOVE the product's
+            # name, and a note in INR elsewhere on the page means 'no ₹ anywhere' never holds
+            body = re.sub(r'(<h1>.*?</h1>)(.*?)(<div class="price">[^<]*</div>)', r'\3\1\2', body, count=1, flags=re.S)
+            body += '<p class="ship-note">Free shipping on orders above INR 999 across India</p>'
         if self.mode in VARIANT_MODES and available and len(self._variants(p)) > 1 and 'id="product-form-template__main"' in buy:
             pills = self._size_pills(p, vid)
             if self.mode == "variant_no_url_push":        # an app-built buy box: no form, no id field
@@ -1852,6 +2098,95 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      '<style>#product-form-template__main button{display:none}</style>'
                      '<script>addEventListener("scroll", () => { if (scrollY > 300) document.getElementById("sticky-atc")'
                      '.style.display = "block"; });</script>')
+        if self.mode == "span_add_to_cart":
+            # costosoitaliano.com (new30v): hidden, empty cart form; the theme's buy control is a
+            # <span class="custom-add-to-cart-btn">Add to Cart</span> far below the name, with no product handle on it
+            body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
+                                     f'name="id" value="{vid}"></form><div style="height:700px"><p>Hand-finished. Ships in 3 days.</p></div>'
+                                     f'<div class="custom-actions"><span class="custom-add-to-cart-btn" onclick="addToCart({vid})" '
+                                     f'style="display:inline-block;padding:10px;background:#222;color:#fff;cursor:pointer">Add to Cart</span></div>')
+        if self.mode == "marketplace_hidden_cart":
+            # saumyasstores.com (new31a, both devices): the price shows, the cart buttons are hidden, and the only buy
+            # control is 'View On Amazon'
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" style="display:none">Add to cart</button>'
+                                '<a class="amz" href="https://www.amazon.in/dp/B0MOCK123" target="_blank">View On Amazon</a>', 1)
+        if self.mode == "needs_photo_upload":
+            # cartwala.in (new31d, both devices): a personalised mouse pad; 'Add to cart' stays disabled until the shopper
+            # uploads a photo (a styled 'Upload your photo' label over a hidden file input, outside the cart form)
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" disabled>Add to cart</button>', 1)
+            body += ('<div class="personalizer"><label class="upload-btn" style="display:inline-block;padding:10px;border:1px dashed #999">'
+                     'Upload your photo<input type="file" accept="image/*" style="display:none"></label></div>'
+                     # cartwala.in re-test: the app's real file input sits hidden deep inside a hidden step panel
+                     # (cartwala.in, 2nd re-test: nothing above it is visible until 'Personalise' opens the app's modal)
+                     '<div class="cl-modal" style="display:none">' + '<div>' * 7 + '<input type="file" accept="image/*">' + '</div>' * 7 + '</div>'
+
+                     '<button type="button" class="cl-open">Personalise</button></div>')
+            body = body.replace('Upload your photo<input type="file" accept="image/*" style="display:none"></label>',
+                                'Upload your photo</label>', 1) if self.mode == "needs_photo_upload" else body
+        if self.mode == "needs_dimensions":
+            # giffywalls.in (new30z5, both devices): a wallpaper mural sold by the square foot; 'Add to cart' stays
+            # disabled until the shopper types the wall's width and height
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<label>Wall width (ft) <input type="number" class="dim" name="properties[Width]" placeholder="Width"></label>'
+                                '<label>Wall height (ft) <input type="number" class="dim" name="properties[Height]" placeholder="Height"></label>'
+                                '<button type="submit" name="add" disabled>Add to cart</button>'
+                                '<script>document.addEventListener("input", () => { const d = [...document.querySelectorAll(".dim")]; '
+                                'document.querySelector("[name=add]").disabled = !d.every(i => i.value); });</script>', 1)
+        if self.mode == "bundle_builder":
+            # orbiz.in (new30z2, both devices): a 'build your crew' product; its only button 'Pick 6 buddies' stays
+            # disabled until the shopper picks six figures
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<div class="odb-tray"><span></span><span></span></div>'
+                                '<button type="button" id="odb-go" disabled>Pick 6 buddies<br><small>Crew of 6</small></button>', 1)
+        if self.mode == "disabled_form_icon_bar":
+            # popees.com phone (new30z5): the form's button stays disabled; the sticky bar's add-to-cart is a bag icon
+            # with no words, only its class says what it does
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" disabled>Add to cart</button>', 1)
+            body += (f'<div class="sticky-bar" style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px">'
+                     f'<span>9-12 M</span><button type="button" class="sticky-bar__add-to-cart" onclick="addToCart({vid})">'
+                     '<svg width="24" height="24"><rect width="20" height="16" y="6" fill="#e91e63"/></svg></button></div>')
+        if self.mode == "disabled_form_bar_on_scroll":
+            # adachikan.com phone (new30z1): the form's 'BUY IT NOW' is disabled; the enabled 'ADD TO CART' sits in a
+            # sticky bar that only appears once the shopper scrolls
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" disabled>Buy it now</button>', 1)
+            body += (f'<div style="height:1600px"></div><div class="sticky-atc" style="display:none;position:fixed;bottom:0;left:0;right:0;'
+                     f'background:#fff;padding:8px"><button type="button" class="sticky-atc__btn" onclick="addToCart({vid})">'
+                     'ADD TO CART</button></div><script>addEventListener("scroll", () => { document.querySelector(".sticky-atc")'
+                     '.style.display = scrollY > 150 ? "block" : "none"; });</script>')
+        if self.mode == "disabled_form_enabled_bar":
+            # arabianaroma.in (new30v): the form's own button stays disabled; an enabled sticky 'Add to cart' is the real one
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" disabled>Add to cart</button>', 1)
+            body += (f'<div class="sticky-atc" style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px">'
+                     f'<button type="button" class="sticky-atc__btn" onclick="addToCart({vid})">Add to cart</button></div>')
+        if self.mode == "hidden_buttons_product":
+            # saralhome.com (new31c, NOT JUDGED): 'FREE TABLE MAT', a freebie; its cart form keeps Add to Cart / BUY NOW,
+            # all hidden, and the page shows no other buy control
+            body = body.replace('<button type="submit" name="add">Add to cart</button>',
+                                '<button type="submit" name="add" style="display:none">Add to Cart</button>'
+                                '<button type="button" style="display:none">BUY NOW</button>', 1)
+            body += '<button type="button" class="accordion-header">Additional Information</button>'   # not an 'add' button
+        if self.mode == "gift_only_product":
+            # nubronicforte.com (new30t): the 'Performance Kit' gift's page: a hidden, empty cart form, no buy control
+            body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
+                                     f'name="id" value="{vid}"></form><p>Complimentary with every order. Auto-added at checkout.</p>')
+        if self.mode == "cod_form_only":
+            # shopkara.store (new30p/t): a hidden, buttonless cart form; the only buy control is a COD order-form app's
+            # 'Order Now - Cash on Delivery' popup button
+            body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
+                                     f'name="id" value="{vid}"></form><div class="es-popup-button" style="cursor:pointer;'
+                                     f'padding:10px;background:#0a0;color:#fff;width:260px">Order Now - Cash on Delivery</div>')
+        if self.mode == "hidden_form_app_button":
+            # shopkara.store (new30p) / nubronicforte.com (new30t): the product's own cart form is there but hidden and
+            # holds no button; the buy control a shopper uses is an app's element outside the form
+            body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
+                                     f'name="id" value="{vid}"></form><div class="pdp-addtobag-btn active" '
+                                     f'data-product-handle="{p["handle"]}" onclick="addToCart({vid})" style="cursor:pointer;'
+                                     f'padding:10px;background:#222;color:#fff;width:200px"><span class="atc-text">ADD TO CART</span></div>')
         if self.mode == "div_buy_control":
             others = [x for x in PRODUCTS if x["handle"] != p["handle"] and float(x["price"]) > 0][:3]
             recs = "".join(f'<div class="rec-card"><a href="/products/{x["handle"]}">{x["title"]}</a>'

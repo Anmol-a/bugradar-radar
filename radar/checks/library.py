@@ -25,7 +25,7 @@ from radar.core.models import StepResult
 from radar.discovery.shopify_data import (parse_product_data, price_ok, assess_add, parse_sent_variant_ids,
                                           rupees, norm_text, prices_in_text)
 from radar.core.overlays import dismiss_overlays, AgeGate
-from radar.healing.locator import Healer, QUICK_SEL, LocatorNotFound, OTHER_CARD_FN
+from radar.healing.locator import Healer, QUICK_SEL, LocatorNotFound, OTHER_CARD_FN, not_page
 
 
 class PincodeGate(Exception):
@@ -40,18 +40,38 @@ class CatalogOnly(Exception):
     BLOCKED with the reason, never a store failure (Shopify's products.json still lists prices)."""
 
 
-MARKETPLACE_JS = r"""() => { const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+MARKETPLACE_JS = r"""(TITLE) => { const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
   const scope = [...document.querySelectorAll('a[href]')].filter(a => vis(a) && !a.closest('footer, header, nav'));
   const mk = scope.filter(a => /(^|\.)(amazon\.(in|com)|amzn\.(in|to)|flipkart\.com|myntra\.com|nykaa\.com|ajio\.com|meesho\.com|jiomart\.com|tatacliq\.com|blinkit\.com|zeptonow\.com|swiggy\.com|bigbasket\.com)$/i
                                .test((() => { try { return new URL(a.href).hostname; } catch (e) { return ''; } })()))
                  .map(a => (a.innerText || a.getAttribute('aria-label') || new URL(a.href).hostname).trim().slice(0, 30));
-  const own = [...document.querySelectorAll('form[action*="/cart/add"] button, form[action*="/cart/add"] input[type=submit], button, [role=button]')]
-    .some(b => vis(b) && !b.closest('header, footer, nav') && /add to (cart|bag|basket)|buy (it )?now|^add$|^buy$/i.test((b.innerText || b.value || '').trim()));
+  const buys = [...document.querySelectorAll('form[action*="/cart/add"] button, form[action*="/cart/add"] input[type=submit], button, [role=button]')]
+    .filter(b => vis(b) && !b.closest('header, footer, nav') && /add to (cart|bag|basket)|buy (it )?now|^add$|^buy$/i.test((b.innerText || b.value || '').trim()));
+  // a buy button a shopper cannot press is no buy button (myop.in, new30x: price hidden and 'Add to cart' disabled
+  // until a perfume is chosen)
+  const off = b => b.disabled || b.getAttribute('aria-disabled') === 'true';
+  const own = buys.some(b => !off(b)), own_disabled = !own && buys.length > 0;
+  // a builder page (aesthesy.com, new31a: upload a photo, then a disabled 'Continue to Customize'): the product is made
+  // from the shopper's own material, priced after the builder
+  const builder = [...document.querySelectorAll('button, [role=button], a, input[type=submit]')].find(b => vis(b)
+    && !b.closest('header, footer, nav') && /customi[sz]e|personali[sz]e|upload|design (it|yours)|create (yours|your)/i.test((b.innerText || b.value || '').trim().slice(0, 40)));
+  const upload = !!document.querySelector('input[type=file]');
   const main = document.querySelector('main, [role=main], #MainContent') || document.body;
   const so = ((main.innerText || '').match(/\b(shop (now )?on|available on|buy (it )?on|also available on)\s*:/i) || [])[0];
   const ask = (((document.body.innerText || '').match(/\b(price (up)?on request|request (a |the )?price|(enquire|inquire|call|contact us) for (the )?price|no longer (accepting|taking) (online )?orders|not (accepting|taking) online orders)\b/i) || [])[0]);
-  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, shop_on: so || null, ask: ask || null}; }"""
+  // a pre-launch product (atovio.in, new31f: 'Coming Soon' badge, no price, 'Notify me'): not on sale yet
+  const soon = (((main.innerText || '').match(/\b(coming soon|launching soon|notify me when (it'?s )?available|pre-?launch)\b/i) || [])[0]) || null;
+  // the product's own block = the text from its name to 600 characters after it (related products further down show
+  // their own prices): no ₹ / Rs / INR price there = the store shows no price for this product at all
+  const flat = (main.innerText || '').replace(/\s+/g, ' '), low = flat.toLowerCase();
+  const at = TITLE ? low.indexOf(TITLE.toLowerCase().replace(/\s+/g, ' ').slice(0, 40)) : -1;
+  let near = at >= 0 ? flat.slice(at, at + 600) : '';
+  const cut = near.search(/you may also like|related products|recommended|customers also|frequently bought|similar products|complete the (look|set)/i);
+  if (cut > 0) near = near.slice(0, cut);
+  const no_price = at >= 0 && !/(?:₹|Rs\.?|INR)\s?\d/i.test(near);
+  return {marketplaces: [...new Set(mk)].slice(0, 4), own_buy: own, own_disabled, shop_on: so || null, ask: ask || null, no_price, soon,
+          builder: builder && (upload || builder.disabled) ? (builder.innerText || builder.value || '').trim().slice(0, 40) : null}; }"""
 
 
 def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
@@ -71,6 +91,18 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
         const at = title ? norm(t).indexOf(norm(title)) : -1;
         if (!foreign && at >= 0) { const w = t.replace(/\s+/g, ' ').slice(at, at + title.length + 160);
           const m = w.match(fx); if (m && !rx.test(w.slice(0, w.indexOf(m[0])))) foreign = m[0]; }
+        // the price can sit ABOVE the name (khushbujewellers.com, new30x: '$24.00' then the name; an 'INR' note
+        // elsewhere): the 120 characters before the name, with no ₹ price in them, count too
+        if (!foreign && at >= 0) { const b = t.replace(/\s+/g, ' ').slice(Math.max(0, at - 120), at);
+          const m = b.match(new RegExp(fx.source, 'g')); if (m && !rx.test(b)) foreign = m[m.length - 1]; }
+        // a currency-converter app (not Shopify Markets: currency INR, rate 1) may draw the converted price where the
+        // page's text does not carry it (nakshatrakids.com, new30y: '$46.45 USD' on screen, 'not on page' in the text);
+        // its switcher showing a foreign currency code on screen is the evidence
+        if (!foreign) for (const e of document.querySelectorAll('body *')) {
+          if (e.children.length > 2) continue; const x = (e.innerText || '').trim();
+          if (!/^(?:\S{1,4}\s)?(USD|EUR|GBP|AED|CAD|AUD|SGD)(?:\s?[$€£])?$/.test(x)) continue;
+          const r = e.getBoundingClientRect(), st = getComputedStyle(e);
+          if (r.width > 0 && r.height > 0 && st.visibility !== 'hidden') { foreign = x.match(/USD|EUR|GBP|AED|CAD|AUD|SGD/)[0] + ' (currency switcher on screen)'; break; } }
         return {active: c.active || '', rate: parseFloat(c.rate || '1') || 1, country: (window.Shopify || {}).country || '',
                 foreign}; }""", title) or {}
     active = (cur.get("active") or "").upper()
@@ -79,7 +111,9 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
         raise OtherMarket(f"location (US runner): the store shows this visitor prices in {active or 'another currency'}{shown}, "
                           f"market {cur.get('country') or '?'}, rate {cur.get('rate', 1):g}; the catalog price in ₹ is not on "
                           "the page. Radar's cloud machines are in the US: check from India")
-    m = ctx.sess.evaluate(MARKETPLACE_JS) or {}
+    m = ctx.sess.evaluate(MARKETPLACE_JS, title or "") or {}
+    if m.get("soon") and (m.get("no_price") or not m.get("own_buy")):
+        raise CatalogOnly(f"not tested: the product page shows no price and says {m['soon']!r}: it is not on sale yet")
     if m.get("own_buy"):
         return
     if m.get("marketplaces"):
@@ -92,6 +126,17 @@ def _raise_if_catalog_only(ctx: Ctx, title: str = "") -> None:
         raise CatalogOnly(        # online orders' (new30n 14 Oct): the price is hidden on purpose, nothing to buy here
             f"not tested: the product page shows no price and no buy button, only {m['ask']!r}: the store does not "
             "sell this product online at a listed price")
+    if m.get("builder"):
+        raise CatalogOnly(f"not tested: this product is made from the shopper's own material through a builder "
+                          f"({m['builder']!r}); its price comes after the builder, and Radar never uploads or fills forms")
+    if m.get("no_price") and m.get("own_disabled"):
+        raise CatalogOnly(
+            "not tested: the product page shows no price for this product and its buy button is disabled (the store "
+            "shows both only after the shopper makes a choice, such as a personalised product): no listed price to check")
+    if m.get("no_price"):        # Anmol, 15 Oct: somuchliving.com (beds) and tastycrafts.in (₹1,00,000 placeholder):
+        raise CatalogOnly(        # no price anywhere near the product's name and no buy button = enquiry-only, not DOWN
+            "not tested: the product page shows no price for this product and no buy button (the store's data holds a "
+            "placeholder price): it is not sold online at a listed price")
 
 
 class OtherMarket(Exception):
@@ -386,7 +431,7 @@ def _js_errors(ctx: Ctx):
 def title_match(catalog: str, heading: str, page_text: str) -> tuple[bool, str]:
     """Catalog title vs what the page shows. Tolerant of spacing/punctuation ('50 ml' = '50ml') and of
     shorter display names. Pure, unit-tested."""
-    compact = lambda s: re.sub(r"[^a-z0-9]+", "", (s or "").lower())
+    compact = lambda s: re.sub(r"[\W_]+", "", (s or "").lower())      # any script's letters (Marathi titles)
     c, h, pg = compact(catalog), compact(heading), compact(page_text)
     if c and (c in pg or (h and (h in c or c in h))):
         return True, "same title"
@@ -593,7 +638,7 @@ OWN_CONTROL_JS = r"""([handle, ids, pid, quick]) => {
     return false; };
   const all = [...document.querySelectorAll('button, a, [role="button"], input[type=submit], div, span')]
     .filter(e => words.test(txt(e)) && txt(e).length <= 25 && vis(e)
-      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), [class*="mini-cart" i]:not(body):not(html)')
       && !otherCard(e, quick));
   const inner = all.filter(e => !all.some(o => o !== e && e.contains(o)));
   for (const e of inner) {
@@ -618,10 +663,16 @@ ENABLED_ADD_JS = r"""([quick]) => {
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
   const fixed = e => { for (let a = e; a && a !== document.body; a = a.parentElement) {
       const p = getComputedStyle(a).position; if (p === 'fixed' || p === 'sticky') return 1; } return 0; };
-  const c = [...document.querySelectorAll('button, input[type=submit], [role="button"]')]
-    .filter(e => /^add to (cart|bag|basket)$/i.test(txt(e)) && vis(e)
+  // + a theme's own <span>/<div>/<a> button ('<span class="custom-add-to-cart-btn">Add to Cart</span>',
+  // costosoitaliano.com new30v): exact wording, and a class that names a button or the cart
+  const c = [...document.querySelectorAll('button, input[type=submit], [role="button"], span[class*="cart" i], span[class*="btn" i], '
+                                       + 'div[class*="cart" i], div[class*="btn" i], a[class*="cart" i], a[class*="btn" i]')]
+    // + an icon-only add-to-cart in a sticky bar (popees.com phone, new30z5: a bag+ icon, no words): named by its class
+    .filter(e => (/^add to (cart|bag|basket)$/i.test(txt(e)) || (!txt(e) && e.matches('button, [role="button"]') && fixed(e)
+                  && /add[-_ ]?to[-_ ]?(cart|bag)|addtocart|\batc\b|[-_]atc/i.test((typeof e.className === 'string' ? e.className : '') + ' ' + (e.id || '') + ' ' + (e.name || ''))))
+      && vis(e) && !(e.parentElement && /^add to (cart|bag|basket)$/i.test(txt(e.parentElement)) && e.parentElement.matches('button, [role="button"], [class*="cart" i], [class*="btn" i]'))
       && !(e.disabled || e.getAttribute('aria-disabled') === 'true')
-      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), [class*="mini-cart" i]:not(body):not(html)')
       && !otherCard(e, quick))
     .sort((x, y) => fixed(y) - fixed(x));
   if (!c.length) return null;
@@ -695,6 +746,15 @@ CHOOSE_JS = r"""([values, quick]) => {
               && e.closest('[class*="variant" i], [class*="swatch" i], [class*="option" i], variant-selects, variant-radios')
               && ((e.getAttribute('data-value') || e.getAttribute('data-option-value') || e.innerText || '').trim().toLowerCase() === low));
     if (btn) { btn.click(); used.add(btn); done.push('button ' + v); return true; }
+    // a picker row whose box names neither 'variant' nor 'option' (sntvl.com, new30r: sizes as plain <button>s in a
+    // 'pdp-sizes' box): a visible button whose own text is the value, beside at least one sibling button of the same
+    // kind, never in the header / nav / footer / cart drawer
+    const row = [...document.querySelectorAll('button, [role="radio"], [role="button"], label, li')]
+      .find(e => ok(e) && vis(e) && !used.has(e) && !e.closest('header, nav, footer, form[action*="/search"], cart-drawer, [id*="cart-drawer" i]:not(body):not(html)')
+              && (e.innerText || '').trim().toLowerCase() === low && e.parentElement
+              && [...e.parentElement.children].filter(x => x !== e && x.tagName === e.tagName && vis(x)
+                                                           && (x.innerText || '').trim().length <= 24).length >= 1);
+    if (row) { row.click(); used.add(row); done.push('button ' + v); return true; }
     return false; };
   for (const val of values) {
     const v = String(val).trim();
@@ -704,6 +764,50 @@ CHOOSE_JS = r"""([values, quick]) => {
   }
   return done;
 }"""
+
+
+# Empty fields the shopper fills in before the buy button wakes up (giffywalls.in: wall width / height): visible,
+# empty text / number inputs or unchosen selects in THIS product's cart form (or line-item properties[...] fields
+# anywhere), never a pincode / email / search / quantity box
+# evidence when the buy button stays disabled and no empty field was found (cartwala.in re-test, new31d): what the
+# product area holds in the way of fields, uploads and app frames
+FIELDS_EVIDENCE_JS = r"""() => { const m = document.querySelector('main, [role=main], #MainContent') || document.body;
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+  const f = [...m.querySelectorAll('input, select, textarea')].filter(e => !/^(hidden|submit|button|radio|checkbox)$/i.test(e.type || ''))
+    .slice(0, 6).map(e => (e.tagName.toLowerCase() + ':' + (e.type || '') + (vis(e) ? '' : ' hidden') + ' ' + (e.name || e.placeholder || '').slice(0, 20)).trim());
+  const fr = [...m.querySelectorAll('iframe')].filter(vis).map(i => (i.src || '').replace(/^https?:\/\//, '').slice(0, 30));
+  return (f.length || fr.length) ? ' (fields on the page: ' + (f.join(', ') || 'none') + (fr.length ? '; app frames: ' + fr.slice(0, 3).join(', ') : '') + ')' : ''; }"""
+
+
+NEEDS_INPUT_JS = r"""(ids) => { const mine = new Set(ids.map(String));
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0 && getComputedStyle(e).visibility !== 'hidden'; };
+  const forms = [...document.querySelectorAll('form[action*="/cart/add"]')].filter(f => mine.has(String((f.querySelector('[name="id"]') || {}).value)));
+  const inForm = e => forms.some(f => f.contains(e) || (f.id && e.getAttribute('form') === f.id));
+  const out = [];
+  for (const e of document.querySelectorAll('input, select, textarea')) {
+    const n = (e.name || '') + ' ' + (e.placeholder || '') + ' ' + (e.id || '') + ' ' + (e.getAttribute('aria-label') || '');
+    if (!(inForm(e) || /^properties\[/.test(e.name || ''))) continue;
+    if (!vis(e) || e.disabled || /pin ?code|zip|postal|e-?mail|search|quantity|^ *qty|coupon|discount/i.test(n)) continue;
+    if (e.tagName === 'INPUT' && !/^(text|number|tel|)$/i.test(e.type || '')) continue;
+    if (e.tagName === 'SELECT' ? e.value : (e.value || '').trim()) continue;
+    if (e.tagName === 'SELECT' && /^id$/.test(e.name)) continue;
+    const lab = (e.labels && e.labels[0] && e.labels[0].innerText) || e.placeholder || e.getAttribute('aria-label') || e.name;
+    out.push(JSON.stringify((lab || '').trim().replace(/\s+/g, ' ').slice(0, 30)));
+  }
+  // cartwala.in (new31d): a personalised product waits for a photo: a file input (often hidden under a styled label)
+  // in the page's main area whose label / container is on screen
+  for (const f of document.querySelectorAll('input[type=file]')) {
+    if (f.files && f.files.length) continue;
+    let host = f.closest('label') || f.parentElement; if (!host || host.closest('header, footer, nav')) continue;
+    // never a review / comment widget's photo field (they keep hidden file inputs on every product page)
+    if (f.closest('[class*="review" i], [id*="review" i], [class*="jdgm" i], [class*="comment" i], [class*="testimonial" i]')) continue;
+    // a personaliser app keeps its file input in a panel that opens from its own button (cartwala.in, 2 re-tests:
+    // 'input:file hidden', nothing visible above it): with the buy button disabled, the photo is what it waits for
+    for (let k = 0; host && !vis(host) && k < 6; k++) host = host.parentElement;
+    if (!host || host === document.body) host = f;
+    out.push(JSON.stringify(((host.innerText || '').trim().replace(/\s+/g, ' ') || 'a photo upload').slice(0, 30)) + ' (a photo upload)');
+    break; }
+  return out.length ? out : null; }"""
 
 
 def _ensure_variant(ctx: Ctx, product: dict) -> dict:
@@ -753,17 +857,65 @@ def _ensure_variant(ctx: Ctx, product: dict) -> dict:
                        f"{got} after choosing {', '.join(picked) or 'nothing'}; buy button disabled until the shopper "
                        f"checks a delivery pincode", True)
             return dict(target, _pincode_gate=gate)
+    enabled_elsewhere = None
+    if right and st["disabled"]:
+        # giffywalls.in (new30z5): a mural's 'Add to cart' waits for the wall's width and height the shopper types in:
+        # Radar never fills forms, so the product is not tested (empty visible fields of the product form, named)
+        need = ctx.sess.evaluate(NEEDS_INPUT_JS, ids)
+        if need:
+            raise CatalogOnly(f"not tested: this product's buy button stays disabled until the shopper fills in "
+                              f"{', '.join(need[:3])} (made to measure / personalised); Radar never fills forms")
+    if right and st["disabled"]:
+        # arabianaroma.in (new30v, both devices, 3 products): the form's own button stays disabled while the page shows
+        # an enabled 'Add to cart' a shopper uses (the buy-button step and the cart check judge that one)
+        enabled_elsewhere = _enabled_add(ctx)
     ctx.expect("variant selected like a shopper", f"{target['id']} ({' / '.join(values) or target.get('title')})",
                f"{got} after choosing {', '.join(picked) or 'nothing (no matching picker)'}"
-               + ("; but the buy button is still disabled" if right and st["disabled"] else ""),
-               right and not st["disabled"])
+               + (f"; the form's own button is disabled, the page's enabled <{enabled_elsewhere['tag']}> "
+                  f"{enabled_elsewhere['text']!r} is the one a shopper uses" if enabled_elsewhere
+                  else "; but the buy button is still disabled" + (ctx.sess.evaluate(FIELDS_EVIDENCE_JS) or "")
+                  if right and st["disabled"] else ""),
+               right and (not st["disabled"] or bool(enabled_elsewhere)))
     return target
+
+
+# A buy button that waits for the shopper's picks ('Pick 6 buddies': orbiz.in new30z2; 'Choose your flavours'): disabled
+# until a choice is made, so it is not a broken button but a product Radar cannot buy without choosing for the shopper
+CHOICE_RX = re.compile(r"^\s*(pick|choose|select)\b|\b(pick|choose|select)\s+(\d+|any \d+|a|an|your)\b", re.I)
+
+
+def _raise_if_waits_for_choice(text: str) -> None:
+    t = re.sub(r"\s+", " ", text or "").strip()
+    if t and CHOICE_RX.search(t[:60]):
+        raise CatalogOnly(f"not tested: this product's buy button {t[:40]!r} stays disabled until the shopper makes "
+                          "their picks (a build-your-own bundle): no single product to put in the cart without choosing")
+
+
+def _enabled_add(ctx: Ctx):
+    """The page's enabled 'Add to cart' for this product, scrolling like a shopper when none shows yet: adachikan.com
+    phone (new30z1) shows its enabled 'ADD TO CART' bar only once the shopper scrolls, while the form's own
+    'BUY IT NOW' is disabled."""
+    alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+    for _ in range(3):
+        if alt:
+            break
+        ctx.sess.page.evaluate("() => window.scrollBy(0, Math.round(innerHeight * 0.6))")
+        ctx.sess.page.wait_for_timeout(400)
+        alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+    return alt
 
 
 def _expect_buy_enabled(ctx: Ctx, loc):
     """'buy button enabled', and when it is NOT: name the button Radar read and any enabled one for the same
     product, so a disabled-button failure is diagnosable from run.json alone (littleboxindia.com mobile)."""
     en = loc.is_enabled()
+    if not en:
+        try:
+            _raise_if_waits_for_choice(loc.inner_text(timeout=2000))
+        except CatalogOnly:
+            raise
+        except Exception:  # noqa: BLE001  detached: judged as before
+            pass
     ctx.expect("buy button enabled", True, True if en else f"False ({ctx.buy_evidence or 'button found by the healer'})", en)
 
 
@@ -777,8 +929,16 @@ def _main_buy_button(ctx: Ctx, product: dict):
     ctx.buy_evidence = ""
     # A page WITH a Shopify form for this product keeps the old path (healer for a renamed/moved button); the
     # page's-own-control rule is only for pages that have no such form at all (nicobar.com's div control).
+    # A form for this product that is hidden AND holds no button (and no [form=id] button outside it) is no buy control:
+    # shopkara.store (new30p) / nubronicforte.com (new30t) keep such a form while an app's element is the real button
     has_form = ctx.sess.evaluate("""(ids) => { const mine = new Set(ids.map(String));
-        return [...document.querySelectorAll('[name="id"]')].some(i => mine.has(String(i.value || ''))); }""", ids)
+        const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
+        return [...document.querySelectorAll('[name="id"]')].some(i => { if (!mine.has(String(i.value || ''))) return false;
+          const f = i.closest('form'); if (!f) return true;
+          const fid = f.getAttribute('id') || '';
+          const btn = f.querySelector('button, input[type=submit], [role=button]')
+                      || (fid && document.querySelector('[form="' + CSS.escape(fid) + '"]'));
+          return !!btn || vis(f); }); }""", ids)
     # Not visible yet? A shopper scrolls: themes show the buy button in a sticky bar only after scrolling
     # (true-elements.com, held-out run 7 Oct: the form's own button is hidden on desktop).
     for step in range(5):
@@ -795,6 +955,21 @@ def _main_buy_button(ctx: Ctx, product: dict):
         found = ctx.sess.evaluate(MAIN_BUY_JS, [ids, QUICK_SEL])
     if found:
         loc = page.locator('[data-radar-target="buy"]').first
+        try:
+            form_on = loc.is_enabled()
+        except Exception:  # noqa: BLE001
+            form_on = True
+        if not form_on:
+            # arabianaroma.in (new30v): the form's own button stays disabled while the page's enabled 'Add to cart'
+            # (a sticky bar / app button) is the one a shopper uses; the cart check verifies what it adds
+            alt = _enabled_add(ctx)
+            if alt:
+                ctx.buy_evidence = (f"form #{found['form'][-24:]} button {found['text']!r} is disabled; the page's enabled "
+                                    f"<{alt['tag']}> {alt['text']!r} is used")
+                return (page.locator('[data-radar-target="buy"]').first,
+                        f"enabled <{alt['tag']}> {alt['text']!r}" + (" (sticky bar)" if alt["sticky"] else "")
+                        + f"; the product form's own button is disabled — the cart check verifies what it adds", None)
+
         # enabled others FIRST: the evidence is clipped to 160 chars in run.json (crossbeats.com, loop cycle 8: the
         # enabled button's text was cut off behind a 47-char form id)
         ctx.buy_evidence = ((f"enabled for this product but not add-to-cart wording: {', '.join(found['enabled_others'])}; "
@@ -811,17 +986,69 @@ def _main_buy_button(ctx: Ctx, product: dict):
     try:
         f = ctx.healer.find(page, "add_to_cart")
     except LocatorNotFound as e:
+        alt = ctx.sess.evaluate(ENABLED_ADD_JS, [QUICK_SEL])
+        if alt and alt.get("count") == 1:     # one enabled 'Add to cart' on the page, not on another product's card
+            ctx.buy_evidence = f"the page's only enabled add-to-cart <{alt['tag']}> {alt['text']!r}"
+            return (page.locator('[data-radar-target="buy"]').first,
+                    f"the page's only enabled <{alt['tag']}> {alt['text']!r}" + (" (sticky bar)" if alt["sticky"] else "")
+                    + " (no Shopify cart button; the cart check verifies what it adds)", None)
         # Say exactly what is (not) there, so nobody has to guess whose problem it is (mcaffeine.com, bench 3).
-        st = ctx.sess.evaluate("""(ids) => { const mine = new Set(ids.map(String)); let own = 0, other = 0;
+        # + what the product's own form holds (shopkara.store new30p, nubronicforte.com new30t: 'a form for this product
+        # but no buy button Radar could use' and nothing more to go on): its buttons, visible / disabled, and any
+        # [form=<id>] button outside it
+        st = ctx.sess.evaluate("""([ids, quick]) => { const mine = new Set(ids.map(String)); let own = 0, other = 0; const seen = [];
+            const vis = e => { const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; };
             for (const f of document.querySelectorAll('form[action*="/cart/add"]')) {
-              const v = (f.querySelector('[name="id"]') || {}).value; if (mine.has(String(v))) own++; else other++; }
-            return {own, other}; }""", ids) or {"own": 0, "other": 0}
+              const v = (f.querySelector('[name="id"]') || {}).value; if (mine.has(String(v))) own++; else { other++; continue; }
+              const fid = f.getAttribute('id') || '';
+              const bs = [...f.querySelectorAll('button, input[type=submit], [role=button], a')]
+                .concat(fid ? [...document.querySelectorAll('[form="' + CSS.escape(fid) + '"]')] : []);
+              for (const b of bs.slice(0, 4)) seen.push('<' + b.tagName.toLowerCase() + '> ' + JSON.stringify(((b.innerText || b.value
+                || b.getAttribute('aria-label') || '').trim()).slice(0, 24)) + (vis(b) ? '' : ' hidden') + (b.disabled ? ' disabled' : ''));
+              if (!bs.length) seen.push('no button in the form' + (vis(f) ? '' : ' (form hidden)'));
+            }
+            const ctl = [...document.querySelectorAll('button, a, [role=button], [onclick], input[type=submit], [class*="btn" i], [class*="button" i]')]
+              .filter(e => vis(e) && !e.closest('header, footer, nav, cart-drawer, [id*="cart-drawer" i]:not(body):not(html)') && !e.closest(quick)
+                      // whole words: 'Additional Information' is not 'add' (saralhome.com freebie, new31c re-test)
+                      && /\\b(cart|bag|basket|buy|order|checkout|add)\\b/i.test((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 40)))
+              .slice(0, 5).map(e => '<' + e.tagName.toLowerCase() + (typeof e.className === 'string' && e.className.trim()
+                ? '.' + e.className.trim().split(/\s+/)[0] : '') + '> ' + JSON.stringify((e.innerText || e.value || e.getAttribute('aria-label') || '').trim().slice(0, 24)));
+            return {own, other, seen: seen.slice(0, 5), ctl}; }""", [ids, QUICK_SEL]) or {"own": 0, "other": 0, "seen": [], "ctl": []}
+        # shopkara.store (new30p/t, 15 Oct): no cart button at all, only an order-form app's 'Order Now - Cash on
+        # Delivery' (a popup the shopper fills in): the product is sold through a form Radar never fills = not tested
+        cod = [c for c in (st.get("ctl") or []) if re.search(r"cash on deliver|\bcod\b|order now|place order", c, re.I)]
+        if cod and len(cod) == len(st.get("ctl") or []):
+            raise CatalogOnly(f"not tested: this product is sold only through an order-form app ({cod[0]}): the shopper "
+                              "fills in a form instead of using a cart, and Radar never fills or submits forms")
+        # nubronicforte.com (new30t, 15 Oct): Radar picked the 'Performance Kit', a gift the store adds to orders on its
+        # own ('Complimentary Performance Kit', 'Free Gift Auto Added' on the main product); its page has a hidden, empty
+        # cart form and no buy control anywhere = the store does not sell it on its own: not tested, never not-judged
+        if st["own"] and not st.get("ctl") and all("no button in the form (form hidden)" in x or x.endswith(" hidden")
+                                                   for x in (st.get("seen") or ["?"])):
+            # + saralhome.com (new31c): 'FREE TABLE MAT', a freebie whose form keeps its buttons, all hidden
+            raise CatalogOnly("not tested: this product's page offers no way to buy it (its cart form is hidden and "
+                              "empty or its buttons are all hidden, and the page shows no buy control): a gift or add-on "
+                              "the store adds by itself")
+        # saumyasstores.com (new31a): the cart buttons are hidden and the only buy control is 'View On Amazon'
+        mk = ctx.sess.evaluate(MARKETPLACE_JS, product.get("title") or "") or {}
+        if mk.get("marketplaces"):          # this product has no usable buy button (established above)
+            raise CatalogOnly("not tested: this product's own cart buttons are hidden and the page sends shoppers to "
+                              f"marketplaces ({', '.join(mk['marketplaces'])}): the store sells it there, not on its own site")
+        waits = ctx.sess.evaluate("""() => [...document.querySelectorAll('button, [role=button], input[type=submit]')]
+            .filter(b => (b.disabled || b.getAttribute('aria-disabled') === 'true') && b.getBoundingClientRect().width > 0
+                         && !b.closest('header, footer, nav'))
+            .map(b => (b.innerText || b.value || '').trim()).slice(0, 8)""") or []
+        for w in waits:
+            _raise_if_waits_for_choice(w)
         # verdict rule (13 Oct): no buy control Radar can find is not proof there is none: NOT JUDGED with the facts
         raise NotJudged("add-to-cart control for THIS product on its page: "
                         + ("none: no add-to-cart form for this product" if not st["own"]
-                           else f"{st['own']} add-to-cart form(s) for this product, but no buy button Radar could use")
+                           else f"{st['own']} add-to-cart form(s) for this product, but no buy button Radar could use"
+                           + (f" (the form holds: {'; '.join(st.get('seen') or [])})" if st.get("seen") else ""))
                         + (f" ({st['other']} such forms belong to other products' cards)" if st["other"] else "")
-                        + "; no other buy control found" + ("; LLM healing disabled" if "LLM healing disabled" in str(e) else "")) from e
+                        + "; no other buy control found"
+                        + (f"; buy-like controls on the page: {', '.join(st.get('ctl') or [])}" if st.get("ctl") else "")
+                        + ("; LLM healing disabled" if "LLM healing disabled" in str(e) else "")) from e
     try:
         healed_on = f.locator.is_enabled()
     except Exception:  # noqa: BLE001  detached
@@ -945,7 +1172,7 @@ def _add_and_verify(ctx: Ctx, product: dict, variant: dict):
 DRAWER_JS = r"""() => {
   document.querySelectorAll('[data-radar-target="drawer"]').forEach(e => e.removeAttribute('data-radar-target'));
   // most specific first: a generic "active drawer" could be the menu
-  const sels = ['cart-drawer', '#CartDrawer', '[id*="cart-drawer" i]', '[class*="cart-drawer" i]', 'cart-notification',
+  const sels = ['cart-drawer', '#CartDrawer', '[id*="cart-drawer" i]:not(body):not(html)', '[class*="cart-drawer" i]:not(body):not(html)', 'cart-notification',
                 'aside[class*="cart" i]', '[role="dialog"][aria-modal="true"]', '[class*="drawer" i][class*="active" i]'];
   const vis = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
     return r.width > 150 && r.height > 150 && s.visibility !== 'hidden' && s.display !== 'none' && s.opacity !== '0'; };
@@ -1785,12 +2012,15 @@ def _collection_sort(ctx: Ctx, url: str, data: dict, soft: bool) -> None:
 # <body> are never used to exclude (bummer.in has <body class="card-hover-effect-none">).
 # Fallback when no text matches: the page's main heading (stores rename products for display).
 TITLE_JS = r"""(title) => {
-  const norm = s => (s || '').toLowerCase().normalize('NFKD').replace(/[^a-z0-9]+/g, ' ').trim();
+  // any script's letters count (prashantpublications.com, new30z4: Marathi titles kept nothing of 'a-z0-9'); Latin
+  // accents are dropped so 'Café' = 'cafe'
+  const norm = s => (s || '').toLowerCase().normalize('NFKD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^\p{L}\p{N}\p{M}]+/gu, ' ').trim();
   const want = norm(title), wt = want.split(' ').filter(w => w.length > 2);
   const m = location.pathname.match(/\/products\/([^/?#]+)/), handle = m ? decodeURIComponent(m[1]) : null;
   const CHROME = 'body > header, #shopify-section-header, [id*="header-group" i], .shopify-section-group-header-group, ' +
-    'footer, [id*="footer" i], nav, [role="navigation"], [role="dialog"], cart-drawer, [id*="cart-drawer" i], ' +
-    '[class*="cart-drawer" i], button, label, option, select, [class*="breadcrumb" i], [class*="visually-hidden" i], .sr-only';
+    'footer, [id*="footer" i], nav, [role="navigation"], [role="dialog"], cart-drawer, [id*="cart-drawer" i]:not(body):not(html), ' +
+    '[class*="cart-drawer" i]:not(body):not(html), button, label, option, select, [class*="breadcrumb" i], [class*="visually-hidden" i], .sr-only';
   const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 2 && r.height > 2 && s.visibility !== 'hidden' && parseFloat(s.opacity || 1) > 0.05; };
   // Another product's card = the nearest box holding product links, when those links all go to a
@@ -1855,6 +2085,60 @@ HIDDEN_PRICE_JS = r"""() => { const out = [];
     out.push({text: t, by: h.tagName.toLowerCase() + (h.className && typeof h.className === 'string' ? '.' + h.className.trim().split(/\s+/).slice(0, 2).join('.') : '')});
     if (out.length > 30) break;
   } return out; }"""
+
+
+PER_UNIT_WORDS = re.compile(r"/\s?(bottle|pack|unit|piece|pc|jar|box|tin|sachet|pouch|kg|month)\b|per\s(bottle|pack|unit|piece|jar|box|month)\b",
+                            re.I)
+
+
+def per_unit_price(want: float, nums, text: str) -> str | None:
+    """The page shows the price PER UNIT of a multi-unit variant ('₹1,649 / Bottle' for the 2-bottle pack at ₹3,298):
+    ayamveda.com + nubronicforte.com (new30w / Anmol's screenshot, 16 Oct). A page price × k (2-12) equals the variant
+    price to the rupee, the page says '/ bottle' (or pack, unit, piece…) and names k of them. Returns the evidence, else
+    None. Pure, unit-tested."""
+    if not want or not PER_UNIT_WORDS.search(text or ""):
+        return None
+    low = (text or "").lower()
+    for n in sorted(nums):
+        for k in range(2, 13):
+            if abs(n * k - want) <= 1.0 and re.search(rf"\b{k}\s?(x\s)?(bottles?|packs?|units?|pieces?|pcs|jars?|boxes|tins?|"
+                                                     rf"sachets?|pouches|months?)\b", low):
+                return f"₹{n:,.2f} {PER_UNIT_WORDS.search(text).group(0).strip()} × {k} = ₹{want:,.2f} (the page shows the per-unit price)"
+    return None
+
+
+DISCOUNT_WORDS = re.compile(r"prepaid|pre-paid|online payment|pay online|upi|extra\s+\d{1,2}\s?%\s?off|\d{1,2}\s?%\s?off", re.I)
+
+
+GST_RATES = (3, 5, 12, 18, 28)
+
+
+def gst_inclusive(want: float, nums) -> str | None:
+    """The page shows the price PLUS an Indian GST rate (kanchisilver.com, new31f: ₹32,000 in Shopify, 'Rs. 32,960 INR'
+    on the page = +3%, the jewellery rate): the store keeps tax-exclusive prices and shows tax-inclusive ones. Matches a
+    GST rate to the rupee. Pure, unit-tested."""
+    for n in nums:
+        for r in GST_RATES:
+            if want > 0 and abs(want * (100 + r) / 100 - n) <= 1.0:
+                return f"₹{n:,.0f} = the price plus {r}% GST (the store's catalog price excludes tax)"
+    return None
+
+
+def store_wide_discount(want: float, nums, text: str) -> str | None:
+    """The page shows the product's price minus a store-wide percentage (an 'extra 5% off on prepaid orders' price)
+    instead of the price itself: rasayanam.in (new30m, 14 Oct) showed ₹1,092 for ₹1,149 under 'EXTRA 5% OFF ON ALL
+    PREPAID ORDERS'. A price 1-20 % below, matching a whole percentage to the rupee, on a page that names such an offer.
+    Returns the evidence, else None. Pure, unit-tested."""
+    if not want or not DISCOUNT_WORDS.search(text or ""):
+        return None
+    for n in nums:
+        if not (0.79 * want <= n < want):
+            continue
+        for pct in range(1, 21):
+            if abs(want * (100 - pct) / 100 - n) <= 1.0:
+                return (f"₹{n:,.0f} = the price minus {pct}% (a store-wide offer the page names: "
+                        f"{DISCOUNT_WORDS.search(text).group(0)!r}); the shopper pays ₹{want:,.2f} without it")
+    return None
 
 
 def price_shown(want: float, nums) -> tuple[bool, str]:
@@ -1947,9 +2231,22 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
         t = ctx.sess.evaluate(TITLE_JS, p["title"]) or _llm_find_name(ctx, p["title"]) or {}
         heading = t.get("text") or ""
         state["heading"] = heading
-        ctx.expect("product name shown on the page", p["title"],
-                   f"{heading!r} ({t.get('tag')}, {t.get('size')}, {t.get('how')})" if heading
-                   else "none: no visible text matching the product name, and no main heading", bool(heading))
+        if heading:
+            ctx.expect("product name shown on the page", p["title"],
+                       f"{heading!r} ({t.get('tag')}, {t.get('size')}, {t.get('how')})", True)
+        else:
+            # zarfstudios.com phone (new31c, DOWN 3x): the page leads with a tagline ('The Fluffiest Cooling AC Comforter
+            # Set On Earth') and shows only the variant 'Poppy' by the price, while the name sits in the page HIDDEN on
+            # this screen size. Name in the page but hidden here, with price, picture and data right = a merchandising
+            # WARNING. A name that is nowhere in the page stays a failure (and goes to triage) as before.
+            hidden_name = ctx.sess.evaluate("""(title) => { const n = s => (s || '').toLowerCase().replace(/\\s+/g, ' ').trim();
+                const want = n(title); if (!want) return false;
+                return [...document.querySelectorAll('h1, h2, h3, [class*="title" i], [class*="name" i]')].some(e =>
+                  n(e.textContent) === want || n(e.textContent).startsWith(want)); }""", p["title"])
+            if not hidden_name:
+                ctx.expect("product name shown on the page", p["title"],
+                           "none: no visible text matching the product name, and no main heading", False)
+            state["name_warn"] = True
         want = round(int(v["price"]) / 100, 2)
         nums = prices_in_text(text)
         if not price_shown(want, nums)[0]:        # price in a sticky bar / lazy block that appears on scroll (supplysix.com, bench 3)
@@ -1961,10 +2258,17 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             ctx.sess.evaluate("() => scrollTo(0, 0)")
         ok, how = price_shown(want, nums)
         if not ok:
+            unit = per_unit_price(want, nums, text)
+            if unit:
+                ok, how = True, unit
+        if not ok:
             _raise_if_catalog_only(ctx, p["title"])
-        where = "" if ok else _hidden_price(ctx, want)
-        ctx.expect("selected variant price shown", rupees(v["price"]),
-                   how if ok else f"not on page{where}", ok)
+            # Anmol, 15 Oct (rasayanam.in 'EXTRA 5% OFF ON ALL PREPAID ORDERS'): a WARNING, not a failure
+            state["price_warn"] = store_wide_discount(want, nums, text) or gst_inclusive(want, nums)
+        if not state.get("price_warn"):
+            where = "" if ok else _hidden_price(ctx, want)
+            ctx.expect("selected variant price shown", rupees(v["price"]),
+                       how if ok else f"not on page{where}", ok)
         img = ctx.sess.evaluate(MAIN_IMAGE_JS)
         for _ in range(8):            # lazy galleries decode the first slide a moment after the price shows
             if img and img.get("ok"):
@@ -1972,6 +2276,12 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
             ctx.sess.page.wait_for_timeout(600)
             img = ctx.sess.evaluate(MAIN_IMAGE_JS)
         ok_img = bool(img and img.get("ok"))
+        if not ok_img and not (img or {}).get("broken") and "images" in p and not p.get("images") \
+                and not p.get("featured_image"):
+            # kalamkitaab.com (new30v) + lucentpublication.com (new30u): book pages with no picture, and the store's own
+            # product data lists NO image: positive evidence, a merchandising WARNING (never a failure, never not-judged)
+            raise StoreWarning("main product image: the product has no image in the store's own data, so shoppers see "
+                               f"no picture (largest image on the page: {(img or {}).get('seen') or 'none'})")
         if not ok_img and not (img or {}).get("broken"):
             # verdict rule (13 Oct): a large image that FAILED to load is evidence (below); no large image Radar can
             # find is not (galleries in canvas / video / app widgets): NOT JUDGED with what was seen
@@ -1979,6 +2289,12 @@ def _pdp_assertions(ctx: Ctx, url: str, expect_buyable: bool, soft_data: bool = 
                             f"missing for a shopper (largest seen: {(img or {}).get('seen') or 'none'})")
         ctx.expect("main product image loaded", "image ≥150px rendered",
                    f"yes ({img.get('how')})" if ok_img else f"a large image failed to load: {img.get('broken')}", ok_img)
+        if state.get("price_warn"):
+            raise StoreWarning(f"selected variant price shown: expected {rupees(v['price'])}, the page shows "
+                               f"{state['price_warn']}")
+        if state.get("name_warn"):
+            raise StoreWarning(f"product name shown on the page: expected {p['title']!r}: the name is in the page but hidden "
+                               "on this screen size (its price, picture and product data are right)")
         return "title, price and image visible"
     ctx.steps.run("shows_title_price_image", shown)
 
@@ -2029,7 +2345,10 @@ def _load_product(ctx: Ctx, url: str) -> str:
     product. A product listed in Shopify's catalog whose page redirects to the homepage or says
     'Page Not Found' is a CATALOG finding (boldcare.in, foxtale.in, bench 3), not a broken product page."""
     out = _load(ctx, url)
-    final = _path(ctx.sess.page.url)
+    # the same product under the store's market path (khushbujewellers.com, new30x: every product URL sent the US
+    # runner to /en-us/products/<handle>) is the product page, not a redirect away from it
+    unmarket = lambda u: _path(u)[len(_market_prefix(u)):] or "/"
+    final = unmarket(ctx.sess.page.url)
     if not final.startswith("/products/"):
         ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
                    f"redirects to {final} (in the store's catalog but hidden from shoppers)", False)
@@ -2053,7 +2372,7 @@ def _load_product(ctx: Ctx, url: str) -> str:
     # The page is given 2.5 s to settle; leaving the product page in that time is the same catalog finding.
     for _ in range(5):
         ctx.sess.page.wait_for_timeout(500)
-        later = _path(ctx.sess.page.url)
+        later = unmarket(ctx.sess.page.url)
         if not later.startswith("/products/"):
             ctx.expect("catalog product page reachable", f"{_path(url)} shows the product",
                        f"redirects to {later} shortly after loading (in the store's catalog but hidden from shoppers)", False)
@@ -2598,8 +2917,13 @@ def _open_info_page(ctx: Ctx, url: str) -> str:
     h1 = (ctx.sess.evaluate("() => ((document.querySelector('main h1, h1') || {}).innerText || '').trim()") or "")[:80]
     ctx.expect("not the store's 'page not found' page", "the page itself", f"title {title[:60]!r}, heading {h1!r}",
                not (SOFT_404.search(title) or SOFT_404.search(h1)))
-    ctx.expect("stays on the page (not sent to the homepage)", _path(url), ctx.redirected_to or _path(url),
-               ctx.redirected_to != "/")
+    # a Shopify discount link (/discount/<code>) applies the code and sends the shopper home: that is how it works
+    # (daantwale.com, new30z2: '/discount/WOWDEAL' failed as 'sent to the homepage')
+    is_discount = bool(re.match(r"^/discount/[^/]+$", _path(url)))
+    ctx.expect("stays on the page (not sent to the homepage)", _path(url),
+               (ctx.redirected_to or _path(url)) + (" (a discount link: applies its code, then the homepage)"
+                                                    if is_discount and ctx.redirected_to == "/" else ""),
+               ctx.redirected_to != "/" or is_discount)
     return out
 
 
@@ -2919,7 +3243,7 @@ def mobile_menu(ctx: Ctx, home: str):
 
 NAME_CANDIDATES_JS = r"""() => {
   const CHROME = 'body > header, #shopify-section-header, [id*="header-group" i], footer, nav, [role="dialog"], ' +
-                 'cart-drawer, [class*="cart-drawer" i], button, label, option, select';
+                 'cart-drawer, [class*="cart-drawer" i]:not(body):not(html), button, label, option, select';
   const vis = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
     return r.width > 2 && r.height > 2 && r.top < innerHeight * 2 && s.visibility !== 'hidden' && parseFloat(s.opacity || 1) > 0.05; };
   document.querySelectorAll('[data-radar-name]').forEach(e => e.removeAttribute('data-radar-name'));
@@ -3179,8 +3503,8 @@ MENU_TOGGLES = ("header details > summary, header [aria-haspopup='true'], header
                 "button[aria-label*='menu' i], summary[aria-label*='menu' i], .header__icon--menu, .menu-toggle, "
                 ".hamburger, button[class*='burger' i]")
 
-NOT_SHOPPING = ("cart-drawer, cart-notification, [id*='cart-drawer' i], [class*='cart-drawer' i], [id*='CartDrawer'], "
-                "[class*='quick-add' i], [data-radar-target='drawer']")
+NOT_SHOPPING = not_page("cart-drawer, cart-notification, [id*='cart-drawer' i], [class*='cart-drawer' i], [id*='CartDrawer'], "
+                        "[class*='quick-add' i], [data-radar-target='drawer']")
 
 PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
   document.querySelectorAll('[data-radar-target]').forEach(e => { if (e.getAttribute('data-radar-target') !== 'drawer') e.removeAttribute('data-radar-target'); });
@@ -3207,11 +3531,18 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
     const c = e.firstElementChild; return depth > 0 && c ? me + ' > ' + desc(c, depth - 1) : me; };
   const tag = e => e ? (e.tagName.toLowerCase() + (e.className && typeof e.className === 'string' && e.className.trim()
                     ? '.' + e.className.trim().split(/\s+/)[0] : '')).slice(0, 40) : 'nothing';
-  const why = {}; const note = k => { why[k] = (why[k] || 0) + 1; };
+  const why = {}; const note = k => { why[k] = (why[k] || 0) + 1; }; let firstCover = null;
+  const CART_SEL = "cart-drawer, cart-notification, [id*='cart-drawer' i], [class*='cart-drawer' i], [id*='CartDrawer'], [data-radar-target='drawer']";
   const usable = e => {
     if (re && !re.test(e.getAttribute('href') || '')) return false;
+    if (e.hasAttribute('data-radar-dead')) { note('did nothing when tapped'); return false; }
     if (!vis(e)) { note('not visible'); invis.push(e); return false; }
-    if (exclude && e.closest(exclude)) { note('inside cart drawer / quick-add'); return false; }
+    const ex = exclude && e.closest(exclude);
+    // a 'quick-add' named container holding MANY products' links is the grid itself (dhaagaweaves.in
+    // 'div.product-grid-container', cmartian.com 'ul.grid', new31a/b re-test: every card 'inside quick-add'), not a
+    // quick-add box: only a cart drawer, or a quick-add box about one product, sets a card aside
+    const many = x => new Set([...x.querySelectorAll('a[href*="/products/"]')].map(a => path(a.getAttribute('href') || ''))).size > 2;
+    if (ex && (ex.matches(CART_SEL) || !many(ex))) { note('inside cart drawer / quick-add (' + tag(ex) + ')'); return false; }
     if (e.getAttribute('aria-disabled') === 'true') { note('disabled'); return false; }
     if (e.closest('[aria-hidden="true"], [inert]')) { note('hidden from shoppers (aria-hidden/inert)'); return false; }
     return true; };
@@ -3246,13 +3577,19 @@ PICK_JS = r"""([sel, hrefRe, prefer, exclude]) => {
     const si = hits.findIndex(h => selfHit(e, h));                  // the link itself first
     const ci = si < 0 ? hits.findIndex(h => cardHit(e, card, h)) : -1;   // else its card (image slider over the link)
     if (si >= 0) at = pts[si]; else if (ci >= 0) { at = pts[ci]; via = 'card'; }
-    if (!at) { cover = hits.find(h => h) || null; note('covered by ' + tag(cover)); continue; }
+    if (!at) { cover = hits.find(h => h) || null; note('covered by ' + tag(cover));
+      if (!firstCover) { const R = n => { const b = n.getBoundingClientRect(); return Math.round(b.left) + ',' + Math.round(b.top) + ' ' + Math.round(b.width) + 'x' + Math.round(b.height); };
+        const cs = cover ? getComputedStyle(cover) : null, [px, py] = pts[0], stack = document.elementsFromPoint(px, py);
+        firstCover = tag(e) + ' box ' + R({getBoundingClientRect: () => r}) + ' at ' + Math.round(px) + ',' + Math.round(py) + ' hit ' + tag(cover)
+          + (cs ? '{' + cs.position + ',z ' + cs.zIndex + ',' + R(cover) + '}' : '') + '; link in stack at ' + stack.findIndex(n => n === e || e.contains(n))
+          + ' of ' + stack.length + '; scroll ' + Math.round(scrollY) + '/' + (document.scrollingElement || document.documentElement).scrollHeight + ' vh ' + innerHeight; }
+      continue; }
     e.setAttribute('data-radar-target', 'click');
     if (card !== e) card.setAttribute('data-radar-target', 'card');
     return {href: e.getAttribute('href') || '', text: (e.innerText || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ').slice(0, 60),
             considered: cands.length, x: Math.round(at[0]), y: Math.round(at[1]), via};
   }
-  return {none: true, total: all.length, why, refused: invis.length ? desc(invis[0], 3).slice(0, 300) : null};
+  return {none: true, total: all.length, why, refused: invis.length ? desc(invis[0], 3).slice(0, 300) : null, covered: firstCover};
 }"""
 
 AIM_JS = r"""(via) => { const t = document.querySelector('[data-radar-target="click"]'); if (!t) return null;
@@ -3283,7 +3620,8 @@ def _why_none(got: dict | None, where: str) -> str:
     if not got or not got.get("total"):
         return f"none on {where} (no matching links on the page)"
     why = ", ".join(f"{n} {k}" for k, n in sorted(got.get("why", {}).items(), key=lambda kv: -kv[1])[:3])
-    return f"none on {where} ({got['total']} links: {why})" + (f"; first refused: {got['refused']}" if got.get("refused") else "")
+    return f"none on {where} ({got['total']} links: {why})" + (f"; first refused: {got['refused']}" if got.get("refused") else "") \
+        + (f"; first covered: {got['covered'][:400]}" if got.get("covered") else "")
 
 
 BIG_FIXED_LAYER_JS = r"""() => { const vw = innerWidth, vh = innerHeight;
@@ -3330,8 +3668,25 @@ COVER_CLOSE_JS = r"""() => {
         || (getComputedStyle(e).cursor === 'pointer' && e.children.length <= 2 && SAFE.test(text(e)));
       const cands = [...root.querySelectorAll('button, a, [role="button"], [aria-label]')]
         .concat([...root.querySelectorAll('div, span, p, li, label, input')].filter(tappable)).filter(shown);
-      const btn = cands.find(c =>
+      let btn = cands.find(c =>
         !BAD.test(text(c)) && (SAFE.test(text(c)) || /close|dismiss/i.test(c.getAttribute('aria-label') || '')));
+      // thinkitchen.in (new30z6): the close is an ICON with no words in the dialog's top-right corner ('no stay/close
+      // control in [div | SUBMIT | Powered by zoko.io]'). A small (≤ 48 px) wordless tappable element whose centre sits
+      // within 60 px of a top corner of the dialog box (the nearest ancestor ≥ 200x150 smaller than the layer) closes it.
+      if (!btn) {
+        const lr = root.getBoundingClientRect();
+        const icon = [...root.querySelectorAll('*')].filter(shown).find(e => {
+          const r = e.getBoundingClientRect(); if (r.width > 48 || r.height > 48 || r.width < 8 || r.height < 8) return false;
+          if (text(e) || e.closest('a[href]:not([href="#"]), form button[type=submit], input')) return false;
+          if (getComputedStyle(e).cursor !== 'pointer' && !e.matches('button, [role="button"]')) return false;
+          let box = e.parentElement;
+          while (box && box !== root) { const b = box.getBoundingClientRect();
+            if (b.width >= 200 && b.height >= 150 && b.width * b.height < 0.9 * lr.width * lr.height) break; box = box.parentElement; }
+          if (!box || box === root) return false;
+          const b = box.getBoundingClientRect(), cx = r.left + r.width / 2, cy = r.top + r.height / 2;
+          return cy - b.top <= 60 && (b.right - cx <= 60 || cx - b.left <= 60); });
+        if (icon) btn = icon;
+      }
       if (!btn) { why.push(tag + ': no stay/close control in [' + cands.slice(0, 6).map(c => text(c).slice(0, 20) || c.tagName.toLowerCase()).join(' | ') + ']'); continue; }
       const b = btn.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
       if (!hit || !(hit === btn || btn.contains(hit))) { why.push(tag + ': ' + text(btn).slice(0, 20) + ' covered'); continue; }
@@ -3445,11 +3800,11 @@ def _click_picked(ctx: Ctx, got: dict | None = None) -> None:
 
 def _click_at(ctx: Ctx, page, loc, got: dict | None, before: str, opened: list) -> None:
     clicked = False
+    last = aim = None
     if got and got.get("x") is not None:
         # The pick scrolled the card into view. Some stores re-lay out right after a scroll (boat-lifestyle.com,
         # bench 5: the header changes ~20 ms after scrolling and a click 30 ms after the pick landed on the NEXT
         # card). So wait until the target stops moving, then aim again at where it is now.
-        last = None
         for _ in range(6):
             page.wait_for_timeout(150)
             aim = ctx.sess.evaluate(AIM_JS, got.get("via") or "link")
@@ -3469,6 +3824,20 @@ def _click_at(ctx: Ctx, page, loc, got: dict | None, before: str, opened: list) 
                 clicked = False
             if not clicked and opened:
                 return                              # it opened a new tab: the caller follows it (no second click)
+    if not clicked and got and got.get("x") is not None and last is not None:
+        # still moving after 6 looks: a marquee / auto-scrolling row that never stops (hunnit.com, new30z1: Playwright's
+        # click waited for a still card until it timed out, 3 times). A shopper taps the card where it is right now.
+        for _ in range(3):              # AIM_JS hit-tests the target where it is now; tap there at once
+            now = ctx.sess.evaluate(AIM_JS, got.get("via") or "link")
+            if now:
+                page.mouse.click(now["x"], now["y"])
+                try:
+                    page.wait_for_url(lambda u: u != before, timeout=2500)
+                except Exception:  # noqa: BLE001  the tap landed beside it: aim again
+                    pass
+                if page.url != before or opened:
+                    clicked = True
+                    break
     if not clicked:
         try:
             loc.click(timeout=6000)
@@ -3526,7 +3895,7 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                 got = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
                 if not got.get("none"):
                     got["overlay"] = closed
-        if got.get("none"):                                 # links inside closed dropdowns / hamburger
+        def via_menus():
             toggles = page.locator(MENU_TOGGLES)
             for i in range(min(toggles.count(), 6)):
                 tg = toggles.nth(i)
@@ -3536,10 +3905,14 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                     _click(ctx, tg)
                 except Exception:  # noqa: BLE001
                     continue
-                got = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
-                if not got.get("none"):
-                    how = "opened a menu, then link"
-                    break
+                g = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
+                if not g.get("none"):
+                    return g
+            return None
+        if got.get("none"):                                 # links inside closed dropdowns / hamburger
+            g = via_menus()
+            if g:
+                got, how = g, "opened a menu, then link"
         if got.get("none"):                                 # menus that open on hover (fresh page: no drawer left open)
             _load(ctx, home)
             hov, hhow = _hover_menus_for(ctx, COLLECTION_HREF, prefer_coll)
@@ -3555,6 +3928,19 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
         ctx.expect("collection link a shopper can click on the homepage", "found",
                    f"{got['href']} ({got['text']!r})" if found else "none (menus opened too)", found)
         _click_picked(ctx, got)
+        if "/collections/" not in page.url and _path(page.url) == _path(home):
+            # amchongtea.com phone (new30x): the only visible collection link ('Explore Now') did nothing when tapped. A
+            # shopper tries the menu: the dead link is set aside, the menus are opened and a collection picked there
+            ctx.sess.evaluate("""() => { const t = document.querySelector('[data-radar-target="click"]');
+                if (t) t.setAttribute('data-radar-dead', '1'); }""")
+            g = _pick(ctx, "a[href]", COLLECTION_HREF, prefer_coll, second_pass=False)
+            g = g if not g.get("none") else via_menus()
+            if g:
+                dead = got
+                _click_picked(ctx, g)
+                if "/collections/" in page.url:
+                    got = g
+                    how += f" ({dead['text'][:30]!r} {_path(dead['href'])} did nothing when tapped; went on via {g['text'][:30]!r})"
         ctx.expect("landed on that collection", _path(got["href"]), _path(page.url), "/collections/" in page.url)
 
         def listed() -> int:
@@ -3640,9 +4026,37 @@ def shopper_journey(ctx: Ctx, home: str, collection_url: str, product_handles: l
                     dead["link"] = (f"{first or 'a product link'} on {_path(listing)} did nothing when clicked (twice); "
                                     f"the product's other link ({got3['text']!r}) opened it")
                     again = " (its first link did nothing; the product name opened it)"
+        if _handle(page.url) != clicked and _handle(page.url) and "/products/" in page.url and clicked:
+            # The tap opened ANOTHER product (faritha.com phone new30x 4 runs, bytheleaf.in phone new30z3): a shopper goes
+            # back and taps the product again by its other link (its picture). If that opens it, the journey goes on and
+            # the miswired link is a store WARNING with the evidence.
+            wrong = _path(page.url)
+            try:
+                page.go_back(wait_until="domcontentloaded", timeout=15000)
+                _wait_stable(ctx, PRODUCT_HREF)
+                if _path(page.url) == _path(listing):
+                    # the page came back fresh: set aside the link that was tapped (same product, same words)
+                    ctx.sess.evaluate("""([h, t]) => document.querySelectorAll('a[href*="/products/' + h + '"]').forEach(e => {
+                        if ((e.innerText || '').trim().replace(/\\s+/g, ' ').slice(0, 60) === t) e.setAttribute('data-radar-tried', '1'); })""",
+                                      [clicked, got.get("text") or ""])
+                    got4 = _pick(ctx, "a[href]", rf"/products/{re.escape(clicked)}(?:[/?#]|$)", [f"/products/{clicked}"],
+                                 exclude=NOT_SHOPPING + ", [data-radar-tried]", second_pass=False)
+                    if not got4.get("none"):
+                        try_click(got4)
+                        if _handle(page.url) == clicked:
+                            dead["link"] = (f"{first or 'a product link'} on {_path(listing)} opened another product "
+                                            f"({wrong}) when tapped; the product's other link ({got4['text']!r}) opened it")
+                            again = " (its first link opened another product; its other link opened it)"
+            except Exception:  # noqa: BLE001  could not go back: judged as before
+                pass
         if _handle(page.url) != clicked and errors:
             raise AssertionError(errors[0])           # same evidence as before when nothing worked
-        ctx.expect("opened the product that was clicked", f"/products/{clicked}", _path(page.url),
+        ctx.expect("opened the product that was clicked", f"/products/{clicked}",
+                   _path(page.url) if _handle(page.url) == clicked or "/products/" not in page.url else
+                   # faritha.com phone (new30x): the Sony card opened the Samsung product 3 times; evidence for the fix:
+                   # what was tapped, where, and how (the link itself or its card)
+                   f"{_path(page.url)} (tapped {first or 'the link'} via its {got.get('via') or 'link'} at "
+                   f"{got.get('x')},{got.get('y')} on {_path(listing)})",
                    _handle(page.url) == clicked)
         known = "known in-stock product" if clicked in product_handles else "first clickable product"
         return (f"clicked {known} on {got.get('considered')} candidates → {_path(page.url)}{again}"
@@ -4095,7 +4509,7 @@ BUY_NOW_JS = r"""([ids, quick]) => {
   const c = [...document.querySelectorAll('button, a, [role="button"], input[type=submit], input[type=button]')]
     .filter(e => vis(e) && txt(e).length <= 30 && !wallet.test(txt(e))
       && (/^buy\s*(it\s*)?now\b/i.test(txt(e)) || (e.closest('.shopify-payment-button, [data-shopify="payment-button"]') && /\bbuy\b/i.test(txt(e))))
-      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i]')
+      && !e.closest('header, nav, footer, cart-drawer, [id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), [class*="mini-cart" i]:not(body):not(html)')
       && !otherCard(e, quick));
   const own = e => { const f = e.closest('form') || (e.getAttribute('form') && document.getElementById(e.getAttribute('form')));
     const i = f && f.querySelector('[name="id"]'); return i && mine.has(String(i.value || '')) ? 1 : 0; };
@@ -4209,7 +4623,7 @@ OPTION_CONTROL_JS = r"""([value, quick]) => {
   const same = t => norm(t) === want;
   const near = t => { t = norm(t); return t.length > want.length && t.startsWith(want) && !/[a-z0-9]/.test(t[want.length]); };
   const away = e => !!(e.closest(quick) || otherCard(e, quick) || e.closest('header, nav, footer, cart-drawer, ' +
-    '[id*="cart-drawer" i], [class*="cart-drawer" i], [class*="mini-cart" i], [role="dialog"]'));
+    '[id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), [class*="mini-cart" i]:not(body):not(html), [role="dialog"]'));
   const off = e => !!(e && (e.disabled || e.getAttribute('aria-disabled') === 'true'));
   const mark = (e, kind, how, extra) => { e.setAttribute('data-radar-variant', 'opt');
     return Object.assign({kind, how, disabled: off(e)}, extra || {}); };
@@ -4764,8 +5178,8 @@ SOLD_OUT_TEXT_JS = r"""([quick]) => {
   const otherCard = __OTHER_CARD__;
   const m = location.pathname.match(/\/products\/([^/?#]+)/), here = m ? decodeURIComponent(m[1]) : null;
   const prodOf = a => { const x = (a.getAttribute('href') || '').match(/\/products\/([^/?#]+)/); return x ? decodeURIComponent(x[1]) : null; };
-  const CHROME = 'header, nav, footer, [role="dialog"], cart-drawer, [id*="cart-drawer" i], [class*="cart-drawer" i], ' +
-                 '[class*="mini-cart" i], script, style, noscript, template';
+  const CHROME = 'header, nav, footer, [role="dialog"], cart-drawer, [id*="cart-drawer" i]:not(body):not(html), [class*="cart-drawer" i]:not(body):not(html), ' +
+                 '[class*="mini-cart" i]:not(body):not(html), script, style, noscript, template';
   const shown = e => { const r = e.getBoundingClientRect(), st = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && st.visibility !== 'hidden' && st.display !== 'none' && parseFloat(st.opacity || 1) > 0.05; };
   const other = e => { const a = e.closest('a[href*="/products/"]'); if (a && prodOf(a) && prodOf(a) !== here) return true;

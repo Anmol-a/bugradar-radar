@@ -37,7 +37,9 @@ NAV_JS = r"""() => {
     const text = (a.textContent || a.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
     if (!href || seen.has(href) || !text || href.startsWith('javascript:')) continue;
     const u = new URL(href);
-    if (/\/(cart|account|search|checkout)(\/|$|\?)|#/.test(u.pathname + u.hash) || /\/products\//.test(u.pathname)) continue;
+    // sign-in links are not pages: Shopify's new customer accounts link '/customer_authentication/redirect' (krkjewels.com
+    // new30t, 15 Oct: 404 for a robot, a login hand-off for a shopper) and /account/login are judged by the account test
+    if (/\/(cart|account|search|checkout|customer_authentication|login|logout)(\/|$|\?)|#/.test(u.pathname + u.hash) || /\/products\//.test(u.pathname)) continue;
     const r = a.getBoundingClientRect();
     seen.add(href); out.push({text: text.slice(0, 60), url: href, visible: r.width > 0 && r.height > 0});
   }
@@ -89,6 +91,14 @@ NOT_MORE = re.compile(r"/(products|cart|account|search|checkout|policies)(/|$)|/
                       re.I)
 
 
+# A control whose href is a broken 'javascript void(0)' (no colon: sahnibakery.com 'Quick Shop', new31e) resolves to
+# '/javascript%20void(0)': a script control, never a page
+JS_HREF = re.compile(r"/javascript(%20|\s|:|$)", re.I)
+# A slideshow's own dots / arrows are links on some themes ('Slide 1, current', 'Load slide 1' -> '/Hero-slideshow':
+# zenvistapackagings.in, new31b, both devices DEGRADED): carousel controls, never pages to open
+SLIDE_CONTROL = re.compile(r"^\s*((load|go to|show|view) )?slide \d+|^\s*(next|previous|prev) slide|^\s*slide \d+ of \d+", re.I)
+
+
 def _norm_url(u: str) -> str:
     p = urlparse(u)
     return ((p.hostname or "").lower().removeprefix("www.") + (p.path.rstrip("/") or "/")).lower()
@@ -103,7 +113,8 @@ def more_links(links: list[dict], base: str, known: list[str], per_place: int = 
     for link in links:
         url = (link.get("url") or "").split("#")[0]
         if not url or not _same_origin(url, base) or NOT_MORE.search(urlparse(url).path) \
-                or NOT_INFO_TEXT.search(link.get("text") or ""):
+                or NOT_INFO_TEXT.search(link.get("text") or "") or SLIDE_CONTROL.search(link.get("text") or "") \
+                or JS_HREF.search(urlparse(url).path):
             continue
         key = _norm_url(url)
         if key in seen:
@@ -157,9 +168,12 @@ def same_site(a: str, b: str) -> bool:
 
 
 # + checkout add-ons sold as products: 'Free Returns + Package Protection' (saturn.health, new30m 14 Oct: NOT JUDGED on
-#   both devices, its page has no buy button a shopper uses) and shipping / order protection or insurance apps
+#   both devices, its page has no buy button a shopper uses) and shipping / order protection or insurance apps;
+#   extended-warranty add-ons (izicart.com new30u: '1 Year Extended Warranty for …' pages show no such product)
 NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift|sampler|tester|\bsample\b|dummy|test[-_ ]product|"
-                           r"(package|shipping|order|returns?|delivery|parcel)[-_ ]?(protection|insurance)|route[-_ ]?protection",
+                           r"(package|shipping|order|returns?|delivery|parcel)[-_ ]?(protection|insurance)|route[-_ ]?protection|"
+                           r"extended[-_ ]?warranty|warranty[-_ ]?(extension|plan|upgrade)|\b\d[-_ ]?years?[-_ ]?(extended[-_ ]?)?warranty|"
+                           r"\b\d[-_ ]?years?[-_ ]?accidental[-_ ]?(damage[-_ ]?)?protection|accidental[-_ ]?damage[-_ ]?(protection|cover)",
                            re.I)
 
 

@@ -1373,6 +1373,132 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 18 Oct 04:30 IST:** (1) radar-tests runs 39054711928 (d3fd056) and 39067649593 (dfb8b86) were FAILURES whose
+  'verdict' job still said success; both were deployed believing them green. Since then the WHOLE run's conclusion is
+  read, never the verdict job alone. Causes fixed in 5126323: '\b' in a non-raw Python string became a backspace (COD
+  order-form test), and the pincode retry now waits for a NEW answer. (2) cartwala (3rd re-test): its personaliser's
+  file input sits in a modal that opens from its own button, nothing visible above it: with the buy button disabled, any
+  file input outside header/footer and review widgets means 'waits for the shopper's photo' (mock needs_photo_upload).
+- **v0.20 18 Oct 03:00 IST (re-test 39069374541: cmartian, dhaagaweaves, saralhome, kanchisilver, atovio confirmed):**
+  cartwala still DEGRADED; the new evidence showed 'input:file hidden' deep inside the personaliser's hidden panel: a
+  file input counts when a box up to 6 levels above it is on screen (mock needs_photo_upload updated).
+- **v0.20 18 Oct 02:20 IST (re-test 39064184208 of new31a-e fixes: 6 of 10 confirmed):** (1) dhaagaweaves / cmartian
+  still 'inside quick-add (div.product-grid-container / ul.grid)': the GRID's container carries a quick-add class. A
+  quick-add container holding more than 2 products' links is the grid, not a quick-add box (mock grid_quick_add_class).
+  (2) saralhome freebie: 'Additional Information' counted as an 'add' control: buy-like words are whole words now
+  (mock hidden_buttons_product + accordion). (3) cartwala: the disabled-buy failure now lists the page's fields and
+  app frames (evidence for the photo-upload app).
+- **v0.20 18 Oct 02:00 IST (new31f run 39064100372: 50/56 healthy):** (1) kanchisilver.com both devices DOWN: Shopify
+  holds tax-exclusive prices, the page shows them plus GST ('Rs. 32,960 INR' for ₹32,000 = +3%): a price equal to the
+  catalog price plus an Indian GST rate (3/5/12/18/28 %) = WARNING (mock gst_price, unit test). (2) atovio.in: a
+  'Coming Soon' product with no price and 'Notify me' = 'not tested: not on sale yet' (mock coming_soon_product).
+- **v0.20 18 Oct 01:00 IST (new31e run 39060018670: 48/56 healthy):** sahnibakery.com: 'Quick Shop' buttons carry
+  href='javascript void(0)' (no colon) = '/javascript%20void(0)': a script control, not a page to open (unit test).
+- **v0.20 18 Oct 01:00 IST (new31d run 39058549062: 43/53 healthy):** cartwala.in both devices DEGRADED: personalised
+  mouse pads whose 'Add to cart' waits for the shopper's photo (a file input under a styled label): an empty photo upload
+  on the page with the buy button disabled = 'not tested' (mock needs_photo_upload).
+- **v0.20 18 Oct 00:30 IST (new31c run 39056290453: 49/54 healthy):** (1) zarfstudios.com phone DOWN 3×: the product's
+  name sits in a desktop-only heading, phones see a tagline; price, picture and data right. Name in the page but hidden
+  on this screen size = WARNING; a name nowhere in the page still fails and goes to triage (mock name_hidden_on_phone).
+  (2) saralhome.com: 'FREE TABLE MAT', a freebie whose cart form keeps its buttons, all hidden, with no other buy
+  control = 'not tested: offers no way to buy it' (mock hidden_buttons_product).
+- **v0.20 18 Oct 00:00 IST (new31b run 39053973214: 45/55 healthy):** (1) dhaagaweaves.in both devices (+ cmartian.com
+  new31a): '44 links: 44 inside cart drawer / quick-add': the theme names its settings on <body> ('quick-add-enabled
+  cart-drawer-active'). Drawer / quick-add container selectors never match <html>/<body> now (mock body_drawer_class).
+  (2) zenvistapackagings.in: the hero slideshow's dots are links ('Slide 1, current' -> /Hero-slideshow): carousel
+  controls are not pages to open (unit test).
+- **v0.20 17 Oct 23:40 IST (new31a run 39052745795: 43/53 healthy):** (1) saumyasstores.com: price shown, cart buttons
+  hidden, the only buy control 'View On Amazon' → 'not tested' (sold on marketplaces) instead of not judged (mock
+  marketplace_hidden_cart). (2) aesthesy.com desktop DOWN: a custom-art builder page (upload, disabled 'Continue to
+  Customize', no price) → 'not tested' (mock customiser_product). (3) Evidence: which drawer / quick-add container a
+  refused card sits in (cmartian.com: 36 cards 'inside cart drawer / quick-add').
+- **v0.20 17 Oct 23:10 IST:** thinkitchen.in (new30z6, both devices NOT JUDGED): a full-screen WhatsApp sign-up popup
+  whose only close is a wordless icon in the dialog's top-right corner ('no stay/close control in [div | SUBMIT |
+  Powered by zoko.io]'). A small wordless tappable element within 60 px of a top corner of the dialog box closes the
+  layer; SUBMIT is never pressed (mock icon_x_popup).
+- **v0.20 17 Oct 06:45 IST (new30z5 run 38986412618: 49/56 healthy):** (1) giffywalls.in: a mural's 'Add to cart' waits
+  for the wall width / height the shopper types: empty visible fields of the product's form with the button disabled =
+  'not tested', fields named (mock needs_dimensions). (2) popees.com phone: the sticky bar's add-to-cart is an icon with
+  no words: an icon-only button in a fixed bar whose class names add-to-cart counts (mock disabled_form_icon_bar).
+  nisargorganicfarm.com nav flaky once (open).
+- **v0.20 17 Oct 06:10 IST (new30z4 run 38983526214: 48/58 healthy):** (1) prashantpublications.com: Marathi titles
+  were 'not shown': name matching kept only a-z0-9; it now keeps any script's letters (mock devanagari_title).
+  (2) paramountchess.com: a cookie holding an emoji broke every product-data request ('Invalid character in header
+  content [cookie]'); the data is then asked from inside the page (mock emoji_cookie). (3) happyaza.com phone: a card
+  opened another product (fixed by the z3 change). Open: varrocaftermarket phone not judged (cards inside a drawer /
+  quick-add); lavanyathelabel phone 'ADD TO CART' stays disabled after the size (maybe real).
+- **v0.20 17 Oct 05:40 IST (new30z3 run 38980915441: 44/55 healthy):** bytheleaf.in phone (flaky) and faritha.com phone
+  (new30x, 4 runs DOWN): tapping a card's name opened ANOTHER product. A shopper goes back and taps the product by its
+  other link; if that opens it, the journey goes on and the miswired link is a store WARNING (mock title_opens_neighbour).
+  kulina.in desktop flaky: a late popup iframe intercepted the first tap (open).
+- **v0.20 17 Oct 05:00 IST (new30z2 run 38974875193: 38/50 healthy):** (1) daantwale.com: a homepage banner links
+  /discount/WOWDEAL; Shopify applies the code and sends the shopper home, not a deleted page (mock discount_link).
+  (2) orbiz.in: a build-your-crew product whose only button 'Pick 6 buddies' stays disabled until six picks: a disabled
+  buy button whose words ask for picks = 'not tested' (mock bundle_builder).
+- **v0.20 17 Oct 04:30 IST (new30z1 run 38974724813, 34 min: 42/55 healthy):** (1) adachikan.com phone: the form's
+  'BUY IT NOW' was disabled; the enabled 'ADD TO CART' bar shows only after scrolling: the enabled-add-to-cart search
+  scrolls like a shopper (mock disabled_form_bar_on_scroll). (2) hunnit.com desktop: cards in a marquee that never
+  stops; Playwright's click waited for a still card and timed out 3×: Radar taps the card where its hit-test finds it
+  right now (mock marquee_cards). (3) cforcover.com stopped after 25 min (open).
+- **v0.20 16 Oct 18:35 IST (new30y run 38899856830, 25 min: 44/55 healthy):** nakshatrakids.com (both devices) and
+  tribalornaments.com DOWN 'price not on page' while the screenshot shows '$46.45 USD' under the name: a currency-converter
+  app (Shopify currency INR, rate 1) draws the converted price where the page's text does not carry it, with a 'USD'
+  switcher on screen. A foreign currency code shown on screen (a switcher) = 'location (US runner)' (mock
+  other_market_switcher).
+- **v0.20 16 Oct 17:45 IST (new30x run 38891734931, 26 min: 40/54 healthy):** (1) khushbujewellers.com DOWN on both
+  devices: the US runner was sent to /en-us/products/<same handle> ('hidden from shoppers' warning) and saw '$24.00'
+  ABOVE the product name while an 'INR' note elsewhere broke 'no ₹ anywhere': the same product under a market path is
+  the product page, and a foreign price in the 120 characters before the name = 'location (US runner)' (mocks
+  market_redirect_all, other_market_price_above). (2) myop.in desktop DOWN: a personalised perfume hides its price and
+  keeps 'Add to cart' disabled until a choice: a disabled buy button is no buy button, so no price + disabled button =
+  'not tested' (mock price_after_choice). (3) amchongtea.com phone NOT JUDGED: the homepage's only visible collection
+  link ('Explore Now') did nothing when tapped; the dead link is set aside and the ☰ menu tried (mock dead_tile_menu).
+  (4) Evidence only: the first covered card's box / hit / scroll (hathimasala.com phone) and the tap point when a card
+  opens another product (faritha.com phone). (5) radar-tests: the redrawing pincode widget could drop the typed text
+  between typing and pressing; re-typed and pressed once more.
+- **v0.20 16 Oct 13:20 IST (new30w run 38865228472, 25 min: 44/53 healthy):** ayamveda.com DOWN on both devices: the
+  page shows '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298 (nubronicforte does the same). `per_unit_price` accepts
+  a page price × k = the variant price when the page says '/ bottle' (pack, unit, piece…) and names k of them (mock
+  `per_unit_price`, unit test). Rest of new30w: real dead sale links (aarahboutique, thayyilsports).
+- **v0.20 16 Oct 13:10 IST:** (1) hathimasala.com lost as 'error: database is locked': parallel scans switching a fresh
+  radar.db to WAL at once; Storage retries the first-time setup (unit test). (2) kalamkitaab.com + lucentpublication.com
+  book pages NOT JUDGED 'no image ≥150px' while the product data lists no image: now a WARNING with that evidence
+  (mock `no_product_images`).
+- **v0.20 16 Oct 12:45 IST (new30v run 38861147423, 41 min incl. one stuck store):** costosoitaliano.com NOT JUDGED (its
+  buy control is '<span class="custom-add-to-cart-btn">Add to Cart</span>', hidden empty form): ENABLED_ADD_JS also takes
+  span/div/a buttons whose class names a button or the cart, and the page's ONLY enabled exact 'Add to cart' is used
+  before giving up (mock `span_add_to_cart`). arabianaroma.in failed 3 products ('buy button still disabled') while an
+  enabled 'Add to cart' was on the page: the form's disabled button gives way to it (mock `disabled_form_enabled_bar`).
+- **v0.20 16 Oct (Anmol's screenshot of nubronicforte):** the main product has a working 'ADD TO CART(19% OFF)'; Radar had
+  picked the 'Performance Kit', a gift the store auto-adds ('Complimentary Performance Kit', 'Free Gift Auto Added'),
+  whose page has a hidden, empty cart form and no buy control. Such a page = not tested with the reason, never not-judged
+  (mock `gift_only_product`).
+- **v0.20 16 Oct 00:05 IST (evidence re-test 38783xxx):** shopkara.store has no cart button at all: its only buy control
+  is an order-form app's 'Order Now - Cash on Delivery' popup. A product sold only through such a form = BLOCKED 'not
+  tested' with the reason (Radar never fills forms), not 'not judged' (mock `cod_form_only`). nubronicforte.com still
+  shows no buy-like control on its page (evidence kept; queue).
+- **v0.20 15 Oct 22:55 IST (re-test 38774216198: krkjewels healthy):** the buy-button evidence showed the cause on
+  shopkara.store + nubronicforte.com: the product's own cart form is hidden and holds no button, while an app's element is
+  the real buy control. A hidden, buttonless form no longer blocks the page's-own-control rule (mock
+  `hidden_form_app_button`). izicart also sells 'N Year Accidental Protection' add-ons: skipped like warranties.
+- **v0.20 15 Oct 22:10 IST (new30u run 38766823085, 18 min):** izicart.com 'degraded' on both devices: Radar tested
+  '1 Year Extended Warranty for …' add-on products (pages show the drone, not the warranty). NOT_FOR_TESTS skips
+  extended-warranty / warranty-plan add-ons like package protection (unit test). Real findings: silawat search HTTP 422
+  (the same theme bug as pehnavri), cartcount /pages/contact 404, joyeekolkata / arganframes / thelostproject dead links.
+- **v0.20 15 Oct 21:50 IST (new30t run 38764016282, 19 min):** krkjewels.com 'degraded' on both devices: the header's
+  Login is Shopify's new customer accounts link '/customer_authentication/redirect' (404 to a robot). NAV_JS skips
+  customer_authentication / login / logout links like /account (mock `customer_auth_link`). Evidence: the 'form for this
+  product but no buy button' not-judged now lists what the form holds (shopkara, nubronicforte: 2 stores, cause unknown).
+- **v0.20 15 Oct 20:30 IST (Anmol's decisions):** (1) finish line = rolling target (≤ 1 false per 30 over the last 90
+  never-seen stores, met 15 Oct): the loop goes to weekly monitor mode. (2) A product page that shows no price near the
+  product's name and has no buy button of its own = BLOCKED 'not tested' (enquiry-only; somuchliving, tastycrafts), never
+  DOWN (mock `hidden_price`). (3) A page price that is the price minus a store-wide percentage the page names ('extra 5%
+  off on prepaid orders', rasayanam.in) = WARNING (`store_wide_discount`, mock `prepaid_price`, unit test).
+- **v0.20 loop 15 Oct 19:15 IST (new30r run 38741032636, 20 min):** sntvl.com variant_ready failed on 3 products, both
+  devices: colour tapped, but sizes are plain <button>s in a box whose class names neither 'variant' nor 'option', and no
+  size is chosen on load. CHOOSE_JS now also takes a visible button whose own text is the value beside sibling buttons
+  of the same kind (outside header / nav / footer / cart drawer); mock `plain_size_buttons`. Open: mungu.in product
+  click stays on the collection (3 tries, no evidence of why); weaveanddesign cards not judged.
 - **v0.20 loop 15 Oct 13:45 IST (new30p run 38700347159, 20 min):** 3 stores (countryflora, kotart, swornyfashion)
   'degraded' because the header's wishlist link answers HTTP 404 while a wishlist app draws the page into the 404
   template. Such app pages (`APP_PAGE_ON_404`: wishlist / favourites / compare) are noted, not counted as broken nav

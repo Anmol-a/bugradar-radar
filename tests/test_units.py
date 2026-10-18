@@ -361,10 +361,12 @@ def test_same_site_and_offsite():
 
 def test_gift_clone_and_gift_card_products_excluded():
     for h in ("skincare-duo-face-wash-50-ml-sunscreen-30-g-sca_clone_freegift", "e-gift-card", "free-gift-pouch",
-              "shampoo-sampler", "free-returns-package-protection", "shipping-protection", "route-package-protection"):
+              "shampoo-sampler", "free-returns-package-protection", "shipping-protection", "route-package-protection",
+              "1 Year Extended Warranty for IZI Spectra Combo", "2-year-warranty-upgrade",
+              "2 Year Accidental Protection for IZI MINI X Drone"):
         assert NOT_FOR_TESTS.search(h), h
     for h in ("ceramic-vase", "kore-s-mens-sweatshirt-maroon", "testosterone-booster", "sun-protection-spf-50",
-              "free-shipping-tote"):
+              "free-shipping-tote", "drone-with-1-year-manufacturer-support"):
         assert not NOT_FOR_TESTS.search(h), h
 
 
@@ -1320,3 +1322,63 @@ def test_builder_adds_the_store_feature_cases():
     no_cart = build_suites(_sm(), replace(Settings(), allow_cart_flow=False))
     assert not any(c.id == "cart.discount_code" for x in no_cart for c in x.cases)     # cart flow off = no cart tests
     assert any(c.id == "product.pincode" for x in no_cart for c in x.cases)            # the pincode box is read-only
+
+
+def test_store_wide_prepaid_discount_is_recognised():
+    from radar.checks.library import store_wide_discount
+    assert "minus 5%" in store_wide_discount(1149.0, {1092.0, 1697.0}, "EXTRA 5% OFF ON ALL PREPAID ORDERS")
+    assert store_wide_discount(1149.0, {1092.0}, "Free shipping on all orders") is None      # no offer named
+    assert store_wide_discount(1149.0, {700.0}, "extra 5% off prepaid") is None              # 39% below: not an offer
+    assert store_wide_discount(1149.0, {1149.0}, "5% off prepaid") is None                   # not below
+
+
+def test_storage_opens_concurrently_on_a_fresh_database(tmp_path):
+    """hathimasala.com (new30v): parallel scans opening a new radar.db at once hit 'database is locked'."""
+    import threading
+    from radar.core.storage import Storage
+    errs = []
+    def go():
+        try:
+            Storage(tmp_path / "data").upsert_site("x.in", "https://x.in", "shopify")
+        except Exception as e:  # noqa: BLE001
+            errs.append(repr(e))
+    ts = [threading.Thread(target=go) for _ in range(12)]
+    [t.start() for t in ts]
+    [t.join() for t in ts]
+    assert not errs, errs
+
+
+def test_per_unit_price_of_a_multi_unit_variant():
+    from radar.checks.library import per_unit_price
+    t = "1 Month ₹ 1,799 / Bottle 1 Bottle · 30 sachets 2 Months ₹ 1,649 / Bottle 2 Bottles · 60 sachets"
+    assert "× 2" in per_unit_price(3298.0, {1799.0, 1649.0, 1499.0}, t)
+    assert per_unit_price(3298.0, {1649.0}, "Only ₹1,649 today") is None          # no per-unit wording
+    assert per_unit_price(3298.0, {1000.0}, "₹1,000 / bottle, 2 bottles") is None  # does not multiply out
+
+
+def test_more_links_skip_slideshow_controls():
+    """zenvistapackagings.in (new31b): the hero slideshow's dots are links ('Slide 1, current', 'Load slide 1' ->
+    /Hero-slideshow); Radar opened them as pages and failed them. They are carousel controls."""
+    from radar.discovery.discover import more_links
+    links = [{"where": "homepage section", "text": "Slide 1, current", "url": "https://s.in/Hero-slideshow"},
+             {"where": "homepage section", "text": "Load slide 2", "url": "https://s.in/Hero-slideshow-2"},
+             {"where": "homepage section", "text": "Our story", "url": "https://s.in/pages/our-story"}]
+    got = [x["url"] for x in more_links(links, "https://s.in", [])]
+    assert got == ["https://s.in/pages/our-story"], got
+
+
+def test_more_links_skip_broken_javascript_hrefs():
+    """sahnibakery.com (new31e): 'Quick Shop' buttons carry href='javascript void(0)' (no colon), which resolves to
+    /javascript%20void(0); a script control, not a page to open."""
+    from radar.discovery.discover import more_links
+    links = [{"where": "homepage section", "text": "Quick Shop", "url": "https://s.in/javascript%20void(0)"},
+             {"where": "homepage section", "text": "Our story", "url": "https://s.in/pages/our-story"}]
+    assert [x["url"] for x in more_links(links, "https://s.in", [])] == ["https://s.in/pages/our-story"]
+
+
+def test_gst_inclusive_price():
+    """kanchisilver.com (new31f): ₹32,000 in Shopify, 'Rs. 32,960 INR' on the page = +3% GST."""
+    from radar.checks.library import gst_inclusive
+    assert "3% GST" in gst_inclusive(32000.0, [32960.0])
+    assert "18% GST" in gst_inclusive(1000.0, [1180.0])
+    assert gst_inclusive(32000.0, [33500.0]) is None

@@ -907,6 +907,32 @@ def test_popup_inside_shadow_dom_is_closed_by_its_x_and_the_journey_passes_first
     assert closed and closed[0]["actual"].startswith("clicked 'close' on:") and "bomb size" in closed[0]["actual"], closed
 
 
+def test_card_name_that_opens_another_product_goes_on_via_its_other_link_with_a_warning(tmp_path):
+    """faritha.com phone (new30x, 4 runs DOWN) + bytheleaf.in phone (new30z3, flaky): tapping a card's name opened the
+    neighbouring product. A shopper goes back and taps the product again (its picture): the journey goes on, and the
+    miswired link is a store WARNING with the evidence."""
+    j = _case(_scan_small("title_opens_neighbour", tmp_path, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    w = _steps(j)["every_product_link_opens_the_product"]
+    assert w.status == "warn" and "opened another product" in w.error, (w.status, w.error)
+
+
+@pytest.mark.parametrize("mode", ["body_drawer_class", "grid_quick_add_class"])
+def test_cart_drawer_words_in_the_body_class_do_not_hide_every_card(tmp_path, mode):
+    """dhaagaweaves.in (new31b, both devices NOT JUDGED, '44 links: 44 inside cart drawer / quick-add') + cmartian.com
+    (new31a): the theme puts 'quick-add-enabled cart-drawer-active' on <body>, so every card matched the drawer rule."""
+    # + the grid's own container carrying a 'quick-add' class (re-test: 'div.product-grid-container', 'ul.grid')
+    j = _case(_scan_small(mode, tmp_path, suites=["journey"]), "journey.")
+    assert j.verdict == "pass", _fails(j)
+
+
+def test_product_card_in_a_marquee_that_never_stops_moving_is_clicked(tmp_path):
+    """hunnit.com desktop (new30z1, 3 attempts DOWN): the cards ride a marquee that never stops, and the click waited for
+    a still card until it timed out. A shopper taps the card where it is."""
+    j = _case(_scan_small("marquee_cards", tmp_path, suites=["journey"]), "journey.")
+    assert j.verdict == "pass", _fails(j)
+
+
 def test_dead_product_image_link_the_name_opens_it_journey_passes_with_a_store_warning(tmp_path):
     """thefunclab.com (bench 10): on the homepage slider the product IMAGE link does nothing when clicked (the theme's
     script cancels mousedown/click); the product NAME opens it. v0.14 clicked the image twice and failed the journey
@@ -961,6 +987,132 @@ def test_div_buy_control_named_for_this_product_is_found_and_adds_the_right_prod
     st = _steps(_case(run, "product.pdp."))
     assert "pdp-addtobag-btn" in st["buy_button_ready"].detail and "data-product-handle" in st["buy_button_ready"].detail, \
         st["buy_button_ready"].detail
+
+
+def test_hidden_buttonless_form_falls_back_to_the_pages_own_buy_control(tmp_path):
+    """shopkara.store (new30p) + nubronicforte.com (new30t): NOT JUDGED 'a form for this product but no buy button Radar
+    could use (the form holds: no button in the form (form hidden))'. The page's own buy control rule ran only when the
+    page had no form at all; a hidden, buttonless form now counts as none."""
+    run, _ = _scan("hidden_form_app_button", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    assert not bad, bad
+    assert "pdp-addtobag-btn" in _steps(_case(run, "product.pdp."))["buy_button_ready"].detail
+
+
+def test_per_unit_price_of_a_multi_unit_variant_counts_as_shown(tmp_path):
+    """ayamveda.com (new30w, both devices DOWN): '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298."""
+    run = _product_only("per_unit_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
+    assert "per-unit price" in str(_steps(vase)["shows_title_price_image"].checks)
+
+
+def test_product_without_any_image_in_its_data_is_a_warning(tmp_path):
+    """kalamkitaab.com (new30v) + lucentpublication.com (new30u): NOT JUDGED 'no image ≥150px' on book pages that have
+    no picture at all; the store's own product data lists no image either = a WARNING with that evidence."""
+    run = _product_only("no_product_images", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert vase.verdict != "blocked" and st.status == "warn" and "no image in the store's own data" in st.error, \
+        (vase.verdict, st.status, st.error)
+
+
+def test_theme_span_add_to_cart_is_used_when_the_form_is_hidden(tmp_path):
+    """costosoitaliano.com (new30v): 'not judged ... buy-like controls on the page: <span.custom-add-to-cart-btn> "Add to
+    Cart"'. The page's only enabled exact 'Add to cart' is used; the cart check proves what it adds."""
+    run, _ = _scan("span_add_to_cart", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    assert not bad, bad
+
+
+@pytest.mark.parametrize("mode", ["disabled_form_enabled_bar", "disabled_form_icon_bar"])
+def test_disabled_form_button_with_an_enabled_add_to_cart_elsewhere_passes(tmp_path, mode):
+    """arabianaroma.in (new30v, 3 products, both devices): 'variant selected ... but the buy button is still disabled'
+    while the page shows an enabled Add to cart. The enabled one is what a shopper uses."""
+    # popees.com phone (new30z5): the sticky bar's add-to-cart is an icon with no words (disabled_form_icon_bar)
+    run, _ = _scan(mode, tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    assert not bad, bad
+
+
+def test_product_name_hidden_on_phones_is_a_warning_not_a_failure(tmp_path):
+    """zarfstudios.com phone (new31c, DOWN 3 attempts): the name is in a desktop-only heading, phones see a tagline;
+    price, picture and data are right. On a phone that is a WARNING with the reason, never a failure."""
+    srv, url = serve("name_hidden_on_phone")
+    try:
+        run = scan(url, _settings(tmp_path, allow_cart_flow=False, max_products=1), device="mobile", only_suites=["product"])[0]
+    finally:
+        srv.shutdown()
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert vase.verdict != "confirmed_fail" and st.status == "warn" and "hidden on this screen size" in st.error, \
+        (vase.verdict, st.status, st.error)
+
+
+def test_buy_button_waiting_for_the_shoppers_photo_is_not_tested(tmp_path):
+    """cartwala.in (new31d, both devices DEGRADED): a personalised mouse pad whose 'Add to cart' stays disabled until the
+    shopper uploads a photo. Radar never uploads: 'not tested' with the reason."""
+    run = _product_only("needs_photo_upload", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error and "photo" in vase.attempts[-1].error.lower(), \
+        (vase.verdict, vase.attempts[-1].error)
+
+
+def test_buy_button_waiting_for_the_shoppers_own_measurements_is_not_tested(tmp_path):
+    """giffywalls.in (new30z5, both devices DEGRADED): a wallpaper mural whose 'Add to cart' stays disabled until the
+    shopper types the wall's width and height. Radar never fills forms: 'not tested' with the fields named."""
+    run = _product_only("needs_dimensions", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error and "width" in vase.attempts[-1].error.lower(), \
+        (vase.verdict, vase.attempts[-1].error)
+
+
+@pytest.mark.parametrize("mode,why", [("marketplace_hidden_cart", "amazon"), ("customiser_product", "customi")])
+def test_products_sold_elsewhere_or_through_a_builder_are_not_tested(tmp_path, mode, why):
+    """saumyasstores.com (new31a, NOT JUDGED): the price shows but the cart buttons are hidden and the only buy control is
+    'View On Amazon'. aesthesy.com (new31a, DOWN): the product page is a custom-art builder with no price and a disabled
+    'Continue to Customize'. Both are 'not tested' with the reason."""
+    run = _product_only(mode, tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error \
+        and why in vase.attempts[-1].error.lower(), (vase.verdict, vase.attempts[-1].error)
+
+
+def test_buy_button_waiting_for_the_shoppers_picks_is_not_tested(tmp_path):
+    """orbiz.in (new30z2, both devices DEGRADED): a 'build your crew' product whose only button, 'Pick 6 buddies', stays
+    disabled until the shopper picks six figures. Not a broken buy button: 'not tested' with the reason."""
+    run = _product_only("bundle_builder", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error and "Pick 6" in vase.attempts[-1].error, \
+        (vase.verdict, vase.attempts[-1].error)
+
+
+def test_disabled_form_button_with_an_add_to_cart_bar_shown_after_scrolling_passes(tmp_path):
+    """adachikan.com phone (new30z1, 3 products): the form's 'BUY IT NOW' was disabled and Radar failed the buy button,
+    while an enabled 'ADD TO CART' bar appears once the shopper scrolls. A shopper scrolls and uses it."""
+    run = _product_only("disabled_form_bar_on_scroll", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
+
+
+@pytest.mark.parametrize("mode", ["gift_only_product", "hidden_buttons_product"])
+def test_gift_only_product_page_without_any_buy_control_is_not_tested(tmp_path, mode):
+    """nubronicforte.com (new30t): Radar picked the 'Performance Kit', a gift auto-added to orders; its page has a hidden,
+    empty cart form and no buy control at all. Not tested with the reason, never 'not judged'."""
+    # + saralhome.com (new31c): a freebie whose form keeps its buttons, all hidden (hidden_buttons_product)
+    run = _product_only(mode, tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "offers no way to buy it" in vase.attempts[-1].error, \
+        (vase.verdict, vase.attempts[-1].error)
+
+
+def test_product_sold_only_through_a_cod_order_form_is_not_tested(tmp_path):
+    """shopkara.store (new30p + new30t): no cart button, only 'Order Now - Cash on Delivery' (an order-form app popup).
+    Radar never fills forms: 'not tested' with the reason, not 'not judged'."""
+    run = _product_only("cod_form_only", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "sold only through an order-form app" in vase.attempts[-1].error, \
+        (vase.verdict, vase.attempts[-1].error)
 
 
 # ---------- desktop + mobile in every run (7 Oct) ----------
@@ -1155,6 +1307,15 @@ def test_a_real_outage_is_still_confirmed(tmp_path, monkeypatch):
 
 def test_popup_closed_by_a_bare_x_in_a_div(tmp_path):
     run, _ = _scan("div_x_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    j = _case(run, "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
+
+
+def test_popup_closed_by_an_icon_only_x_in_the_dialogs_corner(tmp_path):
+    """thinkitchen.in (new30z6, both devices NOT JUDGED): 'no stay/close control in [div | SUBMIT | Powered by zoko.io]':
+    the popup's close is an icon with no words in the dialog's top-right corner. Radar closes it with that icon and
+    never presses SUBMIT."""
+    run, _ = _scan("icon_x_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     j = _case(run, "journey.")
     assert j.verdict == "pass" and len(j.attempts) == 1, [(s.name, s.error) for s in j.attempts[-1].steps if s.status == "fail"]
 
@@ -1526,6 +1687,25 @@ def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_p
     assert "sent to the homepage" in _steps(c)["announcement bar: opens /pages/offers"].error
     assert "homepage section malformed link 'Sale'" in err, err
     assert "starts with '/http'" in _steps(c)["homepage section: malformed link"].detail
+
+
+@pytest.mark.parametrize("mode", ["devanagari_title", "emoji_cookie"])
+def test_non_latin_names_and_non_ascii_cookies_do_not_break_product_checks(tmp_path, mode):
+    """prashantpublications.com (new30z4): Marathi titles were 'not shown' (name matching kept only a-z0-9).
+    paramountchess.com (new30z4): a cookie holding an emoji made every product-data request fail ('Invalid character in
+    header content [cookie]'). Both product pages pass."""
+    run = _product_only(mode, tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
+
+
+def test_discount_link_that_applies_its_code_and_goes_home_is_not_a_broken_link(tmp_path):
+    """daantwale.com (new30z2, both devices DEGRADED): a homepage banner links /discount/WOWDEAL; Shopify applies the code
+    and sends the shopper to the homepage, which is how discount links work, not a deleted page."""
+    run = _info("discount_link", tmp_path, suites=("smoke",))
+    c = _case(run, "smoke.more_links")
+    assert c.verdict == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert any("/discount/WOWDEAL" in s.name for s in c.attempts[-1].steps), [s.name for s in c.attempts[-1].steps]
 
 
 def test_app_proxy_page_drawn_in_a_shadow_root_is_not_blank(tmp_path):
@@ -2082,7 +2262,8 @@ def test_checkout_summary_is_read_past_a_big_inline_script(tmp_path):
     assert st.status == "pass" and all(ch["ok"] for ch in st.checks), (st.status, st.error, st.checks)
 
 
-@pytest.mark.parametrize("mode", ["other_market", "other_market_norate", "other_market_offer"])
+@pytest.mark.parametrize("mode", ["other_market", "other_market_norate", "other_market_offer", "other_market_price_above",
+                                  "other_market_switcher"])
 def test_prices_converted_for_another_country_are_location_never_down(tmp_path, mode):
     """theindianethnicco.com ($62.91) + saltattire.com ($24.23), new30h 11 Oct, and tilfi.com ($497), new30g: Shopify
     Markets shows a US visitor converted dollar prices, so the catalog's ₹ price is 'not on page' and Radar said DOWN.
@@ -2106,6 +2287,8 @@ def test_verdict_rule_no_clickable_card_is_not_judged_never_down(tmp_path):
     st = _steps(j)["click_into_product"]
     assert st.status == "skip" and st.error.startswith("not judged: product card a shopper can click") \
         and "covered by div.veil" in st.error and "not proof" in st.error, st.error
+    # evidence for fixing from facts: the first covered link's box, the hit point, the cover's style + box, the scroll
+    assert "first covered: a" in st.error and "hit div.veil{" in st.error and "scroll " in st.error, st.error
     assert run.verdict == "blocked", run.verdict
     assert j.attempts[-1].screenshot, "the not-judged attempt keeps its screenshot as evidence"
 
@@ -2391,6 +2574,28 @@ def test_market_path_product_data_is_read_under_the_pages_market(tmp_path, devic
     assert "/en-us/products/" in _steps(j)["click_into_product"].detail, _steps(j)["click_into_product"].detail
 
 
+def test_product_url_sent_to_the_same_product_under_a_market_path_is_reachable(tmp_path):
+    """khushbujewellers.com (new30x, 16 Oct): every product URL sent the US runner to /en-us/products/<same handle>;
+    Radar warned 'catalog product page reachable: redirects to /en-us/products/... (hidden from shoppers)'. The same
+    product under the store's market path is the product page."""
+    run = _scan_small("market_redirect_all", tmp_path, suites=["product"])
+    pdp = [c for c in run.cases if c.case_id.startswith("product.pdp.")]
+    assert pdp, [c.case_id for c in run.cases]
+    for c in pdp:
+        assert "hidden from shoppers" not in str([(s.name, s.error) for a in c.attempts for s in a.steps]), _fails(c)
+        assert c.verdict == "pass", (c.case_id, c.verdict, _fails(c))
+
+
+def test_collection_tile_that_does_nothing_when_tapped_goes_on_via_the_menu(tmp_path):
+    """amchongtea.com phone (new30x, 16 Oct): the homepage's only visible collection link ('Explore Now') did nothing
+    when tapped and the homepage lists no products: 'not judged: no product card'. A shopper opens the ☰ menu and
+    picks a collection there; the dead tile is named as a warning-free note, the journey passes."""
+    j = _case(_scan_small("dead_tile_menu", tmp_path, device="mobile", suites=["journey"]), "journey.")
+    st = _steps(j)["click_into_collection"]
+    assert st.status == "pass" and "did nothing" in (st.detail or ""), (st.status, st.detail, st.error)
+    assert j.verdict == "pass", _fails(j)
+
+
 def test_product_handle_ignores_a_trailing_space_in_the_href():
     """thechumbakwala.com (new30n, 14 Oct): the card's href ended in a space; the page opened without it and
     'opened the product that was clicked' compared 'x ' with 'x'."""
@@ -2408,6 +2613,70 @@ def test_wishlist_app_page_on_the_404_template_is_not_a_broken_nav_link(tmp_path
     nav = _case(run, "smoke.nav_links")
     assert nav.verdict == "pass", nav.attempts[-1].error
     assert any("app page /pages/wishlist" in s.name for s in nav.attempts[-1].steps), [s.name for s in nav.attempts[-1].steps]
+
+def test_size_as_plain_buttons_outside_a_variant_box_is_picked(tmp_path):
+    """sntvl.com (new30r, 15 Oct, both devices, 3 products failed): the colour was tapped, but the sizes are plain
+    buttons in a box whose class names neither 'variant' nor 'option', so no size was chosen and the form stayed
+    empty ('Choose your size'). A row of buttons showing the option's values is a picker too."""
+    run = _product_only("plain_size_buttons", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "pass" and len(vase.attempts) == 1, (vase.verdict, vase.attempts[-1].error)
+    assert "button Small" in str(_steps(vase)["variant_ready"].checks), _steps(vase)["variant_ready"].checks
+
+def test_page_with_no_price_at_all_is_not_tested_never_down(tmp_path):
+    """Anmol, 15 Oct: somuchliving.com (beds) and tastycrafts.in (₹1,00,000 placeholder) show no price near the product
+    name and no buy button: enquiry-only, 'not tested' with the reason, like 'Price on Request'; never DOWN."""
+    run = _product_only("hidden_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "shows no price for this product" in vase.attempts[-1].error, \
+        (vase.verdict, vase.attempts[-1].error)
+    assert run.verdict != "down", run.verdict
+
+
+def test_price_hidden_until_a_choice_with_a_disabled_buy_button_is_not_tested(tmp_path):
+    """myop.in (new30x, 16 Oct, desktop DOWN): a personalised perfume hides its price and keeps 'Add to cart' disabled
+    until the shopper picks a perfume. No price near the name and no buy button a shopper can use = 'not tested'."""
+    run = _product_only("price_after_choice", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "not tested" in vase.attempts[-1].error \
+        and "disabled" in vase.attempts[-1].error, (vase.verdict, vase.attempts[-1].error)
+    assert run.verdict != "down", run.verdict
+
+
+def test_price_shown_with_gst_added_is_a_warning(tmp_path):
+    """kanchisilver.com (new31f, both devices DOWN): Shopify holds ₹32,000, the page shows 'Rs. 32,960 INR' = +3% GST
+    (jewellery). The price the shopper sees is the catalog price plus a GST rate: a WARNING, never a failure."""
+    run = _product_only("gst_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert st.status == "warn" and "GST" in st.error, (vase.verdict, st.status, st.error)
+
+
+def test_coming_soon_product_is_not_tested(tmp_path):
+    """atovio.in (new31f, both devices DEGRADED): a pre-launch product page says 'Coming Soon' with no price and a
+    'Notify me' button: not sold yet, 'not tested' with the reason."""
+    run = _product_only("coming_soon_product", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    assert vase.verdict == "blocked" and "coming soon" in vase.attempts[-1].error.lower(), (vase.verdict, vase.attempts[-1].error)
+
+
+def test_price_minus_a_named_prepaid_offer_is_a_warning(tmp_path):
+    """Anmol, 15 Oct: rasayanam.in shows ₹1,092 for ₹1,149 under 'EXTRA 5% OFF ON ALL PREPAID ORDERS'. A page price
+    that is the price minus a store-wide percentage the page names is a WARNING, not a failure."""
+    run = _product_only("prepaid_price", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)["shows_title_price_image"]
+    assert vase.verdict != "confirmed_fail" and st.status == "warn" and "the price minus 5%" in st.error, \
+        (vase.verdict, st.status, st.error)
+
+
+def test_customer_accounts_login_link_is_not_a_menu_page(tmp_path):
+    """krkjewels.com (new30t, 15 Oct, both devices 'degraded'): the header's Login is Shopify's new customer accounts
+    link '/customer_authentication/redirect', which answers 404 to a robot. A sign-in hand-off is not a menu page."""
+    run, _ = _scan("customer_auth_link", tmp_path, max_products=1, max_collections=1, max_nav_links=6)
+    nav = _case(run, "smoke.nav_links")
+    assert nav.verdict == "pass", nav.attempts[-1].error
+    assert not any("customer_authentication" in s.name for s in nav.attempts[-1].steps)
 
 # ---------------- journeys 33 + 35: 'Buy it now' and third-party checkout apps (12 Oct 2026) ----------------
 

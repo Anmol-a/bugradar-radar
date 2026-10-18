@@ -55,8 +55,19 @@ class Storage:
         self.data_dir.mkdir(parents=True, exist_ok=True)
         self.db = sqlite3.connect(self.data_dir / "radar.db", timeout=60)   # bench runs stores in parallel
         self.db.row_factory = sqlite3.Row
-        self.db.execute("PRAGMA journal_mode=WAL")
-        self.db.executescript(SCHEMA)
+        # Switching a fresh database to WAL needs it to itself, and the busy timeout does not cover that: parallel store
+        # scans opening the same new radar.db at once got 'OperationalError: database is locked' (hathimasala.com,
+        # new30v run 38861147423: the store was lost as 'error'). Retry the first-time setup for a while.
+        import time as _time
+        for i in range(12):
+            try:
+                self.db.execute("PRAGMA journal_mode=WAL")
+                self.db.executescript(SCHEMA)
+                break
+            except sqlite3.OperationalError as e:
+                if "locked" not in str(e) or i == 11:
+                    raise
+                _time.sleep(0.5 + 0.25 * i)
 
     # ---------- folders ----------
     def site_dir(self, site_id: str) -> Path:
