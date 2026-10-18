@@ -272,3 +272,21 @@ def test_queue_from_env_accepts_either_key(monkeypatch):
     monkeypatch.setenv("BUGRADAR_SERVICE_KEY", "service")
     q = w.queue_from_env()
     assert q.upload_key is None and q.key == "service"
+
+
+def test_queue_age_script_says_yes_only_for_an_old_waiting_request(monkeypatch, capsys):
+    import tools.queue_age as qa
+
+    class Resp(io.BytesIO):
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+    answers = iter([[{"queued": 2, "oldest_seconds": 400}], [{"queued": 1, "oldest_seconds": 30}], [{"queued": 0, "oldest_seconds": 0}]])
+    monkeypatch.setattr(qa.urllib.request, "urlopen", lambda req, timeout=0: Resp(json.dumps(next(answers)).encode()))
+    for want in ("yes", "no", "no"):
+        qa.main(["--older-than", "360"])
+        assert capsys.readouterr().out.strip() == want
+    def boom(req, timeout=0):
+        raise OSError("down")
+    monkeypatch.setattr(qa.urllib.request, "urlopen", boom)
+    qa.main([])
+    assert capsys.readouterr().out.strip() == "no"            # unknown = let the next run ask again, never crash
