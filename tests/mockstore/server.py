@@ -160,6 +160,10 @@ Modes (to prove Radar catches and heals what it should):
                    never a store failure, no incident; the run is never 'down'
   rate_limited_all  every Shopify data request (/collections.json, /products.json, /products/<h>.js) answers 429 (own
                    server, 9 Oct, after 3 runs in 40 min) -> discovery stops: verdict BLOCKED (rate-limited), not 'error'
+  edge_fingerprint  Cloudflare in front of Shopify, seen from a datacenter address (Contabo, 18 Oct): every data request
+                   that does NOT come from a browser (no Sec-Fetch-Mode header: Playwright's context.request client)
+                   answers 429, while the same URL fetched by the page answers 200 -> the whole run PASSES (Radar asks
+                   from inside the page); a Radar that asked with the Node client would be BLOCKED
   rate_limited_once  each /products/<h>.js answers 429 (Retry-After: 1) twice, then normally -> Radar backs off, PASSES
   noisy_console    every page logs a console error + warning and fires a request nobody answers (third-party widget)
                    -> everything PASSES; the noise only shows up as report evidence (v0.18)
@@ -1557,6 +1561,10 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             return self._send(200, page("Shop | Mock Store", '<h1>Our brands</h1><a class="tile" href="/collections/home-decor" '
                                         'style="display:block;width:300px;height:200px">Home Decor</a>'), set_cart=new)
         if self.mode == "rate_limited_all" and (path.endswith(".json") or (path.startswith("/products/") and path.endswith(".js"))):
+            return self._send(429, "Too Many Requests", "text/plain")
+        if self.mode == "edge_fingerprint" and (path.endswith(".json") or (path.startswith("/products/") and path.endswith(".js"))) \
+                and not self.headers.get("Sec-Fetch-Mode"):
+            Handler.EDGE_429 = getattr(Handler, "EDGE_429", 0) + 1
             return self._send(429, "Too Many Requests", "text/plain")
         if path == "/collections.json":
             return self._json({"collections": [dict(c, products_count=sum(p["collection"] == c["handle"] for p in PRODUCTS))
