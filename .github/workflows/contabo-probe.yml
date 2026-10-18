@@ -17,11 +17,15 @@ jobs:
     timeout-minutes: 14
     steps:
       - uses: actions/checkout@v4
-      - name: Install Radar + Chromium (user site, no sudo)
+      - name: Install Radar + Chromium (a venv kept on the box, no sudo)
         run: |
           python3 --version
-          python3 -m pip install -q --user -r requirements.txt 2>&1 | tail -2 || python3 -m pip install -q --user --break-system-packages -r requirements.txt 2>&1 | tail -2
-          python3 -m playwright install chromium 2>&1 | tail -2
+          python3 -m venv "$HOME/radar-venv" || (python3 -m ensurepip --user; python3 -m venv --without-pip "$HOME/radar-venv")
+          . "$HOME/radar-venv/bin/activate"
+          python -m pip install -q --upgrade pip
+          python -m pip install -q -r requirements.txt
+          python -m playwright install chromium 2>&1 | tail -3
+          python -c "import playwright, sys; print('playwright ok', sys.version)"
       - name: Serve the free-scan queue from Contabo (up to 8 minutes)
         env:
           BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
@@ -29,8 +33,9 @@ jobs:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           RADAR_WORKER_NAME: contabo-${{ github.run_id }}
         run: |
+          . "$HOME/radar-venv/bin/activate"
           { echo "host: $(hostname)  ip: $(curl -s -4 --max-time 10 ifconfig.me || echo ?)  at $(date -u +%FT%TZ)";
-            python3 -m radar worker --scans-only --for 480 2>&1 | grep -vE "^\s*$" | tail -60; } | tee probe.txt
+            python -m radar worker --scans-only --for 480 2>&1 | grep -vE "^\s*$|SyntaxWarning|st = ctx|m = ctx" | tail -80; } | tee probe.txt
       - name: Publish the log to branch probe-results
         if: always()
         run: |
