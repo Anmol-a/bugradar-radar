@@ -1,5 +1,4 @@
-# 18 Oct: Radar's data request uses Playwright's context.request (Node HTTP client), not Chromium. Does THAT get 429 from
-# Contabo while a page load / in-page fetch gets 200?
+# 18 Oct: the Contabo box (self-hosted runner `radar`, Mumbai) serving the free-scan queue, WITH the in-page data fix.
 name: contabo-probe
 on:
   push:
@@ -7,43 +6,34 @@ on:
   workflow_dispatch: {}
 permissions:
   contents: write
+concurrency:
+  group: free-scan-worker
+  cancel-in-progress: false
 jobs:
-  probe:
+  worker:
     runs-on: [self-hosted, radar]
-    timeout-minutes: 12
+    timeout-minutes: 14
     steps:
       - uses: actions/checkout@v4
-      - name: context.request vs in-page fetch vs page.goto
+      - name: Install Radar + Chromium (venv kept on the box)
+        run: |
+          python3 -m venv "$HOME/radar-venv"
+          . "$HOME/radar-venv/bin/activate"
+          python -m pip install -q -r requirements.txt
+          python -m playwright install chromium 2>&1 | tail -1
+      - name: Serve the free-scan queue from Contabo (up to 8 minutes)
         env:
+          BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
           RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          RADAR_WORKER_NAME: contabo-${{ github.run_id }}
         run: |
           . "$HOME/radar-venv/bin/activate"
-          { echo "host: $(hostname)  ip: $(curl -s -4 --max-time 10 ifconfig.me)  at $(date -u +%FT%TZ)";
-            python - <<'PY'
-          import os, time
-          from playwright.sync_api import sync_playwright
-          from radar.core.webbotauth import signer_from_env
-          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 BugRadar/0.1 (+bugradar.in)"
-          S="https://theme-dawn-demo.myshopify.com"; U=S+"/products.json?limit=5"
-          signer=signer_from_env()
-          with sync_playwright() as p:
-              b=p.chromium.launch(); c=b.new_context(user_agent=UA); pg=c.new_page()
-              r=pg.goto(S+"/", wait_until="domcontentloaded", timeout=30000); print("  page.goto home          ", r.status, flush=True); time.sleep(2)
-              for label, hdr in (("context.request unsigned", None), ("context.request SIGNED  ", signer.headers(U) if signer else None)):
-                  for i in range(3):
-                      r=c.request.get(U, timeout=20000, headers=hdr); print(" ", label, r.status, dict(r.headers).get("retry-after",""), dict(r.headers).get("server",""), dict(r.headers).get("cf-ray","")[:8] if r.headers.get("cf-ray") else "", flush=True); time.sleep(2)
-              got=pg.evaluate("async (u) => { const r = await fetch(u, {credentials:'same-origin'}); return r.status }", U); print("  in-page fetch           ", got, flush=True); time.sleep(2)
-              r=pg.goto(U, wait_until="domcontentloaded", timeout=30000); print("  page.goto products.json ", r.status, flush=True)
-              # a FRESH context's request client, no page visited first (what discovery does at the very start)
-              c2=b.new_context(user_agent=UA)
-              for i in range(3):
-                  r=c2.request.get(U, timeout=20000); print("  fresh-context.request   ", r.status, dict(r.headers).get("retry-after",""), flush=True); time.sleep(2)
-              b.close()
-          PY
-          } | tee probe.txt
-      - name: Publish to branch probe-results
+          { echo "host: $(hostname)  ip: $(curl -s -4 --max-time 10 ifconfig.me || echo ?)  at $(date -u +%FT%TZ)";
+            python -m radar worker --scans-only --for 480 2>&1 | grep -vE "^\s*$|SyntaxWarning|st = ctx|m = ctx" | tail -80; } | tee probe.txt
+      - name: Publish the log to branch probe-results
         if: always()
         run: |
           git config user.name radar-probe && git config user.email probe@bugradar.in
           git fetch origin probe-results && git checkout probe-results
-          cp probe.txt contabo-client-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-client-*.txt && git commit -qm "contabo client probe" && git push -q origin probe-results
+          cp probe.txt contabo-worker-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-worker-*.txt && git commit -qm "contabo worker trial (in-page fix)" && git push -q origin probe-results
