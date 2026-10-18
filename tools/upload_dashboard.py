@@ -163,7 +163,7 @@ def reason_of(case: dict) -> str | None:
     return (last.get("error") or "")[:300] or None
 
 
-def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None) -> dict:
+def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_meta: dict | None = None) -> dict:
     host = (urlparse(run.get("base_url") or "").hostname or run.get("site_id") or "store").removeprefix("www.")
     results, shots = [], 0
     for c in run.get("cases", []):
@@ -207,7 +207,7 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None) -> dict
         "build": {"version": build or build_day(run.get("started_at")), "environment": "production"},
         "run": {"tool": "radar", "language": "python", "framework": "radar", "device": run.get("device"),
                 "browser": "chromium", "started_at": run.get("started_at"), "finished_at": run.get("finished_at") or None,
-                "ci_url": ci_url, "meta": {"radar_run_id": run.get("run_id"), "radar_verdict": run.get("verdict"),
+                "ci_url": ci_url, "meta": {**(extra_meta or {}), "radar_run_id": run.get("run_id"), "radar_verdict": run.get("verdict"),
                                            "median_load_secs": perf.get("median_load_secs"), "notes": (run.get("notes") or [])[:3]}},
         "results": results,
     }
@@ -230,7 +230,7 @@ def find_runs(folder: Path, since: float = 0) -> list[Path]:
 
 
 def upload(folder: Path, key: str, since: float = 0, build: str = "", ci_url: str | None = None,
-           dry_run: bool = False, log=print) -> list[dict]:
+           dry_run: bool = False, log=print, extra_meta: dict | None = None) -> list[dict]:
     """Send every finished run under the folder. Returns one record per run.json found:
     {"file", "project", "device", "radar_run_id", "ok", "run_id", "project_id", "error"}; the worker (15 Oct) reads
     run_id off it to tie a free-scan request to its dashboard run."""
@@ -242,7 +242,7 @@ def upload(folder: Path, key: str, since: float = 0, build: str = "", ci_url: st
             continue
         if not run.get("cases") and not run.get("verdict"):
             continue                       # not a finished run
-        payload = to_payload(run, f.parent, build, ci_url)
+        payload = to_payload(run, f.parent, build, ci_url, extra_meta)
         rec = {"file": str(f), "project": payload["project"], "device": payload["run"]["device"],
                "radar_run_id": run.get("run_id"), "ok": False, "run_id": None, "project_id": None, "error": None}
         out.append(rec)

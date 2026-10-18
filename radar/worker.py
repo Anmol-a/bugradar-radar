@@ -149,7 +149,7 @@ def run_monitor(monitor: dict, base: Settings, upload: bool = True, log=print) -
     return overall(verdicts), note
 
 
-def upload_results(data_dir, since: float, log=print) -> tuple[list[dict], str]:
+def upload_results(data_dir, since: float, log=print, extra_meta: dict | None = None) -> tuple[list[dict], str]:
     """Send every run.json written since `since` under the data dir (one per device) through the same uploader the
     cloud runs use. Returns (records, problem): records as tools.upload_dashboard.upload gives them, problem = a short
     note for the row when nothing could be sent ('' when all went)."""
@@ -158,7 +158,7 @@ def upload_results(data_dir, since: float, log=print) -> tuple[list[dict], str]:
         return [], "NOT uploaded (BUGRADAR_KEY unset)"
     from tools.upload_dashboard import upload
     try:
-        recs = upload(Path(data_dir), key, since=since, log=log)
+        recs = upload(Path(data_dir), key, since=since, log=log, extra_meta=extra_meta)
     except Exception as e:  # noqa: BLE001
         return [], f"upload failed: {str(e)[:120]}"
     bad = [r for r in recs if not r["ok"]]
@@ -312,7 +312,9 @@ def run_scan(req: dict, base: Settings, upload: bool = True, log=print, progress
     out = {"verdict": run.verdict, "score": score_of(d), "summary": summarize(d), "run_id": None,
            "project_id": None, "note": f"desktop: {run.verdict} ({int(time.time() - t0)} s)", "failed": False}
     if upload:
-        recs, why = upload_results(base.data_dir, t0, log)
+        # meta.scan_request_id: the dashboard's ingest files a free scan under the "Free scans" workspace, not the key's
+        # own (18 Oct: visitors' stores were filling Anmol's store list)
+        recs, why = upload_results(base.data_dir, t0, log, extra_meta={"scan_request_id": req["id"]})
         mine = [r for r in recs if r["ok"] and r.get("radar_run_id") == run.run_id] or [r for r in recs if r["ok"]]
         if mine:
             out["run_id"], out["project_id"] = mine[0]["run_id"], mine[0]["project_id"]
