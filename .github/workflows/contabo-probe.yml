@@ -1,0 +1,26 @@
+# 18 Oct: is the Contabo box (self-hosted runner `radar`, vmi3647713) still alive, and does Shopify still throttle it?
+# Runs only on this branch. If no runner with label `radar` is online the job never starts: that is the answer too.
+name: contabo-probe
+on:
+  push:
+    branches: [probe-contabo]
+permissions:
+  contents: write
+jobs:
+  probe:
+    runs-on: [self-hosted, radar]
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - name: Probe Shopify from this machine
+        run: |
+          { echo "host: $(hostname)  ip: $(curl -s -4 --max-time 10 ifconfig.me || echo ?)  at $(date -u +%FT%TZ)";
+            for s in theme-dawn-demo.myshopify.com bummer.in giva.co plumgoodness.com mcaffeine.com boat-lifestyle.com foxtale.in soulflower.in suta.in bellavitaorganic.com; do
+              sleep 3; echo "$s $(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -A 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 BugRadar/0.1 (+bugradar.in)' https://$s/)";
+            done; } | tee probe.txt
+      - name: Publish the answer to branch probe-results
+        run: |
+          git config user.name radar-probe && git config user.email probe@bugradar.in
+          git fetch origin probe-results 2>/dev/null && git checkout probe-results || git checkout --orphan probe-results
+          git rm -rfq --cached . 2>/dev/null || true
+          cp probe.txt contabo-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-*.txt && git commit -qm "contabo probe" && git push -q origin probe-results
