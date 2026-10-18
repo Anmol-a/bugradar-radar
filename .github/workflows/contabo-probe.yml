@@ -1,5 +1,5 @@
-# 18 Oct: WHY did Radar get 429 from Contabo when plain curl gets 200 everywhere? Three suspects, one at a time:
-#   A burst (10 quick data requests, unsigned)   B the Web Bot Auth signature headers   C a real Chromium page load
+# 18 Oct: Radar's data request uses Playwright's context.request (Node HTTP client), not Chromium. Does THAT get 429 from
+# Contabo while a page load / in-page fetch gets 200?
 name: contabo-probe
 on:
   push:
@@ -13,32 +13,31 @@ jobs:
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v4
-      - name: A / B / C
+      - name: context.request vs in-page fetch vs page.goto
         env:
           RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
         run: |
           . "$HOME/radar-venv/bin/activate"
-          UA='Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 BugRadar/0.1 (+bugradar.in)'
-          S=theme-dawn-demo.myshopify.com
           { echo "host: $(hostname)  ip: $(curl -s -4 --max-time 10 ifconfig.me)  at $(date -u +%FT%TZ)";
-            echo "A: burst of 10 unsigned data requests, no pause";
-            for i in 1 2 3 4 5 6 7 8 9 10; do printf "%s " "$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -A "$UA" "https://$S/products.json?limit=250&page=$i")"; done; echo;
-            sleep 20;
-            echo "B: ONE signed request (Web Bot Auth headers), then one unsigned";
-            H=$(python -m radar.core.webbotauth headers "https://$S/products.json?limit=5" | sed 's/^/-H "/; s/$/"/' | tr '\n' ' ');
-            echo "   headers used: $(python -m radar.core.webbotauth headers "https://$S/products.json?limit=5" | cut -c1-60 | tr '\n' '|')";
-            eval curl -s -o /dev/null -w "'signed %{http_code}\n'" --max-time 20 -A "'$UA'" $H "https://$S/products.json?limit=5";
-            sleep 3; printf "unsigned %s\n" "$(curl -s -o /dev/null -w '%{http_code}' --max-time 20 -A "$UA" "https://$S/products.json?limit=5")";
-            sleep 3; eval curl -s -o /dev/null -w "'signed-home %{http_code}\n'" --max-time 20 -A "'$UA'" $(python -m radar.core.webbotauth headers "https://$S/" | sed 's/^/-H "/; s/$/"/' | tr '\n' ' ') "https://$S/";
-            sleep 20;
-            echo "C: real Chromium (unsigned): home, then products.json, then a product .js";
             python - <<'PY'
+          import os, time
           from playwright.sync_api import sync_playwright
-          S="https://theme-dawn-demo.myshopify.com"
+          from radar.core.webbotauth import signer_from_env
+          UA="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 BugRadar/0.1 (+bugradar.in)"
+          S="https://theme-dawn-demo.myshopify.com"; U=S+"/products.json?limit=5"
+          signer=signer_from_env()
           with sync_playwright() as p:
-              b=p.chromium.launch(); c=b.new_context(user_agent="Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0.0.0 Safari/537.36 BugRadar/0.1 (+bugradar.in)"); pg=c.new_page()
-              for u in ("/", "/products.json?limit=5", "/collections/all", "/products.json?limit=250", "/collections/all/products.json?limit=250"):
-                  r=pg.goto(S+u, wait_until="domcontentloaded", timeout=30000); print("  chromium", u, r.status if r else None, flush=True)
+              b=p.chromium.launch(); c=b.new_context(user_agent=UA); pg=c.new_page()
+              r=pg.goto(S+"/", wait_until="domcontentloaded", timeout=30000); print("  page.goto home          ", r.status, flush=True); time.sleep(2)
+              for label, hdr in (("context.request unsigned", None), ("context.request SIGNED  ", signer.headers(U) if signer else None)):
+                  for i in range(3):
+                      r=c.request.get(U, timeout=20000, headers=hdr); print(" ", label, r.status, dict(r.headers).get("retry-after",""), dict(r.headers).get("server",""), dict(r.headers).get("cf-ray","")[:8] if r.headers.get("cf-ray") else "", flush=True); time.sleep(2)
+              got=pg.evaluate("async (u) => { const r = await fetch(u, {credentials:'same-origin'}); return r.status }", U); print("  in-page fetch           ", got, flush=True); time.sleep(2)
+              r=pg.goto(U, wait_until="domcontentloaded", timeout=30000); print("  page.goto products.json ", r.status, flush=True)
+              # a FRESH context's request client, no page visited first (what discovery does at the very start)
+              c2=b.new_context(user_agent=UA)
+              for i in range(3):
+                  r=c2.request.get(U, timeout=20000); print("  fresh-context.request   ", r.status, dict(r.headers).get("retry-after",""), flush=True); time.sleep(2)
               b.close()
           PY
           } | tee probe.txt
@@ -47,4 +46,4 @@ jobs:
         run: |
           git config user.name radar-probe && git config user.email probe@bugradar.in
           git fetch origin probe-results && git checkout probe-results
-          cp probe.txt contabo-why429-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-why429-*.txt && git commit -qm "contabo why-429 probe" && git push -q origin probe-results
+          cp probe.txt contabo-client-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-client-*.txt && git commit -qm "contabo client probe" && git push -q origin probe-results
