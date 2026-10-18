@@ -1,39 +1,47 @@
-# 18 Oct: the Contabo box (self-hosted runner `radar`, Mumbai) serving the free-scan queue, WITH the in-page data fix.
+# 18 Oct: install the free-scan worker as an ALWAYS-ON process on the Contabo box (user `radar`, no sudo), driven by the
+# user's crontab, so free scans never wait for GitHub's schedule (which ran once in 5 hours today).
+#   ~/radar-src        a checkout of `main`, pulled on every start
+#   ~/radar.env        BUGRADAR_KEY + RADAR_SIGNING_KEY + OPENAI_API_KEY (0600), written from the repo's secrets
+#   ~/radar-worker.sh  pull, then `python -m radar worker --scans-only --poll 15` under a lock (one instance)
+#   crontab            every minute: start the worker if it is not running; 03:30 IST: restart it to pick up new code
 name: contabo-probe
 on:
   push:
     branches: [probe-contabo]
   workflow_dispatch: {}
-permissions:
-  contents: write
-concurrency:
-  group: free-scan-worker
-  cancel-in-progress: false
 jobs:
-  worker:
+  install:
     runs-on: [self-hosted, radar]
-    timeout-minutes: 14
+    timeout-minutes: 15
     steps:
-      - uses: actions/checkout@v4
-      - name: Install Radar + Chromium (venv kept on the box)
-        run: |
-          python3 -m venv "$HOME/radar-venv"
-          . "$HOME/radar-venv/bin/activate"
-          python -m pip install -q -r requirements.txt
-          python -m playwright install chromium 2>&1 | tail -1
-      - name: Serve the free-scan queue from Contabo (up to 8 minutes)
+      - name: Install the always-on worker
         env:
           BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
           RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
-          RADAR_WORKER_NAME: contabo-${{ github.run_id }}
         run: |
-          . "$HOME/radar-venv/bin/activate"
-          { echo "host: $(hostname)  ip: $(curl -s -4 --max-time 10 ifconfig.me || echo ?)  at $(date -u +%FT%TZ)";
-            python -m radar worker --scans-only --for 480 2>&1 | grep -vE "^\s*$|SyntaxWarning|st = ctx|m = ctx" | tail -80; } | tee probe.txt
-      - name: Publish the log to branch probe-results
-        if: always()
-        run: |
-          git config user.name radar-probe && git config user.email probe@bugradar.in
-          git fetch origin probe-results && git checkout probe-results
-          cp probe.txt contabo-worker-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-worker-*.txt && git commit -qm "contabo worker trial (in-page fix)" && git push -q origin probe-results
+          set -e
+          echo "user $(whoami) home $HOME host $(hostname) ip $(curl -s -4 --max-time 10 ifconfig.me)"
+          which crontab && crontab -l 2>/dev/null | head -5 || echo "(no crontab yet)"
+          [ -d "$HOME/radar-src/.git" ] || git clone -q --branch main https://github.com/Anmol-a/bugradar-radar.git "$HOME/radar-src"
+          git -C "$HOME/radar-src" fetch -q origin main && git -C "$HOME/radar-src" reset -q --hard origin/main
+          python3 -m venv "$HOME/radar-venv"; . "$HOME/radar-venv/bin/activate"
+          python -m pip install -q -r "$HOME/radar-src/requirements.txt"; python -m playwright install chromium 2>&1 | tail -1
+          umask 077
+          printf 'BUGRADAR_KEY=%s\nRADAR_SIGNING_KEY=%s\nOPENAI_API_KEY=%s\nRADAR_WORKER_NAME=contabo\n' "$BUGRADAR_KEY" "$RADAR_SIGNING_KEY" "$OPENAI_API_KEY" > "$HOME/radar.env"
+          cat > "$HOME/radar-worker.sh" <<'SH'
+          #!/bin/bash
+          # the free-scan worker, one instance, logs in ~/radar-worker.log (kept small)
+          exec 9>"$HOME/radar-worker.lock"; flock -n 9 || exit 0
+          cd "$HOME/radar-src" && git fetch -q origin main && git reset -q --hard origin/main
+          set -a; . "$HOME/radar.env"; set +a
+          "$HOME/radar-venv/bin/python" -m pip install -q -r requirements.txt 2>/dev/null || true
+          [ -f "$HOME/radar-worker.log" ] && tail -c 2000000 "$HOME/radar-worker.log" > "$HOME/radar-worker.log.tmp" && mv "$HOME/radar-worker.log.tmp" "$HOME/radar-worker.log"
+          exec "$HOME/radar-venv/bin/python" -m radar worker --scans-only --poll 15 >> "$HOME/radar-worker.log" 2>&1
+          SH
+          chmod 700 "$HOME/radar-worker.sh"
+          ( crontab -l 2>/dev/null | grep -v radar-worker; echo "* * * * * $HOME/radar-worker.sh"; echo "0 22 * * * pkill -f 'radar worker' || true   # 03:30 IST restart picks up new code" ) | crontab -
+          crontab -l
+          # start it now, detached from this job
+          setsid nohup "$HOME/radar-worker.sh" >/dev/null 2>&1 < /dev/null &
+          sleep 20; echo "--- running:"; pgrep -af "radar worker" || echo "(not running yet)"; echo "--- log:"; tail -5 "$HOME/radar-worker.log" 2>/dev/null || true
