@@ -6,25 +6,25 @@ on:
 permissions:
   contents: write
 jobs:
-  status:
+  install:
     runs-on: [self-hosted, radar]
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v4
-      - name: Diagnose the always-on worker
+      - name: Install the crontab entry (cron keeps the worker alive, independent of GitHub jobs)
         run: |
-          { echo "at $(date -u +%FT%TZ) user $(whoami)";
-            echo "--- crontab:"; crontab -l 2>&1 | sed 's/^/  /';
-            echo "--- cron service:"; (systemctl is-active cron 2>/dev/null || systemctl is-active crond 2>/dev/null || echo unknown);
-            echo "--- files:"; ls -la "$HOME/radar-worker.sh" "$HOME/radar.env" "$HOME/radar-worker.log" "$HOME/radar-worker.lock" 2>&1 | sed 's/^/  /'; ls -d "$HOME/radar-src" "$HOME/radar-venv" 2>&1 | sed 's/^/  /';
-            echo "--- processes:"; pgrep -af "radar" | grep -v pgrep | sed 's/^/  /' || echo "  none";
-            echo "--- worker log tail:"; tail -20 "$HOME/radar-worker.log" 2>&1 | sed 's/^/  /';
-            echo "--- try starting by hand (detached):"; setsid nohup "$HOME/radar-worker.sh" >/dev/null 2>&1 < /dev/null & sleep 25;
-            echo "--- processes after:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none"; echo "--- log after:"; tail -8 "$HOME/radar-worker.log" 2>&1 | sed 's/^/  /';
-          } | tee probe.txt
+          sed -i 's|"\$HOME/radar-venv/bin/python" -m radar worker|"$HOME/radar-venv/bin/python" -u -m radar worker|' "$HOME/radar-worker.sh" || true
+          grep -q -- "-u -m radar worker" "$HOME/radar-worker.sh" || sed -i 's|-m radar worker --scans-only|-u -m radar worker --scans-only|' "$HOME/radar-worker.sh"
+          set +e
+          { crontab -l 2>/dev/null | grep -v "radar-worker" | grep -v "radar worker"; } > /tmp/radar.cron
+          echo "* * * * * $HOME/radar-worker.sh" >> /tmp/radar.cron
+          echo "0 22 * * * pkill -f 'radar worker' >/dev/null 2>&1" >> /tmp/radar.cron
+          crontab /tmp/radar.cron && echo "crontab installed:" && crontab -l
+          echo "--- waiting 95 s for cron to start the worker"; sleep 95
+          { echo "at $(date -u +%FT%TZ)"; echo "--- processes:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none"; echo "--- log:"; grep -v "SyntaxWarning\|st = ctx\|m = ctx" "$HOME/radar-worker.log" | tail -8 | sed 's/^/  /'; } | tee probe.txt
       - name: Publish
         if: always()
         run: |
           git config user.name radar-probe && git config user.email probe@bugradar.in
           git fetch origin probe-results && git checkout probe-results
-          cp probe.txt contabo-service-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-service-*.txt && git commit -qm "contabo service status" && git push -q origin probe-results
+          cp probe.txt contabo-cron-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-cron-*.txt && git commit -qm "contabo cron install" && git push -q origin probe-results
