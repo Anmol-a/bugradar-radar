@@ -349,3 +349,21 @@ def test_upload_key_mode_also_serves_the_keys_own_monitors(monkeypatch):
     full = w.SupabaseQueue("https://ref.supabase.co", "service-key")
     full.claim("box-1"); full.finish("m1", "down", "n" * 400)
     assert [c[0] for c in calls] == ["claim_monitor", "finish_monitor"] and len(calls[1][1]["note"]) == 300
+
+
+def test_always_on_worker_honours_scans_only(monkeypatch):
+    """19 Oct: `radar worker --scans-only --poll 15` (Contabo slot 1) took a daily monitor: serve() ignored the flag."""
+    seen = []
+    monkeypatch.setattr(w, "run_once", lambda q, b, wk, upload=True, log=print, scans_only=False: seen.append(scans_only) or {"id": "x"})
+    for flag in (True, False):
+        n = iter(range(3))
+        w.serve(None, Settings(), "box-1", poll_seconds=0, upload=False, log=lambda *_: None, scans_only=flag,
+                _stop=lambda: next(n) >= 2)
+    assert seen == [True, True, False, False]
+    # and the command line passes it through to the always-on mode
+    got = {}
+    monkeypatch.setattr(w, "serve", lambda q, b, wk, poll, upload=True, scans_only=False: got.update(poll=poll, scans_only=scans_only))
+    monkeypatch.setattr(w, "queue_from_env", lambda: None)
+    monkeypatch.setattr(w, "load_settings", lambda: Settings())
+    w.main(["--scans-only", "--poll", "15"])
+    assert got == {"poll": 15, "scans_only": True}

@@ -381,11 +381,14 @@ def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log
     return m
 
 
-def serve(queue: Queue, base: Settings, worker: str, poll_seconds: int = 60, upload: bool = True, log=print) -> None:
-    log(f"[{_now()}] Radar worker {worker} started; polling every {poll_seconds} s")
-    while True:
+def serve(queue: Queue, base: Settings, worker: str, poll_seconds: int = 60, upload: bool = True, log=print,
+          scans_only: bool = False, _stop=lambda: False) -> None:
+    """Run for ever. scans_only: free checks only, never a daily monitor (19 Oct: this always-on mode ignored the flag,
+    which only showed once monitors became claimable by key; Contabo slot 1 then took a monitor)."""
+    log(f"[{_now()}] Radar worker {worker} started; polling every {poll_seconds} s" + (" (free scans only)" if scans_only else ""))
+    while not _stop():
         try:
-            ran = run_once(queue, base, worker, upload=upload, log=log)
+            ran = run_once(queue, base, worker, upload=upload, log=log, scans_only=scans_only)
         except (urllib.error.URLError, OSError) as e:        # Supabase unreachable: wait, try again, never die
             log(f"[{_now()}] queue error: {e}")
             ran = None
@@ -442,7 +445,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.seconds:
         serve_for(q, base, worker, a.seconds, upload=not a.no_upload, scans_only=a.scans_only)
         return 0
-    serve(q, base, worker, a.poll, upload=not a.no_upload)
+    serve(q, base, worker, a.poll, upload=not a.no_upload, scans_only=a.scans_only)
     return 0
 
 
