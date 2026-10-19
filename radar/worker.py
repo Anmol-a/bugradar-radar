@@ -204,7 +204,7 @@ def summarize(run: dict) -> dict:
     from tools.upload_dashboard import plain_name, reason_of, STATUS
     order = {"critical": 0, "major": 1, "minor": 2, "seo": 3}
     cases = run.get("cases") or []
-    problems, counts = [], {"checked": len(cases), "passed": 0, "failed": 0, "warnings": 0, "not_tested": 0}
+    problems, notes, counts = [], [], {"checked": len(cases), "passed": 0, "failed": 0, "warnings": 0, "not_tested": 0}
     for c in cases:
         status = STATUS.get(c.get("verdict"), "warning")
         warn = warning_of(c)
@@ -212,17 +212,20 @@ def summarize(run: dict) -> dict:
         if status in ("passed", "flaky"):
             counts["passed"] += 1
             if warn:
+                # a check that WORKS with a note is not a problem (19 Oct: "Homepage loads healthy" was stored under
+                # problems); it goes under warning_checks, which the result page shows as "works, with a note"
                 counts["warnings"] += 1
-                problems.append({"key": c["case_id"], "name": name, "severity": c.get("severity") or "major",
-                                 "status": "warning", "reason": warn})
+                notes.append({"key": c["case_id"], "name": name, "severity": c.get("severity") or "major",
+                              "status": "warning", "reason": warn})
         elif status == "failed":
             counts["failed"] += 1
             problems.append({"key": c["case_id"], "name": name, "severity": c.get("severity") or "major",
                              "status": "failed", "reason": reason_of(c)})
         else:
             counts["not_tested"] += 1
-    problems.sort(key=lambda x: (0 if x["status"] == "failed" else 1, order.get(x["severity"], 9)))
-    return {**counts, "problems": problems[:5], "platform": run.get("platform"),
+    problems.sort(key=lambda x: order.get(x["severity"], 9))
+    notes.sort(key=lambda x: order.get(x["severity"], 9))
+    return {**counts, "problems": problems[:5], "warning_checks": notes[:5], "platform": run.get("platform"),
             "notes": [str(n)[:200] for n in (run.get("notes") or [])[:2]]}
 
 
@@ -289,6 +292,35 @@ class ScanProgress:
             self._push()
 
 
+HOME_SHOT = "homepage.jpg"
+
+
+def homepage_shot(url: str, settings: Settings, run_dir, log=print) -> bool:
+    """The free result page's "your store as Radar saw it" (19 Oct): one desktop picture of the homepage, saved next to
+    run.json as homepage.jpg; the uploader attaches it to the store's own line. Only after a run that could test the
+    store (so robots.txt and the platform already said yes). Same browser, user agent and signature as the run. Never
+    raises: a store with no picture still gets its result."""
+    try:
+        from radar.core.browser import Browser
+        with Browser(settings, "desktop", store_url=url) as b:
+            ctx = b.new_context()
+            try:
+                page = ctx.new_page()
+                page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                try:
+                    page.wait_for_load_state("networkidle", timeout=6000)
+                except Exception:  # noqa: BLE001  (chat widgets and analytics never go quiet: the page is shown anyway)
+                    pass
+                page.wait_for_timeout(1200)
+                (Path(run_dir) / HOME_SHOT).write_bytes(page.screenshot(type="jpeg", quality=70, full_page=False))
+                return True
+            finally:
+                ctx.close()
+    except Exception as e:  # noqa: BLE001
+        log(f"  {url}: homepage picture skipped: {str(e)[:120]}")
+        return False
+
+
 def run_scan(req: dict, base: Settings, upload: bool = True, log=print, progress=None) -> dict:
     """One free basic check: desktop only, the 'basic' profile, uploaded like any run (so the result page can show the
     dashboard's results + screenshots), then the verdict, score and summary for the scan_requests row. Never raises.
@@ -307,8 +339,10 @@ def run_scan(req: dict, base: Settings, upload: bool = True, log=print, progress
     if not results:
         return {"verdict": "error", "score": None, "summary": {}, "run_id": None, "project_id": None,
                 "note": "nothing ran", "failed": True}
-    run = results[0][0]
+    run, run_dir = results[0]
     d = run.to_dict()
+    if run.verdict in TESTED_VERDICTS:
+        homepage_shot(url, replace(base, allow_cart_flow=False), run_dir, log)
     out = {"verdict": run.verdict, "score": score_of(d), "summary": summarize(d), "run_id": None,
            "project_id": None, "note": f"desktop: {run.verdict} ({int(time.time() - t0)} s)", "failed": False}
     if upload:

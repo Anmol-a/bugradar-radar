@@ -200,6 +200,11 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_m
         plain = re.sub(r"\s*\([^()]*:[^()]{20,}\)\s*$", "", note or "") or note
         site.update(status=SITE_STATUS.get(run.get("verdict"), "skipped"), reason=SITE_WHY.get(run.get("verdict")) or plain,
                     error=note if plain != note else None)
+    # the free check's "your store as Radar saw it" (19 Oct): worker.homepage_shot saves it next to run.json
+    home = run_dir / "homepage.jpg"
+    if home.is_file() and 0 < home.stat().st_size <= MAX_SHOT_BYTES:
+        site["artifacts"] = [{"kind": "screenshot", "name": "homepage.jpg", "content_type": "image/jpeg",
+                              "data_base64": base64.b64encode(home.read_bytes()).decode()}]
     results.insert(0, site)
     perf = run.get("perf") or {}
     return {
