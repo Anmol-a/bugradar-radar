@@ -172,10 +172,12 @@ def test_score_and_summary_from_a_run():
     s = w.summarize(run)
     # passed counts slow_home (passed with a warning) and nav_links; the warning is counted on top, not instead
     assert (s["checked"], s["passed"], s["failed"], s["warnings"], s["not_tested"]) == (5, 2, 2, 1, 1)
-    assert [p["key"] for p in s["problems"]] == ["product.pdp.tee", "health.meta.home", "smoke.home_health"]
+    # problems are checks that FAILED; a check that works with a note goes under warning_checks (19 Oct)
+    assert [p["key"] for p in s["problems"]] == ["product.pdp.tee", "health.meta.home"]
+    assert all(p["status"] == "failed" for p in s["problems"])
     assert s["problems"][0]["name"] == "Product page 'Tee'" and s["problems"][0]["reason"] == "The product page shows no price."
-    assert s["problems"][2] == {"key": "smoke.home_health", "name": "smoke.home_health", "severity": "critical",
-                                "status": "warning", "reason": "Homepage took 6.2 s to load"}
+    assert s["warning_checks"] == [{"key": "smoke.home_health", "name": "smoke.home_health", "severity": "critical",
+                              "status": "warning", "reason": "Homepage took 6.2 s to load"}]
     # a store Radar could not test has no score: nothing was measured
     assert w.score_of({"verdict": "blocked", "cases": [slow_home]}) is None
     assert w.score_of({"verdict": "unsupported", "cases": []}) is None
@@ -290,3 +292,33 @@ def test_queue_age_script_says_yes_only_for_an_old_waiting_request(monkeypatch, 
     monkeypatch.setattr(qa.urllib.request, "urlopen", boom)
     qa.main([])
     assert capsys.readouterr().out.strip() == "no"            # unknown = let the next run ask again, never crash
+
+
+def test_free_scan_takes_a_homepage_picture_only_when_the_store_was_tested(monkeypatch, tmp_path):
+    """19 Oct: the result page shows the homepage as Radar saw it; a store Radar could not test gets no picture
+    (robots.txt or the platform said no), and a picture that fails never fails the scan."""
+    from types import SimpleNamespace as NS
+    shots = []
+    for verdict, expect in (("healthy", 1), ("down", 1), ("blocked", 0), ("unsupported", 0)):
+        run = NS(verdict=verdict, run_id="r", to_dict=lambda v=verdict: {"verdict": v, "cases": []})
+        monkeypatch.setattr("radar.runner.executor.scan_devices", lambda *a, run=run, **k: [(run, tmp_path)])
+        monkeypatch.setattr(w, "homepage_shot", lambda url, s, d, log=print: shots.append((url, d)) or True)
+        before = len(shots)
+        out = w.run_scan({"id": "s", "url": "https://x.in"}, Settings(), upload=False, log=lambda *_: None)
+        assert len(shots) - before == expect, verdict
+        assert out["verdict"] == verdict and out["failed"] is False
+    assert shots[0] == ("https://x.in", tmp_path)
+
+
+def test_homepage_picture_never_raises(tmp_path):
+    class Boom:
+        def __init__(self, *a, **k): raise RuntimeError("no chromium here")
+    import radar.core.browser as br
+    real = br.Browser
+    br.Browser = Boom
+    try:
+        said = []
+        assert w.homepage_shot("https://x.in", Settings(), tmp_path, log=said.append) is False
+        assert "homepage picture skipped" in said[0] and not (tmp_path / w.HOME_SHOT).exists()
+    finally:
+        br.Browser = real

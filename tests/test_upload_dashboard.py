@@ -1,3 +1,4 @@
+import base64
 """The dashboard uploader turns a Radar run.json into the dashboard's results format and posts it with the key."""
 import json
 import threading
@@ -178,3 +179,18 @@ def test_a_failed_check_carries_the_page_it_stopped_on(tmp_path):
     by = {r["key"]: r for r in up.to_payload(run, tmp_path, "", None)["results"]}
     assert by["cart.add"]["page_url"] == "https://shop.example/products/serum" and [s["name"] for s in by["cart.add"]["steps"]] == ["open", "add"]
     assert "page_url" not in by["smoke.home"]
+
+
+def test_the_homepage_picture_rides_on_the_stores_own_line(tmp_path):
+    """19 Oct: a free check's homepage.jpg (worker.homepage_shot) goes up on the SITE_KEY line; none when it is missing
+    or over the size limit."""
+    run = {"base_url": "https://x.in", "verdict": "healthy", "cases": []}
+    assert "artifacts" not in up.to_payload(run, tmp_path, "b", None)["results"][0]
+    (tmp_path / "homepage.jpg").write_bytes(b"\xff\xd8jpeg")
+    site = up.to_payload(run, tmp_path, "b", None)["results"][0]
+    assert site["key"] == up.SITE_KEY
+    (a,) = site["artifacts"]
+    assert (a["kind"], a["name"], a["content_type"]) == ("screenshot", "homepage.jpg", "image/jpeg")
+    assert base64.b64decode(a["data_base64"]) == b"\xff\xd8jpeg"
+    (tmp_path / "homepage.jpg").write_bytes(b"x" * (up.MAX_SHOT_BYTES + 1))
+    assert "artifacts" not in up.to_payload(run, tmp_path, "b", None)["results"][0]
