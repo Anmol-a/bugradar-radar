@@ -143,7 +143,10 @@ def run_monitor(monitor: dict, base: Settings, upload: bool = True, log=print) -
     verdicts = [r.verdict for r, _ in results]
     note = "; ".join(f"{r.device}: {r.verdict}" for r, _ in results) + f" ({int(time.time() - t0)} s)"
     if upload and results:
-        recs, why = upload_results(s.data_dir, t0, log)
+        # monitor_id: the dashboard files the run in the monitor's own workspace and store (a pilot store's runs land
+        # in that store's workspace, never in BugRadar's; dashboard migration 15 + ingest, 19 Oct)
+        meta = {"monitor_id": monitor["id"]} if monitor.get("id") else None
+        recs, why = upload_results(s.data_dir, t0, log, extra_meta=meta)
         if why:
             note += f"; {why}"
     return overall(verdicts), note

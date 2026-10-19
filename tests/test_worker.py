@@ -367,3 +367,17 @@ def test_always_on_worker_honours_scans_only(monkeypatch):
     monkeypatch.setattr(w, "load_settings", lambda: Settings())
     w.main(["--scans-only", "--poll", "15"])
     assert got == {"poll": 15, "scans_only": True}
+
+
+def test_a_daily_check_tells_the_dashboard_which_monitor_it_was(monkeypatch, tmp_path):
+    # 19 Oct: the dashboard files the run in the monitor's own workspace (a pilot store's), so the upload names the monitor
+    class R:
+        def __init__(self, device, verdict): self.device, self.verdict = device, verdict
+    monkeypatch.setattr("radar.runner.executor.scan_devices", lambda url, settings, devices: [(R("desktop", "healthy"), tmp_path)])
+    sent = []
+    monkeypatch.setattr(w, "upload_results", lambda data_dir, since, log=print, extra_meta=None: sent.append(extra_meta) or ([], ""))
+    status, note = w.run_monitor({"id": "mon-7", "url": "https://p.in", "devices": ["desktop"]}, Settings(), log=lambda *_: None)
+    assert status == "healthy" and sent == [{"monitor_id": "mon-7"}]
+    sent.clear()
+    w.run_monitor({"url": "https://p.in", "devices": ["desktop"]}, Settings(), log=lambda *_: None)   # an old row without an id
+    assert sent == [None]
