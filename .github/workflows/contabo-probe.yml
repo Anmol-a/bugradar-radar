@@ -35,8 +35,9 @@ jobs:
           { echo "at $(date -u +%FT%TZ)"; echo "--- code:"; git -C "$HOME/radar-src" log --oneline -1;
             grep -c "def homepage_shot" "$HOME/radar-src/radar/worker.py" | sed 's/^/  homepage_shot (want 1): /';
             grep -c "claim_monitor\", {\"worker\"" "$HOME/radar-src/radar/worker.py" | sed 's/^/  monitors by key (want 1): /';
+            grep -c "scans_only=a.scans_only)" "$HOME/radar-src/radar/worker.py" | sed 's/^/  --scans-only passed through (want 3): /';
             echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none";
-            echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 4 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } | tee probe.txt
+            echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 3 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } | tee probe.txt
       - name: Publish
         if: always()
         run: |
