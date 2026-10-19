@@ -2537,6 +2537,18 @@ def test_country_modal_answered_stay_on_brand_site_never_the_other_site(tmp_path
     assert any("Stay on Mock IN Site" in k["actual"] for k in closed), closed
 
 @pytest.mark.parametrize("device", ["desktop", "mobile"])
+def test_region_gateway_answered_with_the_country_the_store_serves(tmp_path, device):
+    """axorhelmets.com (Contabo probe, 18 Oct, desktop): a full-page gateway 'INDIA VISIT NOW | EUROPE VISIT NOW', no
+    close control, covered every card: not judged. The choice whose panel names the store's own country (Shopify.country)
+    and stays on this store is the shopper's way in; the other region's link is never followed."""
+    j = _case(_scan_small("region_gateway", tmp_path / device, device=device, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    closed = [k for k in _checks(j) if "popup closed" in k["what"]]
+    assert closed and all("europe" not in k["actual"].split("on:")[0].lower() for k in closed), closed
+    assert any("location popup" in k["what"] and "VISIT NOW" in k["actual"] for k in closed), closed
+    assert not any("mockstore.invalid" in str(s.detail) for s in _steps(j).values()), _steps(j)
+
+@pytest.mark.parametrize("device", ["desktop", "mobile"])
 def test_country_modal_stay_here_as_plain_div_is_answered(tmp_path, device):
     """teatrunk.in re-test (run 38461923525): the layer stayed ('no stay/close control in [International]'): 'Stay Here'
     is not a <button>. A tappable element whose own text is a stay control counts; 'International' is never clicked."""
@@ -2920,3 +2932,14 @@ def test_data_requests_come_from_inside_the_page_so_cloudflares_client_fingerpri
     assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
     assert not any("rate-limit" in n for n in run.notes), run.notes
     assert Handler.EDGE_429 == 0, f"{Handler.EDGE_429} data requests still came from the non-browser client"
+
+
+def test_product_shown_under_a_reworded_name_is_not_a_hidden_product(tmp_path):
+    """nbdpowerlifting.com (Contabo probe, 18 Oct, both devices): custom product pages with no cart form show the
+    product as 'STRENGTH / Back Print Acid Wash Hoodie' for the catalog's 'NBD STRENGTH — Back Print Acid Wash Hoodie';
+    every word of the name is there, in another order. Radar called each page 'other content' and failed the store."""
+    run = _product_only("reworded_name", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)
+    assert "other content" not in (st["loads"].error or ""), st["loads"].error
+    assert st["loads"].status == "pass", st["loads"].error

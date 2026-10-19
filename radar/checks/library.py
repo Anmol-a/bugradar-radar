@@ -2415,6 +2415,11 @@ def _hidden_product_page(ctx: Ctx, url: str) -> str | None:
         return None
     if not title or norm_text(title) in norm_text(text):
         return None
+    # the name reworded: every word of it on the page, in any order (nbdpowerlifting.com, Contabo probe 18 Oct:
+    # 'STRENGTH / Back Print Acid Wash Hoodie' for 'NBD STRENGTH — Back Print Acid Wash Hoodie')
+    words = set(norm_text(title).split())
+    if len(words) >= 2 and words <= set(norm_text(text).split()):
+        return None
     m = UNAVAILABLE_RX.search(text)
     if m:
         return ("shows " + repr(text[max(0, m.start() - 20): m.end() + 30].strip())).replace("\n", " ")
@@ -3687,13 +3692,33 @@ COVER_CLOSE_JS = r"""() => {
           return cy - b.top <= 60 && (b.right - cx <= 60 || cx - b.left <= 60); });
         if (icon) btn = icon;
       }
+      // axorhelmets.com (Contabo probe, 18 Oct): a full-page region gateway 'INDIA  VISIT NOW | EUROPE  VISIT NOW',
+      // no close control. The choice whose own panel names the country the store says it is serving (Shopify.country)
+      // and that stays on this store (no link, or a link to this host) is the shopper's 'stay'; any other is never clicked.
+      let region = false;
+      if (!btn) {
+        let name = ''; try { const cc = ((window.Shopify && window.Shopify.country) || '').toUpperCase();
+          name = /^[A-Z]{2}$/.test(cc) ? new Intl.DisplayNames(['en'], {type: 'region'}).of(cc) : ''; } catch (e) { name = ''; }
+        const choices = cands.filter(c => (c.innerText || '').trim() && !BAD.test(text(c)));
+        if (name && name.length > 2 && choices.length >= 2) {
+          const host = location.hostname.replace(/^www\./, '');
+          const stays = c => { const h = c.getAttribute('href'); if (!h || /^(#|javascript:)/i.test(h)) return true;
+            try { return new URL(h, location.href).hostname.replace(/^www\./, '') === host; } catch (e) { return false; } };
+          const panel = c => { let p = c;      // the biggest box around this choice that holds no other choice
+            while (p.parentElement && p.parentElement !== root && choices.filter(o => p.parentElement.contains(o)).length === 1) p = p.parentElement;
+            return text(p) + ' ' + [...p.querySelectorAll('img[alt], [aria-label]')].map(i => i.getAttribute('alt') || i.getAttribute('aria-label')).join(' '); };
+          const re = new RegExp('(^|[^a-z])' + name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '([^a-z]|$)', 'i');
+          const mine = choices.filter(c => re.test(panel(c)));
+          if (mine.length === 1 && stays(mine[0])) { btn = mine[0]; region = true; }
+        }
+      }
       if (!btn) { why.push(tag + ': no stay/close control in [' + cands.slice(0, 6).map(c => text(c).slice(0, 20) || c.tagName.toLowerCase()).join(' | ') + ']'); continue; }
       const b = btn.getBoundingClientRect(), hit = document.elementFromPoint(b.left + b.width / 2, b.top + b.height / 2);
       if (!hit || !(hit === btn || btn.contains(hit))) { why.push(tag + ': ' + text(btn).slice(0, 20) + ' covered'); continue; }
       btn.setAttribute('data-radar-target', 'cover-close');
       const t = text(root);
       return {button: text(btn).slice(0, 30) || 'close', text: t.slice(0, 60).toLowerCase(),
-              kind: /country|region|currency|ship to|location/i.test(t) ? 'location' : 'popup'};
+              kind: region || /country|region|currency|ship to|location/i.test(t) ? 'location' : 'popup'};
     } }
   return why.length ? {none: true, why: [...new Set(why)].join('; ').slice(0, 300)} : null; }"""
 

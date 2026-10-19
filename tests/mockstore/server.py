@@ -146,6 +146,7 @@ Modes (to prove Radar catches and heals what it should):
   div_buy_control  product pages: NO /cart/add form; the buy control is <div class="pdp-addtobag-btn"
                    data-product-handle=...> "ADD TO BAG", after 3 recommendation cards with their own "Add to Bag"
                    buttons for other products (nicobar.com, held-out 7 Oct) -> product + cart PASS, right product added
+  reworded_name    the vase's page (no cart form) shows it as 'VASE · Flower, ceramic' (nbdpowerlifting.com, 18 Oct)
   preselected_variant  the vase's page has NO cart form (headless-style div buy control) and pre-selects its SECOND
                    size ("Large", marked active + aria-checked); only that size's price is shown (foxtale.in, 9 Oct: the
                    200g Best Value size pre-selected, Radar read the first size's ₹349 and failed "price not on page")
@@ -455,6 +456,8 @@ Modes (to prove Radar catches and heals what it should):
                    page until answered (teatrunk.in) -> Radar clicks 'Stay Here' (never 'International'), PASSES
   country_modal_div_stay  country_modal, but 'Stay Here' is a plain <div> with a click handler and the backdrop is a
                    sibling of the box (teatrunk.in re-test) -> Radar clicks 'Stay Here', PASSES
+  region_gateway         full-page split gateway INDIA | EUROPE, each 'VISIT NOW', no close; Shopify.country 'IN'
+                         (axorhelmets.com, Contabo probe 18 Oct)
   country_modal_stay_on  'Visiting from United States (USD $)?' with 'Shop on US Site' / 'Stay on Mock IN Site' and an
                    unlabelled icon x, inside <header> (vedix.com) -> Radar clicks 'Stay on Mock IN Site' (never the US
                    site), PASSES
@@ -1171,6 +1174,19 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   if (document.cookie.includes('ctry=stay')) { m.remove(); return; }
   m.querySelector('.ctry-intl').onclick = () => { location.href = '/pages/international'; };
   m.querySelector('.ctry-stay').onclick = () => { document.cookie = 'ctry=stay;path=/'; m.remove(); }; })();</script></header>""", 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "region_gateway":
+            # axorhelmets.com (Contabo probe, 18 Oct, desktop): a full-page split 'gateway curtain', INDIA | EUROPE, each
+            # with 'VISIT NOW' and no close control; every card covered. The store serves India (Shopify.country 'IN'):
+            # INDIA's button opens this store; EUROPE's link leaves for another site and is never clicked.
+            body = body.replace("</header>", """<section class="split-gateway__curtain" id="gw" style="position:fixed;inset:0;z-index:100;display:flex">
+<div class="gw-half" style="flex:1;background:#333;color:#fff;padding-top:30vh;text-align:center"><h2>INDIA</h2>
+<button type="button" class="gw-in">VISIT NOW</button></div>
+<div class="gw-half" style="flex:1;background:#335;color:#fff;padding-top:30vh;text-align:center"><h2>EUROPE</h2>
+<a class="gw-eu" href="https://eu.mockstore.invalid/">VISIT NOW</a></div></section>
+<script>window.Shopify = window.Shopify || {}; Shopify.country = 'IN';
+(() => { const g = document.getElementById('gw');
+  if (document.cookie.includes('gw=in')) { g.remove(); return; }
+  g.querySelector('.gw-in').onclick = () => { document.cookie = 'gw=in;path=/'; g.remove(); }; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal_stay_on":
             # vedix.com (new30l, desktop): 'Visiting from United States (USD $)?' with 'Shop on US Site' (leaves the
             # store: never clicked), the link 'Stay on Vedix IN Site' and a country dropdown; its x is an unlabelled icon.
@@ -2212,6 +2228,12 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body = body.replace(buy, f'<div class="pdp-addtobag-btn" data-product-handle="{p["handle"]}" '
                                      f'onclick="addToCart({pre["id"]})" style="cursor:pointer;padding:10px;background:#222;color:#fff;'
                                      f'width:200px">ADD TO BAG</div>')
+        if self.mode == "reworded_name" and p["handle"] == "ceramic-vase":
+            # nbdpowerlifting.com (Contabo probe, 18 Oct): a custom page with no cart form shows the product under a
+            # reworded name ('STRENGTH / Back Print Acid Wash Hoodie' for 'NBD STRENGTH — Back Print Acid Wash Hoodie')
+            body = body.replace(buy, f'<div class="pdp-addtobag-btn" data-product-handle="{p["handle"]}" '
+                                     f'onclick="addToCart({vid})" style="cursor:pointer;padding:10px;background:#222;color:#fff;'
+                                     f'width:200px">ADD TO CART</div>').replace(p["title"], "VASE · Flower, ceramic")
         if self.mode == "drawer_form_first":
             body = (f'<div class="drawer__scrollable" style="display:none"><form id="product_form_9{rec["id"]}" '
                     f'class="shopify-product-form" action="/cart/add" method="post"><input type="hidden" name="id" value="{rv}">'

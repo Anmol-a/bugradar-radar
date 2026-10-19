@@ -1373,6 +1373,13 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 19 Oct 04:30 UTC (weekly loop):** axorhelmets.com (Contabo probe) was not judged: a full-page region gateway
+  'INDIA VISIT NOW | EUROPE VISIT NOW' with no close control covered every card. The choice whose own panel names the
+  country the store serves (Shopify.country) and stays on this host is clicked; other regions never. Mock region_gateway.
+- **v0.20 18 Oct 19:30 UTC:** Contabo probe (10 never-seen stores, Mumbai runner): nbdpowerlifting.com's custom product
+  pages (no cart form) show the name reworded ('STRENGTH / Back Print Acid Wash Hoodie'); the hidden-product test wanted
+  the exact name and failed 3 products per device. Every word of the name on the page, in any order, now counts as the
+  name shown. Mock mode reworded_name.
 - **v0.20 18 Oct 04:30 IST:** (1) radar-tests runs 39054711928 (d3fd056) and 39067649593 (dfb8b86) were FAILURES whose
   'verdict' job still said success; both were deployed believing them green. Since then the WHOLE run's conclusion is
   read, never the verdict job alone. Causes fixed in 5126323: '\b' in a non-raw Python string became a backspace (COD
