@@ -233,7 +233,7 @@ def test_scan_progress_drives_the_loading_screen_list():
     broken("start", {})
 
 
-def test_upload_key_mode_serves_free_scans_only_through_the_by_key_functions(monkeypatch):
+def test_upload_key_mode_serves_free_scans_through_the_by_key_functions(monkeypatch):
     calls = []
 
     class Resp(io.BytesIO):
@@ -245,7 +245,6 @@ def test_upload_key_mode_serves_free_scans_only_through_the_by_key_functions(mon
         return Resp(json.dumps([{"id": "s1", "url": "https://x.in"}]).encode() if "claim_scan" in req.full_url else b"")
     monkeypatch.setattr(w.urllib.request, "urlopen", fake_urlopen)
     q = w.SupabaseQueue("https://ref.supabase.co", None, upload_key="brk_abc")
-    assert q.claim("box") is None and calls == []                     # monitors need the service key: never asked
     assert q.claim_scan("box") == {"id": "s1", "url": "https://x.in"}
     q.scan_progress("s1", {"stage": "testing"})
     q.finish_scan("s1", "healthy", 100, {}, None, None, "ok")
@@ -322,3 +321,31 @@ def test_homepage_picture_never_raises(tmp_path):
         assert "homepage picture skipped" in said[0] and not (tmp_path / w.HOME_SHOT).exists()
     finally:
         br.Browser = real
+
+
+def test_upload_key_mode_also_serves_the_keys_own_monitors(monkeypatch):
+    """19 Oct (dashboard migration 14): with only the upload key, monitors go through claim_monitor_by_key /
+    finish_monitor_by_key with the key; with the service key, the plain functions as before."""
+    calls = []
+
+    class Resp(io.BytesIO):
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+
+    def fake_urlopen(req, timeout=0):
+        fn = req.full_url.rsplit("/", 1)[1]
+        calls.append((fn, json.loads(req.data), req.headers.get("Apikey")))
+        rows = [{"id": "m1", "url": "https://x.in", "devices": ["desktop"]}] if fn.startswith("claim_monitor") else []
+        return Resp(json.dumps(rows).encode())
+    monkeypatch.setattr(w.urllib.request, "urlopen", fake_urlopen)
+    keyed = w.SupabaseQueue("https://ref.supabase.co", None, upload_key="brk_abc")
+    assert keyed.claim("box-2") == {"id": "m1", "url": "https://x.in", "devices": ["desktop"]}
+    keyed.finish("m1", "healthy", "desktop: healthy (90 s)")
+    assert calls[0][:2] == ("claim_monitor_by_key", {"brk": "brk_abc", "worker": "box-2"})
+    assert calls[1][:2] == ("finish_monitor_by_key", {"brk": "brk_abc", "monitor_id": "m1", "status": "healthy",
+                                                      "note": "desktop: healthy (90 s)"})
+    assert calls[0][2] == w.ANON_KEY             # the public key reaches PostgREST; the upload key is the proof
+    calls.clear()
+    full = w.SupabaseQueue("https://ref.supabase.co", "service-key")
+    full.claim("box-1"); full.finish("m1", "down", "n" * 400)
+    assert [c[0] for c in calls] == ["claim_monitor", "finish_monitor"] and len(calls[1][1]["note"]) == 300

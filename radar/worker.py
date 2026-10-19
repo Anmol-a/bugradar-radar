@@ -69,8 +69,8 @@ ANON_KEY = ("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZi
 
 class SupabaseQueue:
     """The SQL functions over PostgREST. Standard library only.
-    service_key given: the full queue (monitors + free scans). upload_key only: free scans, through the *_by_key
-    functions, using the public anon key to reach PostgREST."""
+    service_key given: the full queue (monitors + free scans). upload_key only: free scans and the key's own workspace's
+    monitors, through the *_by_key functions (migrations 09 + 14), using the public anon key to reach PostgREST."""
 
     def __init__(self, url: str, service_key: str | None, timeout: int = 30, upload_key: str | None = None):
         self.url, self.timeout = url.rstrip("/"), timeout
@@ -95,13 +95,13 @@ class SupabaseQueue:
         return json.loads(raw) if raw.strip() else None
 
     def claim(self, worker: str) -> dict | None:
-        if self.upload_key:
-            return None                        # monitors need the service key
-        rows = self._rpc("claim_monitor", {"worker": worker}) or []
+        # with the upload key only: monitors of the key's own workspace (dashboard migration 14, 19 Oct), so the box
+        # that holds BugRadar's key runs BugRadar's daily monitors without a service key
+        rows = self._by_key("claim_monitor", {"worker": worker}) or []
         return rows[0] if rows else None
 
     def finish(self, monitor_id: str, status: str, note: str) -> None:
-        self._rpc("finish_monitor", {"monitor_id": monitor_id, "status": status, "note": note[:300]})
+        self._by_key("finish_monitor", {"monitor_id": monitor_id, "status": status, "note": note[:300]})
 
     def claim_scan(self, worker: str) -> dict | None:
         rows = self._by_key("claim_scan", {"worker": worker}) or []
