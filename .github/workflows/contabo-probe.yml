@@ -17,6 +17,8 @@ jobs:
           sleep 100
           { echo "at $(date -u +%FT%TZ)"; echo "--- code:"; git -C "$HOME/radar-src" log --oneline -1;
             grep -c scan_request_id "$HOME/radar-src/radar/worker.py" | sed 's/^/  scan_request_id mentions in worker.py: /';
+            grep -c "def homepage_shot" "$HOME/radar-src/radar/worker.py" | sed 's/^/  homepage_shot in worker.py (19 Oct, want 1): /';
+            grep -c "warning_checks" "$HOME/radar-src/radar/worker.py" | sed 's/^/  warning_checks in worker.py (want 1+): /';
             echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none"; } | tee probe.txt
       - name: Publish
         if: always()
