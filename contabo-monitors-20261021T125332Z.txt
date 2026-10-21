@@ -1,0 +1,26 @@
+at 2026-10-21T12:53:08Z
+--- code:
+32ee3de2 Engine: wait for a slow homepage before calling a store unreachable (#4)
+  homepage_shot (want 1): 1
+  monitors by key (want 1): 1
+  --scans-only passed through (want 3): 3
+  uploads name their monitor (want 1): 1
+  re-check before alerting (want 1): 1
+  patient homepage (want 1): 1
+  slow runs re-checked (want 1): 1
+--- workers:
+  131752 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+  131753 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+--- slot logs (last lines):
+ slot 1:
+   [2026-10-20 22:01:07] Radar worker contabo-1 started; polling every 15 s (free scans only)
+   [2026-10-21 06:50:26] queue error: <urlopen error [Errno -3] Temporary failure in name resolution>
+   [2026-10-21 13:30:55] Radar worker contabo-1 started; polling every 15 s (free scans only)
+ slot 2:
+   sent bugradar-recheck-outage.invalid desktop: 1 results, 1 new problems, 0 fixed
+   [2026-10-21 13:44:26] contabo-2: https://bugradar-recheck-outage.invalid -> unreachable (desktop: unreachable (29 s); still didn't load 10 min after the first look)
+   [2026-10-21 14:52:43] Radar worker contabo-2 started; polling every 15 s
+ slot 3:
+   sent theme-dawn-demo.myshopify.com mobile: 1 results, 1 new problems, 0 fixed
+   [2026-10-21 13:44:54] contabo-3: http://theme-dawn-demo.myshopify.com -> unreachable (mobile: unreachable (59 s); still didn't load 10 min after the first look)
+   [2026-10-21 14:52:43] Radar worker contabo-3 started; polling every 15 s
