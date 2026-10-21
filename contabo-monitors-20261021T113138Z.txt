@@ -1,0 +1,25 @@
+at 2026-10-21T11:31:25Z
+--- code:
+2ee3e34d Worker: a store that didn't load is looked at again in 10 minutes before any alert (#3)
+  homepage_shot (want 1): 1
+  monitors by key (want 1): 1
+  --scans-only passed through (want 3): 3
+  uploads name their monitor (want 1): 1
+  re-check before alerting (want 1): 1
+--- workers:
+  126303 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+  126304 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+  126305 /home/radar/radar-venv/bin/python -u -m radar worker --scans-only --poll 15
+--- slot logs (last lines):
+ slot 1:
+   [2026-10-20 22:01:07] Radar worker contabo-1 started; polling every 15 s (free scans only)
+   [2026-10-21 06:50:26] queue error: <urlopen error [Errno -3] Temporary failure in name resolution>
+   [2026-10-21 13:30:55] Radar worker contabo-1 started; polling every 15 s (free scans only)
+ slot 2:
+   [2026-10-20 22:01:22] Radar worker contabo-2 started; polling every 15 s
+   [2026-10-21 06:50:31] queue error: <urlopen error [Errno -3] Temporary failure in name resolution>
+   [2026-10-21 13:30:34] Radar worker contabo-2 started; polling every 15 s
+ slot 3:
+   sent theme-dawn-demo.myshopify.com desktop: 1 results, 1 new problems, 0 fixed
+   [2026-10-21 12:15:52] contabo-3: https://theme-dawn-demo.myshopify.com -> unreachable (desktop: unreachable (97 s))
+   [2026-10-21 13:30:34] Radar worker contabo-3 started; polling every 15 s
