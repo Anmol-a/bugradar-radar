@@ -86,6 +86,71 @@ def test_run_once_records_the_worst_device_and_the_note(monkeypatch, tmp_path):
     assert (mid, status) == ("m2", "degraded") and note.startswith("desktop: healthy; mobile: degraded (")
 
 
+# ---- a store that didn't load is looked at again before anyone is told (21 Oct) ----------------------------------------
+
+def _recheck_setup(monkeypatch, tmp_path, verdicts):
+    """scan_devices answers the given verdicts per device; upload_results is recorded instead of sent."""
+    class R:
+        def __init__(self, device, verdict): self.device, self.verdict = device, verdict
+    monkeypatch.setattr("radar.runner.executor.scan_devices",
+                        lambda url, settings, devices: [(R(d, v), tmp_path) for d, v in zip(devices, verdicts)])
+    sent = []
+    monkeypatch.setattr(w, "upload_results", lambda data_dir, since, log=print, extra_meta=None: sent.append(extra_meta) or ([], ""))
+    return sent
+
+
+def _one(monitor, verdicts, monkeypatch, tmp_path):
+    sent = _recheck_setup(monkeypatch, tmp_path, verdicts)
+    q = FakeQueue([monitor])
+    w.run_once(q, Settings(), "box-1", upload=True, log=lambda *_: None)
+    (mid, status, note), = q.finished
+    return status, note, sent
+
+
+def test_a_store_that_didnt_load_is_not_uploaded_the_first_time(monkeypatch, tmp_path):
+    status, note, sent = _one({"id": "m1", "url": "https://x.in", "devices": ["desktop"], "last_status": "healthy"},
+                              ["unreachable"], monkeypatch, tmp_path)
+    assert status == "recheck" and sent == []                      # no run, no problem, no email for a blip
+    assert note.startswith("desktop: unreachable (") and note.endswith("didn't load, looking again in 10 minutes")
+
+
+def test_the_second_look_is_uploaded_and_says_so(monkeypatch, tmp_path):
+    # still down 10 minutes later: uploaded (the dashboard opens the problem and alerts), marked as the second look
+    status, note, sent = _one({"id": "m1", "url": "https://x.in", "devices": ["desktop"], "last_status": "recheck"},
+                              ["unreachable"], monkeypatch, tmp_path)
+    assert status == "unreachable" and sent == [{"monitor_id": "m1", "rechecked": True}]
+    assert "looking again" not in note
+    # back by then: uploaded as a normal healthy run, nothing was ever opened
+    status, _, sent = _one({"id": "m1", "url": "https://x.in", "devices": ["desktop", "mobile"], "last_status": "recheck"},
+                           ["healthy", "healthy"], monkeypatch, tmp_path)
+    assert status == "healthy" and sent == [{"monitor_id": "m1", "rechecked": True}]
+
+
+def test_any_device_not_loading_holds_the_whole_first_look(monkeypatch, tmp_path):
+    status, _, sent = _one({"id": "m1", "url": "https://x.in", "devices": ["desktop", "mobile"], "last_status": None},
+                           ["healthy", "unreachable"], monkeypatch, tmp_path)
+    assert status == "recheck" and sent == []
+
+
+def test_only_a_store_that_didnt_load_is_looked_at_again(monkeypatch, tmp_path):
+    # real findings and Radar-side states are uploaded straight away, as before
+    for verdict in ("healthy", "degraded", "down", "blocked", "unsupported", "no_network"):
+        status, note, sent = _one({"id": "m1", "url": "https://x.in", "devices": ["desktop"], "last_status": "healthy"},
+                                  [verdict], monkeypatch, tmp_path)
+        assert status == verdict and sent == [{"monitor_id": "m1"}] and "looking again" not in note, verdict
+    # a store already down yesterday gets the same second look (its problem is already open: no new email either way)
+    status, _, sent = _one({"id": "m1", "url": "https://x.in", "devices": ["desktop"], "last_status": "unreachable"},
+                           ["unreachable"], monkeypatch, tmp_path)
+    assert status == "recheck" and sent == []
+    # a crash is still an error, never a re-check
+    def boom(url, settings, devices):
+        raise RuntimeError("browser exploded")
+    monkeypatch.setattr("radar.runner.executor.scan_devices", boom)
+    q = FakeQueue([{"id": "m1", "url": "https://x.in", "devices": ["desktop"], "last_status": "recheck"}])
+    w.run_once(q, Settings(), "box-1", upload=True, log=lambda *_: None)
+    assert q.finished[0][1] == "error"
+
+
 def test_worker_needs_its_environment(monkeypatch):
     monkeypatch.delenv("BUGRADAR_SUPABASE_URL", raising=False)
     monkeypatch.delenv("BUGRADAR_SERVICE_KEY", raising=False)

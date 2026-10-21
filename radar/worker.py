@@ -6,7 +6,8 @@
 Where the list of stores lives: the dashboard's `monitors` table (Supabase). The worker never sees the browser-facing
 dashboard; it talks to two SQL functions with the service key:
     claim_monitor(worker)              -> the one store most overdue, locked for this worker (or nothing)
-    finish_monitor(id, status, note)   -> unlock + schedule the next run (now + interval_minutes)
+    finish_monitor(id, status, note)   -> unlock + schedule the next run (now + interval_minutes; 10 minutes after a
+                                          'recheck': a store that didn't load is looked at again before an alert, 21 Oct)
 and, since 15 Oct, two more for the free scan page (onboarding door A): a visitor's "check my store" click is a
 `scan_requests` row, claimed BEFORE any daily monitor (someone is waiting on it) and run with the 'basic' profile
 (radar/runner/profiles.py: desktop, one of each, no cart, ~1-2 min):
@@ -127,8 +128,18 @@ def overall(verdicts: list[str]) -> str:
     return max(verdicts, key=lambda v: ORDER.index(v) if v in ORDER else len(ORDER)) if verdicts else "error"
 
 
+# A daily check whose store didn't load is looked at again before anyone is told (21 Oct: one 30 s homepage timeout on
+# the Dawn demo opened a problem and a 🔴 email; the page loaded fine minutes later). The first look uploads nothing and
+# finishes as RECHECK; the dashboard's finish_monitor (migration 23) then schedules the next look RECHECK_MINUTES out
+# instead of a day, once in a row. That second look is uploaded as usual: a store still down alerts then, ~10 min later.
+RECHECK = "recheck"
+RECHECK_VERDICTS = ("unreachable",)
+RECHECK_MINUTES = 10            # set in SQL (migration 23); here only for the note
+
+
 def run_monitor(monitor: dict, base: Settings, upload: bool = True, log=print) -> tuple[str, str]:
-    """Scan one monitor on its devices, upload, return (status, note). Never raises: a crash is status 'error'."""
+    """Scan one monitor on its devices, upload, return (status, note). Never raises: a crash is status 'error'.
+    A store that didn't load is not uploaded the first time: status RECHECK (see above)."""
     from radar.runner.executor import scan_devices
     url = monitor["url"]
     devices = tuple(monitor.get("devices") or ("desktop", "mobile"))
@@ -142,11 +153,18 @@ def run_monitor(monitor: dict, base: Settings, upload: bool = True, log=print) -
         return "error", f"Radar crashed: {str(e)[:200]}"
     verdicts = [r.verdict for r, _ in results]
     note = "; ".join(f"{r.device}: {r.verdict}" for r, _ in results) + f" ({int(time.time() - t0)} s)"
+    second_look = monitor.get("last_status") == RECHECK
+    if not second_look and any(v in RECHECK_VERDICTS for v in verdicts):
+        log(f"  {url}: didn't load; nothing uploaded, looking again in {RECHECK_MINUTES} minutes")
+        return RECHECK, f"{note}; didn't load, looking again in {RECHECK_MINUTES} minutes"
     if upload and results:
         # monitor_id: the dashboard files the run in the monitor's own workspace and store (a pilot store's runs land
-        # in that store's workspace, never in BugRadar's; dashboard migration 15 + ingest, 19 Oct)
-        meta = {"monitor_id": monitor["id"]} if monitor.get("id") else None
-        recs, why = upload_results(s.data_dir, t0, log, extra_meta=meta)
+        # in that store's workspace, never in BugRadar's; dashboard migration 15 + ingest, 19 Oct). rechecked: this is
+        # the second look after a store didn't load (the store's own line then says so).
+        meta = {"monitor_id": monitor["id"]} if monitor.get("id") else {}
+        if second_look:
+            meta["rechecked"] = True
+        recs, why = upload_results(s.data_dir, t0, log, extra_meta=meta or None)
         if why:
             note += f"; {why}"
     return overall(verdicts), note

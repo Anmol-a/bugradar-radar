@@ -123,6 +123,15 @@ def test_every_run_has_a_line_for_the_store_itself(tmp_path):
     assert r["reason"] == "gone.example: the domain does not resolve. Check the address" and r["error"] == long
     for verdict, want in (("blocked", "blocked"), ("unsupported", "skipped")):
         assert up.to_payload({**down, "verdict": verdict}, tmp_path, "", None)["results"][0]["status"] == want
+    # a daily check's second look (worker RECHECK, 21 Oct): the store's line says it wasn't a one-off; nothing else changes
+    p = up.to_payload(down, tmp_path, "", None, {"monitor_id": "m1", "rechecked": True})
+    assert p["results"][0]["reason"] == "gone.example: the domain does not resolve. Checked twice, 10 minutes apart."
+    assert p["run"]["meta"]["rechecked"] is True and p["run"]["meta"]["monitor_id"] == "m1"
+    assert up.to_payload({**down, "notes": []}, tmp_path, "", None, {"rechecked": True})["results"][0]["reason"] == \
+        "The store did not load. Checked twice, 10 minutes apart."
+    assert up.to_payload(RUN, tmp_path, "", None, {"rechecked": True})["results"][0]["reason"] is None      # loaded fine
+    assert up.to_payload({**down, "verdict": "blocked"}, tmp_path, "", None, {"rechecked": True})["results"][0]["reason"] == \
+        "gone.example: the domain does not resolve"                                                    # not a failure
     d = tmp_path / "data" / "sites" / "gone.example" / "runs" / "r2"
     d.mkdir(parents=True)
     (d / "run.json").write_text(json.dumps(down))

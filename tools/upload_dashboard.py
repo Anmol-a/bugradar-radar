@@ -200,6 +200,9 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_m
         plain = re.sub(r"\s*\([^()]*:[^()]{20,}\)\s*$", "", note or "") or note
         site.update(status=SITE_STATUS.get(run.get("verdict"), "skipped"), reason=SITE_WHY.get(run.get("verdict")) or plain,
                     error=note if plain != note else None)
+        if site["status"] == "failed" and (extra_meta or {}).get("rechecked"):
+            # a daily check's second look (radar/worker.py RECHECK, 21 Oct): the owner should know it wasn't a one-off
+            site["reason"] = f"{(site['reason'] or 'The store did not load').rstrip(' .')}. Checked twice, 10 minutes apart."
     # the free check's "your store as Radar saw it" (19 Oct): worker.homepage_shot saves it next to run.json
     home = run_dir / "homepage.jpg"
     if home.is_file() and 0 < home.stat().st_size <= MAX_SHOT_BYTES:
