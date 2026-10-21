@@ -58,6 +58,8 @@ class Settings:
     headless: bool = True
     slow_mo_ms: int = 0                 # >0 slows every browser action (for watching headed runs)
     nav_timeout_ms: int = 30000
+    home_timeout_ms: int = 60000        # the homepage's first load (discover); a timeout is tried once more
+                                        # (21 Oct: Contabo -> Shopify took 16-21 s, twice over 30 s)
     device_budget_s: int = 1500         # bench: one store on one device is stopped after this (25 min; slowest real
                                         # store seen 10 Oct ≈ 19 min). A frozen page otherwise holds a shard for hours
     max_products: int = 3               # products tested per run

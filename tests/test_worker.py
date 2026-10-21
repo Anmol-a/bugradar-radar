@@ -97,9 +97,12 @@ def _ago(minutes):
 
 
 def _recheck_setup(monkeypatch, tmp_path, verdicts):
-    """scan_devices answers the given verdicts per device (or raises); upload_results is recorded instead of sent."""
+    """scan_devices answers the given verdicts per device (or raises); upload_results is recorded instead of sent.
+    A verdict ending in '+slow' is a run whose homepage needed more than its time limit (sitemap_summary.home_slow)."""
     class R:
-        def __init__(self, device, verdict): self.device, self.verdict = device, verdict
+        def __init__(self, device, verdict):
+            self.device, self.verdict = device, verdict.removesuffix("+slow")
+            self.sitemap_summary = {"home_slow": verdict.endswith("+slow")}
     def fake(url, settings, devices):
         if verdicts == "crash":
             raise RuntimeError("browser exploded")
@@ -175,6 +178,22 @@ def test_a_second_look_that_couldnt_test_tries_once_more(monkeypatch, tmp_path):
     # a device that DID test the store is enough: uploaded
     status, _, sent = _one({**SECOND, "devices": ["desktop", "mobile"]}, ["healthy", "no_network"], monkeypatch, tmp_path)
     assert status == "no_network" and sent and sent[0]["rechecked"] is True
+
+
+def test_a_slow_run_that_did_not_pass_is_looked_at_again(monkeypatch, tmp_path):
+    # review 21 Oct: the homepage loaded only after its time limit (slow network); later pages can fail for the same
+    # reason, so a first look like that is not alerted either
+    for verdicts in (["down+slow"], ["degraded+slow"], ["healthy", "down+slow"], ["blocked+slow"]):
+        status, note, sent = _one({**FIRST, "devices": ["desktop", "mobile"][:len(verdicts)]}, verdicts, monkeypatch, tmp_path)
+        assert status == "recheck" and sent == [] and note.endswith("was very slow and not everything passed, looking again in 10 minutes"), verdicts
+    # slow but everything passed: uploaded at once (nothing to alert)
+    status, _, sent = _one(FIRST, ["healthy+slow"], monkeypatch, tmp_path)
+    assert status == "healthy" and sent == [{"monitor_id": "m1"}]
+    # the second look is uploaded whatever it finds: a store that is slow AND failing is reported
+    status, _, sent = _one(SECOND, ["down+slow"], monkeypatch, tmp_path)
+    assert status == "down" and sent == [{"monitor_id": "m1", "rechecked": True, "recheck_minutes": 11}]
+    # not slow: a real failure on a first look is uploaded at once, as before
+    assert _one(FIRST, ["down"], monkeypatch, tmp_path)[:3:2] == ("down", [{"monitor_id": "m1"}])
 
 
 def test_an_old_recheck_starts_over(monkeypatch, tmp_path):
