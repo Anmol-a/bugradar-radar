@@ -55,6 +55,7 @@ class SiteMap:
     pinned_products: list[str] = field(default_factory=list)     # handles with an open incident: tested every run until they pass (14 Oct)
     pinned_collections: list[str] = field(default_factory=list)  # same for collections
     pins_gone: list[str] = field(default_factory=list)           # pinned case ids whose product / collection left the catalog
+    home_slow: bool = False           # the homepage needed more than home_timeout_ms (21 Oct; the worker re-checks such a run)
 
     def to_dict(self) -> dict:
         return asdict(self)

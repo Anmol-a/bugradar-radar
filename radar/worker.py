@@ -191,9 +191,13 @@ def run_monitor(monitor: dict, base: Settings, upload: bool = True, log=print) -
         return "error", f"Radar crashed: {str(e)[:200]}"
     verdicts = [r.verdict for r, _ in results]
     note = "; ".join(f"{r.device}: {r.verdict}" for r, _ in results) + f" ({int(time.time() - t0)} s)"
-    if not second_look and any(v in RECHECK_VERDICTS for v in verdicts):
-        log(f"  {url}: didn't load; nothing uploaded, looking again in {RECHECK_MINUTES} minutes")
-        return RECHECK, f"{note}; didn't load, looking again in {RECHECK_MINUTES} minutes"
+    # a run whose homepage needed more than its time limit (radar/discovery/discover.py homepage(): a slow network or
+    # a slow store) can fail later pages for the same reason: not alerted on a first look either (review, 21 Oct)
+    slow = any((getattr(r, "sitemap_summary", None) or {}).get("home_slow") for r, _ in results)
+    if not second_look and (any(v in RECHECK_VERDICTS for v in verdicts) or (slow and any(v != "healthy" for v in verdicts))):
+        why = "didn't load" if any(v in RECHECK_VERDICTS for v in verdicts) else "was very slow and not everything passed"
+        log(f"  {url}: {why}; nothing uploaded, looking again in {RECHECK_MINUTES} minutes")
+        return RECHECK, f"{note}; {why}, looking again in {RECHECK_MINUTES} minutes"
     if try_again and verdicts and all(v in CANT_TELL for v in verdicts):
         log(f"  {url}: couldn't test it on a second look; nothing uploaded, trying again in {RECHECK_MINUTES} minutes")
         return RECHECK, f"{note}; couldn't test it on a second look, trying again in {RECHECK_MINUTES} minutes"

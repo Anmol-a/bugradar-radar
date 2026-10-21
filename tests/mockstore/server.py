@@ -1416,9 +1416,15 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             # called a working store 'unreachable'. slow_first_home: only the FIRST load is slow (the server's
             # home_delay, seconds); home_hangs: every load is (a store that really doesn't answer).
             import time as _t
+            self.server.home_hits = getattr(self.server, "home_hits", 0) + 1
             if self.mode == "home_hangs" or not getattr(self.server, "home_slow_done", False):
                 self.server.home_slow_done = True
+                self.server.slow_home_pending = getattr(self.server, "slow_home_pending", 0) + 1
                 _t.sleep(float(getattr(self.server, "home_delay", 3.0)))
+                self.server.slow_home_pending -= 1
+            elif getattr(self.server, "slow_home_pending", 0):
+                # asked again while the slow answer was still on its way: Radar started the homepage over
+                self.server.home_asked_again = getattr(self.server, "home_asked_again", 0) + 1
         if self.mode == "products_down" and path.startswith("/products/") and not path.endswith((".js", ".json")):
             return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
         if self.mode == "server_blip" and (path == "/" or path.startswith(("/products/", "/collections/"))) \

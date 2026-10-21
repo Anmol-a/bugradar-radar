@@ -297,22 +297,54 @@ def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
             sm.account_url = acct.split("#")[0]
 
 
+def _timed_out(e: Exception) -> bool:
+    """A navigation that ran out of time: Playwright's own timeout, or Chromium's network timeouts."""
+    from playwright.sync_api import TimeoutError as PlaywrightTimeout
+    return isinstance(e, PlaywrightTimeout) or any(t in str(e) for t in ("ERR_TIMED_OUT", "ERR_CONNECTION_TIMED_OUT"))
+
+
+class _Arrived:
+    """The homepage's answer when the first navigation finished during the pause (Playwright gives no Response then)."""
+    def __init__(self, status: int):
+        self.status = status
+
+
+NAV_STATUS = "() => { const n = performance.getEntriesByType('navigation')[0]; return n && n.responseStatus ? n.responseStatus : null }"
+
+
 def homepage(sess: Session, base_url: str, s: Settings, sm: SiteMap):
     """The store's homepage, patiently. 21 Oct: from the Contabo box a Shopify store's HTML took 2-21 s to be ready on a
     bad minute and twice that day over the 30 s page limit, so Radar called a working store 'unreachable' (a daily
-    check's problem + 🔴 email for nothing). The homepage gets s.home_timeout_ms (60 s), and a TIMEOUT is tried once
-    more after a short pause before it counts; a second timeout is the store's answer. DNS / refused / certificate
-    errors are not retried (they don't get better in 10 s, and the robots.txt request already tried 3 times)."""
+    check's problem + 🔴 email for nothing). The homepage gets s.home_timeout_ms (60 s). After a timeout the page that is
+    still arriving gets a short pause to finish (starting over would throw it away and ask a struggling store again);
+    only if nothing arrived is it loaded once more, and a second timeout is the store's answer. sm.home_slow tells the
+    worker the run was slow (its first look is then re-checked rather than alerted, radar/worker.py). DNS / refused /
+    certificate errors are not retried: they don't get better in 10 s, and robots.txt already tried 3 times."""
     url = base_url + "/"
     try:
         return sess.goto(url, timeout_ms=s.home_timeout_ms)
     except RobotsBlocked:
         raise
     except Exception as e:  # noqa: BLE001
-        if "Timeout" not in str(e):
+        if not _timed_out(e):
             raise
         first = str(e).splitlines()[0][:100]
-    sess.page.wait_for_timeout(int(10000 * sess.backoff_scale))
+    sm.home_slow = True
+    pause_ms, t0 = int(10000 * sess.backoff_scale), time.time()
+    try:
+        # the timed-out navigation keeps going in the browser; the page is still blank until its answer arrives
+        sess.page.wait_for_url(lambda u: same_site(base_url, u), wait_until="domcontentloaded", timeout=max(pause_ms, 1))
+        status = sess.evaluate(NAV_STATUS)
+        if status:
+            sess.settle()
+            sm.notes.append(f"homepage took over {s.home_timeout_ms // 1000} s ({first}) and finished loading "
+                            f"{round(time.time() - t0)} s later; a slow network or a slow store, not a store that is down")
+            return _Arrived(int(status)), round(s.home_timeout_ms / 1000 + time.time() - t0, 2)
+    except Exception:  # noqa: BLE001  nothing usable arrived: load it again below
+        pass
+    left = pause_ms - int((time.time() - t0) * 1000)
+    if left > 0:
+        sess.page.wait_for_timeout(left)
     out = sess.goto(url, timeout_ms=s.home_timeout_ms)
     sm.notes.append(f"homepage took over {s.home_timeout_ms // 1000} s on the first try ({first}) and loaded on the second; "
                     "a slow network or a slow store, not a store that is down")
@@ -386,7 +418,7 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
         sess.page.wait_for_timeout(int(pause * 1000 * sess.backoff_scale))
         waited += pause
         try:
-            resp, _ = sess.goto(base_url + "/")
+            resp, _ = sess.goto(base_url + "/", timeout_ms=s.home_timeout_ms)
         except Exception:  # noqa: BLE001
             break
     if waited and resp is not None and resp.status < 400:
@@ -401,7 +433,7 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
         first = list(det["evidence"])
         sess.page.wait_for_timeout(int(3000 * sess.backoff_scale))
         try:
-            resp2, _ = sess.goto(base_url + "/")
+            resp2, _ = sess.goto(base_url + "/", timeout_ms=s.home_timeout_ms)
             html2 = sess.evaluate("() => document.documentElement.outerHTML") or ""
             det2 = detect_platform(html2)
             if resp2 is not None and resp2.status < 400 and det2["platform"] == "shopify":
