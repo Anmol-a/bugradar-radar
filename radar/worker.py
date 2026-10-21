@@ -6,7 +6,8 @@
 Where the list of stores lives: the dashboard's `monitors` table (Supabase). The worker never sees the browser-facing
 dashboard; it talks to two SQL functions with the service key:
     claim_monitor(worker)              -> the one store most overdue, locked for this worker (or nothing)
-    finish_monitor(id, status, note)   -> unlock + schedule the next run (now + interval_minutes)
+    finish_monitor(id, status, note)   -> unlock + schedule the next run (now + interval_minutes; 10 minutes after a
+                                          'recheck': a store that didn't load is looked at again before an alert, 21 Oct)
 and, since 15 Oct, two more for the free scan page (onboarding door A): a visitor's "check my store" click is a
 `scan_requests` row, claimed BEFORE any daily monitor (someone is waiting on it) and run with the 'basic' profile
 (radar/runner/profiles.py: desktop, one of each, no cart, ~1-2 min):
@@ -36,6 +37,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import socket
 import sys
 import time
@@ -127,26 +129,86 @@ def overall(verdicts: list[str]) -> str:
     return max(verdicts, key=lambda v: ORDER.index(v) if v in ORDER else len(ORDER)) if verdicts else "error"
 
 
+# A daily check whose store didn't load is looked at again before anyone is told (21 Oct: one 30 s homepage timeout on
+# the Dawn demo opened a problem; the page loaded fine minutes later). A look where any device didn't load uploads
+# nothing and finishes as RECHECK; the dashboard's finish_monitor (migration 23) schedules the next look 10 minutes out
+# and keeps recheck_since (when the store first didn't load) and rechecks (how many in a row) on the monitor row.
+#   second look, store still didn't load      -> uploaded: the problem is filed and alerted (~10 min after the first)
+#   second look, store loads / has findings   -> uploaded as usual; a blip leaves no problem and no email
+#   second look, Radar couldn't tell (offline, crashed, robots.txt silent) -> one more re-check (at most MAX_RECHECKS in
+#                                                a row), so a real outage isn't dropped until tomorrow
+# A 'recheck' older than RECHECK_FRESH_MINUTES (a paused check resumed later, a lock taken over) starts over.
+RECHECK = "recheck"
+RECHECK_VERDICTS = ("unreachable",)
+CANT_TELL = ("no_network", "error", "blocked")     # Radar learned nothing about whether the store loads
+RECHECK_MINUTES = 10            # set in SQL (migration 23); here only for the notes
+RECHECK_FRESH_MINUTES = 60      # the same rule is in SQL
+MAX_RECHECKS = 2                # the same cap is in SQL
+
+
+def _when(iso) -> datetime | None:
+    """A Postgres timestamp as PostgREST sends it ('2026-10-21T10:15:52.63058+00:00'), or None."""
+    m = re.match(r"(\d{4}-\d\d-\d\d)[T ](\d\d:\d\d:\d\d)(?:\.(\d+))?(Z|[+-]\d\d(?::?\d\d)?)?$", str(iso or "").strip())
+    if not m:
+        return None
+    frac = (m.group(3) or "0")[:6].ljust(6, "0")
+    tz = m.group(4) or "+00:00"
+    tz = "+00:00" if tz == "Z" else tz[:3] + ":" + (tz[3:].lstrip(":") or "00")
+    try:
+        return datetime.fromisoformat(f"{m.group(1)}T{m.group(2)}.{frac}{tz}")
+    except ValueError:
+        return None
+
+
+def recheck_state(monitor: dict, now: datetime | None = None) -> tuple[bool, int, int]:
+    """(a second look?, re-checks so far, whole minutes since the store first didn't load) for a claimed monitor row."""
+    since = _when(monitor.get("recheck_since"))
+    if monitor.get("last_status") != RECHECK or since is None:
+        return False, 0, 0
+    mins = ((now or datetime.now(timezone.utc)) - since).total_seconds() / 60
+    if not 0 <= mins <= RECHECK_FRESH_MINUTES:
+        return False, 0, 0
+    return True, int(monitor.get("rechecks") or 0), max(1, round(mins))
+
+
 def run_monitor(monitor: dict, base: Settings, upload: bool = True, log=print) -> tuple[str, str]:
-    """Scan one monitor on its devices, upload, return (status, note). Never raises: a crash is status 'error'."""
+    """Scan one monitor on its devices, upload, return (status, note). Never raises: a crash is status 'error'.
+    A store that didn't load is not uploaded until a second look (status RECHECK, see above)."""
     from radar.runner.executor import scan_devices
     url = monitor["url"]
     devices = tuple(monitor.get("devices") or ("desktop", "mobile"))
     s = settings_for(monitor, base)
+    second_look, rechecks, since_min = recheck_state(monitor)
+    try_again = second_look and rechecks < MAX_RECHECKS
     t0 = time.time()
     try:
         results = scan_devices(url, s, devices)
     except Exception as e:  # noqa: BLE001
         log(f"  {url}: Radar crashed: {e}")
         traceback.print_exc()
+        if try_again:
+            return RECHECK, f"Radar crashed on a second look ({str(e)[:150]}); trying again in {RECHECK_MINUTES} minutes"
         return "error", f"Radar crashed: {str(e)[:200]}"
     verdicts = [r.verdict for r, _ in results]
     note = "; ".join(f"{r.device}: {r.verdict}" for r, _ in results) + f" ({int(time.time() - t0)} s)"
+    if not second_look and any(v in RECHECK_VERDICTS for v in verdicts):
+        log(f"  {url}: didn't load; nothing uploaded, looking again in {RECHECK_MINUTES} minutes")
+        return RECHECK, f"{note}; didn't load, looking again in {RECHECK_MINUTES} minutes"
+    if try_again and verdicts and all(v in CANT_TELL for v in verdicts):
+        log(f"  {url}: couldn't test it on a second look; nothing uploaded, trying again in {RECHECK_MINUTES} minutes")
+        return RECHECK, f"{note}; couldn't test it on a second look, trying again in {RECHECK_MINUTES} minutes"
+    if second_look:
+        # the trace of a blip: Pilot stores shows this note until the next check, the run carries recheck_minutes
+        note += (f"; still didn't load {since_min} min after the first look" if any(v in RECHECK_VERDICTS for v in verdicts)
+                 else f"; second look, {since_min} min after it didn't load")
     if upload and results:
         # monitor_id: the dashboard files the run in the monitor's own workspace and store (a pilot store's runs land
-        # in that store's workspace, never in BugRadar's; dashboard migration 15 + ingest, 19 Oct)
-        meta = {"monitor_id": monitor["id"]} if monitor.get("id") else None
-        recs, why = upload_results(s.data_dir, t0, log, extra_meta=meta)
+        # in that store's workspace, never in BugRadar's; dashboard migration 15 + ingest, 19 Oct). rechecked: this is
+        # a second look after the store didn't load (a store still down then says so on its own line).
+        meta: dict = {"monitor_id": monitor["id"]} if monitor.get("id") else {}
+        if second_look:
+            meta.update(rechecked=True, recheck_minutes=since_min)
+        recs, why = upload_results(s.data_dir, t0, log, extra_meta=meta or None)
         if why:
             note += f"; {why}"
     return overall(verdicts), note
