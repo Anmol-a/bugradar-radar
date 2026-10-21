@@ -86,6 +86,116 @@ def test_run_once_records_the_worst_device_and_the_note(monkeypatch, tmp_path):
     assert (mid, status) == ("m2", "degraded") and note.startswith("desktop: healthy; mobile: degraded (")
 
 
+# ---- a store that didn't load is looked at again before anyone is told (21 Oct) ----------------------------------------
+from datetime import datetime, timedelta, timezone  # noqa: E402
+
+
+def _ago(minutes):
+    """A recheck_since the way PostgREST sends it (5-digit fraction, +00:00)."""
+    t = datetime.now(timezone.utc) - timedelta(minutes=minutes)
+    return t.strftime("%Y-%m-%dT%H:%M:%S.") + f"{t.microsecond:06d}"[:5] + "+00:00"
+
+
+def _recheck_setup(monkeypatch, tmp_path, verdicts):
+    """scan_devices answers the given verdicts per device (or raises); upload_results is recorded instead of sent."""
+    class R:
+        def __init__(self, device, verdict): self.device, self.verdict = device, verdict
+    def fake(url, settings, devices):
+        if verdicts == "crash":
+            raise RuntimeError("browser exploded")
+        return [(R(d, v), tmp_path) for d, v in zip(devices, verdicts)]
+    monkeypatch.setattr("radar.runner.executor.scan_devices", fake)
+    sent = []
+    monkeypatch.setattr(w, "upload_results", lambda data_dir, since, log=print, extra_meta=None: sent.append(extra_meta) or ([], ""))
+    return sent
+
+
+def _one(monitor, verdicts, monkeypatch, tmp_path):
+    sent = _recheck_setup(monkeypatch, tmp_path, verdicts)
+    q = FakeQueue([{"id": "m1", "url": "https://x.in", "devices": ["desktop"], **monitor}])
+    w.run_once(q, Settings(), "box-1", upload=True, log=lambda *_: None)
+    (mid, status, note), = q.finished
+    return status, note, sent
+
+
+FIRST = {"last_status": "healthy", "rechecks": 0, "recheck_since": None}
+SECOND = {"last_status": "recheck", "rechecks": 1, "recheck_since": _ago(11)}
+
+
+def test_a_store_that_didnt_load_is_not_uploaded_the_first_time(monkeypatch, tmp_path):
+    status, note, sent = _one(FIRST, ["unreachable"], monkeypatch, tmp_path)
+    assert status == "recheck" and sent == []                      # no run, no problem, no email for a blip
+    assert note.startswith("desktop: unreachable (") and note.endswith("didn't load, looking again in 10 minutes")
+    # a store already down yesterday gets the same first look (its problem is already open: no new email either way)
+    assert _one({**FIRST, "last_status": "unreachable"}, ["unreachable"], monkeypatch, tmp_path)[:3:2] == ("recheck", [])
+    # a brand-new monitor (never ran) too
+    assert _one({"last_status": None}, ["unreachable"], monkeypatch, tmp_path)[:3:2] == ("recheck", [])
+
+
+def test_the_second_look_is_uploaded_and_says_so(monkeypatch, tmp_path):
+    # still down: uploaded (the dashboard opens the problem and alerts) with how long after the first look
+    status, note, sent = _one(SECOND, ["unreachable"], monkeypatch, tmp_path)
+    assert status == "unreachable" and sent == [{"monitor_id": "m1", "rechecked": True, "recheck_minutes": 11}]
+    assert note.endswith("still didn't load 11 min after the first look")
+    # back by then: uploaded as a normal run, nothing was ever opened; the note keeps the trace of the blip
+    status, note, sent = _one({**SECOND, "devices": ["desktop", "mobile"]}, ["healthy", "healthy"], monkeypatch, tmp_path)
+    assert status == "healthy" and sent == [{"monitor_id": "m1", "rechecked": True, "recheck_minutes": 11}]
+    assert note.endswith("second look, 11 min after it didn't load")
+    # a real finding on the second look is uploaded straight away too
+    assert _one(SECOND, ["down"], monkeypatch, tmp_path)[0] == "down"
+
+
+def test_any_device_not_loading_holds_the_whole_first_look(monkeypatch, tmp_path):
+    status, _, sent = _one({**FIRST, "devices": ["desktop", "mobile"]}, ["healthy", "unreachable"], monkeypatch, tmp_path)
+    assert status == "recheck" and sent == []
+    # a phone-only check works the same way
+    assert _one({**FIRST, "devices": ["mobile"]}, ["unreachable"], monkeypatch, tmp_path)[:3:2] == ("recheck", [])
+
+
+def test_only_a_store_that_didnt_load_is_looked_at_again(monkeypatch, tmp_path):
+    # real findings and Radar-side states on a FIRST look are uploaded straight away, as before
+    for verdict in ("healthy", "degraded", "down", "blocked", "unsupported", "no_network"):
+        status, note, sent = _one(FIRST, [verdict], monkeypatch, tmp_path)
+        assert status == verdict and sent == [{"monitor_id": "m1"}] and "look" not in note, verdict
+    # a crash on a first look is still an error, never a re-check
+    assert _one(FIRST, "crash", monkeypatch, tmp_path)[:3:2] == ("error", [])
+
+
+def test_a_second_look_that_couldnt_test_tries_once_more(monkeypatch, tmp_path):
+    # reviewer 21 Oct: the store didn't load, then Radar was offline / crashed / robots.txt was silent on the second look:
+    # uploading that would drop a real outage until tomorrow, so one more look (at most 2 re-checks in a row)
+    for verdicts in (["no_network"], ["blocked"], ["error"], "crash"):
+        status, note, sent = _one(SECOND, verdicts, monkeypatch, tmp_path)
+        assert status == "recheck" and sent == [] and "trying again in 10 minutes" in note, verdicts
+    # after 2 re-checks: whatever the third look found is uploaded (the cap; nothing loops)
+    status, _, sent = _one({**SECOND, "rechecks": 2, "recheck_since": _ago(22)}, ["no_network"], monkeypatch, tmp_path)
+    assert status == "no_network" and sent == [{"monitor_id": "m1", "rechecked": True, "recheck_minutes": 22}]
+    status, _, sent = _one({**SECOND, "rechecks": 2, "recheck_since": _ago(22)}, "crash", monkeypatch, tmp_path)
+    assert status == "error" and sent == []
+    # a device that DID test the store is enough: uploaded
+    status, _, sent = _one({**SECOND, "devices": ["desktop", "mobile"]}, ["healthy", "no_network"], monkeypatch, tmp_path)
+    assert status == "no_network" and sent and sent[0]["rechecked"] is True
+
+
+def test_an_old_recheck_starts_over(monkeypatch, tmp_path):
+    # reviewer 21 Oct: paused during the 10 minutes and resumed days later, or a lock taken over after 3 h: not a second
+    # look (the blip filter applies again and nothing claims "it also didn't load N minutes earlier")
+    for since in (_ago(61), _ago(3 * 24 * 60), None, "not a time"):
+        status, _, sent = _one({**SECOND, "recheck_since": since}, ["unreachable"], monkeypatch, tmp_path)
+        assert status == "recheck" and sent == [], since
+        status, note, sent = _one({**SECOND, "recheck_since": since}, ["healthy"], monkeypatch, tmp_path)
+        assert status == "healthy" and sent == [{"monitor_id": "m1"}] and "second look" not in note, since
+
+
+def test_postgrest_times_are_read_in_every_shape():
+    want = datetime(2026, 10, 21, 10, 15, 52, 630580, tzinfo=timezone.utc)
+    for s in ("2026-10-21T10:15:52.63058+00:00", "2026-10-21 10:15:52.63058+00", "2026-10-21T10:15:52.630580Z",
+              "2026-10-21T15:45:52.63058+05:30"):
+        assert w._when(s) == want, s
+    assert w._when("2026-10-21T10:15:52+00:00") == want.replace(microsecond=0)
+    assert w._when(None) is None and w._when("") is None and w._when("yesterday") is None
+
+
 def test_worker_needs_its_environment(monkeypatch):
     monkeypatch.delenv("BUGRADAR_SUPABASE_URL", raising=False)
     monkeypatch.delenv("BUGRADAR_SERVICE_KEY", raising=False)
