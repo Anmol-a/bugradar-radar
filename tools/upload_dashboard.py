@@ -202,7 +202,9 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_m
                     error=note if plain != note else None)
         if site["status"] == "failed" and (extra_meta or {}).get("rechecked"):
             # a daily check's second look (radar/worker.py RECHECK, 21 Oct): the owner should know it wasn't a one-off
-            site["reason"] = f"{(site['reason'] or 'The store did not load').rstrip(' .')}. Checked twice, 10 minutes apart."
+            mins = (extra_meta or {}).get("recheck_minutes")
+            earlier = f"{mins} minute{'' if mins == 1 else 's'} earlier" if isinstance(mins, int) and mins > 0 else "on an earlier look"
+            site["reason"] = f"{(site['reason'] or 'The store did not load').rstrip(' .')}. It also didn't load {earlier}."
     # the free check's "your store as Radar saw it" (19 Oct): worker.homepage_shot saves it next to run.json
     home = run_dir / "homepage.jpg"
     if home.is_file() and 0 < home.stat().st_size <= MAX_SHOT_BYTES:
