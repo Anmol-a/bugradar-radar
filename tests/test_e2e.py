@@ -1811,6 +1811,53 @@ def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path
     assert any("bombae.example: the domain points to 127.0.0.1" in n and "check the store's address" in n
                for n in run.notes), run.notes
 
+
+def _slow_home(mode, delay, scale, tmp_path, monkeypatch, **kw):
+    """Scan the mock store whose homepage answers after `delay` s (only the first load, or every load for home_hangs)
+    with a 3 s homepage limit; Session.backoff_scale scales the 10 s pause after a timeout. Returns (run, n): for
+    slow_first_home n = homepage requests made while the slow first answer was still on its way (Radar started over);
+    for home_hangs n = all homepage requests."""
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", scale, raising=False)
+    srv, url = serve(mode)
+    srv.home_delay = delay
+    try:
+        run, _ = scan(url, _settings(tmp_path, home_timeout_ms=3000, **kw))
+    finally:
+        srv.shutdown()
+    return run, getattr(srv, "home_hits" if mode == "home_hangs" else "home_asked_again", 0)
+
+
+def test_a_slow_homepage_that_finishes_during_the_pause_is_used_not_reloaded(tmp_path, monkeypatch):
+    # 21 Oct: from the Contabo box the Dawn demo's HTML took 16-21 s on a bad minute and twice over 30 s -> 'unreachable'
+    # and a problem on a working store. Review: a page that arrives just after the limit must not be thrown away.
+    run, hits = _slow_home("slow_first_home", 5.0, 0.6, tmp_path, monkeypatch, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", (run.verdict, run.notes, [(c.case_id, c.verdict) for c in run.cases if c.verdict != "pass"])
+    assert any("homepage took over 3 s" in n and "finished loading" in n for n in run.notes), run.notes
+    assert run.sitemap_summary["home_slow"] is True
+    assert hits == 0, hits                                # the store was not asked again while its answer was coming
+
+
+def test_a_slow_homepage_is_loaded_again_when_nothing_arrived(tmp_path, monkeypatch):
+    run, hits = _slow_home("slow_first_home", 12.0, 0.1, tmp_path, monkeypatch, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", (run.verdict, run.notes, [(c.case_id, c.verdict) for c in run.cases if c.verdict != "pass"])
+    assert any("homepage took over 3 s on the first try" in n and "loaded on the second" in n for n in run.notes), run.notes
+    assert run.sitemap_summary["home_slow"] is True and hits >= 1, hits   # started over (later visits can land too)
+
+
+def test_a_homepage_that_never_loads_is_still_unreachable(tmp_path, monkeypatch):
+    # the other side: a store whose homepage times out twice is reported, as before (and only after both tries)
+    run, hits = _slow_home("home_hangs", 8.0, 0.1, tmp_path, monkeypatch, max_products=1)
+    assert run.verdict == "unreachable", (run.verdict, run.notes)
+    assert any(n.startswith("homepage unreachable:") and "Timeout 3000ms" in n for n in run.notes), run.notes
+    assert not any("loaded on the second" in n or "finished loading" in n for n in run.notes), run.notes
+    assert run.sitemap_summary["home_slow"] is True and hits == 2, hits
+
+
+def test_a_normal_homepage_is_not_marked_slow(tmp_path):
+    run, _ = _scan("healthy", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy" and run.sitemap_summary["home_slow"] is False
+
 # ---------------- journey 22: variant switch (11 Oct 2026) ----------------
 
 def _variant_only(mode, tmp_path, strict=False, device="desktop"):
