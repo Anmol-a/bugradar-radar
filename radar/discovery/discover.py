@@ -297,6 +297,28 @@ def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
             sm.account_url = acct.split("#")[0]
 
 
+def homepage(sess: Session, base_url: str, s: Settings, sm: SiteMap):
+    """The store's homepage, patiently. 21 Oct: from the Contabo box a Shopify store's HTML took 2-21 s to be ready on a
+    bad minute and twice that day over the 30 s page limit, so Radar called a working store 'unreachable' (a daily
+    check's problem + 🔴 email for nothing). The homepage gets s.home_timeout_ms (60 s), and a TIMEOUT is tried once
+    more after a short pause before it counts; a second timeout is the store's answer. DNS / refused / certificate
+    errors are not retried (they don't get better in 10 s, and the robots.txt request already tried 3 times)."""
+    url = base_url + "/"
+    try:
+        return sess.goto(url, timeout_ms=s.home_timeout_ms)
+    except RobotsBlocked:
+        raise
+    except Exception as e:  # noqa: BLE001
+        if "Timeout" not in str(e):
+            raise
+        first = str(e).splitlines()[0][:100]
+    sess.page.wait_for_timeout(int(10000 * sess.backoff_scale))
+    out = sess.goto(url, timeout_ms=s.home_timeout_ms)
+    sm.notes.append(f"homepage took over {s.home_timeout_ms // 1000} s on the first try ({first}) and loaded on the second; "
+                    "a slow network or a slow store, not a store that is down")
+    return out
+
+
 def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = ()) -> SiteMap:
     """pins: case ids with an OPEN incident (product.pdp.<slug> / catalog.collection.<slug>). Their product or collection
     is tested again in this run whatever the sample picks; one that has left the catalog goes to sm.pins_gone (14 Oct)."""
@@ -331,7 +353,7 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
 
     # 2. homepage + platform
     try:
-        resp, _ = sess.goto(base_url + "/")
+        resp, _ = homepage(sess, base_url, s, sm)
     except RobotsBlocked:
         sm.access = "robots_blocked"
         sm.notes.append("robots.txt disallows the whole site for Radar's User-Agent; Radar respects it "

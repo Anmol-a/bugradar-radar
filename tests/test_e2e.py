@@ -1811,6 +1811,36 @@ def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path
     assert any("bombae.example: the domain points to 127.0.0.1" in n and "check the store's address" in n
                for n in run.notes), run.notes
 
+
+def test_a_slow_homepage_is_waited_for_not_called_unreachable(tmp_path, monkeypatch):
+    # 21 Oct: from the Contabo box the Dawn demo's HTML took 16-21 s on a bad minute and twice over 30 s -> 'unreachable'
+    # and a problem on a working store. The first load times out, the second loads: HEALTHY, with a note.
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.05, raising=False)
+    srv, url = serve("slow_first_home")
+    srv.home_delay = 4.0
+    try:
+        run, _ = scan(url, _settings(tmp_path, home_timeout_ms=1500, max_products=1, max_collections=1, max_nav_links=2))
+    finally:
+        srv.shutdown()
+    assert run.verdict == "healthy", (run.verdict, run.notes, [(c.case_id, c.verdict) for c in run.cases if c.verdict != "pass"])
+    assert any("homepage took over 1 s on the first try" in n and "loaded on the second" in n for n in run.notes), run.notes
+
+
+def test_a_homepage_that_never_loads_is_still_unreachable(tmp_path, monkeypatch):
+    # the other side: a store whose homepage times out twice is reported, as before (and only after both tries)
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.05, raising=False)
+    srv, url = serve("home_hangs")
+    srv.home_delay = 4.0
+    try:
+        run, _ = scan(url, _settings(tmp_path, home_timeout_ms=1500, max_products=1))
+    finally:
+        srv.shutdown()
+    assert run.verdict == "unreachable", (run.verdict, run.notes)
+    assert any(n.startswith("homepage unreachable:") and "Timeout 1500ms" in n for n in run.notes), run.notes
+    assert not any("loaded on the second" in n for n in run.notes), run.notes
+
 # ---------------- journey 22: variant switch (11 Oct 2026) ----------------
 
 def _variant_only(mode, tmp_path, strict=False, device="desktop"):

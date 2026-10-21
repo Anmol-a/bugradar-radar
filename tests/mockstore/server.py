@@ -85,6 +85,8 @@ Modes (to prove Radar catches and heals what it should):
                    an enabled sticky ADD TO CART bar (no form link) is on screen (littleboxindia.com mobile) -> PASSES
   disabled_buy_now_only  add-to-cart disabled, only an enabled 'Buy it now' -> never clicked; the failure names it
   buy_now_first    an enabled 'Buy it now' sits before the add-to-cart in the form -> Radar clicks add to cart, PASSES
+  slow_first_home  the FIRST homepage load takes home_delay seconds (Contabo -> Shopify, 21 Oct) -> Radar waits and tries
+                   once more, HEALTHY with a note; home_hangs: every homepage load does -> UNREACHABLE after two tries
   stripped_first_home  the FIRST homepage load shows only one Shopify marker (cdn.shopify.com; koskii.com) -> Radar
                    loads it once more before calling it 'not Shopify', PASSES
   new_tab_cards    product links on the homepage and collections open in a NEW TAB (target=_blank; fashor.com,
@@ -1409,6 +1411,14 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
 <button class="join">Join Us</button></div>
 <script>document.querySelector('.kp-x').onclick = () => parent.postMessage('kp-close', '*');
 document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', '*');</script></body></html>""")
+        if self.mode in ("slow_first_home", "home_hangs") and path == "/":
+            # 21 Oct (Contabo -> Shopify): a store's homepage took 16-21 s on a bad minute and twice over 30 s, and Radar
+            # called a working store 'unreachable'. slow_first_home: only the FIRST load is slow (the server's
+            # home_delay, seconds); home_hangs: every load is (a store that really doesn't answer).
+            import time as _t
+            if self.mode == "home_hangs" or not getattr(self.server, "home_slow_done", False):
+                self.server.home_slow_done = True
+                _t.sleep(float(getattr(self.server, "home_delay", 3.0)))
         if self.mode == "products_down" and path.startswith("/products/") and not path.endswith((".js", ".json")):
             return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
         if self.mode == "server_blip" and (path == "/" or path.startswith(("/products/", "/collections/"))) \
