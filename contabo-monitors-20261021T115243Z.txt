@@ -1,0 +1,48 @@
+at 2026-10-21T11:49:46Z  (box clock; compare with UTC)
+--- box: 6 cpus;  13:49:46 up 2 days,  2:00,  0 user,  load average: 0.73, 1.11, 1.19
+                 total        used        free      shared  buff/cache   available
+  Mem:           11960         663       10949          48         658       11297
+  Swap:              0           0           0
+--- resolver:
+  
+  nameserver 127.0.0.53
+  options edns0 trust-ad
+  search .
+  Current DNS Server: 195.179.224.53
+         DNS Servers: 195.179.224.53 209.126.15.53
+--- dns (getent, seconds):
+  theme-dawn-demo.myshopify.com ok 0.02
+  cdn.shopify.com ok 0.02
+  theme-dawn-demo.myshopify.com ok 0.02
+  onijwpgvpojpvgumvfim.supabase.co ok 0.03
+  www.google.com ok 0.02
+  cdn.shopify.com ok 0.01
+  monorail-edge.shopifysvc.com ok 0.03
+--- curl:
+  https://theme-dawn-demo.myshopify.com/ code=200 dns=0.982883 connect=1.410405 tls=2.915602 first_byte=4.325796 total=4.531681
+  http://theme-dawn-demo.myshopify.com/ code=200 dns=0.085904 connect=0.215421 tls=2.184728 first_byte=2.553166 total=4.124894
+  https://theme-dawn-demo.myshopify.com/ code=200 dns=0.263052 connect=1.074143 tls=5.837770 first_byte=6.472206 total=7.350530
+  http://theme-dawn-demo.myshopify.com/ code=200 dns=0.989902 connect=1.266826 tls=1.560144 first_byte=2.887814 total=2.961171
+  https://theme-dawn-demo.myshopify.com/ code=200 dns=0.167195 connect=0.253611 tls=0.287718 first_byte=0.472447 total=0.571690
+  http://theme-dawn-demo.myshopify.com/ code=200 dns=0.012625 connect=0.025547 tls=0.104501 first_byte=0.501795 total=0.560616
+--- worker logs today (unreachable / timeouts / name resolution):
+ slot 1: 1 unreachable, 0 goto timeouts, 1 name-resolution errors (whole log)
+   [2026-10-18 19:21:36] contabo-1: free scan https://zzz-nonexistent-123.myshopify.com -> unreachable score None (desktop: unreachable (5 s))
+   [2026-10-21 06:50:26] queue error: <urlopen error [Errno -3] Temporary failure in name resolution>
+ slot 2: 3 unreachable, 0 goto timeouts, 1 name-resolution errors (whole log)
+   [2026-10-18 18:21:40] contabo-2: free scan https://gmail.com -> unreachable score None (desktop: unreachable (6 s))
+   [2026-10-21 06:50:31] queue error: <urlopen error [Errno -3] Temporary failure in name resolution>
+   [2026-10-21 13:33:47] contabo-2: https://bugradar-recheck-blip.invalid -> recheck (mobile: unreachable (82 s); didn't load, looking again in 10 minutes)
+   [2026-10-21 13:44:26] contabo-2: https://bugradar-recheck-outage.invalid -> unreachable (desktop: unreachable (29 s); still didn't load 10 min after the first look)
+ slot 3: 3 unreachable, 0 goto timeouts, 1 name-resolution errors (whole log)
+   [2026-10-21 06:50:26] queue error: <urlopen error [Errno -3] Temporary failure in name resolution>
+   [2026-10-21 12:15:52] contabo-3: https://theme-dawn-demo.myshopify.com -> unreachable (desktop: unreachable (97 s))
+   [2026-10-21 13:33:41] contabo-3: https://bugradar-recheck-outage.invalid -> recheck (desktop: unreachable (64 s); didn't load, looking again in 10 minutes)
+   [2026-10-21 13:44:54] contabo-3: http://theme-dawn-demo.myshopify.com -> unreachable (mobile: unreachable (59 s); still didn't load 10 min after the first look)
+--- browser (the worker's own Chromium, 3 loads per device, HTML-ready and full-load seconds, slow requests):
+  desktop #1: html-ready 21.3  full 45.4  slow=['6.1s https://theme-dawn-demo.myshopify.com/', '5.2s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/component-slideshow.css?v=17065', '5.3s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/component-slider.css?v=14039311', '4.5s https://theme-dawn-demo.myshopify.com/cdn/shop/files/Shoes_and_bag.jpg?v=1732889921&width='] failed=['net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch', 'net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch', 'net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch']
+  desktop #2: html-ready 16.5  full 23.0  slow=['4.7s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/component-list-social.css?v=357', '5.3s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/section-image-banner.css?v=1248', '5.3s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/section-rich-text.css?v=1552501', '5.3s https://theme-dawn-demo.myshopify.com/cdn/shop/files/141569803_417219312901458_46384706528'] failed=['net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch', 'net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch', 'net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch']
+  desktop #3: html-ready 2.3  full 15.0  slow=['7.6s https://theme-dawn-demo.myshopify.com/cdn/wpm/s1a9baebawdc64f25fp260b5808mb1d3394fm.js', '13.1s https://theme-dawn-demo.myshopify.com/cdn/shop/products/mlouye-mini-naomi-bag-harvest-1.jp', '13.1s https://theme-dawn-demo.myshopify.com/cdn/shop/products/mlouye-mini-naomi-bag-harvest-2.jp', '13.1s https://theme-dawn-demo.myshopify.com/cdn/shop/products/mlouye-helix-multicolor-4_1800x180'] failed=['net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch']
+  mobile #1: html-ready 18.8  full 20.7  slow=['7.6s https://theme-dawn-demo.myshopify.com/', '6.1s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/component-list-payment.css?v=69', '6.1s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/component-list-menu.css?v=15196', '6.3s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/video-section.css?v=16309243770'] failed=['net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch', 'net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch']
+  mobile #2: html-ready 11.6  full 12.3  slow=['6.1s https://theme-dawn-demo.myshopify.com/', '4.5s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/component-card.css?v=1203415465', '4.5s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/template-collection.css?v=58558', '4.5s https://theme-dawn-demo.myshopify.com/cdn/shop/t/53/assets/component-volume-pricing.css?v='] failed=['net::ERR_ABORTED https://theme-dawn-demo.myshopify.com/.well-known/shopify/monorail/unstable/produce_batch']
+  mobile #3: html-ready 1.6  full 2.2  slow=[] failed=[]
