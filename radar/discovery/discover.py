@@ -257,6 +257,52 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
     return rb
 
 
+HOME_CHECK_PAUSES = (20, 60)     # seconds between the homepage tries when robots.txt is silent (the homepage's 5xx rule)
+
+
+def _short_error(e: Exception | str) -> str:
+    """One network error, short and without brackets (the uploader keeps a bracketed tail as 'Technical detail')."""
+    msg = str(e).splitlines()[0] if str(e) else type(e).__name__
+    msg = re.sub(r"^\w+\.\w+:\s*", "", msg)            # 'apiRequestContext.get: Timeout 60000ms exceeded.'
+    return re.sub(r"[()\[\]]", "", msg).strip()[:90] or type(e).__name__
+
+
+def store_answers(sess: Session, base_url: str, s: Settings) -> tuple[bool, list[str], float]:
+    """Is the whole store down? Asked only on daily checks (Settings.check_store_down) after robots.txt gave no answer.
+    22 Oct: a store whose server times out or answers 5xx to everything fails at robots.txt, Radar's first request;
+    RFC 9309 then means 'do not crawl', the run was 'blocked' (not tested) and the owner heard nothing about the biggest
+    outage of all. One plain HTTP request for the homepage (no scripts, images or clicks: an availability check, not
+    crawling), asked up to 3 times, HOME_CHECK_PAUSES apart, each with the homepage's own patience (home_timeout_ms).
+    Any answer below 500 (200, a redirect, 403 from bot protection, 429) = the store's server is up.
+    Returns (answered, what each try got, seconds spent)."""
+    url = base_url + "/"
+    seen: list[str] = []
+    t0 = time.time()
+    for i in range(len(HOME_CHECK_PAUSES) + 1):
+        if i:
+            sess.page.wait_for_timeout(int(HOME_CHECK_PAUSES[i - 1] * 1000 * sess.backoff_scale))
+        try:
+            r = sess.page.context.request.get(url, timeout=s.home_timeout_ms, headers=sess.sign(url) or None)
+            if r.status < 500:
+                seen.append(f"HTTP {r.status}")
+                return True, seen, round(time.time() - t0, 1)
+            seen.append(f"HTTP {r.status}")
+        except Exception as e:  # noqa: BLE001  timeout, refused, reset, TLS
+            seen.append(_short_error(e))
+    return False, seen, round(time.time() - t0, 1)
+
+
+def _tries(seen: list[str]) -> str:
+    """['HTTP 503', 'HTTP 503', 'HTTP 503'] -> 'HTTP 503 x3'; different answers are listed in order."""
+    if seen and all(x == seen[0] for x in seen):
+        return seen[0] + (f" x{len(seen)}" if len(seen) > 1 else "")
+    return ", ".join(seen)
+
+
+def _span(secs: float) -> str:
+    return f"{int(round(secs))} s" if secs < 90 else f"about {int(round(secs / 60))} minutes"
+
+
 def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
     """Footer policy / contact pages and the header account link, read from the homepage already open. Links the
     store's robots.txt disallows (some disallow /policies/ or /account) are never opened: they are listed in the notes
@@ -374,11 +420,26 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
             return sm
         sm.access = "robots_unreachable"
         why = f"HTTP {code}" if code else ("no answer: " + getattr(sess.robots, "error", "") if getattr(sess.robots, "error", "") else "no answer")
+        home = ""
+        if s.check_store_down:
+            # a daily check (22 Oct): is the whole store down? (store_answers) Free checks and benches keep 'blocked'.
+            answered, seen, secs = store_answers(sess, base_url, s)
+            if not answered:
+                if not online(s.net_probe_urls):
+                    sm.access = "no_network"
+                    sm.notes.append(NO_NETWORK_NOTE.format(where=" while the store was checked"))
+                    return sm
+                sm.access = "unreachable"
+                sm.notes.append(f"The store didn't answer at all: its homepage didn't load, tried {len(seen)} times over "
+                                f"{_span(secs)} (homepage: {_tries(seen)}; robots.txt: {_short_error(why)}, tried 3 times)")
+                return sm
+            home = (f"this run. The homepage itself answers ({seen[-1]}), so the store is open to shoppers: only its "
+                    "robots.txt is failing, and search engines read a failing robots.txt as 'do not crawl' too.")
         sm.notes.append(f"robots.txt could not be fetched ({why}, tried 3 times); "
                         "under the robots.txt standard (RFC 9309) that means 'do not crawl', so nothing was tested "
                         + ("this run. The store's domain does not resolve (DNS: no such host): check the address."
                            if "ENOTFOUND" in getattr(sess.robots, "error", "") else
-                           "this run. Usually a temporary server problem on the store's side."))
+                           home or "this run. Usually a temporary server problem on the store's side."))
         return sm
     if not sm.robots_loaded:
         sm.notes.append("store has no robots.txt (HTTP 4xx); everything allowed (RFC 9309)")

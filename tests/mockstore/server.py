@@ -172,7 +172,12 @@ Modes (to prove Radar catches and heals what it should):
                    -> everything PASSES; the noise only shows up as report evidence (v0.18)
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
                    bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
-  robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
+  robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested;
+                   on a daily check (check_store_down) the homepage answers 200, so it stays BLOCKED with that said
+  all_down         the whole store is down: EVERY request answers HTTP 503, robots.txt included (22 Oct) -> a daily
+                   check (check_store_down) says UNREACHABLE ("didn't answer at all"); free checks / benches: BLOCKED
+  robots_500_home_down  /robots.txt and / answer 503, everything else works -> daily check UNREACHABLE (only those two
+                   are asked)
   blank_not_shopify  gozero.in (cycle 34): no robots.txt (404), the homepage answers 200 with an EMPTY title, an empty
                    <div id=root> and no Shopify marker -> verdict UNSUPPORTED with what the homepage showed (v0.19:
                    'error', shown as 'Radar crashed')
@@ -1379,6 +1384,11 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
+        if self.mode == "all_down" or (self.mode == "robots_500_home_down" and path in ("/robots.txt", "/")):
+            # 22 Oct: a whole store down (every request 503, robots.txt included); the second only fails the two
+            # requests Radar makes before anything else
+            self.server.down_hits = getattr(self.server, "down_hits", []) + [path]
+            return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
         if self.mode == "wishlist_404" and path == "/pages/wishlist":
             # countryflora.com / kotart.in / swornyfashion.com (new30p, 15 Oct): the wishlist app's page is the 404
             # template with the app drawing the list into it

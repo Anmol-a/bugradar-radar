@@ -872,6 +872,77 @@ def test_robots_txt_server_error_means_do_not_crawl(tmp_path):
     assert any("HTTP 500" in n and "RFC 9309" in n for n in run.notes), run.notes
 
 
+def _down_scan(mode, tmp_path, monkeypatch, **kw):
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    srv, url = serve(mode)
+    try:
+        run, _ = scan(url, _settings(tmp_path, **kw))
+    finally:
+        srv.shutdown()
+    return run, getattr(srv, "down_hits", [])
+
+
+def test_a_whole_store_down_is_unreachable_on_a_daily_check(tmp_path, monkeypatch):
+    """22 Oct: every request 503, robots.txt included. Before: robots.txt silent -> 'blocked' (RFC 9309) -> the dashboard
+    filed 'not tested': no problem, no 🔴, for the biggest outage there is."""
+    run, hits = _down_scan("all_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "unreachable" and run.sitemap_summary["access"] == "unreachable", (run.verdict, run.notes)
+    assert run.cases == []
+    assert run.notes[0].startswith("The store didn't answer at all: its homepage didn't load, tried 3 times"), run.notes
+    assert "homepage: HTTP 503 x3" in run.notes[0] and "robots.txt: HTTP 503, tried 3 times" in run.notes[0], run.notes
+    assert hits.count("/robots.txt") == 3 and hits.count("/") == 3 and set(hits) == {"/robots.txt", "/"}, hits
+    from tools import upload_dashboard as up
+    site = up.to_payload(run.to_dict(), tmp_path, "", None)["results"][0]
+    assert (site["key"], site["status"]) == (up.SITE_KEY, "failed"), site
+    assert "(" not in site["reason"] and site["error"] == run.notes[0], site
+
+
+def test_a_whole_store_down_stays_not_tested_on_a_free_check(tmp_path, monkeypatch):
+    """Free checks and benches don't ask for the homepage once robots.txt is silent: unchanged, 'blocked'."""
+    run, hits = _down_scan("all_down", tmp_path, monkeypatch)
+    assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", (run.verdict, run.notes)
+    assert set(hits) == {"/robots.txt"}, hits
+
+
+def test_robots_txt_down_but_homepage_up_is_not_an_outage(tmp_path, monkeypatch):
+    """Only robots.txt fails: the store is open to shoppers. Still 'do not crawl' (blocked, no alert), and the note
+    says the homepage answers."""
+    run, _ = _down_scan("robots_500", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", (run.verdict, run.notes)
+    assert run.cases == []
+    assert "The homepage itself answers (HTTP 200)" in run.notes[0] and "RFC 9309" in run.notes[0], run.notes
+    assert "Usually a temporary server problem" not in run.notes[0], run.notes
+
+
+def test_robots_and_homepage_down_is_unreachable_even_if_other_pages_work(tmp_path, monkeypatch):
+    run, hits = _down_scan("robots_500_home_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "unreachable", (run.verdict, run.notes)
+    assert hits.count("/") == 3, hits
+
+
+def test_a_store_that_refuses_every_connection_is_unreachable_on_a_daily_check(tmp_path, monkeypatch):
+    from radar.core.browser import Session
+    from radar.core.network import reset_cache
+    reset_cache()
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    probe, purl = serve("healthy")
+    try:
+        run, _ = scan("http://127.0.0.1:9", _settings(tmp_path, net_probe_urls=(purl + "/",), check_store_down=True))
+    finally:
+        probe.shutdown()
+    assert run.verdict == "unreachable", (run.verdict, run.notes)
+    assert "ECONNREFUSED" in run.notes[0] and run.notes[0].startswith("The store didn't answer at all"), run.notes
+
+
+def test_radar_going_offline_during_the_homepage_check_is_not_blamed_on_the_store(tmp_path, monkeypatch):
+    import radar.discovery.discover as disc
+    answers = iter([True, False])                       # online when robots.txt failed, offline after the homepage tries
+    monkeypatch.setattr(disc, "online", lambda *a, **k: next(answers, False))
+    run, _ = _down_scan("all_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "no_network", (run.verdict, run.notes)
+
+
 def test_missing_robots_txt_allows_everything(tmp_path):
     run, _ = _scan("robots_404", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
