@@ -1,0 +1,29 @@
+at 2026-10-22T12:47:23Z
+--- code:
+aefb54f0 Daily checks: a store that answers nothing at all is unreachable, not blocked (#5)
+  homepage_shot (want 1): 1
+  monitors by key (want 1): 1
+  --scans-only passed through (want 3): 3
+  uploads name their monitor (want 1): 1
+  re-check before alerting (want 1): 1
+  patient homepage (want 1): 1
+  slow runs re-checked (want 1): 1
+  daily checks ask if the store is down (want 1): 1
+  homepage check when robots.txt is silent (want 1): 1
+--- workers:
+  185704 /home/radar/radar-venv/bin/python -u -m radar worker --scans-only --poll 15
+  185705 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+  185710 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+--- slot logs (last lines):
+ slot 1:
+   [2026-10-21 14:53:26] Radar worker contabo-1 started; polling every 15 s (free scans only)
+   [2026-10-21 22:01:13] Radar worker contabo-1 started; polling every 15 s (free scans only)
+   [2026-10-22 14:46:17] Radar worker contabo-1 started; polling every 15 s (free scans only)
+ slot 2:
+   [2026-10-21 16:11:32] contabo-2: https://theme-dawn-demo.myshopify.com -> healthy (desktop: healthy; mobile: healthy (1985 s))
+   [2026-10-21 22:01:22] Radar worker contabo-2 started; polling every 15 s
+   [2026-10-22 14:46:25] Radar worker contabo-2 started; polling every 15 s
+ slot 3:
+   [2026-10-21 15:13:56] contabo-3: http://theme-dawn-demo.myshopify.com -> healthy (mobile: healthy (511 s); second look, 10 min after it didn't load)
+   [2026-10-21 22:01:22] Radar worker contabo-3 started; polling every 15 s
+   [2026-10-22 14:46:24] Radar worker contabo-3 started; polling every 15 s
