@@ -205,3 +205,20 @@ def test_the_homepage_picture_rides_on_the_stores_own_line(tmp_path):
     assert base64.b64decode(a["data_base64"]) == b"\xff\xd8jpeg"
     (tmp_path / "homepage.jpg").write_bytes(b"x" * (up.MAX_SHOT_BYTES + 1))
     assert "artifacts" not in up.to_payload(run, tmp_path, "b", None)["results"][0]
+
+
+def test_a_bench_label_files_runs_under_their_own_store(tmp_path, capsys):
+    """22 Oct: the GitHub nightly bench filed the Dawn demo into the store BugRadar's daily check watches; a blip there
+    (no 10-minute re-check on the bench) opened a problem. With a label it is its own store on the dashboard."""
+    assert up.project_name(RUN) == "shop.example"
+    assert up.project_name(RUN, "nightly bench") == "shop.example (nightly bench)"
+    assert up.project_name({**RUN, "base_url": "https://www.shop.example"}, "  nightly   bench ") == "shop.example (nightly bench)"
+    assert up.to_payload(RUN, tmp_path, "", None)["project"] == "shop.example"                    # the worker: unchanged
+    assert up.to_payload(RUN, tmp_path, "", None, None, "nightly bench")["project"] == "shop.example (nightly bench)"
+    write_run(tmp_path)
+    recs = up.upload(tmp_path, "brk_x", dry_run=True, log=lambda *_: None, project_label="nightly bench")
+    assert [r["project"] for r in recs] == ["shop.example (nightly bench)"]
+    up.main([str(tmp_path), "--dry-run", "--project-label", "nightly bench"])
+    assert "shop.example (nightly bench)" in capsys.readouterr().out
+    up.main([str(tmp_path), "--dry-run", "--project-label", ""])                                 # manual runs: as before
+    assert '"project": "shop.example"' in capsys.readouterr().out
