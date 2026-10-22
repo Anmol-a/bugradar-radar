@@ -11,19 +11,43 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Look at the running daily check (no restart)
+      - name: Restart on the new main (a store that answers nothing at all is unreachable on daily checks)
         run: |
-          {
-          echo "at $(date -u +%FT%TZ)"
-          echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none"
-          echo "--- chromium processes per worker:"; for p in $(pgrep -f "radar worker"); do echo "  $p: $(pgrep -P $p | wc -l) children, cpu $(ps -o %cpu= -p $p)"; done
-          echo "--- slot 2 log (last 60 lines):"; tail -n 60 "$HOME/radar-worker-2.log" | cut -c1-220 | sed 's/^/  /'
-          echo "--- slot 2 newest files:"; find "$HOME/radar-data-2" -newermt "-40 minutes" -type f -printf '%TT %s %p\n' 2>/dev/null | sort | tail -n 25 | sed "s#$HOME/##" | sed 's/^/  /'
-          echo "--- load:"; uptime
-          } 2>&1 | tee probe.txt
+          # 19 Oct: daily monitors by upload key (dashboard migration 14 + worker monitors-by-key). Free checks are always
+          # claimed first by every slot; slot 1 never takes a monitor, so a visitor never waits behind a 10-minute run.
+          cat > "$HOME/radar-worker.sh" <<'SH'
+          #!/bin/bash
+          # worker slot $1 (1..3): one instance per slot, own data folder, shared code + venv.
+          # Slot 1: free checks only. Slots 2-3: free checks first, else a due daily monitor of any workspace (BugRadar's
+          # key is the operator: dashboard migration 15), uploaded with its monitor_id so it is filed in that workspace.
+          SLOT="${1:-1}"
+          exec 9>"$HOME/radar-worker-$SLOT.lock"; flock -n 9 || exit 0
+          if [ "$SLOT" = "1" ]; then cd "$HOME/radar-src" && git fetch -q origin main && git reset -q --hard origin/main \
+             && "$HOME/radar-venv/bin/python" -m pip install -q -r requirements.txt 2>/dev/null; else sleep 20; cd "$HOME/radar-src"; fi
+          set -a; . "$HOME/radar.env"; set +a
+          export RADAR_WORKER_NAME="contabo-$SLOT" RADAR_DATA_DIR="$HOME/radar-data-$SLOT"
+          ONLY=""; [ "$SLOT" = "1" ] && ONLY="--scans-only"
+          L="$HOME/radar-worker-$SLOT.log"; [ -f "$L" ] && tail -c 2000000 "$L" > "$L.tmp" && mv "$L.tmp" "$L"
+          exec "$HOME/radar-venv/bin/python" -u -m radar worker $ONLY --poll 15 >> "$L" 2>&1
+          SH
+          chmod 700 "$HOME/radar-worker.sh"
+          pkill -f 'radar worker' || true
+          sleep 110
+          { echo "at $(date -u +%FT%TZ)"; echo "--- code:"; git -C "$HOME/radar-src" log --oneline -1;
+            grep -c "def homepage_shot" "$HOME/radar-src/radar/worker.py" | sed 's/^/  homepage_shot (want 1): /';
+            grep -c "claim_monitor\", {\"worker\"" "$HOME/radar-src/radar/worker.py" | sed 's/^/  monitors by key (want 1): /';
+            grep -c "scans_only=a.scans_only)" "$HOME/radar-src/radar/worker.py" | sed 's/^/  --scans-only passed through (want 3): /';
+            grep -c '"monitor_id": monitor\["id"\]' "$HOME/radar-src/radar/worker.py" | sed 's/^/  uploads name their monitor (want 1): /';
+            grep -c 'RECHECK_VERDICTS = ("unreachable",)' "$HOME/radar-src/radar/worker.py" | sed 's/^/  re-check before alerting (want 1): /';
+            grep -c 'home_timeout_ms: int = 60000' "$HOME/radar-src/radar/core/config.py" | sed 's/^/  patient homepage (want 1): /';
+            grep -c 'home_slow' "$HOME/radar-src/radar/worker.py" | sed 's/^/  slow runs re-checked (want 1): /';
+            grep -c 'check_store_down=True' "$HOME/radar-src/radar/worker.py" | sed 's/^/  daily checks ask if the store is down (want 1): /';
+            grep -c 'def store_answers' "$HOME/radar-src/radar/discovery/discover.py" | sed 's/^/  homepage check when robots.txt is silent (want 1): /';
+            echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none";
+            echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 3 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } | tee probe.txt
       - name: Publish
         if: always()
         run: |
           git config user.name radar-probe && git config user.email probe@bugradar.in
           git fetch origin probe-results && git checkout probe-results
-          cp probe.txt contabo-monitors-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-monitors-*.txt && git commit -qm "contabo look at a running check" && git push -q origin probe-results
+          cp probe.txt contabo-monitors-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-monitors-*.txt && git commit -qm "contabo monitors on slots 2-3" && git push -q origin probe-results
