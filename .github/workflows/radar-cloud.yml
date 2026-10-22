@@ -140,7 +140,9 @@ jobs:
         env:
           BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
           BUGRADAR_CI_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
-        run: python3 tools/upload_dashboard.py "${{ steps.req.outputs.data || 'data' }}" --since "${{ steps.t0.outputs.since }}"
+          # the nightly files under '<store> (nightly bench)', never into a store a daily check watches (22 Oct)
+          PROJECT_LABEL: ${{ github.event_name == 'schedule' && 'nightly bench' || '' }}
+        run: python3 tools/upload_dashboard.py "${{ steps.req.outputs.data || 'data' }}" --since "${{ steps.t0.outputs.since }}" --project-label "$PROJECT_LABEL"
 
       - name: Keep the full data folder for 7 days (GitHub machines only)
         if: always() && runner.environment == 'github-hosted' && steps.req.outputs.count != '0'
