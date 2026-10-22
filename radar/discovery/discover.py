@@ -541,6 +541,7 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
                 sm.access = "unreachable"
                 sm.notes.append(down_note(ans, rwhy))
                 return sm
+            sm.store_up_robots_down = ans.status
             sm.notes.append(robots_down_home_up_note(rwhy, ans))
             return sm
         sm.notes.append(f"robots.txt could not be fetched ({why}, tried 3 times); "
