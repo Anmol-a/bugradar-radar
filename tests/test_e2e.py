@@ -3157,6 +3157,12 @@ def test_a_whatsapp_share_link_is_not_a_chat_button(tmp_path):
     assert st["whatsapp_share"].status == "info"
 
 
+def test_a_whatsapp_business_short_link_is_not_judged(tmp_path):
+    c, st = _wa("wa_short", tmp_path)
+    assert c.verdict == "pass" and "whatsapp_number" not in st and st["whatsapp_short_link"].status == "info", \
+        [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+
+
 def test_a_whatsapp_button_only_on_product_pages_is_found_there(tmp_path):
     c, st = _wa("wa_product_only", tmp_path)
     assert c.verdict == "pass" and "product page" in st["whatsapp_number"].detail, st["whatsapp_number"].detail

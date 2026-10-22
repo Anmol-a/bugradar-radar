@@ -183,6 +183,7 @@ Modes (to prove Radar catches and heals what it should):
                    window.open(wa.me/918888888888) / sets location to api.whatsapp.com/send?phone=918888888888 / does
                    nothing (warning) / opens a panel with a wa.me link -> Radar taps it with WhatsApp blocked and reads it
   wa_share_only    only a 'Share on WhatsApp' link (no number) -> information only
+  wa_short         a WhatsApp Business short link wa.me/message/<code> (no number in it) -> information only
   wa_product_only  the WhatsApp link only on product pages -> found there, passes
   pincode_cod_no   the page says 'COD available', the pincode checker says 'COD not available' -> WARNING (22 Oct)
   cod_badge_only   'COD available' badge, no pincode checker -> information only
@@ -806,6 +807,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                            '<div id="wa-panel" style="display:none;position:fixed;right:16px;bottom:80px;width:260px;background:#fff;z-index:21">'
                            '<p>Hi! How can we help?</p><a href="https://wa.me/918888888888?text=Hello">Start chat</a></div>',
         "wa_share_only": '<p><a href="https://api.whatsapp.com/send?text=Look%20at%20this%20store">Share on WhatsApp</a></p>',
+        "wa_short": f'<a class="wa-float" href="https://wa.me/message/ABCDEFGHIJ1" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
         "wa_product_only": f'<a class="wa-float" href="https://wa.me/919876543210" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
     }
 

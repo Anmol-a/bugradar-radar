@@ -13,6 +13,11 @@ def test_whatsapp_addresses_are_read_without_opening_them():
     assert wa_number("https://wa.me/") == ("empty", "")
     assert wa_number("https://www.whatsapp.com/channel/0029Va") == ("other", "")                # a channel, not a chat
     assert wa_number("https://instagram.com/shop") == ("other", "")
+    # WhatsApp Business short links and catalogs (review, 22 Oct): no number in the address, never 'not a phone number'
+    assert wa_number("https://wa.me/message/ABCDEFGHIJ1") == ("short", "")
+    assert wa_number("https://wa.me/qr/ABCDEFGHIJ1") == ("short", "")
+    assert wa_number("https://api.whatsapp.com/message/ABCDEFGHIJ1?autoload=1") == ("short", "")
+    assert wa_number("https://wa.me/c/919876543210") == ("chat", "919876543210")
 
 
 def test_whatsapp_numbers_are_judged_like_whatsapp_would():

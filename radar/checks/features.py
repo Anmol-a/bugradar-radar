@@ -395,8 +395,10 @@ WA_FIND_JS = r"""() => {
 
 
 def wa_number(url: str) -> tuple[str, str]:
-    """(kind, number) for a WhatsApp address. kind: 'chat' (a number to chat with), 'share' (opens WhatsApp to share a
-    text, no number: a product's share button), 'empty' (no number, no text), 'other' (not a chat address). Pure."""
+    """(kind, number) for a WhatsApp address. kind: 'chat' (a number to chat with), 'short' (a WhatsApp Business short
+    link, wa.me/message/<code> or wa.me/qr/<code>: the number is behind WhatsApp's own redirect, not in the address),
+    'share' (opens WhatsApp to share a text, no number: a product's share button), 'empty' (no number, no text),
+    'other' (not a chat address: a channel, a profile). Pure."""
     from urllib.parse import parse_qs, unquote, urlparse
     u = (url or "").strip()
     if not WA_HOST_RX.search(u):
@@ -404,9 +406,16 @@ def wa_number(url: str) -> tuple[str, str]:
     p = urlparse(u if "://" in u or u.lower().startswith("whatsapp:") else "https://" + u)
     q = parse_qs(p.query)
     host = (p.hostname or "").lower()
+    parts = [x for x in p.path.split("/") if x]
+    if parts and parts[0].lower() in ("message", "qr") and host in ("wa.me", "api.whatsapp.com", "whatsapp.com", "www.whatsapp.com"):
+        return "short", ""
+    if parts and parts[0].lower() in ("channel", "catalog") and host != "wa.me":
+        return "other", ""
     num = ""
     if host == "wa.me":
-        num = unquote(p.path.strip("/").split("/")[0]) if p.path.strip("/") else ""
+        if parts and parts[0].lower() == "c" and len(parts) > 1:      # wa.me/c/<number>: the business's catalog
+            parts = parts[1:]
+        num = unquote(parts[0]) if parts else ""
     if not num:
         num = unquote((q.get("phone") or [""])[0])
     num = num.strip()
@@ -454,9 +463,15 @@ def whatsapp_button(ctx: Ctx, home: str, product: str | None = None, strict: boo
     links = [f for f in found if f["kind"] == "link"]
     chats = [(f, *wa_number(f["href"])) for f in links]
     shares = [c for c in chats if c[1] == "share"]
+    shorts = [c for c in chats if c[1] == "short"]
     chats = [c for c in chats if c[1] in ("chat", "empty")]
     if shares:
         ctx.steps.info("whatsapp_share", f"{len(shares)} WhatsApp share link(s) (share a product, no number): not a chat button")
+    if shorts:
+        ctx.steps.info("whatsapp_short_link", f"WhatsApp Business short link ({shorts[0][0]['href'][:80]}): the number is not in "
+                                              "the address, so it is not judged (information only)")
+    if not chats and shorts:
+        return
     if not chats:
         widgets = [i for i, f in enumerate(found) if f["kind"] == "widget"]
         if not widgets:
@@ -470,8 +485,9 @@ def whatsapp_button(ctx: Ctx, home: str, product: str | None = None, strict: boo
             ctx.steps.run("whatsapp_button_responds", dead, soft=not strict)
             return
         kind, num = wa_number(got)
-        if kind == "share":
-            ctx.steps.info("whatsapp_share", f"the WhatsApp button opens a share screen ({got[:80]}), not a chat: nothing to judge")
+        if kind in ("share", "short", "other"):
+            ctx.steps.info("whatsapp_share" if kind == "share" else "whatsapp_short_link",
+                           f"the WhatsApp button opens {got[:80]}: no number in the address, nothing to judge")
             return
         chats = [({"href": got, "label": found[widgets[0]]["label"], "kind": "widget"}, kind, num)]
     judged: dict[str, tuple[str, str, dict]] = {}
