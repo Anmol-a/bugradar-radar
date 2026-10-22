@@ -3100,3 +3100,82 @@ def test_product_shown_under_a_reworded_name_is_not_a_hidden_product(tmp_path):
     st = _steps(vase)
     assert "other content" not in (st["loads"].error or ""), st["loads"].error
     assert st["loads"].status == "pass", st["loads"].error
+
+
+# ---------------- store features (22 Oct): WhatsApp chat button, Cash on Delivery ----------------
+
+def _wa(mode, tmp_path):
+    run = _feature(mode, tmp_path, ("smoke",), allow_cart_flow=False)
+    c = _case(run, "smoke.whatsapp")
+    return c, _steps(c)
+
+
+def test_a_store_without_whatsapp_is_information_only(tmp_path):
+    c, st = _wa("healthy", tmp_path)
+    assert c.verdict == "pass" and st["whatsapp_not_judged"].status == "info", [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+
+
+def test_a_whatsapp_button_with_a_full_number_passes(tmp_path):
+    c, st = _wa("wa_ok", tmp_path)
+    assert c.verdict == "pass" and st["whatsapp_number"].status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert "+919876543210" in st["whatsapp_number"].detail and "homepage" in st["whatsapp_number"].detail
+
+
+def test_a_whatsapp_button_with_a_number_that_cannot_be_dialled_fails(tmp_path):
+    """wa.me/12345: every shopper who taps it reaches no one (positive evidence -> failure, confirmed on retry)."""
+    c, st = _wa("wa_bad", tmp_path)
+    assert c.verdict == "confirmed_fail", (c.verdict, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
+    assert "5 digits" in st["whatsapp_number"].error, st["whatsapp_number"].error
+    c, st = _wa("wa_zero", tmp_path)
+    assert c.verdict == "confirmed_fail" and "starts with 0" in st["whatsapp_number"].error, st["whatsapp_number"].error
+
+
+def test_a_whatsapp_number_without_the_country_code_is_a_warning(tmp_path):
+    c, st = _wa("wa_no_cc", tmp_path)
+    assert c.verdict == "pass" and st["whatsapp_number"].status == "warn", (c.verdict, st["whatsapp_number"].error)
+    assert "919876543210" in st["whatsapp_number"].error
+
+
+def test_a_whatsapp_button_without_an_address_is_tapped_with_whatsapp_blocked(tmp_path):
+    """window.open, a page navigation, a panel with a link: Radar reads where it goes and never opens WhatsApp."""
+    for mode in ("wa_widget_ok", "wa_widget_nav", "wa_widget_panel"):
+        c, st = _wa(mode, tmp_path / mode)
+        assert c.verdict == "pass" and st["whatsapp_number"].status == "pass", \
+            (mode, c.verdict, [(s.name, s.status, s.error, s.detail) for s in c.attempts[-1].steps])
+        assert "+918888888888" in st["whatsapp_number"].detail, (mode, st["whatsapp_number"].detail)
+
+
+def test_a_whatsapp_button_that_does_nothing_is_a_warning(tmp_path):
+    c, st = _wa("wa_widget_dead", tmp_path)
+    assert c.verdict == "pass" and st["whatsapp_button_responds"].status == "warn", \
+        (c.verdict, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
+
+
+def test_a_whatsapp_share_link_is_not_a_chat_button(tmp_path):
+    c, st = _wa("wa_share_only", tmp_path)
+    assert c.verdict == "pass" and "whatsapp_number" not in st, [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+    assert st["whatsapp_share"].status == "info"
+
+
+def test_a_whatsapp_button_only_on_product_pages_is_found_there(tmp_path):
+    c, st = _wa("wa_product_only", tmp_path)
+    assert c.verdict == "pass" and "product page" in st["whatsapp_number"].detail, st["whatsapp_number"].detail
+
+
+def test_cod_wording_is_recorded_and_a_contradiction_is_a_warning(tmp_path):
+    """The page says 'COD available on all orders', the pincode checker for Mumbai 400001 says 'COD not available'."""
+    run = _feature("pincode_cod_no", tmp_path, ("product",))
+    c = _case(run, "product.pincode")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["pincode_answers"].status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert st["cod_agrees"].status == "warn" and "COD is available" in st["cod_agrees"].error, st["cod_agrees"].error
+    assert "the pincode answer for 400001 says COD is not available" in st["cod"].detail, st["cod"].detail
+
+
+def test_cod_that_agrees_or_is_only_on_the_page_is_information(tmp_path):
+    run = _feature("pincode_ok", tmp_path / "ok", ("product",))
+    st = _steps(_case(run, "product.pincode"))
+    assert "cod_agrees" not in st and "pincode answer for 400001 says COD is available" in st["cod"].detail, st["cod"].detail
+    run = _feature("cod_badge_only", tmp_path / "badge", ("product",))
+    st = _steps(_case(run, "product.pincode"))
+    assert st["cod"].status == "info" and "the product page says COD is available" in st["cod"].detail, st["cod"].detail
