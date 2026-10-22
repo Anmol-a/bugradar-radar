@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import re
 import time
+from dataclasses import dataclass
 
 from datetime import datetime, timezone
 from urllib.parse import urljoin, urlparse
@@ -21,7 +22,7 @@ from urllib.parse import urljoin, urlparse
 from radar.core.browser import Session, RobotsBlocked
 from radar.core.config import Settings, site_id_from_url
 from radar.core.models import SiteMap, Product, Collection
-from radar.core.network import NO_NETWORK_NOTE, online
+from radar.core.network import NO_NETWORK_NOTE, online, reset_cache
 from radar.core.robots import Robots
 from radar.discovery.detect import detect_platform, detect_checkout_app, detect_access
 from radar.discovery.shopify_data import products_from_json, product_from_js, price_ok
@@ -258,49 +259,156 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
 
 
 HOME_CHECK_PAUSES = (20, 60)     # seconds between the homepage tries when robots.txt is silent (the homepage's 5xx rule)
+# errors that mean Radar's OWN connection dropped while it asked (the store isn't to blame for these)
+OWN_NETWORK = re.compile(r"ERR_INTERNET_DISCONNECTED|ERR_NETWORK_CHANGED|ERR_NETWORK_IO_SUSPENDED|ENETDOWN|ENETUNREACH")
 
 
-def _short_error(e: Exception | str) -> str:
+def _short_error(e: Exception | str, cap: int = 60) -> str:
     """One network error, short and without brackets (the uploader keeps a bracketed tail as 'Technical detail')."""
     msg = str(e).splitlines()[0] if str(e) else type(e).__name__
-    msg = re.sub(r"^\w+\.\w+:\s*", "", msg)            # 'apiRequestContext.get: Timeout 60000ms exceeded.'
-    return re.sub(r"[()\[\]]", "", msg).strip()[:90] or type(e).__name__
+    msg = re.sub(r"^no answer:\s*", "", msg)
+    msg = re.sub(r"\b(?:apiRequestContext|APIRequestContext|page|Page)\.\w+:\s*", "", msg)   # 'apiRequestContext.get: '
+    return re.sub(r"[()\[\]]", "", msg).strip()[:cap] or type(e).__name__
 
 
-def store_answers(sess: Session, base_url: str, s: Settings) -> tuple[bool, list[str], float]:
+@dataclass
+class StoreAnswer:
+    """What store_answers found. up: the store's server answered (status = that answer). tries: each try, in order
+    ('HTTP 503', 'Timeout 30000ms exceeded.', 'browser: HTTP 503'). offline: an error said Radar's own connection dropped."""
+    up: bool
+    status: int | None
+    tries: list
+    secs: float
+    offline: bool = False
+    challenge: bool = False
+
+
+def _challenge(status: int, body: str) -> bool:
+    """A bot-protection page sent with a 5xx (some firewalls answer their challenge with 503): the server is up."""
+    m = re.search(r"<title[^>]*>(.*?)</title>", body or "", re.I | re.S)
+    return detect_access(status, (m.group(1).strip() if m else ""), body or "", "/") == "bot_blocked"
+
+
+def _browser_answer(sess: Session, url: str, s: Settings) -> tuple[int | None, str, str]:
+    """The homepage asked once by Chromium itself (review, 22 Oct): a firewall can drop or reset Playwright's own HTTP
+    client (it is not a browser; browser.py _get_json, 18 Oct) and an incomplete certificate chain fails there while
+    Chromium completes it, so 'down' is never decided on that client alone. Only the page itself is let through (no
+    scripts, images or styles: aborted), Radar waits for the answer's first bytes ('commit'), then leaves the page.
+    Returns (status or None, error, body of a 5xx answer)."""
+    page = sess.page
+
+    def only_the_page(route):
+        try:
+            if route.request.resource_type == "document":
+                route.fallback()          # on to the context's own routes (Web Bot Auth signing)
+            else:
+                route.abort()
+        except Exception:  # noqa: BLE001  page closing under the route
+            pass
+    try:
+        page.route("**/*", only_the_page)
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        resp = page.goto(url, wait_until="commit", timeout=s.home_timeout_ms)
+        st = resp.status if resp is not None else None
+        body = ""
+        if st is not None and st >= 500:
+            try:
+                body = resp.text()[:200_000]
+            except Exception:  # noqa: BLE001
+                body = ""
+        return st, "", body
+    except Exception as e:  # noqa: BLE001  timeout, refused, reset, TLS
+        return None, _short_error(e), ""
+    finally:
+        # leave the page BEFORE letting requests through again: after 'commit' the document is still arriving and
+        # would load its pictures and scripts the moment the route is gone (caught by the e2e test, 22 Oct)
+        try:
+            page.goto("about:blank", timeout=5000)
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            page.unroute("**/*", only_the_page)
+        except Exception:  # noqa: BLE001
+            pass
+
+
+def store_answers(sess: Session, base_url: str, s: Settings) -> StoreAnswer:
     """Is the whole store down? Asked only on daily checks (Settings.check_store_down) after robots.txt gave no answer.
     22 Oct: a store whose server times out or answers 5xx to everything fails at robots.txt, Radar's first request;
     RFC 9309 then means 'do not crawl', the run was 'blocked' (not tested) and the owner heard nothing about the biggest
-    outage of all. One plain HTTP request for the homepage (no scripts, images or clicks: an availability check, not
-    crawling), asked up to 3 times, HOME_CHECK_PAUSES apart, each with the homepage's own patience (home_timeout_ms).
-    Any answer below 500 (200, a redirect, 403 from bot protection, 429) = the store's server is up.
-    Returns (answered, what each try got, seconds spent)."""
+    outage of all. An availability check, not crawling:
+      1. one plain HTTP request for the homepage, no redirects followed, up to 3 times, HOME_CHECK_PAUSES apart, each
+         given nav_timeout_ms (the status arrives with the first bytes: 4-13 s on Contabo's worst minute, 21 Oct);
+      2. if none answered, the homepage once in Chromium itself (_browser_answer), given home_timeout_ms.
+    Any answer below 500 (200, a redirect, 403 / 429 from bot protection) or a bot-protection page sent with a 5xx = the
+    store's server is up."""
     url = base_url + "/"
-    seen: list[str] = []
+    tries: list[str] = []
     t0 = time.time()
+    done = lambda **kw: StoreAnswer(tries=tries, secs=round(time.time() - t0, 1), **kw)
     for i in range(len(HOME_CHECK_PAUSES) + 1):
         if i:
             sess.page.wait_for_timeout(int(HOME_CHECK_PAUSES[i - 1] * 1000 * sess.backoff_scale))
         try:
-            r = sess.page.context.request.get(url, timeout=s.home_timeout_ms, headers=sess.sign(url) or None)
+            r = sess.page.context.request.get(url, timeout=s.nav_timeout_ms, headers=sess.sign(url) or None,
+                                              max_redirects=0)
+            tries.append(f"HTTP {r.status}")
             if r.status < 500:
-                seen.append(f"HTTP {r.status}")
-                return True, seen, round(time.time() - t0, 1)
-            seen.append(f"HTTP {r.status}")
+                return done(up=True, status=r.status)
+            try:
+                body = r.text()[:200_000]
+            except Exception:  # noqa: BLE001
+                body = ""
+            if _challenge(r.status, body):
+                return done(up=True, status=r.status, challenge=True)
         except Exception as e:  # noqa: BLE001  timeout, refused, reset, TLS
-            seen.append(_short_error(e))
-    return False, seen, round(time.time() - t0, 1)
+            tries.append(_short_error(e))
+    st, err, body = _browser_answer(sess, url, s)
+    tries.append("browser: " + (f"HTTP {st}" if st is not None else err))
+    if st is not None and (st < 500 or _challenge(st, body)):
+        return done(up=True, status=st, challenge=st >= 500)
+    return done(up=False, status=None, offline=any(OWN_NETWORK.search(t) for t in tries))
 
 
 def _tries(seen: list[str]) -> str:
-    """['HTTP 503', 'HTTP 503', 'HTTP 503'] -> 'HTTP 503 x3'; different answers are listed in order."""
-    if seen and all(x == seen[0] for x in seen):
-        return seen[0] + (f" x{len(seen)}" if len(seen) > 1 else "")
-    return ", ".join(seen)
+    """['HTTP 503', 'HTTP 503', 'HTTP 503', 'browser: HTTP 503'] -> 'HTTP 503 x3, browser: HTTP 503': repeats in a row
+    are counted, different answers listed in order."""
+    out: list[list] = []
+    for x in seen:
+        if out and out[-1][0] == x:
+            out[-1][1] += 1
+        else:
+            out.append([x, 1])
+    return ", ".join(x + (f" x{n}" if n > 1 else "") for x, n in out)
 
 
 def _span(secs: float) -> str:
     return f"{int(round(secs))} s" if secs < 90 else f"about {int(round(secs / 60))} minutes"
+
+
+def down_note(ans: StoreAnswer, robots_why: str) -> str:
+    """The store's line on the dashboard and in the 🔴 email: a plain sentence, then the detail in brackets (the
+    uploader shows the bracketed tail under 'Technical detail'). Kept under 300 characters."""
+    plain = (f"The store didn't answer at all: its homepage didn't load, tried {len(ans.tries)} times over "
+             f"{_span(ans.secs)}")
+    tail = f"homepage: {_tries(ans.tries)}; robots.txt: {robots_why}, tried 3 times"
+    room = 295 - len(plain) - 3
+    if len(tail) > room:
+        tail = tail[:room - 1].rstrip(" ,;") + "…"
+    return f"{plain} ({tail})"
+
+
+def robots_down_home_up_note(why: str, ans: StoreAnswer) -> str:
+    """robots.txt failing while the store's server answers: not tested (RFC 9309), never an outage. Under 300 chars."""
+    head = (f"robots.txt could not be fetched ({why[:32].rstrip('. ')}, 3 tries), so nothing was tested: the robots.txt "
+            "standard (RFC 9309) says 'do not crawl' then. ")
+    if ans.status is not None and 200 <= ans.status < 300:
+        return head + (f"The homepage answers (HTTP {ans.status}), so the store is open to shoppers; only robots.txt "
+                       "fails, and search engines pause crawling while it does.")
+    return head + (f"The store's server answers (HTTP {ans.status}"
+                   + (", a bot-protection page" if ans.challenge else "") + "), so it is not down; only robots.txt fails.")
 
 
 def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
@@ -420,26 +528,26 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
             return sm
         sm.access = "robots_unreachable"
         why = f"HTTP {code}" if code else ("no answer: " + getattr(sess.robots, "error", "") if getattr(sess.robots, "error", "") else "no answer")
-        home = ""
         if s.check_store_down:
             # a daily check (22 Oct): is the whole store down? (store_answers) Free checks and benches keep 'blocked'.
-            answered, seen, secs = store_answers(sess, base_url, s)
-            if not answered:
-                if not online(s.net_probe_urls):
+            rwhy = f"HTTP {code}" if code else _short_error(getattr(sess.robots, "error", "") or "no answer")
+            ans = store_answers(sess, base_url, s)
+            if not ans.up:
+                reset_cache()       # the window was minutes long: ask again now, not from the 30 s cache
+                if ans.offline or not online(s.net_probe_urls):
                     sm.access = "no_network"
                     sm.notes.append(NO_NETWORK_NOTE.format(where=" while the store was checked"))
                     return sm
                 sm.access = "unreachable"
-                sm.notes.append(f"The store didn't answer at all: its homepage didn't load, tried {len(seen)} times over "
-                                f"{_span(secs)} (homepage: {_tries(seen)}; robots.txt: {_short_error(why)}, tried 3 times)")
+                sm.notes.append(down_note(ans, rwhy))
                 return sm
-            home = (f"this run. The homepage itself answers ({seen[-1]}), so the store is open to shoppers: only its "
-                    "robots.txt is failing, and search engines read a failing robots.txt as 'do not crawl' too.")
+            sm.notes.append(robots_down_home_up_note(rwhy, ans))
+            return sm
         sm.notes.append(f"robots.txt could not be fetched ({why}, tried 3 times); "
                         "under the robots.txt standard (RFC 9309) that means 'do not crawl', so nothing was tested "
                         + ("this run. The store's domain does not resolve (DNS: no such host): check the address."
                            if "ENOTFOUND" in getattr(sess.robots, "error", "") else
-                           home or "this run. Usually a temporary server problem on the store's side."))
+                           "this run. Usually a temporary server problem on the store's side."))
         return sm
     if not sm.robots_loaded:
         sm.notes.append("store has no robots.txt (HTTP 4xx); everything allowed (RFC 9309)")

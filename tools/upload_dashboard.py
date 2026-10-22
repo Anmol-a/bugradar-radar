@@ -192,14 +192,17 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_m
         results.append(item)
     # one line for the store itself, in every run: it fails when the store cannot be opened, is "not tested" when Radar
     # is not allowed in or the platform is not supported, and passes otherwise (so a store coming back closes the problem)
-    note = str((run.get("notes") or [""])[0])[:300] or None
+    note = str((run.get("notes") or [""])[0]) or None
     site = {"key": SITE_KEY, "name": SITE_NAME, "suite": "smoke", "severity": "critical", "attempts": 1, "error": None,
             "duration_ms": None, "status": "passed", "reason": None}
     if not results:
-        # the plain part is the reason; a long technical tail in brackets ("(robots.txt request: ...)") goes under "Technical detail"
+        # the plain part is the reason; a long technical tail in brackets ("(robots.txt request: ...)") goes under
+        # "Technical detail". Split BEFORE shortening (review, 22 Oct: cut at 300 first, a long note lost its closing
+        # bracket and the owner read the whole technical tail as the reason)
         plain = re.sub(r"\s*\([^()]*:[^()]{20,}\)\s*$", "", note or "") or note
-        site.update(status=SITE_STATUS.get(run.get("verdict"), "skipped"), reason=SITE_WHY.get(run.get("verdict")) or plain,
-                    error=note if plain != note else None)
+        site.update(status=SITE_STATUS.get(run.get("verdict"), "skipped"),
+                    reason=SITE_WHY.get(run.get("verdict")) or (plain[:300] if plain else plain),
+                    error=note[:1000] if note and plain != note else None)
         if site["status"] == "failed" and (extra_meta or {}).get("rechecked"):
             # a daily check's second look (radar/worker.py RECHECK, 21 Oct): the owner should know it wasn't a one-off
             mins = (extra_meta or {}).get("recheck_minutes")
