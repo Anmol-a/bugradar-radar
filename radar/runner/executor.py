@@ -244,7 +244,8 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
             "theme": sm.theme, "checkout_app": sm.checkout_app, "access": sm.access,
             "nav": len(sm.nav), "collections": len(sm.collections), "products": len(sm.products),
             "in_stock": sum(p.available for p in sm.products), "search_path": sm.search_path,
-            "robots_loaded": sm.robots_loaded, "home_slow": sm.home_slow}
+            "robots_loaded": sm.robots_loaded, "home_slow": sm.home_slow,
+            "store_up_robots_down": sm.store_up_robots_down}
         if sm.pins_gone:    # the product / collection left the catalog: nothing left to re-test, incident closed with that reason
             storage.resolve_incidents_for_cases(site_id, set(sm.pins_gone), "no longer in the store's catalog", device)
         storage.save_json(site_id, "sitemap.json", sm.to_dict())

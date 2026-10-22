@@ -222,3 +222,18 @@ def test_a_bench_label_files_runs_under_their_own_store(tmp_path, capsys):
     assert "shop.example (nightly bench)" in capsys.readouterr().out
     up.main([str(tmp_path), "--dry-run", "--project-label", ""])                                 # manual runs: as before
     assert '"project": "shop.example"' in capsys.readouterr().out
+
+
+def test_robots_txt_down_while_the_store_is_open_is_a_warning(tmp_path):
+    """22 Oct: a daily check found robots.txt failing while the store answers: the store line is a WARNING the owner
+    sees (search engines pause crawling), not a quiet 'not tested', and never a problem / alert (status != failed)."""
+    note = "robots.txt could not be fetched (HTTP 503, 3 tries), so nothing was tested: ... The homepage answers (HTTP 200) ..."
+    run = {**RUN, "verdict": "blocked", "cases": [], "notes": [note], "sitemap_summary": {"store_up_robots_down": 200}}
+    site = up.to_payload(run, tmp_path, "", None)["results"][0]
+    assert (site["key"], site["status"]) == (up.SITE_KEY, "warning")
+    assert site["reason"].startswith("Your store opens, but its robots.txt file isn't loading") and site["error"] == note
+    site = up.to_payload({**run, "sitemap_summary": {"store_up_robots_down": 403}}, tmp_path, "", None)["results"][0]
+    assert site["status"] == "warning" and site["reason"].startswith("Your store's server answers (HTTP 403)")
+    # free checks / benches (no such fact) and other blocked runs: unchanged
+    assert up.to_payload({**run, "sitemap_summary": {}}, tmp_path, "", None)["results"][0]["status"] == "blocked"
+    assert up.to_payload({**run, "sitemap_summary": {"store_up_robots_down": None}}, tmp_path, "", None)["results"][0]["status"] == "blocked"
