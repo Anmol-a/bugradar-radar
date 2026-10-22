@@ -172,7 +172,17 @@ Modes (to prove Radar catches and heals what it should):
                    -> everything PASSES; the noise only shows up as report evidence (v0.18)
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
                    bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
-  robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
+  robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested;
+                   on a daily check (check_store_down) the homepage answers 200, so it stays BLOCKED with that said
+  all_down         the whole store is down: EVERY request answers HTTP 503, robots.txt included (22 Oct) -> a daily
+                   check (check_store_down) says UNREACHABLE ("didn't answer at all"); free checks / benches: BLOCKED
+  robots_500_home_down  /robots.txt and / answer 503, everything else works -> daily check UNREACHABLE (only those two
+                   are asked)
+  robots_500_client_dropped  /robots.txt 503; / answers 503 to Playwright's own HTTP client (no Sec-Fetch-Mode) and
+                   normally to Chromium -> daily check: the browser confirms the store is up, BLOCKED (never a false 🔴)
+  robots_500_home_loop  /robots.txt 503; / redirects to itself -> the server answered (HTTP 302): BLOCKED
+  robots_500_home_challenge  /robots.txt 503; / is a Cloudflare challenge sent with 503 -> server up: BLOCKED
+  (down_hits on the server records each request path in these modes, ' (browser)' when Chromium asked)
   blank_not_shopify  gozero.in (cycle 34): no robots.txt (404), the homepage answers 200 with an EMPTY title, an empty
                    <div id=root> and no Shopify marker -> verdict UNSUPPORTED with what the homepage showed (v0.19:
                    'error', shown as 'Radar crashed')
@@ -1379,6 +1389,28 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
+        browser = bool(self.headers.get("Sec-Fetch-Mode"))      # Chromium sends it; Playwright's HTTP client doesn't
+        if self.mode.startswith("robots_500_") or self.mode == "all_down":
+            self.server.down_hits = getattr(self.server, "down_hits", []) + [path + (" (browser)" if browser else "")]
+        if self.mode == "all_down" or (self.mode == "robots_500_home_down" and path in ("/robots.txt", "/")):
+            # 22 Oct: a whole store down (every request 503, robots.txt included); the second only fails the two
+            # requests Radar makes before anything else
+            return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
+        if self.mode in ("robots_500_client_dropped", "robots_500_home_loop", "robots_500_home_challenge"):
+            if path == "/robots.txt":
+                return self._send(503, "Service Unavailable", "text/plain")
+            if path == "/" and self.mode == "robots_500_client_dropped" and not browser:
+                # a firewall that drops Playwright's own HTTP client but lets browsers through (review, 22 Oct)
+                return self._send(503, page("Service Unavailable", "<h1>Service Unavailable</h1>"))
+            if path == "/" and self.mode == "robots_500_home_loop":
+                self.send_response(302)
+                self.send_header("Location", "/")
+                self.end_headers()
+                return
+            if path == "/" and self.mode == "robots_500_home_challenge":
+                return self._send(503, '<html><head><title>Just a moment...</title></head><body>'
+                                       '<div id="cf-chl-widget"></div><script src="/cdn-cgi/challenge-platform/x.js">'
+                                       '</script></body></html>')
         if self.mode == "wishlist_404" and path == "/pages/wishlist":
             # countryflora.com / kotart.in / swornyfashion.com (new30p, 15 Oct): the wishlist app's page is the 404
             # template with the app drawing the list into it
