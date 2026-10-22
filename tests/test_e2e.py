@@ -905,6 +905,7 @@ def test_a_whole_store_down_stays_not_tested_on_a_free_check(tmp_path, monkeypat
     run, hits = _down_scan("all_down", tmp_path, monkeypatch)
     assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", (run.verdict, run.notes)
     assert set(hits) == {"/robots.txt"}, hits
+    assert run.sitemap_summary["store_up_robots_down"] is None          # free checks: still plain "not tested"
 
 
 def test_robots_txt_down_but_homepage_up_is_not_an_outage(tmp_path, monkeypatch):
@@ -915,6 +916,11 @@ def test_robots_txt_down_but_homepage_up_is_not_an_outage(tmp_path, monkeypatch)
     assert run.cases == []
     assert "The homepage answers (HTTP 200), so the store is open to shoppers" in run.notes[0], run.notes
     assert "RFC 9309" in run.notes[0] and len(run.notes[0]) < 300, run.notes
+    # the dashboard shows it as a warning the owner can act on (22 Oct), never a problem / alert
+    from tools import upload_dashboard as up
+    assert run.sitemap_summary["store_up_robots_down"] == 200
+    site = up.to_payload(run.to_dict(), tmp_path, "", None)["results"][0]
+    assert site["status"] == "warning" and "robots.txt file isn't loading" in site["reason"], site
 
 
 def test_robots_and_homepage_down_is_unreachable_even_if_other_pages_work(tmp_path, monkeypatch):

@@ -213,6 +213,15 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_m
         site.update(status=SITE_STATUS.get(run.get("verdict"), "skipped"),
                     reason=SITE_WHY.get(run.get("verdict")) or (plain[:300] if plain else plain),
                     error=note[:1000] if note and plain != note else None)
+        up = (run.get("sitemap_summary") or {}).get("store_up_robots_down")
+        if run.get("verdict") == "blocked" and isinstance(up, int):
+            # a daily check: robots.txt doesn't load while the store itself answers (22 Oct). Radar still can't test it
+            # (RFC 9309), but this is the owner's problem to fix, not a quiet "not tested": search engines read a
+            # failing robots.txt as "don't crawl" too. A warning: shown, never a problem or an alert email.
+            site.update(status="warning", error=note[:1000] if note else None, reason=(
+                ("Your store opens" if 200 <= up < 300 else f"Your store's server answers (HTTP {up})")
+                + ", but its robots.txt file isn't loading. Search engines pause crawling a store while that fails, "
+                  "and Radar can't test the store until it loads again."))
         if site["status"] == "failed" and (extra_meta or {}).get("rechecked"):
             # a daily check's second look (radar/worker.py RECHECK, 21 Oct): the owner should know it wasn't a one-off
             mins = (extra_meta or {}).get("recheck_minutes")
