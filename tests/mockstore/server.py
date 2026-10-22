@@ -184,6 +184,14 @@ Modes (to prove Radar catches and heals what it should):
                    nothing (warning) / opens a panel with a wa.me link -> Radar taps it with WhatsApp blocked and reads it
   wa_share_only    only a 'Share on WhatsApp' link (no number) -> information only
   wa_short         a WhatsApp Business short link wa.me/message/<code> (no number in it) -> information only
+  wa_icon_shortlink  an icon link through wa.link (a URL shortener) -> never clicked, not judged
+  wa_store_redirect  a WhatsApp link to the store's /pages/whatsapp, which redirects to wa.me/918888888888 -> read from
+                   the redirect (Radar asks for it without following it): passes
+  wa_widget_redirect / wa_widget_scheme  a button that loads /go/wa (redirects to WhatsApp) / jumps to
+                   whatsapp://send?phone=918888888888 -> caught without leaving the page: passes
+  wa_share_and_widget  a share link and a chat button on one page (the button answers after 1.2 s) -> the button's own
+                   answer is judged, never the share link that was already there
+  wa_external_named  a WhatsApp-named button that links to another site -> never tapped, not judged
   wa_product_only  the WhatsApp link only on product pages -> found there, passes
   pincode_cod_no   the page says 'COD available', the pincode checker says 'COD not available' -> WARNING (22 Oct)
   cod_badge_only   'COD available' badge, no pincode checker -> information only
@@ -772,7 +780,7 @@ if (!document.cookie.includes('consent=')) document.addEventListener('DOMContent
     HOSTILE_NAV = ('<nav><a href="/collections/home-decor" role="link" aria-disabled="true">Shop</a> '
                    '<details class="menu"><summary aria-expanded="false">Categories</summary>'
                    '<div><a href="/collections/kitchen">Kitchen</a></div></details> <a href="/pages/about">About</a></nav>')
-    HOSTILE_TAIL = """<a class="chat-widget__link" aria-label="Chat on WhatsApp" href="https://wa.me/1" style="position:fixed;right:16px;
+    HOSTILE_TAIL = """<a class="chat-widget__link" aria-label="Chat on WhatsApp" href="https://wa.me/919876543210" style="position:fixed;right:16px;
       bottom:16px;width:140px;height:140px;border-radius:70px;background:#25d366;z-index:90;display:block"></a>
 <script>
 if (!document.cookie.includes('ifp=1')) setTimeout(() => {
@@ -808,6 +816,22 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                            '<p>Hi! How can we help?</p><a href="https://wa.me/918888888888?text=Hello">Start chat</a></div>',
         "wa_share_only": '<p><a href="https://api.whatsapp.com/send?text=Look%20at%20this%20store">Share on WhatsApp</a></p>',
         "wa_short": f'<a class="wa-float" href="https://wa.me/message/ABCDEFGHIJ1" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        # review, 22 Oct: an icon link through a URL shortener (never clicked, not judged)
+        "wa_icon_shortlink": f'<a href="https://wa.link/abc123" style="{WA_FLOAT}"><svg class="icon-whatsapp" width="56" height="56"></svg></a>',
+        # a link to the store's own page that redirects to WhatsApp: read from the redirect, not followed
+        "wa_store_redirect": f'<a class="whatsapp-icon" href="/pages/whatsapp" style="{WA_FLOAT}" aria-label="WhatsApp"></a>',
+        # a button that loads the store's redirect page / jumps to the app scheme (phones)
+        "wa_widget_redirect": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                              'onclick="location.href=\'/go/wa\'"></div>',
+        "wa_widget_scheme": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                            'onclick="location.href=\'whatsapp://send?phone=918888888888\'"></div>',
+        # a product share link AND a chat button on one page: the share link is never taken for the button's answer
+        "wa_share_and_widget": '<p><a href="https://api.whatsapp.com/send?text=Look">Share on WhatsApp</a></p>'
+                               f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                               # answers after 1.2 s: the share link already on the page must not be taken meanwhile
+                               'onclick="setTimeout(() => window.open(\'https://wa.me/918888888888\', \'_blank\'), 1200)"></div>',
+        # a WhatsApp-named button that links to another site: an address of its own, so never tapped
+        "wa_external_named": f'<a class="whatsapp-btn" href="https://chat.example.org/support" style="{WA_FLOAT}">Chat</a>',
         "wa_product_only": f'<a class="wa-float" href="https://wa.me/919876543210" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
     }
 
@@ -1424,6 +1448,14 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
+        if self.mode in ("wa_store_redirect", "wa_widget_redirect") and path in ("/pages/whatsapp", "/go/wa"):
+            # the store's own redirect page to WhatsApp (22 Oct review); hits counted (Radar asks for the redirect only)
+            self.server.wa_redirect_hits = getattr(self.server, "wa_redirect_hits", []) + [
+                (path, self.headers.get("Sec-Fetch-Mode") or "")]
+            self.send_response(302)
+            self.send_header("Location", "https://wa.me/918888888888?text=Hi")
+            self.end_headers()
+            return
         browser = bool(self.headers.get("Sec-Fetch-Mode"))      # Chromium sends it; Playwright's HTTP client doesn't
         if self.mode.startswith("robots_500_") or self.mode == "all_down":
             self.server.down_hits = getattr(self.server, "down_hits", []) + [path + (" (browser)" if browser else "")]
