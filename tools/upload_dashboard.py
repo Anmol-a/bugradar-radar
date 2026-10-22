@@ -163,8 +163,18 @@ def reason_of(case: dict) -> str | None:
     return (last.get("error") or "")[:300] or None
 
 
-def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_meta: dict | None = None) -> dict:
+def project_name(run: dict, label: str = "") -> str:
+    """The dashboard store a run is filed under: the store's host, plus a label for a test bench (22 Oct: the GitHub
+    nightly bench uploaded the Dawn demo into the same store as BugRadar's daily check, so a blip on the nightly, which
+    has no 10-minute re-check, opened a problem there). Pure."""
     host = (urlparse(run.get("base_url") or "").hostname or run.get("site_id") or "store").removeprefix("www.")
+    label = " ".join((label or "").split())[:40]
+    return f"{host} ({label})" if label else host
+
+
+def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_meta: dict | None = None,
+               project_label: str = "") -> dict:
+    host = project_name(run, project_label)
     results, shots = [], 0
     for c in run.get("cases", []):
         status = STATUS.get(c.get("verdict"), "warning")
@@ -243,7 +253,7 @@ def find_runs(folder: Path, since: float = 0) -> list[Path]:
 
 
 def upload(folder: Path, key: str, since: float = 0, build: str = "", ci_url: str | None = None,
-           dry_run: bool = False, log=print, extra_meta: dict | None = None) -> list[dict]:
+           dry_run: bool = False, log=print, extra_meta: dict | None = None, project_label: str = "") -> list[dict]:
     """Send every finished run under the folder. Returns one record per run.json found:
     {"file", "project", "device", "radar_run_id", "ok", "run_id", "project_id", "error"}; the worker (15 Oct) reads
     run_id off it to tie a free-scan request to its dashboard run."""
@@ -255,7 +265,7 @@ def upload(folder: Path, key: str, since: float = 0, build: str = "", ci_url: st
             continue
         if not run.get("cases") and not run.get("verdict"):
             continue                       # not a finished run
-        payload = to_payload(run, f.parent, build, ci_url, extra_meta)
+        payload = to_payload(run, f.parent, build, ci_url, extra_meta, project_label)
         rec = {"file": str(f), "project": payload["project"], "device": payload["run"]["device"],
                "radar_run_id": run.get("run_id"), "ok": False, "run_id": None, "project_id": None, "error": None}
         out.append(rec)
@@ -281,13 +291,16 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--ci-url", default=os.environ.get("BUGRADAR_CI_URL"))
     ap.add_argument("--since", type=float, default=0, help="only runs written after this unix time (machines that keep old data)")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--project-label", default="", help="file runs under '<store> (<label>)', e.g. 'nightly bench'; "
+                                                         "empty = the store itself")
     a = ap.parse_args(argv)
     key = os.environ.get("BUGRADAR_KEY", "")
     if not a.dry_run and not key.startswith("brk_"):
         print("BUGRADAR_KEY is not set; nothing sent.")
         return 0                       # never fail a Radar run because the dashboard isn't set up
     recs = upload(a.folder, key, a.since, a.build, a.ci_url, a.dry_run,
-                  log=lambda m: print(m, file=sys.stderr if m.startswith("could not send") else sys.stdout))
+                  log=lambda m: print(m, file=sys.stderr if m.startswith("could not send") else sys.stdout),
+                  project_label=a.project_label)
     sent, failed = sum(r["ok"] for r in recs), sum(not r["ok"] for r in recs)
     print(f"dashboard upload: {sent} sent, {failed} failed, {len(recs)} found")
     return 0
