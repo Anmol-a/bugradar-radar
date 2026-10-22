@@ -176,6 +176,25 @@ Modes (to prove Radar catches and heals what it should):
                    on a daily check (check_store_down) the homepage answers 200, so it stays BLOCKED with that said
   all_down         the whole store is down: EVERY request answers HTTP 503, robots.txt included (22 Oct) -> a daily
                    check (check_store_down) says UNREACHABLE ("didn't answer at all"); free checks / benches: BLOCKED
+  wa_ok / wa_bad / wa_no_cc / wa_zero  a floating WhatsApp link on every page: wa.me/919876543210 (passes),
+                   wa.me/12345 (fails: not a phone number), wa.me/9876543210 (warning: no country code),
+                   api.whatsapp.com/send?phone=09876543210 (fails: leading 0) (22 Oct)
+  wa_widget_ok / wa_widget_nav / wa_widget_dead / wa_widget_panel  a WhatsApp button with no address: it calls
+                   window.open(wa.me/918888888888) / sets location to api.whatsapp.com/send?phone=918888888888 / does
+                   nothing (warning) / opens a panel with a wa.me link -> Radar taps it with WhatsApp blocked and reads it
+  wa_share_only    only a 'Share on WhatsApp' link (no number) -> information only
+  wa_short         a WhatsApp Business short link wa.me/message/<code> (no number in it) -> information only
+  wa_icon_shortlink  an icon link through wa.link (a URL shortener) -> never clicked, not judged
+  wa_store_redirect  a WhatsApp link to the store's /pages/whatsapp, which redirects to wa.me/918888888888 -> read from
+                   the redirect (Radar asks for it without following it): passes
+  wa_widget_redirect / wa_widget_scheme  a button that loads /go/wa (redirects to WhatsApp) / jumps to
+                   whatsapp://send?phone=918888888888 -> caught without leaving the page: passes
+  wa_share_and_widget  a share link and a chat button on one page (the button answers after 1.2 s) -> the button's own
+                   answer is judged, never the share link that was already there
+  wa_external_named  a WhatsApp-named button that links to another site -> never tapped, not judged
+  wa_product_only  the WhatsApp link only on product pages -> found there, passes
+  pincode_cod_no   the page says 'COD available', the pincode checker says 'COD not available' -> WARNING (22 Oct)
+  cod_badge_only   'COD available' badge, no pincode checker -> information only
   robots_500_home_down  /robots.txt and / answer 503, everything else works -> daily check UNREACHABLE (only those two
                    are asked)
   robots_500_client_dropped  /robots.txt 503; / answers 503 to Playwright's own HTTP client (no Sec-Fetch-Mode) and
@@ -761,7 +780,7 @@ if (!document.cookie.includes('consent=')) document.addEventListener('DOMContent
     HOSTILE_NAV = ('<nav><a href="/collections/home-decor" role="link" aria-disabled="true">Shop</a> '
                    '<details class="menu"><summary aria-expanded="false">Categories</summary>'
                    '<div><a href="/collections/kitchen">Kitchen</a></div></details> <a href="/pages/about">About</a></nav>')
-    HOSTILE_TAIL = """<a class="chat-widget__link" aria-label="Chat on WhatsApp" href="https://wa.me/1" style="position:fixed;right:16px;
+    HOSTILE_TAIL = """<a class="chat-widget__link" aria-label="Chat on WhatsApp" href="https://wa.me/919876543210" style="position:fixed;right:16px;
       bottom:16px;width:140px;height:140px;border-radius:70px;background:#25d366;z-index:90;display:block"></a>
 <script>
 if (!document.cookie.includes('ifp=1')) setTimeout(() => {
@@ -779,7 +798,47 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 }, 400);
 </script>"""
 
+    WA_FLOAT = 'position:fixed;right:16px;bottom:16px;width:56px;height:56px;display:block;background:#25d366;border-radius:28px;z-index:20'
+    WA_SNIPPETS = {
+        # 22 Oct: a floating WhatsApp chat button, the way Indian D2C stores add one
+        "wa_ok": f'<a class="wa-float" href="https://wa.me/919876543210?text=Hi" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        "wa_bad": f'<a class="wa-float" href="https://wa.me/12345" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        "wa_no_cc": f'<a class="wa-float" href="https://wa.me/9876543210" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        "wa_zero": f'<a class="wa-float" href="https://api.whatsapp.com/send?phone=09876543210" style="{WA_FLOAT}" aria-label="WhatsApp"></a>',
+        "wa_widget_ok": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                        'onclick="window.open(\'https://wa.me/918888888888\', \'_blank\')"></div>',
+        "wa_widget_nav": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                         'onclick="location.href=\'https://api.whatsapp.com/send?phone=918888888888\'"></div>',
+        "wa_widget_dead": f'<div class="whatsapp-button" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}"></div>',
+        "wa_widget_panel": f'<button class="whatsapp-launcher" aria-label="Chat with us on WhatsApp" style="{WA_FLOAT}" '
+                           'onclick="document.getElementById(\'wa-panel\').style.display=\'block\'"></button>'
+                           '<div id="wa-panel" style="display:none;position:fixed;right:16px;bottom:80px;width:260px;background:#fff;z-index:21">'
+                           '<p>Hi! How can we help?</p><a href="https://wa.me/918888888888?text=Hello">Start chat</a></div>',
+        "wa_share_only": '<p><a href="https://api.whatsapp.com/send?text=Look%20at%20this%20store">Share on WhatsApp</a></p>',
+        "wa_short": f'<a class="wa-float" href="https://wa.me/message/ABCDEFGHIJ1" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        # review, 22 Oct: an icon link through a URL shortener (never clicked, not judged)
+        "wa_icon_shortlink": f'<a href="https://wa.link/abc123" style="{WA_FLOAT}"><svg class="icon-whatsapp" width="56" height="56"></svg></a>',
+        # a link to the store's own page that redirects to WhatsApp: read from the redirect, not followed
+        "wa_store_redirect": f'<a class="whatsapp-icon" href="/pages/whatsapp" style="{WA_FLOAT}" aria-label="WhatsApp"></a>',
+        # a button that loads the store's redirect page / jumps to the app scheme (phones)
+        "wa_widget_redirect": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                              'onclick="location.href=\'/go/wa\'"></div>',
+        "wa_widget_scheme": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                            'onclick="location.href=\'whatsapp://send?phone=918888888888\'"></div>',
+        # a product share link AND a chat button on one page: the share link is never taken for the button's answer
+        "wa_share_and_widget": '<p><a href="https://api.whatsapp.com/send?text=Look">Share on WhatsApp</a></p>'
+                               f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                               # answers after 1.2 s: the share link already on the page must not be taken meanwhile
+                               'onclick="setTimeout(() => window.open(\'https://wa.me/918888888888\', \'_blank\'), 1200)"></div>',
+        # a WhatsApp-named button that links to another site: an address of its own, so never tapped
+        "wa_external_named": f'<a class="whatsapp-btn" href="https://chat.example.org/support" style="{WA_FLOAT}">Chat</a>',
+        "wa_product_only": f'<a class="wa-float" href="https://wa.me/919876543210" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+    }
+
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode in self.WA_SNIPPETS and isinstance(body, str) and ctype.startswith("text/html") and "</body>" in body \
+                and (self.mode != "wa_product_only" or urlparse(self.path).path.startswith("/products/")):
+            body = body.replace("</body>", self.WA_SNIPPETS[self.mode] + "</body>", 1)
         if self.mode == "grid_quick_add_class" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/collections/"):
             # dhaagaweaves.in / cmartian.com (new31a/b re-test: '44 links: 44 inside cart drawer / quick-add
@@ -1389,6 +1448,14 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
+        if self.mode in ("wa_store_redirect", "wa_widget_redirect") and path in ("/pages/whatsapp", "/go/wa"):
+            # the store's own redirect page to WhatsApp (22 Oct review); hits counted (Radar asks for the redirect only)
+            self.server.wa_redirect_hits = getattr(self.server, "wa_redirect_hits", []) + [
+                (path, self.headers.get("Sec-Fetch-Mode") or "")]
+            self.send_response(302)
+            self.send_header("Location", "https://wa.me/918888888888?text=Hi")
+            self.end_headers()
+            return
         browser = bool(self.headers.get("Sec-Fetch-Mode"))      # Chromium sends it; Playwright's HTTP client doesn't
         if self.mode.startswith("robots_500_") or self.mode == "all_down":
             self.server.down_hits = getattr(self.server, "down_hits", []) + [path + (" (browser)" if browser else "")]
@@ -2309,13 +2376,20 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
             body += ('<div class="pincode-check"><input type="text" placeholder="ENTER YOUR PINCODE" maxlength="6">'
                      '<button type="button" class="pincode-btn">CHECK</button></div>')
-        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered", "pincode_rerender", "pincode_slow") and available:
+        if self.mode in ("pincode_cod_no", "cod_badge_only") and available:
+            # 22 Oct: the page advertises COD under the buy button
+            body += '<ul class="trust-badges"><li>Free shipping</li><li>COD available on all orders</li></ul>'
+        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered", "pincode_rerender", "pincode_slow", "pincode_cod_no") and available:
             # store feature (14 Oct): a delivery-pincode checker next to the buy button. pincode_ok answers after a
             # short app call; pincode_dead: the CHECK button is wired to nothing (the app's script failed to load)
             js = ('<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; const v = document.querySelector('
                   '".pincode-check input").value; setTimeout(() => { document.getElementById("pin-msg").textContent = '
                   '/^\\d{6}$/.test(v) ? "Delivery by Thu, 16 Oct · COD available for " + v : "Please enter a valid pincode"; }, 300); });</script>'
                   if self.mode in ("pincode_ok", "pincode_covered", "pincode_rerender") else
+                  # 22 Oct: the checker says the opposite of the page's 'COD available' badge
+                  '<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; setTimeout(() => { '
+                  'document.getElementById("pin-msg").textContent = "Delivery by Thu, 16 Oct · COD not available for this pincode"; }, 300); });</script>'
+                  if self.mode == "pincode_cod_no" else
                   # boat-lifestyle (15 Oct): 'Checking servicability ...' for a long time, then the answer
                   '<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; const m = document.getElementById("pin-msg"); '
                   'm.textContent = "Checking servicability ..."; setTimeout(() => { m.textContent = "Delivery by Sat, 18 Oct"; }, 11000); });</script>'

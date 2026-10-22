@@ -184,6 +184,13 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
             "not, days) must appear. No box = nothing to judge"))
     if product.cases:
         suites.append(product)
+    # store feature (22 Oct): a WhatsApp chat button opens a chat with a real number. No button = information only.
+    smoke.cases.append(TestCase(
+        "smoke.whatsapp", "smoke", "WhatsApp chat button opens a chat with a real phone number", "whatsapp_button",
+        {"home": base + "/", "product": vurl(picks[0]) if picks else None, "strict": False}, "minor",
+        "If the store shows a WhatsApp chat button (homepage, else a product page): the number it opens must be a full "
+        "international number. Links are read from their address; a button without one is tapped once with WhatsApp "
+        "itself blocked, and the address it tried to open is read. Nothing is sent. No button = nothing to judge"))
 
     buyable = next((p for p in priced if p.available and p.variant_id), None)
     if buyable and s.allow_cart_flow:

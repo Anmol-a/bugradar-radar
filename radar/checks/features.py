@@ -3,15 +3,17 @@ before buying. Each check first looks for the feature on the page; a store witho
 judge). A feature that is there but gives no answer is a finding (warning until a bench measures it; `strict` makes it
 a failure). Code decides from the page's own answer; nothing is ordered, no form that sends shopper data is submitted.
 
-  product.pincode     a delivery-pincode checker on the product page answers for a probe pincode
+  product.pincode     a delivery-pincode checker on the product page answers for a probe pincode; what the page and
+                      the answer say about Cash on Delivery must agree (22 Oct)
   cart.discount_code  a discount / coupon box on the cart page rejects a junk code with a message, total unchanged
+  smoke.whatsapp      a WhatsApp chat button opens a chat with a real phone number (22 Oct)
 """
 from __future__ import annotations
 
 import re
 import time
 
-from radar.checks.library import REGISTRY, Ctx, _base, _click, _dismiss, _load, _product_js, _wait_qty
+from radar.checks.library import REGISTRY, Ctx, _base, _click, _dismiss, _load, _product_js, _wait_qty, same_site_url
 
 PROBE_PINCODE = "400001"            # Mumbai GPO: a real, deliverable-by-everyone pincode; the store's answer is not judged
 JUNK_CODE = "BUGRADAR-TEST-CODE"    # a code no store has: the box must say so, not stay silent
@@ -25,6 +27,56 @@ PIN_ANSWER_RX = re.compile(
 CODE_REJECT_RX = re.compile(
     r"invalid|not\s+valid|isn.?t\s+valid|does\s*n.?t\s+exist|expired|unable|cannot|can.?t\s+be|no\s+such|incorrect|"
     r"enter\s+a\s+valid|not\s+applicable|unavailable|sorry|wrong|not\s+found|doesn.?t\s+match|not\s+recogni", re.I)
+
+# what the product's buy area or a pincode answer says about Cash on Delivery (22 Oct; tightened after review). Read
+# phrase by phrase (split at . , ; | • & and line ends) so 'COD available, returns not applicable' is about COD and
+# returns separately. 'COD' only in capitals and never 'COD liver oil' (themes upper-case product names); questions
+# ('check if COD is available') are not promises; 'no COD charges' means COD exists.
+_COD = r"(?:\bCOD\b(?!(?i:\s*liver))|(?i:\bcash\s+on\s+delivery\b|\bpay\s+on\s+delivery\b))"
+_NOT = r"(?i:(?:is\s+)?not|isn['’]?t|cannot|can['’]?t)\s+(?i:be\s+)?"
+_STATE = r"(?i:available|applicable|eligible|accepted|supported|offered|possible)"
+COD_NO_RX = re.compile(
+    _COD + r".{0,25}?\b" + _NOT + _STATE + r"\b"                                  # COD is not available
+    + r"|" + _COD + r".{0,25}?(?i:\bunavailable\b)"                              # COD unavailable
+    + r"|(?i:\b(?:not|isn['’]?t)\s+(?:available|applicable|eligible)\s+(?:for|on|with)\s+)" + _COD   # not available for COD
+    + r"|(?i:\b(?:do|does|we)\s*(?:not|n['’]?t)\s+(?:offer|accept|provide|support)\s+)" + _COD      # we don't offer COD
+    + r"|(?i:\bno\s+)" + _COD + r"(?!(?i:\s+(?:charges?|fees?|extra|handling)))")                    # no COD (not 'no COD charges')
+COD_ALONE_NO_RX = re.compile(r"\s*(?i:prepaid\s+(?:orders?\s+)?only|only\s+prepaid(?:\s+orders?)?)\s*")
+COD_YES_RX = re.compile(
+    _COD + r".{0,25}?\b" + _STATE + r"\b"                                         # COD available / COD charges applicable
+    + r"|(?i:\b(?:available|accepted)\b).{0,15}?" + _COD                          # available: COD, UPI
+    + r"|(?i:\bno\s+)" + _COD + r"(?i:\s+(?:charges?|fees?))")                    # no COD charges
+QUESTION_RX = re.compile(r"\?|(?i:\bcheck\s+(?:if|whether)\b|\bto\s+check\b|\bfind\s+out\b)")
+# a condition on the order ('COD not available above ₹5000', 'COD on orders over ₹499'): neither a yes nor a no
+CONDITION_RX = re.compile(r"(?i:\b(?:above|over|below|under|more\s+than|less\s+than|up\s*to|min(?:imum)?)\b)\s*(?i:rs\.?|₹|inr)?\s*\d")
+PHRASE_SPLIT_RX = re.compile(r"[.;|•&\n]|,\s")
+
+
+def cod_says(text: str) -> str | None:
+    """'yes' (COD offered), 'no' (not offered / prepaid only), 'mixed' (both said) or None (not mentioned). Pure."""
+    yes = no = False
+    for ph in PHRASE_SPLIT_RX.split(text or ""):
+        if not ph.strip() or QUESTION_RX.search(ph) or CONDITION_RX.search(ph):
+            continue
+        if COD_NO_RX.search(ph) or COD_ALONE_NO_RX.fullmatch(ph):
+            no = True
+        elif COD_YES_RX.search(ph):
+            yes = True
+    return "mixed" if yes and no else "no" if no else "yes" if yes else None
+
+
+COD_WORDS = {"yes": "says COD is available", "no": "says COD is not available",
+             "mixed": "says both that COD is and isn't available", None: "doesn't mention COD"}
+
+# the product's buy area: the add-to-cart form and the few blocks around it (price, badges, delivery info), never the
+# whole page (footers, FAQs and announcement bars talk about COD in general)
+BUY_AREA_JS = r"""() => { const f = document.querySelector('form[action*="/cart/add"]'); if (!f) return '';
+  let el = f;
+  for (let i = 0; i < 4 && el.parentElement && el.parentElement !== document.body; i++) {
+    if (((el.parentElement.innerText) || '').length > 4000) break;
+    el = el.parentElement; }
+  return ((el.innerText) || '').slice(0, 4000); }"""
+
 
 # find a visible text box that asks for a pincode / zip, and the control next to it; marks them for Playwright
 PINCODE_BOX_JS = r"""() => {
@@ -210,9 +262,12 @@ def pincode_check(ctx: Ctx, url: str, probe: str = PROBE_PINCODE, strict: bool =
     answers). No checker on the page = information only. A checker that stays silent after a check = finding."""
     soft = not strict
     ctx.steps.run("product_loads", lambda: (_load(ctx, url), _dismiss(ctx))[0])
+    # Cash on Delivery (22 Oct): what the buy area promises, read before anything is typed
+    page_cod = cod_says(ctx.sess.evaluate(BUY_AREA_JS) or "")
     found = ctx.sess.evaluate(PINCODE_BOX_JS)
     if not found:
         ctx.steps.info("pincode_not_judged", "no delivery-pincode checker on the product page (information only)")
+        ctx.steps.info("cod", f"Cash on Delivery: the product page {COD_WORDS[page_cod]}")
         return
     ctx.steps.info("pincode_box", f"pincode box {found['placeholder']!r}" + (f", button {found['button']!r}" if found['button'] else ", no button (Enter)"))
     errors = _watch_server_errors(ctx)
@@ -232,13 +287,29 @@ def pincode_check(ctx: Ctx, url: str, probe: str = PROBE_PINCODE, strict: bool =
             hit = hit or first
         if hit:
             ctx.expect(f"pincode checker answers for {probe}", "a delivery answer", hit, True)
+            answer["text"] = hit
             return f"typed {probe}, {how}: {hit!r}"
         waited = "25 s (it kept saying it was checking)" if BUSY_RX.search(seen or "") else "8 s"
         why = f"nothing within {waited} ({how}); page showed: {seen[:120]!r}" if seen else f"nothing within {waited} ({how})"
         if errors:
             why += "; " + "; ".join(errors[:2])
         ctx.expect(f"pincode checker answers for {probe}", "a delivery answer (deliverable / not deliverable / days)", why, False)
+    answer: dict = {}
     ctx.steps.run("pincode_answers", answers, soft=soft)
+    if "text" not in answer:
+        ctx.steps.info("cod", f"Cash on Delivery: the product page {COD_WORDS[page_cod]}")
+        return
+    ans_cod = cod_says(answer["text"])
+    ctx.steps.info("cod", f"Cash on Delivery: the product page {COD_WORDS[page_cod]}; the pincode answer for {probe} "
+                          f"{COD_WORDS[ans_cod]}")
+    if {page_cod, ans_cod} == {"yes", "no"}:
+        # the page promises one thing, the checker for a metro pincode (Mumbai GPO) says the other: a shopper choosing
+        # how to pay is told two stories (a warning: the store may limit COD by product or order value)
+        def agrees():
+            ctx.expect(f"product page and pincode answer agree about Cash on Delivery for {probe}", "the same answer",
+                       f"the page {COD_WORDS[page_cod]}, the pincode checker {COD_WORDS[ans_cod]} "
+                       f"({answer['text'][:100]!r})", False)
+        ctx.steps.run("cod_agrees", agrees, soft=True)
 
 
 def discount_code(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart", strict: bool = False):
@@ -310,5 +381,294 @@ def discount_code(ctx: Ctx, url: str, variant_id: int, cart_path: str = "/cart",
     ctx.steps.run("cart_cleaned_up", clean, soft=True)
 
 
+# ---- WhatsApp chat button (22 Oct) ------------------------------------------------------------------------------------
+# Indian D2C stores put a floating "Chat on WhatsApp" button on every page; a wrong number in it (a typo, no country code,
+# a placeholder left by the theme app) sends every shopper with a question to a dead chat, and nobody at the store sees
+# it. Radar reads the number the button opens WITHOUT opening WhatsApp or any other site:
+#   - a link is read from its address (never clicked); a link through a URL shortener (wa.link, bit.ly ...) is not
+#     judged; a link to the store's own page is asked for its redirect only (no redirect followed);
+#   - a button with no address is tapped once while every way out is caught: window.open is replaced, any page load
+#     (this tab or a new one) is answered on the spot with an empty reply (HTTP 204, the page stays), requests to
+#     WhatsApp are aborted, and app-scheme jumps (whatsapp://, intent://) are read from the browser's navigation event.
+# Nothing is sent. A Radar problem while tapping is NOT JUDGED (information), never a finding.
+WA_HOST_RX = re.compile(r"^(?:https?://)?(?:wa\.me|(?:api|web|chat)\.whatsapp\.com|(?:www\.)?whatsapp\.com)(?:/|$)|^whatsapp:"
+                        r"|^intent://[^#]*#Intent;.*(?:scheme=whatsapp|package=com\.whatsapp)", re.I)
+SHORTENER_RX = re.compile(r"^(?:https?://)?(?:www\.)?(?:wa\.link|wa\.click|wa\.ws|bit\.ly|tinyurl\.com|t\.ly|rb\.gy|cutt\.ly|is\.gd|"
+                          r"linktr\.ee|s\.id|shorturl\.at)/", re.I)
+INVISIBLE_RX = re.compile("[​-‏‪-‮⁠-⁩﻿]")
+WA_ROUTES = ("**://wa.me/**", "**://*.whatsapp.com/**", "**://whatsapp.com/**")
+
+# visible WhatsApp links and buttons, marked data-radar-wa=<i>:
+#   link     an <a> whose address is WhatsApp's            -> read
+#   short    an <a> named WhatsApp through a URL shortener -> not judged
+#   redirect an <a> named WhatsApp to the store's own page -> its redirect is asked for (not followed)
+#   widget   a WhatsApp-named button with no address       -> tapped once, every way out caught
+WA_FIND_JS = r"""() => {
+  const HREF = /^(?:https?:\/\/)?(?:wa\.me|(?:api|web|chat)\.whatsapp\.com|(?:www\.)?whatsapp\.com)(?:\/|$)|^whatsapp:/i;
+  const SHORT = /^(?:https?:\/\/)?(?:www\.)?(?:wa\.link|wa\.click|wa\.ws|bit\.ly|tinyurl\.com|t\.ly|rb\.gy|cutt\.ly|is\.gd|linktr\.ee|s\.id|shorturl\.at)\//i;
+  const NAME = /whats\s*-?app/i;
+  const seen = (e) => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
+    return r.width >= 8 && r.height >= 8 && s.visibility !== 'hidden' && s.display !== 'none' && +s.opacity !== 0; };
+  const fixed = (e) => { for (let x = e; x && x !== document.body; x = x.parentElement) { const p = getComputedStyle(x).position;
+    if (p === 'fixed' || p === 'sticky') return true; } return false; };
+  const label = (e) => (e.getAttribute('aria-label') || e.getAttribute('title') || e.innerText || (e.querySelector('img') || {}).alt || '').trim().slice(0, 60);
+  const named = (e) => NAME.test([e.id, typeof e.className === 'string' ? e.className : (e.className && e.className.baseVal) || '',
+    e.getAttribute('aria-label') || '', e.getAttribute('title') || '', e.getAttribute('alt') || ''].join(' '));
+  const realHref = (a) => { const h = (a.getAttribute('href') || '').trim(); return h && h !== '#' && !/^javascript:/i.test(h) ? h : ''; };
+  document.querySelectorAll('[data-radar-wa]').forEach(e => e.removeAttribute('data-radar-wa'));
+  const out = [];
+  const add = (el, kind, href) => { el.setAttribute('data-radar-wa', String(out.length));
+    out.push({kind, href, label: label(el), fixed: fixed(el)}); };
+  for (const a of document.querySelectorAll('a[href]')) {
+    const h = realHref(a);
+    if (!h || !seen(a)) continue;
+    if (HREF.test(h)) { if (!/whatsapp\.com\/channel\//i.test(h)) add(a, 'link', a.href || h); continue; }
+    const isNamed = named(a) || [...a.querySelectorAll('*')].some(named) || NAME.test(a.innerText || '');
+    if (!isNamed) continue;
+    if (SHORT.test(h)) add(a, 'short', a.href || h);
+    else if (a.host === location.host) add(a, 'redirect', a.href);
+  }
+  for (const e of document.querySelectorAll('button, [role=button], div, span, img, svg, a')) {
+    if (out.length >= 8) break;
+    if (!named(e) || /share/i.test(String(e.className && (e.className.baseVal ?? e.className)) + ' ' + (e.getAttribute('aria-label') || ''))
+        || !seen(e) || e.closest('[data-radar-wa]') || e.querySelector('[data-radar-wa]')) continue;
+    const r = e.getBoundingClientRect();
+    if (r.width > 500 || r.height > 300) continue;            // a section that only mentions WhatsApp, not a button
+    const target = e.closest('button, [role=button], a') || e;
+    if (target.hasAttribute('data-radar-wa')) continue;
+    if (target.tagName === 'A' && realHref(target)) continue; // an address of its own: never tapped (read above or left)
+    add(target, 'widget', '');
+  }
+  return out;
+}"""
+
+
+def _clean(u: str) -> str:
+    return INVISIBLE_RX.sub("", u or "").strip()
+
+
+def wa_number(url: str) -> tuple[str, str]:
+    """(kind, number) for a WhatsApp address. kind: 'chat' (a number to chat with, as written), 'short' (a WhatsApp
+    Business short link, wa.me/message/<code> or wa.me/qr/<code>: the number is behind WhatsApp's own redirect),
+    'share' (opens WhatsApp to share a text, no number: a product's share button), 'empty' (no number, no text),
+    'other' (not a chat address: a channel, a profile). Pure."""
+    from urllib.parse import parse_qs, unquote, urlparse
+    u = _clean(url)
+    m = re.match(r"intent://([^#]*)#Intent;", u, re.I)
+    if m and WA_HOST_RX.search(u):
+        u = "whatsapp://" + m.group(1)                    # Android's form of whatsapp://send?phone=...
+    if not WA_HOST_RX.search(u):
+        return "other", ""
+    p = urlparse(u if "://" in u or u.lower().startswith("whatsapp:") else "https://" + u)
+    q = parse_qs(p.query)
+    host = (p.hostname or "").lower()
+    parts = [x for x in p.path.split("/") if x]
+    if parts and parts[0].lower() in ("message", "qr") and host in ("wa.me", "api.whatsapp.com", "whatsapp.com", "www.whatsapp.com"):
+        return "short", ""
+    if parts and parts[0].lower() in ("channel", "catalog") and host != "wa.me":
+        return "other", ""
+    num = ""
+    if host == "wa.me":
+        if parts and parts[0].lower() == "c" and len(parts) > 1:      # wa.me/c/<number>: the business's catalog
+            parts = parts[1:]
+        num = _clean(unquote(parts[0])) if parts else ""
+        if not re.match(r"[+\d(]", num):                              # wa.me/send?phone=... ('send' is not a number)
+            num = ""
+    if not num:
+        num = _clean(unquote((q.get("phone") or [""])[0]))
+    if num:
+        return "chat", num
+    if (q.get("text") or [""])[0]:
+        return "share", ""
+    if host == "wa.me" or "send" in p.path or u.lower().startswith("whatsapp:"):
+        return "empty", ""
+    return "other", ""
+
+
+def wa_judge(num: str) -> tuple[str, str]:
+    """('ok' | 'bad' | 'warn', what the number is, in words) for the number a WhatsApp chat button opens. WhatsApp wants
+    the full international number, digits only, no leading 0 (wa.me/919876543210). 'bad' only on positive evidence
+    that nobody can be reached. Pure, unit-tested."""
+    t = _clean(num)
+    if not t:
+        return "warn", "no phone number in the link (the shopper lands on an empty chat picker)"
+    m = re.match(r"[\s\-().+]*(\d[\d\s\-().]*)", t)
+    if not m:
+        return "bad", f"{t[:30]!r} is not a phone number"
+    digits, rest = re.sub(r"\D", "", m.group(1)), t[m.end():].strip()
+    if digits.startswith("0"):
+        return "bad", f"{digits} starts with 0 (WhatsApp needs the country code instead, 91 for India)"
+    if not 8 <= len(digits) <= 15:
+        return "bad", f"{digits} has {len(digits)} digits, not a complete phone number" + (f" (then {rest[:20]!r})" if rest else "")
+    if rest:
+        return "warn", f"+{digits} with extra characters after it ({rest[:20]!r}): WhatsApp may not open the chat"
+    if len(digits) == 10 and digits[0] in "6789":
+        return "warn", f"{digits} may be missing the country code (91{digits} for an Indian number)"
+    return "ok", f"+{digits}"
+
+
+def _same_site_redirect(ctx: Ctx, url: str) -> str | None:
+    """Where a link to the store's own page sends the shopper, read from its redirect without following it."""
+    try:
+        r = ctx.sess.page.context.request.get(url, max_redirects=0, timeout=15000)
+        return (r.headers or {}).get("location") if 300 <= r.status < 400 else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def whatsapp_button(ctx: Ctx, home: str, product: str | None = None, strict: bool = False):
+    """A WhatsApp chat button on the store must open a chat with a real phone number. No button on the homepage (nor on
+    the product page) = information only. A number that cannot be a phone number = failure (positive evidence: every
+    shopper who taps it reaches no one); a likely missing country code, no number, extra characters, or a button that
+    does nothing when tapped = warning (`strict` makes those failures). Anything Radar cannot read = not judged."""
+    ctx.steps.run("page_loads", lambda: (_load(ctx, home), _dismiss(ctx))[0])
+    found, where = ctx.sess.evaluate(WA_FIND_JS) or [], "homepage"
+    if not found and product:
+        ctx.steps.run("product_page_loads", lambda: (_load(ctx, product), _dismiss(ctx))[0])
+        found, where = ctx.sess.evaluate(WA_FIND_JS) or [], "product page"
+    if not found:
+        ctx.steps.info("whatsapp_not_judged", "no WhatsApp chat button on the homepage or a product page (information only)")
+        return
+    chats, notes = [], []
+    for f in found:
+        href = f["href"]
+        if f["kind"] == "redirect":
+            to = _same_site_redirect(ctx, href)
+            if not (to and WA_HOST_RX.search(_clean(to))):
+                notes.append(f"{f['label'] or 'a WhatsApp link'!r} goes to {href[:70]} (not straight to WhatsApp): not judged")
+                continue
+            href = to
+        if f["kind"] == "short":
+            notes.append(f"{f['label'] or 'a WhatsApp link'!r} goes through a link shortener ({href[:60]}): not judged")
+            continue
+        if f["kind"] in ("link", "redirect"):
+            kind, num = wa_number(href)
+            if kind in ("chat", "empty"):
+                chats.append(({**f, "href": href}, kind, num))
+            elif kind == "short":
+                notes.append(f"WhatsApp Business short link ({href[:70]}): the number is not in the address, not judged")
+            elif kind == "share":
+                notes.append(f"WhatsApp share link ({href[:60]}): shares a page, not a chat button")
+    for n in dict.fromkeys(notes):
+        ctx.steps.info("whatsapp_note", n)
+    if not chats:
+        widgets = sorted((i for i, f in enumerate(found) if f["kind"] == "widget"), key=lambda i: not found[i]["fixed"])
+        if not widgets:
+            ctx.steps.info("whatsapp_not_judged", "no WhatsApp chat button whose number Radar can read (information only)")
+            return
+        i = widgets[0]
+        who = f"{found[i]['label'] or 'the WhatsApp button'!r} on the {where}"
+        status, got = _tap_whatsapp_widget(ctx, i, found)
+        if status == "error":
+            ctx.steps.info("whatsapp_not_judged", f"Radar could not tap {who} ({got}): not judged")
+            return
+        if status == "nothing":
+            def dead():
+                ctx.expect(f"WhatsApp button {who} opens a chat", "a WhatsApp link when tapped",
+                           "nothing within 5 s of tapping it", False)
+            ctx.steps.run("whatsapp_button_responds", dead, soft=not strict)
+            return
+        kind, num = wa_number(got)
+        if kind not in ("chat", "empty"):
+            ctx.steps.info("whatsapp_not_judged", f"{who} opens {got[:80]}: no number in the address, not judged")
+            return
+        chats = [({"href": got, "label": found[i]["label"], "kind": "widget"}, kind, num)]
+    judged: dict[str, tuple] = {}
+    for f, kind, num in chats:
+        key = re.sub(r"\D", "", num) or "(none)"
+        if key not in judged:
+            judged[key] = (*wa_judge(num if kind == "chat" else ""), f)
+    for n, (key, (verdict, what, f)) in enumerate(list(judged.items())[:3]):
+        name = f"whatsapp_number{'' if n == 0 else '_' + str(n + 1)}"
+        who = f"{f.get('label') or 'WhatsApp button'!r} on the {where}"
+
+        def check(verdict=verdict, what=what, who=who, href=f.get("href", "")):
+            ctx.expect(f"WhatsApp button {who} opens a chat with a real number", "a full international number like 919876543210",
+                       f"{what} ({href[:90]})", verdict == "ok")
+            return f"{who}: opens a chat with {what}"
+        ctx.steps.run(name, check, soft=(verdict == "warn" and not strict))
+
+
+TAP_JS = """() => { window.__radarWaOpen = [];
+  window.open = function (u) { try { window.__radarWaOpen.push(String(u || '')); } catch (e) {} return null; };
+  try { navigation.addEventListener('navigate', e => { try { window.__radarWaOpen.push(e.destination.url); } catch (x) {} }); }
+  catch (e) {} }"""
+
+
+def _tap_whatsapp_widget(ctx: Ctx, i: int, found: list) -> tuple[str, str | None]:
+    """Tap a WhatsApp button that has no address of its own and catch where it tries to go without letting it get
+    anywhere (see the section's header). Returns ('found', address) | ('nothing', None) | ('error', what went wrong);
+    never raises: a Radar problem here is not a store finding (review, 22 Oct)."""
+    page, caught, popups = ctx.sess.page, [], []
+
+    def stop_wa(route):                   # any request to WhatsApp itself (a script, a frame)
+        caught.append(route.request.url)
+        try:
+            route.abort()
+        except Exception:  # noqa: BLE001
+            pass
+
+    def stop_loads(route):                # any page load in a tab: answered here with 'no content', the page stays
+        req = route.request
+        try:
+            nav = req.is_navigation_request() and req.frame.parent_frame is None
+        except Exception:  # noqa: BLE001
+            nav = False
+        try:
+            if nav:
+                caught.append(req.url)
+                route.fulfill(status=204, headers={"x-radar-caught": "1"}, body="")
+            else:
+                route.fallback()          # on to the context's own routes (Web Bot Auth signing)
+        except Exception:  # noqa: BLE001
+            pass
+
+    def on_page(p):                       # a new tab (Playwright needs a plain function here)
+        popups.append(p)
+    try:
+        before = {f["href"] for f in (ctx.sess.evaluate(WA_FIND_JS) or []) if f["kind"] == "link"}   # same marks again
+        for pat in WA_ROUTES:
+            page.context.route(pat, stop_wa)
+        page.context.route("**/*", stop_loads)       # added last = asked first
+        page.context.on("page", on_page)
+        page.evaluate(TAP_JS)
+        el = page.locator(f'[data-radar-wa="{i}"]').first
+        try:
+            _click(ctx, el)
+        except Exception:  # noqa: BLE001  covered by a popup we could not close: its own click handler
+            el.dispatch_event("click", timeout=5000)
+        for _ in range(10):
+            page.wait_for_timeout(500)
+            try:
+                opened = list(page.evaluate("() => window.__radarWaOpen || []") or [])
+                panel = [f["href"] for f in (ctx.sess.evaluate(WA_FIND_JS) or [])
+                         if f["kind"] == "link" and f["href"] not in before]
+            except Exception:  # noqa: BLE001  the page was busy: look again
+                opened, panel = [], []
+            for u in opened + caught + [p.url for p in popups] + panel:
+                u = _clean(u)
+                if not u or u == "about:blank":
+                    continue
+                if WA_HOST_RX.search(u):
+                    return "found", u
+                if same_site_url(u, page.url) and u.split("#")[0] != page.url.split("#")[0]:
+                    to = _same_site_redirect(ctx, u)          # the store's own redirect page (/pages/whatsapp)
+                    if to and WA_HOST_RX.search(_clean(to)):
+                        return "found", to
+        return "nothing", None
+    except Exception as e:  # noqa: BLE001
+        return "error", str(e).splitlines()[0][:120]
+    finally:
+        for fn in (lambda: page.context.remove_listener("page", on_page),
+                   lambda: page.context.unroute("**/*", stop_loads),
+                   *[(lambda pat=pat: page.context.unroute(pat, stop_wa)) for pat in WA_ROUTES],
+                   *[(lambda p=p: p.close()) for p in popups]):
+            try:
+                fn()
+            except Exception:  # noqa: BLE001
+                pass
+
+
 REGISTRY["pincode_check"] = pincode_check
 REGISTRY["discount_code"] = discount_code
+REGISTRY["whatsapp_button"] = whatsapp_button
