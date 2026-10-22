@@ -119,10 +119,12 @@ class SupabaseQueue:
 
 
 def settings_for(monitor: dict, base: Settings) -> Settings:
+    """A daily check's settings. check_store_down (22 Oct): a store that answers nothing at all, not even robots.txt,
+    is 'unreachable' (re-checked, then a problem + 🔴), never 'blocked' (silent). Free checks keep the base settings."""
     s = base
     if monitor.get("quick", True):
         s = replace(s, max_products=1, max_collections=1, max_nav_links=4)
-    return replace(s, allow_cart_flow=bool(monitor.get("allow_cart", False)))
+    return replace(s, allow_cart_flow=bool(monitor.get("allow_cart", False)), check_store_down=True)
 
 
 def overall(verdicts: list[str]) -> str:
@@ -135,8 +137,10 @@ def overall(verdicts: list[str]) -> str:
 # and keeps recheck_since (when the store first didn't load) and rechecks (how many in a row) on the monitor row.
 #   second look, store still didn't load      -> uploaded: the problem is filed and alerted (~10 min after the first)
 #   second look, store loads / has findings   -> uploaded as usual; a blip leaves no problem and no email
-#   second look, Radar couldn't tell (offline, crashed, robots.txt silent) -> one more re-check (at most MAX_RECHECKS in
-#                                                a row), so a real outage isn't dropped until tomorrow
+#   second look, Radar couldn't tell (offline, crashed, robots.txt silent while the homepage answers) -> one more
+#                                                re-check (at most MAX_RECHECKS in a row), so a real outage isn't dropped
+# A store that answers nothing at all, robots.txt included, is 'unreachable' on a daily check (settings_for
+# check_store_down, discover.store_answers, 22 Oct), so it takes the re-check -> problem + 🔴 path above.
 # A 'recheck' older than RECHECK_FRESH_MINUTES (a paused check resumed later, a lock taken over) starts over.
 RECHECK = "recheck"
 RECHECK_VERDICTS = ("unreachable",)

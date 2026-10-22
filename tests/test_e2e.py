@@ -872,6 +872,116 @@ def test_robots_txt_server_error_means_do_not_crawl(tmp_path):
     assert any("HTTP 500" in n and "RFC 9309" in n for n in run.notes), run.notes
 
 
+def _down_scan(mode, tmp_path, monkeypatch, **kw):
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    srv, url = serve(mode)
+    try:
+        run, _ = scan(url, _settings(tmp_path, **kw))
+    finally:
+        srv.shutdown()
+    return run, getattr(srv, "down_hits", [])
+
+
+def test_a_whole_store_down_is_unreachable_on_a_daily_check(tmp_path, monkeypatch):
+    """22 Oct: every request 503, robots.txt included. Before: robots.txt silent -> 'blocked' (RFC 9309) -> the dashboard
+    filed 'not tested': no problem, no 🔴, for the biggest outage there is."""
+    run, hits = _down_scan("all_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "unreachable" and run.sitemap_summary["access"] == "unreachable", (run.verdict, run.notes)
+    assert run.cases == []
+    assert run.notes[0].startswith("The store didn't answer at all: its homepage didn't load, tried 4 times"), run.notes
+    assert "homepage: HTTP 503 x3, browser: HTTP 503" in run.notes[0], run.notes
+    assert "robots.txt: HTTP 503, tried 3 times" in run.notes[0] and len(run.notes[0]) < 300, run.notes
+    # robots.txt 3x, the homepage 3x by the HTTP client and once by Chromium; nothing else (no scripts, no images)
+    assert hits == ["/robots.txt"] * 3 + ["/"] * 3 + ["/ (browser)"], hits
+    from tools import upload_dashboard as up
+    site = up.to_payload(run.to_dict(), tmp_path, "", None)["results"][0]
+    assert (site["key"], site["status"]) == (up.SITE_KEY, "failed"), site
+    assert "(" not in site["reason"] and site["error"] == run.notes[0], site
+
+
+def test_a_whole_store_down_stays_not_tested_on_a_free_check(tmp_path, monkeypatch):
+    """Free checks and benches don't ask for the homepage once robots.txt is silent: unchanged, 'blocked'."""
+    run, hits = _down_scan("all_down", tmp_path, monkeypatch)
+    assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", (run.verdict, run.notes)
+    assert set(hits) == {"/robots.txt"}, hits
+
+
+def test_robots_txt_down_but_homepage_up_is_not_an_outage(tmp_path, monkeypatch):
+    """Only robots.txt fails: the store is open to shoppers. Still 'do not crawl' (blocked, no alert), and the note
+    says the homepage answers."""
+    run, _ = _down_scan("robots_500", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", (run.verdict, run.notes)
+    assert run.cases == []
+    assert "The homepage answers (HTTP 200), so the store is open to shoppers" in run.notes[0], run.notes
+    assert "RFC 9309" in run.notes[0] and len(run.notes[0]) < 300, run.notes
+
+
+def test_robots_and_homepage_down_is_unreachable_even_if_other_pages_work(tmp_path, monkeypatch):
+    run, hits = _down_scan("robots_500_home_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "unreachable", (run.verdict, run.notes)
+    assert hits.count("/") == 3 and hits.count("/ (browser)") == 1, hits
+
+
+def test_a_firewall_that_drops_radars_http_client_is_not_an_outage(tmp_path, monkeypatch):
+    """Review, 22 Oct: robots.txt and the homepage fail for Playwright's own HTTP client while Chromium gets the page:
+    Chromium has the last word, the store is up (never a false 🔴)."""
+    run, hits = _down_scan("robots_500_client_dropped", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", (run.verdict, run.notes)
+    assert "The homepage answers (HTTP 200)" in run.notes[0], run.notes
+    assert hits.count("/ (browser)") == 1, hits
+    assert not any(h.startswith(("/cdn", "/products", "/collections")) for h in hits), hits   # only the page itself
+
+
+def test_a_homepage_that_redirects_forever_is_an_answer_not_an_outage(tmp_path, monkeypatch):
+    run, hits = _down_scan("robots_500_home_loop", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "blocked", (run.verdict, run.notes)
+    assert "The store's server answers (HTTP 302)" in run.notes[0], run.notes
+    assert hits.count("/") == 1, hits                    # the redirect is not followed
+
+
+def test_a_bot_protection_page_sent_with_503_is_not_an_outage(tmp_path, monkeypatch):
+    run, _ = _down_scan("robots_500_home_challenge", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "blocked", (run.verdict, run.notes)
+    assert "a bot-protection page" in run.notes[0], run.notes
+
+
+def test_a_store_that_refuses_every_connection_is_unreachable_on_a_daily_check(tmp_path, monkeypatch):
+    from radar.core.browser import Session
+    from radar.core.network import reset_cache
+    reset_cache()
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    probe, purl = serve("healthy")
+    try:
+        run, _ = scan("http://127.0.0.1:9", _settings(tmp_path, net_probe_urls=(purl + "/",), check_store_down=True))
+    finally:
+        probe.shutdown()
+    assert run.verdict == "unreachable", (run.verdict, run.notes)
+    assert "ECONNREFUSED" in run.notes[0] and run.notes[0].startswith("The store didn't answer at all"), run.notes
+
+
+def test_radar_going_offline_during_the_homepage_check_is_not_blamed_on_the_store(tmp_path, monkeypatch):
+    import radar.discovery.discover as disc
+    answers = iter([True, False])                       # online when robots.txt failed, offline after the homepage tries
+    monkeypatch.setattr(disc, "online", lambda *a, **k: next(answers, False))
+    resets = []
+    monkeypatch.setattr(disc, "reset_cache", lambda: resets.append(1))
+    run, _ = _down_scan("all_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "no_network", (run.verdict, run.notes)
+    assert resets == [1]                                # asked fresh, not from the 30 s 'online' cache
+
+
+def test_an_error_that_says_radars_own_network_dropped_is_never_blamed_on_the_store(tmp_path, monkeypatch):
+    """The tries said ENETUNREACH / ERR_INTERNET_DISCONNECTED: no_network even if the connection is back by the end."""
+    import radar.discovery.discover as disc
+    monkeypatch.setattr(disc, "online", lambda *a, **k: True)
+    monkeypatch.setattr(disc, "store_answers", lambda *a, **k: disc.StoreAnswer(
+        up=False, status=None, tries=["connect ENETUNREACH 1.2.3.4:443"] * 3 + ["browser: net::ERR_INTERNET_DISCONNECTED"],
+        secs=200.0, offline=True))
+    run, _ = _down_scan("all_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "no_network", (run.verdict, run.notes)
+
+
 def test_missing_robots_txt_allows_everything(tmp_path):
     run, _ = _scan("robots_404", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]

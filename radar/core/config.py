@@ -69,6 +69,9 @@ class Settings:
     retries: int = 2                    # extra attempts on failure (confirm logic)
     allow_cart_flow: bool = True        # add-to-cart simulation; see ARCHITECTURE.md policy note
     respect_robots: bool = True
+    check_store_down: bool = False      # daily checks only (radar/worker.py settings_for, 22 Oct): when robots.txt
+                                        # doesn't answer, ask for the homepage too; both silent = the store is down
+                                        # ('unreachable', alerted after the worker's re-check), not 'blocked'
     search_is_shopper_flow: bool = True  # /search via the store's own search box is a shopper action
     llm_provider: str = "auto"          # auto | openai | anthropic | openai_compat | none
     llm_model: str = ""                 # "" = provider default (openai: gpt-5-mini, anthropic: claude-haiku-4-5)
