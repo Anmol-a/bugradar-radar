@@ -1,0 +1,35 @@
+at 2026-10-23T16:22:46Z
+--- code:
+2cf22fc5 Daily checks enter the store password (#10)
+  homepage_shot (want 1): 1
+  monitors by key (want 1): 1
+  --scans-only passed through (want 3): 3
+  uploads name their monitor (want 1): 1
+  re-check before alerting (want 1): 1
+  patient homepage (want 1): 1
+  slow runs re-checked (want 1): 1
+  daily checks ask if the store is down (want 1): 1
+  homepage check when robots.txt is silent (want 1): 1
+  WhatsApp button check (want 1): 1
+  COD wording check (want 1): 1
+  robots.txt warning (want 1): 1
+  widget re-found before acting (want 1): 1
+  store password entered (want 1): 1
+  worker reads the store password (want 1): 1
+--- workers:
+  250533 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+  250534 /home/radar/radar-venv/bin/python -u -m radar worker --scans-only --poll 15
+  250535 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+--- slot logs (last lines):
+ slot 1:
+   [2026-10-23 04:31:54] queue error: <urlopen error timed out>
+   [2026-10-23 10:47:10] Radar worker contabo-1 started; polling every 15 s (free scans only)
+   [2026-10-23 18:21:08] Radar worker contabo-1 started; polling every 15 s (free scans only)
+ slot 2:
+   [2026-10-22 22:28:22] Radar worker contabo-2 started; polling every 15 s
+   [2026-10-23 10:47:22] Radar worker contabo-2 started; polling every 15 s
+   [2026-10-23 18:21:22] Radar worker contabo-2 started; polling every 15 s
+ slot 3:
+   sent theme-dawn-demo.myshopify.com mobile: 27 results, 0 new problems, 0 fixed
+   [2026-10-23 16:45:33] contabo-3: https://theme-dawn-demo.myshopify.com -> healthy (desktop: healthy; mobile: healthy (586 s))
+   [2026-10-23 18:21:22] Radar worker contabo-3 started; polling every 15 s
