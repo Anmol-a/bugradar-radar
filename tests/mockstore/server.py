@@ -184,6 +184,7 @@ Modes (to prove Radar catches and heals what it should):
                    nothing (warning) / opens a panel with a wa.me link -> Radar taps it with WhatsApp blocked and reads it
   wa_share_only    only a 'Share on WhatsApp' link (no number) -> information only
   wa_short         a WhatsApp Business short link wa.me/message/<code> (no number in it) -> information only
+  wa_group_only    only a WhatsApp group invite (chat.whatsapp.com/<code>) -> not judged, said in a note (23 Oct)
   wa_icon_shortlink  an icon link through wa.link (a URL shortener) -> never clicked, not judged
   wa_store_redirect  a WhatsApp link to the store's /pages/whatsapp, which redirects to wa.me/918888888888 -> read from
                    the redirect (Radar asks for it without following it): passes
@@ -816,6 +817,8 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                            '<p>Hi! How can we help?</p><a href="https://wa.me/918888888888?text=Hello">Start chat</a></div>',
         "wa_share_only": '<p><a href="https://api.whatsapp.com/send?text=Look%20at%20this%20store">Share on WhatsApp</a></p>',
         "wa_short": f'<a class="wa-float" href="https://wa.me/message/ABCDEFGHIJ1" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        # amrutam.co.in on phones (23 Oct): only a WhatsApp community invite is visible
+        "wa_group_only": '<p><a href="https://chat.whatsapp.com/F0NF4QRM9KyClsMBYpYX28">Join our WhatsApp community</a></p>',
         # review, 22 Oct: an icon link through a URL shortener (never clicked, not judged)
         "wa_icon_shortlink": f'<a href="https://wa.link/abc123" style="{WA_FLOAT}"><svg class="icon-whatsapp" width="56" height="56"></svg></a>',
         # a link to the store's own page that redirects to WhatsApp: read from the redirect, not followed

@@ -215,23 +215,39 @@ def _answer_after(ctx: Ctx, snap: dict, rx: re.Pattern, secs: float = 8.0, busy_
     return None, seen
 
 
+STALE_RX = re.compile(r"not attached to the DOM|detached|Execution context was destroyed|Element is not attached|"
+                      r"no longer on the page|Target closed|frame was detached", re.I)
+
+
+def _on(ctx: Ctx, kind: str, part: str, act, tries: int = 4):
+    """Do `act(element)` on the widget's box / button, finding it again when the widget redrew itself between finding
+    and acting (23 Oct: 'ElementHandle.press: Element is not attached to the DOM' on a widget that redraws every 250 ms,
+    1 run in 12 on a busy machine). Other errors are raised at once."""
+    for i in range(tries):
+        try:
+            return act(_el(ctx, kind, part))
+        except Exception as e:  # noqa: BLE001
+            if i == tries - 1 or not STALE_RX.search(str(e)):
+                raise
+            ctx.sess.page.wait_for_timeout(100)
+
+
 def _type_into(ctx: Ctx, kind: str, text: str) -> None:
     """Scroll the box to the middle of the screen (a sticky buy bar or header can cover it: mcaffeine, plumgoodness,
     boat-lifestyle on the first real run, 14 Oct), close any popup, then fill it like a shopper."""
     _dismiss(ctx)
-    box = _el(ctx, kind, "box")
-    box.evaluate("e => e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'})")
+    _on(ctx, kind, "box", lambda b: b.evaluate("e => e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'})"))
     try:
-        box.click(timeout=4000)
+        _on(ctx, kind, "box", lambda b: b.click(timeout=4000))
     except Exception:  # noqa: BLE001  covered by a sticky bar: focus it directly, typing still goes through the page
-        _el(ctx, kind, "box").focus()
-    _el(ctx, kind, "box").fill(text)
+        _on(ctx, kind, "box", lambda b: b.focus())
+    _on(ctx, kind, "box", lambda b: b.fill(text))
     # an app-rendered widget that redraws itself can drop the text typed into the node it just replaced: type again
     for _ in range(3):
         try:
-            if _el(ctx, kind, "box").input_value(timeout=2000) == text:
+            if _on(ctx, kind, "box", lambda b: b.input_value(timeout=2000)) == text:
                 break
-            _el(ctx, kind, "box").fill(text)
+            _on(ctx, kind, "box", lambda b: b.fill(text))
         except Exception:  # noqa: BLE001  redrawn mid-read: read the new node
             pass
 
@@ -243,17 +259,17 @@ def _press(ctx: Ctx, kind: str) -> str:
     has_btn = ctx.sess.page.evaluate(f"() => !!((window.{store} || {{}}).btn)")
     if has_btn:
         try:
-            _click(ctx, _el(ctx, kind, "btn"))
+            _on(ctx, kind, "btn", lambda b: _click(ctx, b))
             return "pressed its button"
         except Exception as e:  # noqa: BLE001
             # still covered after scrolling (a page that ends right under a sticky bar): fire the button's own click
             # handler, then Enter in the box as well, the two things a shopper's tap / keyboard would do
-            _el(ctx, kind, "btn").dispatch_event("click")
-            _el(ctx, kind, "box").press("Enter")
+            _on(ctx, kind, "btn", lambda b: b.dispatch_event("click"))
+            _on(ctx, kind, "box", lambda b: b.press("Enter"))
             m = re.search(r"<[^>]{0,120}>[^\n]{0,40}intercepts pointer events", str(e))
             why = m.group(0)[:160] if m else str(e).splitlines()[0][:60]
             return f"its button is covered ({why}): clicked it through the cover and pressed Enter"
-    _el(ctx, kind, "box").press("Enter")
+    _on(ctx, kind, "box", lambda b: b.press("Enter"))
     return "pressed Enter in the box"
 
 
@@ -450,7 +466,8 @@ def _clean(u: str) -> str:
 def wa_number(url: str) -> tuple[str, str]:
     """(kind, number) for a WhatsApp address. kind: 'chat' (a number to chat with, as written), 'short' (a WhatsApp
     Business short link, wa.me/message/<code> or wa.me/qr/<code>: the number is behind WhatsApp's own redirect),
-    'share' (opens WhatsApp to share a text, no number: a product's share button), 'empty' (no number, no text),
+    'share' (opens WhatsApp to share a text, no number: a product's share button), 'group' (a group invite link,
+    chat.whatsapp.com/<code>: a community, not a chat with the store), 'empty' (no number, no text),
     'other' (not a chat address: a channel, a profile). Pure."""
     from urllib.parse import parse_qs, unquote, urlparse
     u = _clean(url)
@@ -467,6 +484,8 @@ def wa_number(url: str) -> tuple[str, str]:
         return "short", ""
     if parts and parts[0].lower() in ("channel", "catalog") and host != "wa.me":
         return "other", ""
+    if host == "chat.whatsapp.com" and parts:          # a group invite (chat.whatsapp.com/<code>), not a chat (23 Oct)
+        return "group", ""
     num = ""
     if host == "wa.me":
         if parts and parts[0].lower() == "c" and len(parts) > 1:      # wa.me/c/<number>: the business's catalog
@@ -549,6 +568,10 @@ def whatsapp_button(ctx: Ctx, home: str, product: str | None = None, strict: boo
                 notes.append(f"WhatsApp Business short link ({href[:70]}): the number is not in the address, not judged")
             elif kind == "share":
                 notes.append(f"WhatsApp share link ({href[:60]}): shares a page, not a chat button")
+            elif kind == "group":
+                notes.append(f"WhatsApp group invite ({href[:60]}): a community, not a chat with the store; not judged")
+            else:
+                notes.append(f"WhatsApp link Radar doesn't read a number from ({href[:60]}): not judged")
     for n in dict.fromkeys(notes):
         ctx.steps.info("whatsapp_note", n)
     if not chats:
