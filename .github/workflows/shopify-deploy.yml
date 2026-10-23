@@ -1,0 +1,39 @@
+# Pushes shopify-app/shopify.app.toml (app URL, no scopes, webhooks) to Shopify as a new app version.
+# Runs on GitHub so nothing is needed on Anmol's Mac. Started by hand (Actions -> Shopify app deploy -> Run workflow)
+# or by Claude via workflow_dispatch. Token: Dev Dashboard -> Apps -> BugRadar -> App settings -> App Automation Token,
+# stored as the bugradar-radar repo secret SHOPIFY_APP_AUTOMATION_TOKEN (expires after 1/3/6 months; rotate before then).
+name: Shopify app deploy
+
+on:
+  workflow_dispatch:
+    inputs:
+      message:
+        description: Version message
+        required: false
+        default: deploy from GitHub
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: shopify-app
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - name: Install Shopify CLI
+        run: npm install -g @shopify/cli@latest
+      - name: Deploy app version
+        env:
+          SHOPIFY_APP_AUTOMATION_TOKEN: ${{ secrets.SHOPIFY_APP_AUTOMATION_TOKEN }}
+          MESSAGE: ${{ inputs.message }}
+        run: |
+          if [ -z "$SHOPIFY_APP_AUTOMATION_TOKEN" ]; then echo "Secret SHOPIFY_APP_AUTOMATION_TOKEN is missing"; exit 1; fi
+          shopify version
+          shopify app deploy --allow-updates --message "$MESSAGE"
