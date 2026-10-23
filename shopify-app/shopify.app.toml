@@ -1,0 +1,39 @@
+# DEPLOY COPY: Shopify app deploys run from this public repo (free GitHub minutes; the dashboard repo is private).
+# Twin of bugradar-dashboard/shopify/shopify.app.toml — change both together.
+# BugRadar's Shopify app (23 Oct 2026, week 1; plan: claude/SHOPIFY-APP-plan_19oct.md in the bugradar project).
+# Shopify managed installation: Shopify shows the install screen from this file; there is no OAuth code to run.
+# Push it with the Shopify CLI from this folder:  shopify app deploy   (it links to the app by client_id). The compliance
+# webhooks MUST be declared here and deployed this way: registering them through the API fails Shopify's automated check.
+# client_id is public (it is also in web/.env as VITE_SHOPIFY_CLIENT_ID and in supabase/functions/shopify_app/index.ts).
+
+client_id = "1e51245afbc41334caaa08e0e0196f16"
+name = "BugRadar"
+handle = "bugradar"
+application_url = "https://bugradar-dashboard.vercel.app/shopify.html"
+embedded = true
+
+[build]
+include_config_on_deploy = true
+automatically_update_urls_on_dev = false
+
+[access_scopes]
+# None: Radar only visits the store's public pages, like a shopper. Fewest permissions = an easier review.
+scopes = ""
+use_legacy_install_flow = false
+
+[auth]
+redirect_urls = [ "https://bugradar-dashboard.vercel.app/shopify.html" ]
+
+[webhooks]
+api_version = "2026-10"
+
+  [[webhooks.subscriptions]]
+  topics = [ "app/uninstalled" ]
+  uri = "https://onijwpgvpojpvgumvfim.supabase.co/functions/v1/shopify_webhooks"
+
+  [[webhooks.subscriptions]]
+  compliance_topics = [ "customers/data_request", "customers/redact", "shop/redact" ]
+  uri = "https://onijwpgvpojpvgumvfim.supabase.co/functions/v1/shopify_webhooks"
+
+[pos]
+embedded = false
