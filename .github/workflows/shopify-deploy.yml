@@ -34,6 +34,13 @@ jobs:
           SHOPIFY_APP_AUTOMATION_TOKEN: ${{ secrets.SHOPIFY_APP_AUTOMATION_TOKEN }}
           MESSAGE: ${{ inputs.message }}
         run: |
-          if [ -z "$SHOPIFY_APP_AUTOMATION_TOKEN" ]; then echo "Secret SHOPIFY_APP_AUTOMATION_TOKEN is missing"; exit 1; fi
+          if [ -z "$SHOPIFY_APP_AUTOMATION_TOKEN" ]; then echo "::error::Secret SHOPIFY_APP_AUTOMATION_TOKEN is missing on this repo"; exit 1; fi
           shopify version
-          shopify app deploy --allow-updates --message "$MESSAGE"
+          set +e
+          shopify app deploy --allow-updates --message "$MESSAGE" 2>&1 | tee deploy.log
+          code=${PIPESTATUS[0]}
+          # Logs can't be read from Claude's workspace; annotations can. Repeat the CLI's last lines as annotations.
+          sed -e 's/\x1b\[[0-9;]*m//g' deploy.log | grep -v '^[[:space:]]*$' | tail -25 | while IFS= read -r line; do
+            if [ "$code" -eq 0 ]; then echo "::notice::$line"; else echo "::error::$line"; fi
+          done
+          exit $code
