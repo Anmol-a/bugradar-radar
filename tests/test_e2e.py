@@ -3254,3 +3254,10 @@ def test_a_whatsapp_named_link_to_another_site_is_never_tapped(tmp_path, wa_guar
     c, st = _wa("wa_external_named", tmp_path)
     assert c.verdict == "pass" and tapped == [] and st["whatsapp_not_judged"].status == "info", \
         [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+
+
+def test_a_whatsapp_group_invite_is_named_not_judged(tmp_path, wa_guard):
+    """amrutam.co.in on phones (23 Oct): the only visible WhatsApp link was a community invite; it was dropped silently."""
+    c, st = _wa("wa_group_only", tmp_path)
+    assert c.verdict == "pass" and "whatsapp_number" not in st and "group invite" in st["whatsapp_note"].detail, \
+        [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
