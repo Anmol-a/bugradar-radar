@@ -109,6 +109,12 @@ class SupabaseQueue:
         rows = self._by_key("claim_scan", {"worker": worker}) or []
         return rows[0] if rows else None
 
+    def store_password(self, monitor_id: str) -> str | None:
+        """The storefront password the store's owner gave BugRadar (dashboard migration 26, 23 Oct), or None. Kept in a
+        table nobody can read through the API; only this key-checked function hands it to the worker. Never logged."""
+        pwd = self._by_key("monitor_secret", {"monitor_id": monitor_id})
+        return pwd if isinstance(pwd, str) and pwd else None
+
     def scan_progress(self, scan_id: str, progress: dict) -> None:
         self._by_key("scan_progress", {"scan_id": scan_id, "progress": progress})
 
@@ -120,11 +126,14 @@ class SupabaseQueue:
 
 def settings_for(monitor: dict, base: Settings) -> Settings:
     """A daily check's settings. check_store_down (22 Oct): a store that answers nothing at all, not even robots.txt,
-    is 'unreachable' (re-checked, then a problem + 🔴), never 'blocked' (silent). Free checks keep the base settings."""
+    is 'unreachable' (re-checked, then a problem + 🔴), never 'blocked' (silent). store_password (23 Oct): the owner's
+    storefront password, typed into the store's own password page only. Free checks keep the base settings."""
     s = base
     if monitor.get("quick", True):
         s = replace(s, max_products=1, max_collections=1, max_nav_links=4)
-    return replace(s, allow_cart_flow=bool(monitor.get("allow_cart", False)), check_store_down=True)
+    return replace(s, allow_cart_flow=bool(monitor.get("allow_cart", False)), check_store_down=True,
+                   store_password=monitor.get("store_password") or None,
+                   store_password_unread=bool(monitor.get("store_password_unread")))
 
 
 def overall(verdicts: list[str]) -> str:
@@ -448,7 +457,17 @@ def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log
     if not m:
         return None
     log(f"[{_now()}] {worker}: {m['url']} on {','.join(m.get('devices') or ['desktop', 'mobile'])}")
-    status, note = run_monitor(m, base, upload=upload, log=log)
+    if hasattr(queue, "store_password") and m.get("id"):
+        try:
+            m["store_password"] = queue.store_password(m["id"])
+        except Exception as e:  # noqa: BLE001  a blip, or an old dashboard: test without it, and a store behind its
+            # password page then says "couldn't read the saved password" (never "give us the password")
+            m["store_password_unread"] = True
+            log(f"  {m['url']}: couldn't read the store password ({type(e).__name__}); testing without it")
+    try:
+        status, note = run_monitor(m, base, upload=upload, log=log)
+    finally:
+        m.pop("store_password", None)          # the row is returned to the caller: the password doesn't travel on
     queue.finish(m["id"], status, note)
     log(f"[{_now()}] {worker}: {m['url']} -> {status} ({note})")
     return m

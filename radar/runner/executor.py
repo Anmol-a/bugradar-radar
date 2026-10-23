@@ -237,6 +237,9 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
                 sess.failed = True
                 sm = SiteMap(site_id=site_id, base_url=base, notes=[f"discovery crashed: {e}"[:300]])
             robots = sess.robots
+            # the store password worked (discover.enter_store_password): every check after this starts logged in
+            if sess.password_cookies and sm.access == "open":
+                browser.store_cookies = sess.password_cookies
         run.platform = sm.platform
         run.notes = list(sm.notes)
         run.sitemap_summary = {
