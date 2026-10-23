@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Restart on the new main (robots.txt failing while the store is open is a warning)
+      - name: Restart on the new main (steady pincode widget, WhatsApp group invites)
         run: |
           # 19 Oct: daily monitors by upload key (dashboard migration 14 + worker monitors-by-key). Free checks are always
           # claimed first by every slot; slot 1 never takes a monitor, so a visitor never waits behind a 10-minute run.
@@ -46,6 +46,7 @@ jobs:
             grep -c 'REGISTRY\["whatsapp_button"\]' "$HOME/radar-src/radar/checks/features.py" | sed 's/^/  WhatsApp button check (want 1): /';
             grep -c 'def cod_says' "$HOME/radar-src/radar/checks/features.py" | sed 's/^/  COD wording check (want 1): /';
             grep -c 'store_up_robots_down' "$HOME/radar-src/tools/upload_dashboard.py" | sed 's/^/  robots.txt warning (want 1): /';
+            grep -c 'def _on(' "$HOME/radar-src/radar/checks/features.py" | sed 's/^/  widget re-found before acting (want 1): /';
             echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none";
             echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 3 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } | tee probe.txt
       - name: Publish
