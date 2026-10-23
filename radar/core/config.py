@@ -75,6 +75,7 @@ class Settings:
     store_password: str | None = field(default=None, repr=False)   # daily checks only (23 Oct): the storefront
                                         # password the store's owner gave BugRadar; typed into the store's own
                                         # /password box and nowhere else (discover.enter_store_password). Never logged
+    store_password_unread: bool = False  # the worker couldn't read a saved password this time: say so, never "give it"
     search_is_shopper_flow: bool = True  # /search via the store's own search box is a shopper action
     llm_provider: str = "auto"          # auto | openai | anthropic | openai_compat | none
     llm_model: str = ""                 # "" = provider default (openai: gpt-5-mini, anthropic: claude-haiku-4-5)

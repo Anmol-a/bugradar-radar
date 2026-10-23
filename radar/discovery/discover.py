@@ -463,53 +463,93 @@ class _Arrived:
         self.status = status
 
 
-# The store's own password page (23 Oct, daily checks only): a store that isn't open yet, and every Shopify development
-# store, shows /password to everyone. When the owner gave BugRadar the store password, Radar types it into that ONE box
-# and submits that ONE form: the form must post to this store's own /password with Shopify's storefront_password form
-# type. Nothing else on the page is touched (the "notify me" email box stays empty). The value is set in the page, not
-# typed key by key, because many themes keep the box in a closed pop-up ("Enter using password") until clicked.
-PASSWORD_JS = r"""(pwd) => {
-  const ok = (f) => f && f.method.toLowerCase() === 'post' && new URL(f.action, location.href).host === location.host
-    && /\/password\/?$/.test(new URL(f.action, location.href).pathname)
-    && [...f.elements].some((e) => e.name === 'form_type' && e.value === 'storefront_password');
+# The store's own password page (23 Oct, daily checks only; tightened after the review the same day): every Shopify
+# development store, and every store before its launch, shows /password to everyone. When the owner gave BugRadar the
+# store password, Radar puts it in that ONE box and submits that ONE form, and only when ALL hold:
+#   * the page Radar is on is the store's own host (exactly, not a parent domain), robots.txt allows /password;
+#   * the form posts to that same host's /password, carries Shopify's form_type=storefront_password, and opens in the
+#     same page (no target=_blank / frame);
+#   * after the post the browser is still on the store's own host.
+# Nothing else on the page is touched (the "notify me" email box stays empty); no keystrokes or input events (a page
+# script would see them); the value is set in the page because many themes keep the box in a closed pop-up.
+# Outcomes, each with ONE note put first (notes[0] is the reason the dashboard shows; the Shopify page keys on them):
+#   entered -> the store is tested (the cookie it set goes to every later check: executor -> Browser.store_cookies)
+#   wrong   -> PASSWORD_WRONG_NOTE: the post came back to /password
+#   unused  -> PASSWORD_UNUSED + why (no box, robots, another site, Shopify slowed / challenged Radar, an error)
+PASSWORD_JS = r"""(a) => {
+  if (location.host !== a.host) return 'other-site';
+  const ok = (f) => {
+    if (!f || f.method.toLowerCase() !== 'post' || (f.target && f.target !== '_self')) return false;
+    const u = new URL(f.action, location.href);
+    return u.host === a.host && /^\/password\/?$/.test(u.pathname)
+      && [...f.elements].some((e) => e.name === 'form_type' && e.value === 'storefront_password');
+  };
   const box = [...document.querySelectorAll('input[type="password"]')].find((i) => ok(i.form));
   if (!box) return 'no-box';
-  box.value = pwd;
-  box.dispatchEvent(new Event('input', { bubbles: true }));
+  box.value = a.pwd;
   if (box.form.requestSubmit) box.form.requestSubmit(); else box.form.submit();
   return 'sent';
 }"""
+NEEDED_NOTE = "store is password-protected (Shopify storefront password); nothing can be tested"
 PASSWORD_WRONG_NOTE = ("The store password BugRadar has didn't open the store: its password page still shows. "
                        "Update the store password in BugRadar and the next check tests everything.")
+PASSWORD_UNUSED = "The store password couldn't be used: "
 
 
 def enter_store_password(sess: Session, base_url: str, s: Settings, sm: SiteMap):
-    """Type the owner's store password into the store's own password form. Returns the homepage response after it, or
-    None when the password couldn't be entered (a note says why; the store then stays 'password': not tested)."""
+    """Put the owner's store password in the store's own password form. Returns (outcome, response):
+    ("entered", homepage response) | ("wrong", None) | ("unused", None) | ("stopped", None) — for "stopped" sm.access
+    and the first note are already set (Shopify slowed / challenged Radar, or the store stopped answering)."""
     page = sess.page
+    host = urlparse(base_url).netloc
+    unused = lambda why: (sm.notes.insert(0, PASSWORD_UNUSED + why), ("unused", None))[1]   # noqa: E731
     try:
-        if not same_site(base_url, page.url) or urlparse(page.url).path.rstrip("/") != "/password":
+        if urlparse(page.url).netloc != host or urlparse(page.url).path.rstrip("/") != "/password":
             sess.goto(base_url + "/password", timeout_ms=s.nav_timeout_ms)
-        if not same_site(base_url, page.url):
-            sm.notes.insert(0, "The store's password page is on another site, so Radar didn't type the store password there.")
-            return None
-        with page.expect_navigation(wait_until="domcontentloaded", timeout=s.nav_timeout_ms):
-            sent = page.evaluate(PASSWORD_JS, s.store_password)
+        if urlparse(page.url).netloc != host:
+            return unused("the store's password page is on another site, so Radar didn't type it there.")
+        if not sess.allowed(base_url + "/password"):
+            return unused("robots.txt doesn't let Radar use the store's password page.")
+        with page.expect_navigation(wait_until="domcontentloaded", timeout=s.nav_timeout_ms) as nav:
+            sent = page.evaluate(PASSWORD_JS, {"pwd": s.store_password, "host": host})
             if sent != "sent":
                 raise LookupError(sent)
+        r = nav.value
         sess.settle()
-    except LookupError:
-        sm.notes.insert(0, "Radar has the store password but couldn't find Shopify's password box on the store's "
-                           "password page, so nothing was tested.")
-        return None
+    except LookupError as e:
+        return unused("the password page changed to another site before Radar typed it." if str(e) == "other-site"
+                      else "Radar couldn't find Shopify's password box on the store's password page.")
     except RobotsBlocked:
-        sm.notes.insert(0, "robots.txt doesn't let Radar open the store's password page, so the store password wasn't used.")
-        return None
-    except Exception as e:  # noqa: BLE001  never print the password; the error text from Playwright doesn't carry it
-        sm.notes.insert(0, f"The store password couldn't be entered ({str(e).splitlines()[0][:80]}); nothing was tested.")
-        return None
-    resp, _ = homepage(sess, base_url, s, sm)
-    return resp
+        return unused("robots.txt doesn't let Radar use the store's password page.")
+    except Exception as e:  # noqa: BLE001  Playwright's error text never carries the evaluate argument (review)
+        return unused(f"an error while entering it ({str(e).splitlines()[0][:80]}).")
+    now = urlparse(page.url)
+    if now.netloc != host:
+        return unused("after entering it the store sent Radar to another site.")
+    status = r.status if r else None
+    html = sess.evaluate("() => document.documentElement.outerHTML") or ""
+    title = sess.evaluate("() => document.title") or ""
+    if status in (403, 429) or now.path.startswith("/challenge") or detect_access(status, title, html, now.path) == "bot_blocked":
+        sm.access = "rate_limited" if status == 429 else "bot_blocked"
+        sm.notes.insert(0, PASSWORD_UNUSED + ("Shopify slowed Radar down when it entered the store password; the next "
+                                              "check tries again." if status == 429 else
+                                              "Shopify asked Radar to prove it's human when it entered the store "
+                                              "password, which Radar never does."))
+        return "stopped", None
+    if now.path.rstrip("/") == "/password":
+        return "wrong", None
+    sess.password_cookies = page.context.cookies(base_url)
+    try:
+        resp, _ = homepage(sess, base_url, s, sm)
+    except RobotsBlocked:
+        return unused("robots.txt doesn't let Radar open the homepage.")
+    except Exception as e:  # noqa: BLE001  the store stopped answering right after the password worked
+        msg = str(e).splitlines()[0][:120]
+        sm.access = "no_network" if not online(s.net_probe_urls) else "unreachable"
+        sm.notes.insert(0, NO_NETWORK_NOTE.format(where=f" (homepage after the store password: {msg})")
+                        if sm.access == "no_network" else f"homepage unreachable after the store password: {msg}")
+        return "stopped", None
+    return "entered", resp
 
 
 NAV_STATUS = "() => { const n = performance.getEntriesByType('navigation')[0]; return n && n.responseStatus ? n.responseStatus : null }"
@@ -646,13 +686,18 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
     sm.home_title = sess.evaluate("() => document.title") or ""
     sm.access = detect_access(resp.status if resp else None, sm.home_title, html, urlparse(sess.page.url).path)
     if sm.access == "password" and s.store_password:
-        after = enter_store_password(sess, base_url, s, sm)
-        if after is not None:
+        outcome, after = enter_store_password(sess, base_url, s, sm)
+        if outcome == "stopped":
+            return sm
+        if outcome == "wrong":
+            sm.notes.insert(0, PASSWORD_WRONG_NOTE)
+        if outcome == "entered":
             resp = after
             html = sess.evaluate("() => document.documentElement.outerHTML") or ""
             sm.home_title = sess.evaluate("() => document.title") or ""
             sm.access = detect_access(resp.status if resp else None, sm.home_title, html, urlparse(sess.page.url).path)
-            if sm.access == "password":
+            if sm.access == "password":            # the cookie didn't hold: the same as a wrong password
+                sess.password_cookies = None
                 sm.notes.insert(0, PASSWORD_WRONG_NOTE)
             else:
                 sm.notes.append("store is password-protected; Radar entered the store password its owner gave BugRadar")
@@ -675,8 +720,11 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
             pass
     sm.platform, sm.platform_evidence = det["platform"], det["evidence"]
     if sm.access == "password":
-        if not s.store_password:
-            sm.notes.append("store is password-protected (Shopify storefront password); nothing can be tested")
+        if s.store_password_unread and not s.store_password:
+            sm.notes.insert(0, PASSWORD_UNUSED + "BugRadar couldn't read the saved password for this check; the next "
+                                                 "check uses it.")
+        elif not s.store_password:
+            sm.notes.insert(0, NEEDED_NOTE)
         return sm
     if sm.access == "bot_blocked":
         sm.notes.append("bot protection challenge shown to Radar's identified browser; Radar does not evade it "

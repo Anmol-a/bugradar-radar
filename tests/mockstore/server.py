@@ -693,14 +693,26 @@ def card_price_html(handle: str, mode: str) -> str:
     return f'<span class="price-item price-item--regular">Rs. {low:,.2f}</span>'
 
 
-PASSWORD_MODES = ("storefront_password", "storefront_password_modal")
+# storefront_password_* (23 Oct review): what Radar must NOT type the password into, and Shopify pushing back
+#   _offsite        the form posts to another host            _blank      the form opens in a new tab (target=_blank)
+#   _noformtype     no form_type=storefront_password field    _get        the form is method=get
+#   _robots         robots.txt disallows /password            _429        Shopify answers the post with 429
+#   _redirect       pages show the password box in place, but /password sends the browser to another host
+#                   (localhost instead of 127.0.0.1)
+PASSWORD_MODES = ("storefront_password", "storefront_password_modal", "storefront_password_offsite", "storefront_password_blank",
+                  "storefront_password_noformtype", "storefront_password_get", "storefront_password_robots",
+                  "storefront_password_429", "storefront_password_redirect")
 STORE_PASSWORD = "open-sesame 23"
 
 
-def password_page(mode: str, wrong: bool = False) -> str:
+def password_page(mode: str, wrong: bool = False, port: int = 0) -> str:
     """Shopify's storefront password page (Dawn's layout): a 'notify me' email signup and the password form."""
-    form = ('<form method="post" action="/password" id="login_form" accept-charset="UTF-8" class="password-form">'
-            '<input type="hidden" name="form_type" value="storefront_password"><input type="hidden" name="utf8" value="✓">'
+    action = f"http://localhost:{port}/password" if mode == "storefront_password_offsite" else "/password"
+    attrs = (' target="_blank"' if mode == "storefront_password_blank" else "") + \
+        (' method="get"' if mode == "storefront_password_get" else ' method="post"')
+    ftype = "" if mode == "storefront_password_noformtype" else '<input type="hidden" name="form_type" value="storefront_password">'
+    form = (f'<form{attrs} action="{action}" id="login_form" accept-charset="UTF-8" class="password-form">'
+            f'{ftype}<input type="hidden" name="utf8" value="✓">'
             + ('<p class="form__message" role="alert">Wrong password!</p>' if wrong else "")
             + '<label for="Password">Password</label><input type="password" name="password" id="Password" autocomplete="off">'
             '<button type="submit" name="commit">Enter</button></form>')
@@ -1508,9 +1520,17 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
         if self.mode in PASSWORD_MODES:
             # 23 Oct: Shopify's storefront password. robots.txt and the theme's files still load; every page answers with
             # a redirect to /password until the password cookie is set
+            if path == "/password" and self.mode == "storefront_password_redirect" and self.headers.get("Host", "").startswith("127."):
+                self.send_response(302)
+                self.send_header("Location", f"http://localhost:{self.server.server_address[1]}/password")
+                self.end_headers()
+                return
             if path == "/password":
-                return self._send(200, password_page(self.mode))
+                return self._send(200, password_page(self.mode, port=self.server.server_address[1]))
             if path != "/robots.txt" and not path.startswith("/cdn/") and "storefront_digest=ok" not in (self.headers.get("Cookie") or ""):
+                if self.mode == "storefront_password_redirect":
+                    # the store's pages show the password box in place, but /password itself goes to another host
+                    return self._send(200, password_page(self.mode, port=self.server.server_address[1]))
                 self.send_response(302)
                 self.send_header("Location", "/password")
                 self.end_headers()
@@ -1599,7 +1619,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
         if path == "/robots.txt" and self.mode in ("robots_404", "blank_not_shopify"):
             return self._send(404, "Not Found", "text/plain")
         if path == "/robots.txt":
-            extra = "Disallow: /search\n" if self.mode == "hostile" else ""
+            extra = "Disallow: /search\n" if self.mode == "hostile" else "Disallow: /password\n" if self.mode == "storefront_password_robots" else ""
             # /account and /policies/ disallowed, as some stores do (journeys 28 + 29 must skip them)
             acct = "" if self.mode in ("account_open", "account_broken") else "Disallow: /account\n"
             coll = SHOPIFY_COLLECTION_RULES
@@ -2525,13 +2545,15 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                 self.server.contact_posts = getattr(self.server, "contact_posts", []) + [form]
                 return self._send(200, page("Thanks", "<p>Thanks for subscribing.</p>"))
             self.server.password_posts = getattr(self.server, "password_posts", []) + [form]
+            if self.mode == "storefront_password_429":
+                return self._send(429, page("Too many attempts", "<h1>Too many attempts. Try again later.</h1>"))
             if form.get("form_type") == ["storefront_password"] and form.get("password") == [STORE_PASSWORD]:
                 self.send_response(302)
                 self.send_header("Set-Cookie", "storefront_digest=ok; Path=/; HttpOnly")
                 self.send_header("Location", "/")
                 self.end_headers()
                 return
-            return self._send(200, password_page(self.mode, wrong=True))
+            return self._send(200, password_page(self.mode, wrong=True, port=self.server.server_address[1]))
         cid, new = self._cart()
         if u.path == "/cart/change.js":
             body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")

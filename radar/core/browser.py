@@ -132,6 +132,9 @@ class Browser:
         self.signer = signer_from_env()
         self.sign_domain = _store_domain(store_url)
         self.store_url = store_url
+        # the store's cookies after Radar entered its store password (23 Oct review): every later check's fresh context
+        # starts with them, or it would see the password page again (false fails, and passes that looked at /password)
+        self.store_cookies: list = []
 
     def signs(self, url: str) -> bool:
         if not (self.signer and self.sign_domain):
@@ -179,7 +182,13 @@ class Browser:
         """Fresh context + page with tracing; yields a Session. Saves trace/screenshot on failure
         (caller sets session.failed)."""
         ctx = self.new_context()
-        ctx.tracing.start(screenshots=True, snapshots=True)
+        if self.store_cookies:
+            ctx.add_cookies(self.store_cookies)
+        # no trace at all on a store Radar has a password for (23 Oct review): a trace keeps the typed password (the
+        # evaluate argument, the POST body) and the cookie that stands for it. Screenshots are still saved.
+        tracing = not self.s.store_password
+        if tracing:
+            ctx.tracing.start(screenshots=True, snapshots=True)
         page = ctx.new_page()
         sess = Session(page, self.s)
         sess.evidence_dir, sess.tag = Path(evidence_dir), tag
@@ -200,9 +209,10 @@ class Browser:
                     sess.fail_text = (page.evaluate("() => document.body ? document.body.innerText : ''") or "")[:4000]
                 except Exception:  # noqa: BLE001
                     pass
-                ctx.tracing.stop(path=str(trace))
-                sess.trace = trace.name
-            else:
+                if tracing:
+                    ctx.tracing.stop(path=str(trace))
+                    sess.trace = trace.name
+            elif tracing:
                 ctx.tracing.stop()
             ctx.close()
 
@@ -222,6 +232,7 @@ class Session:
         self.fail_url = self.fail_text = None
         self._shots = 0
         self._last_shot: tuple[str, str] | None = None     # (md5 of bytes, file) to skip identical pictures
+        self.password_cookies: list | None = None   # the store's cookies once its store password worked (discover)
         self.console_errors: list[str] = []      # uncaught JS errors only: what the 'no_js_errors' check judges
         self.failed_requests: list[str] = []
         # Evidence for the report (never judged, 7 Oct): everything the page logged as error/warning, and how long
@@ -232,11 +243,11 @@ class Session:
         self._load_seen: set[tuple] = set()
         self._last_nav = 0.0
         self.last_load_secs = 0.0
-        page.on("pageerror", lambda e: (self.console_errors.append(str(e)[:200]),
+        page.on("pageerror", lambda e: (self.console_errors.append(self.hide(str(e))[:200]),
                                         self._log("pageerror", str(e), page.url)))
         page.on("console", lambda m: self._log(m.type, m.text, (m.location or {}).get("url") or page.url)
                 if m.type in ("error", "warning") else None)
-        page.on("requestfailed", lambda r: self.failed_requests.append(f"{r.method} {r.url[:150]}"))
+        page.on("requestfailed", lambda r: self.failed_requests.append(self.hide(f"{r.method} {r.url[:150]}")))
         # pages of the store (main frame) that answered 5xx during this attempt, also when reached by a click: lets the
         # runner wait out a short server hiccup before re-checking (9 Oct cloud run)
         self.server_errors: list[str] = []
@@ -250,10 +261,16 @@ class Session:
         except Exception:  # noqa: BLE001  never break a page event
             pass
 
+    def hide(self, text: str) -> str:
+        """The store password never reaches a report: a page script could print or request it (23 Oct review)."""
+        pw = getattr(self.s, "store_password", None)
+        return text.replace(pw, "•••") if pw and text else text
+
     def _log(self, kind: str, text: str, url: str):
         """One console entry for the report. Never raises (called from a browser event)."""
         try:
-            text = " ".join((text or "").split())[:220]
+            text = " ".join(self.hide(text or "").split())[:220]
+            url = self.hide(url or "")
             if any(p in (url or "") for p in RADAR_PROBE_URLS):
                 return
             key = f"{kind}|{text[:120]}"
