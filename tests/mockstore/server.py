@@ -174,6 +174,10 @@ Modes (to prove Radar catches and heals what it should):
                    bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
   robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested;
                    on a daily check (check_store_down) the homepage answers 200, so it stays BLOCKED with that said
+  storefront_password  a store behind Shopify's password page (23 Oct): every page sends the visitor to /password until
+                   the right password (STORE_PASSWORD) is posted there; the page also has a "notify me" email box that
+                   Radar must never fill (posts recorded on server.password_posts / server.contact_posts)
+  storefront_password_modal  the same, Dawn-style: the password box sits in a closed pop-up ("Enter using password")
   all_down         the whole store is down: EVERY request answers HTTP 503, robots.txt included (22 Oct) -> a daily
                    check (check_store_down) says UNREACHABLE ("didn't answer at all"); free checks / benches: BLOCKED
   wa_ok / wa_bad / wa_no_cc / wa_zero  a floating WhatsApp link on every page: wa.me/919876543210 (passes),
@@ -687,6 +691,26 @@ def card_price_html(handle: str, mode: str) -> str:
         return (f'<s class="price-item price-item--regular">₹1,599.00</s> <span class="badge">Save ₹{1599 - sale:,.0f}</span> '
                 f'<span class="price-item price-item--sale">₹{sale:,.2f}</span>')
     return f'<span class="price-item price-item--regular">Rs. {low:,.2f}</span>'
+
+
+PASSWORD_MODES = ("storefront_password", "storefront_password_modal")
+STORE_PASSWORD = "open-sesame 23"
+
+
+def password_page(mode: str, wrong: bool = False) -> str:
+    """Shopify's storefront password page (Dawn's layout): a 'notify me' email signup and the password form."""
+    form = ('<form method="post" action="/password" id="login_form" accept-charset="UTF-8" class="password-form">'
+            '<input type="hidden" name="form_type" value="storefront_password"><input type="hidden" name="utf8" value="✓">'
+            + ('<p class="form__message" role="alert">Wrong password!</p>' if wrong else "")
+            + '<label for="Password">Password</label><input type="password" name="password" id="Password" autocomplete="off">'
+            '<button type="submit" name="commit">Enter</button></form>')
+    if mode == "storefront_password_modal":
+        form = f'<details class="password-modal modal"><summary>Enter using password</summary><div class="modal__content">{form}</div></details>'
+    body = ('<h1>Opening soon</h1><p>Be the first to know when we launch.</p>'
+            '<form method="post" action="/contact#ContactFooter" id="ContactFooter" class="newsletter-form">'
+            '<input type="hidden" name="form_type" value="customer"><input type="hidden" name="contact[tags]" value="prospect,password page">'
+            '<input type="email" name="contact[email]" placeholder="Email" required><button type="submit">Notify me</button></form>' + form)
+    return page("Mock Store — Opening soon", body)
 
 
 class Handler(BaseHTTPRequestHandler):
@@ -1481,6 +1505,16 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
                 return self._send(503, '<html><head><title>Just a moment...</title></head><body>'
                                        '<div id="cf-chl-widget"></div><script src="/cdn-cgi/challenge-platform/x.js">'
                                        '</script></body></html>')
+        if self.mode in PASSWORD_MODES:
+            # 23 Oct: Shopify's storefront password. robots.txt and the theme's files still load; every page answers with
+            # a redirect to /password until the password cookie is set
+            if path == "/password":
+                return self._send(200, password_page(self.mode))
+            if path != "/robots.txt" and not path.startswith("/cdn/") and "storefront_digest=ok" not in (self.headers.get("Cookie") or ""):
+                self.send_response(302)
+                self.send_header("Location", "/password")
+                self.end_headers()
+                return
         if self.mode == "wishlist_404" and path == "/pages/wishlist":
             # countryflora.com / kotart.in / swornyfashion.com (new30p, 15 Oct): the wishlist app's page is the 404
             # template with the app drawing the list into it
@@ -2485,6 +2519,19 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
         if self.mode == "signed_only" and not self._signed_ok():
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
+        if self.mode in PASSWORD_MODES and u.path.rstrip("/") in ("/password", "/contact"):
+            form = parse_qs(self.rfile.read(int(self.headers.get("Content-Length", 0))).decode("utf-8", "replace"))
+            if u.path.rstrip("/") == "/contact":
+                self.server.contact_posts = getattr(self.server, "contact_posts", []) + [form]
+                return self._send(200, page("Thanks", "<p>Thanks for subscribing.</p>"))
+            self.server.password_posts = getattr(self.server, "password_posts", []) + [form]
+            if form.get("form_type") == ["storefront_password"] and form.get("password") == [STORE_PASSWORD]:
+                self.send_response(302)
+                self.send_header("Set-Cookie", "storefront_digest=ok; Path=/; HttpOnly")
+                self.send_header("Location", "/")
+                self.end_headers()
+                return
+            return self._send(200, password_page(self.mode, wrong=True))
         cid, new = self._cart()
         if u.path == "/cart/change.js":
             body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")
