@@ -1115,6 +1115,16 @@ def test_hidden_buttonless_form_falls_back_to_the_pages_own_buy_control(tmp_path
     assert "pdp-addtobag-btn" in _steps(_case(run, "product.pdp."))["buy_button_ready"].detail
 
 
+def test_app_drawn_buy_button_over_hidden_form_buttons_is_used(tmp_path):
+    """beardo.in (live round 22 Oct, both devices NOT JUDGED): the cart form keeps its buttons, all hidden; an app draws
+    its own <div> 'ADD TO CART' under the title and again in a sticky bar naming the product. Two such controls on the
+    page = no 'only one' fallback; the page's own control (owned by the product title) is now used."""
+    run, _ = _scan("app_replaced_buy_button", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
+    assert not bad, bad
+    assert "cartx" in _steps(_case(run, "product.pdp."))["buy_button_ready"].detail
+
+
 def test_per_unit_price_of_a_multi_unit_variant_counts_as_shown(tmp_path):
     """ayamveda.com (new30w, both devices DOWN): '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298."""
     run = _product_only("per_unit_price", tmp_path, max_products=1)

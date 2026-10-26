@@ -1373,6 +1373,10 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
+- **v0.20 26 Oct 04:30 UTC (weekly loop):** beardo.in (live round 22 Oct) was not judged on both devices: an app hides
+  the cart form's buttons and draws its own <div> 'ADD TO CART' under the title and in a sticky bar, so the 'only one
+  add-to-cart on the page' fallback failed. The page's own control owned by this product (attribute, next to the title,
+  or a sticky bar naming it) is now used, add-to-cart wording only. Mock app_replaced_buy_button.
 - **v0.20 19 Oct 04:30 UTC (weekly loop):** axorhelmets.com (Contabo probe) was not judged: a full-page region gateway
   'INDIA VISIT NOW | EUROPE VISIT NOW' with no close control covered every card. The choice whose own panel names the
   country the store serves (Shopify.country) and stays on this host is clicked; other regions never. Mock region_gateway.

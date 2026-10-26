@@ -438,6 +438,8 @@ Modes (to prove Radar catches and heals what it should):
                    -> shows_title_price_image WARNS (Anmol, 15 Oct), never fails
   customer_auth_link  the header links '/customer_authentication/redirect' (Shopify new customer accounts), which answers
                    404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
+  app_replaced_buy_button  the cart form keeps its buttons, all hidden; an app's <div> 'ADD TO CART' (no product
+                   attribute) under the title + again in a sticky bar naming the product (beardo.in) -> found, PASSES
   hidden_form_app_button  the product's cart form is hidden and holds no button; the buy control is an app's element
                    outside it (shopkara.store, nubronicforte.com) -> found, the cart check adds the right product, PASSES
   per_unit_price   the vase page shows '₹649.50 / piece' + 'Pack of 2 pieces' for the ₹1,299 variant (ayamveda.com)
@@ -2383,6 +2385,18 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                      f'name="id" value="{vid}"></form><div class="pdp-addtobag-btn active" '
                                      f'data-product-handle="{p["handle"]}" onclick="addToCart({vid})" style="cursor:pointer;'
                                      f'padding:10px;background:#222;color:#fff;width:200px"><span class="atc-text">ADD TO CART</span></div>')
+        if self.mode == "app_replaced_buy_button":
+            # beardo.in (WhatsApp/COD live round, 22 Oct, NOT JUDGED on both devices): an app hides the theme's cart
+            # buttons (the form keeps them, all hidden) and draws its own <div> 'ADD TO CART' twice: under the title
+            # and in a sticky bar that names the product; neither carries a product attribute
+            app = (f'<div class="cartx-product-button-wrap" onclick="addToCart({vid})" style="cursor:pointer;padding:10px;'
+                   f'background:#a00;color:#fff;width:200px">ADD TO CART</div>')
+            body = body.replace(buy, f'<form action="/cart/add" method="post"><input type="hidden" name="id" value="{vid}">'
+                                     '<button type="button" style="display:none">\u2212</button><button type="button" '
+                                     'style="display:none">+</button><button type="submit" name="add" style="display:none">'
+                                     f'Add to cart</button></form>{app}', 1)
+            body += (f'<div class="cartx-sticky" style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px">'
+                     f'<span>{p["title"]}</span> <span>\u20b9{float(p["price"]):,.2f}</span>{app}</div>')
         if self.mode == "div_buy_control":
             others = [x for x in PRODUCTS if x["handle"] != p["handle"] and float(x["price"]) > 0][:3]
             recs = "".join(f'<div class="rec-card"><a href="/products/{x["handle"]}">{x["title"]}</a>'

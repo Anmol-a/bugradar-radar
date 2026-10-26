@@ -617,11 +617,21 @@ MAIN_BUY_JS = r"""([ids, quick]) => {
 # on it or an ancestor (4 levels) names THIS product (handle, product id or a variant id), or when it sits with the
 # product's title and no link to another product is closer. Innermost match only; header/nav/footer/drawers ignored.
 # Used ONLY when the page has no Shopify form/input carrying this product's variant id.
-OWN_CONTROL_JS = r"""([handle, ids, pid, quick]) => {
+# + addOnly (beardo.in, 22 Oct): the fallback for a form whose buttons are all hidden takes add-to-cart wording only
+# (never 'buy it now'), and also owns a control in a fixed/sticky bar that names the product (pname) and links to no
+# other product: an app's '<div class="cartx-product-button-wrap">ADD TO CART' drawn under the title and in that bar.
+OWN_CONTROL_JS = r"""([handle, ids, pid, quick, addOnly, pname]) => {
   const otherCard = __OTHER_CARD__;
   document.querySelectorAll('[data-radar-target="buy"]').forEach(e => e.removeAttribute('data-radar-target'));
   const mine = new Set([String(handle), String(pid), ...ids.map(String)]);
-  const words = /^(add to (bag|cart|basket)|buy( it)? now|add)$/i;
+  const words = addOnly ? /^(add to (bag|cart|basket)|add)$/i : /^(add to (bag|cart|basket)|buy( it)? now|add)$/i;
+  const norm = x => String(x || '').toLowerCase().replace(/\s+/g, ' ').trim();
+  const inBar = e => { if (!addOnly || !pname) return false;
+    for (let a = e.parentElement; a && a !== document.body; a = a.parentElement) {
+      const p = getComputedStyle(a).position; if (p !== 'fixed' && p !== 'sticky') continue;
+      const others = [...a.querySelectorAll('a[href*="/products/"]')].map(prodOf).filter(h => h && h !== here);
+      return !others.length && norm(a.innerText).includes(norm(pname)); }
+    return false; };
   const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
   const vis = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
     return r.width > 0 && r.height > 0 && s.visibility !== 'hidden' && s.display !== 'none'; };
@@ -642,7 +652,8 @@ OWN_CONTROL_JS = r"""([handle, ids, pid, quick]) => {
       && !otherCard(e, quick));
   const inner = all.filter(e => !all.some(o => o !== e && e.contains(o)));
   for (const e of inner) {
-    const by = named(e) ? `${named(e)} names this product` : (withTitle(e) ? 'next to the product title' : null);
+    const by = named(e) ? `${named(e)} names this product` : (withTitle(e) ? 'next to the product title'
+             : (inBar(e) ? 'in a sticky bar naming the product' : null));
     if (!by) continue;
     const t = e.closest('button, a, [role="button"], [onclick], [class*="btn" i], [class*="button" i]') || e;
     t.setAttribute('data-radar-target', 'buy');
@@ -946,7 +957,7 @@ def _main_buy_button(ctx: Ctx, product: dict):
             break
         if not has_form:
             own = ctx.sess.evaluate(OWN_CONTROL_JS, [product.get("handle") or _handle(page.url) or "", ids,
-                                                      product.get("id") or 0, QUICK_SEL])
+                                                      product.get("id") or 0, QUICK_SEL, False, ""])
         if own or step == 4:
             break
         page.evaluate("() => window.scrollBy(0, Math.round(innerHeight * 0.6))")
@@ -992,6 +1003,16 @@ def _main_buy_button(ctx: Ctx, product: dict):
             return (page.locator('[data-radar-target="buy"]').first,
                     f"the page's only enabled <{alt['tag']}> {alt['text']!r}" + (" (sticky bar)" if alt["sticky"] else "")
                     + " (no Shopify cart button; the cart check verifies what it adds)", None)
+        # beardo.in (live round 22 Oct): the product's form keeps its buttons, all hidden, and an app draws its own
+        # <div> 'ADD TO CART' twice (under the title + a sticky bar), so 'the only one' above does not hold: the
+        # page's own control, owned by the product (attribute, title or a sticky bar naming it), add-to-cart only
+        own = ctx.sess.evaluate(OWN_CONTROL_JS, [product.get("handle") or _handle(page.url) or "", ids,
+                                                 product.get("id") or 0, QUICK_SEL, True, product.get("title") or ""])
+        if own:
+            ctx.buy_evidence = f"the page's own add-to-cart <{own['tag']}> {own['text']!r} ({own['why']})"
+            return (page.locator('[data-radar-target="buy"]').first,
+                    f"the page's own buy control <{own['tag']}> {own['text']!r} ({own['why']}; the product form's "
+                    "buttons are hidden, the cart check verifies what it adds)", None)
         # Say exactly what is (not) there, so nobody has to guess whose problem it is (mcaffeine.com, bench 3).
         # + what the product's own form holds (shopkara.store new30p, nubronicforte.com new30t: 'a form for this product
         # but no buy button Radar could use' and nothing more to go on): its buttons, visible / disabled, and any
