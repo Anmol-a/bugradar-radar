@@ -122,7 +122,7 @@ def _no_traces(tmp_path: Path):
 
 
 @pytest.mark.e2e
-@pytest.mark.parametrize("mode", ["storefront_password", "storefront_password_modal"])
+@pytest.mark.parametrize("mode", ["storefront_password", "storefront_password_modal", "storefront_password_devstore"])
 def test_with_the_password_the_store_is_tested(tmp_path, mode):
     run, posts, contact = _scan(mode, tmp_path, store_password=STORE_PASSWORD)
     assert run.sitemap_summary["access"] == "open" and run.verdict == "healthy", (run.verdict, run.notes,
@@ -133,17 +133,21 @@ def test_with_the_password_the_store_is_tested(tmp_path, mode):
     assert not saw, saw
     assert any("Radar entered the store password" in n for n in run.notes), run.notes
     assert len(posts) == 1, posts                                   # typed once, on this device
-    assert sorted(posts[0]) == ["form_type", "password", "utf8"] and posts[0]["form_type"] == ["storefront_password"], posts
+    if mode == "storefront_password_devstore":               # Shopify's own dev-store page (26 Oct): no form_type
+        assert sorted(posts[0]) == ["authenticity_token", "password"], posts
+    else:
+        assert sorted(posts[0]) == ["form_type", "password", "utf8"] and posts[0]["form_type"] == ["storefront_password"], posts
     assert contact == [], "the 'notify me' email box must never be filled"
     _nothing_holds(tmp_path, STORE_PASSWORD)
     _no_traces(tmp_path)
 
 
 @pytest.mark.e2e
-def test_a_wrong_password_is_not_tested_and_says_so(tmp_path):
+@pytest.mark.parametrize("mode", ["storefront_password", "storefront_password_devstore"])
+def test_a_wrong_password_is_not_tested_and_says_so(tmp_path, mode):
     from radar.discovery.discover import PASSWORD_WRONG_NOTE
     from tools import upload_dashboard as up
-    run, posts, contact = _scan("storefront_password", tmp_path, store_password="not-it")
+    run, posts, contact = _scan(mode, tmp_path, store_password="not-it")
     assert (run.verdict, run.sitemap_summary["access"]) == ("blocked", "password"), (run.verdict, run.notes)
     assert run.cases == [] and run.notes[0] == PASSWORD_WRONG_NOTE, run.notes
     assert len(posts) == 1 and contact == []
