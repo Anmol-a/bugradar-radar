@@ -1,0 +1,35 @@
+at 2026-10-26T10:45:02Z
+--- code:
+9520b719 Store password: also use Shopify's own dev-store password page (#13)
+  homepage_shot (want 1): 1
+  monitors by key (want 1): 1
+  --scans-only passed through (want 3): 3
+  uploads name their monitor (want 1): 1
+  re-check before alerting (want 1): 1
+  patient homepage (want 1): 1
+  slow runs re-checked (want 1): 1
+  daily checks ask if the store is down (want 1): 1
+  homepage check when robots.txt is silent (want 1): 1
+  WhatsApp button check (want 1): 1
+  COD wording check (want 1): 1
+  robots.txt warning (want 1): 1
+  widget re-found before acting (want 1): 1
+  store password entered (want 1): 1
+  worker reads the store password (want 1): 1
+--- workers:
+  380179 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+  380180 /home/radar/radar-venv/bin/python -u -m radar worker --poll 15
+  380182 /home/radar/radar-venv/bin/python -u -m radar worker --scans-only --poll 15
+--- slot logs (last lines):
+ slot 1:
+   [2026-10-25 22:01:06] Radar worker contabo-1 started; polling every 15 s (free scans only)
+   [2026-10-26 09:47:48] queue error: <urlopen error timed out>
+   [2026-10-26 11:44:09] Radar worker contabo-1 started; polling every 15 s (free scans only)
+ slot 2:
+   sent bugradar-dev.myshopify.com desktop: 1 results, 0 new problems, 0 fixed
+   [2026-10-26 10:35:27] contabo-2: https://bugradar-dev.myshopify.com -> blocked (desktop: blocked (7 s))
+   [2026-10-26 11:44:22] Radar worker contabo-2 started; polling every 15 s
+ slot 3:
+   [2026-10-24 23:59:22] contabo-3: https://bugradar-dev.myshopify.com -> blocked (desktop: blocked (21 s))
+   [2026-10-25 22:01:22] Radar worker contabo-3 started; polling every 15 s
+   [2026-10-26 11:44:22] Radar worker contabo-3 started; polling every 15 s
