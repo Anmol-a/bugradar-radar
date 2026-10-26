@@ -703,12 +703,22 @@ def card_price_html(handle: str, mode: str) -> str:
 #                   (localhost instead of 127.0.0.1)
 PASSWORD_MODES = ("storefront_password", "storefront_password_modal", "storefront_password_offsite", "storefront_password_blank",
                   "storefront_password_noformtype", "storefront_password_get", "storefront_password_robots",
-                  "storefront_password_429", "storefront_password_redirect")
+                  "storefront_password_429", "storefront_password_redirect", "storefront_password_devstore")
 STORE_PASSWORD = "open-sesame 23"
 
 
 def password_page(mode: str, wrong: bool = False, port: int = 0) -> str:
     """Shopify's storefront password page (Dawn's layout): a 'notify me' email signup and the password form."""
+    if mode == "storefront_password_devstore":
+        # bugradar-dev.myshopify.com/password, 26 Oct 2026: a development store in "private mode" shows Shopify's own page,
+        # not the theme's: no scripts, no form_type, an authenticity_token, the box named "password", data-remote unused
+        err = '<div class="error-container"><p class="error">Password incorrect</p></div>' if wrong else '<div class="error-container"></div>'
+        return ('<!doctype html><html><head><title>bugradar-dev</title></head><body>'
+                '<form action="/password" accept-charset="UTF-8" data-remote="true" method="post">'
+                '<input type="hidden" name="authenticity_token" value="tok-123==">'
+                '<div class="form-section"><label for="password">Enter store password</label>'
+                '<input type="password" class="form-input " id="password" name="password" autocomplete="nope">'
+                f'{err}</div><button type="submit">Enter</button></form></body></html>')
     action = f"http://localhost:{port}/password" if mode == "storefront_password_offsite" else "/password"
     attrs = (' target="_blank"' if mode == "storefront_password_blank" else "") + \
         (' method="get"' if mode == "storefront_password_get" else ' method="post"')
@@ -2561,7 +2571,9 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             self.server.password_posts = getattr(self.server, "password_posts", []) + [form]
             if self.mode == "storefront_password_429":
                 return self._send(429, page("Too many attempts", "<h1>Too many attempts. Try again later.</h1>"))
-            if form.get("form_type") == ["storefront_password"] and form.get("password") == [STORE_PASSWORD]:
+            shopify_form = form.get("form_type") == ["storefront_password"] or (
+                self.mode == "storefront_password_devstore" and form.get("authenticity_token") == ["tok-123=="])
+            if shopify_form and form.get("password") == [STORE_PASSWORD]:
                 self.send_response(302)
                 self.send_header("Set-Cookie", "storefront_digest=ok; Path=/; HttpOnly")
                 self.send_header("Location", "/")

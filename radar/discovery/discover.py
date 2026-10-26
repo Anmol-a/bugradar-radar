@@ -467,8 +467,9 @@ class _Arrived:
 # development store, and every store before its launch, shows /password to everyone. When the owner gave BugRadar the
 # store password, Radar puts it in that ONE box and submits that ONE form, and only when ALL hold:
 #   * the page Radar is on is the store's own host (exactly, not a parent domain), robots.txt allows /password;
-#   * the form posts to that same host's /password, carries Shopify's form_type=storefront_password, and opens in the
-#     same page (no target=_blank / frame);
+#   * the form posts to that same host's /password, opens in the same page (no target=_blank / frame), and is one of
+#     Shopify's two password forms: the theme's (form_type=storefront_password) or, on development stores in "private
+#     mode", Shopify's own page (26 Oct, bugradar-dev: no form_type, an authenticity_token, the box named "password");
 #   * after the post the browser is still on the store's own host.
 # Nothing else on the page is touched (the "notify me" email box stays empty); no keystrokes or input events (a page
 # script would see them); the value is set in the page because many themes keep the box in a closed pop-up.
@@ -481,10 +482,12 @@ PASSWORD_JS = r"""(a) => {
   const ok = (f) => {
     if (!f || f.method.toLowerCase() !== 'post' || (f.target && f.target !== '_self')) return false;
     const u = new URL(f.action, location.href);
+    const els = [...f.elements];
     return u.host === a.host && /^\/password\/?$/.test(u.pathname)
-      && [...f.elements].some((e) => e.name === 'form_type' && e.value === 'storefront_password');
+      && (els.some((e) => e.name === 'form_type' && e.value === 'storefront_password')
+          || els.some((e) => e.name === 'authenticity_token' && e.type === 'hidden'));
   };
-  const box = [...document.querySelectorAll('input[type="password"]')].find((i) => ok(i.form));
+  const box = [...document.querySelectorAll('input[type="password"]')].find((i) => i.name === 'password' && ok(i.form));
   if (!box) return 'no-box';
   box.value = a.pwd;
   if (box.form.requestSubmit) box.form.requestSubmit(); else box.form.submit();
