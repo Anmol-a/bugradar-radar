@@ -510,3 +510,17 @@ def test_a_daily_check_tells_the_dashboard_which_monitor_it_was(monkeypatch, tmp
     sent.clear()
     w.run_monitor({"url": "https://p.in", "devices": ["desktop"]}, Settings(), log=lambda *_: None)   # an old row without an id
     assert sent == [None]
+
+
+def test_a_free_plan_store_runs_the_core_checks_and_pro_runs_everything(monkeypatch, tmp_path):
+    # 26 Oct (Free + Pro): the monitor's plan decides the scan profile; a row without a plan (pilots, BugRadar's own) = Pro
+    class R:
+        def __init__(self, device, verdict): self.device, self.verdict = device, verdict
+    asked = []
+    monkeypatch.setattr("radar.runner.executor.scan_devices",
+                        lambda url, settings, devices, **kw: asked.append(kw.get("profile")) or [(R("desktop", "healthy"), tmp_path)])
+    monkeypatch.setattr(w, "upload_results", lambda data_dir, since, log=print, extra_meta=None: ([], ""))
+    for plan in ("free", "pro", None):
+        row = {"id": "m", "url": "https://p.in", "devices": ["desktop"], **({"plan": plan} if plan else {})}
+        w.run_monitor(row, Settings(), log=lambda *_: None)
+    assert asked == ["core", None, None]
