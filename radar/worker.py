@@ -136,6 +136,11 @@ def settings_for(monitor: dict, base: Settings) -> Settings:
                    store_password_unread=bool(monitor.get("store_password_unread")))
 
 
+def profile_for(monitor: dict) -> str | None:
+    """Free plan -> the 'core' checks; Pro (and a row without a plan: pilots, BugRadar's own) -> everything."""
+    return "core" if monitor.get("plan") == "free" else None
+
+
 def overall(verdicts: list[str]) -> str:
     return max(verdicts, key=lambda v: ORDER.index(v) if v in ORDER else len(ORDER)) if verdicts else "error"
 
@@ -191,11 +196,12 @@ def run_monitor(monitor: dict, base: Settings, upload: bool = True, log=print) -
     url = monitor["url"]
     devices = tuple(monitor.get("devices") or ("desktop", "mobile"))
     s = settings_for(monitor, base)
+    profile = profile_for(monitor)
     second_look, rechecks, since_min = recheck_state(monitor)
     try_again = second_look and rechecks < MAX_RECHECKS
     t0 = time.time()
     try:
-        results = scan_devices(url, s, devices)
+        results = scan_devices(url, s, devices, **({"profile": profile} if profile else {}))   # Pro: everything
     except Exception as e:  # noqa: BLE001
         log(f"  {url}: Radar crashed: {e}")
         traceback.print_exc()

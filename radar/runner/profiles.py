@@ -12,7 +12,12 @@ The basic list (claude/ONBOARDING-how-stores-get-added_15oct.md, decided by Anmo
     search.<term>          (first only)   search finds a real product (not no_results / suggestions)
     health.not_found                      missing page answers 404, not 200
     health.meta.home                      homepage meta tags
-Everything else (the clicking shopper journey, cart / checkout, phone run, variants, sold-out, filters, page 2,
+
+    core    the FREE plan's daily check (26 Oct, Anmol: "Free + Pro, keep features limited in free"): computer + phone,
+            the core of a store: homepage, menu (computer + phone), the clicking shopper journey, one product page,
+            add to cart, the cart page with checkout opening. Pro runs 'full'.
+
+Everything else in 'basic' (the clicking shopper journey, cart / checkout, phone run, variants, sold-out, filters, page 2,
 pincode, coupon, footer links, retries across days) is what daily monitoring adds, so the free scan stays fast, light
 on the store, never touches a cart and gives the visitor a reason to sign up.
 """
@@ -23,7 +28,7 @@ from dataclasses import replace
 
 from radar.core.config import Settings
 
-PROFILES = ("full", "basic")
+PROFILES = ("full", "basic", "core")
 
 # (regex over the case id, how many matching cases to keep); the order here is the run order
 BASIC_RULES: tuple[tuple[str, int], ...] = (
@@ -36,15 +41,28 @@ BASIC_RULES: tuple[tuple[str, int], ...] = (
     (r"^health\.meta\.home$", 1),
 )
 
+# The Free plan (26 Oct). Everything else (collections, filters, page 2, variants, sold-out, pincode / COD, WhatsApp,
+# more links, search, discount box, Buy it now, price consistency, cart drawer, Google basics, policy pages) is Pro.
+CORE_RULES: tuple[tuple[str, int], ...] = (
+    (r"^smoke\.home_health$", 1),
+    (r"^smoke\.nav_links$", 1),
+    (r"^smoke\.mobile_menu$", 1),
+    (r"^journey\.", 1),
+    (r"^product\.pdp\.", 1),
+    (r"^cart\.add_to_cart$", 1),
+    (r"^cart\.edit_and_checkout$", 1),
+)
+RULES = {"basic": BASIC_RULES, "core": CORE_RULES}
+
 
 def keep_case(profile: str | None, case_id: str, seen: dict[str, int]) -> bool:
     """Whether a case with this id is run under the profile. `seen` counts the cases already kept per rule, so
     'first only' rules work across suites; pass the same dict for a whole run."""
     if not profile or profile == "full":
         return True
-    if profile != "basic":
+    if profile not in RULES:
         raise ValueError(f"unknown scan profile {profile!r}; one of {', '.join(PROFILES)}")
-    for pattern, limit in BASIC_RULES:
+    for pattern, limit in RULES[profile]:
         if re.search(pattern, case_id):
             if seen.get(pattern, 0) >= limit:
                 return False
