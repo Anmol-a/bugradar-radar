@@ -64,3 +64,48 @@ def test_basic_profile_on_the_mock_store_runs_only_the_free_checks(tmp_path):
     assert not any(i.startswith(("cart.", "journey.", "info.")) for i in ids)
     assert "product.pincode" not in ids and "product.variant_switch" not in ids
     assert len(ids) == 7
+
+
+def test_core_is_the_free_plan_and_keeps_both_devices():
+    """26 Oct (Free + Pro): the Free plan's daily check keeps the store's core, on computer AND phone; the rest is Pro."""
+    suites = [
+        Suite("journey", "J", "", [_tc("journey.shopper")]),
+        Suite("smoke", "S", "", [_tc("smoke.home_health"), _tc("smoke.nav_links"), _tc("smoke.mobile_menu"), _tc("smoke.more_links"), _tc("smoke.whatsapp")]),
+        Suite("catalog", "C", "", [_tc("catalog.collection.tees"), _tc("catalog.filter.tees")]),
+        Suite("product", "P", "", [_tc("product.pdp.tee"), _tc("product.pdp.mug"), _tc("product.variant_switch"), _tc("product.pincode")]),
+        Suite("cart", "K", "", [_tc("cart.add_to_cart"), _tc("cart.edit_and_checkout"), _tc("cart.discount_code"), _tc("cart.buy_now"), _tc("cart.price_consistency")]),
+        Suite("search", "Q", "", [_tc("search.tee")]),
+        Suite("health", "H", "", [_tc("health.not_found")]),
+        Suite("info", "I", "", [_tc("info.policy_pages")]),
+    ]
+    kept = [c.id for s in p.filter_suites(suites, "core") for c in s.cases]
+    assert kept == ["journey.shopper", "smoke.home_health", "smoke.nav_links", "smoke.mobile_menu", "product.pdp.tee",
+                    "cart.add_to_cart", "cart.edit_and_checkout"]
+    assert p.devices_for_profile("core", ("desktop", "mobile")) == ("desktop", "mobile")
+    base = Settings()
+    assert p.settings_for_profile("core", base) is base          # the monitor's own settings (cart switch etc.) stay
+
+
+def test_the_monitor_plan_picks_the_profile():
+    from radar.worker import profile_for
+    assert profile_for({"plan": "free"}) == "core"
+    assert profile_for({"plan": "pro"}) is None and profile_for({}) is None   # pilots / BugRadar's own: everything
+
+
+@pytest.mark.e2e
+def test_core_profile_on_the_mock_store_runs_the_free_plan_on_both_devices(tmp_path):
+    srv, url = serve("healthy")
+    try:
+        results = scan_devices(url, replace(_settings(tmp_path), allow_cart_flow=True), ("desktop", "mobile"), profile="core")
+    finally:
+        srv.shutdown()
+    assert [r[0].device for r in results] == ["desktop", "mobile"]
+    allowed = ("smoke.home_health", "smoke.nav_links", "smoke.mobile_menu", "journey.", "product.pdp.",
+               "cart.add_to_cart", "cart.edit_and_checkout")
+    for run, _ in results:
+        ids = [c.case_id for c in run.cases]
+        assert run.verdict == "healthy", (run.device, [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases])
+        assert ids and all(i.startswith(allowed) for i in ids), (run.device, ids)
+        assert sum(i.startswith("product.pdp.") for i in ids) == 1
+        assert any(i.startswith("journey.") for i in ids) and "cart.add_to_cart" in ids, ids
+        assert not any(i.startswith(("search.", "catalog.", "health.", "info.")) for i in ids), ids

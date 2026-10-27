@@ -6,7 +6,8 @@
 Where the list of stores lives: the dashboard's `monitors` table (Supabase). The worker never sees the browser-facing
 dashboard; it talks to two SQL functions with the service key:
     claim_monitor(worker)              -> the one store most overdue, locked for this worker (or nothing)
-    finish_monitor(id, status, note)   -> unlock + schedule the next run (now + interval_minutes)
+    finish_monitor(id, status, note)   -> unlock + schedule the next run (now + interval_minutes; 10 minutes after a
+                                          'recheck': a store that didn't load is looked at again before an alert, 21 Oct)
 and, since 15 Oct, two more for the free scan page (onboarding door A): a visitor's "check my store" click is a
 `scan_requests` row, claimed BEFORE any daily monitor (someone is waiting on it) and run with the 'basic' profile
 (radar/runner/profiles.py: desktop, one of each, no cart, ~1-2 min):
@@ -36,6 +37,7 @@ from __future__ import annotations
 
 import json
 import os
+import re
 import socket
 import sys
 import time
@@ -69,8 +71,8 @@ ANON_KEY = ("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZi
 
 class SupabaseQueue:
     """The SQL functions over PostgREST. Standard library only.
-    service_key given: the full queue (monitors + free scans). upload_key only: free scans, through the *_by_key
-    functions, using the public anon key to reach PostgREST."""
+    service_key given: the full queue (monitors + free scans). upload_key only: free scans and the key's own workspace's
+    monitors, through the *_by_key functions (migrations 09 + 14), using the public anon key to reach PostgREST."""
 
     def __init__(self, url: str, service_key: str | None, timeout: int = 30, upload_key: str | None = None):
         self.url, self.timeout = url.rstrip("/"), timeout
@@ -95,17 +97,23 @@ class SupabaseQueue:
         return json.loads(raw) if raw.strip() else None
 
     def claim(self, worker: str) -> dict | None:
-        if self.upload_key:
-            return None                        # monitors need the service key
-        rows = self._rpc("claim_monitor", {"worker": worker}) or []
+        # with the upload key only: monitors of the key's own workspace (dashboard migration 14, 19 Oct), so the box
+        # that holds BugRadar's key runs BugRadar's daily monitors without a service key
+        rows = self._by_key("claim_monitor", {"worker": worker}) or []
         return rows[0] if rows else None
 
     def finish(self, monitor_id: str, status: str, note: str) -> None:
-        self._rpc("finish_monitor", {"monitor_id": monitor_id, "status": status, "note": note[:300]})
+        self._by_key("finish_monitor", {"monitor_id": monitor_id, "status": status, "note": note[:300]})
 
     def claim_scan(self, worker: str) -> dict | None:
         rows = self._by_key("claim_scan", {"worker": worker}) or []
         return rows[0] if rows else None
+
+    def store_password(self, monitor_id: str) -> str | None:
+        """The storefront password the store's owner gave BugRadar (dashboard migration 26, 23 Oct), or None. Kept in a
+        table nobody can read through the API; only this key-checked function hands it to the worker. Never logged."""
+        pwd = self._by_key("monitor_secret", {"monitor_id": monitor_id})
+        return pwd if isinstance(pwd, str) and pwd else None
 
     def scan_progress(self, scan_id: str, progress: dict) -> None:
         self._by_key("scan_progress", {"scan_id": scan_id, "progress": progress})
@@ -117,39 +125,119 @@ class SupabaseQueue:
 
 
 def settings_for(monitor: dict, base: Settings) -> Settings:
+    """A daily check's settings. check_store_down (22 Oct): a store that answers nothing at all, not even robots.txt,
+    is 'unreachable' (re-checked, then a problem + 🔴), never 'blocked' (silent). store_password (23 Oct): the owner's
+    storefront password, typed into the store's own password page only. Free checks keep the base settings."""
     s = base
     if monitor.get("quick", True):
         s = replace(s, max_products=1, max_collections=1, max_nav_links=4)
-    return replace(s, allow_cart_flow=bool(monitor.get("allow_cart", False)))
+    return replace(s, allow_cart_flow=bool(monitor.get("allow_cart", False)), check_store_down=True,
+                   store_password=monitor.get("store_password") or None,
+                   store_password_unread=bool(monitor.get("store_password_unread")))
+
+
+def profile_for(monitor: dict) -> str | None:
+    """Free plan -> the 'core' checks; Pro (and a row without a plan: pilots, BugRadar's own) -> everything."""
+    return "core" if monitor.get("plan") == "free" else None
 
 
 def overall(verdicts: list[str]) -> str:
     return max(verdicts, key=lambda v: ORDER.index(v) if v in ORDER else len(ORDER)) if verdicts else "error"
 
 
+# A daily check whose store didn't load is looked at again before anyone is told (21 Oct: one 30 s homepage timeout on
+# the Dawn demo opened a problem; the page loaded fine minutes later). A look where any device didn't load uploads
+# nothing and finishes as RECHECK; the dashboard's finish_monitor (migration 23) schedules the next look 10 minutes out
+# and keeps recheck_since (when the store first didn't load) and rechecks (how many in a row) on the monitor row.
+#   second look, store still didn't load      -> uploaded: the problem is filed and alerted (~10 min after the first)
+#   second look, store loads / has findings   -> uploaded as usual; a blip leaves no problem and no email
+#   second look, Radar couldn't tell (offline, crashed, robots.txt silent while the homepage answers) -> one more
+#                                                re-check (at most MAX_RECHECKS in a row), so a real outage isn't dropped
+# A store that answers nothing at all, robots.txt included, is 'unreachable' on a daily check (settings_for
+# check_store_down, discover.store_answers, 22 Oct), so it takes the re-check -> problem + 🔴 path above.
+# A 'recheck' older than RECHECK_FRESH_MINUTES (a paused check resumed later, a lock taken over) starts over.
+RECHECK = "recheck"
+RECHECK_VERDICTS = ("unreachable",)
+CANT_TELL = ("no_network", "error", "blocked")     # Radar learned nothing about whether the store loads
+RECHECK_MINUTES = 10            # set in SQL (migration 23); here only for the notes
+RECHECK_FRESH_MINUTES = 60      # the same rule is in SQL
+MAX_RECHECKS = 2                # the same cap is in SQL
+
+
+def _when(iso) -> datetime | None:
+    """A Postgres timestamp as PostgREST sends it ('2026-10-21T10:15:52.63058+00:00'), or None."""
+    m = re.match(r"(\d{4}-\d\d-\d\d)[T ](\d\d:\d\d:\d\d)(?:\.(\d+))?(Z|[+-]\d\d(?::?\d\d)?)?$", str(iso or "").strip())
+    if not m:
+        return None
+    frac = (m.group(3) or "0")[:6].ljust(6, "0")
+    tz = m.group(4) or "+00:00"
+    tz = "+00:00" if tz == "Z" else tz[:3] + ":" + (tz[3:].lstrip(":") or "00")
+    try:
+        return datetime.fromisoformat(f"{m.group(1)}T{m.group(2)}.{frac}{tz}")
+    except ValueError:
+        return None
+
+
+def recheck_state(monitor: dict, now: datetime | None = None) -> tuple[bool, int, int]:
+    """(a second look?, re-checks so far, whole minutes since the store first didn't load) for a claimed monitor row."""
+    since = _when(monitor.get("recheck_since"))
+    if monitor.get("last_status") != RECHECK or since is None:
+        return False, 0, 0
+    mins = ((now or datetime.now(timezone.utc)) - since).total_seconds() / 60
+    if not 0 <= mins <= RECHECK_FRESH_MINUTES:
+        return False, 0, 0
+    return True, int(monitor.get("rechecks") or 0), max(1, round(mins))
+
+
 def run_monitor(monitor: dict, base: Settings, upload: bool = True, log=print) -> tuple[str, str]:
-    """Scan one monitor on its devices, upload, return (status, note). Never raises: a crash is status 'error'."""
+    """Scan one monitor on its devices, upload, return (status, note). Never raises: a crash is status 'error'.
+    A store that didn't load is not uploaded until a second look (status RECHECK, see above)."""
     from radar.runner.executor import scan_devices
     url = monitor["url"]
     devices = tuple(monitor.get("devices") or ("desktop", "mobile"))
     s = settings_for(monitor, base)
+    profile = profile_for(monitor)
+    second_look, rechecks, since_min = recheck_state(monitor)
+    try_again = second_look and rechecks < MAX_RECHECKS
     t0 = time.time()
     try:
-        results = scan_devices(url, s, devices)
+        results = scan_devices(url, s, devices, **({"profile": profile} if profile else {}))   # Pro: everything
     except Exception as e:  # noqa: BLE001
         log(f"  {url}: Radar crashed: {e}")
         traceback.print_exc()
+        if try_again:
+            return RECHECK, f"Radar crashed on a second look ({str(e)[:150]}); trying again in {RECHECK_MINUTES} minutes"
         return "error", f"Radar crashed: {str(e)[:200]}"
     verdicts = [r.verdict for r, _ in results]
     note = "; ".join(f"{r.device}: {r.verdict}" for r, _ in results) + f" ({int(time.time() - t0)} s)"
+    # a run whose homepage needed more than its time limit (radar/discovery/discover.py homepage(): a slow network or
+    # a slow store) can fail later pages for the same reason: not alerted on a first look either (review, 21 Oct)
+    slow = any((getattr(r, "sitemap_summary", None) or {}).get("home_slow") for r, _ in results)
+    if not second_look and (any(v in RECHECK_VERDICTS for v in verdicts) or (slow and any(v != "healthy" for v in verdicts))):
+        why = "didn't load" if any(v in RECHECK_VERDICTS for v in verdicts) else "was very slow and not everything passed"
+        log(f"  {url}: {why}; nothing uploaded, looking again in {RECHECK_MINUTES} minutes")
+        return RECHECK, f"{note}; {why}, looking again in {RECHECK_MINUTES} minutes"
+    if try_again and verdicts and all(v in CANT_TELL for v in verdicts):
+        log(f"  {url}: couldn't test it on a second look; nothing uploaded, trying again in {RECHECK_MINUTES} minutes")
+        return RECHECK, f"{note}; couldn't test it on a second look, trying again in {RECHECK_MINUTES} minutes"
+    if second_look:
+        # the trace of a blip: Pilot stores shows this note until the next check, the run carries recheck_minutes
+        note += (f"; still didn't load {since_min} min after the first look" if any(v in RECHECK_VERDICTS for v in verdicts)
+                 else f"; second look, {since_min} min after it didn't load")
     if upload and results:
-        recs, why = upload_results(s.data_dir, t0, log)
+        # monitor_id: the dashboard files the run in the monitor's own workspace and store (a pilot store's runs land
+        # in that store's workspace, never in BugRadar's; dashboard migration 15 + ingest, 19 Oct). rechecked: this is
+        # a second look after the store didn't load (a store still down then says so on its own line).
+        meta: dict = {"monitor_id": monitor["id"]} if monitor.get("id") else {}
+        if second_look:
+            meta.update(rechecked=True, recheck_minutes=since_min)
+        recs, why = upload_results(s.data_dir, t0, log, extra_meta=meta or None)
         if why:
             note += f"; {why}"
     return overall(verdicts), note
 
 
-def upload_results(data_dir, since: float, log=print) -> tuple[list[dict], str]:
+def upload_results(data_dir, since: float, log=print, extra_meta: dict | None = None) -> tuple[list[dict], str]:
     """Send every run.json written since `since` under the data dir (one per device) through the same uploader the
     cloud runs use. Returns (records, problem): records as tools.upload_dashboard.upload gives them, problem = a short
     note for the row when nothing could be sent ('' when all went)."""
@@ -158,7 +246,7 @@ def upload_results(data_dir, since: float, log=print) -> tuple[list[dict], str]:
         return [], "NOT uploaded (BUGRADAR_KEY unset)"
     from tools.upload_dashboard import upload
     try:
-        recs = upload(Path(data_dir), key, since=since, log=log)
+        recs = upload(Path(data_dir), key, since=since, log=log, extra_meta=extra_meta)
     except Exception as e:  # noqa: BLE001
         return [], f"upload failed: {str(e)[:120]}"
     bad = [r for r in recs if not r["ok"]]
@@ -204,7 +292,7 @@ def summarize(run: dict) -> dict:
     from tools.upload_dashboard import plain_name, reason_of, STATUS
     order = {"critical": 0, "major": 1, "minor": 2, "seo": 3}
     cases = run.get("cases") or []
-    problems, counts = [], {"checked": len(cases), "passed": 0, "failed": 0, "warnings": 0, "not_tested": 0}
+    problems, notes, counts = [], [], {"checked": len(cases), "passed": 0, "failed": 0, "warnings": 0, "not_tested": 0}
     for c in cases:
         status = STATUS.get(c.get("verdict"), "warning")
         warn = warning_of(c)
@@ -212,17 +300,20 @@ def summarize(run: dict) -> dict:
         if status in ("passed", "flaky"):
             counts["passed"] += 1
             if warn:
+                # a check that WORKS with a note is not a problem (19 Oct: "Homepage loads healthy" was stored under
+                # problems); it goes under warning_checks, which the result page shows as "works, with a note"
                 counts["warnings"] += 1
-                problems.append({"key": c["case_id"], "name": name, "severity": c.get("severity") or "major",
-                                 "status": "warning", "reason": warn})
+                notes.append({"key": c["case_id"], "name": name, "severity": c.get("severity") or "major",
+                              "status": "warning", "reason": warn})
         elif status == "failed":
             counts["failed"] += 1
             problems.append({"key": c["case_id"], "name": name, "severity": c.get("severity") or "major",
                              "status": "failed", "reason": reason_of(c)})
         else:
             counts["not_tested"] += 1
-    problems.sort(key=lambda x: (0 if x["status"] == "failed" else 1, order.get(x["severity"], 9)))
-    return {**counts, "problems": problems[:5], "platform": run.get("platform"),
+    problems.sort(key=lambda x: order.get(x["severity"], 9))
+    notes.sort(key=lambda x: order.get(x["severity"], 9))
+    return {**counts, "problems": problems[:5], "warning_checks": notes[:5], "platform": run.get("platform"),
             "notes": [str(n)[:200] for n in (run.get("notes") or [])[:2]]}
 
 
@@ -289,6 +380,35 @@ class ScanProgress:
             self._push()
 
 
+HOME_SHOT = "homepage.jpg"
+
+
+def homepage_shot(url: str, settings: Settings, run_dir, log=print) -> bool:
+    """The free result page's "your store as Radar saw it" (19 Oct): one desktop picture of the homepage, saved next to
+    run.json as homepage.jpg; the uploader attaches it to the store's own line. Only after a run that could test the
+    store (so robots.txt and the platform already said yes). Same browser, user agent and signature as the run. Never
+    raises: a store with no picture still gets its result."""
+    try:
+        from radar.core.browser import Browser
+        with Browser(settings, "desktop", store_url=url) as b:
+            ctx = b.new_context()
+            try:
+                page = ctx.new_page()
+                page.goto(url, wait_until="domcontentloaded", timeout=30000)
+                try:
+                    page.wait_for_load_state("networkidle", timeout=6000)
+                except Exception:  # noqa: BLE001  (chat widgets and analytics never go quiet: the page is shown anyway)
+                    pass
+                page.wait_for_timeout(1200)
+                (Path(run_dir) / HOME_SHOT).write_bytes(page.screenshot(type="jpeg", quality=70, full_page=False))
+                return True
+            finally:
+                ctx.close()
+    except Exception as e:  # noqa: BLE001
+        log(f"  {url}: homepage picture skipped: {str(e)[:120]}")
+        return False
+
+
 def run_scan(req: dict, base: Settings, upload: bool = True, log=print, progress=None) -> dict:
     """One free basic check: desktop only, the 'basic' profile, uploaded like any run (so the result page can show the
     dashboard's results + screenshots), then the verdict, score and summary for the scan_requests row. Never raises.
@@ -307,12 +427,16 @@ def run_scan(req: dict, base: Settings, upload: bool = True, log=print, progress
     if not results:
         return {"verdict": "error", "score": None, "summary": {}, "run_id": None, "project_id": None,
                 "note": "nothing ran", "failed": True}
-    run = results[0][0]
+    run, run_dir = results[0]
     d = run.to_dict()
+    if run.verdict in TESTED_VERDICTS:
+        homepage_shot(url, replace(base, allow_cart_flow=False), run_dir, log)
     out = {"verdict": run.verdict, "score": score_of(d), "summary": summarize(d), "run_id": None,
            "project_id": None, "note": f"desktop: {run.verdict} ({int(time.time() - t0)} s)", "failed": False}
     if upload:
-        recs, why = upload_results(base.data_dir, t0, log)
+        # meta.scan_request_id: the dashboard's ingest files a free scan under the "Free scans" workspace, not the key's
+        # own (18 Oct: visitors' stores were filling Anmol's store list)
+        recs, why = upload_results(base.data_dir, t0, log, extra_meta={"scan_request_id": req["id"]})
         mine = [r for r in recs if r["ok"] and r.get("radar_run_id") == run.run_id] or [r for r in recs if r["ok"]]
         if mine:
             out["run_id"], out["project_id"] = mine[0]["run_id"], mine[0]["project_id"]
@@ -339,17 +463,30 @@ def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log
     if not m:
         return None
     log(f"[{_now()}] {worker}: {m['url']} on {','.join(m.get('devices') or ['desktop', 'mobile'])}")
-    status, note = run_monitor(m, base, upload=upload, log=log)
+    if hasattr(queue, "store_password") and m.get("id"):
+        try:
+            m["store_password"] = queue.store_password(m["id"])
+        except Exception as e:  # noqa: BLE001  a blip, or an old dashboard: test without it, and a store behind its
+            # password page then says "couldn't read the saved password" (never "give us the password")
+            m["store_password_unread"] = True
+            log(f"  {m['url']}: couldn't read the store password ({type(e).__name__}); testing without it")
+    try:
+        status, note = run_monitor(m, base, upload=upload, log=log)
+    finally:
+        m.pop("store_password", None)          # the row is returned to the caller: the password doesn't travel on
     queue.finish(m["id"], status, note)
     log(f"[{_now()}] {worker}: {m['url']} -> {status} ({note})")
     return m
 
 
-def serve(queue: Queue, base: Settings, worker: str, poll_seconds: int = 60, upload: bool = True, log=print) -> None:
-    log(f"[{_now()}] Radar worker {worker} started; polling every {poll_seconds} s")
-    while True:
+def serve(queue: Queue, base: Settings, worker: str, poll_seconds: int = 60, upload: bool = True, log=print,
+          scans_only: bool = False, _stop=lambda: False) -> None:
+    """Run for ever. scans_only: free checks only, never a daily monitor (19 Oct: this always-on mode ignored the flag,
+    which only showed once monitors became claimable by key; Contabo slot 1 then took a monitor)."""
+    log(f"[{_now()}] Radar worker {worker} started; polling every {poll_seconds} s" + (" (free scans only)" if scans_only else ""))
+    while not _stop():
         try:
-            ran = run_once(queue, base, worker, upload=upload, log=log)
+            ran = run_once(queue, base, worker, upload=upload, log=log, scans_only=scans_only)
         except (urllib.error.URLError, OSError) as e:        # Supabase unreachable: wait, try again, never die
             log(f"[{_now()}] queue error: {e}")
             ran = None
@@ -406,7 +543,7 @@ def main(argv: list[str] | None = None) -> int:
     if a.seconds:
         serve_for(q, base, worker, a.seconds, upload=not a.no_upload, scans_only=a.scans_only)
         return 0
-    serve(q, base, worker, a.poll, upload=not a.no_upload)
+    serve(q, base, worker, a.poll, upload=not a.no_upload, scans_only=a.scans_only)
     return 0
 
 

@@ -1,3 +1,4 @@
+import base64
 """The dashboard uploader turns a Radar run.json into the dashboard's results format and posts it with the key."""
 import json
 import threading
@@ -122,6 +123,17 @@ def test_every_run_has_a_line_for_the_store_itself(tmp_path):
     assert r["reason"] == "gone.example: the domain does not resolve. Check the address" and r["error"] == long
     for verdict, want in (("blocked", "blocked"), ("unsupported", "skipped")):
         assert up.to_payload({**down, "verdict": verdict}, tmp_path, "", None)["results"][0]["status"] == want
+    # a daily check's second look (worker RECHECK, 21 Oct): the store's line says it wasn't a one-off; nothing else changes
+    p = up.to_payload(down, tmp_path, "", None, {"monitor_id": "m1", "rechecked": True, "recheck_minutes": 11})
+    assert p["results"][0]["reason"] == "gone.example: the domain does not resolve. It also didn't load 11 minutes earlier."
+    assert p["run"]["meta"]["rechecked"] is True and p["run"]["meta"]["monitor_id"] == "m1" and p["run"]["meta"]["recheck_minutes"] == 11
+    assert up.to_payload(down, tmp_path, "", None, {"rechecked": True, "recheck_minutes": 1})["results"][0]["reason"].endswith(
+        "It also didn't load 1 minute earlier.")
+    assert up.to_payload({**down, "notes": []}, tmp_path, "", None, {"rechecked": True})["results"][0]["reason"] == \
+        "The store did not load. It also didn't load on an earlier look."
+    assert up.to_payload(RUN, tmp_path, "", None, {"rechecked": True, "recheck_minutes": 11})["results"][0]["reason"] is None  # loaded
+    assert up.to_payload({**down, "verdict": "blocked"}, tmp_path, "", None, {"rechecked": True})["results"][0]["reason"] == \
+        "gone.example: the domain does not resolve"                                                    # not a failure
     d = tmp_path / "data" / "sites" / "gone.example" / "runs" / "r2"
     d.mkdir(parents=True)
     (d / "run.json").write_text(json.dumps(down))
@@ -178,3 +190,50 @@ def test_a_failed_check_carries_the_page_it_stopped_on(tmp_path):
     by = {r["key"]: r for r in up.to_payload(run, tmp_path, "", None)["results"]}
     assert by["cart.add"]["page_url"] == "https://shop.example/products/serum" and [s["name"] for s in by["cart.add"]["steps"]] == ["open", "add"]
     assert "page_url" not in by["smoke.home"]
+
+
+def test_the_homepage_picture_rides_on_the_stores_own_line(tmp_path):
+    """19 Oct: a free check's homepage.jpg (worker.homepage_shot) goes up on the SITE_KEY line; none when it is missing
+    or over the size limit."""
+    run = {"base_url": "https://x.in", "verdict": "healthy", "cases": []}
+    assert "artifacts" not in up.to_payload(run, tmp_path, "b", None)["results"][0]
+    (tmp_path / "homepage.jpg").write_bytes(b"\xff\xd8jpeg")
+    site = up.to_payload(run, tmp_path, "b", None)["results"][0]
+    assert site["key"] == up.SITE_KEY
+    (a,) = site["artifacts"]
+    assert (a["kind"], a["name"], a["content_type"]) == ("screenshot", "homepage.jpg", "image/jpeg")
+    assert base64.b64decode(a["data_base64"]) == b"\xff\xd8jpeg"
+    (tmp_path / "homepage.jpg").write_bytes(b"x" * (up.MAX_SHOT_BYTES + 1))
+    assert "artifacts" not in up.to_payload(run, tmp_path, "b", None)["results"][0]
+
+
+def test_a_bench_label_files_runs_under_their_own_store(tmp_path, capsys):
+    """22 Oct: the GitHub nightly bench filed the Dawn demo into the store BugRadar's daily check watches; a blip there
+    (no 10-minute re-check on the bench) opened a problem. With a label it is its own store on the dashboard."""
+    assert up.project_name(RUN) == "shop.example"
+    assert up.project_name(RUN, "nightly bench") == "shop.example (nightly bench)"
+    assert up.project_name({**RUN, "base_url": "https://www.shop.example"}, "  nightly   bench ") == "shop.example (nightly bench)"
+    assert up.to_payload(RUN, tmp_path, "", None)["project"] == "shop.example"                    # the worker: unchanged
+    assert up.to_payload(RUN, tmp_path, "", None, None, "nightly bench")["project"] == "shop.example (nightly bench)"
+    write_run(tmp_path)
+    recs = up.upload(tmp_path, "brk_x", dry_run=True, log=lambda *_: None, project_label="nightly bench")
+    assert [r["project"] for r in recs] == ["shop.example (nightly bench)"]
+    up.main([str(tmp_path), "--dry-run", "--project-label", "nightly bench"])
+    assert "shop.example (nightly bench)" in capsys.readouterr().out
+    up.main([str(tmp_path), "--dry-run", "--project-label", ""])                                 # manual runs: as before
+    assert '"project": "shop.example"' in capsys.readouterr().out
+
+
+def test_robots_txt_down_while_the_store_is_open_is_a_warning(tmp_path):
+    """22 Oct: a daily check found robots.txt failing while the store answers: the store line is a WARNING the owner
+    sees (search engines pause crawling), not a quiet 'not tested', and never a problem / alert (status != failed)."""
+    note = "robots.txt could not be fetched (HTTP 503, 3 tries), so nothing was tested: ... The homepage answers (HTTP 200) ..."
+    run = {**RUN, "verdict": "blocked", "cases": [], "notes": [note], "sitemap_summary": {"store_up_robots_down": 200}}
+    site = up.to_payload(run, tmp_path, "", None)["results"][0]
+    assert (site["key"], site["status"]) == (up.SITE_KEY, "warning")
+    assert site["reason"].startswith("Your store opens, but its robots.txt file isn't loading") and site["error"] == note
+    site = up.to_payload({**run, "sitemap_summary": {"store_up_robots_down": 403}}, tmp_path, "", None)["results"][0]
+    assert site["status"] == "warning" and site["reason"].startswith("Your store's server answers (HTTP 403)")
+    # free checks / benches (no such fact) and other blocked runs: unchanged
+    assert up.to_payload({**run, "sitemap_summary": {}}, tmp_path, "", None)["results"][0]["status"] == "blocked"
+    assert up.to_payload({**run, "sitemap_summary": {"store_up_robots_down": None}}, tmp_path, "", None)["results"][0]["status"] == "blocked"

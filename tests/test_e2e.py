@@ -872,6 +872,122 @@ def test_robots_txt_server_error_means_do_not_crawl(tmp_path):
     assert any("HTTP 500" in n and "RFC 9309" in n for n in run.notes), run.notes
 
 
+def _down_scan(mode, tmp_path, monkeypatch, **kw):
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    srv, url = serve(mode)
+    try:
+        run, _ = scan(url, _settings(tmp_path, **kw))
+    finally:
+        srv.shutdown()
+    return run, getattr(srv, "down_hits", [])
+
+
+def test_a_whole_store_down_is_unreachable_on_a_daily_check(tmp_path, monkeypatch):
+    """22 Oct: every request 503, robots.txt included. Before: robots.txt silent -> 'blocked' (RFC 9309) -> the dashboard
+    filed 'not tested': no problem, no 🔴, for the biggest outage there is."""
+    run, hits = _down_scan("all_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "unreachable" and run.sitemap_summary["access"] == "unreachable", (run.verdict, run.notes)
+    assert run.cases == []
+    assert run.notes[0].startswith("The store didn't answer at all: its homepage didn't load, tried 4 times"), run.notes
+    assert "homepage: HTTP 503 x3, browser: HTTP 503" in run.notes[0], run.notes
+    assert "robots.txt: HTTP 503, tried 3 times" in run.notes[0] and len(run.notes[0]) < 300, run.notes
+    # robots.txt 3x, the homepage 3x by the HTTP client and once by Chromium; nothing else (no scripts, no images)
+    assert hits == ["/robots.txt"] * 3 + ["/"] * 3 + ["/ (browser)"], hits
+    from tools import upload_dashboard as up
+    site = up.to_payload(run.to_dict(), tmp_path, "", None)["results"][0]
+    assert (site["key"], site["status"]) == (up.SITE_KEY, "failed"), site
+    assert "(" not in site["reason"] and site["error"] == run.notes[0], site
+
+
+def test_a_whole_store_down_stays_not_tested_on_a_free_check(tmp_path, monkeypatch):
+    """Free checks and benches don't ask for the homepage once robots.txt is silent: unchanged, 'blocked'."""
+    run, hits = _down_scan("all_down", tmp_path, monkeypatch)
+    assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", (run.verdict, run.notes)
+    assert set(hits) == {"/robots.txt"}, hits
+    assert run.sitemap_summary["store_up_robots_down"] is None          # free checks: still plain "not tested"
+
+
+def test_robots_txt_down_but_homepage_up_is_not_an_outage(tmp_path, monkeypatch):
+    """Only robots.txt fails: the store is open to shoppers. Still 'do not crawl' (blocked, no alert), and the note
+    says the homepage answers."""
+    run, _ = _down_scan("robots_500", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", (run.verdict, run.notes)
+    assert run.cases == []
+    assert "The homepage answers (HTTP 200), so the store is open to shoppers" in run.notes[0], run.notes
+    assert "RFC 9309" in run.notes[0] and len(run.notes[0]) < 300, run.notes
+    # the dashboard shows it as a warning the owner can act on (22 Oct), never a problem / alert
+    from tools import upload_dashboard as up
+    assert run.sitemap_summary["store_up_robots_down"] == 200
+    site = up.to_payload(run.to_dict(), tmp_path, "", None)["results"][0]
+    assert site["status"] == "warning" and "robots.txt file isn't loading" in site["reason"], site
+
+
+def test_robots_and_homepage_down_is_unreachable_even_if_other_pages_work(tmp_path, monkeypatch):
+    run, hits = _down_scan("robots_500_home_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "unreachable", (run.verdict, run.notes)
+    assert hits.count("/") == 3 and hits.count("/ (browser)") == 1, hits
+
+
+def test_a_firewall_that_drops_radars_http_client_is_not_an_outage(tmp_path, monkeypatch):
+    """Review, 22 Oct: robots.txt and the homepage fail for Playwright's own HTTP client while Chromium gets the page:
+    Chromium has the last word, the store is up (never a false 🔴)."""
+    run, hits = _down_scan("robots_500_client_dropped", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "blocked" and run.sitemap_summary["access"] == "robots_unreachable", (run.verdict, run.notes)
+    assert "The homepage answers (HTTP 200)" in run.notes[0], run.notes
+    assert hits.count("/ (browser)") == 1, hits
+    assert not any(h.startswith(("/cdn", "/products", "/collections")) for h in hits), hits   # only the page itself
+
+
+def test_a_homepage_that_redirects_forever_is_an_answer_not_an_outage(tmp_path, monkeypatch):
+    run, hits = _down_scan("robots_500_home_loop", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "blocked", (run.verdict, run.notes)
+    assert "The store's server answers (HTTP 302)" in run.notes[0], run.notes
+    assert hits.count("/") == 1, hits                    # the redirect is not followed
+
+
+def test_a_bot_protection_page_sent_with_503_is_not_an_outage(tmp_path, monkeypatch):
+    run, _ = _down_scan("robots_500_home_challenge", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "blocked", (run.verdict, run.notes)
+    assert "a bot-protection page" in run.notes[0], run.notes
+
+
+def test_a_store_that_refuses_every_connection_is_unreachable_on_a_daily_check(tmp_path, monkeypatch):
+    from radar.core.browser import Session
+    from radar.core.network import reset_cache
+    reset_cache()
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    probe, purl = serve("healthy")
+    try:
+        run, _ = scan("http://127.0.0.1:9", _settings(tmp_path, net_probe_urls=(purl + "/",), check_store_down=True))
+    finally:
+        probe.shutdown()
+    assert run.verdict == "unreachable", (run.verdict, run.notes)
+    assert "ECONNREFUSED" in run.notes[0] and run.notes[0].startswith("The store didn't answer at all"), run.notes
+
+
+def test_radar_going_offline_during_the_homepage_check_is_not_blamed_on_the_store(tmp_path, monkeypatch):
+    import radar.discovery.discover as disc
+    answers = iter([True, False])                       # online when robots.txt failed, offline after the homepage tries
+    monkeypatch.setattr(disc, "online", lambda *a, **k: next(answers, False))
+    resets = []
+    monkeypatch.setattr(disc, "reset_cache", lambda: resets.append(1))
+    run, _ = _down_scan("all_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "no_network", (run.verdict, run.notes)
+    assert resets == [1]                                # asked fresh, not from the 30 s 'online' cache
+
+
+def test_an_error_that_says_radars_own_network_dropped_is_never_blamed_on_the_store(tmp_path, monkeypatch):
+    """The tries said ENETUNREACH / ERR_INTERNET_DISCONNECTED: no_network even if the connection is back by the end."""
+    import radar.discovery.discover as disc
+    monkeypatch.setattr(disc, "online", lambda *a, **k: True)
+    monkeypatch.setattr(disc, "store_answers", lambda *a, **k: disc.StoreAnswer(
+        up=False, status=None, tries=["connect ENETUNREACH 1.2.3.4:443"] * 3 + ["browser: net::ERR_INTERNET_DISCONNECTED"],
+        secs=200.0, offline=True))
+    run, _ = _down_scan("all_down", tmp_path, monkeypatch, check_store_down=True)
+    assert run.verdict == "no_network", (run.verdict, run.notes)
+
+
 def test_missing_robots_txt_allows_everything(tmp_path):
     run, _ = _scan("robots_404", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
@@ -1811,6 +1927,53 @@ def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path
     assert any("bombae.example: the domain points to 127.0.0.1" in n and "check the store's address" in n
                for n in run.notes), run.notes
 
+
+def _slow_home(mode, delay, scale, tmp_path, monkeypatch, **kw):
+    """Scan the mock store whose homepage answers after `delay` s (only the first load, or every load for home_hangs)
+    with a 3 s homepage limit; Session.backoff_scale scales the 10 s pause after a timeout. Returns (run, n): for
+    slow_first_home n = homepage requests made while the slow first answer was still on its way (Radar started over);
+    for home_hangs n = all homepage requests."""
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", scale, raising=False)
+    srv, url = serve(mode)
+    srv.home_delay = delay
+    try:
+        run, _ = scan(url, _settings(tmp_path, home_timeout_ms=3000, **kw))
+    finally:
+        srv.shutdown()
+    return run, getattr(srv, "home_hits" if mode == "home_hangs" else "home_asked_again", 0)
+
+
+def test_a_slow_homepage_that_finishes_during_the_pause_is_used_not_reloaded(tmp_path, monkeypatch):
+    # 21 Oct: from the Contabo box the Dawn demo's HTML took 16-21 s on a bad minute and twice over 30 s -> 'unreachable'
+    # and a problem on a working store. Review: a page that arrives just after the limit must not be thrown away.
+    run, hits = _slow_home("slow_first_home", 5.0, 0.6, tmp_path, monkeypatch, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", (run.verdict, run.notes, [(c.case_id, c.verdict) for c in run.cases if c.verdict != "pass"])
+    assert any("homepage took over 3 s" in n and "finished loading" in n for n in run.notes), run.notes
+    assert run.sitemap_summary["home_slow"] is True
+    assert hits == 0, hits                                # the store was not asked again while its answer was coming
+
+
+def test_a_slow_homepage_is_loaded_again_when_nothing_arrived(tmp_path, monkeypatch):
+    run, hits = _slow_home("slow_first_home", 12.0, 0.1, tmp_path, monkeypatch, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy", (run.verdict, run.notes, [(c.case_id, c.verdict) for c in run.cases if c.verdict != "pass"])
+    assert any("homepage took over 3 s on the first try" in n and "loaded on the second" in n for n in run.notes), run.notes
+    assert run.sitemap_summary["home_slow"] is True and hits >= 1, hits   # started over (later visits can land too)
+
+
+def test_a_homepage_that_never_loads_is_still_unreachable(tmp_path, monkeypatch):
+    # the other side: a store whose homepage times out twice is reported, as before (and only after both tries)
+    run, hits = _slow_home("home_hangs", 8.0, 0.1, tmp_path, monkeypatch, max_products=1)
+    assert run.verdict == "unreachable", (run.verdict, run.notes)
+    assert any(n.startswith("homepage unreachable:") and "Timeout 3000ms" in n for n in run.notes), run.notes
+    assert not any("loaded on the second" in n or "finished loading" in n for n in run.notes), run.notes
+    assert run.sitemap_summary["home_slow"] is True and hits == 2, hits
+
+
+def test_a_normal_homepage_is_not_marked_slow(tmp_path):
+    run, _ = _scan("healthy", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    assert run.verdict == "healthy" and run.sitemap_summary["home_slow"] is False
+
 # ---------------- journey 22: variant switch (11 Oct 2026) ----------------
 
 def _variant_only(mode, tmp_path, strict=False, device="desktop"):
@@ -2537,6 +2700,18 @@ def test_country_modal_answered_stay_on_brand_site_never_the_other_site(tmp_path
     assert any("Stay on Mock IN Site" in k["actual"] for k in closed), closed
 
 @pytest.mark.parametrize("device", ["desktop", "mobile"])
+def test_region_gateway_answered_with_the_country_the_store_serves(tmp_path, device):
+    """axorhelmets.com (Contabo probe, 18 Oct, desktop): a full-page gateway 'INDIA VISIT NOW | EUROPE VISIT NOW', no
+    close control, covered every card: not judged. The choice whose panel names the store's own country (Shopify.country)
+    and stays on this store is the shopper's way in; the other region's link is never followed."""
+    j = _case(_scan_small("region_gateway", tmp_path / device, device=device, suites=["journey"]), "journey.")
+    assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
+    closed = [k for k in _checks(j) if "popup closed" in k["what"]]
+    assert closed and all("europe" not in k["actual"].split("on:")[0].lower() for k in closed), closed
+    assert any("location popup" in k["what"] and "VISIT NOW" in k["actual"] for k in closed), closed
+    assert not any("mockstore.invalid" in str(s.detail) for s in _steps(j).values()), _steps(j)
+
+@pytest.mark.parametrize("device", ["desktop", "mobile"])
 def test_country_modal_stay_here_as_plain_div_is_answered(tmp_path, device):
     """teatrunk.in re-test (run 38461923525): the layer stayed ('no stay/close control in [International]'): 'Stay Here'
     is not a <button>. A tappable element whose own text is a stay control counts; 'International' is never clicked."""
@@ -2920,3 +3095,169 @@ def test_data_requests_come_from_inside_the_page_so_cloudflares_client_fingerpri
     assert run.verdict == "healthy", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
     assert not any("rate-limit" in n for n in run.notes), run.notes
     assert Handler.EDGE_429 == 0, f"{Handler.EDGE_429} data requests still came from the non-browser client"
+
+
+def test_product_shown_under_a_reworded_name_is_not_a_hidden_product(tmp_path):
+    """nbdpowerlifting.com (Contabo probe, 18 Oct, both devices): custom product pages with no cart form show the
+    product as 'STRENGTH / Back Print Acid Wash Hoodie' for the catalog's 'NBD STRENGTH — Back Print Acid Wash Hoodie';
+    every word of the name is there, in another order. Radar called each page 'other content' and failed the store."""
+    run = _product_only("reworded_name", tmp_path, max_products=1)
+    vase = _case(run, "product.pdp.ceramic")
+    st = _steps(vase)
+    assert "other content" not in (st["loads"].error or ""), st["loads"].error
+    assert st["loads"].status == "pass", st["loads"].error
+
+
+# ---------------- store features (22 Oct): WhatsApp chat button, Cash on Delivery ----------------
+
+WA_HOST = re.compile(r"^https?://(?:wa\.me|(?:[a-z]+\.)?whatsapp\.com|wa\.link)(?:/|$)", re.I)
+
+
+@pytest.fixture
+def wa_guard(monkeypatch):
+    """Proves Radar never reached WhatsApp (or a shortener): every answer from those hosts must be Radar's own empty
+    reply (x-radar-caught), never the real site (review, 22 Oct: GitHub's machines have internet)."""
+    from radar.core.browser import Browser
+    real, reached = Browser.new_context, []
+
+    def new_context(self):
+        ctx = real(self)
+        ctx.on("response", lambda r: reached.append(r.url) if WA_HOST.search(r.url) and not (r.headers or {}).get("x-radar-caught") else None)
+        return ctx
+    monkeypatch.setattr(Browser, "new_context", new_context)
+    yield reached
+    assert reached == [], f"Radar reached WhatsApp / a shortener: {reached}"
+
+
+def _wa(mode, tmp_path):
+    run = _feature(mode, tmp_path, ("smoke",), allow_cart_flow=False)
+    c = _case(run, "smoke.whatsapp")
+    return c, _steps(c)
+
+
+def test_a_store_without_whatsapp_is_information_only(tmp_path):
+    c, st = _wa("healthy", tmp_path)
+    assert c.verdict == "pass" and st["whatsapp_not_judged"].status == "info", [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+
+
+def test_a_whatsapp_button_with_a_full_number_passes(tmp_path):
+    c, st = _wa("wa_ok", tmp_path)
+    assert c.verdict == "pass" and st["whatsapp_number"].status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert "+919876543210" in st["whatsapp_number"].detail and "homepage" in st["whatsapp_number"].detail
+
+
+def test_a_whatsapp_button_with_a_number_that_cannot_be_dialled_fails(tmp_path):
+    """wa.me/12345: every shopper who taps it reaches no one (positive evidence -> failure, confirmed on retry)."""
+    c, st = _wa("wa_bad", tmp_path)
+    assert c.verdict == "confirmed_fail", (c.verdict, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
+    assert "5 digits" in st["whatsapp_number"].error, st["whatsapp_number"].error
+    c, st = _wa("wa_zero", tmp_path)
+    assert c.verdict == "confirmed_fail" and "starts with 0" in st["whatsapp_number"].error, st["whatsapp_number"].error
+
+
+def test_a_whatsapp_number_without_the_country_code_is_a_warning(tmp_path):
+    c, st = _wa("wa_no_cc", tmp_path)
+    assert c.verdict == "pass" and st["whatsapp_number"].status == "warn", (c.verdict, st["whatsapp_number"].error)
+    assert "919876543210" in st["whatsapp_number"].error
+
+
+def test_a_whatsapp_button_without_an_address_is_tapped_with_whatsapp_blocked(tmp_path, wa_guard):
+    """window.open, a page navigation, a panel with a link: Radar reads where it goes and never opens WhatsApp."""
+    for mode in ("wa_widget_ok", "wa_widget_nav", "wa_widget_panel"):
+        c, st = _wa(mode, tmp_path / mode)
+        assert c.verdict == "pass" and st["whatsapp_number"].status == "pass", \
+            (mode, c.verdict, [(s.name, s.status, s.error, s.detail) for s in c.attempts[-1].steps])
+        assert "+918888888888" in st["whatsapp_number"].detail, (mode, st["whatsapp_number"].detail)
+
+
+def test_a_whatsapp_button_that_does_nothing_is_a_warning(tmp_path, wa_guard):
+    c, st = _wa("wa_widget_dead", tmp_path)
+    assert c.verdict == "pass" and st["whatsapp_button_responds"].status == "warn", \
+        (c.verdict, [(s.name, s.status, s.error) for s in c.attempts[-1].steps])
+
+
+def test_a_whatsapp_share_link_is_not_a_chat_button(tmp_path):
+    c, st = _wa("wa_share_only", tmp_path)
+    assert c.verdict == "pass" and "whatsapp_number" not in st, [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+    assert st["whatsapp_note"].status == "info" and "share link" in st["whatsapp_note"].detail
+
+
+def test_a_whatsapp_business_short_link_is_not_judged(tmp_path):
+    c, st = _wa("wa_short", tmp_path)
+    assert c.verdict == "pass" and "whatsapp_number" not in st and "short link" in st["whatsapp_note"].detail, \
+        [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+
+
+def test_a_whatsapp_button_only_on_product_pages_is_found_there(tmp_path):
+    c, st = _wa("wa_product_only", tmp_path)
+    assert c.verdict == "pass" and "product page" in st["whatsapp_number"].detail, st["whatsapp_number"].detail
+
+
+def test_cod_wording_is_recorded_and_a_contradiction_is_a_warning(tmp_path):
+    """The page says 'COD available on all orders', the pincode checker for Mumbai 400001 says 'COD not available'."""
+    run = _feature("pincode_cod_no", tmp_path, ("product",))
+    c = _case(run, "product.pincode")
+    st = _steps(c)
+    assert c.verdict == "pass" and st["pincode_answers"].status == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+    assert st["cod_agrees"].status == "warn" and "COD is available" in st["cod_agrees"].error, st["cod_agrees"].error
+    assert "the pincode answer for 400001 says COD is not available" in st["cod"].detail, st["cod"].detail
+
+
+def test_cod_that_agrees_or_is_only_on_the_page_is_information(tmp_path):
+    run = _feature("pincode_ok", tmp_path / "ok", ("product",))
+    st = _steps(_case(run, "product.pincode"))
+    assert "cod_agrees" not in st and "pincode answer for 400001 says COD is available" in st["cod"].detail, st["cod"].detail
+    run = _feature("cod_badge_only", tmp_path / "badge", ("product",))
+    st = _steps(_case(run, "product.pincode"))
+    assert st["cod"].status == "info" and "the product page says COD is available" in st["cod"].detail, st["cod"].detail
+
+
+def test_a_whatsapp_icon_through_a_link_shortener_is_never_clicked(tmp_path, wa_guard):
+    c, st = _wa("wa_icon_shortlink", tmp_path)
+    assert c.verdict == "pass" and "whatsapp_number" not in st and "link shortener" in st["whatsapp_note"].detail, \
+        [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+
+
+def test_a_whatsapp_link_to_the_stores_own_redirect_page_is_read_from_the_redirect(tmp_path, wa_guard):
+    srv, url = serve("wa_store_redirect")
+    try:
+        run = scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=2, allow_cart_flow=False),
+                   only_suites=["smoke"])[0]
+    finally:
+        srv.shutdown()
+    st = _steps(_case(run, "smoke.whatsapp"))
+    assert st["whatsapp_number"].status == "pass" and "+918888888888" in st["whatsapp_number"].detail, st
+    # asked for its redirect only (Playwright's HTTP client, no browser navigation), never followed to WhatsApp
+    assert srv.wa_redirect_hits and all(mode == "" for _, mode in srv.wa_redirect_hits), srv.wa_redirect_hits
+
+
+def test_a_whatsapp_button_that_loads_a_redirect_page_or_the_app_scheme_is_caught(tmp_path, wa_guard):
+    for mode in ("wa_widget_redirect", "wa_widget_scheme", "wa_share_and_widget"):
+        c, st = _wa(mode, tmp_path / mode)
+        assert c.verdict == "pass" and st["whatsapp_number"].status == "pass", \
+            (mode, c.verdict, [(s.name, s.status, s.error, s.detail) for s in c.attempts[-1].steps])
+        assert "+918888888888" in st["whatsapp_number"].detail, (mode, st["whatsapp_number"].detail)
+
+
+def test_the_hostile_themes_chat_bubble_has_a_real_number(tmp_path):
+    """The hostile mock's WhatsApp bubble (it covers buttons) carries a real number, so the whole-store test stays
+    about what it tests."""
+    c, st = _wa("hostile", tmp_path)
+    assert c.verdict == "pass", [(s.name, s.status, s.error) for s in c.attempts[-1].steps]
+
+
+def test_a_whatsapp_named_link_to_another_site_is_never_tapped(tmp_path, wa_guard, monkeypatch):
+    import radar.checks.features as feat
+    tapped = []
+    real = feat._tap_whatsapp_widget
+    monkeypatch.setattr(feat, "_tap_whatsapp_widget", lambda *a, **k: tapped.append(1) or real(*a, **k))
+    c, st = _wa("wa_external_named", tmp_path)
+    assert c.verdict == "pass" and tapped == [] and st["whatsapp_not_judged"].status == "info", \
+        [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+
+
+def test_a_whatsapp_group_invite_is_named_not_judged(tmp_path, wa_guard):
+    """amrutam.co.in on phones (23 Oct): the only visible WhatsApp link was a community invite; it was dropped silently."""
+    c, st = _wa("wa_group_only", tmp_path)
+    assert c.verdict == "pass" and "whatsapp_number" not in st and "group invite" in st["whatsapp_note"].detail, \
+        [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]

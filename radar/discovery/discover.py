@@ -14,6 +14,7 @@ from __future__ import annotations
 
 import re
 import time
+from dataclasses import dataclass
 
 from datetime import datetime, timezone
 from urllib.parse import urljoin, urlparse
@@ -21,7 +22,7 @@ from urllib.parse import urljoin, urlparse
 from radar.core.browser import Session, RobotsBlocked
 from radar.core.config import Settings, site_id_from_url
 from radar.core.models import SiteMap, Product, Collection
-from radar.core.network import NO_NETWORK_NOTE, online
+from radar.core.network import NO_NETWORK_NOTE, online, reset_cache
 from radar.core.robots import Robots
 from radar.discovery.detect import detect_platform, detect_checkout_app, detect_access
 from radar.discovery.shopify_data import products_from_json, product_from_js, price_ok
@@ -257,6 +258,159 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
     return rb
 
 
+HOME_CHECK_PAUSES = (20, 60)     # seconds between the homepage tries when robots.txt is silent (the homepage's 5xx rule)
+# errors that mean Radar's OWN connection dropped while it asked (the store isn't to blame for these)
+OWN_NETWORK = re.compile(r"ERR_INTERNET_DISCONNECTED|ERR_NETWORK_CHANGED|ERR_NETWORK_IO_SUSPENDED|ENETDOWN|ENETUNREACH")
+
+
+def _short_error(e: Exception | str, cap: int = 60) -> str:
+    """One network error, short and without brackets (the uploader keeps a bracketed tail as 'Technical detail')."""
+    msg = str(e).splitlines()[0] if str(e) else type(e).__name__
+    msg = re.sub(r"^no answer:\s*", "", msg)
+    msg = re.sub(r"\b(?:apiRequestContext|APIRequestContext|page|Page)\.\w+:\s*", "", msg)   # 'apiRequestContext.get: '
+    return re.sub(r"[()\[\]]", "", msg).strip()[:cap] or type(e).__name__
+
+
+@dataclass
+class StoreAnswer:
+    """What store_answers found. up: the store's server answered (status = that answer). tries: each try, in order
+    ('HTTP 503', 'Timeout 30000ms exceeded.', 'browser: HTTP 503'). offline: an error said Radar's own connection dropped."""
+    up: bool
+    status: int | None
+    tries: list
+    secs: float
+    offline: bool = False
+    challenge: bool = False
+
+
+def _challenge(status: int, body: str) -> bool:
+    """A bot-protection page sent with a 5xx (some firewalls answer their challenge with 503): the server is up."""
+    m = re.search(r"<title[^>]*>(.*?)</title>", body or "", re.I | re.S)
+    return detect_access(status, (m.group(1).strip() if m else ""), body or "", "/") == "bot_blocked"
+
+
+def _browser_answer(sess: Session, url: str, s: Settings) -> tuple[int | None, str, str]:
+    """The homepage asked once by Chromium itself (review, 22 Oct): a firewall can drop or reset Playwright's own HTTP
+    client (it is not a browser; browser.py _get_json, 18 Oct) and an incomplete certificate chain fails there while
+    Chromium completes it, so 'down' is never decided on that client alone. Only the page itself is let through (no
+    scripts, images or styles: aborted), Radar waits for the answer's first bytes ('commit'), then leaves the page.
+    Returns (status or None, error, body of a 5xx answer)."""
+    page = sess.page
+
+    def only_the_page(route):
+        try:
+            if route.request.resource_type == "document":
+                route.fallback()          # on to the context's own routes (Web Bot Auth signing)
+            else:
+                route.abort()
+        except Exception:  # noqa: BLE001  page closing under the route
+            pass
+    try:
+        page.route("**/*", only_the_page)
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        resp = page.goto(url, wait_until="commit", timeout=s.home_timeout_ms)
+        st = resp.status if resp is not None else None
+        body = ""
+        if st is not None and st >= 500:
+            try:
+                body = resp.text()[:200_000]
+            except Exception:  # noqa: BLE001
+                body = ""
+        return st, "", body
+    except Exception as e:  # noqa: BLE001  timeout, refused, reset, TLS
+        return None, _short_error(e), ""
+    finally:
+        # leave the page BEFORE letting requests through again: after 'commit' the document is still arriving and
+        # would load its pictures and scripts the moment the route is gone (caught by the e2e test, 22 Oct)
+        try:
+            page.goto("about:blank", timeout=5000)
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            page.unroute("**/*", only_the_page)
+        except Exception:  # noqa: BLE001
+            pass
+
+
+def store_answers(sess: Session, base_url: str, s: Settings) -> StoreAnswer:
+    """Is the whole store down? Asked only on daily checks (Settings.check_store_down) after robots.txt gave no answer.
+    22 Oct: a store whose server times out or answers 5xx to everything fails at robots.txt, Radar's first request;
+    RFC 9309 then means 'do not crawl', the run was 'blocked' (not tested) and the owner heard nothing about the biggest
+    outage of all. An availability check, not crawling:
+      1. one plain HTTP request for the homepage, no redirects followed, up to 3 times, HOME_CHECK_PAUSES apart, each
+         given nav_timeout_ms (the status arrives with the first bytes: 4-13 s on Contabo's worst minute, 21 Oct);
+      2. if none answered, the homepage once in Chromium itself (_browser_answer), given home_timeout_ms.
+    Any answer below 500 (200, a redirect, 403 / 429 from bot protection) or a bot-protection page sent with a 5xx = the
+    store's server is up."""
+    url = base_url + "/"
+    tries: list[str] = []
+    t0 = time.time()
+    done = lambda **kw: StoreAnswer(tries=tries, secs=round(time.time() - t0, 1), **kw)
+    for i in range(len(HOME_CHECK_PAUSES) + 1):
+        if i:
+            sess.page.wait_for_timeout(int(HOME_CHECK_PAUSES[i - 1] * 1000 * sess.backoff_scale))
+        try:
+            r = sess.page.context.request.get(url, timeout=s.nav_timeout_ms, headers=sess.sign(url) or None,
+                                              max_redirects=0)
+            tries.append(f"HTTP {r.status}")
+            if r.status < 500:
+                return done(up=True, status=r.status)
+            try:
+                body = r.text()[:200_000]
+            except Exception:  # noqa: BLE001
+                body = ""
+            if _challenge(r.status, body):
+                return done(up=True, status=r.status, challenge=True)
+        except Exception as e:  # noqa: BLE001  timeout, refused, reset, TLS
+            tries.append(_short_error(e))
+    st, err, body = _browser_answer(sess, url, s)
+    tries.append("browser: " + (f"HTTP {st}" if st is not None else err))
+    if st is not None and (st < 500 or _challenge(st, body)):
+        return done(up=True, status=st, challenge=st >= 500)
+    return done(up=False, status=None, offline=any(OWN_NETWORK.search(t) for t in tries))
+
+
+def _tries(seen: list[str]) -> str:
+    """['HTTP 503', 'HTTP 503', 'HTTP 503', 'browser: HTTP 503'] -> 'HTTP 503 x3, browser: HTTP 503': repeats in a row
+    are counted, different answers listed in order."""
+    out: list[list] = []
+    for x in seen:
+        if out and out[-1][0] == x:
+            out[-1][1] += 1
+        else:
+            out.append([x, 1])
+    return ", ".join(x + (f" x{n}" if n > 1 else "") for x, n in out)
+
+
+def _span(secs: float) -> str:
+    return f"{int(round(secs))} s" if secs < 90 else f"about {int(round(secs / 60))} minutes"
+
+
+def down_note(ans: StoreAnswer, robots_why: str) -> str:
+    """The store's line on the dashboard and in the 🔴 email: a plain sentence, then the detail in brackets (the
+    uploader shows the bracketed tail under 'Technical detail'). Kept under 300 characters."""
+    plain = (f"The store didn't answer at all: its homepage didn't load, tried {len(ans.tries)} times over "
+             f"{_span(ans.secs)}")
+    tail = f"homepage: {_tries(ans.tries)}; robots.txt: {robots_why}, tried 3 times"
+    room = 295 - len(plain) - 3
+    if len(tail) > room:
+        tail = tail[:room - 1].rstrip(" ,;") + "…"
+    return f"{plain} ({tail})"
+
+
+def robots_down_home_up_note(why: str, ans: StoreAnswer) -> str:
+    """robots.txt failing while the store's server answers: not tested (RFC 9309), never an outage. Under 300 chars."""
+    head = (f"robots.txt could not be fetched ({why[:32].rstrip('. ')}, 3 tries), so nothing was tested: the robots.txt "
+            "standard (RFC 9309) says 'do not crawl' then. ")
+    if ans.status is not None and 200 <= ans.status < 300:
+        return head + (f"The homepage answers (HTTP {ans.status}), so the store is open to shoppers; only robots.txt "
+                       "fails, and search engines pause crawling while it does.")
+    return head + (f"The store's server answers (HTTP {ans.status}"
+                   + (", a bot-protection page" if ans.challenge else "") + "), so it is not down; only robots.txt fails.")
+
+
 def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
     """Footer policy / contact pages and the header account link, read from the homepage already open. Links the
     store's robots.txt disallows (some disallow /policies/ or /account) are never opened: they are listed in the notes
@@ -297,6 +451,152 @@ def _discover_info_pages(sess: Session, sm: SiteMap, base_url: str) -> None:
             sm.account_url = acct.split("#")[0]
 
 
+def _timed_out(e: Exception) -> bool:
+    """A navigation that ran out of time: Playwright's own timeout, or Chromium's network timeouts."""
+    from playwright.sync_api import TimeoutError as PlaywrightTimeout
+    return isinstance(e, PlaywrightTimeout) or any(t in str(e) for t in ("ERR_TIMED_OUT", "ERR_CONNECTION_TIMED_OUT"))
+
+
+class _Arrived:
+    """The homepage's answer when the first navigation finished during the pause (Playwright gives no Response then)."""
+    def __init__(self, status: int):
+        self.status = status
+
+
+# The store's own password page (23 Oct, daily checks only; tightened after the review the same day): every Shopify
+# development store, and every store before its launch, shows /password to everyone. When the owner gave BugRadar the
+# store password, Radar puts it in that ONE box and submits that ONE form, and only when ALL hold:
+#   * the page Radar is on is the store's own host (exactly, not a parent domain), robots.txt allows /password;
+#   * the form posts to that same host's /password, opens in the same page (no target=_blank / frame), and is one of
+#     Shopify's two password forms: the theme's (form_type=storefront_password) or, on development stores in "private
+#     mode", Shopify's own page (26 Oct, bugradar-dev: no form_type, an authenticity_token, the box named "password");
+#   * after the post the browser is still on the store's own host.
+# Nothing else on the page is touched (the "notify me" email box stays empty); no keystrokes or input events (a page
+# script would see them); the value is set in the page because many themes keep the box in a closed pop-up.
+# Outcomes, each with ONE note put first (notes[0] is the reason the dashboard shows; the Shopify page keys on them):
+#   entered -> the store is tested (the cookie it set goes to every later check: executor -> Browser.store_cookies)
+#   wrong   -> PASSWORD_WRONG_NOTE: the post came back to /password
+#   unused  -> PASSWORD_UNUSED + why (no box, robots, another site, Shopify slowed / challenged Radar, an error)
+PASSWORD_JS = r"""(a) => {
+  if (location.host !== a.host) return 'other-site';
+  const ok = (f) => {
+    if (!f || f.method.toLowerCase() !== 'post' || (f.target && f.target !== '_self')) return false;
+    const u = new URL(f.action, location.href);
+    const els = [...f.elements];
+    return u.host === a.host && /^\/password\/?$/.test(u.pathname)
+      && (els.some((e) => e.name === 'form_type' && e.value === 'storefront_password')
+          || els.some((e) => e.name === 'authenticity_token' && e.type === 'hidden'));
+  };
+  const box = [...document.querySelectorAll('input[type="password"]')].find((i) => i.name === 'password' && ok(i.form));
+  if (!box) return 'no-box';
+  box.value = a.pwd;
+  if (box.form.requestSubmit) box.form.requestSubmit(); else box.form.submit();
+  return 'sent';
+}"""
+NEEDED_NOTE = "store is password-protected (Shopify storefront password); nothing can be tested"
+PASSWORD_WRONG_NOTE = ("The store password BugRadar has didn't open the store: its password page still shows. "
+                       "Update the store password in BugRadar and the next check tests everything.")
+PASSWORD_UNUSED = "The store password couldn't be used: "
+
+
+def enter_store_password(sess: Session, base_url: str, s: Settings, sm: SiteMap):
+    """Put the owner's store password in the store's own password form. Returns (outcome, response):
+    ("entered", homepage response) | ("wrong", None) | ("unused", None) | ("stopped", None) — for "stopped" sm.access
+    and the first note are already set (Shopify slowed / challenged Radar, or the store stopped answering)."""
+    page = sess.page
+    host = urlparse(base_url).netloc
+    unused = lambda why: (sm.notes.insert(0, PASSWORD_UNUSED + why), ("unused", None))[1]   # noqa: E731
+    try:
+        if urlparse(page.url).netloc != host or urlparse(page.url).path.rstrip("/") != "/password":
+            sess.goto(base_url + "/password", timeout_ms=s.nav_timeout_ms)
+        if urlparse(page.url).netloc != host:
+            return unused("the store's password page is on another site, so Radar didn't type it there.")
+        if not sess.allowed(base_url + "/password"):
+            return unused("robots.txt doesn't let Radar use the store's password page.")
+        with page.expect_navigation(wait_until="domcontentloaded", timeout=s.nav_timeout_ms) as nav:
+            sent = page.evaluate(PASSWORD_JS, {"pwd": s.store_password, "host": host})
+            if sent != "sent":
+                raise LookupError(sent)
+        r = nav.value
+        sess.settle()
+    except LookupError as e:
+        return unused("the password page changed to another site before Radar typed it." if str(e) == "other-site"
+                      else "Radar couldn't find Shopify's password box on the store's password page.")
+    except RobotsBlocked:
+        return unused("robots.txt doesn't let Radar use the store's password page.")
+    except Exception as e:  # noqa: BLE001  Playwright's error text never carries the evaluate argument (review)
+        return unused(f"an error while entering it ({str(e).splitlines()[0][:80]}).")
+    now = urlparse(page.url)
+    if now.netloc != host:
+        return unused("after entering it the store sent Radar to another site.")
+    status = r.status if r else None
+    html = sess.evaluate("() => document.documentElement.outerHTML") or ""
+    title = sess.evaluate("() => document.title") or ""
+    if status in (403, 429) or now.path.startswith("/challenge") or detect_access(status, title, html, now.path) == "bot_blocked":
+        sm.access = "rate_limited" if status == 429 else "bot_blocked"
+        sm.notes.insert(0, PASSWORD_UNUSED + ("Shopify slowed Radar down when it entered the store password; the next "
+                                              "check tries again." if status == 429 else
+                                              "Shopify asked Radar to prove it's human when it entered the store "
+                                              "password, which Radar never does."))
+        return "stopped", None
+    if now.path.rstrip("/") == "/password":
+        return "wrong", None
+    sess.password_cookies = page.context.cookies(base_url)
+    try:
+        resp, _ = homepage(sess, base_url, s, sm)
+    except RobotsBlocked:
+        return unused("robots.txt doesn't let Radar open the homepage.")
+    except Exception as e:  # noqa: BLE001  the store stopped answering right after the password worked
+        msg = str(e).splitlines()[0][:120]
+        sm.access = "no_network" if not online(s.net_probe_urls) else "unreachable"
+        sm.notes.insert(0, NO_NETWORK_NOTE.format(where=f" (homepage after the store password: {msg})")
+                        if sm.access == "no_network" else f"homepage unreachable after the store password: {msg}")
+        return "stopped", None
+    return "entered", resp
+
+
+NAV_STATUS = "() => { const n = performance.getEntriesByType('navigation')[0]; return n && n.responseStatus ? n.responseStatus : null }"
+
+
+def homepage(sess: Session, base_url: str, s: Settings, sm: SiteMap):
+    """The store's homepage, patiently. 21 Oct: from the Contabo box a Shopify store's HTML took 2-21 s to be ready on a
+    bad minute and twice that day over the 30 s page limit, so Radar called a working store 'unreachable' (a daily
+    check's problem + 🔴 email for nothing). The homepage gets s.home_timeout_ms (60 s). After a timeout the page that is
+    still arriving gets a short pause to finish (starting over would throw it away and ask a struggling store again);
+    only if nothing arrived is it loaded once more, and a second timeout is the store's answer. sm.home_slow tells the
+    worker the run was slow (its first look is then re-checked rather than alerted, radar/worker.py). DNS / refused /
+    certificate errors are not retried: they don't get better in 10 s, and robots.txt already tried 3 times."""
+    url = base_url + "/"
+    try:
+        return sess.goto(url, timeout_ms=s.home_timeout_ms)
+    except RobotsBlocked:
+        raise
+    except Exception as e:  # noqa: BLE001
+        if not _timed_out(e):
+            raise
+        first = str(e).splitlines()[0][:100]
+    sm.home_slow = True
+    pause_ms, t0 = int(10000 * sess.backoff_scale), time.time()
+    try:
+        # the timed-out navigation keeps going in the browser; the page is still blank until its answer arrives
+        sess.page.wait_for_url(lambda u: same_site(base_url, u), wait_until="domcontentloaded", timeout=max(pause_ms, 1))
+        status = sess.evaluate(NAV_STATUS)
+        if status:
+            sess.settle()
+            sm.notes.append(f"homepage took over {s.home_timeout_ms // 1000} s ({first}) and finished loading "
+                            f"{round(time.time() - t0)} s later; a slow network or a slow store, not a store that is down")
+            return _Arrived(int(status)), round(s.home_timeout_ms / 1000 + time.time() - t0, 2)
+    except Exception:  # noqa: BLE001  nothing usable arrived: load it again below
+        pass
+    left = pause_ms - int((time.time() - t0) * 1000)
+    if left > 0:
+        sess.page.wait_for_timeout(left)
+    out = sess.goto(url, timeout_ms=s.home_timeout_ms)
+    sm.notes.append(f"homepage took over {s.home_timeout_ms // 1000} s on the first try ({first}) and loaded on the second; "
+                    "a slow network or a slow store, not a store that is down")
+    return out
+
+
 def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = ()) -> SiteMap:
     """pins: case ids with an OPEN incident (product.pdp.<slug> / catalog.collection.<slug>). Their product or collection
     is tested again in this run whatever the sample picks; one that has left the catalog goes to sm.pins_gone (14 Oct)."""
@@ -320,6 +620,22 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
             return sm
         sm.access = "robots_unreachable"
         why = f"HTTP {code}" if code else ("no answer: " + getattr(sess.robots, "error", "") if getattr(sess.robots, "error", "") else "no answer")
+        if s.check_store_down:
+            # a daily check (22 Oct): is the whole store down? (store_answers) Free checks and benches keep 'blocked'.
+            rwhy = f"HTTP {code}" if code else _short_error(getattr(sess.robots, "error", "") or "no answer")
+            ans = store_answers(sess, base_url, s)
+            if not ans.up:
+                reset_cache()       # the window was minutes long: ask again now, not from the 30 s cache
+                if ans.offline or not online(s.net_probe_urls):
+                    sm.access = "no_network"
+                    sm.notes.append(NO_NETWORK_NOTE.format(where=" while the store was checked"))
+                    return sm
+                sm.access = "unreachable"
+                sm.notes.append(down_note(ans, rwhy))
+                return sm
+            sm.store_up_robots_down = ans.status
+            sm.notes.append(robots_down_home_up_note(rwhy, ans))
+            return sm
         sm.notes.append(f"robots.txt could not be fetched ({why}, tried 3 times); "
                         "under the robots.txt standard (RFC 9309) that means 'do not crawl', so nothing was tested "
                         + ("this run. The store's domain does not resolve (DNS: no such host): check the address."
@@ -331,7 +647,7 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
 
     # 2. homepage + platform
     try:
-        resp, _ = sess.goto(base_url + "/")
+        resp, _ = homepage(sess, base_url, s, sm)
     except RobotsBlocked:
         sm.access = "robots_blocked"
         sm.notes.append("robots.txt disallows the whole site for Radar's User-Agent; Radar respects it "
@@ -364,7 +680,7 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
         sess.page.wait_for_timeout(int(pause * 1000 * sess.backoff_scale))
         waited += pause
         try:
-            resp, _ = sess.goto(base_url + "/")
+            resp, _ = sess.goto(base_url + "/", timeout_ms=s.home_timeout_ms)
         except Exception:  # noqa: BLE001
             break
     if waited and resp is not None and resp.status < 400:
@@ -372,6 +688,22 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
     html = sess.evaluate("() => document.documentElement.outerHTML") or ""
     sm.home_title = sess.evaluate("() => document.title") or ""
     sm.access = detect_access(resp.status if resp else None, sm.home_title, html, urlparse(sess.page.url).path)
+    if sm.access == "password" and s.store_password:
+        outcome, after = enter_store_password(sess, base_url, s, sm)
+        if outcome == "stopped":
+            return sm
+        if outcome == "wrong":
+            sm.notes.insert(0, PASSWORD_WRONG_NOTE)
+        if outcome == "entered":
+            resp = after
+            html = sess.evaluate("() => document.documentElement.outerHTML") or ""
+            sm.home_title = sess.evaluate("() => document.title") or ""
+            sm.access = detect_access(resp.status if resp else None, sm.home_title, html, urlparse(sess.page.url).path)
+            if sm.access == "password":            # the cookie didn't hold: the same as a wrong password
+                sess.password_cookies = None
+                sm.notes.insert(0, PASSWORD_WRONG_NOTE)
+            else:
+                sm.notes.append("store is password-protected; Radar entered the store password its owner gave BugRadar")
     det = detect_platform(html)
     if det["platform"] != "shopify" and det["evidence"] and sm.access == "open" and resp is not None and resp.status < 400:
         # One Shopify marker but not two (koskii.com, new30f, 10 Oct: 'not Shopify' on one device and a healthy Shopify
@@ -379,7 +711,7 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
         first = list(det["evidence"])
         sess.page.wait_for_timeout(int(3000 * sess.backoff_scale))
         try:
-            resp2, _ = sess.goto(base_url + "/")
+            resp2, _ = sess.goto(base_url + "/", timeout_ms=s.home_timeout_ms)
             html2 = sess.evaluate("() => document.documentElement.outerHTML") or ""
             det2 = detect_platform(html2)
             if resp2 is not None and resp2.status < 400 and det2["platform"] == "shopify":
@@ -391,7 +723,11 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
             pass
     sm.platform, sm.platform_evidence = det["platform"], det["evidence"]
     if sm.access == "password":
-        sm.notes.append("store is password-protected (Shopify storefront password); nothing can be tested")
+        if s.store_password_unread and not s.store_password:
+            sm.notes.insert(0, PASSWORD_UNUSED + "BugRadar couldn't read the saved password for this check; the next "
+                                                 "check uses it.")
+        elif not s.store_password:
+            sm.notes.insert(0, NEEDED_NOTE)
         return sm
     if sm.access == "bot_blocked":
         sm.notes.append("bot protection challenge shown to Radar's identified browser; Radar does not evade it "

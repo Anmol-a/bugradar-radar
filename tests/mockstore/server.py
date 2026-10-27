@@ -85,6 +85,8 @@ Modes (to prove Radar catches and heals what it should):
                    an enabled sticky ADD TO CART bar (no form link) is on screen (littleboxindia.com mobile) -> PASSES
   disabled_buy_now_only  add-to-cart disabled, only an enabled 'Buy it now' -> never clicked; the failure names it
   buy_now_first    an enabled 'Buy it now' sits before the add-to-cart in the form -> Radar clicks add to cart, PASSES
+  slow_first_home  the FIRST homepage load takes home_delay seconds (Contabo -> Shopify, 21 Oct) -> Radar waits and tries
+                   once more, HEALTHY with a note; home_hangs: every homepage load does -> UNREACHABLE after two tries
   stripped_first_home  the FIRST homepage load shows only one Shopify marker (cdn.shopify.com; koskii.com) -> Radar
                    loads it once more before calling it 'not Shopify', PASSES
   new_tab_cards    product links on the homepage and collections open in a NEW TAB (target=_blank; fashor.com,
@@ -146,6 +148,7 @@ Modes (to prove Radar catches and heals what it should):
   div_buy_control  product pages: NO /cart/add form; the buy control is <div class="pdp-addtobag-btn"
                    data-product-handle=...> "ADD TO BAG", after 3 recommendation cards with their own "Add to Bag"
                    buttons for other products (nicobar.com, held-out 7 Oct) -> product + cart PASS, right product added
+  reworded_name    the vase's page (no cart form) shows it as 'VASE · Flower, ceramic' (nbdpowerlifting.com, 18 Oct)
   preselected_variant  the vase's page has NO cart form (headless-style div buy control) and pre-selects its SECOND
                    size ("Large", marked active + aria-checked); only that size's price is shown (foxtale.in, 9 Oct: the
                    200g Best Value size pre-selected, Radar read the first size's ₹349 and failed "price not on page")
@@ -169,7 +172,41 @@ Modes (to prove Radar catches and heals what it should):
                    -> everything PASSES; the noise only shows up as report evidence (v0.18)
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
                    bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
-  robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested
+  robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested;
+                   on a daily check (check_store_down) the homepage answers 200, so it stays BLOCKED with that said
+  storefront_password  a store behind Shopify's password page (23 Oct): every page sends the visitor to /password until
+                   the right password (STORE_PASSWORD) is posted there; the page also has a "notify me" email box that
+                   Radar must never fill (posts recorded on server.password_posts / server.contact_posts)
+  storefront_password_modal  the same, Dawn-style: the password box sits in a closed pop-up ("Enter using password")
+  all_down         the whole store is down: EVERY request answers HTTP 503, robots.txt included (22 Oct) -> a daily
+                   check (check_store_down) says UNREACHABLE ("didn't answer at all"); free checks / benches: BLOCKED
+  wa_ok / wa_bad / wa_no_cc / wa_zero  a floating WhatsApp link on every page: wa.me/919876543210 (passes),
+                   wa.me/12345 (fails: not a phone number), wa.me/9876543210 (warning: no country code),
+                   api.whatsapp.com/send?phone=09876543210 (fails: leading 0) (22 Oct)
+  wa_widget_ok / wa_widget_nav / wa_widget_dead / wa_widget_panel  a WhatsApp button with no address: it calls
+                   window.open(wa.me/918888888888) / sets location to api.whatsapp.com/send?phone=918888888888 / does
+                   nothing (warning) / opens a panel with a wa.me link -> Radar taps it with WhatsApp blocked and reads it
+  wa_share_only    only a 'Share on WhatsApp' link (no number) -> information only
+  wa_short         a WhatsApp Business short link wa.me/message/<code> (no number in it) -> information only
+  wa_group_only    only a WhatsApp group invite (chat.whatsapp.com/<code>) -> not judged, said in a note (23 Oct)
+  wa_icon_shortlink  an icon link through wa.link (a URL shortener) -> never clicked, not judged
+  wa_store_redirect  a WhatsApp link to the store's /pages/whatsapp, which redirects to wa.me/918888888888 -> read from
+                   the redirect (Radar asks for it without following it): passes
+  wa_widget_redirect / wa_widget_scheme  a button that loads /go/wa (redirects to WhatsApp) / jumps to
+                   whatsapp://send?phone=918888888888 -> caught without leaving the page: passes
+  wa_share_and_widget  a share link and a chat button on one page (the button answers after 1.2 s) -> the button's own
+                   answer is judged, never the share link that was already there
+  wa_external_named  a WhatsApp-named button that links to another site -> never tapped, not judged
+  wa_product_only  the WhatsApp link only on product pages -> found there, passes
+  pincode_cod_no   the page says 'COD available', the pincode checker says 'COD not available' -> WARNING (22 Oct)
+  cod_badge_only   'COD available' badge, no pincode checker -> information only
+  robots_500_home_down  /robots.txt and / answer 503, everything else works -> daily check UNREACHABLE (only those two
+                   are asked)
+  robots_500_client_dropped  /robots.txt 503; / answers 503 to Playwright's own HTTP client (no Sec-Fetch-Mode) and
+                   normally to Chromium -> daily check: the browser confirms the store is up, BLOCKED (never a false 🔴)
+  robots_500_home_loop  /robots.txt 503; / redirects to itself -> the server answered (HTTP 302): BLOCKED
+  robots_500_home_challenge  /robots.txt 503; / is a Cloudflare challenge sent with 503 -> server up: BLOCKED
+  (down_hits on the server records each request path in these modes, ' (browser)' when Chromium asked)
   blank_not_shopify  gozero.in (cycle 34): no robots.txt (404), the homepage answers 200 with an EMPTY title, an empty
                    <div id=root> and no Shopify marker -> verdict UNSUPPORTED with what the homepage showed (v0.19:
                    'error', shown as 'Radar crashed')
@@ -455,6 +492,8 @@ Modes (to prove Radar catches and heals what it should):
                    page until answered (teatrunk.in) -> Radar clicks 'Stay Here' (never 'International'), PASSES
   country_modal_div_stay  country_modal, but 'Stay Here' is a plain <div> with a click handler and the backdrop is a
                    sibling of the box (teatrunk.in re-test) -> Radar clicks 'Stay Here', PASSES
+  region_gateway         full-page split gateway INDIA | EUROPE, each 'VISIT NOW', no close; Shopify.country 'IN'
+                         (axorhelmets.com, Contabo probe 18 Oct)
   country_modal_stay_on  'Visiting from United States (USD $)?' with 'Shop on US Site' / 'Stay on Mock IN Site' and an
                    unlabelled icon x, inside <header> (vedix.com) -> Radar clicks 'Stay on Mock IN Site' (never the US
                    site), PASSES
@@ -654,6 +693,48 @@ def card_price_html(handle: str, mode: str) -> str:
     return f'<span class="price-item price-item--regular">Rs. {low:,.2f}</span>'
 
 
+# storefront_password_* (23 Oct review): what Radar must NOT type the password into, and Shopify pushing back
+#   _offsite        the form posts to another host            _blank      the form opens in a new tab (target=_blank)
+#   _noformtype     no form_type=storefront_password field    _get        the form is method=get
+#   _robots         robots.txt disallows /password            _429        Shopify answers the post with 429
+#   _redirect       pages show the password box in place, but /password sends the browser to another host
+#                   (localhost instead of 127.0.0.1)
+PASSWORD_MODES = ("storefront_password", "storefront_password_modal", "storefront_password_offsite", "storefront_password_blank",
+                  "storefront_password_noformtype", "storefront_password_get", "storefront_password_robots",
+                  "storefront_password_429", "storefront_password_redirect", "storefront_password_devstore")
+STORE_PASSWORD = "open-sesame 23"
+
+
+def password_page(mode: str, wrong: bool = False, port: int = 0) -> str:
+    """Shopify's storefront password page (Dawn's layout): a 'notify me' email signup and the password form."""
+    if mode == "storefront_password_devstore":
+        # bugradar-dev.myshopify.com/password, 26 Oct 2026: a development store in "private mode" shows Shopify's own page,
+        # not the theme's: no scripts, no form_type, an authenticity_token, the box named "password", data-remote unused
+        err = '<div class="error-container"><p class="error">Password incorrect</p></div>' if wrong else '<div class="error-container"></div>'
+        return ('<!doctype html><html><head><title>bugradar-dev</title></head><body>'
+                '<form action="/password" accept-charset="UTF-8" data-remote="true" method="post">'
+                '<input type="hidden" name="authenticity_token" value="tok-123==">'
+                '<div class="form-section"><label for="password">Enter store password</label>'
+                '<input type="password" class="form-input " id="password" name="password" autocomplete="nope">'
+                f'{err}</div><button type="submit">Enter</button></form></body></html>')
+    action = f"http://localhost:{port}/password" if mode == "storefront_password_offsite" else "/password"
+    attrs = (' target="_blank"' if mode == "storefront_password_blank" else "") + \
+        (' method="get"' if mode == "storefront_password_get" else ' method="post"')
+    ftype = "" if mode == "storefront_password_noformtype" else '<input type="hidden" name="form_type" value="storefront_password">'
+    form = (f'<form{attrs} action="{action}" id="login_form" accept-charset="UTF-8" class="password-form">'
+            f'{ftype}<input type="hidden" name="utf8" value="✓">'
+            + ('<p class="form__message" role="alert">Wrong password!</p>' if wrong else "")
+            + '<label for="Password">Password</label><input type="password" name="password" id="Password" autocomplete="off">'
+            '<button type="submit" name="commit">Enter</button></form>')
+    if mode == "storefront_password_modal":
+        form = f'<details class="password-modal modal"><summary>Enter using password</summary><div class="modal__content">{form}</div></details>'
+    body = ('<h1>Opening soon</h1><p>Be the first to know when we launch.</p>'
+            '<form method="post" action="/contact#ContactFooter" id="ContactFooter" class="newsletter-form">'
+            '<input type="hidden" name="form_type" value="customer"><input type="hidden" name="contact[tags]" value="prospect,password page">'
+            '<input type="email" name="contact[email]" placeholder="Email" required><button type="submit">Notify me</button></form>' + form)
+    return page("Mock Store — Opening soon", body)
+
+
 class Handler(BaseHTTPRequestHandler):
     mode = "healthy"
     SEEN_UA: set = set()          # every User-Agent that reached the store (tests check Radar's identity)
@@ -746,7 +827,7 @@ if (!document.cookie.includes('consent=')) document.addEventListener('DOMContent
     HOSTILE_NAV = ('<nav><a href="/collections/home-decor" role="link" aria-disabled="true">Shop</a> '
                    '<details class="menu"><summary aria-expanded="false">Categories</summary>'
                    '<div><a href="/collections/kitchen">Kitchen</a></div></details> <a href="/pages/about">About</a></nav>')
-    HOSTILE_TAIL = """<a class="chat-widget__link" aria-label="Chat on WhatsApp" href="https://wa.me/1" style="position:fixed;right:16px;
+    HOSTILE_TAIL = """<a class="chat-widget__link" aria-label="Chat on WhatsApp" href="https://wa.me/919876543210" style="position:fixed;right:16px;
       bottom:16px;width:140px;height:140px;border-radius:70px;background:#25d366;z-index:90;display:block"></a>
 <script>
 if (!document.cookie.includes('ifp=1')) setTimeout(() => {
@@ -764,7 +845,49 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
 }, 400);
 </script>"""
 
+    WA_FLOAT = 'position:fixed;right:16px;bottom:16px;width:56px;height:56px;display:block;background:#25d366;border-radius:28px;z-index:20'
+    WA_SNIPPETS = {
+        # 22 Oct: a floating WhatsApp chat button, the way Indian D2C stores add one
+        "wa_ok": f'<a class="wa-float" href="https://wa.me/919876543210?text=Hi" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        "wa_bad": f'<a class="wa-float" href="https://wa.me/12345" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        "wa_no_cc": f'<a class="wa-float" href="https://wa.me/9876543210" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        "wa_zero": f'<a class="wa-float" href="https://api.whatsapp.com/send?phone=09876543210" style="{WA_FLOAT}" aria-label="WhatsApp"></a>',
+        "wa_widget_ok": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                        'onclick="window.open(\'https://wa.me/918888888888\', \'_blank\')"></div>',
+        "wa_widget_nav": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                         'onclick="location.href=\'https://api.whatsapp.com/send?phone=918888888888\'"></div>',
+        "wa_widget_dead": f'<div class="whatsapp-button" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}"></div>',
+        "wa_widget_panel": f'<button class="whatsapp-launcher" aria-label="Chat with us on WhatsApp" style="{WA_FLOAT}" '
+                           'onclick="document.getElementById(\'wa-panel\').style.display=\'block\'"></button>'
+                           '<div id="wa-panel" style="display:none;position:fixed;right:16px;bottom:80px;width:260px;background:#fff;z-index:21">'
+                           '<p>Hi! How can we help?</p><a href="https://wa.me/918888888888?text=Hello">Start chat</a></div>',
+        "wa_share_only": '<p><a href="https://api.whatsapp.com/send?text=Look%20at%20this%20store">Share on WhatsApp</a></p>',
+        "wa_short": f'<a class="wa-float" href="https://wa.me/message/ABCDEFGHIJ1" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+        # amrutam.co.in on phones (23 Oct): only a WhatsApp community invite is visible
+        "wa_group_only": '<p><a href="https://chat.whatsapp.com/F0NF4QRM9KyClsMBYpYX28">Join our WhatsApp community</a></p>',
+        # review, 22 Oct: an icon link through a URL shortener (never clicked, not judged)
+        "wa_icon_shortlink": f'<a href="https://wa.link/abc123" style="{WA_FLOAT}"><svg class="icon-whatsapp" width="56" height="56"></svg></a>',
+        # a link to the store's own page that redirects to WhatsApp: read from the redirect, not followed
+        "wa_store_redirect": f'<a class="whatsapp-icon" href="/pages/whatsapp" style="{WA_FLOAT}" aria-label="WhatsApp"></a>',
+        # a button that loads the store's redirect page / jumps to the app scheme (phones)
+        "wa_widget_redirect": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                              'onclick="location.href=\'/go/wa\'"></div>',
+        "wa_widget_scheme": f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                            'onclick="location.href=\'whatsapp://send?phone=918888888888\'"></div>',
+        # a product share link AND a chat button on one page: the share link is never taken for the button's answer
+        "wa_share_and_widget": '<p><a href="https://api.whatsapp.com/send?text=Look">Share on WhatsApp</a></p>'
+                               f'<div class="whatsapp-chat-widget" role="button" aria-label="WhatsApp us" style="{WA_FLOAT}" '
+                               # answers after 1.2 s: the share link already on the page must not be taken meanwhile
+                               'onclick="setTimeout(() => window.open(\'https://wa.me/918888888888\', \'_blank\'), 1200)"></div>',
+        # a WhatsApp-named button that links to another site: an address of its own, so never tapped
+        "wa_external_named": f'<a class="whatsapp-btn" href="https://chat.example.org/support" style="{WA_FLOAT}">Chat</a>',
+        "wa_product_only": f'<a class="wa-float" href="https://wa.me/919876543210" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
+    }
+
     def _send(self, code, body, ctype="text/html; charset=utf-8", set_cart=None):
+        if self.mode in self.WA_SNIPPETS and isinstance(body, str) and ctype.startswith("text/html") and "</body>" in body \
+                and (self.mode != "wa_product_only" or urlparse(self.path).path.startswith("/products/")):
+            body = body.replace("</body>", self.WA_SNIPPETS[self.mode] + "</body>", 1)
         if self.mode == "grid_quick_add_class" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/collections/"):
             # dhaagaweaves.in / cmartian.com (new31a/b re-test: '44 links: 44 inside cart drawer / quick-add
@@ -1171,6 +1294,19 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   if (document.cookie.includes('ctry=stay')) { m.remove(); return; }
   m.querySelector('.ctry-intl').onclick = () => { location.href = '/pages/international'; };
   m.querySelector('.ctry-stay').onclick = () => { document.cookie = 'ctry=stay;path=/'; m.remove(); }; })();</script></header>""", 1)
+        if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "region_gateway":
+            # axorhelmets.com (Contabo probe, 18 Oct, desktop): a full-page split 'gateway curtain', INDIA | EUROPE, each
+            # with 'VISIT NOW' and no close control; every card covered. The store serves India (Shopify.country 'IN'):
+            # INDIA's button opens this store; EUROPE's link leaves for another site and is never clicked.
+            body = body.replace("</header>", """<section class="split-gateway__curtain" id="gw" style="position:fixed;inset:0;z-index:100;display:flex">
+<div class="gw-half" style="flex:1;background:#333;color:#fff;padding-top:30vh;text-align:center"><h2>INDIA</h2>
+<button type="button" class="gw-in">VISIT NOW</button></div>
+<div class="gw-half" style="flex:1;background:#335;color:#fff;padding-top:30vh;text-align:center"><h2>EUROPE</h2>
+<a class="gw-eu" href="https://eu.mockstore.invalid/">VISIT NOW</a></div></section>
+<script>window.Shopify = window.Shopify || {}; Shopify.country = 'IN';
+(() => { const g = document.getElementById('gw');
+  if (document.cookie.includes('gw=in')) { g.remove(); return; }
+  g.querySelector('.gw-in').onclick = () => { document.cookie = 'gw=in;path=/'; g.remove(); }; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal_stay_on":
             # vedix.com (new30l, desktop): 'Visiting from United States (USD $)?' with 'Shop on US Site' (leaves the
             # store: never clicked), the link 'Stay on Vedix IN Site' and a country dropdown; its x is an unlabelled icon.
@@ -1361,6 +1497,54 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
         path, q = u.path.rstrip("/") or "/", parse_qs(u.query)
+        if self.mode in ("wa_store_redirect", "wa_widget_redirect") and path in ("/pages/whatsapp", "/go/wa"):
+            # the store's own redirect page to WhatsApp (22 Oct review); hits counted (Radar asks for the redirect only)
+            self.server.wa_redirect_hits = getattr(self.server, "wa_redirect_hits", []) + [
+                (path, self.headers.get("Sec-Fetch-Mode") or "")]
+            self.send_response(302)
+            self.send_header("Location", "https://wa.me/918888888888?text=Hi")
+            self.end_headers()
+            return
+        browser = bool(self.headers.get("Sec-Fetch-Mode"))      # Chromium sends it; Playwright's HTTP client doesn't
+        if self.mode.startswith("robots_500_") or self.mode == "all_down":
+            self.server.down_hits = getattr(self.server, "down_hits", []) + [path + (" (browser)" if browser else "")]
+        if self.mode == "all_down" or (self.mode == "robots_500_home_down" and path in ("/robots.txt", "/")):
+            # 22 Oct: a whole store down (every request 503, robots.txt included); the second only fails the two
+            # requests Radar makes before anything else
+            return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
+        if self.mode in ("robots_500_client_dropped", "robots_500_home_loop", "robots_500_home_challenge"):
+            if path == "/robots.txt":
+                return self._send(503, "Service Unavailable", "text/plain")
+            if path == "/" and self.mode == "robots_500_client_dropped" and not browser:
+                # a firewall that drops Playwright's own HTTP client but lets browsers through (review, 22 Oct)
+                return self._send(503, page("Service Unavailable", "<h1>Service Unavailable</h1>"))
+            if path == "/" and self.mode == "robots_500_home_loop":
+                self.send_response(302)
+                self.send_header("Location", "/")
+                self.end_headers()
+                return
+            if path == "/" and self.mode == "robots_500_home_challenge":
+                return self._send(503, '<html><head><title>Just a moment...</title></head><body>'
+                                       '<div id="cf-chl-widget"></div><script src="/cdn-cgi/challenge-platform/x.js">'
+                                       '</script></body></html>')
+        if self.mode in PASSWORD_MODES:
+            # 23 Oct: Shopify's storefront password. robots.txt and the theme's files still load; every page answers with
+            # a redirect to /password until the password cookie is set
+            if path == "/password" and self.mode == "storefront_password_redirect" and self.headers.get("Host", "").startswith("127."):
+                self.send_response(302)
+                self.send_header("Location", f"http://localhost:{self.server.server_address[1]}/password")
+                self.end_headers()
+                return
+            if path == "/password":
+                return self._send(200, password_page(self.mode, port=self.server.server_address[1]))
+            if path != "/robots.txt" and not path.startswith("/cdn/") and "storefront_digest=ok" not in (self.headers.get("Cookie") or ""):
+                if self.mode == "storefront_password_redirect":
+                    # the store's pages show the password box in place, but /password itself goes to another host
+                    return self._send(200, password_page(self.mode, port=self.server.server_address[1]))
+                self.send_response(302)
+                self.send_header("Location", "/password")
+                self.end_headers()
+                return
         if self.mode == "wishlist_404" and path == "/pages/wishlist":
             # countryflora.com / kotart.in / swornyfashion.com (new30p, 15 Oct): the wishlist app's page is the 404
             # template with the app drawing the list into it
@@ -1393,6 +1577,20 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
 <button class="join">Join Us</button></div>
 <script>document.querySelector('.kp-x').onclick = () => parent.postMessage('kp-close', '*');
 document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', '*');</script></body></html>""")
+        if self.mode in ("slow_first_home", "home_hangs") and path == "/":
+            # 21 Oct (Contabo -> Shopify): a store's homepage took 16-21 s on a bad minute and twice over 30 s, and Radar
+            # called a working store 'unreachable'. slow_first_home: only the FIRST load is slow (the server's
+            # home_delay, seconds); home_hangs: every load is (a store that really doesn't answer).
+            import time as _t
+            self.server.home_hits = getattr(self.server, "home_hits", 0) + 1
+            if self.mode == "home_hangs" or not getattr(self.server, "home_slow_done", False):
+                self.server.home_slow_done = True
+                self.server.slow_home_pending = getattr(self.server, "slow_home_pending", 0) + 1
+                _t.sleep(float(getattr(self.server, "home_delay", 3.0)))
+                self.server.slow_home_pending -= 1
+            elif getattr(self.server, "slow_home_pending", 0):
+                # asked again while the slow answer was still on its way: Radar started the homepage over
+                self.server.home_asked_again = getattr(self.server, "home_asked_again", 0) + 1
         if self.mode == "products_down" and path.startswith("/products/") and not path.endswith((".js", ".json")):
             return self._send(503, page("Something went wrong", "<h1>Something went wrong</h1>"))
         if self.mode == "server_blip" and (path == "/" or path.startswith(("/products/", "/collections/"))) \
@@ -1431,7 +1629,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
         if path == "/robots.txt" and self.mode in ("robots_404", "blank_not_shopify"):
             return self._send(404, "Not Found", "text/plain")
         if path == "/robots.txt":
-            extra = "Disallow: /search\n" if self.mode == "hostile" else ""
+            extra = "Disallow: /search\n" if self.mode == "hostile" else "Disallow: /password\n" if self.mode == "storefront_password_robots" else ""
             # /account and /policies/ disallowed, as some stores do (journeys 28 + 29 must skip them)
             acct = "" if self.mode in ("account_open", "account_broken") else "Disallow: /account\n"
             coll = SHOPIFY_COLLECTION_RULES
@@ -2212,6 +2410,12 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body = body.replace(buy, f'<div class="pdp-addtobag-btn" data-product-handle="{p["handle"]}" '
                                      f'onclick="addToCart({pre["id"]})" style="cursor:pointer;padding:10px;background:#222;color:#fff;'
                                      f'width:200px">ADD TO BAG</div>')
+        if self.mode == "reworded_name" and p["handle"] == "ceramic-vase":
+            # nbdpowerlifting.com (Contabo probe, 18 Oct): a custom page with no cart form shows the product under a
+            # reworded name ('STRENGTH / Back Print Acid Wash Hoodie' for 'NBD STRENGTH — Back Print Acid Wash Hoodie')
+            body = body.replace(buy, f'<div class="pdp-addtobag-btn" data-product-handle="{p["handle"]}" '
+                                     f'onclick="addToCart({vid})" style="cursor:pointer;padding:10px;background:#222;color:#fff;'
+                                     f'width:200px">ADD TO CART</div>').replace(p["title"], "VASE · Flower, ceramic")
         if self.mode == "drawer_form_first":
             body = (f'<div class="drawer__scrollable" style="display:none"><form id="product_form_9{rec["id"]}" '
                     f'class="shopify-product-form" action="/cart/add" method="post"><input type="hidden" name="id" value="{rv}">'
@@ -2239,13 +2443,20 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
             body += ('<div class="pincode-check"><input type="text" placeholder="ENTER YOUR PINCODE" maxlength="6">'
                      '<button type="button" class="pincode-btn">CHECK</button></div>')
-        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered", "pincode_rerender", "pincode_slow") and available:
+        if self.mode in ("pincode_cod_no", "cod_badge_only") and available:
+            # 22 Oct: the page advertises COD under the buy button
+            body += '<ul class="trust-badges"><li>Free shipping</li><li>COD available on all orders</li></ul>'
+        if self.mode in ("pincode_ok", "pincode_dead", "pincode_covered", "pincode_rerender", "pincode_slow", "pincode_cod_no") and available:
             # store feature (14 Oct): a delivery-pincode checker next to the buy button. pincode_ok answers after a
             # short app call; pincode_dead: the CHECK button is wired to nothing (the app's script failed to load)
             js = ('<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; const v = document.querySelector('
                   '".pincode-check input").value; setTimeout(() => { document.getElementById("pin-msg").textContent = '
                   '/^\\d{6}$/.test(v) ? "Delivery by Thu, 16 Oct · COD available for " + v : "Please enter a valid pincode"; }, 300); });</script>'
                   if self.mode in ("pincode_ok", "pincode_covered", "pincode_rerender") else
+                  # 22 Oct: the checker says the opposite of the page's 'COD available' badge
+                  '<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; setTimeout(() => { '
+                  'document.getElementById("pin-msg").textContent = "Delivery by Thu, 16 Oct · COD not available for this pincode"; }, 300); });</script>'
+                  if self.mode == "pincode_cod_no" else
                   # boat-lifestyle (15 Oct): 'Checking servicability ...' for a long time, then the answer
                   '<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; const m = document.getElementById("pin-msg"); '
                   'm.textContent = "Checking servicability ..."; setTimeout(() => { m.textContent = "Delivery by Sat, 18 Oct"; }, 11000); });</script>'
@@ -2338,6 +2549,23 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
         if self.mode == "signed_only" and not self._signed_ok():
             return self._send(429, "Too Many Requests", "text/plain")
         u = urlparse(self.path)
+        if self.mode in PASSWORD_MODES and u.path.rstrip("/") in ("/password", "/contact"):
+            form = parse_qs(self.rfile.read(int(self.headers.get("Content-Length", 0))).decode("utf-8", "replace"))
+            if u.path.rstrip("/") == "/contact":
+                self.server.contact_posts = getattr(self.server, "contact_posts", []) + [form]
+                return self._send(200, page("Thanks", "<p>Thanks for subscribing.</p>"))
+            self.server.password_posts = getattr(self.server, "password_posts", []) + [form]
+            if self.mode == "storefront_password_429":
+                return self._send(429, page("Too many attempts", "<h1>Too many attempts. Try again later.</h1>"))
+            shopify_form = form.get("form_type") == ["storefront_password"] or (
+                self.mode == "storefront_password_devstore" and form.get("authenticity_token") == ["tok-123=="])
+            if shopify_form and form.get("password") == [STORE_PASSWORD]:
+                self.send_response(302)
+                self.send_header("Set-Cookie", "storefront_digest=ok; Path=/; HttpOnly")
+                self.send_header("Location", "/")
+                self.end_headers()
+                return
+            return self._send(200, password_page(self.mode, wrong=True, port=self.server.server_address[1]))
         cid, new = self._cart()
         if u.path == "/cart/change.js":
             body = json.loads(self.rfile.read(int(self.headers.get("Content-Length", 0))) or b"{}")

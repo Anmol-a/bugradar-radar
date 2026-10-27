@@ -86,6 +86,135 @@ def test_run_once_records_the_worst_device_and_the_note(monkeypatch, tmp_path):
     assert (mid, status) == ("m2", "degraded") and note.startswith("desktop: healthy; mobile: degraded (")
 
 
+# ---- a store that didn't load is looked at again before anyone is told (21 Oct) ----------------------------------------
+from datetime import datetime, timedelta, timezone  # noqa: E402
+
+
+def _ago(minutes):
+    """A recheck_since the way PostgREST sends it (5-digit fraction, +00:00)."""
+    t = datetime.now(timezone.utc) - timedelta(minutes=minutes)
+    return t.strftime("%Y-%m-%dT%H:%M:%S.") + f"{t.microsecond:06d}"[:5] + "+00:00"
+
+
+def _recheck_setup(monkeypatch, tmp_path, verdicts):
+    """scan_devices answers the given verdicts per device (or raises); upload_results is recorded instead of sent.
+    A verdict ending in '+slow' is a run whose homepage needed more than its time limit (sitemap_summary.home_slow)."""
+    class R:
+        def __init__(self, device, verdict):
+            self.device, self.verdict = device, verdict.removesuffix("+slow")
+            self.sitemap_summary = {"home_slow": verdict.endswith("+slow")}
+    def fake(url, settings, devices):
+        if verdicts == "crash":
+            raise RuntimeError("browser exploded")
+        return [(R(d, v), tmp_path) for d, v in zip(devices, verdicts)]
+    monkeypatch.setattr("radar.runner.executor.scan_devices", fake)
+    sent = []
+    monkeypatch.setattr(w, "upload_results", lambda data_dir, since, log=print, extra_meta=None: sent.append(extra_meta) or ([], ""))
+    return sent
+
+
+def _one(monitor, verdicts, monkeypatch, tmp_path):
+    sent = _recheck_setup(monkeypatch, tmp_path, verdicts)
+    q = FakeQueue([{"id": "m1", "url": "https://x.in", "devices": ["desktop"], **monitor}])
+    w.run_once(q, Settings(), "box-1", upload=True, log=lambda *_: None)
+    (mid, status, note), = q.finished
+    return status, note, sent
+
+
+FIRST = {"last_status": "healthy", "rechecks": 0, "recheck_since": None}
+SECOND = {"last_status": "recheck", "rechecks": 1, "recheck_since": _ago(11)}
+
+
+def test_a_store_that_didnt_load_is_not_uploaded_the_first_time(monkeypatch, tmp_path):
+    status, note, sent = _one(FIRST, ["unreachable"], monkeypatch, tmp_path)
+    assert status == "recheck" and sent == []                      # no run, no problem, no email for a blip
+    assert note.startswith("desktop: unreachable (") and note.endswith("didn't load, looking again in 10 minutes")
+    # a store already down yesterday gets the same first look (its problem is already open: no new email either way)
+    assert _one({**FIRST, "last_status": "unreachable"}, ["unreachable"], monkeypatch, tmp_path)[:3:2] == ("recheck", [])
+    # a brand-new monitor (never ran) too
+    assert _one({"last_status": None}, ["unreachable"], monkeypatch, tmp_path)[:3:2] == ("recheck", [])
+
+
+def test_the_second_look_is_uploaded_and_says_so(monkeypatch, tmp_path):
+    # still down: uploaded (the dashboard opens the problem and alerts) with how long after the first look
+    status, note, sent = _one(SECOND, ["unreachable"], monkeypatch, tmp_path)
+    assert status == "unreachable" and sent == [{"monitor_id": "m1", "rechecked": True, "recheck_minutes": 11}]
+    assert note.endswith("still didn't load 11 min after the first look")
+    # back by then: uploaded as a normal run, nothing was ever opened; the note keeps the trace of the blip
+    status, note, sent = _one({**SECOND, "devices": ["desktop", "mobile"]}, ["healthy", "healthy"], monkeypatch, tmp_path)
+    assert status == "healthy" and sent == [{"monitor_id": "m1", "rechecked": True, "recheck_minutes": 11}]
+    assert note.endswith("second look, 11 min after it didn't load")
+    # a real finding on the second look is uploaded straight away too
+    assert _one(SECOND, ["down"], monkeypatch, tmp_path)[0] == "down"
+
+
+def test_any_device_not_loading_holds_the_whole_first_look(monkeypatch, tmp_path):
+    status, _, sent = _one({**FIRST, "devices": ["desktop", "mobile"]}, ["healthy", "unreachable"], monkeypatch, tmp_path)
+    assert status == "recheck" and sent == []
+    # a phone-only check works the same way
+    assert _one({**FIRST, "devices": ["mobile"]}, ["unreachable"], monkeypatch, tmp_path)[:3:2] == ("recheck", [])
+
+
+def test_only_a_store_that_didnt_load_is_looked_at_again(monkeypatch, tmp_path):
+    # real findings and Radar-side states on a FIRST look are uploaded straight away, as before
+    for verdict in ("healthy", "degraded", "down", "blocked", "unsupported", "no_network"):
+        status, note, sent = _one(FIRST, [verdict], monkeypatch, tmp_path)
+        assert status == verdict and sent == [{"monitor_id": "m1"}] and "look" not in note, verdict
+    # a crash on a first look is still an error, never a re-check
+    assert _one(FIRST, "crash", monkeypatch, tmp_path)[:3:2] == ("error", [])
+
+
+def test_a_second_look_that_couldnt_test_tries_once_more(monkeypatch, tmp_path):
+    # reviewer 21 Oct: the store didn't load, then Radar was offline / crashed / robots.txt was silent on the second look:
+    # uploading that would drop a real outage until tomorrow, so one more look (at most 2 re-checks in a row)
+    for verdicts in (["no_network"], ["blocked"], ["error"], "crash"):
+        status, note, sent = _one(SECOND, verdicts, monkeypatch, tmp_path)
+        assert status == "recheck" and sent == [] and "trying again in 10 minutes" in note, verdicts
+    # after 2 re-checks: whatever the third look found is uploaded (the cap; nothing loops)
+    status, _, sent = _one({**SECOND, "rechecks": 2, "recheck_since": _ago(22)}, ["no_network"], monkeypatch, tmp_path)
+    assert status == "no_network" and sent == [{"monitor_id": "m1", "rechecked": True, "recheck_minutes": 22}]
+    status, _, sent = _one({**SECOND, "rechecks": 2, "recheck_since": _ago(22)}, "crash", monkeypatch, tmp_path)
+    assert status == "error" and sent == []
+    # a device that DID test the store is enough: uploaded
+    status, _, sent = _one({**SECOND, "devices": ["desktop", "mobile"]}, ["healthy", "no_network"], monkeypatch, tmp_path)
+    assert status == "no_network" and sent and sent[0]["rechecked"] is True
+
+
+def test_a_slow_run_that_did_not_pass_is_looked_at_again(monkeypatch, tmp_path):
+    # review 21 Oct: the homepage loaded only after its time limit (slow network); later pages can fail for the same
+    # reason, so a first look like that is not alerted either
+    for verdicts in (["down+slow"], ["degraded+slow"], ["healthy", "down+slow"], ["blocked+slow"]):
+        status, note, sent = _one({**FIRST, "devices": ["desktop", "mobile"][:len(verdicts)]}, verdicts, monkeypatch, tmp_path)
+        assert status == "recheck" and sent == [] and note.endswith("was very slow and not everything passed, looking again in 10 minutes"), verdicts
+    # slow but everything passed: uploaded at once (nothing to alert)
+    status, _, sent = _one(FIRST, ["healthy+slow"], monkeypatch, tmp_path)
+    assert status == "healthy" and sent == [{"monitor_id": "m1"}]
+    # the second look is uploaded whatever it finds: a store that is slow AND failing is reported
+    status, _, sent = _one(SECOND, ["down+slow"], monkeypatch, tmp_path)
+    assert status == "down" and sent == [{"monitor_id": "m1", "rechecked": True, "recheck_minutes": 11}]
+    # not slow: a real failure on a first look is uploaded at once, as before
+    assert _one(FIRST, ["down"], monkeypatch, tmp_path)[:3:2] == ("down", [{"monitor_id": "m1"}])
+
+
+def test_an_old_recheck_starts_over(monkeypatch, tmp_path):
+    # reviewer 21 Oct: paused during the 10 minutes and resumed days later, or a lock taken over after 3 h: not a second
+    # look (the blip filter applies again and nothing claims "it also didn't load N minutes earlier")
+    for since in (_ago(61), _ago(3 * 24 * 60), None, "not a time"):
+        status, _, sent = _one({**SECOND, "recheck_since": since}, ["unreachable"], monkeypatch, tmp_path)
+        assert status == "recheck" and sent == [], since
+        status, note, sent = _one({**SECOND, "recheck_since": since}, ["healthy"], monkeypatch, tmp_path)
+        assert status == "healthy" and sent == [{"monitor_id": "m1"}] and "second look" not in note, since
+
+
+def test_postgrest_times_are_read_in_every_shape():
+    want = datetime(2026, 10, 21, 10, 15, 52, 630580, tzinfo=timezone.utc)
+    for s in ("2026-10-21T10:15:52.63058+00:00", "2026-10-21 10:15:52.63058+00", "2026-10-21T10:15:52.630580Z",
+              "2026-10-21T15:45:52.63058+05:30"):
+        assert w._when(s) == want, s
+    assert w._when("2026-10-21T10:15:52+00:00") == want.replace(microsecond=0)
+    assert w._when(None) is None and w._when("") is None and w._when("yesterday") is None
+
+
 def test_worker_needs_its_environment(monkeypatch):
     monkeypatch.delenv("BUGRADAR_SUPABASE_URL", raising=False)
     monkeypatch.delenv("BUGRADAR_SERVICE_KEY", raising=False)
@@ -172,10 +301,12 @@ def test_score_and_summary_from_a_run():
     s = w.summarize(run)
     # passed counts slow_home (passed with a warning) and nav_links; the warning is counted on top, not instead
     assert (s["checked"], s["passed"], s["failed"], s["warnings"], s["not_tested"]) == (5, 2, 2, 1, 1)
-    assert [p["key"] for p in s["problems"]] == ["product.pdp.tee", "health.meta.home", "smoke.home_health"]
+    # problems are checks that FAILED; a check that works with a note goes under warning_checks (19 Oct)
+    assert [p["key"] for p in s["problems"]] == ["product.pdp.tee", "health.meta.home"]
+    assert all(p["status"] == "failed" for p in s["problems"])
     assert s["problems"][0]["name"] == "Product page 'Tee'" and s["problems"][0]["reason"] == "The product page shows no price."
-    assert s["problems"][2] == {"key": "smoke.home_health", "name": "smoke.home_health", "severity": "critical",
-                                "status": "warning", "reason": "Homepage took 6.2 s to load"}
+    assert s["warning_checks"] == [{"key": "smoke.home_health", "name": "smoke.home_health", "severity": "critical",
+                              "status": "warning", "reason": "Homepage took 6.2 s to load"}]
     # a store Radar could not test has no score: nothing was measured
     assert w.score_of({"verdict": "blocked", "cases": [slow_home]}) is None
     assert w.score_of({"verdict": "unsupported", "cases": []}) is None
@@ -231,7 +362,7 @@ def test_scan_progress_drives_the_loading_screen_list():
     broken("start", {})
 
 
-def test_upload_key_mode_serves_free_scans_only_through_the_by_key_functions(monkeypatch):
+def test_upload_key_mode_serves_free_scans_through_the_by_key_functions(monkeypatch):
     calls = []
 
     class Resp(io.BytesIO):
@@ -243,7 +374,6 @@ def test_upload_key_mode_serves_free_scans_only_through_the_by_key_functions(mon
         return Resp(json.dumps([{"id": "s1", "url": "https://x.in"}]).encode() if "claim_scan" in req.full_url else b"")
     monkeypatch.setattr(w.urllib.request, "urlopen", fake_urlopen)
     q = w.SupabaseQueue("https://ref.supabase.co", None, upload_key="brk_abc")
-    assert q.claim("box") is None and calls == []                     # monitors need the service key: never asked
     assert q.claim_scan("box") == {"id": "s1", "url": "https://x.in"}
     q.scan_progress("s1", {"stage": "testing"})
     q.finish_scan("s1", "healthy", 100, {}, None, None, "ok")
@@ -290,3 +420,107 @@ def test_queue_age_script_says_yes_only_for_an_old_waiting_request(monkeypatch, 
     monkeypatch.setattr(qa.urllib.request, "urlopen", boom)
     qa.main([])
     assert capsys.readouterr().out.strip() == "no"            # unknown = let the next run ask again, never crash
+
+
+def test_free_scan_takes_a_homepage_picture_only_when_the_store_was_tested(monkeypatch, tmp_path):
+    """19 Oct: the result page shows the homepage as Radar saw it; a store Radar could not test gets no picture
+    (robots.txt or the platform said no), and a picture that fails never fails the scan."""
+    from types import SimpleNamespace as NS
+    shots = []
+    for verdict, expect in (("healthy", 1), ("down", 1), ("blocked", 0), ("unsupported", 0)):
+        run = NS(verdict=verdict, run_id="r", to_dict=lambda v=verdict: {"verdict": v, "cases": []})
+        monkeypatch.setattr("radar.runner.executor.scan_devices", lambda *a, run=run, **k: [(run, tmp_path)])
+        monkeypatch.setattr(w, "homepage_shot", lambda url, s, d, log=print: shots.append((url, d)) or True)
+        before = len(shots)
+        out = w.run_scan({"id": "s", "url": "https://x.in"}, Settings(), upload=False, log=lambda *_: None)
+        assert len(shots) - before == expect, verdict
+        assert out["verdict"] == verdict and out["failed"] is False
+    assert shots[0] == ("https://x.in", tmp_path)
+
+
+def test_homepage_picture_never_raises(tmp_path):
+    class Boom:
+        def __init__(self, *a, **k): raise RuntimeError("no chromium here")
+    import radar.core.browser as br
+    real = br.Browser
+    br.Browser = Boom
+    try:
+        said = []
+        assert w.homepage_shot("https://x.in", Settings(), tmp_path, log=said.append) is False
+        assert "homepage picture skipped" in said[0] and not (tmp_path / w.HOME_SHOT).exists()
+    finally:
+        br.Browser = real
+
+
+def test_upload_key_mode_also_serves_the_keys_own_monitors(monkeypatch):
+    """19 Oct (dashboard migration 14): with only the upload key, monitors go through claim_monitor_by_key /
+    finish_monitor_by_key with the key; with the service key, the plain functions as before."""
+    calls = []
+
+    class Resp(io.BytesIO):
+        def __enter__(self): return self
+        def __exit__(self, *a): pass
+
+    def fake_urlopen(req, timeout=0):
+        fn = req.full_url.rsplit("/", 1)[1]
+        calls.append((fn, json.loads(req.data), req.headers.get("Apikey")))
+        rows = [{"id": "m1", "url": "https://x.in", "devices": ["desktop"]}] if fn.startswith("claim_monitor") else []
+        return Resp(json.dumps(rows).encode())
+    monkeypatch.setattr(w.urllib.request, "urlopen", fake_urlopen)
+    keyed = w.SupabaseQueue("https://ref.supabase.co", None, upload_key="brk_abc")
+    assert keyed.claim("box-2") == {"id": "m1", "url": "https://x.in", "devices": ["desktop"]}
+    keyed.finish("m1", "healthy", "desktop: healthy (90 s)")
+    assert calls[0][:2] == ("claim_monitor_by_key", {"brk": "brk_abc", "worker": "box-2"})
+    assert calls[1][:2] == ("finish_monitor_by_key", {"brk": "brk_abc", "monitor_id": "m1", "status": "healthy",
+                                                      "note": "desktop: healthy (90 s)"})
+    assert calls[0][2] == w.ANON_KEY             # the public key reaches PostgREST; the upload key is the proof
+    calls.clear()
+    full = w.SupabaseQueue("https://ref.supabase.co", "service-key")
+    full.claim("box-1"); full.finish("m1", "down", "n" * 400)
+    assert [c[0] for c in calls] == ["claim_monitor", "finish_monitor"] and len(calls[1][1]["note"]) == 300
+
+
+def test_always_on_worker_honours_scans_only(monkeypatch):
+    """19 Oct: `radar worker --scans-only --poll 15` (Contabo slot 1) took a daily monitor: serve() ignored the flag."""
+    seen = []
+    monkeypatch.setattr(w, "run_once", lambda q, b, wk, upload=True, log=print, scans_only=False: seen.append(scans_only) or {"id": "x"})
+    for flag in (True, False):
+        n = iter(range(3))
+        w.serve(None, Settings(), "box-1", poll_seconds=0, upload=False, log=lambda *_: None, scans_only=flag,
+                _stop=lambda: next(n) >= 2)
+    assert seen == [True, True, False, False]
+    # and the command line passes it through to the always-on mode
+    got = {}
+    monkeypatch.setattr(w, "serve", lambda q, b, wk, poll, upload=True, scans_only=False: got.update(poll=poll, scans_only=scans_only))
+    monkeypatch.setattr(w, "queue_from_env", lambda: None)
+    monkeypatch.setattr(w, "load_settings", lambda: Settings())
+    w.main(["--scans-only", "--poll", "15"])
+    assert got == {"poll": 15, "scans_only": True}
+
+
+def test_a_daily_check_tells_the_dashboard_which_monitor_it_was(monkeypatch, tmp_path):
+    # 19 Oct: the dashboard files the run in the monitor's own workspace (a pilot store's), so the upload names the monitor
+    class R:
+        def __init__(self, device, verdict): self.device, self.verdict = device, verdict
+    monkeypatch.setattr("radar.runner.executor.scan_devices", lambda url, settings, devices: [(R("desktop", "healthy"), tmp_path)])
+    sent = []
+    monkeypatch.setattr(w, "upload_results", lambda data_dir, since, log=print, extra_meta=None: sent.append(extra_meta) or ([], ""))
+    status, note = w.run_monitor({"id": "mon-7", "url": "https://p.in", "devices": ["desktop"]}, Settings(), log=lambda *_: None)
+    assert status == "healthy" and sent == [{"monitor_id": "mon-7"}]
+    sent.clear()
+    w.run_monitor({"url": "https://p.in", "devices": ["desktop"]}, Settings(), log=lambda *_: None)   # an old row without an id
+    assert sent == [None]
+
+
+def test_a_free_plan_store_runs_the_core_checks_and_pro_runs_everything(monkeypatch, tmp_path):
+    # 26 Oct (Free + Pro): the monitor's plan decides the scan profile; a row without a plan (pilots, BugRadar's own) = Pro
+    class R:
+        def __init__(self, device, verdict): self.device, self.verdict = device, verdict
+    asked = []
+    monkeypatch.setattr("radar.runner.executor.scan_devices",
+                        lambda url, settings, devices, **kw: asked.append(kw.get("profile")) or [(R("desktop", "healthy"), tmp_path)])
+    monkeypatch.setattr(w, "upload_results", lambda data_dir, since, log=print, extra_meta=None: ([], ""))
+    for plan in ("free", "pro", None):
+        row = {"id": "m", "url": "https://p.in", "devices": ["desktop"], **({"plan": plan} if plan else {})}
+        w.run_monitor(row, Settings(), log=lambda *_: None)
+    assert asked == ["core", None, None]

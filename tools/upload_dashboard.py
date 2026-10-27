@@ -163,8 +163,18 @@ def reason_of(case: dict) -> str | None:
     return (last.get("error") or "")[:300] or None
 
 
-def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None) -> dict:
+def project_name(run: dict, label: str = "") -> str:
+    """The dashboard store a run is filed under: the store's host, plus a label for a test bench (22 Oct: the GitHub
+    nightly bench uploaded the Dawn demo into the same store as BugRadar's daily check, so a blip on the nightly, which
+    has no 10-minute re-check, opened a problem there). Pure."""
     host = (urlparse(run.get("base_url") or "").hostname or run.get("site_id") or "store").removeprefix("www.")
+    label = " ".join((label or "").split())[:40]
+    return f"{host} ({label})" if label else host
+
+
+def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_meta: dict | None = None,
+               project_label: str = "") -> dict:
+    host = project_name(run, project_label)
     results, shots = [], 0
     for c in run.get("cases", []):
         status = STATUS.get(c.get("verdict"), "warning")
@@ -192,14 +202,36 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None) -> dict
         results.append(item)
     # one line for the store itself, in every run: it fails when the store cannot be opened, is "not tested" when Radar
     # is not allowed in or the platform is not supported, and passes otherwise (so a store coming back closes the problem)
-    note = str((run.get("notes") or [""])[0])[:300] or None
+    note = str((run.get("notes") or [""])[0]) or None
     site = {"key": SITE_KEY, "name": SITE_NAME, "suite": "smoke", "severity": "critical", "attempts": 1, "error": None,
             "duration_ms": None, "status": "passed", "reason": None}
     if not results:
-        # the plain part is the reason; a long technical tail in brackets ("(robots.txt request: ...)") goes under "Technical detail"
+        # the plain part is the reason; a long technical tail in brackets ("(robots.txt request: ...)") goes under
+        # "Technical detail". Split BEFORE shortening (review, 22 Oct: cut at 300 first, a long note lost its closing
+        # bracket and the owner read the whole technical tail as the reason)
         plain = re.sub(r"\s*\([^()]*:[^()]{20,}\)\s*$", "", note or "") or note
-        site.update(status=SITE_STATUS.get(run.get("verdict"), "skipped"), reason=SITE_WHY.get(run.get("verdict")) or plain,
-                    error=note if plain != note else None)
+        site.update(status=SITE_STATUS.get(run.get("verdict"), "skipped"),
+                    reason=SITE_WHY.get(run.get("verdict")) or (plain[:300] if plain else plain),
+                    error=note[:1000] if note and plain != note else None)
+        up = (run.get("sitemap_summary") or {}).get("store_up_robots_down")
+        if run.get("verdict") == "blocked" and isinstance(up, int):
+            # a daily check: robots.txt doesn't load while the store itself answers (22 Oct). Radar still can't test it
+            # (RFC 9309), but this is the owner's problem to fix, not a quiet "not tested": search engines read a
+            # failing robots.txt as "don't crawl" too. A warning: shown, never a problem or an alert email.
+            site.update(status="warning", error=note[:1000] if note else None, reason=(
+                ("Your store opens" if 200 <= up < 300 else f"Your store's server answers (HTTP {up})")
+                + ", but its robots.txt file isn't loading. Search engines pause crawling a store while that fails, "
+                  "and Radar can't test the store until it loads again."))
+        if site["status"] == "failed" and (extra_meta or {}).get("rechecked"):
+            # a daily check's second look (radar/worker.py RECHECK, 21 Oct): the owner should know it wasn't a one-off
+            mins = (extra_meta or {}).get("recheck_minutes")
+            earlier = f"{mins} minute{'' if mins == 1 else 's'} earlier" if isinstance(mins, int) and mins > 0 else "on an earlier look"
+            site["reason"] = f"{(site['reason'] or 'The store did not load').rstrip(' .')}. It also didn't load {earlier}."
+    # the free check's "your store as Radar saw it" (19 Oct): worker.homepage_shot saves it next to run.json
+    home = run_dir / "homepage.jpg"
+    if home.is_file() and 0 < home.stat().st_size <= MAX_SHOT_BYTES:
+        site["artifacts"] = [{"kind": "screenshot", "name": "homepage.jpg", "content_type": "image/jpeg",
+                              "data_base64": base64.b64encode(home.read_bytes()).decode()}]
     results.insert(0, site)
     perf = run.get("perf") or {}
     return {
@@ -207,7 +239,7 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None) -> dict
         "build": {"version": build or build_day(run.get("started_at")), "environment": "production"},
         "run": {"tool": "radar", "language": "python", "framework": "radar", "device": run.get("device"),
                 "browser": "chromium", "started_at": run.get("started_at"), "finished_at": run.get("finished_at") or None,
-                "ci_url": ci_url, "meta": {"radar_run_id": run.get("run_id"), "radar_verdict": run.get("verdict"),
+                "ci_url": ci_url, "meta": {**(extra_meta or {}), "radar_run_id": run.get("run_id"), "radar_verdict": run.get("verdict"),
                                            "median_load_secs": perf.get("median_load_secs"), "notes": (run.get("notes") or [])[:3]}},
         "results": results,
     }
@@ -230,7 +262,7 @@ def find_runs(folder: Path, since: float = 0) -> list[Path]:
 
 
 def upload(folder: Path, key: str, since: float = 0, build: str = "", ci_url: str | None = None,
-           dry_run: bool = False, log=print) -> list[dict]:
+           dry_run: bool = False, log=print, extra_meta: dict | None = None, project_label: str = "") -> list[dict]:
     """Send every finished run under the folder. Returns one record per run.json found:
     {"file", "project", "device", "radar_run_id", "ok", "run_id", "project_id", "error"}; the worker (15 Oct) reads
     run_id off it to tie a free-scan request to its dashboard run."""
@@ -242,7 +274,7 @@ def upload(folder: Path, key: str, since: float = 0, build: str = "", ci_url: st
             continue
         if not run.get("cases") and not run.get("verdict"):
             continue                       # not a finished run
-        payload = to_payload(run, f.parent, build, ci_url)
+        payload = to_payload(run, f.parent, build, ci_url, extra_meta, project_label)
         rec = {"file": str(f), "project": payload["project"], "device": payload["run"]["device"],
                "radar_run_id": run.get("run_id"), "ok": False, "run_id": None, "project_id": None, "error": None}
         out.append(rec)
@@ -268,13 +300,16 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--ci-url", default=os.environ.get("BUGRADAR_CI_URL"))
     ap.add_argument("--since", type=float, default=0, help="only runs written after this unix time (machines that keep old data)")
     ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--project-label", default="", help="file runs under '<store> (<label>)', e.g. 'nightly bench'; "
+                                                         "empty = the store itself")
     a = ap.parse_args(argv)
     key = os.environ.get("BUGRADAR_KEY", "")
     if not a.dry_run and not key.startswith("brk_"):
         print("BUGRADAR_KEY is not set; nothing sent.")
         return 0                       # never fail a Radar run because the dashboard isn't set up
     recs = upload(a.folder, key, a.since, a.build, a.ci_url, a.dry_run,
-                  log=lambda m: print(m, file=sys.stderr if m.startswith("could not send") else sys.stdout))
+                  log=lambda m: print(m, file=sys.stderr if m.startswith("could not send") else sys.stdout),
+                  project_label=a.project_label)
     sent, failed = sum(r["ok"] for r in recs), sum(not r["ok"] for r in recs)
     print(f"dashboard upload: {sent} sent, {failed} failed, {len(recs)} found")
     return 0
