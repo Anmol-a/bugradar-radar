@@ -401,3 +401,31 @@ def test_plain_names_by_check_key():
     # no key / an unknown key: as before, only 'PDP' is replaced; a product check without a quoted title keeps its kind
     assert n("PDP 'Tee'") == "Product page 'Tee'" and n("Some new check", "new.check") == "Some new check"
     assert n("product.pdp.tee", "product.pdp.tee") == "Product page"
+
+
+# ---- one alert across browsers (28 Oct re-test) ----------------------------------------------------------------------
+def _p(device, *rows, project="shop.example"):
+    return {"project": project, "run": {"device": device},
+            "results": [{"key": k, "status": st} for k, st in rows]}
+
+
+def test_mark_also_failed_names_the_other_browser():
+    from tools.upload_dashboard import mark_also_failed
+    d = _p("desktop", ("smoke.nav_links", "failed"), ("cart.add_to_cart", "passed"))
+    m = _p("mobile", ("smoke.nav_links", "failed"), ("cart.add_to_cart", "failed"))
+    mark_also_failed([d, m])
+    assert d["results"][0]["also_failed_on"] == ["mobile"]
+    assert m["results"][0]["also_failed_on"] == ["desktop"]
+    assert "also_failed_on" not in d["results"][1]          # passed
+    assert "also_failed_on" not in m["results"][1]          # failed on mobile only
+
+
+def test_mark_also_failed_keeps_stores_apart_and_single_runs_plain():
+    from tools.upload_dashboard import mark_also_failed
+    a = _p("desktop", ("smoke.nav_links", "failed"), project="a.example")
+    b = _p("mobile", ("smoke.nav_links", "failed"), project="b.example")
+    mark_also_failed([a, b])
+    assert "also_failed_on" not in a["results"][0] and "also_failed_on" not in b["results"][0]
+    solo = _p("desktop", ("smoke.nav_links", "failed"))
+    mark_also_failed([solo])
+    assert "also_failed_on" not in solo["results"][0]
