@@ -31,8 +31,11 @@ SHOT_WIDTH = 900
 # a build is one day of results; the day is counted where the store's shoppers are (a 5 am India run belongs to that
 # day, not to the UTC day before). BUGRADAR_TZ overrides.
 TZ = os.environ.get("BUGRADAR_TZ", "Asia/Kolkata")
-# the triage label comes from an LLM, so the dashboard says so in plain words instead of presenting it as fact
-TRIAGE_NOTE = {"radar_problem": "this may be the test's fault, not the store's", "unsure": "not yet confirmed as a store problem"}
+# the triage label comes from an LLM. It is NEVER shown to the store owner (28 Oct: a tester read "the monitor likely
+# looked in the wrong place ... this may be the test's fault" under a menu link that really answered HTTP 404). It
+# goes into the technical `error` field, for engineers, under one of these labels.
+TRIAGE_NOTE = {"real_store_problem": "likely a real store problem", "radar_problem": "may be the test's fault, not the store's",
+               "unsure": "not yet confirmed as a store problem"}
 # a run with no checks at all still has something to say: the store could not be opened or tested
 SITE_KEY, SITE_NAME = "site.reachable", "Store opens and can be tested"
 SITE_STATUS = {"unreachable": "failed", "blocked": "blocked"}          # anything else without checks: skipped
@@ -46,9 +49,215 @@ def build_day(iso: str | None) -> str:
         return (iso or "")[:10]
 
 
-def plain_name(title: str) -> str:
-    """Check names without shop-talk a store owner would not know."""
-    return re.sub(r"^PDP\b", "Product page", title)
+QUOTED = re.compile(r"'([^']{1,80})'")
+
+
+def _quoted(title: str | None) -> str | None:
+    """The product / collection / search word a case title names in quotes: \"PDP 'Vitamin C Serum'\" -> Vitamin C Serum.
+    (radar/generate/builder.py writes every title with the name in single quotes.)"""
+    m = QUOTED.search(title or "")
+    return m.group(1) if m else None
+
+
+# the title the dashboard shows for a check (it composes "<name>: stopped working ..." in emails, so this must be
+# something a store owner would say). Fixed keys first; prefixes carry the product / collection / word from the title.
+PLAIN_NAMES = {
+    SITE_KEY: SITE_NAME,
+    "smoke.nav_links": "Menu links", "smoke.home_health": "Homepage", "smoke.mobile_menu": "Mobile menu",
+    "smoke.more_links": "Footer and banner links", "smoke.whatsapp": "WhatsApp button",
+    "journey.shopper": "Shopper's path",
+    "cart.add_to_cart": "Add to cart", "cart.edit_and_checkout": "Cart page and checkout button",
+    "cart.price_consistency": "Prices match across pages", "cart.drawer_and_page": "Cart drawer",
+    "cart.discount_code": "Discount box", "cart.buy_now": "Buy it now",
+    "search.no_results": "Search: no-results page", "search.suggestions": "Search suggestions",
+    "product.variant_switch": "Variant picker", "product.pincode": "Pincode checker", "product.sold_out": "Sold-out product page",
+    "health.meta.home": "Homepage title and description", "health.meta.pdp": "Product page title and description",
+    "health.not_found": "Missing-page (404) page",
+    "info.policy_pages": "Info pages (shipping, contact)", "info.account_page": "Account login page",
+}
+PLAIN_PREFIXES = (("product.pdp.", "Product page"), ("catalog.collection.", "Collection"),
+                  ("catalog.more.", "Collection paging"), ("catalog.filter.", "Collection filters"), ("search.", "Search"))
+
+
+def plain_name(title: str, key: str | None = None) -> str:
+    """Check names without shop-talk a store owner would not know. With the case id (key) the name is a fixed plain
+    one ("Menu links"); a product / collection / search check names its subject from the title ("Product page: Vitamin
+    C Serum"). Without a key (older callers) only the 'PDP' shop-talk is replaced."""
+    if key in PLAIN_NAMES:
+        return PLAIN_NAMES[key]
+    for prefix, name in PLAIN_PREFIXES:
+        if key and key.startswith(prefix):
+            what = _quoted(title)
+            return f"{name}: {what}" if what else name
+    return re.sub(r"^PDP\b", "Product page", title or key or "")
+
+
+# ---------------- the owner's one-sentence reason for a failed check ----------------
+
+EXPECT_GOT = re.compile(r"^(?P<what>[^:]{1,120}): expected (?P<exp>.+?), got (?P<got>.+)$", re.S)
+HTTP_STATUS = re.compile(r"HTTP status: expected < 400, got (\d{3})")
+PAGE_BLANK = re.compile(r"page not blank: expected")
+NO_PAGE_WITHIN = re.compile(r"page did not load: no page within \d+ s, nor within (\d+) s")
+# the step names of the shopper journey (radar/checks/library.py shopper_journey, _add_and_verify,
+# _cart_view_and_checkout) in a shopper's words
+JOURNEY_STEPS = {
+    "open_homepage": "opening the homepage", "click_into_collection": "opening a collection from the menu",
+    "click_into_product": "opening a product from the collection",
+    "every_product_link_opens_the_product": "opening a product from the collection",
+    "product_identified": "reading the product's price", "variant_ready": "choosing a variant",
+    "click_add_to_cart": "the add-to-cart button", "cart_received_this_product": "the cart receiving the product",
+    "cart_total_increase": "the cart total", "cart_shows_product": "the cart page showing the product",
+    "checkout_button_ready": "the checkout button",
+}
+# what a product page failed to show, by the assertion that failed (library._pdp_assertions)
+PDP_MISSING = (("product name shown on the page", "its name"), ("selected variant price shown", "its price"),
+               ("main product image", "its picture"))
+
+
+def _sentence(text: str, limit: int = 300) -> str:
+    """One owner-facing sentence: single spaces, first letter capitalised, no more than `limit` chars, a full stop."""
+    s = " ".join(str(text or "").split()).rstrip(" .")
+    if len(s) > limit - 1:
+        s = s[: limit - 2].rstrip() + "…"
+    return (s[:1].upper() + s[1:] + ".") if s else ""
+
+
+def _cleaned(detail: str) -> str:
+    """A step's error without the 'what: expected X, got Y' phrasing: 'what was Y (expected X)'."""
+    m = EXPECT_GOT.match(" ".join(str(detail or "").split()))
+    if not m:
+        return str(detail or "")
+    return f"{m['what']} was {m['got']} (expected {m['exp']})"
+
+
+def _listed(detail: str) -> list[str]:
+    """The items after 'got N: a, b' in a links / pages assertion (library.links_resolve, more_links_resolve, info_pages)."""
+    m = re.search(r"got \d+: (.+)$", " ".join(str(detail or "").split()))
+    return [x.strip() for x in m.group(1).split(", ") if x.strip()] if m else []
+
+
+def _home_detail(detail: str) -> str:
+    m = HTTP_STATUS.search(detail)
+    if m:
+        return f"the server answered HTTP {m.group(1)}"
+    if PAGE_BLANK.search(detail):
+        return "the page was blank"
+    m = NO_PAGE_WITHIN.search(detail)
+    if m:
+        return f"it didn't load within {m.group(1)} seconds"
+    return _cleaned(detail)
+
+
+def plain_reason(key: str, title: str | None, step: str | None, detail: str | None) -> str | None:
+    """The owner's sentence for a failed check, built from what the robot measured (the failed step's error): never
+    from the LLM triage. Returns None when there is nothing to say."""
+    detail = " ".join(str(detail or "").split())
+    what = _quoted(title)
+    step = step or ""
+    if key == "smoke.nav_links":
+        paths = _listed(detail)
+        if len(paths) == 1:
+            return _sentence(f"A link in your main menu opens a page that doesn't exist: {paths[0]}")
+        if paths:
+            return _sentence(f"{len(paths)} links in your main menu open pages that don't exist: {', '.join(paths)}")
+        return _sentence("A link in your main menu opens a page that doesn't load" + (f": {_cleaned(detail)}" if detail else ""))
+    if key == "smoke.more_links":
+        links = _listed(detail)
+        if len(links) == 1:
+            return _sentence(f"A link on your homepage, announcement bar or footer opens a page that doesn't work: {links[0]}")
+        if links:
+            return _sentence(f"{len(links)} links on your homepage, announcement bar or footer open pages that don't work: {', '.join(links)}")
+        return _sentence("A link on your homepage, announcement bar or footer opens a page that doesn't work")
+    if key == "smoke.home_health":
+        return _sentence("Your homepage didn't load properly" + (f": {_home_detail(detail)}" if detail else ""))
+    if key == "smoke.mobile_menu":
+        return _sentence("The menu button didn't open the menu in the mobile browser")
+    if key == "smoke.whatsapp":
+        return _sentence("The WhatsApp button doesn't open a chat with a valid number")
+    if key == "cart.add_to_cart":
+        return _sentence("Adding a product to the cart didn't work" + (f": {_cleaned(detail)}" if detail else ""))
+    if key == "cart.edit_and_checkout":
+        return _sentence("The cart page or the checkout button didn't work" + (f": {_cleaned(detail)}" if detail else ""))
+    if key == "search.no_results":
+        return _sentence("Searching for a word no store sells didn't show a proper 'no results' page")
+    if key == "search.suggestions":
+        return _sentence(f"Typing '{what}' in the search box didn't suggest any products" if what
+                         else "The search box didn't suggest any products while typing")
+    if key.startswith("search."):
+        return _sentence(f"Search didn't return products for '{what}'" if what
+                         else "Search didn't work" + (f": {_cleaned(detail)}" if detail else ""))
+    if key.startswith("product.pdp."):
+        page = f"The product page '{what}'" if what else "A product page"
+        for needle, missing in PDP_MISSING:
+            if needle in detail:
+                return _sentence(f"{page} is missing {missing}")
+        if step == "buy_button_ready" or "buy button enabled" in detail:
+            return _sentence(f"{page} doesn't let shoppers add it to the cart: the buy button is missing or disabled")
+        return _sentence(f"{page} didn't load properly" + (f": {_home_detail(detail)}" if detail else ""))
+    if key == "product.pincode":
+        m = re.search(r"pincode checker answers for (\S+?):", detail)
+        page = f"The pincode checker on '{what}'" if what else "The pincode checker"
+        return _sentence(f"{page} didn't answer" + (f" for {m.group(1)}" if m else ""))
+    if key == "product.variant_switch":
+        return _sentence((f"Picking another variant of '{what}'" if what else "Picking another variant")
+                         + " didn't update the product page" + (f": {_cleaned(detail)}" if detail else ""))
+    if key == "product.sold_out":
+        return _sentence((f"The sold-out product '{what}'" if what else "A sold-out product")
+                         + " isn't shown as sold out or can still be added to the cart" + (f": {_cleaned(detail)}" if detail else ""))
+    if key.startswith("catalog.collection."):
+        coll = f"The collection '{what}'" if what else "A collection"
+        if step == "lists_products" or "products listed" in detail:
+            return _sentence(f"{coll} shows no products")
+        return _sentence(f"{coll} didn't load properly" + (f": {_home_detail(detail)}" if detail else ""))
+    if key.startswith("catalog.more."):
+        coll = f"The collection '{what}'" if what else "A collection"
+        if step == "loads":
+            return _sentence(f"{coll} didn't load properly" + (f": {_home_detail(detail)}" if detail else ""))
+        return _sentence(f"{coll} doesn't show more products past its first page")
+    if key.startswith("catalog.filter."):
+        coll = f"the collection '{what}'" if what else "a collection"
+        if step == "loads":
+            return _sentence(f"{coll[:1].upper()}{coll[1:]} didn't load properly" + (f": {_home_detail(detail)}" if detail else ""))
+        return _sentence(f"Filtering {coll} doesn't narrow its products")
+    if key == "journey.shopper":
+        where = JOURNEY_STEPS.get(step) or step.replace("_", " ") or "an unknown step"
+        return _sentence(f"A shopper's path (menu → product → cart) broke at: {where}")
+    if key == "health.not_found":
+        return _sentence("A missing page doesn't show a proper 'page not found' page")
+    if key.startswith("health.meta."):
+        page = "product page" if key.endswith(".pdp") else "homepage"
+        if step == "loads" or "HTTP status" in detail or "page did not load" in detail:
+            return _sentence(f"The {page} didn't load properly" + (f": {_home_detail(detail)}" if detail else ""))
+        return _sentence(f"The {page} is missing its title or description")
+    if key == "info.policy_pages":
+        pages = _listed(detail)
+        if len(pages) == 1:
+            return _sentence(f"An info page linked in your footer doesn't open: {pages[0]}")
+        if pages:
+            return _sentence(f"{len(pages)} info pages linked in your footer don't open: {', '.join(pages)}")
+        return _sentence("An info page linked in your footer doesn't open")
+    if key == "info.account_page":
+        return _sentence("The account login page didn't open properly" + (f": {_cleaned(detail)}" if detail else ""))
+    return _sentence(_cleaned(detail)) or None
+
+
+def triage_note(case: dict) -> str | None:
+    """The LLM's triage, for the technical `error` field only: 'Triage (<label>): <reason>'."""
+    tri = case.get("triage") or {}
+    if not tri.get("reason"):
+        return None
+    label = TRIAGE_NOTE.get(tri.get("verdict")) or str(tri.get("verdict") or "").replace("_", " ") or "no verdict"
+    return f"Triage ({label}): {str(tri['reason'])[:300]}"
+
+
+def error_of(case: dict) -> str | None:
+    """The technical error for engineers: the last try's error, then the triage (never shown to owners)."""
+    last = (case.get("attempts") or [{}])[-1]
+    parts = [str(last["error"]) for _ in [0] if last.get("error")]
+    note = triage_note(case)
+    if note:
+        parts.append(note)
+    return "\n".join(parts)[:4000] or None
 
 
 def smaller(p: Path) -> tuple[str, str, bytes] | None:
@@ -140,12 +349,8 @@ def steps_of(case: dict) -> list[dict] | None:
 
 
 def reason_of(case: dict) -> str | None:
-    """One plain sentence on why a check did not pass."""
-    tri = case.get("triage") or {}
-    if case.get("verdict") == "confirmed_fail" and tri.get("reason"):
-        note = TRIAGE_NOTE.get(tri.get("verdict"))
-        text = str(tri["reason"])[:300].rstrip(" .")
-        return f"{text} ({note})." if note else text + "."
+    """One plain sentence on why a check did not pass, for the store owner. Built from the robot's own evidence (the
+    failed step's error) by plain_reason; the LLM triage never reaches it (see error_of)."""
     last = (case.get("attempts") or [{}])[-1]
     if case.get("verdict") in ("blocked", "skipped", "no_network"):
         for st in last.get("steps") or []:
@@ -157,10 +362,9 @@ def reason_of(case: dict) -> str | None:
     if case.get("verdict") == "flaky":
         return f"Passed on try {len(case.get('attempts') or [])} after failing first"
     step = last.get("failed_step")
-    for st in last.get("steps") or []:
-        if st.get("name") == step and (st.get("detail") or st.get("error")):
-            return str(st.get("detail") or st.get("error"))[:300]
-    return (last.get("error") or "")[:300] or None
+    detail = next((st.get("error") or st.get("detail") for st in last.get("steps") or []
+                   if st.get("name") == step and (st.get("error") or st.get("detail"))), None) or last.get("error")
+    return plain_reason(str(case.get("case_id") or ""), case.get("title"), step, detail and str(detail))
 
 
 def project_name(run: dict, label: str = "") -> str:
@@ -180,9 +384,9 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_m
         status = STATUS.get(c.get("verdict"), "warning")
         last = (c.get("attempts") or [{}])[-1]
         item = {
-            "key": c["case_id"], "name": plain_name(c.get("title") or c["case_id"]), "suite": c.get("suite"),
+            "key": c["case_id"], "name": plain_name(c.get("title") or c["case_id"], c["case_id"]), "suite": c.get("suite"),
             "severity": c.get("severity") or "major", "status": status, "reason": reason_of(c),
-            "error": (last.get("error") or None) and str(last["error"])[:4000],
+            "error": error_of(c),
             "duration_ms": int(sum(a.get("secs") or 0 for a in c.get("attempts") or []) * 1000) or None,
             "attempts": len(c.get("attempts") or []) or 1,
         }
