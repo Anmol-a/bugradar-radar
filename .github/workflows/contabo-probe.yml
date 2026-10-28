@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Restart on the new main (plain reasons + short check names, 28 Oct)
+      - name: Restart on the new main (one alert names every browser, 28 Oct)
         run: |
           # 19 Oct: daily monitors by upload key (dashboard migration 14 + worker monitors-by-key). Free checks are always
           # claimed first by every slot; slot 1 never takes a monitor, so a visitor never waits behind a 10-minute run.
@@ -51,6 +51,7 @@ jobs:
             grep -c 'def store_password' "$HOME/radar-src/radar/worker.py" | sed 's/^/  worker reads the store password (want 1): /';
             grep -c 'def plain_reason' "$HOME/radar-src/tools/upload_dashboard.py" | sed 's/^/  plain reasons, no triage in the reason (want 1): /';
             grep -c 'def plain_name' "$HOME/radar-src/tools/upload_dashboard.py" | sed 's/^/  short check names (want 1): /';
+            grep -c 'def mark_also_failed' "$HOME/radar-src/tools/upload_dashboard.py" | sed 's/^/  one alert names every browser (want 1): /';
             echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none";
             echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 3 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } | tee probe.txt
       - name: Publish
