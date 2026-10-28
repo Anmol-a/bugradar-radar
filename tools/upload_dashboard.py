@@ -449,6 +449,29 @@ def to_payload(run: dict, run_dir: Path, build: str, ci_url: str | None, extra_m
     }
 
 
+def mark_also_failed(payloads: list[dict]) -> None:
+    """One check, several browsers, one alert (28 Oct re-test). The worker sends desktop and mobile a few seconds apart,
+    so the dashboard opens the problem on the first upload and alerts then, before it knows mobile is broken too: the
+    alert said "broken in the desktop browser" when both were. Each failed result now names the OTHER browsers of the
+    same store, in this same upload batch, where the same check failed too (`also_failed_on`); ingest adds them to
+    the alert's "where". Pure, unit-tested."""
+    failed: dict[tuple[str, str], set[str]] = {}
+    for p in payloads:
+        dev = (p.get("run") or {}).get("device")
+        for r in p.get("results") or []:
+            if dev and r.get("status") == "failed":
+                failed.setdefault((p.get("project") or "", r["key"]), set()).add(dev)
+    order = {"desktop": 0, "mobile": 1, "tablet": 2}
+    for p in payloads:
+        dev = (p.get("run") or {}).get("device")
+        for r in p.get("results") or []:
+            if r.get("status") != "failed":
+                continue
+            others = sorted(failed.get((p.get("project") or "", r["key"]), set()) - {dev}, key=lambda d: (order.get(d, 9), d))
+            if others:
+                r["also_failed_on"] = others
+
+
 def send(payload: dict, key: str) -> dict:
     req = urllib.request.Request(INGEST_URL, data=json.dumps(payload).encode(), method="POST",
                                  headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"})
@@ -471,6 +494,7 @@ def upload(folder: Path, key: str, since: float = 0, build: str = "", ci_url: st
     {"file", "project", "device", "radar_run_id", "ok", "run_id", "project_id", "error"}; the worker (15 Oct) reads
     run_id off it to tie a free-scan request to its dashboard run."""
     out: list[dict] = []
+    ready: list[tuple[Path, dict, dict]] = []
     for f in find_runs(folder, since):
         try:
             run = json.loads(f.read_text())
@@ -478,7 +502,9 @@ def upload(folder: Path, key: str, since: float = 0, build: str = "", ci_url: st
             continue
         if not run.get("cases") and not run.get("verdict"):
             continue                       # not a finished run
-        payload = to_payload(run, f.parent, build, ci_url, extra_meta, project_label)
+        ready.append((f, run, to_payload(run, f.parent, build, ci_url, extra_meta, project_label)))
+    mark_also_failed([p for _, _, p in ready])
+    for f, run, payload in ready:
         rec = {"file": str(f), "project": payload["project"], "device": payload["run"]["device"],
                "radar_run_id": run.get("run_id"), "ok": False, "run_id": None, "project_id": None, "error": None}
         out.append(rec)
