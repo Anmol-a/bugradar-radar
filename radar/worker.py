@@ -296,7 +296,7 @@ def summarize(run: dict) -> dict:
     for c in cases:
         status = STATUS.get(c.get("verdict"), "warning")
         warn = warning_of(c)
-        name = plain_name(c.get("title") or c["case_id"])
+        name = plain_name(c.get("title") or c["case_id"], c["case_id"])
         if status in ("passed", "flaky"):
             counts["passed"] += 1
             if warn:
@@ -349,7 +349,7 @@ class ScanProgress:
         elif event == "suites":
             from tools.upload_dashboard import plain_name
             self.state["stage"] = "testing"
-            self.state["checks"] = [{"key": c.id, "name": plain_name(c.title), "state": "waiting"}
+            self.state["checks"] = [{"key": c.id, "name": plain_name(c.title, c.id), "state": "waiting"}
                                     for s in d["suites"] for c in s.cases]
             self._mark_next_running()
             self._push()
