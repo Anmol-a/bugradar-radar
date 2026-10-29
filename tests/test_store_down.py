@@ -67,6 +67,9 @@ class _Sess:
     def sign(self, url):
         return None
 
+    def request_get(self, url, **kw):          # Session.request_get (public-address guard) minus the guard
+        return self.page.context.request.get(url, **kw)
+
 
 S = Settings(nav_timeout_ms=30000, home_timeout_ms=60000)
 

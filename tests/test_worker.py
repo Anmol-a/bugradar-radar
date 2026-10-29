@@ -289,8 +289,9 @@ def test_a_crashed_free_scan_is_marked_failed_not_left_running(monkeypatch):
 
 def test_score_and_summary_from_a_run():
     failed_pdp = _case("product.pdp.tee", "confirmed_fail", "critical", title="PDP 'Tee'",
-                       steps=[{"name": "price_visible", "status": "fail", "detail": "No price on the page"}],
-                       triage={"verdict": "store_problem", "reason": "The product page shows no price"})
+                       steps=[{"name": "shows_title_price_image", "status": "fail",
+                               "error": "selected variant price shown: expected ₹499, got not on page"}],
+                       triage={"verdict": "radar_problem", "reason": "The price may be in a sticky bar the monitor missed"})
     slow_home = _case("smoke.home_health", "pass", "critical",
                       steps=[{"name": "slow page /", "status": "warn", "detail": "Homepage took 6.2 s to load"}])
     seo = _case("health.meta.home", "confirmed_fail", "seo", steps=[{"name": "meta", "status": "fail", "detail": "No meta description"}])
@@ -304,8 +305,10 @@ def test_score_and_summary_from_a_run():
     # problems are checks that FAILED; a check that works with a note goes under warning_checks (19 Oct)
     assert [p["key"] for p in s["problems"]] == ["product.pdp.tee", "health.meta.home"]
     assert all(p["status"] == "failed" for p in s["problems"])
-    assert s["problems"][0]["name"] == "Product page 'Tee'" and s["problems"][0]["reason"] == "The product page shows no price."
-    assert s["warning_checks"] == [{"key": "smoke.home_health", "name": "smoke.home_health", "severity": "critical",
+    # the reason is the robot's evidence in plain words; the LLM triage never reaches the owner (28 Oct)
+    assert s["problems"][0]["name"] == "Product page: Tee" and s["problems"][0]["reason"] == "The product page 'Tee' is missing its price."
+    assert s["problems"][1]["reason"] == "The homepage is missing its title or description."
+    assert s["warning_checks"] == [{"key": "smoke.home_health", "name": "Homepage", "severity": "critical",
                               "status": "warning", "reason": "Homepage took 6.2 s to load"}]
     # a store Radar could not test has no score: nothing was measured
     assert w.score_of({"verdict": "blocked", "cases": [slow_home]}) is None
@@ -347,7 +350,7 @@ def test_scan_progress_drives_the_loading_screen_list():
     st = sent[-1]
     assert st["stage"] == "testing" and st["store"]["products"] == 3 and st["store"]["theme"] == "Dawn"
     assert [(c["name"], c["state"]) for c in st["checks"]] == [
-        ("Homepage loads healthy", "running"), ("Product page 'Tee'", "waiting"), ("Search for 'tee' returns products", "waiting")]
+        ("Homepage", "running"), ("Product page: Tee", "waiting"), ("Search: tee", "waiting")]
     prog("attempt", {"case": cases[0], "attempt": NS(ok=True, steps=[NS(status="warn")])})
     assert [c["state"] for c in sent[-1]["checks"]] == ["warning", "running", "waiting"]
     prog("attempt", {"case": cases[1], "attempt": NS(ok=False, steps=[])})          # first try failed: tried again

@@ -2912,7 +2912,7 @@ def _offsite_redirect(ctx: Ctx, url: str):
     store's own address (robots.txt already allowed it), redirects not followed."""
     try:
         ctx.sess._polite()
-        r = ctx.sess.page.context.request.get(url, max_redirects=0, timeout=15000, headers=ctx.sess.sign(url) or None)
+        r = ctx.sess.request_get(url, max_redirects=0, timeout=15000, headers=ctx.sess.sign(url) or None)
     except Exception:  # noqa: BLE001
         return None
     loc = r.headers.get("location") if 300 <= r.status < 400 else None

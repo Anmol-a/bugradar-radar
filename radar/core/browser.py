@@ -24,6 +24,7 @@ from pathlib import Path
 
 from playwright.sync_api import sync_playwright, Page, BrowserContext
 
+from radar.core import netguard
 from radar.core.config import Settings
 from radar.core.robots import Robots
 from radar.core.webbotauth import signer_from_env
@@ -175,6 +176,16 @@ class Browser:
                 req = route.request
                 route.continue_(headers={**req.headers, **self.signer.headers(req.url)})
             ctx.route(lambda url: self.signs(url), sign)
+        # public addresses only (29 Oct, security review #4): a redirect, link or script pointing at the worker's own
+        # machine or a private network is never fetched. Registered last, so it runs first; allowed requests fall back
+        # to the signing route above (or go out as they are).
+        if netguard.guard_on():
+            def guard(route):
+                if netguard.browser_url_ok(route.request.url):
+                    route.fallback()
+                else:
+                    route.abort("blockedbyclient")
+            ctx.route("**/*", guard)
         return ctx
 
     @contextmanager
@@ -328,7 +339,30 @@ class Session:
             time.sleep(wait)
         self._last_nav = time.time()
 
+    def request_get(self, url: str, **kw):
+        """Radar's own HTTP GET (context.request: robots.txt, sitemaps, redirect checks), public addresses only. The
+        browser's route doesn't see these requests, so each hop is checked here and redirects are followed by hand
+        (max_redirects as in Playwright: default 20; 0 = return the redirect itself)."""
+        from urllib.parse import urljoin
+        req = self.page.context.request
+        max_r = kw.pop("max_redirects", None)
+        netguard.require_public(url)
+        if max_r == 0 or not netguard.guard_on():
+            return req.get(url, **kw) if max_r is None else req.get(url, max_redirects=max_r, **kw)
+        sign = getattr(self, "sign", None)
+        for _ in range((20 if max_r is None else max_r) + 1):
+            r = req.get(url, max_redirects=0, **kw)
+            loc = r.headers.get("location") if 300 <= r.status < 400 else None
+            if not loc:
+                return r
+            url = urljoin(url, loc)
+            netguard.require_public(url)
+            if callable(sign):
+                kw["headers"] = sign(url) or None   # signed for the store's own domain only (Web Bot Auth)
+        raise RuntimeError(f"too many redirects ({max_r if max_r is not None else 20})")
+
     def goto(self, url: str, timeout_ms: int | None = None):
+        netguard.require_public(url)
         if not self.allowed(url):
             raise RobotsBlocked(f"robots.txt disallows {url}")
         self._polite()
@@ -479,7 +513,7 @@ class Session:
                     last = f"HTTP {st} but the body is not JSON ({(got.get('text') or '')[:60]!r})"
                     continue
             try:
-                r = self.page.context.request.get(url, timeout=20000, headers=self.sign(url) or None)
+                r = self.request_get(url, timeout=20000, headers=self.sign(url) or None)
             except Exception as e:  # noqa: BLE001  timeout, reset, DNS
                 last = f"no answer ({str(e).splitlines()[0][:120]})"
                 if "Invalid character in header" in str(e):
