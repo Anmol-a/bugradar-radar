@@ -76,6 +76,12 @@ class Settings:
                                         # password the store's owner gave BugRadar; typed into the store's own
                                         # /password box and nowhere else (discover.enter_store_password). Never logged
     store_password_unread: bool = False  # the worker couldn't read a saved password this time: say so, never "give it"
+    # Shopify app stores only (29 Oct, Shopify review 2.2.1): what the store's own Shopify admin says, read through the
+    # Admin API by the app and handed over with the claimed monitor (radar/discovery/shopify_admin.py)
+    shopify_menu: tuple = ()            # [{text, url, menu}]: every link in the store's Shopify menus -> smoke.shopify_menu
+    shopify_menu_note: dict = field(default_factory=dict)   # {offsite, skipped, over_cap}: what the menu check left out
+    shopify_products: tuple = ()        # [{handle, title, url, prices, available}] when the admin data is fresh -> product.shopify_admin
+    shopify_currency: str = ""          # the store's currency in the admin (prices are compared only in it)
     search_is_shopper_flow: bool = True  # /search via the store's own search box is a shopper action
     llm_provider: str = "auto"          # auto | openai | anthropic | openai_compat | none
     llm_model: str = ""                 # "" = provider default (openai: gpt-5-mini, anthropic: claude-haiku-4-5)

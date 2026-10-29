@@ -15,7 +15,9 @@ The basic list (claude/ONBOARDING-how-stores-get-added_15oct.md, decided by Anmo
 
     core    the FREE plan's daily check (26 Oct, Anmol: "Free + Pro, keep features limited in free"): computer + phone,
             the core of a store: homepage, menu (computer + phone), the clicking shopper journey, one product page,
-            add to cart, the cart page with checkout opening. Pro runs 'full'.
+            add to cart, the cart page with checkout opening. Pro runs 'full'. Shopify app stores also get, on Free
+            (29 Oct, Shopify review 2.2.1), the two checks built from their Shopify admin: smoke.shopify_menu and
+            product.shopify_admin. The dashboard's web/src/lib/plans.ts isCoreCheck must list the same.
 
 Everything else in 'basic' (the clicking shopper journey, cart / checkout, phone run, variants, sold-out, filters, page 2,
 pincode, coupon, footer links, retries across days) is what daily monitoring adds, so the free scan stays fast, light
@@ -47,8 +49,10 @@ CORE_RULES: tuple[tuple[str, int], ...] = (
     (r"^smoke\.home_health$", 1),
     (r"^smoke\.nav_links$", 1),
     (r"^smoke\.mobile_menu$", 1),
+    (r"^smoke\.shopify_menu$", 1),         # Shopify app stores (29 Oct): the menus read from the store's admin
     (r"^journey\.", 1),
     (r"^product\.pdp\.", 1),
+    (r"^product\.shopify_admin$", 1),      # Shopify app stores (29 Oct): prices and stock vs the store's admin
     (r"^cart\.add_to_cart$", 1),
     (r"^cart\.edit_and_checkout$", 1),
 )

@@ -110,6 +110,17 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
         smoke.cases.append(TestCase("smoke.nav_links", "smoke", "Navigation links resolve", "links_resolve",
                                     {"urls": [n["url"] for n in sm.nav[:15]], "max_links": s.max_nav_links}, "major",
                                     "Each menu page opens in the browser and shows content"))
+    if s.shopify_menu:     # 29 Oct (Shopify review 2.2.1): the menus as the store's Shopify admin defines them
+        left = s.shopify_menu_note or {}
+        out = ", ".join(x for x in (f"{left.get('over_cap')} more over the limit" if left.get("over_cap") else "",
+                                    f"{left.get('offsite')} to other sites" if left.get("offsite") else "",
+                                    f"{left.get('skipped')} account / cart pages" if left.get("skipped") else "") if x)
+        smoke.cases.append(TestCase("smoke.shopify_menu", "smoke", "Every link in your Shopify menus opens (read from Shopify)",
+                                    "links_resolve", {"urls": [m["url"] for m in s.shopify_menu],
+                                                      "max_links": len(s.shopify_menu)}, "major",
+                                    "The store's menus read from Shopify (main menu, footer and others): each link opens "
+                                    "in the browser and shows content, including links the theme hides in a drawer or "
+                                    "mega menu" + (f". Not opened: {out}" if out else "")))
     smoke.cases.append(TestCase("smoke.mobile_menu", "smoke", "Menu opens on phones", "mobile_menu", {"home": base + "/"},
                                 "minor", "On a phone-sized screen, tapping the menu button shows the menu's links "
                                 "(judged on phones only)"))      # journey 16
@@ -158,6 +169,15 @@ def build_suites(sm: SiteMap, s: Settings) -> list[Suite]:
              # a pinned product gets no fallback: its open incident must be judged on that very page
              "fallbacks": [vurl(x) for x in spare[i * 2:(i + 1) * 2]] if p.available and i >= 0 else []}, "major",
             "Structured title/price/image present, price > 0, buy button visible when in stock"))
+    # 29 Oct (Shopify review 2.2.1): prices and stock as the store's Shopify admin lists them, compared with the page
+    if s.shopify_products:
+        product.cases.append(TestCase(
+            "product.shopify_admin", "product", "Product prices and stock match your Shopify admin (read from Shopify)",
+            "admin_match", {"products": [dict(p) for p in s.shopify_products], "currency": s.shopify_currency,
+                            "strict": False}, "major",
+            "For a few products read from Shopify's admin: the product page shows the admin's price, and a product the "
+            "admin lists as sold out isn't offered as buyable (and the reverse). Prices are compared only in the store's "
+            "own currency. Nothing is clicked"))
     # journey 22: a product with several variants (size, colour), in stock first: picking another one updates the page
     multi = next((p for p in priced if p.variants >= 2 and p.available), None) or next((p for p in priced if p.variants >= 2), None)
     if multi and product.cases:

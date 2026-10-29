@@ -24,6 +24,7 @@ from radar.core.browser import Session, RobotsBlocked, RateLimited
 from radar.core.models import StepResult
 from radar.discovery.shopify_data import (parse_product_data, price_ok, assess_add, parse_sent_variant_ids,
                                           rupees, norm_text, prices_in_text)
+from radar.discovery.shopify_admin import MAX_ADMIN_PRODUCTS
 from radar.core.overlays import dismiss_overlays, AgeGate
 from radar.healing.locator import Healer, QUICK_SEL, LocatorNotFound, OTHER_CARD_FN, not_page
 
@@ -5576,6 +5577,93 @@ def cart_drawer(ctx: Ctx, url: str, variant_id: int | None = None, cart_path: st
 
 REGISTRY["cart_drawer"] = cart_drawer
 
+
+
+# ---------------- the store's Shopify admin (29 Oct, Shopify review 2.2.1) ----------------
+def _admin_price_text(p: dict, currency: str) -> str:
+    prices = ", ".join(f"{x:,.2f}" for x in (p.get("prices") or [])[:4])
+    return f"{prices} {currency}".strip()
+
+
+def stock_verdict(admin_available: bool, button: dict | None, wording: str) -> tuple[str, str, bool]:
+    """(expected, actual, ok) for 'the page's stock matches the Shopify admin'. Sold out in the admin: the page must not
+    offer it as buyable (the sold-out rule, sold_out_verdict). In stock in the admin: the page must not say it can't be
+    bought, i.e. a disabled or missing buy button WITH sold-out wording fails; a disabled button alone passes (a theme
+    can pre-select a sold-out size). Pure, unit-tested."""
+    if not admin_available:
+        exp, actual, ok = sold_out_verdict(button, wording)
+        return "sold out in your Shopify admin: " + exp, actual, ok
+    exp = "in stock in your Shopify admin: a buy button, and no 'sold out' wording"
+    says = f"; page says {wording!r}" if wording else ""
+    if button is not None and button.get("enabled"):
+        return exp, f"buy button {(button.get('text') or '').strip()[:40]!r} enabled", True
+    if not wording:
+        what = "buy button disabled" if button else "no buy button found"
+        return exp, what + " but no sold-out wording (a size or option may need choosing first)", True
+    return exp, (("buy button disabled" if button else "no buy button") + f"{says}: shoppers are told it can't be "
+                 "bought though your admin lists it in stock"), False
+
+
+def admin_match(ctx: Ctx, products: list[dict], currency: str = "", strict: bool = False):
+    """Prices and stock as the store's Shopify admin lists them (read through the Admin API by the BugRadar Shopify app,
+    radar/discovery/shopify_admin.py), compared with each product's page as a shopper sees it:
+      price  one of the admin's variant prices is shown in the product's own part of the page (exact, or rounded to
+             whole units the way many themes show it: price_shown).
+             Compared only when the page shows the store's own currency (a Markets conversion is not a mismatch).
+      stock  sold out in the admin -> not offered as buyable; in stock in the admin -> not shown as sold out.
+    A page that doesn't open or isn't the product page is left to the product page test (not judged here). Nothing is
+    clicked. Warnings unless strict (not yet measured on a bench; the admin data can be up to a day old)."""
+    soft = not strict
+    page = ctx.sess.page
+    judged = 0
+    for p in (products or [])[:MAX_ADMIN_PRODUCTS]:
+        url, name = p.get("url") or "", (p.get("title") or p.get("handle") or "product")[:40]
+        if not url or not ctx.sess.allowed(url):
+            ctx.steps.info(f"not opened '{name}'", f"{_path(url)}: robots.txt keeps Radar out")
+            continue
+        state: dict = {}
+
+        def load(url=url):
+            out = _load(ctx, url)
+            state["gone"] = _gone_product_page(ctx, url)
+            return out
+        if ctx.steps.run(f"open '{name}'", load, soft=True) is None:
+            continue
+        if state.get("gone"):
+            ctx.steps.info(f"'{name}' not judged", f"not the product page: {state['gone']} (the product page test covers it)")
+            continue
+        _dismiss(ctx)
+        own_text = ctx.sess.evaluate(SOLD_OUT_TEXT_JS, [QUICK_SEL]) or ""
+        shown_cur = str(ctx.sess.evaluate("() => (window.Shopify && Shopify.currency && Shopify.currency.active) || ''") or "")
+
+        def price(p=p, own_text=own_text):
+            nums = prices_in_text(own_text)
+            hit = next((x for x in p.get("prices") or [] if price_shown(x, nums)[0]), None)    # exact, or rounded the
+            seen = sorted(nums)[:6]                                                          # theme's way (price_shown)
+            ctx.expect(f"'{name}' price on the page", f"your Shopify admin's price ({_admin_price_text(p, currency)})",
+                       f"{hit:,.2f} shown" if hit is not None else
+                       f"not shown; prices on the page: {', '.join(f'{x:,.2f}' for x in seen) or 'none'}", hit is not None)
+            return f"shows {hit:,.2f} {currency}".strip()
+        if currency and shown_cur and shown_cur.upper() != currency.upper():
+            ctx.steps.info(f"'{name}' price not compared", f"the page shows prices in {shown_cur}, your admin in {currency} "
+                                                           "(converted for this visitor's country)")
+        else:
+            ctx.steps.run(f"price matches admin: '{name}'", price, soft=soft)
+
+        def stock(p=p, own_text=own_text):
+            pj = _product_js(ctx, page.url)
+            b = _sold_out_button(ctx, pj)
+            exp, actual, ok = stock_verdict(bool(p.get("available")), b, sold_out_wording(own_text + " \n " + ((b or {}).get("text") or "")))
+            ctx.expect(f"'{name}' stock on the page", exp, actual + (f" ({b['how']})" if b else ""), ok)
+            return actual
+        ctx.steps.run(f"stock matches admin: '{name}'", stock, soft=soft)
+        judged += 1
+    ctx.steps.run("compared_with_admin", lambda: ctx.expect(
+        "product pages compared with your Shopify admin", ">= 1", judged, judged > 0)
+        and f"{judged} product page(s) compared with your Shopify admin", soft=True)
+
+
+REGISTRY["admin_match"] = admin_match
 
 # ---------------- store features (14 Oct): widgets Indian D2C stores add on top of Shopify ----------------
 import radar.checks.features  # noqa: E402,F401  (registers itself into REGISTRY; imported last: it needs this module's helpers)
