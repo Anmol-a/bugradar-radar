@@ -264,7 +264,7 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
         elif sm.platform != "shopify":
             # Discovery only gets here after the homepage answered < 400 and was read: a site with no title, no
             # Shopify marker and no robots.txt is still a site Radar looked at and found not to be Shopify, never a
-            # Radar crash (gozero.in, cycle 34: 'error' / 'Radar crashed' for a non-Shopify page with an empty title).
+            # Radar crash (shop130.example, cycle 34: 'error' / 'Radar crashed' for a non-Shopify page with an empty title).
             run.verdict = "unsupported"
         else:
             suites = build_suites(sm, s)
@@ -296,7 +296,7 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
                 run.verdict = run_verdict(run.cases)
                 refused = _refused_mid_run(run.cases)
                 if refused:
-                    # bombayshirts.com phone (new30l, 13 Oct): the desktop run was healthy; on the phone the store's
+                    # shop036.example phone (new30l, 13 Oct): the desktop run was healthy; on the phone the store's
                     # bot protection answered HTTP 403 to the homepage and every page after it (0.07 s loads), and
                     # Radar said DOWN. A refusal of Radar's browser is 'blocked' (could not check), never an outage.
                     run.verdict = "blocked"

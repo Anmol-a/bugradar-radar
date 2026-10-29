@@ -9,7 +9,7 @@ Last updated: 3 Oct 2026 · Layer 1, revision 3 (platform detection + robots.txt
 ## What exists today (Layer 1)
 
 ```
-sites/vaaree.yml            per-site hints: URLs, selector lists, access rules
+sites/shop125.yml            per-site hints: URLs, selector lists, access rules
 radar/config.py             load config, derive site_id (storage key)
 radar/locate.py             first_visible(): try selector hints in order
 radar/detect.py             platform detection from homepage HTML (Shopify or unknown)
@@ -22,7 +22,7 @@ tests/                      22 unit tests (no browser needed)
 ```
 
 ### How a run works
-1. `runner.py sites/vaaree.yml` loads the config. `site_id` = lowercase host without `www.` (`vaaree.com`).
+1. `runner.py sites/shop125.yml` loads the config. `site_id` = lowercase host without `www.` (`shop125.example`).
 2. A fresh browser context starts (clear User-Agent `BugRadar/0.1 (+bugradar.in)`, locale en-IN, timezone Asia/Kolkata, tracing on).
 3. The journey walks the buying path. Each step is timed and logged pass/fail/warn. Hard steps fail the run; soft steps (our own check might be wrong, e.g. visible price text on a custom theme) only warn.
 4. If a step fails: screenshot + Playwright trace are saved, the context is thrown away, and the journey is retried in a **fresh context** (max 2 retries).
@@ -42,17 +42,17 @@ tests/                      22 unit tests (no browser needed)
 | Part | Status |
 |---|---|
 | Config, site_id, confirm/retry, Shopify data parsing, in-stock pick, cart check, platform detection, robots rules | **Tested** (22 unit tests pass) |
-| Runner, retry in fresh contexts, evidence capture | **Proven on a real run (Vaaree, 3 Oct):** reached the product page, failed, retried, confirmed, saved run.json. |
-| Revision-2 journey (catalog API, structured data, cart.js) | **Written and compiles, NOT yet run.** The build workspace has no Chromium and cannot reach vaaree.com. |
-| Vaaree selectors | Only add-to-cart, checkout button and nav are still selector-based, and are **unverified guesses**. Price/title/image no longer depend on CSS. |
-| Assumption: Vaaree exposes `/collections/all/products.json` and JSON-LD on product pages | **Unverified.** If either is blocked or absent the run fails with a clear reason. |
+| Runner, retry in fresh contexts, evidence capture | **Proven on a real run (Shop125, 3 Oct):** reached the product page, failed, retried, confirmed, saved run.json. |
+| Revision-2 journey (catalog API, structured data, cart.js) | **Written and compiles, NOT yet run.** The build workspace has no Chromium and cannot reach shop125.example. |
+| Shop125 selectors | Only add-to-cart, checkout button and nav are still selector-based, and are **unverified guesses**. Price/title/image no longer depend on CSS. |
+| Assumption: Shop125 exposes `/collections/all/products.json` and JSON-LD on product pages | **Unverified.** If either is blocked or absent the run fails with a clear reason. |
 
 ---
 
 ## Findings from real runs and site checks (3 Oct 2026)
 
-- **Vaaree is NOT Shopify.** Its pages use `/products/` and `/collections/` URLs like Shopify, but assets come from `cdn.vaaree.com` and `/products.json` returns 404. Our Shopify-only assumption was wrong for it. Radar now reports verdict `unsupported` for such a site instead of a confusing failure. `sites/vaaree.yml` stays as the negative test.
-- **Moxie Beauty and Palmonas are Shopify** (CDN, `/cdn/shop/`, digital-wallet meta). Moxie Beauty is the first real test site. Supply6 could not be checked (its certificate did not match `www.supply6.com`).
+- **Shop125 is NOT Shopify.** Its pages use `/products/` and `/collections/` URLs like Shopify, but assets come from `cdn.shop125.example` and `/products.json` returns 404. Our Shopify-only assumption was wrong for it. Radar now reports verdict `unsupported` for such a site instead of a confusing failure. `sites/shop125.yml` stays as the negative test.
+- **Moxie Beauty and Shop095 are Shopify** (CDN, `/cdn/shop/`, digital-wallet meta). Moxie Beauty is the first real test site. Supply6 could not be checked (its certificate did not match `www.shop111.example`).
 - **First real run proved:** browser launch, the fresh-context retry, trace and screenshot capture, `run.json`, and that a wrong assumption surfaces as a precise `reason`.
 
 ## Pain points (known, current)
@@ -65,7 +65,7 @@ tests/                      22 unit tests (no browser needed)
 4. **Product choice (mitigated).** The journey picks the first in-stock product from the catalog JSON. Stores that disable `/products.json` fail at `catalog_has_in_stock_product`; a non-JSON crawl is not built.
 5. **Add to cart creates a real cart session** on the live store. No order, but it is traffic the site did not agree to. Keep frequency low.
 6. **Cart check (fixed in rev 2).** The cart is now confirmed through `/cart.js` containing the exact variant, not through page markup. The checkout-button check is still selector-based.
-7. **GoKwik / Shopflo checkouts** (Moxie Beauty, Palmonas, Supply6): v0 stops at the cart, so checkout-widget coverage is **not** tested yet.
+7. **GoKwik / Shopflo checkouts** (Moxie Beauty, Shop095, Supply6): v0 stops at the cart, so checkout-widget coverage is **not** tested yet.
 8. **Results are local files only.** No Supabase, no dedupe across runs, no alerts. Incident signature is computed but nothing stores or alerts on it yet.
 9. **No scheduler.** Run by hand or local cron.
 10. **Journey is hand-written config, not auto-built.** The "input a URL only" goal needs the discovery layer (Layer 3).
@@ -87,6 +87,6 @@ tests/                      22 unit tests (no browser needed)
 5. Dashboard (Next.js reading Supabase), each module with its own visual panel
 
 ## Change log
-- 3 Oct 2026 (rev 3): Vaaree real run showed `/products.json` 404 (not Shopify). Added platform detection (`unsupported` verdict, no retries) and robots.txt checks; added `sites/moxiebeauty.yml`. 22 unit tests pass; Moxie run pending.
-- 3 Oct 2026: Layer 1 written. First real Vaaree run: engine, retry and evidence worked; failed at `pdp_has_title_price_image` because a guessed price selector matched nothing (our bug, not Vaaree's).
+- 3 Oct 2026 (rev 3): Shop125 real run showed `/products.json` 404 (not Shopify). Added platform detection (`unsupported` verdict, no retries) and robots.txt checks; added `sites/shop063.yml`. 22 unit tests pass; Moxie run pending.
+- 3 Oct 2026: Layer 1 written. First real Shop125 run: engine, retry and evidence worked; failed at `pdp_has_title_price_image` because a guessed price selector matched nothing (our bug, not Shop125's).
 - 3 Oct 2026 (rev 2): journey rewritten to be data-first (catalog JSON, JSON-LD/meta, `/cart.js`), in-stock + variant pinning, soft vs hard steps. 15 unit tests pass; browser run pending.

@@ -12,7 +12,7 @@ Modes (to prove Radar catches and heals what it should):
   wrong_variant    the STORE's main buy button sends another product's id (a real site bug)
                    -> cart and journey must FAIL with "expected <this product>, got <other>"
   free_gift        after a product is added, the store's script adds a Rs 0 gift in a second
-                   request (moxiebeauty.in adds a free Travel Pouch) -> PASS with a warning
+                   request (shop063.example adds a free Travel Pouch) -> PASS with a warning
   newsletter_popup a full-screen "10% off, subscribe" popup appears ~0.4s after every page load
                    until closed -> Radar closes it (never subscribes) and PASSES
   cookie_banner    a cookie banner with Accept all / Decline -> Radar must click Decline, PASS
@@ -32,9 +32,9 @@ Modes (to prove Radar catches and heals what it should):
   title_layouts    product names where real themes put them (bench 2, 4 Oct): the vase's name is an
                    <h2> rich-text block with no <h1> (Publisher theme), the spoons' name sits in the
                    theme's own <header class="product__header">, <body> carries a class containing
-                   "card" (bummer.in) -> every product test PASSES
+                   "card" (shop129.example) -> every product test PASSES
   card_layouts     product cards as real themes build them: on the homepage an image slider sits OVER
-                   the card link and opens the product on click (bummer.in's suspected pattern); on
+                   the card link and opens the product on click (shop129.example's suspected pattern); on
                    collection pages a badge layer covers the card's centre but not its top
                    (theme-spotlight, where Playwright's own centre click was intercepted) -> PASSES
   renamed_title    the vase's page shows it as "Handmade Vase in Clay" in a big div, no <h1>: Radar's rules
@@ -48,80 +48,80 @@ Modes (to prove Radar catches and heals what it should):
   brand_landing    same homepage, no mega menu: "Shop" links to /pages/shop, a landing page that lists
                    collections (thehouseofrare.com MEN -> /pages/rare-rabbit) -> journey hops there, PASSES
   rerender_grid    collection grids are first rendered with dead links, then replaced ~1.5 s later by a
-                   search app with working ones (dotandkey.com + SearchTap) -> journey clicks again, PASSES
+                   search app with working ones (shop074.example + SearchTap) -> journey clicks again, PASSES
   icon_popup       product pages open a popup with only utility classes ("fixed inset-0 z-50") and an
-                   icon-only X close button (soulflower.in's YourLio popup) -> closed, PASSES
-  sticky_price     the product price is only in a sticky bar shown after scrolling (supplysix.com) -> PASSES
+                   icon-only X close button (shop083.example's YourLio popup) -> closed, PASSES
+  sticky_price     the product price is only in a sticky bar shown after scrolling (shop084.example) -> PASSES
   hidden_product   the vase is listed in a collection but its product page redirects to the homepage
-                   (boldcare.in) -> product test WARNS "hidden from shoppers" and tests the next product
-  notfound_product the vase's page answers 200 "Page Not Found" (foxtale.in) -> same, WARNS + next product
+                   (shop100.example) -> product test WARNS "hidden from shoppers" and tests the next product
+  notfound_product the vase's page answers 200 "Page Not Found" (shop116.example) -> same, WARNS + next product
   no_buy_form      the vase's page has no add-to-cart form for the vase, only other products' quick-add
-                   buttons (mcaffeine.com) -> product test FAILS saying exactly that
+                   buttons (shop078.example) -> product test FAILS saying exactly that
   quick_named_main the MAIN buy button sits in <form class="cart-form"><div class="quick-add-container">, a plain
-                   type=button with no /cart/add action, plus the icon-only popup (soulflower.in, bench 3)
+                   type=button with no /cart/add action, plus the icon-only popup (shop083.example, bench 3)
                    -> found as the product's own button, cart flow PASSES
-  search_app       /search is filled by a search app ~2.5 s after load: empty until then (bonkerscorner.com, baccabucci.com,
+  search_app       /search is filled by a search app ~2.5 s after load: empty until then (shop025.example, shop059.example,
                    held-out new30b 9 Oct: Radar read the page at 0.8 s, '0 results') -> search PASSES
-  search_app_popular  same, but 'popular products' (none matching the word) show until then (bellavitaorganic.com
+  search_app_popular  same, but 'popular products' (none matching the word) show until then (shop007.example
                    'Custom Search': '0 of 23 mention the term') -> search PASSES
   delayed_scripts  a speed app delays every theme script until the shopper's first mousemove / touch / wheel / key:
                    html stays 'no-js' (price hidden by the theme's no-js CSS), window.Shopify undefined, search results
-                   rendered by a delayed script (baccabucci.com, bellavitaorganic.com: new30b + re-run 9 Oct, evidence
+                   rendered by a delayed script (shop059.example, shop007.example: new30b + re-run 9 Oct, evidence
                    'theme scripts had not run (html.no-js)') -> Radar moves the mouse like a shopper; product + search PASS
   search_app_scroll  the search page title carries Shopify's own count ('Search: N results found for ...') and the
-                   search app renders its results only after the shopper scrolls (ptron.in desktop, new30c 10 Oct:
+                   search app renders its results only after the shopper scrolls (shop141.example desktop, new30c 10 Oct:
                    grey empty results area) -> Radar scrolls; search PASSES
-  search_app_never  same title, but the search app never renders anything (ptron.in mobile, kushals.com mobile,
+  search_app_never  same title, but the search app never renders anything (shop141.example mobile, shop105.example mobile,
                    new30c 10 Oct: blank results area after 10 s); Shopify's own /search/suggest.json finds the word
                    -> search WARNS "search app did not render results", never FAILS
   pincode_gate     every in-stock product's buy button is disabled and reads 'PLEASE ENTER YOUR PINCODE TO CHECK
-                   AVAILABILITY' with a pincode box + CHECK button below (bombaysweetshop.com, new30d 10 Oct: the right
+                   AVAILABILITY' with a pincode box + CHECK button below (shop011.example, new30d 10 Oct: the right
                    variant WAS selected, Radar failed 'variant selected like a shopper') -> Radar never types a pincode
                    (no form but add-to-cart is ever submitted): product test PASSES with a 'pincode gate' WARNING, the cart
                    test is BLOCKED (cannot add without a pincode), never a failure
   disabled_dup_button  the main form's visible buy button is DISABLED, an enabled sticky ADD TO CART (form=) for the
-                   same product is on screen (crossbeats.com mobile, new30e) -> Radar clicks the ENABLED one, PASSES
+                   same product is on screen (shop062.example mobile, new30e) -> Radar clicks the ENABLED one, PASSES
   healer_disabled_sticky  the form's own button is hidden, the healer finds a DISABLED 'Add to cart' by the title,
-                   an enabled sticky ADD TO CART bar (no form link) is on screen (littleboxindia.com mobile) -> PASSES
+                   an enabled sticky ADD TO CART bar (no form link) is on screen (shop018.example mobile) -> PASSES
   disabled_buy_now_only  add-to-cart disabled, only an enabled 'Buy it now' -> never clicked; the failure names it
   buy_now_first    an enabled 'Buy it now' sits before the add-to-cart in the form -> Radar clicks add to cart, PASSES
   slow_first_home  the FIRST homepage load takes home_delay seconds (Contabo -> Shopify, 21 Oct) -> Radar waits and tries
                    once more, HEALTHY with a note; home_hangs: every homepage load does -> UNREACHABLE after two tries
-  stripped_first_home  the FIRST homepage load shows only one Shopify marker (cdn.shopify.com; koskii.com) -> Radar
+  stripped_first_home  the FIRST homepage load shows only one Shopify marker (cdn.shopify.com; shop120.example) -> Radar
                    loads it once more before calling it 'not Shopify', PASSES
-  new_tab_cards    product links on the homepage and collections open in a NEW TAB (target=_blank; fashor.com,
-                   tigc.in) -> journey follows the product into that tab, PASSES with a note
+  new_tab_cards    product links on the homepage and collections open in a NEW TAB (target=_blank; shop115.example,
+                   shop146.example) -> journey follows the product into that tab, PASSES with a note
   search_misses    searching the first product's word returns only unrelated products (the word came from a
-                   product the store hides: foxtale.in 'purify', bench 3) -> a second word is tried; the miss is a
+                   product the store hides: shop116.example 'purify', bench 3) -> a second word is tried; the miss is a
                    WARNING, the search test PASSES on the second word
   drawer_form_first  before the main form, a hidden cart-drawer form named product_form_<n> holding ANOTHER
-                   product's variant (boldcare.in, bench 4); the vase needs a size picked -> reads the OWN form, PASSES
-  upsell_forms_first  same, but hidden cart-upsell 'shopify-product-form's with an EMPTY id come first (bummer.in,
+                   product's variant (shop100.example, bench 4); the vase needs a size picked -> reads the OWN form, PASSES
+  upsell_forms_first  same, but hidden cart-upsell 'shopify-product-form's with an EMPTY id come first (shop129.example,
                    bench 4) -> reads the OWN form, PASSES
   unavailable_product  the vase's page answers 200 with "The product is currently unavailable", body class
                    hidden_product, no buy form for the vase, but Product ld+json and a hidden drawer form for ANOTHER
-                   product (plumgoodness.com, benches 4 and 7) -> WARNS + next product
+                   product (shop040.example, benches 4 and 7) -> WARNS + next product
   home_at_product_url  the vase's URL renders the homepage (product cards, no vase name, no form, no data) like a
-                   headless storefront hiding a product (foxtale.in, bench 4) -> WARNS + next product
+                   headless storefront hiding a product (shop116.example, bench 4) -> WARNS + next product
   price_desktop_hidden the vase's only on-page price is in a sticky bar the theme hides on desktop (class
-                   hidden-lap-and-up, supplysix.com, bench 4) -> product test FAILS saying the price is only in a
+                   hidden-lap-and-up, shop084.example, bench 4) -> product test FAILS saying the price is only in a
                    hidden element (a real store finding on this screen size). On a phone-sized screen (< 1008 px) the
                    theme shows that bar, so MOBILE passes (v0.18: every run tests both)
-  store_refuses    the homepage answers HTTP 423 "This store is unavailable" to Radar (plumgoodness.com, bench 5, while
+  store_refuses    the homepage answers HTTP 423 "This store is unavailable" to Radar (shop040.example, bench 5, while
                    it was live for other visitors) -> verdict BLOCKED with the reason, never "unsupported" (not Shopify)
   shift_after_scroll  collection cards are tall blocks; ~10 ms after the first scroll the page re-lays out and
-                   every card moves down by one card (boat-lifestyle.com, bench 5: header change after scroll; a click
+                   every card moves down by one card (shop017.example, bench 5: header change after scroll; a click
                    30 ms after the pick opened the NEXT product) -> journey waits for the layout, re-aims, PASSES
   shadow_popup     the same YourLio-style promo popup, but rendered INSIDE a shadow root (#chat-widget), appearing
-                   300 ms after collection pages load (soulflower.in, bench 9: the popup sat over the product card and
+                   300 ms after collection pages load (shop083.example, bench 9: the popup sat over the product card and
                    v0.13's finder could not see into shadow DOM) -> popup closed by its x, journey PASSES first try
   title_opens_neighbour  tapping a collection card's NAME opens the next card's product; its image link opens the right
-                   one (faritha.com, bytheleaf.in) -> journey PASSES, store WARNING names the miswired link
-  marquee_cards    collection cards sit in a marquee that never stops moving (hunnit.com, new30z1) -> journey PASSES
+                   one (shop102.example, shop090.example) -> journey PASSES, store WARNING names the miswired link
+  marquee_cards    collection cards sit in a marquee that never stops moving (shop117.example, new30z1) -> journey PASSES
   dead_image_link  collection cards have an IMAGE link and a NAME link; the theme's slider script cancels mousedown/click on
-                   the image (thefunclab.com, bench 10) -> journey clicks the name, PASSES, store WARNING names the dead link
+                   the image (shop068.example, bench 10) -> journey clicks the name, PASSES, store WARNING names the dead link
   slider_over_image  collection cards: a slider layer (not a link) sits OVER the product image link and swallows clicks;
-                   the product NAME link below opens it (bummer.in /collections/men, 9 Oct cloud run: v0.19 failed 3/3 with
+                   the product NAME link below opens it (shop129.example /collections/men, 9 Oct cloud run: v0.19 failed 3/3 with
                    'could not click: ... intercepts pointer events' and never tried the name link) -> journey PASSES via the
                    name, store WARNING names the dead image link
   server_blip      the whole store answers HTTP 503 'Something went wrong' to every page for 3 s, starting the first time a
@@ -130,32 +130,32 @@ Modes (to prove Radar catches and heals what it should):
   products_down    every product PAGE answers HTTP 503, always (a real outage) -> product tests are still CONFIRMED failures
                    after Radar's spaced re-checks; never softened into a hiccup
   div_x_popup      every page opens a 'It's Our Birthday' scratch-to-win popup whose only close control is a bare '×' in a
-                   <div> (no button, no label, no telling class) (soulflower.in, 9 Oct cloud run) -> closed by its ×,
+                   <div> (no button, no label, no telling class) (shop083.example, 9 Oct cloud run) -> closed by its ×,
                    never 'Reveal my reward'; journey PASSES first try
   scroll_reveal    collection product cards are invisible (opacity 0, reveal animation) until the shopper scrolls the page
-                   (reequil.com '151 not visible', wearcomet.com, held-out run 9 Oct) -> journey scrolls like a shopper,
+                   (shop108.example '151 not visible', shop085.example, held-out run 9 Oct) -> journey scrolls like a shopper,
                    PASSES
   signed_only      like Shopify's edge for cloud networks (9 Oct): EVERY request without a valid Web Bot Auth signature
                    (verified against Handler.SIGNER_X) answers HTTP 429 -> unsigned Radar is BLOCKED (rate-limited);
                    Radar with RADAR_SIGNING_KEY set PASSES
-  headless_alias   product links are /products/sku-<id> (a headless storefront's own URL, palmonas.com 14 Oct); their
+  headless_alias   product links are /products/sku-<id> (a headless storefront's own URL, shop095.example 14 Oct); their
                    .js answers the HTML page; the page's canonical names the Shopify handle -> Radar reads the product
                    data via that handle, journey PASSES on the first attempt
-  flaky_data       every /products/<h>.js answers an EMPTY body the first time it is asked (palmonas.com, bench 11) and
+  flaky_data       every /products/<h>.js answers an EMPTY body the first time it is asked (shop095.example, bench 11) and
                    JSON after that -> Radar retries the data request; tests PASS on the first attempt
   sticky_buy_only  product pages: the form's own button is hidden on desktop; the same form's button shows in a sticky
-                   bar only after the shopper scrolls (true-elements.com, held-out 7 Oct) -> product tests PASS
+                   bar only after the shopper scrolls (shop034.example, held-out 7 Oct) -> product tests PASS
   div_buy_control  product pages: NO /cart/add form; the buy control is <div class="pdp-addtobag-btn"
                    data-product-handle=...> "ADD TO BAG", after 3 recommendation cards with their own "Add to Bag"
-                   buttons for other products (nicobar.com, held-out 7 Oct) -> product + cart PASS, right product added
-  reworded_name    the vase's page (no cart form) shows it as 'VASE · Flower, ceramic' (nbdpowerlifting.com, 18 Oct)
+                   buttons for other products (shop107.example, held-out 7 Oct) -> product + cart PASS, right product added
+  reworded_name    the vase's page (no cart form) shows it as 'VASE · Flower, ceramic' (shop014.example, 18 Oct)
   preselected_variant  the vase's page has NO cart form (headless-style div buy control) and pre-selects its SECOND
-                   size ("Large", marked active + aria-checked); only that size's price is shown (foxtale.in, 9 Oct: the
+                   size ("Large", marked active + aria-checked); only that size's price is shown (shop116.example, 9 Oct: the
                    200g Best Value size pre-selected, Radar read the first size's ₹349 and failed "price not on page")
                    -> product test reads the size the page shows and PASSES (v0.18 FAILED: expected the first size's price)
   drawer_decoy_popup  every homepage / collection page carries a CLOSED wishlist drawer (role=dialog, aria-modal, slid
                    off-screen with translateX(100%), close button unclickable) BEFORE a real promo popup in the DOM: a
-                   bottom sheet over the product grid, 300 ms after load (suta.in wishlist drawer + soulflower.in cart drawer,
+                   bottom sheet over the product grid, 300 ms after load (shop145.example wishlist drawer + shop083.example cart drawer,
                    7-9 Oct: v0.18 retried the hidden drawer ~10 times and never closed the real popup) -> real popup
                    closed, journey PASSES on desktop and mobile
   rate_limited     every /products/<h>.js answers HTTP 429 Too Many Requests, always (Shopify throttling Radar's own
@@ -170,7 +170,7 @@ Modes (to prove Radar catches and heals what it should):
   rate_limited_once  each /products/<h>.js answers 429 (Retry-After: 1) twice, then normally -> Radar backs off, PASSES
   noisy_console    every page logs a console error + warning and fires a request nobody answers (third-party widget)
                    -> everything PASSES; the noise only shows up as report evidence (v0.18)
-  robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (soulflower.in / bummer.in,
+  robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (shop083.example / shop129.example,
                    bench 11: no answer on two quick tries) -> third try reads it; store tested, healthy
   robots_500       /robots.txt answers HTTP 500 (bench 8 lesson, RFC 9309) -> "do not crawl": BLOCKED, nothing tested;
                    on a daily check (check_store_down) the homepage answers 200, so it stays BLOCKED with that said
@@ -207,60 +207,60 @@ Modes (to prove Radar catches and heals what it should):
   robots_500_home_loop  /robots.txt 503; / redirects to itself -> the server answered (HTTP 302): BLOCKED
   robots_500_home_challenge  /robots.txt 503; / is a Cloudflare challenge sent with 503 -> server up: BLOCKED
   (down_hits on the server records each request path in these modes, ' (browser)' when Chromium asked)
-  blank_not_shopify  gozero.in (cycle 34): no robots.txt (404), the homepage answers 200 with an EMPTY title, an empty
+  blank_not_shopify  shop130.example (cycle 34): no robots.txt (404), the homepage answers 200 with an EMPTY title, an empty
                    <div id=root> and no Shopify marker -> verdict UNSUPPORTED with what the homepage showed (v0.19:
                    'error', shown as 'Radar crashed')
-  pack_of_two      theformalclub.in (cycle 34): the vase is a 'pack of 2' with ONE option whose values join both items'
+  pack_of_two      shop042.example (cycle 34): the vase is a 'pack of 2' with ONE option whose values join both items'
                    sizes ('S / 38 / M / 40'); the page shows two pickers labelled 'S' / 'M' and fills the form's id only
                    when both are picked -> Radar clicks 'S' in each picker and PASSES (v0.19: 'variant selected like a
                    shopper ... after choosing nothing (no matching picker)')
-  stale_catalog    bombaytrooper.com (cycle 34): /products.json lists the vase in stock, its /products/<h>.js and page
+  stale_catalog    shop024.example (cycle 34): /products.json lists the vase in stock, its /products/<h>.js and page
                    say sold out -> the product test notes it (info) and tests the next in-stock catalog product, PASSES
                    (v0.19: 'an in-stock variant exists ... got none available')
-  stale_catalog_all  bombaytrooper.com (13 Oct, dashboard): as stale_catalog, but EVERY product is sold out in its .js and on
+  stale_catalog_all  shop024.example (13 Oct, dashboard): as stale_catalog, but EVERY product is sold out in its .js and on
                    its page, so there is no in-stock product to test instead -> the product test judges the sold-out page
                    (name, price, picture, 'sold out' told), tags it with a 'sold_out_product' step and PASSES (before:
                    'an in-stock variant exists ... got none available', confirmed_fail)
-  app_proxy_page   arakucoffee.in (cycle 34): a homepage section links to /tools/product-finder/match-me, an app-proxy
+  app_proxy_page   shop058.example (cycle 34): a homepage section links to /tools/product-finder/match-me, an app-proxy
                    quiz page with no theme layout whose content a web component draws in a CLOSED shadow root (body text
                    empty, no <img>) -> smoke.more_links PASSES on what the browser painted (v0.19: 'page not blank: got
                    0 chars, 0 images' -> confirmed_fail)
-  slow_page        bluenectar.co.in (cycle 34, desktop): the menu page /pages/about answers after SLOW_PAGE_SECS (4 s;
+  slow_page        shop035.example (cycle 34, desktop): the menu page /pages/about answers after SLOW_PAGE_SECS (4 s;
                    tests use a 3 s navigation timeout) -> opened again with twice the wait: smoke.nav_links PASSES with a
                    'slow page' WARNING (v0.19: 'Timeout exceeded' -> broken navigation page, confirmed_fail)
   robots_404       /robots.txt answers HTTP 404 (no file) -> everything allowed, store tested normally
   (Radar's own network dropping mid-run is not a mode: tests shut the store down from the progress hook and point
    the connectivity probe at a dead port (Radar offline) or at a live server (Radar online, store died).)
-  empty_doc_title  every page renders normally but its <title> is empty (hairoriginals.com, new30e held-out)
+  empty_doc_title  every page renders normally but its <title> is empty (shop027.example, new30e held-out)
                    -> pages load (no 'down'); the SEO test 'title' warns
-  annual_return_pdf  the footer's first link is 'Annual Return FY 2024-25', a PDF under /cdn/ (giva.co): a company-law
+  annual_return_pdf  the footer's first link is 'Annual Return FY 2024-25', a PDF under /cdn/ (shop143.example): a company-law
                    filing, not the returns policy -> never picked as an info page, info.policy_pages PASSES
   grid_on_scroll   collection pages show a 1600 px banner and an EMPTY grid that an app fills only when the grid
-                   scrolls into view (veirdo.in, new30h: '144 items', Radar saw 0 products) -> collection + journey PASS
+                   scrolls into view (shop137.example, new30h: '144 items', Radar saw 0 products) -> collection + journey PASS
   lazy_gallery     the product page's main picture is a lazy gallery slide: an empty 300x300 <img> whose data-src is
-                   swapped in 2 s after load (soultree.in, new30h: image on screen, Radar said 'none loaded') -> PASSES
+                   swapped in 2 s after load (shop110.example, new30h: image on screen, Radar said 'none loaded') -> PASSES
   other_market     every page shows prices converted to USD (Shopify Markets for a US visitor: Shopify.currency
-                   {active: USD, rate: 0.012}, '$15.59' where the catalog says ₹1,299; theindianethnicco.com, saltattire.com
-                   new30h, tilfi.com new30g) -> product / journey / cart tests are BLOCKED 'location (US runner)', not DOWN
-  other_market_norate  same dollar prices, but the page exposes no Shopify.currency (theindianethnicco.com $62.91 and
-                   saltattire.com $24.23 kept failing on the rate test alone, cycle 28 re-run) -> BLOCKED 'location'
+                   {active: USD, rate: 0.012}, '$15.59' where the catalog says ₹1,299; shop005.example, shop065.example
+                   new30h, shop135.example new30g) -> product / journey / cart tests are BLOCKED 'location (US runner)', not DOWN
+  other_market_norate  same dollar prices, but the page exposes no Shopify.currency (shop005.example $62.91 and
+                   shop065.example $24.23 kept failing on the rate test alone, cycle 28 re-run) -> BLOCKED 'location'
   cart_dawn_rows   Dawn's real cart rows: hidden 'Decrease quantity for <title>' text inside the quantity box, the price in
                    its own table cell, a discount code (regular price struck, sale price 10% lower) -> journey 23's
                    cart line price PASSES ('discounted in the cart'), not 'line shows no price' (12 theme demos, cycle 28)
   other_market_switcher  product pages show the price only as converted '$… USD' drawn by a converter app (not in the
-                   page's text) and a 'USD' currency switcher (nakshatrakids.com, new30y) -> BLOCKED 'location'
+                   page's text) and a 'USD' currency switcher (shop030.example, new30y) -> BLOCKED 'location'
   other_market_price_above  dollar prices with no Shopify.currency, the price ABOVE the product's name and an 'INR 999'
-                   shipping note on the page (khushbujewellers.com, new30x) -> BLOCKED 'location'
+                   shipping note on the page (shop009.example, new30x) -> BLOCKED 'location'
   other_market_offer  dollar prices with no Shopify.currency, plus an offer block in ₹ ('Flat ₹250 off, min. order ₹2,500')
-                   lower on the product page (theindianethnicco.com, cycle 28 round 2 still DOWN) -> BLOCKED 'location'
-  marketplace_only product pages show no price and no cart, only 'Buy on Amazon / Flipkart' links (antesports, beyondsnack)
+                   lower on the product page (shop005.example, cycle 28 round 2 still DOWN) -> BLOCKED 'location'
+  marketplace_only product pages show no price and no cart, only 'Buy on Amazon / Flipkart' links (shop057, shop060)
                    -> product + journey BLOCKED "sells only on marketplaces", never DOWN
   href_space       homepage + collection cards link to '/products/<handle> ' (trailing space in the href; the browser
-                   opens /products/<handle>; thechumbakwala.com new30n 14 Oct) -> journey PASSES (was DOWN 'opened the
+                   opens /products/<handle>; shop020.example new30n 14 Oct) -> journey PASSES (was DOWN 'opened the
                    product that was clicked: expected /products/x , got /products/x')
   price_on_request product pages hide the price on purpose: 'Price on Request' + 'Enquire' / 'Chat with us', no cart
-                   (houseofquadri.com, artoftimeindia.com, new30n 14 Oct); the spoon page shows no price and only the
-                   bar 'We are no longer accepting online orders' (banjarakasuti.com) -> BLOCKED 'not tested', never DOWN
+                   (shop029.example, shop016.example, new30n 14 Oct); the spoon page shows no price and only the
+                   bar 'We are no longer accepting online orders' (shop023.example) -> BLOCKED 'not tested', never DOWN
   cart_qty_broken  the cart page's + / − buttons and quantity box do nothing (theme script missing) -> cart.edit_and_checkout
                    WARNS (strict: FAILS) at change_quantity "cart quantity after pressing +: expected 2"
   cart_remove_broken  the cart page's Remove link reloads the cart without removing the line -> WARNS (strict: FAILS) at
@@ -276,10 +276,10 @@ Modes (to prove Radar catches and heals what it should):
   cart_no_drawer   adding sends the shopper straight to the cart page (no drawer) -> 'no_drawer' information, the cart
                    page is compared with /cart.js, PASSES (healthy: the drawer names the product only, no quantity or
                    subtotal; those are not judged)
-  no_title         product pages show no product name at all (snitch.co.in after its move)
+  no_title         product pages show no product name at all (shop097.example after its move)
                    -> product tests FAIL at shows_title_price_image with "none"
-  (every mode)     footer links to an 'Annual Return FY 2024-25' PDF (downloads; giva.co), Cloudflare's /cdn-cgi/l/email-protection
-                   'Email' link (beminimalist.co), /pages/shipping-policy, /policies/refund-policy, /pages/privacy-policy,
+  (every mode)     footer links to an 'Annual Return FY 2024-25' PDF (downloads; shop143.example), Cloudflare's /cdn-cgi/l/email-protection
+                   'Email' link (shop047.example), /pages/shipping-policy, /policies/refund-policy, /pages/privacy-policy,
                    /pages/terms-of-service, /pages/contact (+ an Instagram link) and a header account link
                    /account/login; robots.txt disallows /policies/ and /account (some stores do: Radar must skip them)
                    -> journey 28 opens shipping, privacy, terms, contact (refund skipped: robots.txt); no account test
@@ -287,7 +287,7 @@ Modes (to prove Radar catches and heals what it should):
                    (already in the menu) -> journey 15 opens offers + our-story (only in healthy and broken_section_link:
                    the navigation modes must not get extra links)
   broken_section_link  /pages/our-story answers 404, /pages/offers redirects to the homepage, a banner link's href is
-                   '/https://www.mockstore.in/collections/sale' (beyondsnack.in) (journey 15) -> smoke.more_links FAILS naming
+                   '/https://www.mockstore.in/collections/sale' (shop060.example) (journey 15) -> smoke.more_links FAILS naming
                    them, the last as a malformed address
   broken_policies  the footer's shipping page answers 404, the privacy page is a heading with no text, the contact page
                    has no form, email or phone (journey 28) -> info.policy_pages FAILS naming shipping; privacy and
@@ -298,9 +298,9 @@ Modes (to prove Radar catches and heals what it should):
   hamburger_menu   phones only: the header menu hides behind a ☰ button (aria-label Menu) opening a drawer (journey 16)
                    -> smoke.mobile_menu PASSES 'tapped the menu button'; desktop / healthy -> not judged / links shown
   dead_tile_menu   phones: hamburger_menu, and the homepage's only visible collection link is an 'Explore Now' tile whose
-                   tap does nothing, no product cards (amchongtea.com, new30x) -> journey goes via the ☰ menu, PASSES
+                   tap does nothing, no product cards (shop056.example, new30x) -> journey goes via the ☰ menu, PASSES
   icon_x_popup     a full-screen sign-up popup whose only close is an icon with no words in the dialog's top-right
-                   corner (thinkitchen.in, new30z6) -> closed with that icon, never SUBMIT; journey PASSES
+                   corner (shop069.example, new30z6) -> closed with that icon, never SUBMIT; journey PASSES
   hamburger_broken same, but the button's script throws and the drawer never opens -> smoke.mobile_menu WARNS
   late_cards       collection grids are rendered by a script 1.5 s after the page loads -> the collection test and
                    catalog.more wait for the cards and PASS (they failed at once on the old code)
@@ -332,7 +332,7 @@ Modes (to prove Radar catches and heals what it should):
                    -> product pages WARN 'screen covered by fixed bars' naming div.sticky-info; the store stays healthy
   healthy (+)      the vase's page has Dawn-style size pills (radio + label) whose script updates the form's variant id,
                    the price and ?variant= (journey 22) -> product.variant_switch PASSES (Small → Large, ₹1,299 → ₹1,399)
-  variant_pill_covered  healthy pills under a transparent swatch layer that forwards clicks (dotandkey.com, 12 Oct):
+  variant_pill_covered  healthy pills under a transparent swatch layer that forwards clicks (shop074.example, 12 Oct):
                    Playwright's click on the pill times out ('intercepts pointer events') -> Radar clicks the point like
                    a shopper, variant_switch PASSES (was 'option could not be clicked' warning)
   variant_switch_broken  same pills, but the theme's variant script is missing: clicking Large changes nothing (id, price
@@ -341,7 +341,7 @@ Modes (to prove Radar catches and heals what it should):
                    makes it say 'Sold out' -> variant_switch and sold_out_blocks_buy PASS
   variant_sold_out_buyable  same, but the buy button stays enabled 'Add to cart' on the sold-out size -> WARNS (strict:
                    FAILS) at sold_out_blocks_buy (the buy button is never clicked)
-  variant_no_url_push  (journey 22 round 2: antinorm.co, veirdo.in) an app-built buy box with no form/id field, pill
+  variant_no_url_push  (journey 22 round 2: shop099.example, shop137.example) an app-built buy box with no form/id field, pill
                    labels carry their price, the theme never pushes ?variant= -> variant_switch PASSES on the pill the
                    page marks as chosen (it used to warn: the address kept the ?variant= Radar opened it with)
   variant_price_late  (theme-taste-demo) the form's id changes at once, the price 1.5 s later -> PASSES
@@ -369,133 +369,133 @@ Modes (to prove Radar catches and heals what it should):
                    the filter and chooses 'Price, low to high'; both PASS
   filter_broken    the filters are shown, but ?filter.v.availability=1 still lists everything, the sold-out lamp too
                    -> catalog.filter WARNS (strict: FAILS) 'not matching: sold-out-lamp' (its .js and page: sold out)
-  filter_stock_differs  antinorm.co / beminimalist.co (11 Oct): 'In stock' lists the lamp, which the collection's
+  filter_stock_differs  shop099.example / shop047.example (11 Oct): 'In stock' lists the lamp, which the collection's
                    products.json calls sold out, while Shopify's /products/<h>.js and its product page sell it (inventory
                    policy 'continue' / untracked stock) -> catalog.filter PASSES: the storefront's own data decides
-  filter_big_collection  maspar.com (11 Oct): only a 'Size' filter; the collection's products.json (Radar reads 250 of a
+  filter_big_collection  shop121.example (11 Oct): only a 'Size' filter; the collection's products.json (Radar reads 250 of a
                    bigger collection) does not carry the vase, the one product ?filter.v.option.size=Small lists ->
                    PASSES (1 listed, the data cannot tell), never '0 products listed with the filter on'
   filter_empty     the 'Availability' filter says 'In stock (2)' but ?filter.v.availability=1 lists nothing ('No products
                    found') -> catalog.filter WARNS (strict: FAILS), naming the store's own count
   filter_app       Dawn's filter form is on the page, but a filter app (script /static/boost-sd-filter.js) owns the grid
                    and empties it on addresses with filter.* -> 'not judged: filter app Boost' (info), not a warning
-  contents_cards   every product card's link is display:contents around image + name (valliyan.com, Baseline theme):
+  contents_cards   every product card's link is display:contents around image + name (shop098.example, Baseline theme):
                    the <a> has no box of its own -> collection + journey PASS (was 'products listed: 0', 'N not visible')
-  zero_box_cards   valliyan.com re-test (cycle 34 fix still failed): the card's display:contents link wraps a block whose
+  zero_box_cards   shop098.example re-test (cycle 34 fix still failed): the card's display:contents link wraps a block whose
                    image and name FLOAT, so that block has zero height too -> collection + journey PASS (v0.19 cycle 34:
                    'products listed: 0', '15 links: 15 not visible')
-  contents_reveal_cards  valliyan.com re-test 2 (run 38326679916): the card's display:contents link carries a
+  contents_reveal_cards  shop098.example re-test 2 (run 38326679916): the card's display:contents link carries a
                    scroll-reveal opacity:0 that never lifts (no box to observe); its image and name still paint -> the
                    journey PASSES (v0.19 13 Oct: grid counted, then '15 links: 15 not visible')
-  freebie_type     suta.in (full 36, 13 Oct): the catalog's first product is 'Free Fabric' (Rs 1,000, product type
+  freebie_type     shop145.example (full 36, 13 Oct): the catalog's first product is 'Free Fabric' (Rs 1,000, product type
                    'Freebies', also in Home Decor), whose page has no product image -> it is skipped as a gift SKU and a
                    real product is tested: product suite PASSES (v0.19: 'main product image loaded: got none', degraded)
   hidden_link_shown_cards  the card's link is visibility:hidden while its image + name override it (visibility:visible),
                    so the card paints and takes the click -> collection + journey PASS (v0.19 13 Oct: the link's own style
                    decided: 'N not visible'). Visibility is judged by what paints INSIDE the link.
-  stretched_link_cards  valliyan.com (Baseline; first-refused evidence 13 Oct: 'a.increase-target{inline,op 1,visible,
+  stretched_link_cards  shop098.example (Baseline; first-refused evidence 13 Oct: 'a.increase-target{inline,op 1,visible,
                    0x0} > span.visually-hidden'): each card holds an EMPTY inline link whose ::before is position:absolute
                    over the card -> collection + journey PASS (v0.19: '15 links: 15 not visible')
-  late_grid        giva.co phone (full 36, 13 Oct): collection pages say '12 products' at once but an app draws the
+  late_grid        shop143.example phone (full 36, 13 Oct): collection pages say '12 products' at once but an app draws the
                    product cards LATE_GRID_SECS (8 s) after load, past Radar's 6 s grid wait -> collection + journey PASS
                    ('rendered 8.0s after the page loaded'); v0.19: 'products listed: 0' on the first attempt (flaky)
   veiled_cards     verdict rule (13 Oct): every product card sits under a transparent fixed layer with NO control to
                    close it -> Radar cannot find a card it is sure a shopper can tap: journey NOT JUDGED (case 'blocked',
                    store 'blocked'), never DOWN (v0.19: 'product card a shopper can click: ... covered by div.veil' = DOWN)
-  pdp_no_image     verdict rule: the vase's page has no image at all (suta.in 'Free Fabric') -> product.pdp NOT JUDGED
+  pdp_no_image     verdict rule: the vase's page has no image at all (shop145.example 'Free Fabric') -> product.pdp NOT JUDGED
                    with what was seen; store stays healthy (v0.19: 'main product image loaded: got none' = degraded)
   pdp_broken_image the vase's 300x300 image answers 404 -> positive evidence: product.pdp FAILS 'a large image failed
                    to load' (the rule keeps real breakage a failure)
-  refused_mid_run  bombayshirts.com phone (new30l, 13 Oct): discovery sees the store (robots, homepage, data), then the
+  refused_mid_run  shop036.example phone (new30l, 13 Oct): discovery sees the store (robots, homepage, data), then the
                    bot wall answers HTTP 403 to every page -> run verdict 'blocked' with a note (v0.19: DOWN, 8 failed checks)
-  late_redirect_product  the vase's page renders, then a script sends the shopper to / a moment later (foxtale.in
+  late_redirect_product  the vase's page renders, then a script sends the shopper to / a moment later (shop116.example
                    14 Oct) -> loads WARNS 'redirects to / shortly after loading', the next catalog product is tested
   sibling_variant_links  the vase's <h1> shares a box with big 'CHOOSE VARIANTS' cards linking to sibling
-                   products (beminimalist.co 14 Oct) -> its name is still found, the journey PASSES first try
+                   products (shop047.example 14 Oct) -> its name is still found, the journey PASSES first try
   market_path      Shopify Markets: / sends the shopper to /en-us/, links carry the prefix, prices are +20% there and so is
-                   /en-us/products/<h>.js; the default /products/<h>.js says the base price (amayrajewellery.com 14 Oct)
+                   /en-us/products/<h>.js; the default /products/<h>.js says the base price (shop010.example 14 Oct)
                    -> Radar reads the data under the page's market path, journey PASSES first try
   market_redirect_all  market_path, and every /products/<h> URL also sends the visitor to /en-us/products/<h>
-                   (khushbujewellers.com, new30x) -> product pages PASS, no 'hidden from shoppers' warning
+                   (shop009.example, new30x) -> product pages PASS, no 'hidden from shoppers' warning
   wishlist_404     the header links /pages/wishlist, which answers HTTP 404 with a wishlist app drawn into it
-                   (countryflora / kotart / swornyfashion, new30p) -> smoke.nav_links PASSES, the app page noted
+                   (shop037 / shop131 / shop033, new30p) -> smoke.nav_links PASSES, the app page noted
   plain_size_buttons  the vase has Size x Colour; colour swatch in a 'swatches' box, sizes as plain buttons in a
-                   'pdp-sizes' box, nothing chosen on load (form id empty, 'Choose your size' disabled) (sntvl.com
+                   'pdp-sizes' box, nothing chosen on load (form id empty, 'Choose your size' disabled) (shop134.example
                    new30r) -> Radar taps the colour AND the size, product PASSES
   hidden_price     product pages show no price near the name and only a disabled 'Unavailable' button (the data has a
-                   placeholder price; somuchliving / tastycrafts 15 Oct) -> product BLOCKED 'not tested', never DOWN
+                   placeholder price; shop041 / shop067 15 Oct) -> product BLOCKED 'not tested', never DOWN
   marketplace_hidden_cart  the price shows, cart buttons are hidden, the only buy control is 'View On Amazon'
-                   (saumyasstores.com, new31a) -> product BLOCKED 'not tested', never not judged
+                   (shop032.example, new31a) -> product BLOCKED 'not tested', never not judged
   customiser_product  the product page is an art builder (upload, disabled 'Continue to Customize'), no price, no cart
-                   button (aesthesy.com, new31a) -> BLOCKED 'not tested', never DOWN
-  price_after_choice  product pages hide the price and keep 'Add to cart' disabled until a choice is made (myop.in,
+                   button (shop086.example, new31a) -> BLOCKED 'not tested', never DOWN
+  price_after_choice  product pages hide the price and keep 'Add to cart' disabled until a choice is made (shop144.example,
                    new30x) -> product BLOCKED 'not tested', never DOWN
-  gst_price        product pages show the price plus 3% GST ('Rs. 1,338 INR' for ₹1,299: kanchisilver.com, new31f)
+  gst_price        product pages show the price plus 3% GST ('Rs. 1,338 INR' for ₹1,299: shop039.example, new31f)
                    -> shows_title_price_image WARNS, never fails
-  coming_soon_product  product pages say 'Coming Soon', no price, a 'Notify me' button (atovio.in, new31f) -> BLOCKED
+  coming_soon_product  product pages say 'Coming Soon', no price, a 'Notify me' button (shop127.example, new31f) -> BLOCKED
                    'not tested', never DEGRADED
-  prepaid_price    product pages show the price minus 5% under 'EXTRA 5% OFF ON ALL PREPAID ORDERS' (rasayanam.in)
+  prepaid_price    product pages show the price minus 5% under 'EXTRA 5% OFF ON ALL PREPAID ORDERS' (shop096.example)
                    -> shows_title_price_image WARNS (Anmol, 15 Oct), never fails
   customer_auth_link  the header links '/customer_authentication/redirect' (Shopify new customer accounts), which answers
-                   404 to a robot (krkjewels.com new30t) -> not a menu page, smoke.nav_links PASSES
+                   404 to a robot (shop077.example new30t) -> not a menu page, smoke.nav_links PASSES
   hidden_form_app_button  the product's cart form is hidden and holds no button; the buy control is an app's element
-                   outside it (shopkara.store, nubronicforte.com) -> found, the cart check adds the right product, PASSES
-  per_unit_price   the vase page shows '₹649.50 / piece' + 'Pack of 2 pieces' for the ₹1,299 variant (ayamveda.com)
+                   outside it (shop066.example, shop031.example) -> found, the cart check adds the right product, PASSES
+  per_unit_price   the vase page shows '₹649.50 / piece' + 'Pack of 2 pieces' for the ₹1,299 variant (shop088.example)
                    -> price shown PASSES (per-unit evidence)
-  no_product_images  product pages show no picture and /products/<h>.js lists no image (kalamkitaab, lucentpublication)
+  no_product_images  product pages show no picture and /products/<h>.js lists no image (shop051, shop003)
                    -> shows_title_price_image WARNS 'no image in the store's own data', never not-judged
   span_add_to_cart  hidden, empty cart form + a theme <span class="custom-add-to-cart-btn">Add to Cart</span> far from
-                   the name (costosoitaliano.com) -> used, the cart check adds the right product, PASSES
-  grid_quick_add_class  the collection grid's container carries a 'quick-add' class (dhaagaweaves.in, cmartian.com)
+                   the name (shop012.example) -> used, the cart check adds the right product, PASSES
+  grid_quick_add_class  the collection grid's container carries a 'quick-add' class (shop048.example, shop091.example)
                    -> its cards are still cards, journey PASSES
-  body_drawer_class  <body> carries 'quick-add-enabled cart-drawer-active' (dhaagaweaves.in, cmartian.com, new31a/b) ->
+  body_drawer_class  <body> carries 'quick-add-enabled cart-drawer-active' (shop048.example, shop091.example, new31a/b) ->
                    cards are still cards, journey PASSES
-  name_hidden_on_phone  product names sit in a desktop-only <h1>; phones see a tagline (zarfstudios.com, new31c) -> phone
+  name_hidden_on_phone  product names sit in a desktop-only <h1>; phones see a tagline (shop054.example, new31c) -> phone
                    shows_title_price_image WARNS, never fails
-  devanagari_title  the vase is named in Marathi in its data and on its pages (prashantpublications.com) -> PASSES
-  emoji_cookie     a page script sets a cookie holding an emoji (paramountchess.com) -> product data still read, PASSES
+  devanagari_title  the vase is named in Marathi in its data and on its pages (shop001.example) -> PASSES
+  emoji_cookie     a page script sets a cookie holding an emoji (shop019.example) -> product data still read, PASSES
   discount_link    a homepage section links /discount/WOWDEAL, which applies the code and redirects to the homepage
-                   (Shopify's own behaviour; daantwale.com, new30z2) -> smoke.more_links PASSES
-  hidden_buttons_product  the product's cart form keeps its buttons, all hidden, and no other buy control (saralhome.com
+                   (Shopify's own behaviour; shop073.example, new30z2) -> smoke.more_links PASSES
+  hidden_buttons_product  the product's cart form keeps its buttons, all hidden, and no other buy control (shop082.example
                    freebie, new31c) -> product BLOCKED 'not tested', never not judged
-  needs_photo_upload  'Add to cart' stays disabled until the shopper uploads a photo (cartwala.in, new31d) -> product
+  needs_photo_upload  'Add to cart' stays disabled until the shopper uploads a photo (shop101.example, new31d) -> product
                    BLOCKED 'not tested', never DEGRADED
-  needs_dimensions  'Add to cart' stays disabled until the shopper types the wall's width and height (giffywalls.in,
+  needs_dimensions  'Add to cart' stays disabled until the shopper types the wall's width and height (shop075.example,
                    new30z5) -> product BLOCKED 'not tested', never DOWN
-  bundle_builder   the product's only button 'Pick 6 buddies' is disabled until a choice (orbiz.in, new30z2) -> product
+  bundle_builder   the product's only button 'Pick 6 buddies' is disabled until a choice (shop140.example, new30z2) -> product
                    BLOCKED 'not tested', never DOWN
-  disabled_form_icon_bar  the form's button is disabled; the sticky bar's add-to-cart is an icon with no words (popees.com
+  disabled_form_icon_bar  the form's button is disabled; the sticky bar's add-to-cart is an icon with no words (shop122.example
                    phone, new30z5) -> PASSES
   disabled_form_bar_on_scroll  the form's 'Buy it now' is disabled, the enabled 'ADD TO CART' sticky bar shows only after
-                   scrolling (adachikan.com phone, new30z1) -> PASSES
+                   scrolling (shop070.example phone, new30z1) -> PASSES
   disabled_form_enabled_bar  the form's own button is disabled, an enabled sticky 'Add to cart' adds the product
-                   (arabianaroma.in) -> variant_ready + buy PASS
-  gift_only_product  hidden, empty cart form and no buy control anywhere (a gift the store auto-adds; nubronicforte
+                   (shop044.example) -> variant_ready + buy PASS
+  gift_only_product  hidden, empty cart form and no buy control anywhere (a gift the store auto-adds; shop031
                    'Performance Kit') -> product BLOCKED 'not tested: offers no way to buy it'
   cod_form_only    hidden buttonless cart form + only an 'Order Now - Cash on Delivery' order-form app button
-                   (shopkara.store) -> product BLOCKED 'not tested: sold only through an order-form app'
+                   (shop066.example) -> product BLOCKED 'not tested: sold only through an order-form app'
   grid_names_dead  grid_without_links, but tapping a card does nothing -> NOT JUDGED with what was tapped
-  grid_without_links  giva.co desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
+  grid_without_links  shop143.example desktop (verdict-rule sanity, 13 Oct): the collection page shows its product cards (names,
                    prices) but as script-driven tiles with NO <a href="/products/..."> -> 'products listed' NOT JUDGED
                    (the page shows the products by name), never a failure
   grid_empty_data_full  the collection page shows no products at all while its products.json lists them -> positive
                    evidence: 'products listed' FAILS naming the data
-  offsite_hang     nonasties.in phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
+  offsite_hang     shop094.example phone (new30k): footer links /map and /panjim answer 302 to another site (Google Maps)
                    that never finishes loading for the phone browser -> smoke.more_links PASSES, naming the other site
                    (v0.19: 'page did not load ... nor within 60 s' -> links that fail to open, confirmed_fail)
   landing_collection  /collections/home-decor (the menu's first collection) is a landing page: hero, hidden mega-menu
-                   product links, a 'Learn more' tile to /collections/kitchen (quboworld.com 'Smart Entrance') -> the
+                   product links, a 'Learn more' tile to /collections/kitchen (shop080.example 'Smart Entrance') -> the
                    collection test WARNS 'landing page', the journey goes on to the sub-collection and PASSES
   phone_brand_landing  brand_landing, but on phones the top menu sits behind a ☰ drawer (subko.coffee phone) -> the
                    journey opens the menu, hops to /pages/shop, PASSES
   country_modal    a 'Shopping from Outside India? International / Stay Here' modal rendered inside <header> covers the
-                   page until answered (teatrunk.in) -> Radar clicks 'Stay Here' (never 'International'), PASSES
+                   page until answered (shop112.example) -> Radar clicks 'Stay Here' (never 'International'), PASSES
   country_modal_div_stay  country_modal, but 'Stay Here' is a plain <div> with a click handler and the backdrop is a
-                   sibling of the box (teatrunk.in re-test) -> Radar clicks 'Stay Here', PASSES
+                   sibling of the box (shop112.example re-test) -> Radar clicks 'Stay Here', PASSES
   region_gateway         full-page split gateway INDIA | EUROPE, each 'VISIT NOW', no close; Shopify.country 'IN'
-                         (axorhelmets.com, Contabo probe 18 Oct)
+                         (shop045.example, Contabo probe 18 Oct)
   country_modal_stay_on  'Visiting from United States (USD $)?' with 'Shop on US Site' / 'Stay on Mock IN Site' and an
-                   unlabelled icon x, inside <header> (vedix.com) -> Radar clicks 'Stay on Mock IN Site' (never the US
+                   unlabelled icon x, inside <header> (shop136.example) -> Radar clicks 'Stay on Mock IN Site' (never the US
                    site), PASSES
   buy_now_ok       (journey 33) the product form carries Shopify's dynamic checkout slot (div.shopify-payment-button); a
                    script renders 'Buy it now' into it 600 ms after load; the click opens /checkouts/cn/buynow?variant=<id>,
@@ -516,7 +516,7 @@ Modes (to prove Radar catches and heals what it should):
                    /collections/*filter*&*filter*, /collections/*+* (facets_sort_allowed: without the sort_by lines)
 
 Every product page also carries a quick-add product card BEFORE the main buy button in the DOM
-and a cart drawer that opens over the page after adding (both copied from moxiebeauty.in's
+and a cart drawer that opens over the page after adding (both copied from shop063.example's
 theme, where Radar originally clicked the card's button and added the wrong product).
 
 Run by hand to look at it:  python3 -m tests.mockstore.server healthy 8765
@@ -549,7 +549,7 @@ PRODUCTS.append({"id": 4, "handle": "free-sampler", "title": "Vase Sampler", "pr
                  "redirect": "/products/ceramic-vase"})   # like Moxie's Rs 0 samplers: JS-redirects on load
 PRODUCTS.append({"id": 5, "handle": "gift-pouch", "title": "Travel Pouch (gift)", "price": "1.00",
                  "variants": [{"id": 501, "available": True, "price": "1.00"}], "collection": None,
-                 "unavailable_page": True})   # like plumgoodness.com's Rs 1 freebie: not in any collection
+                 "unavailable_page": True})   # like shop040.example's Rs 1 freebie: not in any collection
 FREEBIE = {"id": 9, "handle": "free-fabric", "title": "Free Fabric", "price": "1000.00", "product_type": "Freebies",
            "variants": [{"id": 901, "available": True, "price": "1000.00"}], "collection": "home-decor"}   # freebie_type
 COLLECTIONS = [{"handle": "home-decor", "title": "Home Decor"}, {"handle": "kitchen", "title": "Kitchen"}]
@@ -563,7 +563,7 @@ J15_MODES = ("healthy", "broken_section_link")      # announcement bar + homepag
 VARIANT_MODES = ("healthy", "variant_switch_broken", "variant_sold_out", "variant_sold_out_buyable",
                  "variant_no_url_push", "variant_price_late", "variant_form_late", "variant_id_on_submit",
                  "variant_pill_covered")
-# theformalclub.in (cycle 34): a 'pack of 2 shirts' product with ONE option whose values join both shirts' sizes
+# shop042.example (cycle 34): a 'pack of 2 shirts' product with ONE option whose values join both shirts' sizes
 # ('S / 38 / M / 40'); the page shows two size pickers labelled 'S', 'M' (one per shirt) and sets the variant id only
 # when both are picked
 PACK_SIZES = (("S", "S / 38"), ("M", "M / 40"))
@@ -597,7 +597,7 @@ def facets_page(h: str, items: list[dict], q: dict, mode: str) -> str:
     if avail == "1" and mode == "filter_empty":          # the store's filter is broken: nothing comes back
         shown = []
     group = None
-    if mode == "filter_big_collection":                  # maspar.com: only a 'Size' filter (the variants' option values)
+    if mode == "filter_big_collection":                  # shop121.example: only a 'Size' filter (the variants' option values)
         size = (q.get("filter.v.option.size") or [""])[0]
         has = lambda p, z: any(v.get("option1") == z for v in p["variants"])
         sizes = sorted({v["option1"] for p in items for v in p["variants"] if v.get("option1")})
@@ -659,11 +659,11 @@ def page(title: str, body: str, extra_head: str = "", shopify: bool = True) -> s
 <main>{body}</main><footer><img src="{img}" width="40" height="40" alt="logo"><div class="footer-menu">{FOOTER_LINKS}</div></footer></body></html>"""
 
 
-FOOTER_LINKS = ('<a href="/cdn/shop/t/1/assets/annual-return-fy-2024-25.pdf">Annual Return FY 2024-25</a> '   # giva.co
+FOOTER_LINKS = ('<a href="/cdn/shop/t/1/assets/annual-return-fy-2024-25.pdf">Annual Return FY 2024-25</a> '   # shop143.example
                 '<a href="/pages/shipping-policy">Shipping Policy</a> <a href="/policies/refund-policy">Refund policy</a> '
                 '<a href="/pages/privacy-policy">Privacy Policy</a> <a href="/pages/terms-of-service">Terms of Service</a> '
                 '<a href="/pages/contact">Contact us</a> <a href="https://instagram.com/mockstore">Instagram</a> '
-                '<a href="/cdn-cgi/l/email-protection#7a19">Email</a>')        # Cloudflare's email link (beminimalist.co)
+                '<a href="/cdn-cgi/l/email-protection#7a19">Email</a>')        # Cloudflare's email link (shop047.example)
 POLICY_TEXT = ("We ship every order within two working days from our studio in Jaipur. Delivery takes three to seven days "
                "across India; remote pin codes can take up to ten days. Shipping is free above Rs 999; below that a flat "
                "Rs 79 applies. You will get a tracking link by SMS and email as soon as the parcel leaves us. ")
@@ -748,7 +748,7 @@ class Handler(BaseHTTPRequestHandler):
 
     OVERLAYS = {
         "kwikpass_popup": """<script>
-// GoKwik KwikPass login popup (bonkerscorner.com, boldcare.in, consciouschemist.com: 'could not click: <iframe
+// GoKwik KwikPass login popup (shop025.example, shop100.example, shop008.example: 'could not click: <iframe
 // id="iframe-kp" class="iframe-kp" src="https://pdp.gokwik.co/kwikpass/kwikpass.html"> from <div id="d2c-pass">'):
 // a full-screen iframe from ANOTHER origin, no popup-like name, its × inside the frame. Shown after the theme
 // loads, on every page until closed. Its real close is an icon-only div (no label, no 'close' class) while a hidden
@@ -777,7 +777,7 @@ if (!document.cookie.includes('bday=1')) setTimeout(() => {
   document.body.appendChild(d); }, 300);
 </script>""",
         "icon_x_popup": """<script>
-// thinkitchen.in (new30z6, both devices NOT JUDGED): a WhatsApp sign-up popup (zoko) over the whole page; its close is an
+// shop069.example (new30z6, both devices NOT JUDGED): a WhatsApp sign-up popup (zoko) over the whole page; its close is an
 // icon in the dialog's top-right corner with no words and no label; the only words are SUBMIT and 'Powered by zoko.io'
 if (!document.cookie.includes('zk=1')) setTimeout(() => {
   const d = document.createElement('div'); d.className = 'zoko_popup_campaign';
@@ -863,7 +863,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                            '<p>Hi! How can we help?</p><a href="https://wa.me/918888888888?text=Hello">Start chat</a></div>',
         "wa_share_only": '<p><a href="https://api.whatsapp.com/send?text=Look%20at%20this%20store">Share on WhatsApp</a></p>',
         "wa_short": f'<a class="wa-float" href="https://wa.me/message/ABCDEFGHIJ1" style="{WA_FLOAT}" aria-label="Chat on WhatsApp"></a>',
-        # amrutam.co.in on phones (23 Oct): only a WhatsApp community invite is visible
+        # shop071.example on phones (23 Oct): only a WhatsApp community invite is visible
         "wa_group_only": '<p><a href="https://chat.whatsapp.com/F0NF4QRM9KyClsMBYpYX28">Join our WhatsApp community</a></p>',
         # review, 22 Oct: an icon link through a URL shortener (never clicked, not judged)
         "wa_icon_shortlink": f'<a href="https://wa.link/abc123" style="{WA_FLOAT}"><svg class="icon-whatsapp" width="56" height="56"></svg></a>',
@@ -890,66 +890,66 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             body = body.replace("</body>", self.WA_SNIPPETS[self.mode] + "</body>", 1)
         if self.mode == "grid_quick_add_class" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/collections/"):
-            # dhaagaweaves.in / cmartian.com (new31a/b re-test: '44 links: 44 inside cart drawer / quick-add
+            # shop048.example / shop091.example (new31a/b re-test: '44 links: 44 inside cart drawer / quick-add
             # (div.product-grid-container)'): the grid's own container carries a 'quick-add' class
             body = body.replace("<main>", '<main><div class="product-grid-container quick-add-enabled-grid">', 1).replace(
                 "</main>", "</div></main>", 1)
         if self.mode == "body_drawer_class" and isinstance(body, str) and ctype.startswith("text/html"):
-            # dhaagaweaves.in (new31b, both devices: '44 links: 44 inside cart drawer / quick-add') + cmartian.com: the
+            # shop048.example (new31b, both devices: '44 links: 44 inside cart drawer / quick-add') + shop091.example: the
             # theme names its settings on <body> ('quick-add-enabled cart-drawer-active'), so every card on the page sat
             # 'inside' a cart drawer / quick-add by class
             body = body.replace("<body>", '<body class="template-collection quick-add-enabled cart-drawer-active">', 1)
         if self.mode == "name_hidden_on_phone" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/products/"):
-            # zarfstudios.com phone (new31c, DOWN 3x): the product's name is in a desktop-only block; phones see a tagline
+            # shop054.example phone (new31c, DOWN 3x): the product's name is in a desktop-only block; phones see a tagline
             body = re.sub(r"<h1>([^<]*)</h1>", r'<h1 class="product__title desk-only">\1</h1><p class="tagline">The Fluffiest '
                           r'Thing On Earth</p><style>@media (max-width: 700px) {.desk-only {display:none}}</style>', body, count=1)
             body = body.replace("<head>", '<head><meta name="viewport" content="width=device-width, initial-scale=1">', 1)
         if self.mode == "devanagari_title" and isinstance(body, str):
-            # prashantpublications.com (new30z4): Marathi book titles; Radar's name matching kept only a-z0-9, so the
+            # shop001.example (new30z4): Marathi book titles; Radar's name matching kept only a-z0-9, so the
             # name was 'not shown' on every product page
             body = body.replace("Ceramic Flower Vase", "घुमान मधील बाबा नामदेवजी")
             if ctype.startswith("text/html"):     # its theme shows the name in a styled div, no <h1>
                 body = body.replace("<h1>घुमान मधील बाबा नामदेवजी</h1>",
                                     '<div class="product__title" style="font-size:28px;font-weight:600">घुमान मधील बाबा नामदेवजी</div>')
         if self.mode == "emoji_cookie" and isinstance(body, str) and ctype.startswith("text/html"):
-            # paramountchess.com (new30z4): an app stores the last product's handle (with an emoji) in a cookie; Radar's
+            # shop019.example (new30z4): an app stores the last product's handle (with an emoji) in a cookie; Radar's
             # data request sent the browser's cookies and failed ('Invalid character in header content ["cookie"]')
             body = body.replace("</head>", "<script>document.cookie = 'recent=\\u{1F451}-royal-set; path=/'.replace('\\u{1F451}', String.fromCodePoint(0x1F451));</script></head>", 1)
         if self.mode == "per_unit_price" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
-            # ayamveda.com (new30w) / nubronicforte.com: the page shows the price per unit of a multi-unit variant
+            # shop088.example (new30w) / shop031.example: the page shows the price per unit of a multi-unit variant
             body = re.sub(r'<div class="price">₹1,299\.00</div>', '<div class="price">₹649.50 / piece</div><p>Pack of 2 pieces</p>',
                           body, count=1)
         if self.mode == "no_product_images" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/products/"):
-            # kalamkitaab.com / lucentpublication.com: book pages with no product picture at all
+            # shop051.example / shop003.example: book pages with no product picture at all
             body = re.sub(r'<img src="/cdn/shop/files/[^"]+\.svg" width="(300|400)" height="(300|400)"[^>]*>', '', body)
         if self.mode == "customer_auth_link" and isinstance(body, str) and ctype.startswith("text/html"):
-            # krkjewels.com (new30t, 15 Oct): the header's 'Login' is Shopify's new-accounts hand-off link, 404 for a robot
+            # shop077.example (new30t, 15 Oct): the header's 'Login' is Shopify's new-accounts hand-off link, 404 for a robot
             body = body.replace('<a href="/pages/about">About</a>',
                                 '<a href="/pages/about">About</a> <a href="/customer_authentication/redirect?locale=en">Login</a>', 1)
         if self.mode == "gst_price" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/products/"):
-            # kanchisilver.com (new31f, both devices DOWN): silver jewellery priced without tax in Shopify, shown with 3% GST
+            # shop039.example (new31f, both devices DOWN): silver jewellery priced without tax in Shopify, shown with 3% GST
             # on the page (₹32,000 -> 'Rs. 32,960 INR')
             body = re.sub(r'(<div class="price">)₹([\d,]+\.\d\d)',
                           lambda m: f"{m.group(1)}Rs. {round(float(m.group(2).replace(',', '')) * 1.03):,} INR", body)
         if self.mode == "coming_soon_product" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/products/"):
-            # atovio.in (new31f, both devices DEGRADED): a pre-launch product: 'Coming Soon', no price, 'Notify me'
+            # shop127.example (new31f, both devices DEGRADED): a pre-launch product: 'Coming Soon', no price, 'Notify me'
             body = re.sub(r'<div class="price">[^<]*</div>', '<span class="badge">Coming Soon</span>', body, count=1)
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="button" class="notify">Notify me when available</button>', 1)
         if self.mode == "prepaid_price" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.startswith("/products/"):
-            # rasayanam.in (new30m, 14 Oct): 'EXTRA 5% OFF ON ALL PREPAID ORDERS', and the page shows the price minus 5%
+            # shop096.example (new30m, 14 Oct): 'EXTRA 5% OFF ON ALL PREPAID ORDERS', and the page shows the price minus 5%
             body = body.replace("<main>", '<main><div class="announcement">EXTRA 5% OFF ON ALL PREPAID ORDERS</div>', 1)
             body = re.sub(r'(<div class="price">)₹([\d,]+\.\d\d)',
                           lambda m: f"{m.group(1)}₹{round(float(m.group(2).replace(',', '')) * 0.95):,}", body)
         if self.mode == "plain_size_buttons" and isinstance(body, str) and ctype.startswith("text/html") \
                 and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
-            # sntvl.com (new30r, 15 Oct, both devices, 3 products): colour swatches in a 'swatch' box, sizes as plain
+            # shop134.example (new30r, 15 Oct, both devices, 3 products): colour swatches in a 'swatch' box, sizes as plain
             # <button>s in a box whose class names neither 'variant' nor 'option'; no size chosen on load, the form's id
             # is empty and the button disabled ('Choose your size') until the shopper taps a size
             body = re.sub(r'(<form id="product-form-template__main"[^>]*>)<input type="hidden" name="id" value="\d+">'
@@ -978,7 +978,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                 body = json.dumps(data)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "sibling_variant_links" \
                 and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
-            # beminimalist.co (full 36, 14 Oct, both devices, twice): 'CHOOSE VARIANTS' = big cards linking to the
+            # shop047.example (full 36, 14 Oct, both devices, twice): 'CHOOSE VARIANTS' = big cards linking to the
             # sibling products (other sizes are separate products) inside the same box as the product's own <h1>
             sib = ('<div class="pinfo">\\1<p>CHOOSE VARIANTS</p><div class="sizes">'
                    + "".join([f'<a href="/products/{x["handle"]}" style="display:block;width:420px;height:220px;'
@@ -987,7 +987,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             body = re.sub(r"(<h1>[^<]*</h1>)", sib, body, count=1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "late_redirect_product" \
                 and urlparse(self.path).path.rstrip("/") == "/products/ceramic-vase":
-            # foxtale.in (full 36 + re-test, 14 Oct, flaky twice): the product page renders, then the storefront's app
+            # shop116.example (full 36 + re-test, 14 Oct, flaky twice): the product page renders, then the storefront's app
             # sends the shopper to the homepage a moment later (a catalog product hidden from shoppers)
             body = body.replace("</body>", f"<script>addEventListener('load', () => setTimeout(() => location.replace('/'), "
                                            f"{LATE_REDIRECT_MS}));</script></body>")
@@ -1004,14 +1004,14 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             body = body.replace("</body>", "<script>addEventListener('load', () => setTimeout(() => { for (;;) {} }, 200));</script></body>")
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "stripped_first_home" \
                 and urlparse(self.path).path in ("", "/") and not getattr(self.server, "home_served", False):
-            # koskii.com (new30f + re-run, 10 Oct): one load of the homepage carried a single Shopify marker
+            # shop120.example (new30f + re-run, 10 Oct): one load of the homepage carried a single Shopify marker
             # (cdn.shopify.com) and Radar said 'not Shopify'; the other device's run of the same store was healthy.
             self.server.home_served = True
             body = re.sub(r"<script>window\.Shopify = .*?</script>", "", body, count=1).replace("/cdn/shop/", "/static/") \
                 .replace("</head>", '<link rel="preconnect" href="https://cdn.shopify.com"></head>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "new_tab_cards" \
                 and "/products/" not in self.path:
-            # fashor.com (new30f) + tigc.in (new30c), 10 Oct: the product card click left the collection unchanged
+            # shop115.example (new30f) + shop146.example (new30c), 10 Oct: the product card click left the collection unchanged
             # (3 attempts, both devices). Suspected: product links open in a NEW TAB (target=_blank / window.open);
             # the shopper is on the product in that tab, Radar kept looking at the old one.
             body = body.replace("</body>", """<script>document.querySelectorAll('a[href*="/products/"]').forEach(a => a.target = '_blank');</script></body>""")
@@ -1039,7 +1039,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                                 'off</a></div><main>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "dead_tile_menu" and self.path in ("/", "") \
                 and "Mobile" in (self.headers.get("User-Agent") or ""):
-            # amchongtea.com phone (new30x, 16 Oct): a brand homepage with no product cards; its only visible collection
+            # shop056.example phone (new30x, 16 Oct): a brand homepage with no product cards; its only visible collection
             # link is an 'Explore Now' tile whose tap does nothing (an animation script swallows it); the collections
             # are in the ☰ menu. Radar tapped the tile, stayed on '/', found no product card: 'not judged'.
             body = re.sub(r"<main>.*?</main>", '<main><h1>Where land, legacy and craft come together</h1><a class="explore" '
@@ -1056,7 +1056,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                                 '<a href="/pages/about">About</a></nav></div>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "search_icon_only":
             # the header's search form stays hidden until a bare icon link is clicked: no aria-label, not a button, not a
-            # /search link, only title="Search" and an svg icon (antinorm, plum, soulflower... 36-store run 11 Oct)
+            # /search link, only title="Search" and an svg icon (shop099, plum, shop083... 36-store run 11 Oct)
             body = body.replace('<form action="/search" method="get"><input name="q"></form>',
                                 '<a href="javascript:void(0)" class="header-icon js-drawer-open-top" title="Search" '
                                 'onclick="document.getElementById(\'hdr-search\').style.display=\'block\'">'
@@ -1132,7 +1132,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
             body = body.replace("</body>", '<div class="offers">Flat ₹250 off | Use code FIRSTBUY. Valid on 1st order only, '
                                 'min. order value ₹2,500</div></body>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "other_market_switcher" and "/products/" in self.path:
-            # nakshatrakids.com / tribalornaments.com (new30y, 16 Oct, DOWN): a currency-converter app (not Shopify
+            # shop030.example / shop015.example (new30y, 16 Oct, DOWN): a currency-converter app (not Shopify
             # Markets: currency INR, rate 1) shows the US visitor '$46.45 USD' in a way the page's text does not carry,
             # and a 'USD' currency switcher sits in the corner
             body = re.sub(r'<div class="price">₹([\d,]+\.\d\d)</div>', lambda m: '<div class="price" data-money-convertible></div>'
@@ -1217,7 +1217,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                                 '&#9776;</button><div id="m-drawer" style="display:none"><nav><div class="menu-item"', 1)
             body = body.replace('<a href="/pages/about">About</a></nav><style>', '<a href="/pages/about">About</a></nav></div><style>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "contents_cards":
-            # valliyan.com (Baseline theme, new30j, both devices): the product card's link is display:contents around
+            # shop098.example (Baseline theme, new30j, both devices): the product card's link is display:contents around
             # the image + name + price. A shopper sees and taps the card; the <a> itself has no box (0x0 rect), so
             # Radar said 'products listed: 0' and '15 links: 15 not visible'.
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
@@ -1229,7 +1229,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
             body = body.replace('<div class="footer-menu">', '<div class="footer-menu"><a href="/map">Assagao, Goa</a> '
                                 '<a href="/panjim">Panjim, Goa</a> ', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "contents_reveal_cards":
-            # valliyan.com re-test 2: a boxless card link with a reveal class still at opacity:0 (has no effect: no box)
+            # shop098.example re-test 2: a boxless card link with a reveal class still at opacity:0 (has no effect: no box)
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
                 f'<a class="card reveal" href="/products/{m.group(1)}" style="display:contents;opacity:0">'
                 f'<div class="product-item" style="display:inline-block;width:220px;margin:8px;vertical-align:top">'
@@ -1251,7 +1251,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                                 "bottom:0;left:0}.visually-hidden{position:absolute;width:1px;height:1px;overflow:hidden;"
                                 "clip:rect(0 0 0 0);white-space:nowrap}</style></head>", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "zero_box_cards":
-            # valliyan.com re-test: display:contents link > a wrapper whose children float (the wrapper's height is 0)
+            # shop098.example re-test: display:contents link > a wrapper whose children float (the wrapper's height is 0)
             body = re.sub(r'<a class="card" href="/products/([^"]+)">(<img[^>]*>)(.*?)</a>', lambda m: (
                 f'<a class="card" href="/products/{m.group(1)}" style="display:contents">'
                 f'<div class="product-item" style="width:240px">'
@@ -1259,7 +1259,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                 f'<div class="product-item__title" style="float:left;width:220px">{m.group(3)}</div></div></a>'), body)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "landing_collection" \
                 and path_now == "/collections/home-decor":
-            # quboworld.com (Horizon, new30j): the menu's first collection is an 'entrance' landing page: a hero and
+            # shop080.example (Horizon, new30j): the menu's first collection is an 'entrance' landing page: a hero and
             # tiles with 'Learn more' buttons to sub-collections, no product grid; the mega menu's product links are in
             # the page but hidden ('104 links: 104 not visible')
             body = re.sub(r'(<main>).*?(</main>)', lambda m: m.group(1) + (
@@ -1270,7 +1270,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                 '<a class="button" href="/collections/kitchen">Learn more</a></div></section>') + m.group(2),
                 body, count=1, flags=re.S)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal":
-            # teatrunk.in (new30i, both devices): 'Shopping from Outside India?' with International / Stay Here, rendered
+            # shop112.example (new30i, both devices): 'Shopping from Outside India?' with International / Stay Here, rendered
             # inside the theme's <header>, its backdrop (div.ctryModal-Content-overlay) over every card and menu link.
             # Shown until the shopper answers. 'International' leaves the store: never clicked.
             body = body.replace("</header>", """<div class="ctryModal" id="ctryModal" style="position:fixed;inset:0;z-index:100">
@@ -1283,7 +1283,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   m.querySelector('.ctry-intl').onclick = () => { location.href = '/pages/international'; };
   m.querySelector('.ctry-stay').onclick = () => { document.cookie = 'ctry=stay;path=/'; m.remove(); }; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal_div_stay":
-            # teatrunk.in re-test (run 38461923525): same modal, but its backdrop is a sibling of the box inside a
+            # shop112.example re-test (run 38461923525): same modal, but its backdrop is a sibling of the box inside a
             # section and 'Stay Here' is a plain <div> with a click handler (only 'International' is a <button>).
             body = body.replace("</header>", """<div class="shopify-section" id="ctryModal">
 <div class="ctryModal-Content-overlay" style="position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.45)"></div>
@@ -1295,7 +1295,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   m.querySelector('.ctry-intl').onclick = () => { location.href = '/pages/international'; };
   m.querySelector('.ctry-stay').onclick = () => { document.cookie = 'ctry=stay;path=/'; m.remove(); }; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "region_gateway":
-            # axorhelmets.com (Contabo probe, 18 Oct, desktop): a full-page split 'gateway curtain', INDIA | EUROPE, each
+            # shop045.example (Contabo probe, 18 Oct, desktop): a full-page split 'gateway curtain', INDIA | EUROPE, each
             # with 'VISIT NOW' and no close control; every card covered. The store serves India (Shopify.country 'IN'):
             # INDIA's button opens this store; EUROPE's link leaves for another site and is never clicked.
             body = body.replace("</header>", """<section class="split-gateway__curtain" id="gw" style="position:fixed;inset:0;z-index:100;display:flex">
@@ -1308,7 +1308,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   if (document.cookie.includes('gw=in')) { g.remove(); return; }
   g.querySelector('.gw-in').onclick = () => { document.cookie = 'gw=in;path=/'; g.remove(); }; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal_stay_on":
-            # vedix.com (new30l, desktop): 'Visiting from United States (USD $)?' with 'Shop on US Site' (leaves the
+            # shop136.example (new30l, desktop): 'Visiting from United States (USD $)?' with 'Shop on US Site' (leaves the
             # store: never clicked), the link 'Stay on Vedix IN Site' and a country dropdown; its x is an unlabelled icon.
             # Re-test (run 38437504227) still not closed: the closed country list ('#' links, hidden) made the layer look
             # like page content (> 12 links); only visible links that go somewhere count.
@@ -1325,7 +1325,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   const stay = e => { e.preventDefault(); document.cookie = 'geo=stay;path=/'; m.remove(); };
   m.querySelector('.geo-stay').onclick = stay; m.querySelector('.geo-x').onclick = stay; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "title_opens_neighbour" and path_now.startswith("/collections/"):
-            # faritha.com phone (new30x, 4 runs) + bytheleaf.in phone (new30z3): tapping a card's NAME opened the NEXT card's
+            # shop102.example phone (new30x, 4 runs) + shop090.example phone (new30z3): tapping a card's NAME opened the NEXT card's
             # product; the card's image link opens the right one
             hs = re.findall(r'<a class="card" href="/products/([^"]+)">', body)
             nxt = {h: hs[i - 1] for i, h in enumerate(hs)} if hs else {}
@@ -1339,7 +1339,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
                                 "'a.card__title'); if (!a) return; e.preventDefault(); e.stopImmediatePropagation(); "
                                 "location.href = a.dataset.go; }, true);</script></body>", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "marquee_cards" and path_now.startswith("/collections/"):
-            # hunnit.com desktop (new30z1): product cards ride a marquee that never stops moving; Playwright's click waits
+            # shop117.example desktop (new30z1): product cards ride a marquee that never stops moving; Playwright's click waits
             # for the card to be still and timed out ('could not click: Locator.click: Timeout 6000ms') 3 times
             body = body.replace("<main>", '<main><style>@keyframes mq{from{transform:translateX(0)}to{transform:translateX(-300px)}}'
                                 '.mq{animation:mq 1.2s linear infinite alternate;padding-left:420px}</style><div class="mq">', 1).replace("</main>", "</div></main>", 1)
@@ -1440,7 +1440,7 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "delayed_scripts":
             # a speed app delays EVERY theme script until the shopper's first interaction (mousemove, touch, wheel,
             # key): html stays 'no-js', window.Shopify is undefined, the price block is hidden by the theme's no-js CSS
-            # and the search app has not rendered (baccabucci.com + bellavitaorganic.com, new30b + re-run 9 Oct)
+            # and the search app has not rendered (shop059.example + shop007.example, new30b + re-run 9 Oct)
             body = body.replace("<html>", '<html class="no-js">', 1).replace("<script>", '<script type="text/delayed">')
             body = body.replace("</head>", "<style>html.no-js .price{display:none}</style></head>", 1)
             body = body.replace("</body>", """<script>(function () { let done = false; const run = () => { if (done) return; done = true;
@@ -1452,7 +1452,7 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "pagespeed_gate":
             # a 'speed' snippet treats every Linux x86_64 browser as Google PageSpeed / Lighthouse and never runs the
             # theme's scripts for it: html stays 'no-js', the price stays hidden, the search app never renders
-            # (bonkerscorner.com, bellavitaorganic.com, baccabucci.com, re-run 9 Oct: the quoted script says
+            # (shop025.example, shop007.example, shop059.example, re-run 9 Oct: the quoted script says
             # 'Detect Google PageSpeed / Lighthouse testing bot (Linux x86_64 ...'). Real shoppers' phones and PCs
             # report Android ('Linux armv81'), iPhone, Win32 or MacIntel and get the full page.
             body = body.replace("<html>", '<html class="no-js">', 1).replace("<script>", '<script type="text/delayed">')
@@ -1546,15 +1546,15 @@ if (!document.cookie.includes('lio=1')) setTimeout(() => {
                 self.end_headers()
                 return
         if self.mode == "wishlist_404" and path == "/pages/wishlist":
-            # countryflora.com / kotart.in / swornyfashion.com (new30p, 15 Oct): the wishlist app's page is the 404
+            # shop037.example / shop131.example / shop033.example (new30p, 15 Oct): the wishlist app's page is the 404
             # template with the app drawing the list into it
             return self._send(404, page("Wishlist | Mock Store", '<div id="wishlist-app"><h1>My Wishlist</h1>'
                                         '<p>Your wishlist is empty. Tap the heart on any product to save it here.</p></div>'))
         if self.mode in ("market_path", "market_redirect_all"):
-            # amayrajewellery.com (new30n, 14 Oct): Shopify Markets sends the visitor to /en-us/, where every page link
+            # shop010.example (new30n, 14 Oct): Shopify Markets sends the visitor to /en-us/, where every page link
             # carries the prefix and prices are the US market's (+20%); the default market's /products/<h>.js says less
             self.market = path == "/en-us" or path.startswith("/en-us/")
-            # market_redirect_all: khushbujewellers.com (new30x, 16 Oct): every product URL sends the US visitor to the same
+            # market_redirect_all: shop009.example (new30x, 16 Oct): every product URL sends the US visitor to the same
             # product under /en-us/ (Radar warned 'redirects to /en-us/products/... hidden from shoppers')
             prod = (self.mode == "market_redirect_all" and path.startswith("/products/")
                     and not path.endswith((".js", ".json")))
@@ -1637,7 +1637,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                 coll = "".join(l + "\n" for l in coll.splitlines() if "sort_by" not in l)
             return self._send(200, "User-agent: *\nDisallow: /checkout\nDisallow: /cart\n" + acct + "Disallow: /policies/\n"
                               + extra + coll, "text/plain")
-        if path.endswith(".pdf"):     # a company filing linked from the footer: the browser downloads it (giva.co, 11 Oct)
+        if path.endswith(".pdf"):     # a company filing linked from the footer: the browser downloads it (shop143.example, 11 Oct)
             self.send_response(200)
             self.send_header("Content-Type", "application/pdf")
             self.send_header("Content-Disposition", 'attachment; filename="annual-return.pdf"')
@@ -1673,7 +1673,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             if self.mode == "pdp_broken_image" and path.endswith("/ceramic-vase.svg"):
                 return self._send(404, "gone", "text/plain")
             return self._send(200, SVG, "image/svg+xml")
-        if path == "/" and self.mode == "blank_not_shopify":     # gozero.in (cycle 34): no title, no markers, no robots.txt
+        if path == "/" and self.mode == "blank_not_shopify":     # shop130.example (cycle 34): no title, no markers, no robots.txt
             return self._send(200, '<!doctype html><html><head><meta charset="utf-8"><title></title></head>'
                                    '<body><div id="root"></div></body></html>')
         if path == "/" and self.mode == "store_refuses":
@@ -1683,7 +1683,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                         "<h1>Welcome</h1>" + "".join(card(p) for p in PRODUCTS if p["collection"])
                                         + ('<section class="story-banner"><a href="/pages/our-story">Read our story</a> '
                                            '<a href="/collections/kitchen">Shop the kitchen</a>'
-                                           + (' <a href="/https://www.mockstore.in/collections/sale">Sale</a>'   # beyondsnack.in
+                                           + (' <a href="/https://www.mockstore.in/collections/sale">Sale</a>'   # shop060.example
                                               if self.mode == "broken_section_link" else "") + '</section>'
                                            if self.mode in J15_MODES else "")
                                         + ('<section class="quiz-banner"><a href="/tools/product-finder/match-me">Match me '
@@ -1692,7 +1692,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                            if self.mode == "discount_link" else ""),
                                         shopify=self.mode != "not_shopify"), set_cart=new)
         if path.startswith("/discount/") and self.mode == "discount_link":
-            # daantwale.com (new30z2): a Shopify discount link applies the code and sends the shopper to the homepage
+            # shop073.example (new30z2): a Shopify discount link applies the code and sends the shopper to the homepage
             self.send_response(302)
             self.send_header("Location", "/")
             self.send_header("Set-Cookie", "discount_code=WOWDEAL; Path=/")
@@ -1701,7 +1701,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
         if path == "/pages/blank":       # HTTP 200 with a title but nothing on screen (JS crash style)
             return self._send(200, "<!doctype html><html><head><title>Blank | Mock Store</title></head><body><div id=app></div></body></html>")
         if path == "/tools/product-finder/match-me" and self.mode == "app_proxy_page":
-            # arakucoffee.in (cycle 34): an app-proxy quiz page, no theme layout, drawn by a web component in a CLOSED
+            # shop058.example (cycle 34): an app-proxy quiz page, no theme layout, drawn by a web component in a CLOSED
             # shadow root (no text in document.body, no <img>)
             return self._send(200, '<!doctype html><html><head><meta charset="utf-8"><title>Match Me A Cup</title></head>'
                                    '<body><quiz-app style="display:block"></quiz-app><script>customElements.define("quiz-app", '
@@ -1711,7 +1711,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                    'match you with a coffee.</p><button>Start the quiz</button>\'; }, 300); } });</script>'
                                    '</body></html>')
         if self.mode == "offsite_hang" and path in ("/map", "/panjim"):
-            # nonasties.in (new30k, phone): the store's footer link redirects to Google Maps, another site
+            # shop094.example (new30k, phone): the store's footer link redirects to Google Maps, another site
             self.send_response(302)
             self.send_header("Location", f"http://localhost:{self.server.server_address[1]}/offsite{path}")
             self.send_header("Content-Length", "0")
@@ -1722,7 +1722,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             _t.sleep(OFFSITE_HANG_SECS)
             return self._send(200, page("Maps", "<p>map</p>"))
         if path == "/pages/about" and self.mode == "slow_page":
-            import time as _t                     # bluenectar.co.in (cycle 34, desktop): pages slower than the timeout
+            import time as _t                     # shop035.example (cycle 34, desktop): pages slower than the timeout
             _t.sleep(SLOW_PAGE_SECS)
         if path == "/pages/about":
             return self._send(200, page("About Mock Store", "<p>About us</p>"))
@@ -1792,7 +1792,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                 f'background:#eee"></div><div class="tile__title">{p["title"]}</div><div>Rs. {p["price"]}</div></div>'
                                 for p in items)
                 return self._send(200, page(f"{h.title()} Collection | Mock Store", f"<h2>{len(items)} products</h2>{tiles}"), set_cart=new)
-            if self.mode == "grid_without_links":    # giva.co desktop: cards a script navigates, no product links
+            if self.mode == "grid_without_links":    # shop143.example desktop: cards a script navigates, no product links
                 tiles = "".join(f'<div class="tile" role="button" data-url="/products/{p["handle"]}" style="display:inline-block;'
                                 f'width:200px;margin:8px"><div style="height:160px;background:#eee"></div>'
                                 f'<div class="tile__title">{p["title"]}</div><div>Rs. {p["price"]}</div></div>' for p in items)
@@ -1801,7 +1801,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                             "location.href = t.dataset.url);</script>"), set_cart=new)
             if self.mode == "grid_empty_data_full":  # the page lists nothing; the store's data lists the products
                 return self._send(200, page(f"{h.title()} Collection | Mock Store", "<h2>Our collection</h2><p>Loading…</p>"), set_cart=new)
-            if self.mode == "late_grid":        # giva.co phone: the count is in the HTML, the cards come from a script later
+            if self.mode == "late_grid":        # shop143.example phone: the count is in the HTML, the cards come from a script later
                 cards = "".join(card(p) for p in items).replace("`", "")
                 return self._send(200, page(f"{h.title()} Collection | Mock Store",
                                             f"<h2>{len(items)} products</h2><div id=\"late-grid\"></div><script>setTimeout(() => "
@@ -1844,7 +1844,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
         if path.startswith("/products/"):
             h = path.split("/")[2]
             if self.mode == "headless_alias" and h.startswith("sku-"):
-                # palmonas.com (full 36, 14 Oct): a headless storefront's product URL is a SKU, not the Shopify handle;
+                # shop095.example (full 36, 14 Oct): a headless storefront's product URL is a SKU, not the Shopify handle;
                 # /products/<sku>.js answers the HTML page; the page's canonical names the real handle.
                 p = next((x for x in PRODUCTS if f"sku-{x['id']}" == h.removesuffix(".js")), None)
                 if not p:
@@ -1877,7 +1877,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                        "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in self._variants(p)]})
                 return self._json({"id": p["id"], "handle": p["handle"], "title": p["title"],
                                    "variants": [dict(v, price=int(float(v["price"]) * 100)) for v in self._variants(p)]})
-            if self.mode == "freebie_type" and h == "free-fabric":      # suta.in: a gift SKU's page, no product image
+            if self.mode == "freebie_type" and h == "free-fabric":      # shop145.example: a gift SKU's page, no product image
                 return self._send(200, page("Free Fabric | Mock Store", '<div class="product"><h1>Free Fabric</h1>'
                                             '<span class="badge">FREEBIES</span><div class="price">Rs. 1,000.00</div>'
                                             '<form action="/cart/add" method="post"><input type="hidden" name="id" value="901">'
@@ -1893,7 +1893,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
             if self.mode == "notfound_product" and h == "ceramic-vase":
                 return self._send(200, page("404 Page Not Found | Mock Store", "<h1>Page Not Found</h1><p>Sorry.</p>"))
             if self.mode == "unavailable_product" and h == "ceramic-vase":
-                # like plumgoodness.com (bench 7): Product ld+json in the head and a hidden cart-drawer form for ANOTHER
+                # like shop040.example (bench 7): Product ld+json in the head and a hidden cart-drawer form for ANOTHER
                 # product, so "any form or ld+json" looked like a product page
                 ld = json.dumps({"@context": "https://schema.org", "@type": "Product", "name": p["title"],
                                  "offers": {"@type": "Offer", "price": p["price"], "priceCurrency": "INR"}})
@@ -2023,8 +2023,8 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
         if path == "/search":
             term = (q.get("q") or [""])[0].lower()
             if self.mode in ("search_app_scroll", "search_app_never"):
-                # ptron.in / kushals.com (new30c, 10 Oct): Shopify counts the results in the title, a search app owns the
-                # results area and fills it on the first scroll (ptron desktop) or never (ptron + kushals mobile)
+                # shop141.example / shop105.example (new30c, 10 Oct): Shopify counts the results in the title, a search app owns the
+                # results area and fills it on the first scroll (ptron desktop) or never (ptron + shop105 mobile)
                 hits = [p for p in PRODUCTS if term and term in p["title"].lower()]
                 found = "".join(card(p) for p in hits)
                 fill = ("addEventListener('scroll', () => { const a = document.getElementById('app-results'); "
@@ -2045,8 +2045,8 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                                             f'document.getElementById("app-results").innerHTML = '
                                             f'document.getElementById("app-found").innerHTML;</script>'))
             if self.mode in ("search_app", "search_app_popular"):
-                # a search app renders results ~2.5 s after the page loads, from its own API (bonkerscorner, baccabucci:
-                # empty until then; bellavitaorganic: 'popular products' placeholders until then)
+                # a search app renders results ~2.5 s after the page loads, from its own API (shop025, shop059:
+                # empty until then; shop007: 'popular products' placeholders until then)
                 popular = "".join(card(p) for p in PRODUCTS if p not in hits and float(p["price"]) > 0) \
                     if self.mode == "search_app_popular" else ""
                 return self._send(200, page("Custom Search | Mock Store", f'<div id="app-results">{popular}</div>'
@@ -2066,13 +2066,13 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
         if self.mode == "stale_catalog_all" and not catalog:
             return [dict(v, available=False) for v in p["variants"]]      # every product sold out since it was listed
         if self.mode == "stale_catalog" and p["handle"] == "ceramic-vase" and not catalog:
-            # bombaytrooper.com (cycle 34): products.json still lists it in stock; its .js and its page say sold out
+            # shop024.example (cycle 34): products.json still lists it in stock; its .js and its page say sold out
             return [dict(v, available=False) for v in p["variants"]]
         if self.mode in ("variant_sold_out", "variant_sold_out_buyable") and p["handle"] == "ceramic-vase":
             return p["variants"] + [SOLD_OUT_SIZE]
         if self.mode == "filter_stock_differs" and p["handle"] == "sold-out-lamp":
             # inventory policy 'continue': Shopify's own product data and page sell it; the collection's products.json
-            # (which reads p["variants"] directly) still says sold out (antinorm.co / beminimalist.co, 11 Oct)
+            # (which reads p["variants"] directly) still says sold out (shop099.example / shop047.example, 11 Oct)
             return [dict(v, available=True) for v in p["variants"]]
         return p["variants"]
 
@@ -2092,7 +2092,7 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
         data = json.dumps([{"id": v["id"], "option1": v["option1"], "available": v["available"],
                             "price": f'₹{float(v["price"]):,.2f}'} for v in vs])
         block = "false" if self.mode == "variant_sold_out_buyable" else "true"
-        if self.mode == "variant_pill_covered":      # dotandkey.com (12 Oct): a transparent swatch layer lies over the
+        if self.mode == "variant_pill_covered":      # shop074.example (12 Oct): a transparent swatch layer lies over the
             pills = pills.replace('<fieldset>', '<fieldset style="position:relative">').replace(  # pills; it forwards
                 '</fieldset>', '<div class="swatch-layer" style="position:absolute;inset:0;z-index:5"></div></fieldset>') + (
                 "<script>document.querySelector('.swatch-layer').addEventListener('click', ev => {"   # the click to the
@@ -2110,7 +2110,7 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
 
     def _theme_pills(self, vs, vid):
         """Journey 22 round 2: real themes whose variant switch WORKS but that the first variant_switch misread.
-        variant_no_url_push (antinorm.co, veirdo.in): an app-built buy box with no <form>/id field (its button adds the
+        variant_no_url_push (shop099.example, shop137.example): an app-built buy box with no <form>/id field (its button adds the
           picked variant from a script); pill labels carry the pack price ('Large ₹1,399.00'); the theme never pushes
           ?variant=, so the address keeps the ?variant=201 Radar opened it with.
         variant_price_late (theme-taste-demo): the form's id changes at once, the price ~1.5 s later (Dawn-family themes
@@ -2143,7 +2143,7 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
 
     def _pdp(self, p):
         if self.mode == "hidden_price":
-            # somuchliving.com / tastycrafts.in (new30q/s, 15 Oct): the page shows the product, its options and a
+            # shop041.example / shop067.example (new30q/s, 15 Oct): the page shows the product, its options and a
             # disabled 'Unavailable' button, but no price anywhere near the name; the data holds a placeholder price
             return page(f"{p['title']} | Mock Store",
                         f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
@@ -2152,7 +2152,7 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         '<div style="height:900px"></div><section class="related"><h2>You may also like</h2>'
                         '<p>Another piece Rs. 4,500.00</p></section>')
         if self.mode == "customiser_product":
-            # aesthesy.com (new31a, desktop DOWN): a custom-art product whose page is a builder: 'Create Art That's
+            # shop086.example (new31a, desktop DOWN): a custom-art product whose page is a builder: 'Create Art That's
             # Entirely Yours', upload a photo, a disabled 'Continue to Customize'; no price, no cart button, no product name
             return page(f"{p['title']} | Mock Store",
                         '<h1>Create Art That\'s Entirely Yours</h1><p>Upload a photo. Choose your style.</p>'
@@ -2164,7 +2164,7 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         f'value="{self._variants(p)[0]["id"]}"></form>'
                         '<footer><div class="cf-footer" style="display:none">₹' + f'{float(p["price"]):,.2f}' + '</div></footer>')
         if self.mode == "price_after_choice":
-            # myop.in (new30x, 16 Oct, desktop DOWN): a personalised product hides its price (class 'myop-hidden') and
+            # shop144.example (new30x, 16 Oct, desktop DOWN): a personalised product hides its price (a hidden-price class) and
             # keeps 'Add to cart' disabled until the shopper picks a perfume and writes a text
             return page(f"{p['title']} | Mock Store",
                         f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
@@ -2175,7 +2175,7 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         '<p>Another bottle Rs. 1,500.00</p></section>')
         if self.mode == "price_on_request":
             body = (f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">')
-            if p["handle"] == "wooden-spoon-set":     # banjarakasuti.com: no price, no buy, a store-wide notice
+            if p["handle"] == "wooden-spoon-set":     # shop023.example: no price, no buy, a store-wide notice
                 body = ('<div class="announcement">We are no longer accepting online orders. Visit us at our store.</div>'
                         + body + '<p>Hand-carved, made to share.</p>')
             else:
@@ -2183,13 +2183,13 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                          '<button type="button">Chat with us</button>')
             return page(f"{p['title']} | Mock Store", body)
         if self.mode == "marketplace_only":
-            # antesports.com (new30g) / beyondsnack.in (new30e): a brand catalog on Shopify, no price and no cart on the
+            # shop057.example (new30g) / shop060.example (new30e): a brand catalog on Shopify, no price and no cart on the
             # product page, only 'Buy on Amazon / Flipkart' links; products.json still carries prices
             return page(f"{p['title']} | Mock Store", f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" '
                         'width="400" height="400" alt=""><p>A compact, hand-finished piece for everyday use.</p>'
                         '<div class="buy-links"><a href="https://www.amazon.in/dp/B0MOCK">Buy on Amazon</a> '
                         '<a href="https://www.flipkart.com/mock/p/itm1">Buy on Flipkart</a></div>'
-                        if p["handle"] != "wooden-spoon-set" else   # beyondsnack 'Diwali Box': the heading, no links at all
+                        if p["handle"] != "wooden-spoon-set" else   # shop060 'Diwali Box': the heading, no links at all
                         f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
                         '<h2>Shop Now On:</h2><p>A festive assortment, made to share.</p>')
         price = "0" if (self.mode == "broken_price" and p["handle"] == "ceramic-vase") else p["price"]
@@ -2281,7 +2281,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
         body = (f'{quick}<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="300" height="300" alt="">'
                 f'<div class="price">₹{float(p["price"]):,.2f}</div>{buy}')
         if self.mode == "other_market_price_above":
-            # khushbujewellers.com (new30x, 16 Oct, both devices DOWN): the converted '$24.00' sits ABOVE the product's
+            # shop009.example (new30x, 16 Oct, both devices DOWN): the converted '$24.00' sits ABOVE the product's
             # name, and a note in INR elsewhere on the page means 'no ₹ anywhere' never holds
             body = re.sub(r'(<h1>.*?</h1>)(.*?)(<div class="price">[^<]*</div>)', r'\3\1\2', body, count=1, flags=re.S)
             body += '<p class="ship-note">Free shipping on orders above INR 999 across India</p>'
@@ -2305,34 +2305,34 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      '<script>addEventListener("scroll", () => { if (scrollY > 300) document.getElementById("sticky-atc")'
                      '.style.display = "block"; });</script>')
         if self.mode == "span_add_to_cart":
-            # costosoitaliano.com (new30v): hidden, empty cart form; the theme's buy control is a
+            # shop012.example (new30v): hidden, empty cart form; the theme's buy control is a
             # <span class="custom-add-to-cart-btn">Add to Cart</span> far below the name, with no product handle on it
             body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
                                      f'name="id" value="{vid}"></form><div style="height:700px"><p>Hand-finished. Ships in 3 days.</p></div>'
                                      f'<div class="custom-actions"><span class="custom-add-to-cart-btn" onclick="addToCart({vid})" '
                                      f'style="display:inline-block;padding:10px;background:#222;color:#fff;cursor:pointer">Add to Cart</span></div>')
         if self.mode == "marketplace_hidden_cart":
-            # saumyasstores.com (new31a, both devices): the price shows, the cart buttons are hidden, and the only buy
+            # shop032.example (new31a, both devices): the price shows, the cart buttons are hidden, and the only buy
             # control is 'View On Amazon'
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" style="display:none">Add to cart</button>'
                                 '<a class="amz" href="https://www.amazon.in/dp/B0MOCK123" target="_blank">View On Amazon</a>', 1)
         if self.mode == "needs_photo_upload":
-            # cartwala.in (new31d, both devices): a personalised mouse pad; 'Add to cart' stays disabled until the shopper
+            # shop101.example (new31d, both devices): a personalised mouse pad; 'Add to cart' stays disabled until the shopper
             # uploads a photo (a styled 'Upload your photo' label over a hidden file input, outside the cart form)
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" disabled>Add to cart</button>', 1)
             body += ('<div class="personalizer"><label class="upload-btn" style="display:inline-block;padding:10px;border:1px dashed #999">'
                      'Upload your photo<input type="file" accept="image/*" style="display:none"></label></div>'
-                     # cartwala.in re-test: the app's real file input sits hidden deep inside a hidden step panel
-                     # (cartwala.in, 2nd re-test: nothing above it is visible until 'Personalise' opens the app's modal)
+                     # shop101.example re-test: the app's real file input sits hidden deep inside a hidden step panel
+                     # (shop101.example, 2nd re-test: nothing above it is visible until 'Personalise' opens the app's modal)
                      '<div class="cl-modal" style="display:none">' + '<div>' * 7 + '<input type="file" accept="image/*">' + '</div>' * 7 + '</div>'
 
                      '<button type="button" class="cl-open">Personalise</button></div>')
             body = body.replace('Upload your photo<input type="file" accept="image/*" style="display:none"></label>',
                                 'Upload your photo</label>', 1) if self.mode == "needs_photo_upload" else body
         if self.mode == "needs_dimensions":
-            # giffywalls.in (new30z5, both devices): a wallpaper mural sold by the square foot; 'Add to cart' stays
+            # shop075.example (new30z5, both devices): a wallpaper mural sold by the square foot; 'Add to cart' stays
             # disabled until the shopper types the wall's width and height
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<label>Wall width (ft) <input type="number" class="dim" name="properties[Width]" placeholder="Width"></label>'
@@ -2341,13 +2341,13 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                 '<script>document.addEventListener("input", () => { const d = [...document.querySelectorAll(".dim")]; '
                                 'document.querySelector("[name=add]").disabled = !d.every(i => i.value); });</script>', 1)
         if self.mode == "bundle_builder":
-            # orbiz.in (new30z2, both devices): a 'build your crew' product; its only button 'Pick 6 buddies' stays
+            # shop140.example (new30z2, both devices): a 'build your crew' product; its only button 'Pick 6 buddies' stays
             # disabled until the shopper picks six figures
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<div class="odb-tray"><span></span><span></span></div>'
                                 '<button type="button" id="odb-go" disabled>Pick 6 buddies<br><small>Crew of 6</small></button>', 1)
         if self.mode == "disabled_form_icon_bar":
-            # popees.com phone (new30z5): the form's button stays disabled; the sticky bar's add-to-cart is a bag icon
+            # shop122.example phone (new30z5): the form's button stays disabled; the sticky bar's add-to-cart is a bag icon
             # with no words, only its class says what it does
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" disabled>Add to cart</button>', 1)
@@ -2355,7 +2355,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      f'<span>9-12 M</span><button type="button" class="sticky-bar__add-to-cart" onclick="addToCart({vid})">'
                      '<svg width="24" height="24"><rect width="20" height="16" y="6" fill="#e91e63"/></svg></button></div>')
         if self.mode == "disabled_form_bar_on_scroll":
-            # adachikan.com phone (new30z1): the form's 'BUY IT NOW' is disabled; the enabled 'ADD TO CART' sits in a
+            # shop070.example phone (new30z1): the form's 'BUY IT NOW' is disabled; the enabled 'ADD TO CART' sits in a
             # sticky bar that only appears once the shopper scrolls
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" disabled>Buy it now</button>', 1)
@@ -2364,30 +2364,30 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      'ADD TO CART</button></div><script>addEventListener("scroll", () => { document.querySelector(".sticky-atc")'
                      '.style.display = scrollY > 150 ? "block" : "none"; });</script>')
         if self.mode == "disabled_form_enabled_bar":
-            # arabianaroma.in (new30v): the form's own button stays disabled; an enabled sticky 'Add to cart' is the real one
+            # shop044.example (new30v): the form's own button stays disabled; an enabled sticky 'Add to cart' is the real one
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" disabled>Add to cart</button>', 1)
             body += (f'<div class="sticky-atc" style="position:fixed;bottom:0;left:0;right:0;background:#fff;padding:8px">'
                      f'<button type="button" class="sticky-atc__btn" onclick="addToCart({vid})">Add to cart</button></div>')
         if self.mode == "hidden_buttons_product":
-            # saralhome.com (new31c, NOT JUDGED): 'FREE TABLE MAT', a freebie; its cart form keeps Add to Cart / BUY NOW,
+            # shop082.example (new31c, NOT JUDGED): 'FREE TABLE MAT', a freebie; its cart form keeps Add to Cart / BUY NOW,
             # all hidden, and the page shows no other buy control
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" style="display:none">Add to Cart</button>'
                                 '<button type="button" style="display:none">BUY NOW</button>', 1)
             body += '<button type="button" class="accordion-header">Additional Information</button>'   # not an 'add' button
         if self.mode == "gift_only_product":
-            # nubronicforte.com (new30t): the 'Performance Kit' gift's page: a hidden, empty cart form, no buy control
+            # shop031.example (new30t): the 'Performance Kit' gift's page: a hidden, empty cart form, no buy control
             body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
                                      f'name="id" value="{vid}"></form><p>Complimentary with every order. Auto-added at checkout.</p>')
         if self.mode == "cod_form_only":
-            # shopkara.store (new30p/t): a hidden, buttonless cart form; the only buy control is a COD order-form app's
+            # shop066.example (new30p/t): a hidden, buttonless cart form; the only buy control is a COD order-form app's
             # 'Order Now - Cash on Delivery' popup button
             body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
                                      f'name="id" value="{vid}"></form><div class="es-popup-button" style="cursor:pointer;'
                                      f'padding:10px;background:#0a0;color:#fff;width:260px">Order Now - Cash on Delivery</div>')
         if self.mode == "hidden_form_app_button":
-            # shopkara.store (new30p) / nubronicforte.com (new30t): the product's own cart form is there but hidden and
+            # shop066.example (new30p) / shop031.example (new30t): the product's own cart form is there but hidden and
             # holds no button; the buy control a shopper uses is an app's element outside the form
             body = body.replace(buy, f'<form action="/cart/add" method="post" style="display:none"><input type="hidden" '
                                      f'name="id" value="{vid}"></form><div class="pdp-addtobag-btn active" '
@@ -2411,7 +2411,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                                      f'onclick="addToCart({pre["id"]})" style="cursor:pointer;padding:10px;background:#222;color:#fff;'
                                      f'width:200px">ADD TO BAG</div>')
         if self.mode == "reworded_name" and p["handle"] == "ceramic-vase":
-            # nbdpowerlifting.com (Contabo probe, 18 Oct): a custom page with no cart form shows the product under a
+            # shop014.example (Contabo probe, 18 Oct): a custom page with no cart form shows the product under a
             # reworded name ('STRENGTH / Back Print Acid Wash Hoodie' for 'NBD STRENGTH — Back Print Acid Wash Hoodie')
             body = body.replace(buy, f'<div class="pdp-addtobag-btn" data-product-handle="{p["handle"]}" '
                                      f'onclick="addToCart({vid})" style="cursor:pointer;padding:10px;background:#222;color:#fff;'
@@ -2421,7 +2421,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                     f'class="shopify-product-form" action="/cart/add" method="post"><input type="hidden" name="id" value="{rv}">'
                     f'<button type="submit">Add</button></form></div>' + body)
         if self.mode == "upsell_forms_first":
-            # nested like bummer.in's cart drawer: no product link within 6 levels, so it is not "another product's card"
+            # nested like shop129.example's cart drawer: no product link within 6 levels, so it is not "another product's card"
             body = ('<div class="cart-drawer" style="display:none"><div class="cart-upsell"><div class="cart-upsell__list">'
                     + "".join(f'<cart-product-card class="cart-upsell__item"><div class="cart-upsell__detail"><div class="cart-upsell__content">'
                               f'<div class="cart-upsell__right"><product-form-component><form id="NativeCartUpsell-{k}" '
@@ -2437,7 +2437,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                           '<script>if (matchMedia("(max-width: 1007px)").matches) '
                           'document.querySelector("product-sticky-form").hidden = false;</script>', body, count=1)
         if self.mode == "pincode_gate" and available:
-            # bombaysweetshop.com (new30d held-out, 10 Oct): variant selected, but the store's own buy button stays
+            # shop011.example (new30d held-out, 10 Oct): variant selected, but the store's own buy button stays
             # disabled and says 'PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY' until a delivery pincode is checked
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" disabled>PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY</button>')
@@ -2457,7 +2457,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                   '<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; setTimeout(() => { '
                   'document.getElementById("pin-msg").textContent = "Delivery by Thu, 16 Oct · COD not available for this pincode"; }, 300); });</script>'
                   if self.mode == "pincode_cod_no" else
-                  # boat-lifestyle (15 Oct): 'Checking servicability ...' for a long time, then the answer
+                  # shop017 (15 Oct): 'Checking servicability ...' for a long time, then the answer
                   '<script>document.addEventListener("click", e => { if (!e.target.closest(".pincode-btn")) return; const m = document.getElementById("pin-msg"); '
                   'm.textContent = "Checking servicability ..."; setTimeout(() => { m.textContent = "Delivery by Sat, 18 Oct"; }, 11000); });</script>'
                   if self.mode == "pincode_slow" else "")
@@ -2465,7 +2465,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                       'placeholder="Enter pincode" maxlength="6"><button type="button" class="pincode-btn">CHECK</button>'
                       '<div id="pin-msg" class="delivery-estimate"></div></div>' + js)
             if self.mode == "pincode_covered":
-                # mcaffeine / plumgoodness / boat-lifestyle (first real run, 14 Oct): the checker sits far down the page
+                # shop078 / shop040 / shop017 (first real run, 14 Oct): the checker sits far down the page
                 # under a sticky buy bar, and a newsletter popup opens a few seconds AFTER the page was read and its
                 # first popups closed -> the plain click timed out for 8 s
                 widget = ('<div style="height:2400px"></div>' + widget +      # no footer: the page ends under the bar
@@ -2473,7 +2473,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                           'z-index:30;padding:10px">Sticky buy bar <button type="button">Add to cart</button></div>'
                           + self.OVERLAYS["newsletter_popup"].replace("}, 400);", "}, 2500);"))
             if self.mode == "pincode_rerender":
-                # mcaffeine / plumgoodness / boat-lifestyle (15 Oct re-test): an app-rendered widget redraws itself
+                # shop078 / shop040 / shop017 (15 Oct re-test): an app-rendered widget redraws itself
                 # every few hundred ms (new nodes, typed value kept): anything Radar marked on the old nodes is gone
                 widget += ('<script>setInterval(() => { const w = document.querySelector(".pincode-check"); if (!w) return; '
                            'const v = w.querySelector("input").value, m = w.querySelector("#pin-msg").textContent; '
@@ -2483,7 +2483,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                            'w.replaceWith(n); }, 250);</script>')
             body += widget
         if self.mode == "disabled_dup_button" and available:
-            # littleboxindia.com mobile (new30c + loop cycle 6): the product form holds TWO buy buttons; the one Radar
+            # shop018.example mobile (new30c + loop cycle 6): the product form holds TWO buy buttons; the one Radar
             # reads is disabled while an enabled ADD TO CART for the same product is on screen. Radar must name both.
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" style="display:none">Add to cart</button>'
@@ -2491,7 +2491,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body += ('<div class="sticky-bar" style="position:fixed;left:0;right:0;bottom:0;background:#fff;padding:8px;z-index:20">'
                      '<button type="submit" form="product-form-template__main" class="sticky-atc">ADD TO CART</button></div>')
         if self.mode == "disabled_buy_now_only" and available:
-            # crossbeats.com-like: the form's native submit is hidden, the visible ADD TO CART is disabled and the only
+            # shop062.com-like: the form's native submit is hidden, the visible ADD TO CART is disabled and the only
             # enabled control is 'Buy it now' (checkout) -> Radar must NOT click it; the failure names it first
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" style="display:none">Add to cart</button>'
@@ -2518,7 +2518,7 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
                      "b.className = 'shopify-payment-button__button shopify-payment-button__button--unbranded'; "
                      "b.textContent = 'Buy it now'; " + go + " s.appendChild(b); }, 600);</script>")
         if self.mode == "healer_disabled_sticky" and available:
-            # littleboxindia.com mobile (new30c/d/e): the form's own button is not shown, the healer finds a DISABLED
+            # shop018.example mobile (new30c/d/e): the form's own button is not shown, the healer finds a DISABLED
             # 'Add to cart' near the title, and an ENABLED sticky ADD TO CART (no form attribute) is on screen.
             body = body.replace('<button type="submit" name="add">Add to cart</button>',
                                 '<button type="submit" name="add" style="display:none">Add to cart</button>')

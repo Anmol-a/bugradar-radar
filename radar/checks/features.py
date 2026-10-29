@@ -160,8 +160,8 @@ FINDERS = {"pin": ("__radarPin", PINCODE_BOX_JS), "code": ("__radarCode", DISCOU
 
 
 def _el(ctx: Ctx, kind: str, part: str):
-    """The widget's box / button / holder as a live element handle. App-rendered widgets (mcaffeine, plumgoodness,
-    boat-lifestyle, 14-15 Oct) re-render themselves and drop any marker Radar set: when the remembered node has left
+    """The widget's box / button / holder as a live element handle. App-rendered widgets (shop078, shop040,
+    shop017, 14-15 Oct) re-render themselves and drop any marker Radar set: when the remembered node has left
     the document, the finder runs again and the new node is used."""
     store, finder = FINDERS[kind]
     page = ctx.sess.page
@@ -198,7 +198,7 @@ def _answer_after(ctx: Ctx, snap: dict, rx: re.Pattern, secs: float = 8.0, busy_
                   not_this: str | None = None) -> tuple[str | None, str]:
     """Poll the page for text matching rx (holder text that was not there before, or a message element). Returns
     (matched text or None, what was seen last). While the widget says it is still working ('Checking servicability
-    ...': boat-lifestyle, 15 Oct) the wait stretches to busy_secs: slow is a warning with the time, not 'no answer'."""
+    ...': shop017, 15 Oct) the wait stretches to busy_secs: slow is a warning with the time, not 'no answer'."""
     page, seen, t0 = ctx.sess.page, "", time.time()
     limit = secs
     while time.time() - t0 < limit:
@@ -233,8 +233,8 @@ def _on(ctx: Ctx, kind: str, part: str, act, tries: int = 4):
 
 
 def _type_into(ctx: Ctx, kind: str, text: str) -> None:
-    """Scroll the box to the middle of the screen (a sticky buy bar or header can cover it: mcaffeine, plumgoodness,
-    boat-lifestyle on the first real run, 14 Oct), close any popup, then fill it like a shopper."""
+    """Scroll the box to the middle of the screen (a sticky buy bar or header can cover it: shop078, shop040,
+    shop017 on the first real run, 14 Oct), close any popup, then fill it like a shopper."""
     _dismiss(ctx)
     _on(ctx, kind, "box", lambda b: b.evaluate("e => e.scrollIntoView({block: 'center', inline: 'nearest', behavior: 'instant'})"))
     try:

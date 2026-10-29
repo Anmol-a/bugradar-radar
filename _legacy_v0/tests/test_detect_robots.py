@@ -15,7 +15,7 @@ def test_single_cdn_link_is_not_enough():
 
 
 def test_custom_stack_is_unknown():
-    html = '<img src="https://cdn.vaaree.com/tenant-123/a.jpg"><script src="/_next/static/x.js">'
+    html = '<img src="https://cdn.shop125.example/tenant-123/a.jpg"><script src="/_next/static/x.js">'
     assert detect_platform(html)["platform"] == "unknown"
 
 

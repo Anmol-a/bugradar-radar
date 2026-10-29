@@ -38,7 +38,7 @@ NAV_JS = r"""() => {
     const text = (a.textContent || a.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
     if (!href || seen.has(href) || !text || href.startsWith('javascript:')) continue;
     const u = new URL(href);
-    // sign-in links are not pages: Shopify's new customer accounts link '/customer_authentication/redirect' (krkjewels.com
+    // sign-in links are not pages: Shopify's new customer accounts link '/customer_authentication/redirect' (shop077.example
     // new30t, 15 Oct: 404 for a robot, a login hand-off for a shopper) and /account/login are judged by the account test
     if (/\/(cart|account|search|checkout|customer_authentication|login|logout)(\/|$|\?)|#/.test(u.pathname + u.hash) || /\/products\//.test(u.pathname)) continue;
     const r = a.getBoundingClientRect();
@@ -87,16 +87,16 @@ MORE_LINKS_JS = r"""() => { const out = [], seen = new Set();
   document.querySelectorAll('footer a[href], [role=contentinfo] a[href], [id*="footer" i] a[href], [class*="footer" i] a[href]')
     .forEach(a => add(a, 'footer'));
   return out.slice(0, 300); }"""
-# /cdn-cgi/: Cloudflare's own paths ('Email' footer links become /cdn-cgi/l/email-protection: beminimalist.co, 11 Oct)
+# /cdn-cgi/: Cloudflare's own paths ('Email' footer links become /cdn-cgi/l/email-protection: shop047.example, 11 Oct)
 NOT_MORE = re.compile(r"/(products|cart|account|search|checkout|policies)(/|$)|/apps/|^/(cdn|files|cdn-cgi)/|\.[a-z0-9]{2,5}$",
                       re.I)
 
 
-# A control whose href is a broken 'javascript void(0)' (no colon: sahnibakery.com 'Quick Shop', new31e) resolves to
+# A control whose href is a broken 'javascript void(0)' (no colon: shop053.example 'Quick Shop', new31e) resolves to
 # '/javascript%20void(0)': a script control, never a page
 JS_HREF = re.compile(r"/javascript(%20|\s|:|$)", re.I)
 # A slideshow's own dots / arrows are links on some themes ('Slide 1, current', 'Load slide 1' -> '/Hero-slideshow':
-# zenvistapackagings.in, new31b, both devices DEGRADED): carousel controls, never pages to open
+# shop006.example, new31b, both devices DEGRADED): carousel controls, never pages to open
 SLIDE_CONTROL = re.compile(r"^\s*((load|go to|show|view) )?slide \d+|^\s*(next|previous|prev) slide|^\s*slide \d+ of \d+", re.I)
 
 
@@ -134,7 +134,7 @@ INFO_KINDS = (("refund", r"refund|return|exchange|cancell?ation"),
               ("terms", r"terms|conditions|\btos\b"),
               ("contact", r"contact"))
 NOT_INFO = re.compile(r"/(products|collections|cart|account|search|checkout|blogs)(/|$)|/apps/|^/(cdn|files|cdn-cgi)/|"
-                      r"\.[a-z0-9]{2,5}$", re.I)       # files (giva.co links its 'Annual Return' PDF from the footer)
+                      r"\.[a-z0-9]{2,5}$", re.I)       # files (shop143.example links its 'Annual Return' PDF from the footer)
 # company filings Indian stores link next to their policies: 'Annual Return FY 2024-25' (MGT-7) is not a returns page
 NOT_INFO_TEXT = re.compile(r"annual|investor|\bcsr\b|mgt[- ]?7|financial|shareholder|grievance redressal", re.I)
 
@@ -170,7 +170,7 @@ def same_site(a: str, b: str) -> bool:
 
 # + checkout add-ons sold as products: 'Free Returns + Package Protection' (saturn.health, new30m 14 Oct: NOT JUDGED on
 #   both devices, its page has no buy button a shopper uses) and shipping / order protection or insurance apps;
-#   extended-warranty add-ons (izicart.com new30u: '1 Year Extended Warranty for …' pages show no such product)
+#   extended-warranty add-ons (shop104.example new30u: '1 Year Extended Warranty for …' pages show no such product)
 NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift|sampler|tester|\bsample\b|dummy|test[-_ ]product|"
                            r"(package|shipping|order|returns?|delivery|parcel)[-_ ]?(protection|insurance)|route[-_ ]?protection|"
                            r"extended[-_ ]?warranty|warranty[-_ ]?(extension|plan|upgrade)|\b\d[-_ ]?years?[-_ ]?(extended[-_ ]?)?warranty|"
@@ -179,7 +179,7 @@ NOT_FOR_TESTS = re.compile(r"(_|-)clone|free[-_ ]?gift|gift[-_ ]?card|e[-_]?gift
 
 
 # A gift SKU by the store's own label: product type 'Freebies' or a tag that is exactly 'freebie' / 'free gift' / 'gwp'
-# (suta.in, full 36 13 Oct: 'Free Fabric', Rs 1,000, badge FREEBIES, no product image, was the one product tested ->
+# (shop145.example, full 36 13 Oct: 'Free Fabric', Rs 1,000, badge FREEBIES, no product image, was the one product tested ->
 # degraded). Only the type or a WHOLE tag counts: 'free-gift-eligible' marks a real product that qualifies for an offer.
 GIFT_KIND = re.compile(r"(^|\|)\s*(freebies?|free[-_ ]?gifts?|gift[-_ ]?with[-_ ]?purchase|gwp|complimentary[-_ ]?gifts?)\s*(\||$)",
                        re.I)
@@ -187,7 +187,7 @@ GIFT_KIND = re.compile(r"(^|\|)\s*(freebies?|free[-_ ]?gifts?|gift[-_ ]?with[-_ 
 
 def token_priced(products: list, floor_share: float = 0.10, max_price: float = 50.0) -> list:
     """Products priced like a freebie SKU next to the store's real prices: at most 10% of the median
-    priced product AND at most 50 (currency units). plumgoodness.com lists a Rs 1 'Skincare Duo'
+    priced product AND at most 50 (currency units). shop040.example lists a Rs 1 'Skincare Duo'
     in /products.json whose page says 'The product is currently unavailable'. Pure, unit-tested."""
     def num(p):
         try:
@@ -235,8 +235,8 @@ def dead_domain_reason(err: str, host: str = "") -> str:
 
 def load_robots(sess: Session, base: str, s: Settings) -> Robots:
     """RFC 9309: 200 = rules; 4xx = unavailable (allow all); 5xx or no answer = unreachable (disallow all).
-    Three tries, 2 s and 5 s apart, longer timeout each time, before calling it unreachable (bench 11: soulflower.in
-    and bummer.in had no answer on two quick tries and were blocked for the run; both answer normally)."""
+    Three tries, 2 s and 5 s apart, longer timeout each time, before calling it unreachable (bench 11: shop083.example
+    and shop129.example had no answer on two quick tries and were blocked for the run; both answer normally)."""
     status, err = None, ""
     tries = ((10000, 2), (15000, 5), (20000, 0))
     for i, (timeout, gap) in enumerate(tries):
@@ -249,7 +249,7 @@ def load_robots(sess: Session, base: str, s: Settings) -> Robots:
                 return Robots(None, s.user_agent)
         except Exception as e:  # noqa: BLE001  DNS, TLS, timeout, reset
             status = None
-            err = str(e).split("\n")[0][:160]   # evidence: which network error (chemistatplay.com, neemli.in new30c)
+            err = str(e).split("\n")[0][:160]   # evidence: which network error (shop026.example, shop133.example new30c)
         if gap:
             time.sleep(gap)
     rb = Robots(None, s.user_agent, unreachable=True)
@@ -706,7 +706,7 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
                 sm.notes.append("store is password-protected; Radar entered the store password its owner gave BugRadar")
     det = detect_platform(html)
     if det["platform"] != "shopify" and det["evidence"] and sm.access == "open" and resp is not None and resp.status < 400:
-        # One Shopify marker but not two (koskii.com, new30f, 10 Oct: 'not Shopify' on one device and a healthy Shopify
+        # One Shopify marker but not two (shop120.example, new30f, 10 Oct: 'not Shopify' on one device and a healthy Shopify
         # store on the other). A store is one platform: load the homepage once more before saying it is not Shopify.
         first = list(det["evidence"])
         sess.page.wait_for_timeout(int(3000 * sess.backoff_scale))
@@ -735,7 +735,7 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
         return sm
     if resp is None or resp.status >= 400:
         code = resp.status if resp else None
-        # Not "not Shopify": the store did not serve its homepage to Radar (plumgoodness.com, bench 5: HTTP 423
+        # Not "not Shopify": the store did not serve its homepage to Radar (shop040.example, bench 5: HTTP 423
         # "This store is unavailable" to Radar while the store was live for other visitors).
         sm.access = "refused" if code in (401, 403, 423, 429) else "unreachable"
         sm.notes.append(f"homepage returned HTTP {code or 'none'} ('{sm.home_title[:60]}') to Radar; nothing tested. "

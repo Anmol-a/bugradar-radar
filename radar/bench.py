@@ -60,7 +60,7 @@ def summarise(run: dict, report: str) -> dict:
         warns += sum(1 for s in last.get("steps", []) if s.get("status") == "warn")
         if v in ("confirmed_fail", "flaky", "blocked"):
             t = c.get("triage") or {}
-            # a FLAKY case passed on its last attempt: show the attempt that failed (boat-lifestyle.com, bench 5
+            # a FLAKY case passed on its last attempt: show the attempt that failed (shop017.example, bench 5
             # showed an empty row)
             bad = next((a for a in reversed(c["attempts"]) if not a.get("ok") and a.get("error")), last)
             failures.append({"case": c["case_id"], "verdict": v, "step": bad.get("failed_step"),
@@ -80,7 +80,7 @@ def combine(per_device: dict[str, dict]) -> dict:
     """One bench row from the per-device rows of ONE store (each from summarise()). Pure, unit-tested.
     Store facts (theme, checkout, notes) come from the first device; verdict and suites are the worst of the
     devices; failures keep the device they happened on; `device_only` lists the test cases that failed
-    (confirmed) on one device but not the other (the supplysix kind of finding: fine on mobile, no price on desktop)."""
+    (confirmed) on one device but not the other (the shop084 kind of finding: fine on mobile, no price on desktop)."""
     devs = list(per_device)
     first = per_device[devs[0]]
     verdict = max((r["verdict"] for r in per_device.values()), key=lambda v: VERDICT_RANK.get(v, 4))

@@ -18,7 +18,7 @@ def test_whatsapp_addresses_are_read_without_opening_them():
     assert wa_number("https://wa.me/qr/ABCDEFGHIJ1") == ("short", "")
     assert wa_number("https://api.whatsapp.com/message/ABCDEFGHIJ1?autoload=1") == ("short", "")
     assert wa_number("https://wa.me/c/919876543210") == ("chat", "919876543210")
-    # amrutam.co.in on phones (23 Oct): a group invite is shown, not the chat number
+    # shop071.example on phones (23 Oct): a group invite is shown, not the chat number
     assert wa_number("https://chat.whatsapp.com/F0NF4QRM9KyClsMBYpYX28") == ("group", "")
 
 
