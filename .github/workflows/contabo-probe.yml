@@ -11,7 +11,7 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Restart on the new main (public addresses only, 29 Oct)
+      - name: Restart on the new main (Shopify admin checks, 29 Oct)
         run: |
           # 19 Oct: daily monitors by upload key (dashboard migration 14 + worker monitors-by-key). Free checks are always
           # claimed first by every slot; slot 1 never takes a monitor, so a visitor never waits behind a 10-minute run.
@@ -53,6 +53,8 @@ jobs:
             grep -c 'def plain_name' "$HOME/radar-src/tools/upload_dashboard.py" | sed 's/^/  short check names (want 1): /';
             grep -c 'def mark_also_failed' "$HOME/radar-src/tools/upload_dashboard.py" | sed 's/^/  one alert names every browser (want 1): /';
             grep -c 'def public_url' "$HOME/radar-src/radar/core/netguard.py" | sed 's/^/  public addresses only (want 1): /';
+            grep -c 'REGISTRY\["admin_match"\]' "$HOME/radar-src/radar/checks/library.py" | sed 's/^/  Shopify admin prices + stock check (want 1): /';
+            grep -c 'smoke.shopify_menu' "$HOME/radar-src/radar/generate/builder.py" | sed 's/^/  Shopify menu links check (want 1): /';
             { grep -c RADAR_ALLOW_PRIVATE_HOSTS "$HOME/radar.env" || true; } | sed 's/^/  test switch NOT set on the worker (want 0): /';
             echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none";
             echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 3 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } | tee probe.txt
