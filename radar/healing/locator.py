@@ -44,7 +44,7 @@ INTENTS = {
 
 def not_page(sel: str) -> str:
     """A container selector that never matches <html> / <body>: themes name their settings there ('quick-add-enabled
-    cart-drawer-active' on <body>: dhaagaweaves.in, cmartian.com, new31a/b), which made every element on the page
+    cart-drawer-active' on <body>: shop048.example, shop091.example, new31a/b), which made every element on the page
     'inside a cart drawer / quick-add'."""
     return ", ".join(p.strip() + ":not(html):not(body)" for p in sel.split(","))
 
@@ -53,8 +53,8 @@ QUICK_SEL = not_page("[id*='quick-add' i], [class*='quick-add' i], [class*='quic
                      "[class*='card' i] [class*='quick' i], .swiper-slide, [class*='upsell' i], [class*='recommend' i]")
 
 # Is this element a buy control on ANOTHER product's card? Decided by where the nearest product links
-# point, never by class names alone: soulflower.in's MAIN buy button sits in a "quick-add-container"
-# (bench 3), while moxiebeauty.in's quick-add cards link to other products (bench 0). Off product pages
+# point, never by class names alone: shop083.example's MAIN buy button sits in a "quick-add-container"
+# (bench 3), while shop063.example's quick-add cards link to other products (bench 0). Off product pages
 # every quick-add container counts as a card, as before.
 OTHER_CARD_FN = r"""(e, quick) => { const c = e.closest(quick); if (!c) return false;
   const m = location.pathname.match(/\/products\/([^/?#]+)/); const here = m ? decodeURIComponent(m[1]) : null;
@@ -167,7 +167,7 @@ class Healer:
         self.events: list[dict] = []
 
     def _visible(self, page: Page, selector: str, timeout: int, intent: str = "", root: str | None = None):
-        """First VISIBLE match that is not excluded. (Using .first was the Moxie bug: the first
+        """First VISIBLE match that is not excluded. (Using .first was the Shop063 bug: the first
         add-to-cart form in the DOM was a quick-add button on a product card.)"""
         base = page.locator(root) if root else page
         deadline = time.time() + timeout / 1000

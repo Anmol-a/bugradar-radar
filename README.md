@@ -25,17 +25,17 @@ python3 -m pytest -q -m "not e2e"    # 165 fast unit tests only
 
 ## Use
 ```bash
-python3 -m radar scan moxiebeauty.in --open            # desktop AND mobile (default since v0.18), opens the reports
-python3 -m radar scan moxiebeauty.in --device desktop  # one screen size only (or --device mobile)
-python3 -m radar scan moxiebeauty.in --headed          # watch the browser (slowed to 400 ms per action)
-python3 -m radar scan moxiebeauty.in --headed --slowmo 1000   # slower still
-python3 -m radar scan palmonas.com --no-cart           # skip add-to-cart (prospects)
-python3 -m radar scan palmonas.com --profile basic     # the free scan page's first check: desktop, 7 read-only
+python3 -m radar scan shop063.example --open            # desktop AND mobile (default since v0.18), opens the reports
+python3 -m radar scan shop063.example --device desktop  # one screen size only (or --device mobile)
+python3 -m radar scan shop063.example --headed          # watch the browser (slowed to 400 ms per action)
+python3 -m radar scan shop063.example --headed --slowmo 1000   # slower still
+python3 -m radar scan shop095.example --no-cart           # skip add-to-cart (prospects)
+python3 -m radar scan shop095.example --profile basic     # the free scan page's first check: desktop, 7 read-only
                                                        # checks (home, menu, 1 collection, 1 product, search, 404,
                                                        # meta), never a cart; ~1-2 min. radar/runner/profiles.py
-python3 -m radar scan moxiebeauty.in --suites smoke,cart
+python3 -m radar scan shop063.example --suites smoke,cart
 python3 -m radar sites                                 # everything scanned so far
-python3 -m radar open moxiebeauty.in                   # site history page
+python3 -m radar open shop063.example                   # site history page
 ```
 Results: `data/sites/<site_id>/` (see ARCHITECTURE.md, section 7).
 
@@ -46,10 +46,10 @@ pages, account page, links beyond the menu, phone menu, layout (sideways scroll,
 errors, script weight (ARCHITECTURE.md 4zc-4zd). Regression on 36 stores: 0 Radar false failures. Never-seen score
 (30-store lists, run once each): 12/30 → 6/26 → 3/22 → 3/18 → 4/21 → 2/19 wrong.
 Earlier (7 Oct, v0.18: every run tests desktop and mobile; console + page-load evidence in reports; ARCHITECTURE.md 4r). Held-out score (v0.16→v0.17): first honest score on 30 never-seen stores (v0.16, run once): 21 of 23 testable
-stores judged right; 2 false-failure stores (nicobar, true-elements: buy control) = 2/30, target ≤ 1/30 missed;
+stores judged right; 2 false-failure stores (shop107, shop034: buy control) = 2/30, target ≤ 1/30 missed;
 fixed in v0.17 (ARCHITECTURE.md 4q). 5 of 30 stores are custom/headless, not covered by v1. Store findings:
-supplysix desktop price, thefunclab dead image link, foxtale hidden product, libas products with no images,
-soulflower + foxtale soft 404.
+shop084 desktop price, shop068 dead image link, shop116 hidden product, shop197 products with no images,
+shop083 + shop116 soft 404.
 
 ## Bench: many Shopify stores, one table
 ```bash
@@ -101,7 +101,7 @@ Modes (46, described at the top of `tests/mockstore/server.py`), e.g. `healthy`,
 `hidden_product`, `notfound_product`, `no_buy_form`, `search_misses`.
 
 ## Per-site overrides (optional)
-`sites/<site_id>.yml`, for example `sites/moxiebeauty.in.yml`:
+`sites/<site_id>.yml`, for example `sites/shop063.example.yml`:
 ```yaml
 delay_seconds: 2.5
 max_products: 5

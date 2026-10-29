@@ -12,7 +12,7 @@ from __future__ import annotations
 
 FIND_JS = r"""() => {
   // Search the page AND every open shadow root: app popups increasingly render inside a web component's
-  // shadow DOM (soulflower.in's YourLio popup inside #chat-widget, bench 9; document.querySelectorAll
+  // shadow DOM (shop083.example's YourLio popup inside #chat-widget, bench 9; document.querySelectorAll
   // cannot see into it, so the popup blocked the product click).
   const hosts = []; const findHosts = r => r.querySelectorAll('*').forEach(e => { if (e.shadowRoot) { hosts.push(e.shadowRoot); findHosts(e.shadowRoot); } });
   findHosts(document);
@@ -31,7 +31,7 @@ FIND_JS = r"""() => {
     '[id*="consent" i], [class*="privy" i], [class*="omnisend" i], [class*="geolocation" i], [class*="country-selector" i], ' +
     '[class*="age-verif" i], [class*="ageverif" i], [class*="agegate" i], [class*="age-gate" i], [id*="age" i][class*="gate" i]';
   // Only a layer a shopper can SEE counts: inside the viewport and on top at some point of it. Closed side drawers
-  // (wishlist / cart / menu slid off-screen, suta.in + soulflower.in, 7-9 Oct) are never popups, and a candidate
+  // (wishlist / cart / menu slid off-screen, shop145.example + shop083.example, 7-9 Oct) are never popups, and a candidate
   // whose close did not work is marked tried and skipped (v0.18 retried the same hidden drawer ~10 times).
   const deepHit = (x, y) => { let el = document.elementFromPoint(x, y);
     while (el && el.shadowRoot) { const inner = el.shadowRoot.elementFromPoint(x, y); if (!inner || inner === el) break; el = inner; }
@@ -48,7 +48,7 @@ FIND_JS = r"""() => {
     .filter(e => { const r = e.getBoundingClientRect();
       return e.getAttribute('aria-modal') === 'true' || e.tagName === 'DIALOG' ||
              (fixedish(e) && r.width * r.height >= 0.08 * vw * vh); });
-  // Popups with no telling names (utility classes like "fixed inset-0 z-50", soulflower.in's YourLio
+  // Popups with no telling names (utility classes like "fixed inset-0 z-50", shop083.example's YourLio
   // popup, bench 3): any FIXED layer covering half the screen that takes clicks and holds a small box
   // with a button in it. Cart drawers, the site header and click-through layers are excluded.
   const bareX = r => [...r.querySelectorAll('div, span, i, em, b, p'), ...[...r.querySelectorAll('*')].filter(x => x.shadowRoot)
@@ -61,7 +61,7 @@ FIND_JS = r"""() => {
     if (isCart(e) || e.closest('header, nav, [id*="header" i]') || tried(e) || !onScreen(e)) return false;
     // a popup is small inside: not the page's own content (main, the buy form, a menu full of links)
     if (e.querySelector('main, form[action*="/cart/add"], [role="navigation"]') || [...e.querySelectorAll('a[href]')].filter(a => shown(a) && !/^(#|javascript:)/i.test(a.getAttribute('href') || '')).length > 12) return false;
-    // a control to close it: a real button, or a bare "×" drawn by a div/span (soulflower.in birthday popup, 9 Oct)
+    // a control to close it: a real button, or a bare "×" drawn by a div/span (shop083.example birthday popup, 9 Oct)
     return !!e.querySelector('button, [role="button"]') || bareX(e);
   }).slice(0, 4);
   const roots = [...new Set([...named, ...generic])];
@@ -120,7 +120,7 @@ IFRAME_POPUPS_JS = r"""() => {
                   (f.getAttribute('src') || '')).toLowerCase();
     let fixed = false; for (let n = f; n && n !== document.body; n = n.parentElement) { if (getComputedStyle(n).position === 'fixed') { fixed = true; break; } }
     // A fixed iframe over half the screen that is on top at its centre blocks the shopper whatever it is called:
-    // GoKwik KwikPass login (id 'iframe-kp', src pdp.gokwik.co/kwikpass; bonkerscorner, boldcare, consciouschemist).
+    // GoKwik KwikPass login (id 'iframe-kp', src pdp.gokwik.co/kwikpass; shop025, shop100, shop008).
     const x = Math.min(vw - 1, Math.max(0, r.left + r.width / 2)), y = Math.min(vh - 1, Math.max(0, r.top + r.height / 2));
     const covers = r.width * r.height >= 0.5 * vw * vh && document.elementFromPoint(x, y) === f;
     if (s.display !== 'none' && s.visibility !== 'hidden' && r.width * r.height >= 0.08 * vw * vh && fixed
@@ -168,7 +168,7 @@ def dismiss_overlays(page, rounds: int = 3) -> list[dict]:
 CLOSE_IN_FRAME_JS = r"""() => {
   // The close control inside a popup frame, as a shopper finds it: a VISIBLE close / dismiss control, a visible
   // '×' / 'No thanks', or an icon-only control (svg / img, no text) small and top-right in the popup box.
-  // GoKwik KwikPass (bonkerscorner, run 37958664708): the first '.close' match in the frame was hidden, its real
+  // GoKwik KwikPass (shop025, run 37958664708): the first '.close' match in the frame was hidden, its real
   // close an icon-only element, so the CSS selector + Escape left it open. Never a join / login / subscribe control.
   document.querySelectorAll('[data-radar-close]').forEach(e => e.removeAttribute('data-radar-close'));
   const shown = e => { const r = e.getBoundingClientRect(), s = getComputedStyle(e);
