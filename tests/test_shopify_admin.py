@@ -1,6 +1,6 @@
 """The store's Shopify admin data (29 Oct 2026, Shopify review 2.2.1): the menu links and the products the BugRadar
 Shopify app reads through the Admin API, turned into two checks (smoke.shopify_menu, product.shopify_admin)."""
-from dataclasses import replace
+import pytest
 from datetime import datetime, timedelta, timezone
 
 from radar import worker as w
@@ -145,6 +145,7 @@ def _steps(run, cid):
     return case, {s.name: s for s in case.attempts[-1].steps}
 
 
+@pytest.mark.e2e
 def test_admin_data_matching_the_store_passes(tmp_path):
     run = _admin_scan(tmp_path, [
         {"handle": "ceramic-vase", "title": "Ceramic Flower Vase", "url": "/products/ceramic-vase", "prices": [1299.0, 1399.0], "available": True},
@@ -159,6 +160,7 @@ def test_admin_data_matching_the_store_passes(tmp_path):
     assert menu.verdict == "pass", [(s.name, s.status, s.error) for s in msteps.values()]
 
 
+@pytest.mark.e2e
 def test_admin_data_not_matching_the_store_warns(tmp_path):
     run = _admin_scan(tmp_path, [
         {"handle": "ceramic-vase", "title": "Ceramic Flower Vase", "url": "/products/ceramic-vase", "prices": [1199.0], "available": True},
