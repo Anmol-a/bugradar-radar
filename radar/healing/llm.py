@@ -10,12 +10,14 @@ The LLM is never called on a passing run and NEVER decides pass/fail. It is used
 Providers (switching = one line in .env; prompts and code stay the same):
   openai          OpenAI. Default model gpt-5-mini (llm-check 15/15 vs gpt-4o-mini 14/15, 5 Oct; reads
                   screenshots; ~$0.00036 per triage call). Key: OPENAI_API_KEY.
-  anthropic       Claude Messages API. Default model claude-haiku-4-5-20251001. Key: ANTHROPIC_API_KEY.
+  anthropic       Claude Messages API. Default model claude-haiku-5-5 ($0.10 / $0.50 per million tokens, 30 Oct: the Max
+                  plan's $100/month API credits pay for it). Key: ANTHROPIC_API_KEY.
   openai_compat   Any OpenAI-compatible /chat/completions endpoint (Gemini's compat endpoint,
                   DeepSeek, local models). Needs RADAR_LLM_BASE_URL + RADAR_LLM_API_KEY.
   none            Healing stays heuristic-only, no triage.
-  auto (default)  openai if OPENAI_API_KEY is set, else anthropic if ANTHROPIC_API_KEY, else
-                  openai_compat if configured, else none.
+  auto (default)  anthropic if ANTHROPIC_API_KEY is set (30 Oct: Claude first, the credits are already paid for), else
+                  openai if OPENAI_API_KEY, else openai_compat if configured, else none.
+Every call passes the spend guard first (budget.py: $3 a day, $90 a month across all machines); over it, no AI.
 """
 from __future__ import annotations
 
@@ -28,6 +30,7 @@ from dataclasses import dataclass, field
 from typing import Callable
 
 from radar.core.config import Settings
+from radar.healing.budget import LocalBudget, RemoteBudget, budget_from_env
 
 Transport = Callable[[str, dict, dict], dict]   # (url, headers, body) -> parsed JSON response
 
@@ -39,12 +42,14 @@ def _http_post(url: str, headers: dict, body: dict) -> dict:
         return json.loads(r.read().decode())
 
 
-DEFAULT_MODEL = {"openai": "gpt-5-mini", "anthropic": "claude-haiku-4-5-20251001", "openai_compat": ""}
+DEFAULT_MODEL = {"openai": "gpt-5-mini", "anthropic": "claude-haiku-5-5", "openai_compat": ""}
 OPENAI_BASE = "https://api.openai.com/v1"
 
-# USD per 1M tokens (input, output), list prices checked 5 Oct 2026. Only used for the cost line
-# in reports; unknown models show tokens without a cost.
-PRICES = {"gpt-4o-mini": (0.15, 0.60), "gpt-5-mini": (0.25, 2.00), "gpt-5-nano": (0.05, 0.40),
+# USD per 1M tokens (input, output), list prices checked 5 Oct 2026; Claude 5.5 models added 30 Oct 2026 (Haiku 5.5's
+# price is for prompts up to 100K tokens; Radar's are a few thousand). Used for the cost line in reports and for the
+# spend guard: a model with no price here counts as $0.01 per call there, never as free.
+PRICES = {"claude-haiku-5-5": (0.10, 0.50), "claude-sonnet-5-5": (2.00, 10.00), "claude-opus-5-5": (4.00, 20.00),
+          "gpt-4o-mini": (0.15, 0.60), "gpt-5-mini": (0.25, 2.00), "gpt-5-nano": (0.05, 0.40),
           "gpt-4.1-nano": (0.10, 0.40), "claude-haiku-4-5": (1.00, 5.00), "claude-sonnet-4-5": (3.00, 15.00),
           "gemini-2.5-flash-lite": (0.10, 0.40), "deepseek-chat": (0.28, 0.42)}
 
@@ -77,6 +82,7 @@ class LLMClient:
     input_tokens: int = 0
     output_tokens: int = 0
     errors: list[str] = field(default_factory=list)
+    budget: LocalBudget | RemoteBudget | None = None
 
     @property
     def enabled(self) -> bool:
@@ -95,7 +101,12 @@ class LLMClient:
         images: JPEG bytes (screenshots), sent at low detail to keep cost down."""
         if not self.enabled or self.calls >= self.max_calls:
             return None
+        if self.budget is not None and not self.budget.allowed():
+            if self.budget.why not in self.errors:
+                self.errors.append(self.budget.why)
+            return None
         self.calls += 1
+        tin0, tout0, charged = self.input_tokens, self.output_tokens, False
         imgs = [base64.b64encode(b).decode() for b in (images or []) if b]
         try:
             if self.provider == "anthropic":
@@ -129,19 +140,36 @@ class LLMClient:
                 u = resp.get("usage", {})
                 self.input_tokens += u.get("prompt_tokens", 0)
                 self.output_tokens += u.get("completion_tokens", 0)
+            self._charge(tin0, tout0)
+            charged = True
             return extract_json(text)
         except Exception as e:  # noqa: BLE001  network, auth, parse: never crash a run over the LLM
+            if not charged:                    # a call that failed before its answer still counts (a cent, or its tokens)
+                self._charge(tin0, tout0)
             self.errors.append(f"{type(e).__name__}: {str(e)[:150]}")
             return None
 
+    def _charge(self, tin0: int, tout0: int) -> None:
+        """Tell the spend guard what this call cost (a model with no known price counts as $0.01)."""
+        if self.budget is None:
+            return
+        tin, tout = self.input_tokens - tin0, self.output_tokens - tout0
+        usd = est_usd(self.model, tin, tout)
+        self.budget.spend(usd if usd is not None else 0.01)
 
-def make_client(s: Settings, transport: Transport | None = None) -> LLMClient:
+
+def make_client(s: Settings, transport: Transport | None = None,
+                budget: LocalBudget | RemoteBudget | None = None) -> LLMClient:
+    """budget: the spend guard (default: the shared ledger when BUGRADAR_KEY is set, else a small local cap)."""
+    if budget is None:
+        from radar.worker import ANON_KEY       # the public anon key; imported here to keep llm.py free of the worker
+        budget = budget_from_env(ANON_KEY)
     provider = s.llm_provider
     oa_key = os.environ.get("OPENAI_API_KEY", "")
     a_key = os.environ.get("ANTHROPIC_API_KEY", "")
     c_key = os.environ.get("RADAR_LLM_API_KEY", "")
     if provider == "auto":
-        provider = ("openai" if oa_key else "anthropic" if a_key
+        provider = ("anthropic" if a_key else "openai" if oa_key
                     else "openai_compat" if (c_key and s.llm_base_url) else "none")
     key = {"openai": oa_key, "anthropic": a_key}.get(provider, c_key)
     if provider != "none" and not key:
@@ -149,7 +177,7 @@ def make_client(s: Settings, transport: Transport | None = None) -> LLMClient:
     base = s.llm_base_url or (OPENAI_BASE if provider == "openai" else "")
     model = s.llm_model or DEFAULT_MODEL.get(provider, "")
     c = LLMClient(provider=provider, model=model, max_calls=s.llm_max_calls_per_run,
-                  base_url=base, api_key=key)
+                  base_url=base, api_key=key, budget=budget)
     if transport:
         c.transport = transport
     return c

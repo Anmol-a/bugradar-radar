@@ -164,12 +164,12 @@ def test_make_client_auto(monkeypatch):
     for k in ("ANTHROPIC_API_KEY", "RADAR_LLM_API_KEY", "OPENAI_API_KEY"):
         monkeypatch.delenv(k, raising=False)
     assert make_client(Settings()).provider == "none"
-    monkeypatch.setenv("ANTHROPIC_API_KEY", "x")
-    c = make_client(Settings())
-    assert c.provider == "anthropic" and c.model == "claude-haiku-4-5-20251001"
-    monkeypatch.setenv("OPENAI_API_KEY", "y")                     # OpenAI first while BugRadar is pre-revenue
+    monkeypatch.setenv("OPENAI_API_KEY", "y")
     c = make_client(Settings())
     assert (c.provider, c.model, c.base_url, c.api_key) == ("openai", "gpt-5-mini", "https://api.openai.com/v1", "y")
+    monkeypatch.setenv("ANTHROPIC_API_KEY", "x")                  # 30 Oct: Claude first (the Max plan's API credits)
+    c = make_client(Settings())
+    assert (c.provider, c.model, c.api_key) == ("anthropic", "claude-haiku-5-5", "x")
     from dataclasses import replace as _r
     assert make_client(_r(Settings(), llm_model="gpt-4o-mini")).model == "gpt-4o-mini"   # switch = one setting
 
@@ -1382,3 +1382,61 @@ def test_gst_inclusive_price():
     assert "3% GST" in gst_inclusive(32000.0, [32960.0])
     assert "18% GST" in gst_inclusive(1000.0, [1180.0])
     assert gst_inclusive(32000.0, [33500.0]) is None
+
+
+# ---------- AI spend guard (30 Oct) ----------
+def _claude(budget, usage=(3000, 150)):
+    def fake(url, headers, body):
+        return {"content": [{"type": "text", "text": '{"ok": 1}'}], "usage": {"input_tokens": usage[0], "output_tokens": usage[1]}}
+    return LLMClient("anthropic", "claude-haiku-5-5", 50, api_key="k", transport=fake, budget=budget)
+
+
+def test_haiku_5_5_price_and_local_cap():
+    from radar.healing.budget import LocalBudget
+    from radar.healing.llm import est_usd
+    assert est_usd("claude-haiku-5-5", 3000, 150) == round(3000 / 1e6 * 0.10 + 150 / 1e6 * 0.50, 6)    # $0.000375
+    b = LocalBudget(cap_usd=0.0007)                                # calls run while spend is under the cap
+    c = _claude(b)
+    assert c.complete_json("s", "u") == {"ok": 1} and c.complete_json("s", "u") == {"ok": 1}
+    assert c.complete_json("s", "u") is None                       # $0.00075 spent: over $0.0007, no third call
+    assert c.calls == 2 and any("AI budget" in e for e in c.errors) and abs(b.spent - 0.00075) < 1e-9
+
+
+def test_remote_ledger_is_asked_and_charged_and_fails_closed():
+    from radar.healing.budget import RemoteBudget
+    seen = []
+    answers = iter([{"ok": True, "day_usd": 0, "month_usd": 10, "day_cap": 3, "month_cap": 90},
+                    {"ok": True, "day_usd": 0.0004, "month_usd": 10, "day_cap": 3, "month_cap": 90},
+                    {"ok": False, "day_usd": 3.0001, "month_usd": 13, "day_cap": 3, "month_cap": 90}])
+    def post(url, headers, body):
+        seen.append((url, headers["apikey"], body))
+        return next(answers)
+    b = RemoteBudget("https://x.supabase.co", "brk_test", "anon", post=post)
+    c = _claude(b)
+    assert c.complete_json("s", "u") == {"ok": 1}                  # asked first (0), then charged
+    assert seen[0][0] == "https://x.supabase.co/rest/v1/rpc/llm_spend_by_key" and seen[0][1] == "anon"
+    assert seen[0][2] == {"brk": "brk_test", "add_usd": 0.0, "add_calls": 0}
+    assert seen[1][2] == {"brk": "brk_test", "add_usd": 0.000375, "add_calls": 1}
+    assert c.complete_json("s", "u") == {"ok": 1}                  # the ledger said no after this one
+    assert c.complete_json("s", "u") is None and c.calls == 2
+    assert any("day $3.00 of $3" in e for e in c.errors), c.errors
+    down = RemoteBudget("https://x.supabase.co", "brk_test", "anon", post=lambda *a: (_ for _ in ()).throw(OSError("down")))
+    d = _claude(down)
+    assert d.complete_json("s", "u") is None and d.calls == 0 and "unreachable" in d.errors[0]
+
+
+def test_budget_from_env(monkeypatch):
+    from radar.healing.budget import LocalBudget, RemoteBudget, budget_from_env
+    monkeypatch.delenv("BUGRADAR_KEY", raising=False)
+    assert isinstance(budget_from_env("anon"), LocalBudget)
+    monkeypatch.setenv("BUGRADAR_KEY", "brk_abc")
+    b = budget_from_env("anon")
+    assert isinstance(b, RemoteBudget) and b.upload_key == "brk_abc" and b.url.endswith(".supabase.co")
+
+
+def test_failed_call_is_still_charged_and_unknown_model_costs_a_cent():
+    from radar.healing.budget import LocalBudget
+    b = LocalBudget(cap_usd=1)
+    c = LLMClient("anthropic", "some-new-model", 5, api_key="k", transport=lambda *a: {"content": [{"type": "text", "text": "no json"}],
+                  "usage": {"input_tokens": 10, "output_tokens": 1}}, budget=b)
+    assert c.complete_json("s", "u") is None and b.spent == 0.01
