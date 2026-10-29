@@ -529,7 +529,7 @@ def wa_judge(num: str) -> tuple[str, str]:
 def _same_site_redirect(ctx: Ctx, url: str) -> str | None:
     """Where a link to the store's own page sends the shopper, read from its redirect without following it."""
     try:
-        r = ctx.sess.page.context.request.get(url, max_redirects=0, timeout=15000)
+        r = ctx.sess.request_get(url, max_redirects=0, timeout=15000)
         return (r.headers or {}).get("location") if 300 <= r.status < 400 else None
     except Exception:  # noqa: BLE001
         return None

@@ -13,8 +13,7 @@
 #   - "Run workflow" button on github.com                           -> runs cloud/request.txt
 #
 # Where results go
-#   - branch `cloud-results`: runs/<bench stamp>/ with bench.json, bench.html, bench.log, meta.json and, per store
-#     and device, run.json + failure screenshots (*.png). Small, readable with plain git. LATEST = newest stamp.
+#   - (until 29 Oct 2026: branch `cloud-results`. Stopped: this repo is public and the results named real stores.)
 #   - GitHub machines: Actions artifact `radar-data-<run id>` (7 days) with the whole data/ folder.
 #     Own server: everything stays on the server in /home/radar/radar-data (history kept, so incidents carry over).
 #
@@ -35,7 +34,7 @@ concurrency:
   cancel-in-progress: false
 
 permissions:
-  contents: write                  # to commit results to the cloud-results branch
+  contents: read                   # results are no longer committed to a branch (29 Oct)
 
 jobs:
   radar:
@@ -108,8 +107,10 @@ jobs:
           python3 -m radar.core.webbotauth check 2>&1 | tee bench.log || true
           python3 -m radar ${{ steps.req.outputs.args }} 2>&1 | tee -a bench.log
 
+      # 29 Oct 2026: no longer published to the public `cloud-results` branch (it named real stores and their
+      # problems). Results go to the BugRadar dashboard (next step) and, on GitHub machines, to the 7-day artifact.
       - name: Publish results to the cloud-results branch
-        if: always() && steps.req.outputs.count != '0'
+        if: false
         run: |
           git config user.name "bugradar-cloud"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
