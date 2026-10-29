@@ -167,7 +167,7 @@ class Healer:
         self.events: list[dict] = []
 
     def _visible(self, page: Page, selector: str, timeout: int, intent: str = "", root: str | None = None):
-        """First VISIBLE match that is not excluded. (Using .first was the Moxie bug: the first
+        """First VISIBLE match that is not excluded. (Using .first was the Shop063 bug: the first
         add-to-cart form in the DOM was a quick-add button on a product card.)"""
         base = page.locator(root) if root else page
         deadline = time.time() + timeout / 1000

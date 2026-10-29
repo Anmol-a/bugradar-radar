@@ -23,9 +23,9 @@ CASES = [
      "error": "product name shown on the page: expected Textured Knit Washed Sweater, got none",
      "checks": [bad("product name shown on the page", "Textured Knit Washed Sweater", "none")],
      "url": "https://www.shop097.example/products/relaxed-fit-textured-sweater-4sw0003-03",
-     "text": "WE HAVE MOVED TO Shop123.example UPGRADE NOW\nLog in\nNEW ARRIVALS\nBESTSELLERS\nSALE\nsnitch.co.in is now "
+     "text": "WE HAVE MOVED TO Shop123.example UPGRADE NOW\nLog in\nNEW ARRIVALS\nBESTSELLERS\nSALE\nshop097.example is now "
              "Shop123.example Cooler. Bolder. Snappier. UPGRADE NOW\nBag\nSubtotal INR 0"},
-    {"id": "plum_hidden_gift_sku", "want": {"radar_problem"}, "source": "shop040.example, bench 2",
+    {"id": "shop040_hidden_gift_sku", "want": {"radar_problem"}, "source": "shop040.example, bench 2",
      "title": "PDP 'Skincare Duo (face wash 50 ml + sunscreen 30 g)'", "check": "product_page",
      "step": "shows_title_price_image",
      "error": "product name shown on the page: expected Skincare Duo (face wash 50 ml + sunscreen 30 g), got none",
@@ -44,10 +44,10 @@ CASES = [
     {"id": "spotlight_click_intercepted", "want": {"radar_problem"}, "source": "theme-spotlight demo, bench 2",
      "title": "Home → collection → product → cart", "check": "shopper_journey", "step": "click_into_product",
      "error": "could not click: <div class=\"card__inner\"></div> subtree intercepts pointer events",
-     "checks": [ok_("product card a shopper can click", "found", "/products/ebbets-corduroy-cap-yellow")],
+     "checks": [ok_("product card a shopper can click", "found", "/products/corduroy-cap-yellow")],
      "url": "https://theme-spotlight-demo.myshopify.com/",
-     "text": "Featured collection\nEbbets Corduroy Cap - Yellow $48.00\nEbbets Wool C Cap - Camel $48.00\n"
-             "Ebbets Wool C Cap - Navy $48.00\nView all"},
+     "text": "Featured collection\nEbbets Corduroy Cap - Yellow $48.00\nWool Cap - Camel $48.00\n"
+             "Wool Cap - Navy $48.00\nView all"},
     {"id": "newsletter_covers_page", "want": {"radar_problem"}, "source": "mock newsletter_popup",
      "title": "Home → collection → product → cart", "check": "shopper_journey", "step": "click_into_product",
      "error": "product card a shopper can click: expected found, got none on / (24 links: 24 covered by div.klaviyo-form)",
@@ -146,7 +146,7 @@ CASES += [
      "checks": [bad("HTTP status for a page that does not exist", 404, "200 (redirected to /)")],
      "url": "https://shop083.example/",
      "text": "IT'S OUR BIRTHDAY! BUY 1 GET 1 FREE IS LIVE SITEWIDE\nShop\nHair + Skin Quiz\nLearn\nBestsellers"},
-    {"id": "wellbeing_jsonld_price_null", "want": {"real_store_problem"}, "source": "shop002.example, cloud 7 Oct + Mac 9 Oct",
+    {"id": "shop002_jsonld_price_null", "want": {"real_store_problem"}, "source": "shop002.example, cloud 7 Oct + Mac 9 Oct",
      "title": "PDP 'Plant Protein 22g | 907g | 3B CFU Probiotics'", "check": "product_page", "step": "structured_data_valid",
      "error": "structured data: price: expected > 0, got null",
      "checks": [ok_("selected variant price shown", "₹2,549.00", "₹2,549.00"),
@@ -182,14 +182,14 @@ CASES += [
      "url": "https://shop038.example/products/ceramic-vase",
      "text": "Ceramic Flower Vase\nRs 1,299.00\nGrab it\nShare\nHandmade in Khurja."},
     {"id": "shop084_price_hidden_desktop", "want": {"real_store_problem"}, "source": "shop084.example, bench 4",
-     "title": "PDP 'Supply6 360 (Pack of 3)'", "check": "product_page", "step": "shows_title_price_image",
+     "title": "PDP 'Shop111 360 (Pack of 3)'", "check": "product_page", "step": "shows_title_price_image",
      "error": "selected variant price shown: expected ₹199.00, got not on page (₹199.00 is only inside a hidden element "
               "<product-sticky-form.product-sticky-form.hidden-lap-and-up>, not shown on this screen size)",
-     "checks": [ok_("product name shown on the page", "Supply6 360 (Pack of 3)", "'Supply6 360 (Pack Of 3)' (h1, 40px, exact name)"),
+     "checks": [ok_("product name shown on the page", "Shop111 360 (Pack of 3)", "'Shop111 360 (Pack Of 3)' (h1, 40px, exact name)"),
                 bad("selected variant price shown", "₹199.00", "not on page (₹199.00 is only inside a hidden element "
                     "<product-sticky-form.product-sticky-form.hidden-lap-and-up>, not shown on this screen size)")],
-     "url": "https://shop084.example/products/supply6-360-pack-of-3",
-     "text": "Supply6 360 (Pack Of 3)\nDaily nutrition to support modern diets\nLoved by 2L+ Customers\nChoose Your 360:\n"
+     "url": "https://shop084.example/products/shop111-360-pack-of-3",
+     "text": "Shop111 360 (Pack Of 3)\nDaily nutrition to support modern diets\nLoved by 2L+ Customers\nChoose Your 360:\n"
              "Original 360\n360 Mind + Body\nFlavour:\nUnflavoured\nGreen Apple\nADD TO CART\nZero Sugar\nNo Preservatives"},
 ]
 

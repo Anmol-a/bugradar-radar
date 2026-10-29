@@ -486,7 +486,7 @@ Modes (to prove Radar catches and heals what it should):
   landing_collection  /collections/home-decor (the menu's first collection) is a landing page: hero, hidden mega-menu
                    product links, a 'Learn more' tile to /collections/kitchen (shop080.example 'Smart Entrance') -> the
                    collection test WARNS 'landing page', the journey goes on to the sub-collection and PASSES
-  phone_brand_landing  brand_landing, but on phones the top menu sits behind a ☰ drawer (subko.coffee phone) -> the
+  phone_brand_landing  brand_landing, but on phones the top menu sits behind a ☰ drawer (shop147.example phone) -> the
                    journey opens the menu, hops to /pages/shop, PASSES
   country_modal    a 'Shopping from Outside India? International / Stay Here' modal rendered inside <header> covers the
                    page until answered (shop112.example) -> Radar clicks 'Stay Here' (never 'International'), PASSES
@@ -546,7 +546,7 @@ PRODUCTS = [
 ]
 PRODUCTS.append({"id": 4, "handle": "free-sampler", "title": "Vase Sampler", "price": "0.00",
                  "variants": [{"id": 401, "available": True, "price": "0.00"}], "collection": "home-decor",
-                 "redirect": "/products/ceramic-vase"})   # like Moxie's Rs 0 samplers: JS-redirects on load
+                 "redirect": "/products/ceramic-vase"})   # like Shop063's Rs 0 samplers: JS-redirects on load
 PRODUCTS.append({"id": 5, "handle": "gift-pouch", "title": "Travel Pouch (gift)", "price": "1.00",
                  "variants": [{"id": 501, "available": True, "price": "1.00"}], "collection": None,
                  "unavailable_page": True})   # like shop040.example's Rs 1 freebie: not in any collection
@@ -1056,7 +1056,7 @@ if (!document.cookie.includes('ifp=1')) setTimeout(() => {
                                 '<a href="/pages/about">About</a></nav></div>', 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "search_icon_only":
             # the header's search form stays hidden until a bare icon link is clicked: no aria-label, not a button, not a
-            # /search link, only title="Search" and an svg icon (shop099, plum, shop083... 36-store run 11 Oct)
+            # /search link, only title="Search" and an svg icon (shop099, shop040, shop083... 36-store run 11 Oct)
             body = body.replace('<form action="/search" method="get"><input name="q"></form>',
                                 '<a href="javascript:void(0)" class="header-icon js-drawer-open-top" title="Search" '
                                 'onclick="document.getElementById(\'hdr-search\').style.display=\'block\'">'
@@ -1210,7 +1210,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
             body = body.replace('<a href="/collections/all">Shop all</a>', '')
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "phone_brand_landing" \
                 and "Mobile" in (self.headers.get("User-Agent") or ""):
-            # subko.coffee phone (new30j, 11 Oct): the brand-landing top menu ('Shop' -> /pages/shop) sits behind the ☰
+            # shop147.example phone (new30j, 11 Oct): the brand-landing top menu ('Shop' -> /pages/shop) sits behind the ☰
             # button on phones; the drawer holds no collection link, only the landing pages
             body = body.replace('<nav><div class="menu-item"', '<button type="button" class="header__icon--menu" '
                                 'aria-label="Menu" onclick="document.getElementById(\'m-drawer\').style.display=\'block\'">'
@@ -1309,7 +1309,7 @@ if (!document.cookie.includes('wheel=1')) document.addEventListener('DOMContentL
   g.querySelector('.gw-in').onclick = () => { document.cookie = 'gw=in;path=/'; g.remove(); }; })();</script></header>""", 1)
         if isinstance(body, str) and ctype.startswith("text/html") and self.mode == "country_modal_stay_on":
             # shop136.example (new30l, desktop): 'Visiting from United States (USD $)?' with 'Shop on US Site' (leaves the
-            # store: never clicked), the link 'Stay on Vedix IN Site' and a country dropdown; its x is an unlabelled icon.
+            # store: never clicked), the link 'Stay on Shop136 IN Site' and a country dropdown; its x is an unlabelled icon.
             # Re-test (run 38437504227) still not closed: the closed country list ('#' links, hidden) made the layer look
             # like page content (> 12 links); only visible links that go somewhere count.
             body = body.replace("</header>", """<div class="geo-wrap" id="geoModal" style="position:fixed;inset:0;z-index:100">

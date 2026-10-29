@@ -454,7 +454,7 @@ def test_triage_facts_for_store_side_findings():
     assert any("soft 404" in f for f in facts(soft, "", "Welcome"))
     hid = [{"what": "selected variant price shown", "expected": "₹199.00", "ok": False,
             "actual": "not on page (₹199.00 is only inside a hidden element <product-sticky-form.hidden-lap-and-up>, not shown on this screen size)"}]
-    fs = facts(hid, "", "Supply6 360\nADD TO CART")
+    fs = facts(hid, "", "Shop111 360\nADD TO CART")
     assert any("hides at this screen size" in f and "real_store_problem" in f for f in fs)     # shop084.example, bench 4
     assert not any("DOES appear" in f for f in fs)
 
@@ -501,9 +501,9 @@ def test_emulated_platform_matches_the_user_agent_sent():
 
 
 def test_search_term_skips_brand_plurals_and_promo_words():
-    """shop040.example, bench 9: 'plums' (brand 'Plum' + s) matched all 246 products by brand; 'mystery' came from
+    """shop040.example, bench 9: 'plums' (the brand word + s) matched all 246 products by brand; 'mystery' came from
     a promo item the store's search app leaves out. Neither is a word a shopper's search can be judged by."""
-    brand = {"plum", "goodness", "shop040", "bodylovin"}
+    brand = {"plum", "shop040"}
     assert _search_term("set-of-5-plums-2", "Set of 5 Plums", brand) == ""
     assert _search_term("mystery-merch", "Mystery Merch", brand) == ""
     assert _search_term("mystery-box-2-full-size", "Mystery Box (2 full-size)", brand) == ""

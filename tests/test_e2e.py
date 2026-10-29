@@ -196,7 +196,7 @@ def test_store_sending_wrong_product_is_caught_with_names(tmp_path):
 
 
 def test_free_gift_added_by_store_passes_with_warning(tmp_path):
-    """Moxie adds a free Travel Pouch in a second request: correct store behaviour, not a failure."""
+    """Shop063 adds a free Travel Pouch in a second request: correct store behaviour, not a failure."""
     run, _ = _scan("free_gift", tmp_path, )
     for prefix in ("cart.", "journey."):
         c = _case(run, prefix)
@@ -1922,7 +1922,7 @@ def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path
         rb.status, rb.error = None, "APIRequestContext.get: connect ECONNREFUSED 127.0.0.1:443"
         return rb
     monkeypatch.setattr(disc, "load_robots", dead)
-    run, _ = scan("https://bombae.example", _settings(tmp_path))
+    run, _ = scan("https://shop128.example", _settings(tmp_path))
     assert run.verdict == "unreachable", (run.verdict, run.notes)
     assert any("shop128.example: the domain points to 127.0.0.1" in n and "check the store's address" in n
                for n in run.notes), run.notes
@@ -2670,7 +2670,7 @@ def test_landing_collection_without_a_grid_warns_and_the_journey_goes_on_to_a_co
 
 
 def test_phone_brand_landing_menu_behind_the_menu_button_is_opened_for_the_hop(tmp_path):
-    """subko.coffee phone (new30j; desktop healthy via 'Specialty Coffee' -> /pages/coffee): on phones the brand
+    """shop147.example phone (new30j; desktop healthy via 'Specialty Coffee' -> /pages/coffee): on phones the brand
     landing's top menu sits behind ☰. Radar looked only at header links already on screen and failed 'no matching
     links on the page'. A shopper opens the menu and picks the section."""
     j = _case(_scan_small("phone_brand_landing", tmp_path, device="mobile", suites=["journey"]), "journey.")
@@ -2691,7 +2691,7 @@ def test_country_modal_inside_the_header_is_answered_stay_here_never_internation
 
 @pytest.mark.parametrize("device", ["desktop", "mobile"])
 def test_country_modal_answered_stay_on_brand_site_never_the_other_site(tmp_path, device):
-    """shop136.example (new30l, desktop): 'Visiting from United States (USD $)? Shop on US Site | Stay on Vedix IN Site',
+    """shop136.example (new30l, desktop): 'Visiting from United States (USD $)? Shop on US Site | Stay on Shop136 IN Site',
     its x an unlabelled icon, covered every card; 'Stay on <brand> <country> Site' is a stay control too."""
     j = _case(_scan_small("country_modal_stay_on", tmp_path / device, device=device, suites=["journey"]), "journey.")
     assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)

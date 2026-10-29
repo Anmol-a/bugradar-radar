@@ -613,7 +613,7 @@ MAIN_BUY_JS = r"""([ids, quick]) => {
 
 
 # The page's OWN buy control when it is not a Shopify cart form button (shop107.example, held-out run 7 Oct: a
-# <div class="pdp-addtobag-btn" data-product-handle="saanjh-shawl-chartreuse"> "ADD TO BAG", no /cart/add form,
+# <div class="pdp-addtobag-btn" data-product-handle="silk-shawl-chartreuse"> "ADD TO BAG", no /cart/add form,
 # and 10 "Add to Bag" buttons for OTHER products in recommendation cards on the same page). Owned when an attribute
 # on it or an ancestor (4 levels) names THIS product (handle, product id or a variant id), or when it sits with the
 # product's title and no link to another product is closer. Innermost match only; header/nav/footer/drawers ignored.
@@ -2616,7 +2616,7 @@ def _open_search_box(ctx: Ctx):
         page.wait_for_timeout(400)
     if got is None and ctx.sess.evaluate(SEARCH_OPENER_JS):
         # wider net (11 Oct, 36-store run: 7 of 22 real stores' search boxes stayed closed: shop099, cava, shop074,
-        # shop078, plum, shop083, shop084): any control near the top that says 'search' in its label / class / icon
+        # shop078, shop040, shop083, shop084): any control near the top that says 'search' in its label / class / icon
         try:
             _click(ctx, page.locator('[data-radar-search-open="1"]').first)
         except Exception:  # noqa: BLE001
@@ -3478,7 +3478,7 @@ def _hop_target(home: str, h: str) -> bool:
 def _landing_hop(ctx: Ctx, home: str) -> str | None:
     """Brand-landing homepages (thehouseofrare.com: MEN -> /pages/rare-rabbit): click the first top
     menu link that goes to another page of the store, like a shopper picking a section. On phones the top menu sits
-    behind the menu button (subko.coffee phone, new30j: desktop hopped via 'Specialty Coffee', the phone found no header
+    behind the menu button (shop147.example phone, new30j: desktop hopped via 'Specialty Coffee', the phone found no header
     link on screen): the menu is opened and its links are used."""
     page = ctx.sess.page
     items = ctx.sess.evaluate(TOP_NAV_JS) or []
