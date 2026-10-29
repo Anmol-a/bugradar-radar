@@ -65,6 +65,7 @@ PLAIN_NAMES = {
     SITE_KEY: SITE_NAME,
     "smoke.nav_links": "Menu links", "smoke.home_health": "Homepage", "smoke.mobile_menu": "Mobile menu",
     "smoke.more_links": "Footer and banner links", "smoke.whatsapp": "WhatsApp button",
+    "smoke.shopify_menu": "Shopify menu links", "product.shopify_admin": "Prices and stock match your Shopify admin",
     "journey.shopper": "Shopper's path",
     "cart.add_to_cart": "Add to cart", "cart.edit_and_checkout": "Cart page and checkout button",
     "cart.price_consistency": "Prices match across pages", "cart.drawer_and_page": "Cart drawer",
@@ -161,6 +162,19 @@ def plain_reason(key: str, title: str | None, step: str | None, detail: str | No
         if paths:
             return _sentence(f"{len(paths)} links in your main menu open pages that don't exist: {', '.join(paths)}")
         return _sentence("A link in your main menu opens a page that doesn't load" + (f": {_cleaned(detail)}" if detail else ""))
+    if key == "smoke.shopify_menu":       # 29 Oct: the menus read from the store's Shopify admin
+        paths = _listed(detail)
+        if len(paths) == 1:
+            return _sentence(f"A link in your Shopify menus opens a page that doesn't exist: {paths[0]}")
+        if paths:
+            return _sentence(f"{len(paths)} links in your Shopify menus open pages that don't exist: {', '.join(paths)}")
+        return _sentence("A link in your Shopify menus opens a page that doesn't load" + (f": {_cleaned(detail)}" if detail else ""))
+    if key == "product.shopify_admin":
+        if step.startswith("price matches admin"):
+            return _sentence(f"A product page doesn't show the price in your Shopify admin: {_cleaned(detail)}")
+        if step.startswith("stock matches admin"):
+            return _sentence(f"A product page's stock doesn't match your Shopify admin: {_cleaned(detail)}")
+        return _sentence("Product pages couldn't be compared with your Shopify admin" + (f": {_cleaned(detail)}" if detail else ""))
     if key == "smoke.more_links":
         links = _listed(detail)
         if len(links) == 1:
