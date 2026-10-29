@@ -50,6 +50,7 @@ from pathlib import Path
 from typing import Protocol
 
 from radar.core.config import Settings, load_settings
+from radar.core.netguard import public_url
 
 # the store's answer as the dashboard's monitor row records it (worst device wins)
 ORDER = ["healthy", "degraded", "blocked", "unsupported", "unreachable", "no_network", "down", "error"]
@@ -194,6 +195,10 @@ def run_monitor(monitor: dict, base: Settings, upload: bool = True, log=print) -
     A store that didn't load is not uploaded until a second look (status RECHECK, see above)."""
     from radar.runner.executor import scan_devices
     url = monitor["url"]
+    if not public_url(url):
+        # 29 Oct (security review #4): never visit the worker's own machine or a private network
+        log(f"  {url}: not a public web address; not visited")
+        return "unsupported", "The store address doesn't point at a public website, so BugRadar didn't open it."
     devices = tuple(monitor.get("devices") or ("desktop", "mobile"))
     s = settings_for(monitor, base)
     profile = profile_for(monitor)
@@ -415,6 +420,10 @@ def run_scan(req: dict, base: Settings, upload: bool = True, log=print, progress
     progress: a ScanProgress (or any callable taking Radar's progress events) for the live loading screen."""
     from radar.runner.executor import scan_devices
     url = req["url"]
+    if not public_url(url):
+        log(f"  {url}: not a public web address; not visited")
+        return {"verdict": "error", "score": None, "summary": {}, "run_id": None, "project_id": None,
+                "note": "not a public web address; not visited", "failed": True}
     t0 = time.time()
     try:
         results = scan_devices(url, replace(base, allow_cart_flow=False), ("desktop",), profile="basic",
