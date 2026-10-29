@@ -10,7 +10,7 @@ Always `python3` (not `python`) on the Mac, for every command in this project.
 python3 -m venv venv && source venv/bin/activate
 pip install -r requirements.txt
 playwright install chromium
-cp .env.example .env               # then paste your OPENAI_API_KEY into .env (never into chat or git)
+cp .env.example .env               # then paste your ANTHROPIC_API_KEY into .env (never into chat or git)
 python3 -m pytest -q                 # 372 tests (165 unit + 207 real-browser); locally ~1 h, on GitHub ~15 min
 python3 -m pytest -q -m "not e2e"    # 165 fast unit tests only
 # Every push to fix/v0.19, cloud-runs or main runs the whole suite on 9 GitHub machines (.github/workflows/radar-tests.yml):
@@ -69,7 +69,7 @@ reported against them) and the bench prints a warning: run it again. Radar check
 3 always-on hosts; change them with `RADAR_NET_PROBES=url1,url2` in `.env` (empty value = check off).
 
 ## Cloud runs (no Mac needed)
-GitHub Actions workflow `.github/workflows/radar-cloud.yml` (needs the repo secret `OPENAI_API_KEY`).
+GitHub Actions workflow `.github/workflows/radar-cloud.yml` (AI: repo secret `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` as fallback; `BUGRADAR_KEY` puts its AI spend on the shared ledger).
 - **Start a run:** change the one line in `cloud/request.txt` (e.g. `bench stores/bench.txt --quick`) on branch
   `cloud-runs` and push, or press "Run workflow" on GitHub. Only `bench <list> [flags]` is accepted.
 - **Nightly:** `cloud/nightly.txt`, 02:13 IST, once the workflow is on `main`.
@@ -82,7 +82,7 @@ GitHub Actions workflow `.github/workflows/radar-cloud.yml` (needs the repo secr
   `/home/radar/radar-data`, so run history and incidents carry over between runs.
 
 ## LLM (healing + failure triage)
-Put the key in `.env` (template: `.env.example`). Default: OpenAI `gpt-5-mini` (15/15 on llm-check, 5 Oct; gpt-4o-mini scored 14/15).
+Put the key in `.env` (template: `.env.example`). Default (30 Oct): Claude `claude-haiku-5-5` on the Max plan's API credits, with a spend guard of $3 a day / $90 a month across all machines (`radar/healing/budget.py`). Fallback: OpenAI `gpt-5-mini` (15/15 on llm-check, 5 Oct).
 ```bash
 python3 -m radar llm-check                    # score the model on 22 known failure cases (~$0.002)
 python3 -m radar llm-check --model gpt-4o-mini # try another model without editing .env

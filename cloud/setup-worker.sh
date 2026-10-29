@@ -10,7 +10,8 @@
 #        BUGRADAR_SUPABASE_URL=https://onijwpgvpojpvgumvfim.supabase.co
 #        BUGRADAR_SERVICE_KEY=<Supabase -> Project settings -> API keys -> service_role>
 #        BUGRADAR_KEY=<dashboard -> Connect tools -> upload key brk_...>
-#        OPENAI_API_KEY=<optional: LLM triage>
+#        ANTHROPIC_API_KEY=<optional: AI triage on Claude Haiku 5.5, spend-guarded ($3/day) via BUGRADAR_KEY>
+#        OPENAI_API_KEY=<optional: fallback when no ANTHROPIC_API_KEY>
 #   3. systemctl restart radar-worker && journalctl -u radar-worker -f
 #
 # What it does: a non-root user `radar`; Python + Chromium with its system libraries; the repo in /home/radar/radar
@@ -66,6 +67,7 @@ if [ ! -f "$HOME_DIR/radar.env" ]; then
 BUGRADAR_SUPABASE_URL=https://onijwpgvpojpvgumvfim.supabase.co
 BUGRADAR_SERVICE_KEY=PASTE_SERVICE_ROLE_KEY
 BUGRADAR_KEY=PASTE_UPLOAD_KEY_brk_
+ANTHROPIC_API_KEY=
 OPENAI_API_KEY=
 RADAR_DATA_DIR=$HOME_DIR/radar-data
 RADAR_WORKER_NAME=$(hostname -s)

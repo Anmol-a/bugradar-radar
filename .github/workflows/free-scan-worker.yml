@@ -44,6 +44,7 @@ jobs:
           BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
           RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RADAR_WORKER_NAME: contabo-${{ github.run_id }}
         run: |
           . "$HOME/radar-venv/bin/activate"
@@ -79,6 +80,7 @@ jobs:
           BUGRADAR_KEY: ${{ secrets.BUGRADAR_KEY }}
           RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
           RADAR_WORKER_NAME: github-${{ github.run_id }}
         run: python3 -m radar worker --scans-only --for 540 2>&1 | tee worker.log
       - name: Summary
