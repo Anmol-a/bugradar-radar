@@ -17,8 +17,12 @@ include_config_on_deploy = true
 automatically_update_urls_on_dev = false
 
 [access_scopes]
-# None: Radar only visits the store's public pages, like a shopper. Fewest permissions = an easier review.
-scopes = ""
+# Read-only, added 29 Oct 2026 after review item 2.2.1 "Use Shopify APIs" (claude/SHOPIFY-REVIEW-FIX_29oct.md):
+#   read_online_store_navigation  main + footer menus -> every menu link is checked
+#   read_products                 products, variant prices, availability -> price-matches-admin and sold-out checks
+#   read_themes                   themes/publish webhook -> a check starts the moment a theme is published
+# Nothing is written to the store; no orders, no customers (no protected customer data).
+scopes = "read_online_store_navigation,read_products,read_themes"
 use_legacy_install_flow = false
 
 [auth]
@@ -29,6 +33,11 @@ api_version = "2026-10"
 
   [[webhooks.subscriptions]]
   topics = [ "app/uninstalled", "app_subscriptions/update" ]
+  uri = "https://onijwpgvpojpvgumvfim.supabase.co/functions/v1/shopify_webhooks"
+
+  [[webhooks.subscriptions]]
+  # A theme was published: the store's next check starts now (read_themes).
+  topics = [ "themes/publish" ]
   uri = "https://onijwpgvpojpvgumvfim.supabase.co/functions/v1/shopify_webhooks"
 
   [[webhooks.subscriptions]]

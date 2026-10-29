@@ -125,16 +125,25 @@ class SupabaseQueue:
                                      "run_id": run_id, "project_id": project_id, "note": note[:300], "failed": failed})
 
 
-def settings_for(monitor: dict, base: Settings) -> Settings:
+def settings_for(monitor: dict, base: Settings, now: datetime | None = None) -> Settings:
     """A daily check's settings. check_store_down (22 Oct): a store that answers nothing at all, not even robots.txt,
     is 'unreachable' (re-checked, then a problem + 🔴), never 'blocked' (silent). store_password (23 Oct): the owner's
-    storefront password, typed into the store's own password page only. Free checks keep the base settings."""
+    storefront password, typed into the store's own password page only. shopify_* (29 Oct, Shopify review 2.2.1): a
+    Shopify app store's menus and products as its admin lists them (monitors.shopify_data): the menu is always used,
+    the products only while fresh (read in the last 24 h: the app reads them when the owner opens it, and an old price
+    would make a false alarm). Free checks keep the base settings."""
+    from radar.discovery import shopify_admin as sa
     s = base
     if monitor.get("quick", True):
         s = replace(s, max_products=1, max_collections=1, max_nav_links=4)
+    data = monitor.get("shopify_data") if isinstance(monitor.get("shopify_data"), dict) else None
+    menu, menu_note = sa.menu_links(data, monitor.get("url") or "")
+    products = sa.admin_products(data, monitor.get("url") or "") if sa.fresh(data, now) else []
     return replace(s, allow_cart_flow=bool(monitor.get("allow_cart", False)), check_store_down=True,
                    store_password=monitor.get("store_password") or None,
-                   store_password_unread=bool(monitor.get("store_password_unread")))
+                   store_password_unread=bool(monitor.get("store_password_unread")),
+                   shopify_menu=tuple(menu), shopify_menu_note=menu_note, shopify_products=tuple(products),
+                   shopify_currency=str((data or {}).get("currency") or ""))
 
 
 def profile_for(monitor: dict) -> str | None:
