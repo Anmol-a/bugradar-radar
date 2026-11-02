@@ -67,7 +67,7 @@ def test_healthy_store_all_pass_and_artifacts(tmp_path):
 
 def test_renamed_button_without_a_form_is_found_by_what_names_this_product(tmp_path):
     """The buy button lost name="add", sits outside any form and says "Add to Bag", but carries data-vid = this
-    product's variant. Until v0.16 only heuristic healing found it; since v0.17 (held-out run, nicobar.com) a control
+    product's variant. Until v0.16 only heuristic healing found it; since v0.17 (held-out run, shop107.example) a control
     that NAMES this product is taken directly, so no guess and no healing is needed. Healing itself is still proven by
     the obscure-button tests. The cart check proves the right product was added."""
     run, _ = _scan("renamed_button", tmp_path)
@@ -80,7 +80,7 @@ def test_renamed_button_without_a_form_is_found_by_what_names_this_product(tmp_p
 
 
 def test_broken_structured_price_is_an_seo_note_not_a_failure(tmp_path):
-    """Structured price 0 while the page shows the right price (wellbeingnutrition.com JSON-LD price null, 9 Oct):
+    """Structured price 0 while the page shows the right price (shop002.example JSON-LD price null, 9 Oct):
     a Google Shopping / SEO finding, shown as a warning on the product test; the store stays healthy."""
     run, d = _scan("broken_price", tmp_path)
     case = _case(run, "product.pdp.ceramic")
@@ -124,7 +124,7 @@ def test_obscure_button_without_llm_is_not_judged_and_says_why(tmp_path):
 
 
 def test_store_refusing_radar_mid_run_is_blocked_not_down(tmp_path):
-    """bombayshirts.com phone (new30l, 13 Oct): discovery saw the store, then its bot wall answered HTTP 403 to the
+    """shop036.example phone (new30l, 13 Oct): discovery saw the store, then its bot wall answered HTTP 403 to the
     homepage and every page after it -> 8 failed checks, DOWN. A refusal of Radar's browser is 'blocked' (could not
     check) with a note, never an outage."""
     run, _ = _scan("refused_mid_run", tmp_path, allow_cart_flow=False)
@@ -138,7 +138,7 @@ def test_non_shopify_is_unsupported(tmp_path):
 
 
 def test_blank_non_shopify_homepage_is_unsupported_not_a_radar_crash(tmp_path):
-    """gozero.in (cycle 34): no robots.txt, homepage 200 with an empty title and no Shopify marker. v0.19 called it
+    """shop130.example (cycle 34): no robots.txt, homepage 200 with an empty title and no Shopify marker. v0.19 called it
     'error' (the bench shows 'Radar crashed'); nothing crashed: Radar looked at the site and it is not Shopify."""
     run, _ = _scan("blank_not_shopify", tmp_path)
     assert run.verdict == "unsupported" and run.cases == [], (run.verdict, run.notes)
@@ -196,7 +196,7 @@ def test_store_sending_wrong_product_is_caught_with_names(tmp_path):
 
 
 def test_free_gift_added_by_store_passes_with_warning(tmp_path):
-    """Moxie adds a free Travel Pouch in a second request: correct store behaviour, not a failure."""
+    """Shop063 adds a free Travel Pouch in a second request: correct store behaviour, not a failure."""
     run, _ = _scan("free_gift", tmp_path, )
     for prefix in ("cart.", "journey."):
         c = _case(run, prefix)
@@ -384,7 +384,7 @@ def test_card_link_covered_in_the_middle_is_clicked_where_it_is_free(tmp_path):
 
 
 def test_card_link_under_an_image_slider_is_clicked_through_its_card(tmp_path):
-    """An image slider sits over the whole card link and opens the product itself (bummer.in pattern)."""
+    """An image slider sits over the whole card link and opens the product itself (shop129.example pattern)."""
     from radar.checks.library import _pick, _click_picked, PRODUCT_HREF, _handle
     def go(ctx):
         got = _pick(ctx, "a[href]", PRODUCT_HREF, ["/products/wooden-spoon-set"])
@@ -511,7 +511,7 @@ def test_grid_rerendered_under_the_click_is_clicked_again(tmp_path):
 
 
 def test_product_link_opening_a_new_tab_is_followed(tmp_path):
-    """fashor.com (new30f) + tigc.in (new30c), 10 Oct: clicking the product card left the collection page as it was,
+    """shop115.example (new30f) + shop146.example (new30c), 10 Oct: clicking the product card left the collection page as it was,
     on every attempt. A link that opens the product in a new tab works for a shopper: the journey follows it."""
     j = _case(_journey_only("new_tab_cards", tmp_path), "journey.")
     assert j.verdict == "pass", [(a.ok, a.error) for a in j.attempts]
@@ -520,7 +520,7 @@ def test_product_link_opening_a_new_tab_is_followed(tmp_path):
 
 
 def test_one_shopify_marker_is_checked_again_before_not_shopify(tmp_path):
-    """koskii.com (new30f, 10 Oct): one homepage load showed a single Shopify marker and Radar called the store 'not
+    """shop120.example (new30f, 10 Oct): one homepage load showed a single Shopify marker and Radar called the store 'not
     Shopify' while the other device found a healthy Shopify store. A store is one platform: Radar loads it once more."""
     run, _ = _scan("stripped_first_home", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict == "healthy", (run.verdict, run.notes)
@@ -549,9 +549,9 @@ def test_price_only_in_a_sticky_bar_is_found_after_scrolling(tmp_path):
 def test_catalog_product_hidden_from_shoppers_is_a_warning_and_the_next_product_is_tested(tmp_path):
     for mode, words in (("hidden_product", "redirects to / (in the store's catalog but hidden from shoppers)"),
                         ("notfound_product", "but the page does not exist"),
-                        ("unavailable_product", "currently unavailable"),           # plumgoodness.com, bench 4
-                        ("home_at_product_url", "page shows other content"),       # foxtale.in (headless), bench 4
-                        ("late_redirect_product", "redirects to / shortly after loading")):   # foxtale.in, 14 Oct
+                        ("unavailable_product", "currently unavailable"),           # shop040.example, bench 4
+                        ("home_at_product_url", "page shows other content"),       # shop116.example (headless), bench 4
+                        ("late_redirect_product", "redirects to / shortly after loading")):   # shop116.example, 14 Oct
         run = _product_only(mode, tmp_path / mode, max_products=1)
         vase = _case(run, "product.pdp.ceramic")
         assert vase.verdict == "pass", (mode, vase.attempts[-1].error)
@@ -562,7 +562,7 @@ def test_catalog_product_hidden_from_shoppers_is_a_warning_and_the_next_product_
 
 
 def test_product_meta_tags_are_judged_on_the_next_product_when_the_first_page_is_gone(tmp_path):
-    """giva.co (full 36 verification run 38379683273, desktop): the first catalog product's page answered 404. The
+    """shop143.example (full 36 verification run 38379683273, desktop): the first catalog product's page answered 404. The
     product test warned and tested the next product (right), but health.meta.pdp opened the same URL and hard-failed:
     the same store fact counted twice and the store went 'degraded'. The meta check judges the product-page
     template, so it moves on to the next catalog product the same way."""
@@ -576,7 +576,7 @@ def test_product_meta_tags_are_judged_on_the_next_product_when_the_first_page_is
 
 
 def test_product_sold_out_since_the_catalog_listed_it_is_skipped_for_the_next_one(tmp_path):
-    """bombaytrooper.com (cycle 34, both devices): products.json listed the hoppers in stock; their .js and page said
+    """shop024.example (cycle 34, both devices): products.json listed the hoppers in stock; their .js and page said
     SOLD OUT ('an in-stock variant exists: got none available' -> confirmed_fail). The product test now tests the next
     in-stock catalog product and says why (info). The last candidate is never skipped."""
     run = _product_only("stale_catalog", tmp_path, max_products=1)
@@ -588,7 +588,7 @@ def test_product_sold_out_since_the_catalog_listed_it_is_skipped_for_the_next_on
 
 
 def test_a_sold_out_product_with_no_in_stock_one_to_test_instead_is_tagged_not_failed(tmp_path):
-    """bombaytrooper.com (13 Oct, on the dashboard: '3 things are broken' per device, all three sold-out product pages).
+    """shop024.example (13 Oct, on the dashboard: '3 things are broken' per device, all three sold-out product pages).
     Anmol: a sold-out product is not broken and not a warning; tag it. Before: the last candidate was never skipped, so
     'an in-stock variant exists: got none available' -> confirmed_fail."""
     run = _product_only("stale_catalog_all", tmp_path, max_products=1)
@@ -601,7 +601,7 @@ def test_a_sold_out_product_with_no_in_stock_one_to_test_instead_is_tagged_not_f
 
 
 def test_pack_of_two_picks_each_item_size_in_its_own_picker(tmp_path):
-    """theformalclub.in (cycle 34, both devices): a 'pack of 2' product with ONE option whose values join both shirts'
+    """shop042.example (cycle 34, both devices): a 'pack of 2' product with ONE option whose values join both shirts'
     sizes ('S / 38 / S / 38'); the page shows two size pickers labelled 'S', 'M', ... v0.19: 'variant selected like a
     shopper: expected ... (S / 38 / S / 38), got  after choosing nothing (no matching picker)'. Radar now picks the
     value's parts like a shopper, one control per picker (the second 'S' is the second picker's)."""
@@ -624,7 +624,7 @@ def test_product_page_without_its_own_buy_form_says_so(tmp_path):
 
 
 def test_main_buy_button_in_a_quick_add_named_container_behind_a_popup(tmp_path):
-    """soulflower.in (bench 3): the product's OWN button lives in a 'quick-add-container' with no /cart/add form,
+    """shop083.example (bench 3): the product's OWN button lives in a 'quick-add-container' with no /cart/add form,
     and an icon-only popup covers the page. Old rule excluded it by class name."""
     srv, url = serve("quick_named_main")
     try:
@@ -654,7 +654,7 @@ def test_search_word_from_a_hidden_product_falls_back_to_a_second_word(tmp_path)
 
 @pytest.mark.parametrize("mode", ["search_app", "search_app_popular"])
 def test_search_app_that_renders_results_late_is_waited_for(tmp_path, mode):
-    """bonkerscorner.com + baccabucci.com (empty search page at 0.8 s) and bellavitaorganic.com (placeholder 'popular'
+    """shop025.example + shop059.example (empty search page at 0.8 s) and shop007.example (placeholder 'popular'
     products) in the new30b held-out run, 9 Oct: the store's search app renders the real results seconds later."""
     srv, url = serve(mode)
     try:
@@ -669,7 +669,7 @@ def test_search_app_that_renders_results_late_is_waited_for(tmp_path, mode):
 
 
 def test_search_app_that_renders_only_after_a_scroll_is_scrolled(tmp_path):
-    """ptron.in desktop (new30c held-out run, 10 Oct): title 'Search: 513 results found for "sonor"', the search app's
+    """shop141.example desktop (new30c held-out run, 10 Oct): title 'Search: 513 results found for "sonor"', the search app's
     results area stayed a grey block for 10 s. A shopper scrolls; Radar now scrolls the results area and waits again."""
     srv, url = serve("search_app_scroll")
     try:
@@ -684,7 +684,7 @@ def test_search_app_that_renders_only_after_a_scroll_is_scrolled(tmp_path):
 
 
 def test_search_app_that_never_renders_is_a_warning_when_shopify_search_finds_the_word(tmp_path):
-    """ptron.in (both devices) + kushals.com mobile (new30c held-out run, 10 Oct): Shopify's own count in the title
+    """shop141.example (both devices) + shop105.example mobile (new30c held-out run, 10 Oct): Shopify's own count in the title
     ('1000 results found for "zircon"'), but the search app never filled the results area for Radar's browser. Shopify's
     own search (/search/suggest.json) finds the word, so search works on the store; what Radar cannot prove is the
     app's rendering: a WARNING with that evidence, not a failure."""
@@ -703,7 +703,7 @@ def test_search_app_that_never_renders_is_a_warning_when_shopify_search_finds_th
 
 
 def test_theme_scripts_delayed_until_the_first_interaction_run(tmp_path):
-    """baccabucci.com + bellavitaorganic.com (new30b and the 9 Oct re-run): a speed app holds every script until the
+    """shop059.example + shop007.example (new30b and the 9 Oct re-run): a speed app holds every script until the
     shopper first moves / touches / scrolls; Radar never did, so html stayed 'no-js', the price stayed hidden and the
     search app never rendered. A shopper moves the mouse; so does Radar, then the page is read."""
     from radar.runner.executor import scan_devices
@@ -719,7 +719,7 @@ def test_theme_scripts_delayed_until_the_first_interaction_run(tmp_path):
 
 
 def test_store_that_holds_scripts_for_linux_pagespeed_bots_shows_the_emulated_shopper_the_full_page(tmp_path):
-    """bonkerscorner.com, bellavitaorganic.com, baccabucci.com (new30b + re-runs, 9 Oct): a speed snippet treats any
+    """shop025.example, shop007.example, shop059.example (new30b + re-runs, 9 Oct): a speed snippet treats any
     browser reporting navigator.platform 'Linux x86_64' as Google PageSpeed and never runs the theme's scripts: no
     price, no search results. GitHub's machines are Linux, and Playwright's device emulation left the platform at
     'Linux x86_64' even for the Pixel 7. Radar now reports the platform of the device it emulates (desktop: Windows
@@ -738,8 +738,8 @@ def test_store_that_holds_scripts_for_linux_pagespeed_bots_shows_the_emulated_sh
 
 @pytest.mark.parametrize("mode", ["drawer_form_first", "upsell_forms_first"])
 def test_hidden_drawer_and_upsell_forms_never_taken_for_the_product_form(tmp_path, mode):
-    """boldcare.in + bummer.in (bench 4): hidden cart-drawer / upsell forms named product_form / shopify-product-form
-    come first in the DOM, one with ANOTHER product's variant (boldcare), others with an empty id (bummer). v0.8 read
+    """shop100.example + shop129.example (bench 4): hidden cart-drawer / upsell forms named product_form / shopify-product-form
+    come first in the DOM, one with ANOTHER product's variant (shop100), others with an empty id (shop129). v0.8 read
     them as the product's form: 'expected 201, got 301' / 'got  after choosing radio Small'. The own form decides."""
     run = _product_only(mode, tmp_path)
     vase = _case(run, "product.pdp.ceramic")
@@ -752,7 +752,7 @@ def test_hidden_drawer_and_upsell_forms_never_taken_for_the_product_form(tmp_pat
 
 
 def test_price_only_in_an_element_hidden_on_this_screen_fails_and_says_where(tmp_path):
-    """supplysix.com (bench 4): on desktop the only price is in a mobile-only sticky bar. A shopper sees no
+    """shop084.example (bench 4): on desktop the only price is in a mobile-only sticky bar. A shopper sees no
     price, so the test fails; the message says the price is only in a hidden element (not 'Radar looked wrong')."""
     run = _product_only("price_desktop_hidden", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -762,14 +762,14 @@ def test_price_only_in_an_element_hidden_on_this_screen_fails_and_says_where(tmp
 
 
 def test_store_refusing_radar_is_blocked_with_the_reason_not_unsupported(tmp_path):
-    """plumgoodness.com (bench 5): HTTP 423 'This store is unavailable' to Radar. v0.9 said 'unsupported' (not Shopify)."""
+    """shop040.example (bench 5): HTTP 423 'This store is unavailable' to Radar. v0.9 said 'unsupported' (not Shopify)."""
     run, _ = _scan("store_refuses", tmp_path)
     assert run.verdict == "blocked", run.verdict
     assert any("HTTP 423" in n and "This store is unavailable" in n for n in run.notes), run.notes
 
 
 def test_card_clicked_where_it_is_after_the_page_relays_out(tmp_path):
-    """boat-lifestyle.com (bench 5): the page re-lays out ~20 ms after Radar scrolls a card into view; v0.9 clicked
+    """shop017.example (bench 5): the page re-lays out ~20 ms after Radar scrolls a card into view; v0.9 clicked
     the old point and opened the card above/below. Every attempt must open the product that was picked."""
     run = scan_journey = None
     srv, url = serve("shift_after_scroll")
@@ -1010,7 +1010,7 @@ def test_bench_does_not_start_stores_while_radar_is_offline(tmp_path):
 
 
 def test_popup_inside_shadow_dom_is_closed_by_its_x_and_the_journey_passes_first_try(tmp_path):
-    """soulflower.in (bench 9): the YourLio promo popup renders inside #chat-widget's shadow root and appears after the
+    """shop083.example (bench 9): the YourLio promo popup renders inside #chat-widget's shadow root and appears after the
     collection page loads; v0.13 could not see it, the click on the product card was intercepted -> FLAKY journey."""
     srv, url = serve("shadow_popup")
     try:
@@ -1024,7 +1024,7 @@ def test_popup_inside_shadow_dom_is_closed_by_its_x_and_the_journey_passes_first
 
 
 def test_card_name_that_opens_another_product_goes_on_via_its_other_link_with_a_warning(tmp_path):
-    """faritha.com phone (new30x, 4 runs DOWN) + bytheleaf.in phone (new30z3, flaky): tapping a card's name opened the
+    """shop102.example phone (new30x, 4 runs DOWN) + shop090.example phone (new30z3, flaky): tapping a card's name opened the
     neighbouring product. A shopper goes back and taps the product again (its picture): the journey goes on, and the
     miswired link is a store WARNING with the evidence."""
     j = _case(_scan_small("title_opens_neighbour", tmp_path, suites=["journey"]), "journey.")
@@ -1035,7 +1035,7 @@ def test_card_name_that_opens_another_product_goes_on_via_its_other_link_with_a_
 
 @pytest.mark.parametrize("mode", ["body_drawer_class", "grid_quick_add_class"])
 def test_cart_drawer_words_in_the_body_class_do_not_hide_every_card(tmp_path, mode):
-    """dhaagaweaves.in (new31b, both devices NOT JUDGED, '44 links: 44 inside cart drawer / quick-add') + cmartian.com
+    """shop048.example (new31b, both devices NOT JUDGED, '44 links: 44 inside cart drawer / quick-add') + shop091.example
     (new31a): the theme puts 'quick-add-enabled cart-drawer-active' on <body>, so every card matched the drawer rule."""
     # + the grid's own container carrying a 'quick-add' class (re-test: 'div.product-grid-container', 'ul.grid')
     j = _case(_scan_small(mode, tmp_path, suites=["journey"]), "journey.")
@@ -1043,14 +1043,14 @@ def test_cart_drawer_words_in_the_body_class_do_not_hide_every_card(tmp_path, mo
 
 
 def test_product_card_in_a_marquee_that_never_stops_moving_is_clicked(tmp_path):
-    """hunnit.com desktop (new30z1, 3 attempts DOWN): the cards ride a marquee that never stops, and the click waited for
+    """shop117.example desktop (new30z1, 3 attempts DOWN): the cards ride a marquee that never stops, and the click waited for
     a still card until it timed out. A shopper taps the card where it is."""
     j = _case(_scan_small("marquee_cards", tmp_path, suites=["journey"]), "journey.")
     assert j.verdict == "pass", _fails(j)
 
 
 def test_dead_product_image_link_the_name_opens_it_journey_passes_with_a_store_warning(tmp_path):
-    """thefunclab.com (bench 10): on the homepage slider the product IMAGE link does nothing when clicked (the theme's
+    """shop068.example (bench 10): on the homepage slider the product IMAGE link does nothing when clicked (the theme's
     script cancels mousedown/click); the product NAME opens it. v0.14 clicked the image twice and failed the journey
     (FLAKY: the retry happened to go via a collection grid). A shopper clicks the name: journey passes, the dead link
     is a store warning with the evidence."""
@@ -1069,7 +1069,7 @@ def test_dead_product_image_link_the_name_opens_it_journey_passes_with_a_store_w
 
 # ---------- bench 11 (7 Oct): transient misses on two stores each ----------
 def test_store_data_answering_empty_once_is_retried_not_a_failure(tmp_path):
-    """palmonas.com: /products/x.js answered an empty body once (JSON error); wellbeingnutrition.com: a timeout once.
+    """shop095.example: /products/x.js answered an empty body once (JSON error); shop002.example: a timeout once.
     Both made the journey FLAKY in v0.15. Radar now retries the data request: every case passes on its first attempt."""
     run, _ = _scan("flaky_data", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict == "healthy", [(c.case_id, c.verdict, [a.error for a in c.attempts]) for c in run.cases]
@@ -1077,7 +1077,7 @@ def test_store_data_answering_empty_once_is_retried_not_a_failure(tmp_path):
 
 
 def test_robots_txt_failing_twice_then_answering_is_read_on_the_third_try(tmp_path):
-    """soulflower.in / bummer.in: robots.txt gave no answer on two quick tries, so v0.15 blocked the whole store."""
+    """shop083.example / shop129.example: robots.txt gave no answer on two quick tries, so v0.15 blocked the whole store."""
     run, _ = _scan("robots_500_twice", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     assert run.verdict == "healthy", (run.verdict, run.notes)
     assert run.sitemap_summary["robots_loaded"] is True
@@ -1085,7 +1085,7 @@ def test_robots_txt_failing_twice_then_answering_is_read_on_the_third_try(tmp_pa
 
 # ---------- held-out run (7 Oct, 30 never-seen stores): buy controls a shopper uses but Radar missed ----------
 def test_buy_button_shown_only_in_a_sticky_bar_after_scrolling_is_found(tmp_path):
-    """true-elements.com: the product form's own button is hidden on desktop; 'ADD TO CART' appears in a sticky bar
+    """shop034.example: the product form's own button is hidden on desktop; 'ADD TO CART' appears in a sticky bar
     once the shopper scrolls. v0.16 failed all 3 products ('could not find add_to_cart')."""
     run = _product_only("sticky_buy_only", tmp_path, max_products=2)
     assert all(c.verdict == "pass" for c in run.cases), [(c.case_id, c.attempts[-1].error) for c in run.cases]
@@ -1094,7 +1094,7 @@ def test_buy_button_shown_only_in_a_sticky_bar_after_scrolling_is_found(tmp_path
 
 
 def test_div_buy_control_named_for_this_product_is_found_and_adds_the_right_product(tmp_path):
-    """nicobar.com: the buy control is a <div data-product-handle=...> 'ADD TO BAG', no Shopify cart form, and other
+    """shop107.example: the buy control is a <div data-product-handle=...> 'ADD TO BAG', no Shopify cart form, and other
     products' 'Add to Bag' buttons come first on the page. v0.16 failed all 3 products. The cart test proves that
     clicking it adds THIS product, not a recommended one."""
     run, _ = _scan("div_buy_control", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
@@ -1106,7 +1106,7 @@ def test_div_buy_control_named_for_this_product_is_found_and_adds_the_right_prod
 
 
 def test_hidden_buttonless_form_falls_back_to_the_pages_own_buy_control(tmp_path):
-    """shopkara.store (new30p) + nubronicforte.com (new30t): NOT JUDGED 'a form for this product but no buy button Radar
+    """shop066.example (new30p) + shop031.example (new30t): NOT JUDGED 'a form for this product but no buy button Radar
     could use (the form holds: no button in the form (form hidden))'. The page's own buy control rule ran only when the
     page had no form at all; a hidden, buttonless form now counts as none."""
     run, _ = _scan("hidden_form_app_button", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
@@ -1116,7 +1116,7 @@ def test_hidden_buttonless_form_falls_back_to_the_pages_own_buy_control(tmp_path
 
 
 def test_per_unit_price_of_a_multi_unit_variant_counts_as_shown(tmp_path):
-    """ayamveda.com (new30w, both devices DOWN): '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298."""
+    """shop088.example (new30w, both devices DOWN): '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298."""
     run = _product_only("per_unit_price", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
     assert vase.verdict == "pass", (vase.verdict, vase.attempts[-1].error)
@@ -1124,7 +1124,7 @@ def test_per_unit_price_of_a_multi_unit_variant_counts_as_shown(tmp_path):
 
 
 def test_product_without_any_image_in_its_data_is_a_warning(tmp_path):
-    """kalamkitaab.com (new30v) + lucentpublication.com (new30u): NOT JUDGED 'no image ≥150px' on book pages that have
+    """shop051.example (new30v) + shop003.example (new30u): NOT JUDGED 'no image ≥150px' on book pages that have
     no picture at all; the store's own product data lists no image either = a WARNING with that evidence."""
     run = _product_only("no_product_images", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -1134,7 +1134,7 @@ def test_product_without_any_image_in_its_data_is_a_warning(tmp_path):
 
 
 def test_theme_span_add_to_cart_is_used_when_the_form_is_hidden(tmp_path):
-    """costosoitaliano.com (new30v): 'not judged ... buy-like controls on the page: <span.custom-add-to-cart-btn> "Add to
+    """shop012.example (new30v): 'not judged ... buy-like controls on the page: <span.custom-add-to-cart-btn> "Add to
     Cart"'. The page's only enabled exact 'Add to cart' is used; the cart check proves what it adds."""
     run, _ = _scan("span_add_to_cart", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
@@ -1143,16 +1143,16 @@ def test_theme_span_add_to_cart_is_used_when_the_form_is_hidden(tmp_path):
 
 @pytest.mark.parametrize("mode", ["disabled_form_enabled_bar", "disabled_form_icon_bar"])
 def test_disabled_form_button_with_an_enabled_add_to_cart_elsewhere_passes(tmp_path, mode):
-    """arabianaroma.in (new30v, 3 products, both devices): 'variant selected ... but the buy button is still disabled'
+    """shop044.example (new30v, 3 products, both devices): 'variant selected ... but the buy button is still disabled'
     while the page shows an enabled Add to cart. The enabled one is what a shopper uses."""
-    # popees.com phone (new30z5): the sticky bar's add-to-cart is an icon with no words (disabled_form_icon_bar)
+    # shop122.example phone (new30z5): the sticky bar's add-to-cart is an icon with no words (disabled_form_icon_bar)
     run, _ = _scan(mode, tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
     assert not bad, bad
 
 
 def test_product_name_hidden_on_phones_is_a_warning_not_a_failure(tmp_path):
-    """zarfstudios.com phone (new31c, DOWN 3 attempts): the name is in a desktop-only heading, phones see a tagline;
+    """shop054.example phone (new31c, DOWN 3 attempts): the name is in a desktop-only heading, phones see a tagline;
     price, picture and data are right. On a phone that is a WARNING with the reason, never a failure."""
     srv, url = serve("name_hidden_on_phone")
     try:
@@ -1166,7 +1166,7 @@ def test_product_name_hidden_on_phones_is_a_warning_not_a_failure(tmp_path):
 
 
 def test_buy_button_waiting_for_the_shoppers_photo_is_not_tested(tmp_path):
-    """cartwala.in (new31d, both devices DEGRADED): a personalised mouse pad whose 'Add to cart' stays disabled until the
+    """shop101.example (new31d, both devices DEGRADED): a personalised mouse pad whose 'Add to cart' stays disabled until the
     shopper uploads a photo. Radar never uploads: 'not tested' with the reason."""
     run = _product_only("needs_photo_upload", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -1175,7 +1175,7 @@ def test_buy_button_waiting_for_the_shoppers_photo_is_not_tested(tmp_path):
 
 
 def test_buy_button_waiting_for_the_shoppers_own_measurements_is_not_tested(tmp_path):
-    """giffywalls.in (new30z5, both devices DEGRADED): a wallpaper mural whose 'Add to cart' stays disabled until the
+    """shop075.example (new30z5, both devices DEGRADED): a wallpaper mural whose 'Add to cart' stays disabled until the
     shopper types the wall's width and height. Radar never fills forms: 'not tested' with the fields named."""
     run = _product_only("needs_dimensions", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -1185,8 +1185,8 @@ def test_buy_button_waiting_for_the_shoppers_own_measurements_is_not_tested(tmp_
 
 @pytest.mark.parametrize("mode,why", [("marketplace_hidden_cart", "amazon"), ("customiser_product", "customi")])
 def test_products_sold_elsewhere_or_through_a_builder_are_not_tested(tmp_path, mode, why):
-    """saumyasstores.com (new31a, NOT JUDGED): the price shows but the cart buttons are hidden and the only buy control is
-    'View On Amazon'. aesthesy.com (new31a, DOWN): the product page is a custom-art builder with no price and a disabled
+    """shop032.example (new31a, NOT JUDGED): the price shows but the cart buttons are hidden and the only buy control is
+    'View On Amazon'. shop086.example (new31a, DOWN): the product page is a custom-art builder with no price and a disabled
     'Continue to Customize'. Both are 'not tested' with the reason."""
     run = _product_only(mode, tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -1195,7 +1195,7 @@ def test_products_sold_elsewhere_or_through_a_builder_are_not_tested(tmp_path, m
 
 
 def test_buy_button_waiting_for_the_shoppers_picks_is_not_tested(tmp_path):
-    """orbiz.in (new30z2, both devices DEGRADED): a 'build your crew' product whose only button, 'Pick 6 buddies', stays
+    """shop140.example (new30z2, both devices DEGRADED): a 'build your crew' product whose only button, 'Pick 6 buddies', stays
     disabled until the shopper picks six figures. Not a broken buy button: 'not tested' with the reason."""
     run = _product_only("bundle_builder", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -1204,7 +1204,7 @@ def test_buy_button_waiting_for_the_shoppers_picks_is_not_tested(tmp_path):
 
 
 def test_disabled_form_button_with_an_add_to_cart_bar_shown_after_scrolling_passes(tmp_path):
-    """adachikan.com phone (new30z1, 3 products): the form's 'BUY IT NOW' was disabled and Radar failed the buy button,
+    """shop070.example phone (new30z1, 3 products): the form's 'BUY IT NOW' was disabled and Radar failed the buy button,
     while an enabled 'ADD TO CART' bar appears once the shopper scrolls. A shopper scrolls and uses it."""
     run = _product_only("disabled_form_bar_on_scroll", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -1213,9 +1213,9 @@ def test_disabled_form_button_with_an_add_to_cart_bar_shown_after_scrolling_pass
 
 @pytest.mark.parametrize("mode", ["gift_only_product", "hidden_buttons_product"])
 def test_gift_only_product_page_without_any_buy_control_is_not_tested(tmp_path, mode):
-    """nubronicforte.com (new30t): Radar picked the 'Performance Kit', a gift auto-added to orders; its page has a hidden,
+    """shop031.example (new30t): Radar picked the 'Performance Kit', a gift auto-added to orders; its page has a hidden,
     empty cart form and no buy control at all. Not tested with the reason, never 'not judged'."""
-    # + saralhome.com (new31c): a freebie whose form keeps its buttons, all hidden (hidden_buttons_product)
+    # + shop082.example (new31c): a freebie whose form keeps its buttons, all hidden (hidden_buttons_product)
     run = _product_only(mode, tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
     assert vase.verdict == "blocked" and "offers no way to buy it" in vase.attempts[-1].error, \
@@ -1223,7 +1223,7 @@ def test_gift_only_product_page_without_any_buy_control_is_not_tested(tmp_path, 
 
 
 def test_product_sold_only_through_a_cod_order_form_is_not_tested(tmp_path):
-    """shopkara.store (new30p + new30t): no cart button, only 'Order Now - Cash on Delivery' (an order-form app popup).
+    """shop066.example (new30p + new30t): no cart button, only 'Order Now - Cash on Delivery' (an order-form app popup).
     Radar never fills forms: 'not tested' with the reason, not 'not judged'."""
     run = _product_only("cod_form_only", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -1259,7 +1259,7 @@ def test_every_scan_tests_desktop_and_mobile_and_mobile_is_a_real_phone(tmp_path
 
 
 def test_price_shown_only_on_phones_fails_on_desktop_and_passes_on_mobile(tmp_path):
-    """supplysix.com (bench 4): the trial page's only price sits in a bar the theme shows on phones only."""
+    """shop084.example (bench 4): the trial page's only price sits in a bar the theme shows on phones only."""
     results = _both("price_desktop_hidden", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1,
                     max_nav_links=2)
     by = {r.device: r for r, _ in results}
@@ -1339,7 +1339,7 @@ def test_bench_runs_both_devices_per_store_and_one_row_says_where_it_fails(tmp_p
 
 
 def test_preselected_size_without_a_cart_form_is_read_from_the_page(tmp_path):
-    """foxtale.in (9 Oct bench, both devices, 3 runs): a headless-style page with no cart form pre-selects its
+    """shop116.example (9 Oct bench, both devices, 3 runs): a headless-style page with no cart form pre-selects its
     200g 'Best Value' size; v0.18 fell back to the first size (75g, ₹349), found that price nowhere and failed a
     working page. Radar must read the size the page marks as selected."""
     run = _product_only("preselected_variant", tmp_path, max_products=2)
@@ -1350,7 +1350,7 @@ def test_preselected_size_without_a_cart_form_is_read_from_the_page(tmp_path):
 
 
 def test_closed_drawer_is_never_taken_for_the_popup_and_the_real_popup_is_closed(tmp_path):
-    """suta.in (wishlist drawer, 8 Oct) and soulflower.in (cart drawer, 7 Oct), mobile: v0.18's popup finder kept
+    """shop145.example (wishlist drawer, 8 Oct) and shop083.example (cart drawer, 7 Oct), mobile: v0.18's popup finder kept
     picking a closed, off-screen side drawer, its close click timed out, and the real promo popup over the product
     grid was never closed ('26 covered by div'). On both devices the journey must pass, the real popup closed."""
     results = _both("drawer_decoy_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1,
@@ -1394,7 +1394,7 @@ def test_rate_limited_discovery_is_blocked_not_error(tmp_path, monkeypatch):
 
 
 def test_image_link_under_a_slider_layer_falls_back_to_the_product_name(tmp_path):
-    """bummer.in (9 Oct cloud run, desktop, 3/3 attempts): a slider layer over the product image swallowed the click and
+    """shop129.example (9 Oct cloud run, desktop, 3/3 attempts): a slider layer over the product image swallowed the click and
     Playwright's fallback click was intercepted, so Radar raised 'could not click' before trying the product's name
     link, which a shopper would click. The journey must pass and the dead image link be a store WARNING."""
     run, _ = _scan("slider_over_image", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
@@ -1428,7 +1428,7 @@ def test_popup_closed_by_a_bare_x_in_a_div(tmp_path):
 
 
 def test_popup_closed_by_an_icon_only_x_in_the_dialogs_corner(tmp_path):
-    """thinkitchen.in (new30z6, both devices NOT JUDGED): 'no stay/close control in [div | SUBMIT | Powered by zoko.io]':
+    """shop069.example (new30z6, both devices NOT JUDGED): 'no stay/close control in [div | SUBMIT | Powered by zoko.io]':
     the popup's close is an icon with no words in the dialog's top-right corner. Radar closes it with that icon and
     never presses SUBMIT."""
     run, _ = _scan("icon_x_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
@@ -1437,7 +1437,7 @@ def test_popup_closed_by_an_icon_only_x_in_the_dialogs_corner(tmp_path):
 
 
 def test_login_popup_in_a_cross_origin_iframe_is_closed_inside_the_frame(tmp_path):
-    """GoKwik KwikPass (bonkerscorner.com, boldcare.in, consciouschemist.com, 7-9 Oct): a full-screen iframe from
+    """GoKwik KwikPass (shop025.example, shop100.example, shop008.example, 7-9 Oct): a full-screen iframe from
     another origin with no popup-like name (id 'iframe-kp' in div#d2c-pass) and its × inside the frame blocked every
     click: 'could not click: <iframe id="iframe-kp" ...>'. Radar closes it with the frame's own ×, never logs in."""
     run, _ = _scan("kwikpass_popup", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
@@ -1483,7 +1483,7 @@ def test_unsigned_radar_is_blocked_rate_limited_by_that_edge(tmp_path, monkeypat
 
 
 def test_pincode_gate_is_a_warning_and_the_cart_is_blocked_not_failed(tmp_path):
-    """bombaysweetshop.com (new30d held-out run, 10 Oct, both devices): the right variant WAS selected, but the buy button
+    """shop011.example (new30d held-out run, 10 Oct, both devices): the right variant WAS selected, but the buy button
     stays disabled and says 'PLEASE ENTER YOUR PINCODE TO CHECK AVAILABILITY'. Radar never types a pincode (it submits
     no form but add-to-cart), so: product test PASSES with a pincode WARNING, cart + journey cart steps are BLOCKED
     with the reason, nothing is a failure."""
@@ -1503,8 +1503,8 @@ def test_pincode_gate_is_a_warning_and_the_cart_is_blocked_not_failed(tmp_path):
 
 
 def test_disabled_buy_button_with_an_enabled_duplicate_uses_the_enabled_one(tmp_path):
-    """crossbeats.com mobile (new30e, loop cycle 7 evidence): the main form's visible <button.cf-checkout> was disabled
-    while another ADD TO CART for the same product was enabled; 2 stores (with littleboxindia) = fix: a shopper uses
+    """shop062.example mobile (new30e, loop cycle 7 evidence): the main form's visible <button.cf-checkout> was disabled
+    while another ADD TO CART for the same product was enabled; 2 stores (with shop018) = fix: a shopper uses
     the enabled one, so Radar clicks it and the cart check proves it added the right product."""
     run, _ = _scan("disabled_dup_button", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict in ("confirmed_fail", "flaky")]
@@ -1515,7 +1515,7 @@ def test_disabled_buy_button_with_an_enabled_duplicate_uses_the_enabled_one(tmp_
 
 
 def test_disabled_add_to_cart_with_only_buy_it_now_enabled_fails_and_names_it(tmp_path):
-    """Never click 'buy it now' (it goes to checkout). crossbeats.com mobile, loop cycle 8: the enabled button's name was
+    """Never click 'buy it now' (it goes to checkout). shop062.example mobile, loop cycle 8: the enabled button's name was
     clipped off the end of the evidence, so the enabled one now comes FIRST in the failure."""
     run, _ = _scan("disabled_buy_now_only", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     errs = [s.error or "" for c in run.cases if c.case_id.startswith("product.pdp.")
@@ -1532,7 +1532,7 @@ def test_buy_it_now_before_add_to_cart_is_never_clicked(tmp_path):
 
 
 def test_healer_found_disabled_button_but_an_enabled_sticky_add_to_cart_is_used(tmp_path):
-    """littleboxindia.com mobile (new30c/d/e): no visible button in the product's form, the healer found a DISABLED
+    """shop018.example mobile (new30c/d/e): no visible button in the product's form, the healer found a DISABLED
     'Add to cart', an enabled sticky ADD TO CART bar was on screen -> Radar uses the enabled one, PASSES."""
     run, _ = _scan("healer_disabled_sticky", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
     bad = [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict in ("confirmed_fail", "flaky")]
@@ -1542,7 +1542,7 @@ def test_healer_found_disabled_button_but_an_enabled_sticky_add_to_cart_is_used(
 
 
 def test_empty_document_title_on_a_rendered_page_is_an_seo_warning_not_down(tmp_path):
-    """hairoriginals.com (new30e held-out run, 10 Oct, both devices): every page rendered in full (screenshot), but
+    """shop027.example (new30e held-out run, 10 Oct, both devices): every page rendered in full (screenshot), but
     document.title was empty, so every load step failed and the store was 'down'. Shoppers never see the tab title:
     the page loads, and the SEO test 'title' reports the empty title as a warning."""
     run, _ = _scan("empty_doc_title", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
@@ -1743,7 +1743,7 @@ def test_checkout_page_is_not_opened_without_the_cart_flow(tmp_path):
 
 
 def test_footer_annual_return_pdf_is_not_read_as_the_refund_page(tmp_path):
-    """giva.co (run 38077075618, both devices): the footer's 'Annual Return FY 2024-25' PDF under /cdn/ was opened as
+    """shop143.example (run 38077075618, both devices): the footer's 'Annual Return FY 2024-25' PDF under /cdn/ was opened as
     the refund page and failed info.policy_pages = a Radar false failure. Files and company-law filings are skipped."""
     run = _info("annual_return_pdf", tmp_path)
     c = _case(run, "info.policy_pages")
@@ -1752,7 +1752,7 @@ def test_footer_annual_return_pdf_is_not_read_as_the_refund_page(tmp_path):
 
 
 def test_marketplace_only_store_is_blocked_with_the_reason_never_down(tmp_path):
-    """antesports.com (new30g) + beyondsnack.in (new30e): product pages show no price and no cart, only 'Buy on Amazon /
+    """shop057.example (new30g) + shop060.example (new30e): product pages show no price and no cart, only 'Buy on Amazon /
     Flipkart'. Until loop cycle 25 that was DOWN ('selected variant price shown: not on page') = a Radar false failure."""
     run, _ = _scan("marketplace_only", tmp_path)
     assert run.verdict != "down", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
@@ -1760,12 +1760,12 @@ def test_marketplace_only_store_is_blocked_with_the_reason_never_down(tmp_path):
         c = _case(run, prefix)
         assert c.verdict == "blocked" and "only links to marketplaces (Buy on Amazon, Buy on Flipkart)" in c.attempts[-1].error, \
             (prefix, c.verdict, c.attempts[-1].error)
-    spoons = _case(run, "product.pdp.wooden")         # beyondsnack 'Diwali Box': only a 'Shop Now On:' heading, no links
+    spoons = _case(run, "product.pdp.wooden")         # shop060 'Diwali Box': only a 'Shop Now On:' heading, no links
     assert spoons.verdict == "blocked" and "'Shop Now On:'" in spoons.attempts[-1].error, (spoons.verdict, spoons.attempts[-1].error)
 
 
 def test_card_href_with_trailing_space_opens_the_clicked_product(tmp_path):
-    """thechumbakwala.com (new30n, 14 Oct): card hrefs end in a space ('/products/x '); the browser opens /products/x and
+    """shop020.example (new30n, 14 Oct): card hrefs end in a space ('/products/x '); the browser opens /products/x and
     Radar compared the raw handle: DOWN 'expected /products/x , got /products/x' = a Radar false failure."""
     srv, url = serve("href_space")
     try:
@@ -1777,8 +1777,8 @@ def test_card_href_with_trailing_space_opens_the_clicked_product(tmp_path):
 
 
 def test_price_on_request_store_is_blocked_with_the_reason_never_down(tmp_path):
-    """houseofquadri.com + artoftimeindia.com (new30n, 14 Oct): luxury pages show 'Price on Request' + 'Enquire', no cart;
-    banjarakasuti.com shows no price and 'We are no longer accepting online orders'. Was DOWN ('selected variant price
+    """shop029.example + shop016.example (new30n, 14 Oct): luxury pages show 'Price on Request' + 'Enquire', no cart;
+    shop023.example shows no price and 'We are no longer accepting online orders'. Was DOWN ('selected variant price
     shown: not on page') = a Radar false failure: the price is hidden on purpose."""
     run, _ = _scan("price_on_request", tmp_path)
     assert run.verdict != "down", [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases if c.verdict != "pass"]
@@ -1807,8 +1807,8 @@ def test_links_beyond_the_menu_open_and_a_dead_banner_or_ended_offer_fails(tmp_p
 
 @pytest.mark.parametrize("mode", ["devanagari_title", "emoji_cookie"])
 def test_non_latin_names_and_non_ascii_cookies_do_not_break_product_checks(tmp_path, mode):
-    """prashantpublications.com (new30z4): Marathi titles were 'not shown' (name matching kept only a-z0-9).
-    paramountchess.com (new30z4): a cookie holding an emoji made every product-data request fail ('Invalid character in
+    """shop001.example (new30z4): Marathi titles were 'not shown' (name matching kept only a-z0-9).
+    shop019.example (new30z4): a cookie holding an emoji made every product-data request fail ('Invalid character in
     header content [cookie]'). Both product pages pass."""
     run = _product_only(mode, tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -1816,7 +1816,7 @@ def test_non_latin_names_and_non_ascii_cookies_do_not_break_product_checks(tmp_p
 
 
 def test_discount_link_that_applies_its_code_and_goes_home_is_not_a_broken_link(tmp_path):
-    """daantwale.com (new30z2, both devices DEGRADED): a homepage banner links /discount/WOWDEAL; Shopify applies the code
+    """shop073.example (new30z2, both devices DEGRADED): a homepage banner links /discount/WOWDEAL; Shopify applies the code
     and sends the shopper to the homepage, which is how discount links work, not a deleted page."""
     run = _info("discount_link", tmp_path, suites=("smoke",))
     c = _case(run, "smoke.more_links")
@@ -1825,7 +1825,7 @@ def test_discount_link_that_applies_its_code_and_goes_home_is_not_a_broken_link(
 
 
 def test_app_proxy_page_drawn_in_a_shadow_root_is_not_blank(tmp_path):
-    """arakucoffee.in (cycle 34, both devices): a homepage section links to an app-proxy quiz page (/tools/...). It
+    """shop058.example (cycle 34, both devices): a homepage section links to an app-proxy quiz page (/tools/...). It
     answered 200 with a title and the browser painted it (largest contentful paint 1.6 s), but body.innerText was empty
     and there was no <img>: 'page not blank: 0 chars, 0 images' -> broken link. v0.20 reads open shadow roots and what
     the browser painted, waiting up to ~4 s for app pages."""
@@ -1845,7 +1845,7 @@ def test_blank_page_is_still_blank(tmp_path):
 
 
 def test_slow_menu_page_is_retried_and_warned_not_called_broken(tmp_path):
-    """bluenectar.co.in (cycle 34, desktop only): collection pages took 9-33 s; two hit the 30 s navigation timeout on
+    """shop035.example (cycle 34, desktop only): collection pages took 9-33 s; two hit the 30 s navigation timeout on
     every attempt and became 'broken navigation pages' (phone run, same hour: all fine). A page that times out is opened
     once more with twice the wait: it loads -> WARNING 'slow page' with the time, never a broken link."""
     srv, url = serve("slow_page")
@@ -1863,7 +1863,7 @@ def test_slow_menu_page_is_retried_and_warned_not_called_broken(tmp_path):
 
 
 def test_store_link_redirecting_to_another_site_that_never_loads_is_not_a_broken_link(tmp_path):
-    """nonasties.in phone (new30k, run 38297412579): footer /map and /panjim redirect to Google Maps; on desktop they
+    """shop094.example phone (new30k, run 38297412579): footer /map and /panjim redirect to Google Maps; on desktop they
     opened (title '... - Google Maps'), on the phone the maps page never finished: 'page did not load ... nor within
     60 s' -> 'links beyond the menu that fail to open: 2' (degraded). The store's own link works; the other site is
     not judged."""
@@ -1911,7 +1911,7 @@ def test_collection_grid_rendered_after_load_is_waited_for(tmp_path):
 
 
 def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path, monkeypatch):
-    # new30g (11 Oct): bombae.in / pahadilocal.com (DNS -> 127.0.0.1), skinq.in (no such host), brewhouse.in (another
+    # new30g (11 Oct): shop128.example / shop052.example (DNS -> 127.0.0.1), shop142.example (no such host), shop089.example (another
     # site's certificate) were 'blocked … usually a temporary server problem'. The robots.txt request's network error is
     # replayed here (DNS cannot be faked locally, and a proxy may answer for unknown hosts).
     import radar.discovery.discover as disc
@@ -1922,9 +1922,9 @@ def test_store_address_pointing_at_no_server_is_unreachable_not_blocked(tmp_path
         rb.status, rb.error = None, "APIRequestContext.get: connect ECONNREFUSED 127.0.0.1:443"
         return rb
     monkeypatch.setattr(disc, "load_robots", dead)
-    run, _ = scan("https://bombae.example", _settings(tmp_path))
+    run, _ = scan("https://shop128.example", _settings(tmp_path))
     assert run.verdict == "unreachable", (run.verdict, run.notes)
-    assert any("bombae.example: the domain points to 127.0.0.1" in n and "check the store's address" in n
+    assert any("shop128.example: the domain points to 127.0.0.1" in n and "check the store's address" in n
                for n in run.notes), run.notes
 
 
@@ -2013,7 +2013,7 @@ def test_variant_switch_selects_the_picked_size_and_shows_its_price(tmp_path):
 
 
 def test_variant_switch_clicks_a_pill_under_the_pickers_own_layer_like_a_shopper(tmp_path):
-    """dotandkey.com (12 Oct): a transparent swatch layer inside the picker receives the click and forwards it; the
+    """shop074.example (12 Oct): a transparent swatch layer inside the picker receives the click and forwards it; the
     locator click times out ('intercepts pointer events'). Radar clicks the point -> Large picked, PASS."""
     c = _case(_variant_only("variant_pill_covered", tmp_path), "product.variant_switch")
     s = _steps(c)["variant_switch"]
@@ -2059,7 +2059,7 @@ def test_variant_switch_is_not_judged_without_a_clickable_option(tmp_path):
 
 
 def test_variant_switch_without_a_form_or_address_push_reads_the_marked_pill(tmp_path):
-    """Round 2 (antinorm.co, veirdo.in, 11 Oct): an app-built buy box (no form, no id field) and a theme that never
+    """Round 2 (shop099.example, shop137.example, 11 Oct): an app-built buy box (no form, no id field) and a theme that never
     pushes ?variant=. The address keeps the ?variant=201 Radar opened it with: that is not 'kept the old variant'.
     The page marks the Large pill chosen and shows ₹1,399 -> pass."""
     c = _case(_variant_only("variant_no_url_push", tmp_path), "product.variant_switch")
@@ -2341,7 +2341,7 @@ def test_collection_filter_that_does_not_filter_warns_and_fails_when_strict(tmp_
 
 
 def test_collection_filter_in_stock_is_judged_by_the_storefronts_own_stock(tmp_path):
-    """antinorm.co + beminimalist.co (11 Oct 2026): 'In stock' listed one product the collection's products.json called
+    """shop099.example + shop047.example (11 Oct 2026): 'In stock' listed one product the collection's products.json called
     sold out, and Radar warned. Shopify's storefront filter counts products that keep selling (inventory policy
     'continue', untracked stock) as in stock; the product's own /products/<h>.js and page sell it, so it matches."""
     for device in ("desktop", "mobile"):
@@ -2354,7 +2354,7 @@ def test_collection_filter_in_stock_is_judged_by_the_storefronts_own_stock(tmp_p
 
 
 def test_collection_filter_listing_products_beyond_the_data_radar_read_is_not_zero_results(tmp_path):
-    """maspar.com (11 Oct 2026): a 'Size' filter on a collection bigger than the 250 products Radar reads. The products it
+    """shop121.example (11 Oct 2026): a 'Size' filter on a collection bigger than the 250 products Radar reads. The products it
     listed were not in that data, and Radar counted only those it knew: '0 products listed with the filter on'. Here
     ?filter.v.option.size=Large lists the vase, which the collection's products.json does not carry."""
     run = _filter_only("filter_big_collection", tmp_path)
@@ -2428,7 +2428,7 @@ def test_checkout_summary_is_read_past_a_big_inline_script(tmp_path):
 @pytest.mark.parametrize("mode", ["other_market", "other_market_norate", "other_market_offer", "other_market_price_above",
                                   "other_market_switcher"])
 def test_prices_converted_for_another_country_are_location_never_down(tmp_path, mode):
-    """theindianethnicco.com ($62.91) + saltattire.com ($24.23), new30h 11 Oct, and tilfi.com ($497), new30g: Shopify
+    """shop005.example ($62.91) + shop065.example ($24.23), new30h 11 Oct, and shop135.example ($497), new30g: Shopify
     Markets shows a US visitor converted dollar prices, so the catalog's ₹ price is 'not on page' and Radar said DOWN.
     The cloud machines are in the US: that is 'location (US runner)', BLOCKED with the reason."""
     run, _ = _scan(mode, tmp_path)
@@ -2457,7 +2457,7 @@ def test_verdict_rule_no_clickable_card_is_not_judged_never_down(tmp_path):
 
 
 def test_verdict_rule_product_without_an_image_is_not_judged_but_a_broken_image_fails(tmp_path):
-    """Verdict rule: no large image Radar can find on a product page (suta.in 'Free Fabric') is NOT JUDGED with what
+    """Verdict rule: no large image Radar can find on a product page (shop145.example 'Free Fabric') is NOT JUDGED with what
     was seen, and the store stays healthy; a large image that FAILED to load (404) is positive evidence and fails."""
     run = _product_only("pdp_no_image", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -2471,7 +2471,7 @@ def test_verdict_rule_product_without_an_image_is_not_judged_but_a_broken_image_
 
 
 def test_verdict_rule_products_shown_by_name_without_links_are_tapped_and_an_empty_page_fails(tmp_path):
-    """giva.co desktop (verdict-rule sanity run 38403594396; full 36 on 14 Oct again NOT JUDGED with 50 of 50 names
+    """shop143.example desktop (verdict-rule sanity run 38403594396; full 36 on 14 Oct again NOT JUDGED with 50 of 50 names
     shown): a grid of named, priced cards a script opens, no product links. Radar taps a listed name like a shopper:
     a product page opening = PASS; nothing opening = NOT JUDGED with what was tapped (Anmol, 14 Oct: not-judged is a
     Radar bug, target 0); no names and no links while the data lists products = a failure with the data as evidence."""
@@ -2504,7 +2504,7 @@ def test_verdict_rule_collection_with_no_grid_fails_only_when_the_store_data_lis
 
 
 def test_lazy_gallery_image_is_waited_for_not_called_missing(tmp_path):
-    """soultree.in (new30h, desktop + phone): the product picture is plainly on screen in the evidence screenshot, yet
+    """shop110.example (new30h, desktop + phone): the product picture is plainly on screen in the evidence screenshot, yet
     'main product image loaded' said none = DOWN. A lazy gallery that fills its slide 2 s after load now passes."""
     run = _product_only("lazy_gallery", tmp_path)
     c = _case(run, "product.pdp.ceramic")
@@ -2514,7 +2514,7 @@ def test_lazy_gallery_image_is_waited_for_not_called_missing(tmp_path):
 
 
 def test_collection_grid_rendered_on_scroll_is_found_by_scrolling(tmp_path):
-    """veirdo.in (new30h, both devices): a tall sale banner, then a grid an app renders only when it scrolls into view.
+    """shop137.example (new30h, both devices): a tall sale banner, then a grid an app renders only when it scrolls into view.
     Radar never scrolled and failed 'products listed: 0' (collection) and 'product card a shopper can click' (journey)."""
     run, _ = _scan("grid_on_scroll", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     for prefix in ("catalog.collection.", "journey."):
@@ -2562,7 +2562,7 @@ def _fails(case):
 
 
 def test_card_link_with_display_contents_is_a_card_a_shopper_can_click(tmp_path):
-    """valliyan.com (Baseline theme, new30j, both devices): the card link is display:contents around image + name +
+    """shop098.example (Baseline theme, new30j, both devices): the card link is display:contents around image + name +
     price. The products were plainly on screen (journey.shopper.a1.png), yet 'products listed: 0' and '15 links: 15
     not visible': the <a> has no box of its own. Its box is its children's."""
     run = _scan_small("contents_cards", tmp_path, suites=["journey", "catalog"])
@@ -2573,7 +2573,7 @@ def test_card_link_with_display_contents_is_a_card_a_shopper_can_click(tmp_path)
 
 
 def test_card_link_around_a_wrapper_of_floats_is_a_card_a_shopper_can_click(tmp_path):
-    """valliyan.com re-test (cycle 34 display:contents fix, run 38297409964): the same visible grid still gave
+    """shop098.example re-test (cycle 34 display:contents fix, run 38297409964): the same visible grid still gave
     'products listed: 0' and '15 links: 15 not visible'. A card wrapper whose image and name float has zero height
     too; any empty box takes its children's boxes, recursively."""
     run = _scan_small("zero_box_cards", tmp_path, suites=["journey", "catalog"])
@@ -2584,7 +2584,7 @@ def test_card_link_around_a_wrapper_of_floats_is_a_card_a_shopper_can_click(tmp_
 
 
 def test_boxless_card_link_with_a_stuck_reveal_opacity_is_still_a_card_a_shopper_can_click(tmp_path):
-    """valliyan.com re-test 2 (run 38326679916, both devices): after the empty-box fix the collection counted 15
+    """shop098.example re-test 2 (run 38326679916, both devices): after the empty-box fix the collection counted 15
     products, but the journey still said '15 links: 15 not visible' under the visible grid (journey.shopper.a1.png).
     A display:contents link paints nothing itself, so its own opacity has no effect; it is visible when a child is."""
     run = _scan_small("contents_reveal_cards", tmp_path, suites=["journey", "catalog"])
@@ -2595,7 +2595,7 @@ def test_boxless_card_link_with_a_stuck_reveal_opacity_is_still_a_card_a_shopper
 
 
 def test_gift_sku_by_product_type_is_not_the_product_radar_tests(tmp_path):
-    """suta.in (full 36 run 38338066670, both devices): the one product tested was 'Free Fabric' (Rs 1,000, badge
+    """shop145.example (full 36 run 38338066670, both devices): the one product tested was 'Free Fabric' (Rs 1,000, badge
     FREEBIES) whose page has no product image -> 'main product image loaded: got none', store degraded. The store labels
     it a gift SKU by its product type; such products are skipped like gift cards and samples."""
     run = _scan_small("freebie_type", tmp_path, suites=["product"])
@@ -2606,7 +2606,7 @@ def test_gift_sku_by_product_type_is_not_the_product_radar_tests(tmp_path):
 
 
 def test_card_visibility_is_judged_by_what_paints_inside_the_link(tmp_path):
-    """Robust card visibility (13 Oct, after valliyan.com's 3 re-tests): the link's own computed style is not the
+    """Robust card visibility (13 Oct, after shop098.example's 3 re-tests): the link's own computed style is not the
     judge; something inside it that paints is. A visibility:hidden link whose image and name override it is a card a
     shopper sees and taps."""
     run = _scan_small("hidden_link_shown_cards", tmp_path, suites=["journey", "catalog"])
@@ -2617,7 +2617,7 @@ def test_card_visibility_is_judged_by_what_paints_inside_the_link(tmp_path):
 
 
 def test_stretched_link_over_the_card_is_a_card_a_shopper_can_click(tmp_path):
-    """valliyan.com (Baseline theme): the first-refused evidence (run 38361019922) showed 'a.increase-target{inline,op 1,
+    """shop098.example (Baseline theme): the first-refused evidence (run 38361019922) showed 'a.increase-target{inline,op 1,
     visible,0x0} > span.visually-hidden': an empty link whose ::before is stretched over the card. Its box is its
     pseudo-element's; the tap on the card hits the link."""
     run = _scan_small("stretched_link_cards", tmp_path, suites=["journey", "catalog"])
@@ -2643,7 +2643,7 @@ def test_no_clickable_card_names_the_first_refused_link_for_the_report(tmp_path)
 
 
 def test_grid_an_app_draws_late_is_waited_for_when_the_page_promises_products(tmp_path):
-    """giva.co phone (full 36 verification run 38379683273): collection pages announced '4643 products' but the app
+    """shop143.example phone (full 36 verification run 38379683273): collection pages announced '4643 products' but the app
     drew the cards after Radar's 6 s wait on a cold visit; four collections counted 0 and the retry passed (flaky,
     store 'degraded'); the failure screenshot shows the cards. While the page itself promises products (a count in
     its text, or still loading) Radar waits up to 15 s."""
@@ -2656,7 +2656,7 @@ def test_grid_an_app_draws_late_is_waited_for_when_the_page_promises_products(tm
 
 
 def test_landing_collection_without_a_grid_warns_and_the_journey_goes_on_to_a_collection_with_products(tmp_path):
-    """quboworld.com (Horizon, new30j): the menu's first collection, 'Smart Entrance', is a landing page (hero + 'Learn
+    """shop080.example (Horizon, new30j): the menu's first collection, 'Smart Entrance', is a landing page (hero + 'Learn
     more' tiles to sub-collections, mega-menu product links hidden). Radar failed it as 'products listed: 0' and the
     journey as '104 links: 104 not visible' (DOWN). A shopper goes on to a collection that lists products."""
     run = _scan_small("landing_collection", tmp_path, suites=["journey", "catalog"])
@@ -2670,7 +2670,7 @@ def test_landing_collection_without_a_grid_warns_and_the_journey_goes_on_to_a_co
 
 
 def test_phone_brand_landing_menu_behind_the_menu_button_is_opened_for_the_hop(tmp_path):
-    """subko.coffee phone (new30j; desktop healthy via 'Specialty Coffee' -> /pages/coffee): on phones the brand
+    """shop147.example phone (new30j; desktop healthy via 'Specialty Coffee' -> /pages/coffee): on phones the brand
     landing's top menu sits behind ☰. Radar looked only at header links already on screen and failed 'no matching
     links on the page'. A shopper opens the menu and picks the section."""
     j = _case(_scan_small("phone_brand_landing", tmp_path, device="mobile", suites=["journey"]), "journey.")
@@ -2680,7 +2680,7 @@ def test_phone_brand_landing_menu_behind_the_menu_button_is_opened_for_the_hop(t
 
 @pytest.mark.parametrize("device", ["desktop", "mobile"])
 def test_country_modal_inside_the_header_is_answered_stay_here_never_international(tmp_path, device):
-    """teatrunk.in (new30i, both devices): 'Shopping from Outside India? International | Stay Here' covered every card
+    """shop112.example (new30i, both devices): 'Shopping from Outside India? International | Stay Here' covered every card
     ('covered by div.ctryModal-Content-overlay') and Radar recorded no popup closed: the modal sits inside <header>,
     which the popup rules skip (menus live there). The layer actually covering the cards is answered 'Stay Here'."""
     j = _case(_scan_small("country_modal", tmp_path / device, device=device, suites=["journey"]), "journey.")
@@ -2691,7 +2691,7 @@ def test_country_modal_inside_the_header_is_answered_stay_here_never_internation
 
 @pytest.mark.parametrize("device", ["desktop", "mobile"])
 def test_country_modal_answered_stay_on_brand_site_never_the_other_site(tmp_path, device):
-    """vedix.com (new30l, desktop): 'Visiting from United States (USD $)? Shop on US Site | Stay on Vedix IN Site',
+    """shop136.example (new30l, desktop): 'Visiting from United States (USD $)? Shop on US Site | Stay on Shop136 IN Site',
     its x an unlabelled icon, covered every card; 'Stay on <brand> <country> Site' is a stay control too."""
     j = _case(_scan_small("country_modal_stay_on", tmp_path / device, device=device, suites=["journey"]), "journey.")
     assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
@@ -2701,7 +2701,7 @@ def test_country_modal_answered_stay_on_brand_site_never_the_other_site(tmp_path
 
 @pytest.mark.parametrize("device", ["desktop", "mobile"])
 def test_region_gateway_answered_with_the_country_the_store_serves(tmp_path, device):
-    """axorhelmets.com (Contabo probe, 18 Oct, desktop): a full-page gateway 'INDIA VISIT NOW | EUROPE VISIT NOW', no
+    """shop045.example (Contabo probe, 18 Oct, desktop): a full-page gateway 'INDIA VISIT NOW | EUROPE VISIT NOW', no
     close control, covered every card: not judged. The choice whose panel names the store's own country (Shopify.country)
     and stays on this store is the shopper's way in; the other region's link is never followed."""
     j = _case(_scan_small("region_gateway", tmp_path / device, device=device, suites=["journey"]), "journey.")
@@ -2713,7 +2713,7 @@ def test_region_gateway_answered_with_the_country_the_store_serves(tmp_path, dev
 
 @pytest.mark.parametrize("device", ["desktop", "mobile"])
 def test_country_modal_stay_here_as_plain_div_is_answered(tmp_path, device):
-    """teatrunk.in re-test (run 38461923525): the layer stayed ('no stay/close control in [International]'): 'Stay Here'
+    """shop112.example re-test (run 38461923525): the layer stayed ('no stay/close control in [International]'): 'Stay Here'
     is not a <button>. A tappable element whose own text is a stay control counts; 'International' is never clicked."""
     j = _case(_scan_small("country_modal_div_stay", tmp_path / device, device=device, suites=["journey"]), "journey.")
     assert j.verdict == "pass" and len(j.attempts) == 1, _fails(j)
@@ -2723,7 +2723,7 @@ def test_country_modal_stay_here_as_plain_div_is_answered(tmp_path, device):
 
 @pytest.mark.parametrize("device", ["desktop", "mobile"])
 def test_headless_product_url_reads_data_via_the_handle_the_page_names(tmp_path, device):
-    """palmonas.com (full 36, 14 Oct, both devices): /products/8904097333505 (a SKU, not the Shopify handle) loaded for
+    """shop095.example (full 36, 14 Oct, both devices): /products/8904097333505 (a SKU, not the Shopify handle) loaded for
     the shopper, but its .js answered the HTML page and product_identified failed until a retry picked another
     product. The page's canonical / og:url / ld+json names the real handle; Radar reads the data through it."""
     j = _case(_scan_small("headless_alias", tmp_path / device, device=device, suites=["journey"]), "journey.")
@@ -2731,7 +2731,7 @@ def test_headless_product_url_reads_data_via_the_handle_the_page_names(tmp_path,
     assert any("handle the page names" in k["what"] for k in _checks(j)), _checks(j)
 
 def test_product_name_found_beside_sibling_variant_cards(tmp_path):
-    """beminimalist.co (full 36, 14 Oct, both devices, two runs): the product's own 50 px <h1> sat in one box with big
+    """shop047.example (full 36, 14 Oct, both devices, two runs): the product's own 50 px <h1> sat in one box with big
     'CHOOSE VARIANTS' cards linking to sibling products; that box looked like ANOTHER product's card, so the name was
     'not shown' and only the LLM re-check passed. The page's own heading is never another product's card."""
     run = _product_only("sibling_variant_links", tmp_path, max_products=1)
@@ -2741,7 +2741,7 @@ def test_product_name_found_beside_sibling_variant_cards(tmp_path):
 
 @pytest.mark.parametrize("device", ["desktop", "mobile"])
 def test_market_path_product_data_is_read_under_the_pages_market(tmp_path, device):
-    """amayrajewellery.com (new30n, 14 Oct, both devices DOWN): the store sent the US runner to /en-us/, where the page
+    """shop010.example (new30n, 14 Oct, both devices DOWN): the store sent the US runner to /en-us/, where the page
     showed the US market's price (₹1,798,800) while Radar asked the default market's .js (₹1,499,000): 'price not on
     page'. Product data is asked under the page's own market path."""
     j = _case(_scan_small("market_path", tmp_path / device, device=device, suites=["journey"]), "journey.")
@@ -2750,7 +2750,7 @@ def test_market_path_product_data_is_read_under_the_pages_market(tmp_path, devic
 
 
 def test_product_url_sent_to_the_same_product_under_a_market_path_is_reachable(tmp_path):
-    """khushbujewellers.com (new30x, 16 Oct): every product URL sent the US runner to /en-us/products/<same handle>;
+    """shop009.example (new30x, 16 Oct): every product URL sent the US runner to /en-us/products/<same handle>;
     Radar warned 'catalog product page reachable: redirects to /en-us/products/... (hidden from shoppers)'. The same
     product under the store's market path is the product page."""
     run = _scan_small("market_redirect_all", tmp_path, suites=["product"])
@@ -2762,7 +2762,7 @@ def test_product_url_sent_to_the_same_product_under_a_market_path_is_reachable(t
 
 
 def test_collection_tile_that_does_nothing_when_tapped_goes_on_via_the_menu(tmp_path):
-    """amchongtea.com phone (new30x, 16 Oct): the homepage's only visible collection link ('Explore Now') did nothing
+    """shop056.example phone (new30x, 16 Oct): the homepage's only visible collection link ('Explore Now') did nothing
     when tapped and the homepage lists no products: 'not judged: no product card'. A shopper opens the ☰ menu and
     picks a collection there; the dead tile is named as a warning-free note, the journey passes."""
     j = _case(_scan_small("dead_tile_menu", tmp_path, device="mobile", suites=["journey"]), "journey.")
@@ -2772,7 +2772,7 @@ def test_collection_tile_that_does_nothing_when_tapped_goes_on_via_the_menu(tmp_
 
 
 def test_product_handle_ignores_a_trailing_space_in_the_href():
-    """thechumbakwala.com (new30n, 14 Oct): the card's href ended in a space; the page opened without it and
+    """shop020.example (new30n, 14 Oct): the card's href ended in a space; the page opened without it and
     'opened the product that was clicked' compared 'x ' with 'x'."""
     from radar.checks.library import _handle, _market_prefix
     assert _handle("https://s.in/products/custom-spiritual-desk-calendar ") == "custom-spiritual-desk-calendar"
@@ -2782,7 +2782,7 @@ def test_product_handle_ignores_a_trailing_space_in_the_href():
     assert _market_prefix("https://s.in/products/x") == "" and _market_prefix("https://s.in/cart") == ""
 
 def test_wishlist_app_page_on_the_404_template_is_not_a_broken_nav_link(tmp_path):
-    """new30p (15 Oct): countryflora.com, kotart.in and swornyfashion.com were 'degraded' because the header's wishlist
+    """new30p (15 Oct): shop037.example, shop131.example and shop033.example were 'degraded' because the header's wishlist
     link answers HTTP 404 while a wishlist app draws the page into the store's 404 template. Shoppers see the app."""
     run, _ = _scan("wishlist_404", tmp_path, max_products=1, max_collections=1, max_nav_links=4)
     nav = _case(run, "smoke.nav_links")
@@ -2790,7 +2790,7 @@ def test_wishlist_app_page_on_the_404_template_is_not_a_broken_nav_link(tmp_path
     assert any("app page /pages/wishlist" in s.name for s in nav.attempts[-1].steps), [s.name for s in nav.attempts[-1].steps]
 
 def test_size_as_plain_buttons_outside_a_variant_box_is_picked(tmp_path):
-    """sntvl.com (new30r, 15 Oct, both devices, 3 products failed): the colour was tapped, but the sizes are plain
+    """shop134.example (new30r, 15 Oct, both devices, 3 products failed): the colour was tapped, but the sizes are plain
     buttons in a box whose class names neither 'variant' nor 'option', so no size was chosen and the form stayed
     empty ('Choose your size'). A row of buttons showing the option's values is a picker too."""
     run = _product_only("plain_size_buttons", tmp_path, max_products=1)
@@ -2799,7 +2799,7 @@ def test_size_as_plain_buttons_outside_a_variant_box_is_picked(tmp_path):
     assert "button Small" in str(_steps(vase)["variant_ready"].checks), _steps(vase)["variant_ready"].checks
 
 def test_page_with_no_price_at_all_is_not_tested_never_down(tmp_path):
-    """Anmol, 15 Oct: somuchliving.com (beds) and tastycrafts.in (₹1,00,000 placeholder) show no price near the product
+    """Anmol, 15 Oct: shop041.example (beds) and shop067.example (₹1,00,000 placeholder) show no price near the product
     name and no buy button: enquiry-only, 'not tested' with the reason, like 'Price on Request'; never DOWN."""
     run = _product_only("hidden_price", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -2809,7 +2809,7 @@ def test_page_with_no_price_at_all_is_not_tested_never_down(tmp_path):
 
 
 def test_price_hidden_until_a_choice_with_a_disabled_buy_button_is_not_tested(tmp_path):
-    """myop.in (new30x, 16 Oct, desktop DOWN): a personalised perfume hides its price and keeps 'Add to cart' disabled
+    """shop144.example (new30x, 16 Oct, desktop DOWN): a personalised perfume hides its price and keeps 'Add to cart' disabled
     until the shopper picks a perfume. No price near the name and no buy button a shopper can use = 'not tested'."""
     run = _product_only("price_after_choice", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -2819,7 +2819,7 @@ def test_price_hidden_until_a_choice_with_a_disabled_buy_button_is_not_tested(tm
 
 
 def test_price_shown_with_gst_added_is_a_warning(tmp_path):
-    """kanchisilver.com (new31f, both devices DOWN): Shopify holds ₹32,000, the page shows 'Rs. 32,960 INR' = +3% GST
+    """shop039.example (new31f, both devices DOWN): Shopify holds ₹32,000, the page shows 'Rs. 32,960 INR' = +3% GST
     (jewellery). The price the shopper sees is the catalog price plus a GST rate: a WARNING, never a failure."""
     run = _product_only("gst_price", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -2828,7 +2828,7 @@ def test_price_shown_with_gst_added_is_a_warning(tmp_path):
 
 
 def test_coming_soon_product_is_not_tested(tmp_path):
-    """atovio.in (new31f, both devices DEGRADED): a pre-launch product page says 'Coming Soon' with no price and a
+    """shop127.example (new31f, both devices DEGRADED): a pre-launch product page says 'Coming Soon' with no price and a
     'Notify me' button: not sold yet, 'not tested' with the reason."""
     run = _product_only("coming_soon_product", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -2836,7 +2836,7 @@ def test_coming_soon_product_is_not_tested(tmp_path):
 
 
 def test_price_minus_a_named_prepaid_offer_is_a_warning(tmp_path):
-    """Anmol, 15 Oct: rasayanam.in shows ₹1,092 for ₹1,149 under 'EXTRA 5% OFF ON ALL PREPAID ORDERS'. A page price
+    """Anmol, 15 Oct: shop096.example shows ₹1,092 for ₹1,149 under 'EXTRA 5% OFF ON ALL PREPAID ORDERS'. A page price
     that is the price minus a store-wide percentage the page names is a WARNING, not a failure."""
     run = _product_only("prepaid_price", tmp_path, max_products=1)
     vase = _case(run, "product.pdp.ceramic")
@@ -2846,7 +2846,7 @@ def test_price_minus_a_named_prepaid_offer_is_a_warning(tmp_path):
 
 
 def test_customer_accounts_login_link_is_not_a_menu_page(tmp_path):
-    """krkjewels.com (new30t, 15 Oct, both devices 'degraded'): the header's Login is Shopify's new customer accounts
+    """shop077.example (new30t, 15 Oct, both devices 'degraded'): the header's Login is Shopify's new customer accounts
     link '/customer_authentication/redirect', which answers 404 to a robot. A sign-in hand-off is not a menu page."""
     run, _ = _scan("customer_auth_link", tmp_path, max_products=1, max_collections=1, max_nav_links=6)
     nav = _case(run, "smoke.nav_links")
@@ -3025,7 +3025,7 @@ def test_pincode_checker_that_answers_passes_with_the_answer_recorded(tmp_path):
 
 
 def test_pincode_checker_under_a_sticky_bar_is_still_used(tmp_path):
-    """mcaffeine / plumgoodness / boat-lifestyle (first real run, 14 Oct): the box was found, the click timed out (a
+    """shop078 / shop040 / shop017 (first real run, 14 Oct): the box was found, the click timed out (a
     sticky buy bar covered it at the bottom edge). Scroll to the middle first, like a shopper would."""
     run = _feature("pincode_covered", tmp_path, ("product",))
     c = _case(run, "product.pincode")
@@ -3036,7 +3036,7 @@ def test_pincode_checker_under_a_sticky_bar_is_still_used(tmp_path):
 
 
 def test_pincode_checker_that_redraws_itself_is_still_used(tmp_path):
-    """mcaffeine / plumgoodness / boat-lifestyle (15 Oct re-test): the widget is app-rendered and redraws itself every
+    """shop078 / shop040 / shop017 (15 Oct re-test): the widget is app-rendered and redraws itself every
     few hundred ms, so the nodes Radar found are gone by the time it types ('Locator.evaluate: Timeout 30000ms').
     Radar must find the widget again before every action."""
     run = _feature("pincode_rerender", tmp_path, ("product",))
@@ -3047,7 +3047,7 @@ def test_pincode_checker_that_redraws_itself_is_still_used(tmp_path):
 
 
 def test_pincode_checker_that_keeps_checking_is_waited_for(tmp_path):
-    """boat-lifestyle (15 Oct): 'Checking servicability ...' for longer than 8 s. Radar waits while the widget says it is
+    """shop017 (15 Oct): 'Checking servicability ...' for longer than 8 s. Radar waits while the widget says it is
     working (up to 25 s) and records a slow answer, not 'no answer'."""
     run = _feature("pincode_slow", tmp_path, ("product",))
     c = _case(run, "product.pincode")
@@ -3098,7 +3098,7 @@ def test_data_requests_come_from_inside_the_page_so_cloudflares_client_fingerpri
 
 
 def test_product_shown_under_a_reworded_name_is_not_a_hidden_product(tmp_path):
-    """nbdpowerlifting.com (Contabo probe, 18 Oct, both devices): custom product pages with no cart form show the
+    """shop014.example (Contabo probe, 18 Oct, both devices): custom product pages with no cart form show the
     product as 'STRENGTH / Back Print Acid Wash Hoodie' for the catalog's 'NBD STRENGTH — Back Print Acid Wash Hoodie';
     every word of the name is there, in another order. Radar called each page 'other content' and failed the store."""
     run = _product_only("reworded_name", tmp_path, max_products=1)
@@ -3257,7 +3257,7 @@ def test_a_whatsapp_named_link_to_another_site_is_never_tapped(tmp_path, wa_guar
 
 
 def test_a_whatsapp_group_invite_is_named_not_judged(tmp_path, wa_guard):
-    """amrutam.co.in on phones (23 Oct): the only visible WhatsApp link was a community invite; it was dropped silently."""
+    """shop071.example on phones (23 Oct): the only visible WhatsApp link was a community invite; it was dropped silently."""
     c, st = _wa("wa_group_only", tmp_path)
     assert c.verdict == "pass" and "whatsapp_number" not in st and "group invite" in st["whatsapp_note"].detail, \
         [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]

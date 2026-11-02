@@ -56,7 +56,7 @@ class Storage:
         self.db = sqlite3.connect(self.data_dir / "radar.db", timeout=60)   # bench runs stores in parallel
         self.db.row_factory = sqlite3.Row
         # Switching a fresh database to WAL needs it to itself, and the busy timeout does not cover that: parallel store
-        # scans opening the same new radar.db at once got 'OperationalError: database is locked' (hathimasala.com,
+        # scans opening the same new radar.db at once got 'OperationalError: database is locked' (shop050.example,
         # new30v run 38861147423: the store was lost as 'error'). Retry the first-time setup for a while.
         import time as _time
         for i in range(12):

@@ -1,11 +1,11 @@
 """Command line.
 
-  python3 -m radar scan moxiebeauty.in              discover, generate, test, report: desktop AND mobile
-  python3 -m radar scan moxiebeauty.in --device desktop --headed   one screen size only
-  python3 -m radar scan moxiebeauty.in --suites smoke,cart
+  python3 -m radar scan shop063.example              discover, generate, test, report: desktop AND mobile
+  python3 -m radar scan shop063.example --device desktop --headed   one screen size only
+  python3 -m radar scan shop063.example --suites smoke,cart
   python3 -m radar bench stores/bench.txt           many stores, one table (see radar/bench.py)
   python3 -m radar sites                            every site scanned so far
-  python3 -m radar open moxiebeauty.in              open the latest report
+  python3 -m radar open shop063.example              open the latest report
 """
 from __future__ import annotations
 

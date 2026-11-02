@@ -38,7 +38,7 @@ def _pinned_first(items, pinned_handles, n):
 
 GENERIC = {"with", "pack", "size", "combo", "free", "mens", "women", "womens", "unisex", "kids", "new", "the",
            "and", "for", "set", "pcs", "piece", "pieces", "travel", "mini", "gift", "copy", "plain", "regular",
-           # promo / bundle words: stores often keep these items out of search on purpose (plumgoodness.com
+           # promo / bundle words: stores often keep these items out of search on purpose (shop040.example
            # 'Mystery Merch', bench 9: the store's search app showed 12 other products for 'mystery')
            "mystery", "merch", "bundle", "bundles", "sampler", "trial", "surprise", "offer", "offers", "freebie",
            "hamper", "limited", "edition", "exclusive", "special", "value", "saver", "deal", "deals", "full", "half"}
@@ -65,7 +65,7 @@ def _search_term(handle: str, title: str, brand_words: set[str]) -> str:
     def brand(w: str) -> bool:
         # a brand word, or part of a run-together brand like the domain label 'thehouseofrare' ('rare', 'house'):
         # thehouseofrare.com, bench 7 searched 'rare' and every product matched by brand, none by name
-        # plural of a brand word too: plumgoodness.com, bench 9 searched 'plums' and got all 246 products by brand
+        # plural of a brand word too: shop040.example, bench 9 searched 'plums' and got all 246 products by brand
         return any(s in brand_words or any(len(b) >= len(s) + 3 and s in b for b in brand_words) for s in _stems(w))
     for source in (handle.replace("-", " "), title):
         for w in re.findall(r"[A-Za-z]{4,}", source or ""):

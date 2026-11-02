@@ -6,7 +6,7 @@ OK, BAD = Attempt(True), Attempt(False, "add_to_cart", "x")
 
 
 def test_site_id_normalisation():
-    assert site_id_from_url("https://www.Vaaree.com/products/x") == "vaaree.com"
+    assert site_id_from_url("https://www.Shop125.example/products/x") == "shop125.example"
     assert site_id_from_url("xyz.in") == "xyz.in"
     assert site_id_from_url("https://shop.xyz.in:8080/") == "shop.xyz.in"
     with pytest.raises(ValueError):
@@ -29,12 +29,12 @@ def test_two_of_three_confirms():
 
 
 def test_signature_dedupes_same_outage():
-    assert signature("vaaree.com", "buy_journey", "add_to_cart") == "vaaree.com|buy_journey|add_to_cart"
+    assert signature("shop125.example", "buy_journey", "add_to_cart") == "shop125.example|buy_journey|add_to_cart"
 
 
 def test_vaaree_config_loads():
-    cfg = load_site("sites/vaaree.yml")
-    assert cfg.site_id == "vaaree.com" and cfg.access.user_agent.startswith("BugRadar/0.1")
+    cfg = load_site("sites/shop125.yml")
+    assert cfg.site_id == "shop125.example" and cfg.access.user_agent.startswith("BugRadar/0.1")
 
 
 def test_non_shopify_rejected(tmp_path):

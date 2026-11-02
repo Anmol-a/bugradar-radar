@@ -17,9 +17,9 @@ from radar.runner.executor import run_verdict
 
 # ---------- config ----------
 def test_normalize_and_site_id():
-    assert normalize_url("Moxiebeauty.in/products/x?y=1") == "https://moxiebeauty.in"
+    assert normalize_url("Shop063.example/products/x?y=1") == "https://shop063.example"
     assert normalize_url("http://localhost:8765/a") == "http://localhost:8765"
-    assert site_id_from_url("https://www.Vaaree.com/x") == "vaaree.com"
+    assert site_id_from_url("https://www.Shop125.example/x") == "shop125.example"
     assert site_id_from_url("shop.xyz.in") == "shop.xyz.in"
     assert site_id_from_url("http://127.0.0.1:9000") == "127.0.0.1_9000"
     with pytest.raises(ValueError):
@@ -313,7 +313,7 @@ def test_bench_summary_row():
     assert r["secs"] == 90 and r["warnings"] == 1 and len(r["failures"]) == 2
     run["cases"][2]["attempts"] = [{"ok": False, "failed_step": "click_into_product", "error": "opened the wrong product", "steps": []},
                                    {"ok": True, "steps": []}]
-    fl = summarise(run, "/r.html")["failures"][1]          # boat-lifestyle.com, bench 5: flaky row was empty
+    fl = summarise(run, "/r.html")["failures"][1]          # shop017.example, bench 5: flaky row was empty
     assert fl["step"] == "click_into_product" and fl["error"] == "failed once, passed on retry: opened the wrong product"
 
 
@@ -353,10 +353,10 @@ def test_title_match_tolerant_but_not_blind():
 
 
 def test_same_site_and_offsite():
-    assert same_site("https://moxiebeauty.in", "https://www.moxiebeauty.in/")
+    assert same_site("https://shop063.example", "https://www.shop063.example/")
     assert same_site("https://a.myshopify.com", "https://a.myshopify.com/x")
-    assert not same_site("https://antinorm.com", "https://zombo.com/")          # wrong domain in the list
-    assert not same_site("https://peepbeauty.com", "https://www.hugedomains.com/domain_profile.cfm")
+    assert not same_site("https://shop087.example", "https://zombo.com/")          # wrong domain in the list
+    assert not same_site("https://shop064.example", "https://www.hugedomains.com/domain_profile.cfm")
 
 
 def test_gift_clone_and_gift_card_products_excluded():
@@ -371,7 +371,7 @@ def test_gift_clone_and_gift_card_products_excluded():
 
 
 def test_gift_sku_by_product_type_or_whole_tag():
-    """suta.in 'Free Fabric' (type 'Freebies'): a gift SKU by the store's own label. A tag that only marks a real
+    """shop145.example 'Free Fabric' (type 'Freebies'): a gift SKU by the store's own label. A tag that only marks a real
     product as eligible for an offer ('free-gift-eligible') does not count."""
     from radar.discovery.discover import GIFT_KIND
     from radar.discovery.shopify_data import products_from_json, product_from_js
@@ -454,8 +454,8 @@ def test_triage_facts_for_store_side_findings():
     assert any("soft 404" in f for f in facts(soft, "", "Welcome"))
     hid = [{"what": "selected variant price shown", "expected": "₹199.00", "ok": False,
             "actual": "not on page (₹199.00 is only inside a hidden element <product-sticky-form.hidden-lap-and-up>, not shown on this screen size)"}]
-    fs = facts(hid, "", "Supply6 360\nADD TO CART")
-    assert any("hides at this screen size" in f and "real_store_problem" in f for f in fs)     # supplysix.com, bench 4
+    fs = facts(hid, "", "Shop111 360\nADD TO CART")
+    assert any("hides at this screen size" in f and "real_store_problem" in f for f in fs)     # shop084.example, bench 4
     assert not any("DOES appear" in f for f in fs)
 
 
@@ -501,9 +501,9 @@ def test_emulated_platform_matches_the_user_agent_sent():
 
 
 def test_search_term_skips_brand_plurals_and_promo_words():
-    """plumgoodness.com, bench 9: 'plums' (brand 'Plum' + s) matched all 246 products by brand; 'mystery' came from
+    """shop040.example, bench 9: 'plums' (the brand word + s) matched all 246 products by brand; 'mystery' came from
     a promo item the store's search app leaves out. Neither is a word a shopper's search can be judged by."""
-    brand = {"plum", "goodness", "plumgoodness", "bodylovin"}
+    brand = {"plum", "shop040"}
     assert _search_term("set-of-5-plums-2", "Set of 5 Plums", brand) == ""
     assert _search_term("mystery-merch", "Mystery Merch", brand) == ""
     assert _search_term("mystery-box-2-full-size", "Mystery Box (2 full-size)", brand) == ""
@@ -705,8 +705,8 @@ def test_cloud_publisher_on_our_own_server_publishes_only_this_runs_results(tmp_
 
 def test_price_shown_accepts_whole_rupee_rounding_only():
     from radar.checks.library import price_shown
-    assert price_shown(3391.50, [3990.0, 3392.0])[0]          # thelabellife.com
-    assert price_shown(727.18, [727.0])[0]                     # salty.co.in
+    assert price_shown(3391.50, [3990.0, 3392.0])[0]          # shop043.example
+    assert price_shown(727.18, [727.0])[0]                     # shop109.example
     assert price_shown(1299.0, [1299.0])[0]
     assert not price_shown(1299.0, [1300.0])[0]               # a whole-rupee price must match exactly
     assert not price_shown(727.18, [728.5])[0]
@@ -724,21 +724,21 @@ def test_webbotauth_signature_verifies_and_is_per_host():
     import secrets as _s
     t = [1_800_000_000]
     s = Signer(b64u(_s.token_bytes(32)), clock=lambda: t[0])
-    h = s.headers("https://www.bummer.in/products/x.js")
+    h = s.headers("https://www.shop129.example/products/x.js")
     assert h["Signature-Agent"] == '"https://bugradar.in"'
     assert 'tag="web-bot-auth"' in h["Signature-Input"] and 'alg="ed25519"' in h["Signature-Input"]
     assert f'keyid="{s.keyid}"' in h["Signature-Input"] and "created=1800000000;expires=1800003600" in h["Signature-Input"]
-    assert verify(h, "www.bummer.in", s.x) and not verify(h, "bummer.in", s.x)      # bound to the host
-    assert s.headers("https://www.bummer.in/") == h                                  # cached within its lifetime
+    assert verify(h, "www.shop129.example", s.x) and not verify(h, "shop129.example", s.x)      # bound to the host
+    assert s.headers("https://www.shop129.example/") == h                                  # cached within its lifetime
     t[0] += 3560
-    assert s.headers("https://www.bummer.in/") != h                                  # renewed before it expires
+    assert s.headers("https://www.shop129.example/") != h                                  # renewed before it expires
     assert authority("http://127.0.0.1:8765/x") == "127.0.0.1:8765" and authority("https://A.com:443/") == "a.com"
     d = s.directory()["keys"][0]
     assert d["kid"] == s.keyid and d["kty"] == "OKP" and d["crv"] == "Ed25519"
 
 
 def test_title_count_reads_shopifys_search_count():
-    """ptron.in / kushals.com (new30c, 10 Oct): Shopify prints its own result count in the search page title."""
+    """shop141.example / shop105.example (new30c, 10 Oct): Shopify prints its own result count in the search page title."""
     from radar.checks.library import _title_count
     assert _title_count('Search: 513 results found for "sonor" - pTron India') == 513
     assert _title_count('Search: 1,000 results found for "zircon"') == 1000
@@ -769,7 +769,7 @@ def test_footer_links_are_read_as_one_info_page_per_kind_same_store_only():
         ("privacy", "https://www.shop.example.in/pages/privacy-policy"), ("terms", base + "/pages/terms-conditions"),
         ("contact", base + "/pages/contact")]
     assert info_pages([], base) == []
-    # a company-law filing is not the refund page (giva.co, run 38077075618), nor any file under /cdn/
+    # a company-law filing is not the refund page (shop143.example, run 38077075618), nor any file under /cdn/
     filing = [{"text": "Annual Return FY 2024-25", "url": base + "/cdn/shop/t/234/assets/annual-return-fy-2024-25.pdf"},
               {"text": "Annual Return", "url": base + "/pages/annual-return"},
               {"text": "Returns", "url": base + "/pages/returns.pdf"},
@@ -872,13 +872,13 @@ def test_script_weight_warns_only_at_the_extreme():
 
 def test_dead_store_addresses_are_told_apart_from_temporary_problems():
     from radar.discovery.discover import dead_domain_reason as why
-    assert why("APIRequestContext.get: getaddrinfo ENOTFOUND skinq.in").startswith("the domain does not resolve")
-    assert why("APIRequestContext.get: getaddrinfo EAI_AGAIN wishcare.co").startswith("the domain did not resolve")
-    assert why("APIRequestContext.get: connect ECONNREFUSED 127.0.0.1:443", "bombae.in") == \
+    assert why("APIRequestContext.get: getaddrinfo ENOTFOUND shop142.example").startswith("the domain does not resolve")
+    assert why("APIRequestContext.get: getaddrinfo EAI_AGAIN shop113.example").startswith("the domain did not resolve")
+    assert why("APIRequestContext.get: connect ECONNREFUSED 127.0.0.1:443", "shop128.example") == \
         "the domain points to 127.0.0.1 (no server there), not to a store"
     assert why("connect ECONNREFUSED 127.0.0.1:9", "127.0.0.1") == ""      # a server address that is simply silent
     assert "(websitewelcome.com)" in why("APIRequestContext.get: Hostname/IP does not match certificate's altnames: "
-                                        "Host: brewhouse.in. is not in the cert's altnames: DNS:*.websitewelcome.com, DNS:websi")
+                                        "Host: shop089.example. is not in the cert's altnames: DNS:*.websitewelcome.com, DNS:websi")
     assert why("APIRequestContext.get: self-signed certificate; if the root CA is installed locally").startswith("its HTTPS")
     for temporary in ("APIRequestContext.get: Timeout 20000ms exceeded.", "Client network socket disconnected before secure "
                       "TLS connection was established", "connect ECONNREFUSED 104.18.2.3:443", ""):
@@ -906,8 +906,8 @@ def test_variant_switch_targets_prefer_in_stock_other_price_then_fewest_changes(
 
 
 def test_switch_verdict_ignores_the_address_radar_opened_with():
-    """Journey 22 round 2: ?variant= that was already in the address before the pick is no evidence (antinorm.co,
-    veirdo.in); any id field of the product form counts; form stale while the page shows the pick = not judged."""
+    """Journey 22 round 2: ?variant= that was already in the address before the pick is no evidence (shop099.example,
+    shop137.example); any id field of the product form counts; form stale while the page shows the pick = not judged."""
     from radar.checks.library import switch_verdict, marks_values
     form = lambda v, *more: {"variant": v, "all": [v, *more]}
     # no form, address unchanged, page marks the picked pill -> ok; marks nothing -> not judged, never 'kept old'
@@ -1134,7 +1134,7 @@ def test_filter_pick_prefers_in_stock_and_never_a_price_box_or_an_empty_option()
 
 def test_facet_count_reads_the_themes_own_count_next_to_a_filter_option():
     from radar.checks.library import facet_count
-    assert facet_count("Small (43)‎") == 43                     # maspar.com: an invisible direction mark after it
+    assert facet_count("Small (43)‎") == 43                     # shop121.example: an invisible direction mark after it
     assert facet_count("In stock (1,204)") == 1204 and facet_count("Out of stock ( 0 )") == 0
     assert facet_count("In stock only") is None and facet_count("") is None and facet_count("Size (S) Blue") is None
 
@@ -1283,7 +1283,7 @@ def test_storage_lists_open_incident_cases_per_device_and_closes_gone_pins(tmp_p
 
 
 def test_product_data_from_the_store_domain_when_a_headless_subdomain_answers_html():
-    """palmonas.com re-test (run 38534330264, phone): product pages live on shop.palmonas.com, whose /products/<h>.js
+    """shop095.example re-test (run 38534330264, phone): product pages live on shop.shop095.example, whose /products/<h>.js
     answers the HTML page; the store's own domain answers the data. Radar asks the store's domain next."""
     from types import SimpleNamespace
     from radar.checks import library as L
@@ -1333,7 +1333,7 @@ def test_store_wide_prepaid_discount_is_recognised():
 
 
 def test_storage_opens_concurrently_on_a_fresh_database(tmp_path):
-    """hathimasala.com (new30v): parallel scans opening a new radar.db at once hit 'database is locked'."""
+    """shop050.example (new30v): parallel scans opening a new radar.db at once hit 'database is locked'."""
     import threading
     from radar.core.storage import Storage
     errs = []
@@ -1357,7 +1357,7 @@ def test_per_unit_price_of_a_multi_unit_variant():
 
 
 def test_more_links_skip_slideshow_controls():
-    """zenvistapackagings.in (new31b): the hero slideshow's dots are links ('Slide 1, current', 'Load slide 1' ->
+    """shop006.example (new31b): the hero slideshow's dots are links ('Slide 1, current', 'Load slide 1' ->
     /Hero-slideshow); Radar opened them as pages and failed them. They are carousel controls."""
     from radar.discovery.discover import more_links
     links = [{"where": "homepage section", "text": "Slide 1, current", "url": "https://s.in/Hero-slideshow"},
@@ -1368,7 +1368,7 @@ def test_more_links_skip_slideshow_controls():
 
 
 def test_more_links_skip_broken_javascript_hrefs():
-    """sahnibakery.com (new31e): 'Quick Shop' buttons carry href='javascript void(0)' (no colon), which resolves to
+    """shop053.example (new31e): 'Quick Shop' buttons carry href='javascript void(0)' (no colon), which resolves to
     /javascript%20void(0); a script control, not a page to open."""
     from radar.discovery.discover import more_links
     links = [{"where": "homepage section", "text": "Quick Shop", "url": "https://s.in/javascript%20void(0)"},
@@ -1377,7 +1377,7 @@ def test_more_links_skip_broken_javascript_hrefs():
 
 
 def test_gst_inclusive_price():
-    """kanchisilver.com (new31f): ₹32,000 in Shopify, 'Rs. 32,960 INR' on the page = +3% GST."""
+    """shop039.example (new31f): ₹32,000 in Shopify, 'Rs. 32,960 INR' on the page = +3% GST."""
     from radar.checks.library import gst_inclusive
     assert "3% GST" in gst_inclusive(32000.0, [32960.0])
     assert "18% GST" in gst_inclusive(1000.0, [1180.0])

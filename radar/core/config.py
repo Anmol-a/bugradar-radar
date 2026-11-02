@@ -18,7 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 
 
 def normalize_url(url: str) -> str:
-    """'moxiebeauty.in' -> 'https://moxiebeauty.in'. Keeps the host as given (www kept for
+    """'shop063.example' -> 'https://shop063.example'. Keeps the host as given (www kept for
     requests), drops path/query: Radar always starts from the homepage."""
     url = (url or "").strip()
     if not url:
