@@ -55,6 +55,8 @@ def _norm(s) -> str:
     return re.sub(r"[^a-z0-9]+", " ", str(s or "").lower()).strip()
 
 
+# assertion names of the checks that open links themselves (checks/library.py links_resolve, more_links_resolve)
+_LINK_CHECKS = ("broken navigation pages", "links beyond the menu that fail to open")
 _PRICE_LINE = re.compile(r"(₹|rs\.?|inr)\s*\d", re.I)
 _KNOWN_BUY = re.compile(r"\b(add|cart|bag|buy)\b", re.I)
 
@@ -112,6 +114,18 @@ def facts(checks: list[dict], error: str | None, page_text: str | None) -> list[
     if any("page that does not exist" in str(c.get("what")) for c in checks if not c.get("ok")):
         out.append("A page that should not exist did not return HTTP 404 (a 'soft 404'). This is how the store's server is "
                    "configured, not something the robot did; it is a minor real store problem (search engines index junk pages).")
+    # 3 Nov: a planted broken menu link (bugradar-shopper-test, 28 Oct) was triaged "robot looked in the wrong place"
+    # because a link's ADDRESS is never in the visible text. The link check opened each address itself in a real
+    # browser; a non-zero count of pages that fail to open is the store's broken link, not a Radar locator problem.
+    for c in checks:
+        if c.get("ok") or str(c.get("what")) not in _LINK_CHECKS:
+            continue
+        mm = re.match(r"\s*(\d+)\s*:\s*(.+)", str(c.get("actual") or ""))
+        if mm and int(mm.group(1)) > 0:
+            out.append(f"Code opened each of these links itself in a real browser and they failed to open (error or "
+                       f"missing page): {mm.group(2)[:200]}. A link's address is in the page's HTML, not in its visible text, "
+                       "so the address not appearing in the page text proves nothing. This is a broken link a shopper can "
+                       "click: real_store_problem (store_bug).")
     if m:
         what = m.group(1) or f"{m.group(2)}.{(m.group(3) or '').split()[0] if m.group(3) else ''}"
         out.append(f"The robot's click target was covered by another element lying on top of it ({what}).")
