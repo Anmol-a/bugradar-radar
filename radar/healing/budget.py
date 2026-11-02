@@ -2,9 +2,11 @@
 
 Every AI call Radar makes, on every machine (Contabo's workers, GitHub's runs), is added to one shared ledger in the
 BugRadar database (public.llm_spend, function llm_spend_by_key, dashboard migration 34). The ledger answers "ok" while
-today's spend is under $3 and this month's under $90. Once it says no, Radar stops asking the AI until the next day:
-checks still run and alert exactly as before, only without the AI's extra judging. $3 a day can't add up to more than
-$93 in any month, and the Claude Console's own monthly limit is the backstop above that.
+today's spend is under the day cap and this month's under the month cap. The caps live on the BugRadar side, in one
+settings row (llm_spend_settings, migration 34): $2.25 a day / $70 a month by default (3 Nov, Anmol: the rest of the
+$100 stays for sync8), changed or paused with one update, no deploy. Once it says no, Radar stops asking the AI until
+the next day: checks still run and alert exactly as before, only without the AI's extra judging. $2.25 a day can't add
+up to more than $70 in any month, and the Claude Console's own monthly limit is the backstop above that.
 
   RemoteBudget   the shared ledger, reached with the operator's upload key (BUGRADAR_KEY) like the worker's other calls.
                  If the ledger can't be reached, the answer is NO (fail closed): no AI rather than unknown spend.

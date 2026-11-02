@@ -17,7 +17,7 @@ Providers (switching = one line in .env; prompts and code stay the same):
   none            Healing stays heuristic-only, no triage.
   auto (default)  anthropic if ANTHROPIC_API_KEY is set (30 Oct: Claude first, the credits are already paid for), else
                   openai if OPENAI_API_KEY, else openai_compat if configured, else none.
-Every call passes the spend guard first (budget.py: $3 a day, $90 a month across all machines); over it, no AI.
+Every call passes the spend guard first (budget.py: $2.25 a day, $70 a month by default, across all machines); over it, no AI.
 """
 from __future__ import annotations
 

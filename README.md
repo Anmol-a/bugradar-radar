@@ -82,7 +82,7 @@ GitHub Actions workflow `.github/workflows/radar-cloud.yml` (AI: repo secret `AN
   `/home/radar/radar-data`, so run history and incidents carry over between runs.
 
 ## LLM (healing + failure triage)
-Put the key in `.env` (template: `.env.example`). Default (30 Oct): Claude `claude-haiku-5-5` on the Max plan's API credits, with a spend guard of $3 a day / $90 a month across all machines (`radar/healing/budget.py`). Fallback: OpenAI `gpt-5-mini` (15/15 on llm-check, 5 Oct).
+Put the key in `.env` (template: `.env.example`). Default (30 Oct): Claude `claude-haiku-5-5` on the Max plan's API credits, with a spend guard across all machines: $2.25 a day / $70 a month by default, changed or paused in one setting on the BugRadar side (`llm_spend_settings`, migration 34) (`radar/healing/budget.py`). Fallback: OpenAI `gpt-5-mini` (15/15 on llm-check, 5 Oct).
 ```bash
 python3 -m radar llm-check                    # score the model on 22 known failure cases (~$0.002)
 python3 -m radar llm-check --model gpt-4o-mini # try another model without editing .env
