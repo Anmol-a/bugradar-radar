@@ -47,7 +47,7 @@ jobs:
           RADAR_WORKER_NAME: contabo-${{ github.run_id }}
         run: |
           . "$HOME/radar-venv/bin/activate"
-          python -m radar worker --scans-only --for 540 2>&1 | grep -vE "SyntaxWarning|st = ctx|m = ctx" | tee worker.log
+          python -m radar worker --scans-only --for 540 2>&1 | grep -vE "SyntaxWarning|st = ctx|m = ctx" | python tools/redact_stream.py | tee worker.log
       - name: Summary
         if: always()
         run: |
@@ -80,7 +80,7 @@ jobs:
           RADAR_SIGNING_KEY: ${{ secrets.RADAR_SIGNING_KEY }}
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
           RADAR_WORKER_NAME: github-${{ github.run_id }}
-        run: python3 -m radar worker --scans-only --for 540 2>&1 | tee worker.log
+        run: python3 -m radar worker --scans-only --for 540 2>&1 | python3 tools/redact_stream.py | tee worker.log
       - name: Summary
         if: always()
         run: |
