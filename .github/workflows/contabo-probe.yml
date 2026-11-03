@@ -69,7 +69,9 @@ jobs:
             { grep -c '^BUGRADAR_KEY=.' "$HOME/radar.env" || true; } | sed 's/^/  BugRadar key in radar.env (want 1): /';
             { grep -c RADAR_ALLOW_PRIVATE_HOSTS "$HOME/radar.env" || true; } | sed 's/^/  test switch NOT set on the worker (want 0): /';
             echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none";
-            echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 3 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } \
-            | GITHUB_ACTIONS=true python3 "$HOME/radar-src/tools/redact_stream.py"
+            echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 3 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } > probe.txt
+          # bare store names ("sent brand.in mobile") are masked too: every web-address-like word is handed to the masker
+          grep -oiE '\b[a-z0-9-]+(\.[a-z0-9-]+)*\.(com|in|co\.in|co\.uk|uk|store|shop|co|net|org|io|ae|sg|au|ca|us|online|life|world|in\.net)\b' probe.txt | sort -u > hosts.txt || true
+          GITHUB_ACTIONS=true python3 "$HOME/radar-src/tools/redact_stream.py" hosts.txt < probe.txt; rm -f probe.txt hosts.txt
           # 3 Nov: the result stays in this run's log (store names masked). It no longer goes to the public probe-results
           # branch, which named stores and has been deleted.
