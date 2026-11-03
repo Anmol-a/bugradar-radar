@@ -1382,3 +1382,16 @@ def test_gst_inclusive_price():
     assert "3% GST" in gst_inclusive(32000.0, [32960.0])
     assert "18% GST" in gst_inclusive(1000.0, [1180.0])
     assert gst_inclusive(32000.0, [33500.0]) is None
+
+
+def test_triage_fact_broken_links_are_the_store_not_the_robot():
+    """3 Nov: a planted broken menu link was triaged 'robot looked in the wrong place' (the address is never in the
+    visible text). The link check opened it itself; triage must be told so."""
+    from radar.healing.triage import facts
+    menu = [{"what": "broken navigation pages", "expected": 0, "actual": "1: /pages/this-page-does-not-exist", "ok": False}]
+    f = facts(menu, None, "Home Shop About Contact")
+    assert any("/pages/this-page-does-not-exist" in x and "real_store_problem" in x for x in f), f
+    other = [{"what": "links beyond the menu that fail to open", "expected": 0, "actual": "2: homepage /collections/a, footer /pages/b", "ok": False}]
+    assert any("real_store_problem" in x for x in facts(other, None, ""))
+    assert not any("failed to open" in x for x in facts([{**menu[0], "ok": True}], None, ""))           # passed: no fact
+    assert not any("failed to open" in x for x in facts([{**menu[0], "actual": "0"}], None, ""))       # zero broken: no fact
