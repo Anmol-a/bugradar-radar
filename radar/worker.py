@@ -51,6 +51,7 @@ from typing import Protocol
 
 from radar.core.config import Settings, load_settings
 from radar.core.netguard import public_url
+from radar.core.redact import install, remember
 
 # the store's answer as the dashboard's monitor row records it (worst device wins)
 ORDER = ["healthy", "degraded", "blocked", "unsupported", "unreachable", "no_network", "down", "error"]
@@ -468,6 +469,7 @@ def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log
     Returns the row that ran, or None when nothing was due. scans_only: never a monitor (the GitHub free-scan worker)."""
     req = queue.claim_scan(worker) if hasattr(queue, "claim_scan") else None
     if req:
+        remember(req.get("url") or "", req.get("host") or "")      # public logs on GitHub: alias, not the name
         log(f"[{_now()}] {worker}: free scan {req['url']} ({req['id']})")
         prog = ScanProgress(lambda st: queue.scan_progress(req["id"], st), log) if hasattr(queue, "scan_progress") else None
         r = run_scan(req, base, upload=upload, log=log, progress=prog)
@@ -480,6 +482,7 @@ def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log
     m = queue.claim(worker)
     if not m:
         return None
+    remember(m.get("url") or "")
     log(f"[{_now()}] {worker}: {m['url']} on {','.join(m.get('devices') or ['desktop', 'mobile'])}")
     if hasattr(queue, "store_password") and m.get("id"):
         try:
@@ -551,6 +554,7 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--for", dest="seconds", type=int, default=0, metavar="SECS",
                     help="drain the queue for this many seconds, then exit (a GitHub job); 0 = run for ever")
     a = ap.parse_args(argv)
+    install()             # on GitHub (a public repo's logs): store names become aliases; elsewhere nothing changes
     worker = os.environ.get("RADAR_WORKER_NAME") or socket.gethostname()
     base = load_settings()
     q = queue_from_env()

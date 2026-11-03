@@ -62,7 +62,7 @@ _OS = {"Darwin": "Macintosh; Intel Mac OS X 10_15_7", "Windows": "Windows NT 10.
 
 # The desktop shopper Radar emulates: Chrome on Windows, the commonest desktop in India, whatever machine Radar runs
 # on (9 Oct: GitHub's machines are Linux, and stores' 'speed' snippets treat a 'Linux x86_64' browser as Google
-# PageSpeed and never run the theme for it: bonkerscorner.com, bellavitaorganic.com, baccabucci.com).
+# PageSpeed and never run the theme for it: shop025.example, shop007.example, shop059.example).
 DESKTOP_SYSTEM = "Windows"
 # navigator.platform of each emulated device, kept consistent with the User-Agent Radar sends. Playwright's device
 # emulation changes the UA but leaves navigator.platform at the host's ('Linux x86_64'), a mix no real phone shows.
@@ -394,8 +394,8 @@ class Session:
 
     def first_touch(self):
         """Speed apps hold the theme's scripts until the shopper's first interaction (mousemove / touch / wheel):
-        until then html stays 'no-js', prices and galleries stay hidden, search apps never render (baccabucci.com,
-        bellavitaorganic.com, 9 Oct). A shopper always moves or touches; when the page shows held scripts, Radar
+        until then html stays 'no-js', prices and galleries stay hidden, search apps never render (shop059.example,
+        shop007.example, 9 Oct). A shopper always moves or touches; when the page shows held scripts, Radar
         moves the mouse along the left edge (no menus or exit-intent there) and wheels 0 px, then waits for them."""
         try:
             if not self.page.evaluate(self.DELAYED_JS):
@@ -479,7 +479,7 @@ class Session:
         if not self.allowed(url):
             raise RobotsBlocked(f"robots.txt disallows {url}")
         # Store data (/products/x.js, /cart.js) is retried on a transient miss: no answer, a 5xx/429, or a body
-        # that is not JSON (bench 11: palmonas.com returned an empty body once, wellbeingnutrition.com timed out
+        # that is not JSON (bench 11: shop095.example returned an empty body once, shop002.example timed out
         # once; both passed on the next attempt). A real 4xx is final.
         last, limited, after = None, 0, 0
         for i, wait in enumerate((0, 1000, 3000, 8000, 20000)):
@@ -517,7 +517,7 @@ class Session:
             except Exception as e:  # noqa: BLE001  timeout, reset, DNS
                 last = f"no answer ({str(e).splitlines()[0][:120]})"
                 if "Invalid character in header" in str(e):
-                    # a store cookie holding an emoji (paramountchess.com, new30z4) breaks the browser context's request
+                    # a store cookie holding an emoji (shop019.example, new30z4) breaks the browser context's request
                     # headers: ask from inside the page instead, as the store's own scripts do
                     try:
                         got = self.page.evaluate("""async (u) => { const r = await fetch(u, {credentials: 'same-origin'});

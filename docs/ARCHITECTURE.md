@@ -3,13 +3,13 @@
 Rule for this file: it says what works, what is proven, what is not, and what hurts. No bluff.
 It is updated with every change.
 
-Last updated: 11 Oct 2026 · Framework v0.19 (207 tests: 91 unit, 116 e2e). Journeys from the URL alone: sections 4, 4zc–4zd; regression on 36 stores at 0 Radar false failures; never-seen score 2/19 (new30g, run once). Earlier: 7 Oct 2026 · v0.18 (**desktop + mobile in every run**, section 4r). **First honest score (held-out run, 30 never-seen stores, v0.16, run once): 23 Shopify stores tested; 21 judged correctly, 2 stores with Radar false failures (nicobar, true-elements: buy control not recognised) = 2/30, target was ≤ 1/30, MISSED.** Both are one pattern, fixed in v0.17 (4q). 5 of 30 stores are not Shopify themes (custom/headless) and are not covered by Radar v1 at all.
+Last updated: 11 Oct 2026 · Framework v0.19 (207 tests: 91 unit, 116 e2e). Journeys from the URL alone: sections 4, 4zc–4zd; regression on 36 stores at 0 Radar false failures; never-seen score 2/19 (new30g, run once). Earlier: 7 Oct 2026 · v0.18 (**desktop + mobile in every run**, section 4r). **First honest score (held-out run, 30 never-seen stores, v0.16, run once): 23 Shopify stores tested; 21 judged correctly, 2 stores with Radar false failures (shop107, shop034: buy control not recognised) = 2/30, target was ≤ 1/30, MISSED.** Both are one pattern, fixed in v0.17 (4q). 5 of 30 stores are not Shopify themes (custom/headless) and are not covered by Radar v1 at all.
 
 ---
 
 ## 1. What it does in one line
 
-`python3 -m radar scan moxiebeauty.in` → finds out what the store is, discovers its pages and
+`python3 -m radar scan shop063.example` → finds out what the store is, discovers its pages and
 products, **generates** test suites, runs them in a real browser with retries and self-healing
 locators, stores everything per site, and writes an interactive report.
 
@@ -132,12 +132,12 @@ The add-to-cart assertions (journey and cart test), all checked against the stor
 | cart total went up by the product price | `/cart.js` total_price (warning only: automatic discounts change totals legitimately) |
 | cart (drawer or page) lists the product; checkout button visible + enabled | the page; checkout never clicked |
 
-**Why this exists:** on 3 Oct, on moxiebeauty.in, Radar's old locator ("first add-to-cart
+**Why this exists:** on 3 Oct, on shop063.example, Radar's old locator ("first add-to-cart
 button in the page") clicked a *quick-add button on a product card* that sits before the main
 form in the DOM. Product A was open, product B was added, and the journey still passed
 because it only checked "cart count went up". Proven from the Playwright trace (locator resolved
 to `quick-add-template--…-submit`, request body `id=51469498810690`). It was Radar's bug, not
-Moxie's. The mock store now reproduces that layout on every product page, and a `wrong_variant`
+Shop063's. The mock store now reproduces that layout on every product page, and a `wrong_variant`
 mode proves a store that really sends the wrong product is caught and named.
 
 ## 4c. Built for every Shopify store, not one
@@ -148,7 +148,7 @@ endpoints every Shopify Online Store has: `/products.json`, `/products/<handle>.
 
 | Pattern (where first seen) | General rule | Mock mode |
 |---|---|---|
-| Quick-add buttons on product cards (moxiebeauty.in; Dawn and most OS 2.0 themes) | only the form whose variant belongs to the open product; cards/carousels/upsells excluded at every locator rung | every PDP |
+| Quick-add buttons on product cards (shop063.example; Dawn and most OS 2.0 themes) | only the form whose variant belongs to the open product; cards/carousels/upsells excluded at every locator rung | every PDP |
 | Cart drawer covering the page (Dawn default) | detect the open drawer, assert inside it | every PDP |
 | Free gift auto-added (gift-with-purchase apps) | extra Rs 0 item = warning; extra paid item = failure | `free_gift` |
 | Rs 0 sample products that JS-redirect | excluded from product/cart tests; page waits for client-side redirects | every store |
@@ -178,7 +178,7 @@ into "Radar's bug" vs "real store issue", fix Radar's bugs as general rules (wit
 rerun, until Radar's own false failures across the list are zero.
 
 `stores/bench.txt` holds Shopify's theme demo stores (cart flow on: no merchant affected), the
-BugRadar Phase-3 prospects and other Indian D2C stores (read-only). thesleepcompany.in and
+BugRadar Phase-3 prospects and other Indian D2C stores (read-only). shop022.example and
 the owner's private exclusion list are deliberately excluded.
 
 ## 4e. First bench (36 stores, 4 Oct): root-cause analysis
@@ -188,23 +188,23 @@ Playwright trace logs/DOM snapshots). **All 10 were Radar's bugs, not store bugs
 
 | Radar bug | Stores | Evidence | General fix |
 |---|---|---|---|
-| Product picker looked at only the first 30 links; all were hidden mega-menu links | plumgoodness | trace: picker never reached a visible card | click engine considers every candidate |
-| Clicked elements covered by a chat bubble / hero image, or off-screen carousel slides | suta, rarerabbit, mcaffeine | trace: "WhatsApp chat widget intercepts pointer events", "element is outside of the viewport" | scroll to centre + hit-test (`elementFromPoint`) before choosing |
-| Clicked a disabled menu parent (`aria-disabled="true"`) | beminimalist | trace | disabled / inert / aria-hidden elements skipped |
-| Opened the wrong dropdown, then gave up | giva | trace: clicked "Product Type" summary | open each header dropdown in turn |
-| Required a collection link on the homepage | theme-origin, theme-spotlight, snitch | Origin snapshot: only collection link is inside the empty cart drawer | collection step is soft; journey goes home → product |
+| Product picker looked at only the first 30 links; all were hidden mega-menu links | shop040 | trace: picker never reached a visible card | click engine considers every candidate |
+| Clicked elements covered by a chat bubble / hero image, or off-screen carousel slides | shop194, rarerabbit, shop078 | trace: "WhatsApp chat widget intercepts pointer events", "element is outside of the viewport" | scroll to centre + hit-test (`elementFromPoint`) before choosing |
+| Clicked a disabled menu parent (`aria-disabled="true"`) | shop047 | trace | disabled / inert / aria-hidden elements skipped |
+| Opened the wrong dropdown, then gave up | shop195 | trace: clicked "Product Type" summary | open each header dropdown in turn |
+| Required a collection link on the homepage | theme-origin, theme-spotlight, shop123 | Origin snapshot: only collection link is inside the empty cart drawer | collection step is soft; journey goes home → product |
 | Used Shopify's hidden `frontpage` collection | theme-origin | catalog: 0 products | `frontpage` excluded |
-| Popup inside an iframe could not be closed | bummer | trace: `popup-iframe-open-…` intercepts pointer events | close button found inside the frame; Escape fallback |
-| Required the page title to equal the catalog title exactly | plum, snitch, rarerabbit | "50 ml" vs "50ml", short display names | hard: a product title is visible; soft: it matches the catalog |
-| Tested a gift-app clone product | plumgoodness | handle `…_sca_clone_freegift` | clones, gift cards, samplers excluded |
-| A page served with no network response counted as broken | thefunclab, plumgoodness (`/`) | status `null` | Navigation Timing status, else content check |
+| Popup inside an iframe could not be closed | shop129 | trace: `popup-iframe-open-…` intercepts pointer events | close button found inside the frame; Escape fallback |
+| Required the page title to equal the catalog title exactly | shop192, shop123, rarerabbit | "50 ml" vs "50ml", short display names | hard: a product title is visible; soft: it matches the catalog |
+| Tested a gift-app clone product | shop040 | handle `…_sca_clone_freegift` | clones, gift cards, samplers excluded |
+| A page served with no network response counted as broken | shop068, shop040 (`/`) | status `null` | Navigation Timing status, else content check |
 | Searched the brand name ("rare") | rarerabbit | search | search word from the product handle, brand words excluded |
-| "robots.txt blocks the whole site" reported as an error | vaaree | note | verdict BLOCKED |
+| "robots.txt blocks the whole site" reported as an error | shop125 | note | verdict BLOCKED |
 
-**Real store findings in that run:** foxtale.in returns HTTP 200 for missing product pages (soft-404),
+**Real store findings in that run:** shop116.example returns HTTP 200 for missing product pages (soft-404),
 plus the warnings (JS errors, missing og:image, etc.).
-**Wrong entries in the store list (mine):** antinorm.com → redirects to zombo.com, peepbeauty.com →
-domain for sale, supply6.com → does not resolve. Radar now says "wrong / dead URL" for these.
+**Wrong entries in the store list (mine):** shop087.example → redirects to zombo.com, shop064.example →
+domain for sale, shop111.example → does not resolve. Radar now says "wrong / dead URL" for these.
 
 **Search and robots.txt:** many stores disallow `/search` in robots.txt (it stops crawlers indexing
 endless result pages). Radar now treats a search typed into the store's own search box as a shopper
@@ -226,11 +226,11 @@ Run on Anmol's Mac with v0.6 (files landed 11:07 UTC). The three wrong domains w
 | Blocked / unsupported / unreachable / error | 0 / 3 / 0 / 2 | 1 / 1 / 1 / 0 |
 
 **What the v0.6 fixes did to bench 1's 10 DOWN stores:**
-- 4 now healthy: suta, mcaffeine, beminimalist, giva.
+- 4 now healthy: shop194, shop078, shop047, shop195.
 - 1 was a list problem: rarerabbit.in now redirects to thehouseofrare.com, reported as wrong/dead URL.
-- 5 still down, some for new reasons: plumgoodness, theme-origin, theme-spotlight, snitch, bummer.
+- 5 still down, some for new reasons: shop040, theme-origin, theme-spotlight, shop123, shop129.
 - **2 newly down because of a check I added in v0.6** (a regression, mine): theme-publisher and
-  palmonas. They fail "product title heading visible".
+  shop095. They fail "product title heading visible".
 
 **The 7 DOWN stores, each failure as Radar reported it.** None of these has been shown to be a real
 store bug. Treat all 7 as Radar false failures until a trace says otherwise.
@@ -238,12 +238,12 @@ store bug. Treat all 7 as Radar false failures until a trace says otherwise.
 | Store (theme) | Failing test → step | Radar's message | Suspected cause (NOT yet verified from trace/DOM) |
 |---|---|---|---|
 | theme-publisher (Dawn-based) | journey + product → shows_title_price_image | product title heading visible: got none | heading check too narrow, see A |
-| palmonas (Unsen) | journey → shows_title_price_image | same | A |
-| plumgoodness (Focal) | journey + product → shows_title_price_image | same | A |
-| snitch (Impulse) | product → shows_title_price_image | same | A |
-| snitch | journey → click_into_product | product card a shopper can click: none on / | see B |
-| bummer (custom "Bummer 3.0") | product → shows_title_price_image | same heading failure | A |
-| bummer | journey → click_into_product | product card: none on /collections/men | B |
+| shop095 (Shop095) | journey → shows_title_price_image | same | A |
+| shop040 (Focal) | journey + product → shows_title_price_image | same | A |
+| shop123 (Impulse) | product → shows_title_price_image | same | A |
+| shop123 | journey → click_into_product | product card a shopper can click: none on / | see B |
+| shop129 (custom "Shop129 3.0") | product → shows_title_price_image | same heading failure | A |
+| shop129 | journey → click_into_product | product card: none on /collections/men | B |
 | theme-origin (Origin) | journey → click_into_product | product card: none on / | B (Origin's homepage has no collection link, so the journey goes home → product) |
 | theme-spotlight (Spotlight) | journey → click_into_product | could not click: `</div>` subtree intercepts pointer events | see C |
 
@@ -261,7 +261,7 @@ copying each failing markup.
 **B. Product card "none" (3 stores).** `PICK_JS` filters every `/products/` link: visible, not in
 cart drawer or quick-add, not `aria-hidden`/`inert`, then scrolls each one to the centre and
 hit-tests it. "none" means every candidate failed one of those. Not yet known which filter. First
-step for the next session: open the trace for theme-origin and snitch, run PICK_JS by hand on the
+step for the next session: open the trace for theme-origin and shop123, run PICK_JS by hand on the
 DOM snapshot, log which filter removed each card.
 
 **C. Click intercepted after a passing hit-test (theme-spotlight).** `PICK_JS` hit-tests at
@@ -270,19 +270,19 @@ card link those are different points, and another `<div>` (image overlay, badge,
 layer) can cover the centre. Likely fix: click at the same point that was hit-tested
 (`click(position=...)`), or hit-test the centre too. Verify against the trace first.
 
-**D. Search relevance (foxtale.in, degraded, not down).** Searching "plumping" (word from a product
-handle) returned 8 products, none mentioning the word. Foxtale has no search form on the homepage,
+**D. Search relevance (shop116.example, degraded, not down).** Searching "plumping" (word from a product
+handle) returned 8 products, none mentioning the word. Shop116 has no search form on the homepage,
 so Radar used Shopify's `/search`. Not yet known whether this is a real relevance problem or Radar's
 relevance check being too literal (e.g. "plumper" vs "plumping"). Check by hand before reporting.
 
 **Real store findings in bench 2** (not Radar's bugs, checked from the run data):
-- soulflower.in: a missing page redirects to `/` with HTTP 200 (soft-404).
-- foxtale.in: a missing page returns HTTP 200 (soft-404).
-- soulflower.in's journey was flaky (failed once, passed on retry); cause not looked at.
+- shop083.example: a missing page redirects to `/` with HTTP 200 (soft-404).
+- shop116.example: a missing page returns HTTP 200 (soft-404).
+- shop083.example's journey was flaky (failed once, passed on retry); cause not looked at.
 
-**Store list fixes still to do:** rarerabbit.in → thehouseofrare.com; real domains for Supply6,
-Antinorm, Peep Beauty (Anmol to supply). Vaaree stays: robots.txt blocks Radar (expected BLOCKED).
-thewholetruthfoods stays as the not-Shopify negative control.
+**Store list fixes still to do:** rarerabbit.in → thehouseofrare.com; real domains for Shop111,
+Shop099, Shop079 (Anmol to supply). Shop125 stays: robots.txt blocks Radar (expected BLOCKED).
+shop148 stays as the not-Shopify negative control.
 
 **Checkout apps seen across the 33 stores:**
 - Shopify's own checkout: 12 stores.
@@ -307,54 +307,54 @@ message as on the real store; v0.7 passes them.
 | Store | Real cause (from the trace) | Whose bug | Fix (general rule) | Mock mode |
 |---|---|---|---|---|
 | theme-publisher | Product name is an `<h2>` rich-text block; no `<h1>` on the page | Radar | Name found anywhere it is shown: every visible text matching the catalog title is scored (heading + font size), not just `h1`/"title" classes | `title_layouts` |
-| palmonas | Name is a 12px `<span>` in `div.px-product-header` | Radar | same | `title_layouts` |
-| bummer (PDP) | `<body class="... card-hover-effect-none">`: the "inside a card" exclusion matched `<body>`, so every title was excluded | Radar | "Another product's card" = small box mostly covered by a link to a DIFFERENT product; class names never used; `<body>` never excludes | `title_layouts` |
-| plumgoodness | Radar tested a Rs 1 freebie SKU from `/products.json`; its page says "The product is currently unavailable" | Radar (test data) | Token-priced products (≤ 10% of the median price and ≤ 50) are skipped; products listed in the browsed collections are tested first | healthy (`gift-pouch`) |
-| snitch | snitch.co.in moved to snitch.com; product pages show only an "upgrade" banner | **Store** (intentional move) | Correct FAIL; bench list now uses snitch.com | `no_title` |
+| shop095 | Name is a 12px `<span>` in `div.px-product-header` | Radar | same | `title_layouts` |
+| shop129 (PDP) | `<body class="... card-hover-effect-none">`: the "inside a card" exclusion matched `<body>`, so every title was excluded | Radar | "Another product's card" = small box mostly covered by a link to a DIFFERENT product; class names never used; `<body>` never excludes | `title_layouts` |
+| shop040 | Radar tested a Rs 1 freebie SKU from `/products.json`; its page says "The product is currently unavailable" | Radar (test data) | Token-priced products (≤ 10% of the median price and ≤ 50) are skipped; products listed in the browsed collections are tested first | healthy (`gift-pouch`) |
+| shop123 | shop097.example moved to shop123.example; product pages show only an "upgrade" banner | **Store** (intentional move) | Correct FAIL; bench list now uses shop123.example | `no_title` |
 | theme-spotlight | Hit-test passed near the card's top, Playwright then re-scrolled and clicked the centre, where a `<div>` sits | Radar | Click at the exact point that was hit-tested (`mouse.click(x, y)`), link itself preferred over its card | `card_layouts` |
 | theme-origin | No collection link on the homepage, so Radar opened the menu drawer; the drawer stayed open and covered the product link | Radar | Fresh homepage after the collection search fails | `no_collection_links` (now with a drawer) |
-| bummer (journey) | Does not reproduce offline (58 cards clickable in the snapshot): something live (JS) covered or animated the cards | Probably Radar | (1) a click inside the product's own card counts (image sliders over the link); (2) a second look after 1.2 s (entrance animations); (3) a "none" now says WHY per link ("62 links: 58 covered by div.swiper, 4 not visible") | `card_layouts` |
+| shop129 (journey) | Does not reproduce offline (58 cards clickable in the snapshot): something live (JS) covered or animated the cards | Probably Radar | (1) a click inside the product's own card counts (image sliders over the link); (2) a second look after 1.2 s (entrance animations); (3) a "none" now says WHY per link ("62 links: 58 covered by div.swiper, 4 not visible") | `card_layouts` |
 
-**Real store findings kept from bench 2:** soulflower.in and foxtale.in soft-404s; foxtale search
+**Real store findings kept from bench 2:** shop083.example and shop116.example soft-404s; shop116 search
 relevance still to check by hand.
 
 **Still to prove on the Mac:** rerun the bench with v0.7. Expected: the 6 Radar causes above gone;
-snitch.com/thehouseofrare.com/supplysix.com/antinorm.co/peepbeauty.in are new rows; bummer's journey is
+shop123.example/thehouseofrare.com/shop084.example/shop099.example/shop079.example are new rows; shop129's journey is
 either fixed or now explains itself.
 
 ## 4h. Third bench (36 stores, 5 Oct, v0.7.2 with gpt-5-mini triage): results and root causes
 
 `data/bench/20261005T080226Z/` on the Mac. 33 testable stores: **25 healthy, 6 degraded, 2 down**
-(bench 2: 21 / 2 / 7). All of bench 2's DOWN stores now pass (Publisher, Spotlight, Origin, Plum,
-Bummer; Palmonas degraded by one flaky step; Snitch moved to snitch.com, which is not Shopify).
-Not testable: vaaree (robots.txt, expected), thewholetruthfoods + snitch.com (not Shopify).
+(bench 2: 21 / 2 / 7). All of bench 2's DOWN stores now pass (Publisher, Spotlight, Origin, Shop192,
+Shop129; Shop095 degraded by one flaky step; Shop123 moved to shop123.example, which is not Shopify).
+Not testable: shop125 (robots.txt, expected), shop148 + shop123.example (not Shopify).
 
 Every failure was diagnosed from its trace (offline DOM replay + network log + screenshots):
 
 | Store | Failure | Real cause | Whose | v0.8 fix | Mock mode (old code fails it with the same message) |
 |---|---|---|---|---|---|
-| dotandkey (DOWN) | clicked product, stayed on collection | SearchTap re-renders the grid ~1 s after load; the click hit the old grid (no product request in the network log) | Radar | wait until product links stop changing; if a click does not navigate, re-pick and click again (recorded) | `rerender_grid` |
+| shop074 (DOWN) | clicked product, stayed on collection | SearchTap re-renders the grid ~1 s after load; the click hit the old grid (no product request in the network log) | Radar | wait until product links stop changing; if a click does not navigate, re-pick and click again (recorded) | `rerender_grid` |
 | thehouseofrare (DOWN) | no collection link, no product card on / | brand-landing homepage; menus open on HOVER; top items go to /pages/<brand> | Radar | hover top menu items; else one hop via the first top-menu page | `hover_menu`, `brand_landing` |
-| soulflower PDP | add_to_cart not found (score 0.05) | main button sits in `form.cart-form > div.quick-add-container` (no /cart/add action); excluded by class name; plus a YourLio popup with utility classes and an icon-only X | Radar | "another product's card" decided by where nearby product links point (never class names); main button = any container carrying this product's variant id; generic big-fixed-layer popup + icon-only close | `quick_named_main`, `icon_popup` |
-| supplysix PDP | price not on page | price only in a sticky bar shown after scrolling | Radar | scroll the page, then re-read the price | `sticky_price` |
-| foxtale search | 'purify': 0 of 8 relevant | word taken from a product the store hides | Radar | second word from another product; first miss kept as warning | `search_misses` |
-| mcaffeine PDP | add_to_cart not found | **no add-to-cart form for this product on its own page**; the 18 forms on it are other products' cards | Store (or deliberate "not sold alone") | message says exactly that; triage gets it as a fact | `no_buy_form` |
-| boldcare PDP, foxtale PDP | URL is a product page: got / | catalog product redirects to the homepage | **Store catalog finding** | recorded as a WARNING "in the catalog but hidden from shoppers"; next catalog product tested | `hidden_product` |
-| foxtale PDP | no product name | catalog product page says "Page Not Found" | **Store catalog finding** | same, "the page does not exist" | `notfound_product` |
-| soulflower, foxtale health | 404 expected, got 200 | soft 404 | **Store** (minor SEO) | unchanged (correct FAIL); gpt-5-mini had called it Radar's, now a code FACT | n/a |
-| palmonas PDP, dotandkey search | flaky | failed once, passed on retry | n/a | reported as flaky, no incident | n/a |
+| shop083 PDP | add_to_cart not found (score 0.05) | main button sits in `form.cart-form > div.quick-add-container` (no /cart/add action); excluded by class name; plus a YourLio popup with utility classes and an icon-only X | Radar | "another product's card" decided by where nearby product links point (never class names); main button = any container carrying this product's variant id; generic big-fixed-layer popup + icon-only close | `quick_named_main`, `icon_popup` |
+| shop084 PDP | price not on page | price only in a sticky bar shown after scrolling | Radar | scroll the page, then re-read the price | `sticky_price` |
+| shop116 search | 'purify': 0 of 8 relevant | word taken from a product the store hides | Radar | second word from another product; first miss kept as warning | `search_misses` |
+| shop078 PDP | add_to_cart not found | **no add-to-cart form for this product on its own page**; the 18 forms on it are other products' cards | Store (or deliberate "not sold alone") | message says exactly that; triage gets it as a fact | `no_buy_form` |
+| shop100 PDP, shop116 PDP | URL is a product page: got / | catalog product redirects to the homepage | **Store catalog finding** | recorded as a WARNING "in the catalog but hidden from shoppers"; next catalog product tested | `hidden_product` |
+| shop116 PDP | no product name | catalog product page says "Page Not Found" | **Store catalog finding** | same, "the page does not exist" | `notfound_product` |
+| shop083, shop116 health | 404 expected, got 200 | soft 404 | **Store** (minor SEO) | unchanged (correct FAIL); gpt-5-mini had called it Radar's, now a code FACT | n/a |
+| shop095 PDP, shop074 search | flaky | failed once, passed on retry | n/a | reported as flaky, no incident | n/a |
 
 **Triage accuracy on this bench (gpt-5-mini, before v0.8 facts):** 9 confirmed failures; correct on
-dotandkey, thehouseofrare, soulflower PDP, foxtale search, foxtale 'Page Not Found' (5); wrong on the
-two soft 404s and mcaffeine (called Radar's), and "unsure" on supplysix. These are now `llm-check`
+shop074, thehouseofrare, shop083 PDP, shop116 search, shop116 'Page Not Found' (5); wrong on the
+two soft 404s and shop078 (called Radar's), and "unsure" on shop084. These are now `llm-check`
 cases (20 total) with code-proven facts for soft 404 and missing buy form.
 
 ## 4i. Fourth bench (36 stores, 5 Oct, v0.8): results and root causes
 
 `data/bench/20261005T095646Z/` on the Mac. 33 testable stores: **27 healthy, 6 degraded, 0 down**
-(bench 3: 25 / 6 / 2). Every v0.8 fix held on the stores that caused it: dotandkey, thehouseofrare,
-soulflower PDP, mcaffeine and boldcare's redirecting product all pass. Not testable: vaaree
-(robots.txt), snitch.com + thewholetruthfoods (not Shopify). `llm-check` (20 cases, gpt-5-mini):
+(bench 3: 25 / 6 / 2). Every v0.8 fix held on the stores that caused it: shop074, thehouseofrare,
+shop083 PDP, shop078 and shop100's redirecting product all pass. Not testable: shop125
+(robots.txt), shop123.example + shop148 (not Shopify). `llm-check` (20 cases, gpt-5-mini):
 19/20, held-out 3/3, ≈ $0.0076; one miss (below).
 
 10 confirmed failures on 6 stores, each diagnosed from its trace (offline DOM replay of the frame
@@ -362,41 +362,41 @@ snapshot at the failing call, the call's recorded result, screencast frames):
 
 | Store | Failure | Real cause (proof) | Whose | v0.9 fix | Mock mode (v0.8 fails it with the same message) |
 |---|---|---|---|---|---|
-| boldcare PDP | variant: expected 46648059855066, got 47923389726938 | first `/cart/add` form in the DOM is a hidden cart-drawer form `product_form_8964884103386` for ANOTHER product; v0.8 accepted any form whose id/class says product_form. The page's own form held the right id (screenshot: "2 Packs" selected, ₹898) | Radar | the product's form = a form carrying one of THIS product's variant ids (visible first, main-named first); a form is never picked by name alone; a nameless-id main form counts only when visible and empty | `drawer_form_first` |
-| bummer PDP ×3 | variant: expected 4757735…, got "" after choosing M, Toffee | 14 hidden `NativeCartUpsell` forms (class `shopify-product-form`, empty id) come first; the real form held 47577353257211 all along | Radar | same rule | `upsell_forms_first` |
-| plumgoodness PDP | no product name | `/products/…-copy-1` (catalog copy) answers 200 "The product is currently unavailable", body class `hidden_product`, no buy form, no Product data | **Store catalog finding** | treated like a redirect / Page Not Found: WARNING "in the catalog but hidden from shoppers", next catalog product tested | `unavailable_product` |
-| foxtale PDP | no product name | headless storefront renders its homepage at `/products/brightening-under-eye-cream`: no form, no Product data, name nowhere on the page | **Store catalog finding** | same (rule: no buy form + no Product data + the product's name nowhere on the page; if every candidate looks like this the last one fails hard) | `home_at_product_url` |
-| supplysix PDP | price not on page | on desktop the ONLY price is in `product-sticky-form.hidden-lap-and-up[hidden]`, a mobile-only bar; screencast of the full scroll shows no price, just ADD TO CART. **Bench 3 called this Radar's (sticky bar on scroll); that was wrong for desktop** | **Store** (desktop shoppers see no price before cart) | failure stays; message now says "₹199.00 is only inside a hidden element <…hidden-lap-and-up>, not shown on this screen size"; triage FACT says so (gpt-5-mini had blamed Radar) | `price_desktop_hidden` |
-| soulflower, foxtale health | 404 expected, got 200 | soft 404 | **Store** (minor SEO) | unchanged; triage now right (FACT from v0.8) | n/a |
+| shop100 PDP | variant: expected 46648059855066, got 47923389726938 | first `/cart/add` form in the DOM is a hidden cart-drawer form `product_form_8964884103386` for ANOTHER product; v0.8 accepted any form whose id/class says product_form. The page's own form held the right id (screenshot: "2 Packs" selected, ₹898) | Radar | the product's form = a form carrying one of THIS product's variant ids (visible first, main-named first); a form is never picked by name alone; a nameless-id main form counts only when visible and empty | `drawer_form_first` |
+| shop129 PDP ×3 | variant: expected 4757735…, got "" after choosing M, Toffee | 14 hidden `NativeCartUpsell` forms (class `shopify-product-form`, empty id) come first; the real form held 47577353257211 all along | Radar | same rule | `upsell_forms_first` |
+| shop040 PDP | no product name | `/products/…-copy-1` (catalog copy) answers 200 "The product is currently unavailable", body class `hidden_product`, no buy form, no Product data | **Store catalog finding** | treated like a redirect / Page Not Found: WARNING "in the catalog but hidden from shoppers", next catalog product tested | `unavailable_product` |
+| shop116 PDP | no product name | headless storefront renders its homepage at `/products/brightening-under-eye-cream`: no form, no Product data, name nowhere on the page | **Store catalog finding** | same (rule: no buy form + no Product data + the product's name nowhere on the page; if every candidate looks like this the last one fails hard) | `home_at_product_url` |
+| shop084 PDP | price not on page | on desktop the ONLY price is in `product-sticky-form.hidden-lap-and-up[hidden]`, a mobile-only bar; screencast of the full scroll shows no price, just ADD TO CART. **Bench 3 called this Radar's (sticky bar on scroll); that was wrong for desktop** | **Store** (desktop shoppers see no price before cart) | failure stays; message now says "₹199.00 is only inside a hidden element <…hidden-lap-and-up>, not shown on this screen size"; triage FACT says so (gpt-5-mini had blamed Radar) | `price_desktop_hidden` |
+| shop083, shop116 health | 404 expected, got 200 | soft 404 | **Store** (minor SEO) | unchanged; triage now right (FACT from v0.8) | n/a |
 
-**Radar false failures in bench 4: 4 cases on 2 stores (boldcare 1, bummer 3), one cause.** Two
-more (plum, foxtale PDP) were store catalog findings reported as failures instead of warnings.
+**Radar false failures in bench 4: 4 cases on 2 stores (shop100 1, shop129 3), one cause.** Two
+more (shop192, shop116 PDP) were store catalog findings reported as failures instead of warnings.
 
-**Triage on this bench (gpt-5-mini):** right on bummer ×3, boldcare (Radar), plum, both soft 404s
-(store) = 6; wrong on supplysix (said Radar; it is the store) and foxtale PDP (said Radar looked at the
+**Triage on this bench (gpt-5-mini):** right on shop129 ×3, shop100 (Radar), shop192, both soft 404s
+(store) = 6; wrong on shop084 (said Radar; it is the store) and shop116 PDP (said Radar looked at the
 homepage; the store serves the homepage there). Both are now code-established (fact / warning).
 `llm-check` miss `custom_buy_button_not_recognised`: the model saw only "no add-to-cart form" and
 blamed the store. New FACT lists short action-like lines next to the price that Radar's buy words
-(add / cart / bag / buy) did not match ("Grab it", "Share"). New case `supplysix_price_hidden_desktop`:
+(add / cart / bag / buy) did not match ("Grab it", "Share"). New case `shop084_price_hidden_desktop`:
 **21 llm-check cases.**
 
 ## 4j. Fifth bench (36 stores, 5 Oct, v0.9): results and root causes
 
 `data/bench/20261005T115219Z/` on the Mac. **32 testable: 28 healthy, 4 degraded, 0 down.**
-`llm-check` (21 cases, gpt-5-mini): **21/21**, held-out 3/3, ≈ $0.0088. v0.9's fixes held: boldcare and
-bummer healthy (variant read from the own form), plum/foxtale hidden products no longer fail.
+`llm-check` (21 cases, gpt-5-mini): **21/21**, held-out 3/3, ≈ $0.0088. v0.9's fixes held: shop100 and
+shop129 healthy (variant read from the own form), shop192/shop116 hidden products no longer fail.
 
 **Confirmed failures: 3, all real store findings, all triaged correctly by the LLM.**
 
 | Store | Result | Cause | Whose | v0.10 |
 |---|---|---|---|---|
-| supplysix PDP | FAIL | desktop shows no price (only a mobile-only sticky bar) | Store | — (message + triage right) |
-| soulflower, foxtale health | FAIL | soft 404 | Store | — |
-| boat-lifestyle journey | FLAKY | attempt 1 clicked Airdopes 161 at (140, 425) but opened Rockerz 412. Trace timing: pick + scrollIntoView at t, hit-test check at t+7 ms (OK), mouse click at t+30 ms; screencast shows the page re-laid out after the scroll (header changes) and the grid moved ~234 px, so the stale point was on the next card. Retry passed | **Radar** | after the pick, wait until the target stops moving (150 ms steps, two equal measurements), re-aim at its current position, then hit-test and click (`AIM_JS`). Mock `shift_after_scroll` (cards move one row ~8 ms after the first scroll): v0.9 fails it 5/5 with the bench message, v0.10 passes 5/5 |
-| plumgoodness | "unsupported" | homepage answered **HTTP 423 "This store is unavailable"** to Radar (live for other visitors at the same time, checked) | **Radar verdict** (store refused Radar) | homepage 401/403/423/429 → access `refused` → verdict BLOCKED with the code and page title; other ≥400 → UNREACHABLE. Never "unsupported". Mock `store_refuses` (v0.9: "down") |
+| shop084 PDP | FAIL | desktop shows no price (only a mobile-only sticky bar) | Store | — (message + triage right) |
+| shop083, shop116 health | FAIL | soft 404 | Store | — |
+| shop017 journey | FLAKY | attempt 1 clicked Earbuds 161 at (140, 425) but opened Headphones 412. Trace timing: pick + scrollIntoView at t, hit-test check at t+7 ms (OK), mouse click at t+30 ms; screencast shows the page re-laid out after the scroll (header changes) and the grid moved ~234 px, so the stale point was on the next card. Retry passed | **Radar** | after the pick, wait until the target stops moving (150 ms steps, two equal measurements), re-aim at its current position, then hit-test and click (`AIM_JS`). Mock `shift_after_scroll` (cards move one row ~8 ms after the first scroll): v0.9 fails it 5/5 with the bench message, v0.10 passes 5/5 |
+| shop040 | "unsupported" | homepage answered **HTTP 423 "This store is unavailable"** to Radar (live for other visitors at the same time, checked) | **Radar verdict** (store refused Radar) | homepage 401/403/423/429 → access `refused` → verdict BLOCKED with the code and page title; other ≥400 → UNREACHABLE. Never "unsupported". Mock `store_refuses` (v0.9: "down") |
 | bench row | flaky row empty | the row showed the last (passing) attempt | Radar report | flaky rows show the failed attempt: "failed once, passed on retry: …" |
 
-**Radar false failures in bench 5: 0 confirmed, 1 flaky (boat), 1 wrong verdict (plum).** Both fixed in v0.10.
+**Radar false failures in bench 5: 0 confirmed, 1 flaky (shop017), 1 wrong verdict (shop192).** Both fixed in v0.10.
 The exit rule (a bench with zero Radar false failures) needs one more clean bench: v0.10.
 
 ## 4k. Sixth bench (36 stores, 6 Oct 00:50 IST, v0.10): R1 exit rule met
@@ -409,18 +409,18 @@ benched yet.
 
 | Store | Result | Cause | Whose |
 |---|---|---|---|
-| supplysix PDP | FAIL | desktop shows no price (mobile-only sticky bar); LLM: real store problem | Store (same as bench 4, 5) |
-| soulflower, foxtale health | FAIL | soft 404; LLM: real store problem | Store (same as benches 3-5) |
-| boat-lifestyle | **healthy** | v0.10 re-aim fix held (bench 5: flaky) | — |
-| plumgoodness | BLOCKED | HTTP 423 "This store is unavailable" to Radar again (2 runs, hours apart), live for normal visitors. Now reported honestly: "refused or rate-limited Radar's browser" | Store refuses Radar |
-| vaaree | BLOCKED | robots.txt disallows | Store's choice |
-| snitch.com, thewholetruthfoods | UNSUPPORTED | not Shopify | — |
+| shop084 PDP | FAIL | desktop shows no price (mobile-only sticky bar); LLM: real store problem | Store (same as bench 4, 5) |
+| shop083, shop116 health | FAIL | soft 404; LLM: real store problem | Store (same as benches 3-5) |
+| shop017 | **healthy** | v0.10 re-aim fix held (bench 5: flaky) | — |
+| shop040 | BLOCKED | HTTP 423 "This store is unavailable" to Radar again (2 runs, hours apart), live for normal visitors. Now reported honestly: "refused or rate-limited Radar's browser" | Store refuses Radar |
+| shop125 | BLOCKED | robots.txt disallows | Store's choice |
+| shop123.example, shop148 | UNSUPPORTED | not Shopify | — |
 
 **Radar false failures: 0. Radar flaky: 0. Every confirmed failure is a real store finding, triaged
 correctly by gpt-5-mini.** This is R1's exit rule (handoff, 5 Oct). Engine phase closed on desktop.
 
-Open question carried forward: plum's 423 twice. v0.11 sends a normal Chrome name + BugRadar; if
-plum lets that in, its block is a filter on non-browser User-Agents (allowed: Radar still identifies
+Open question carried forward: shop192's 423 twice. v0.11 sends a normal Chrome name + BugRadar; if
+shop192 lets that in, its block is a filter on non-browser User-Agents (allowed: Radar still identifies
 itself). If it still refuses, it is a deliberate block: stays BLOCKED, never evaded.
 
 ## 4l. Seventh bench (36 stores, 6 Oct 10:12 IST, v0.11): new User-Agent; 2 Radar issues found
@@ -429,21 +429,21 @@ itself). If it still refuses, it is a deliberate block: stays BLOCKED, never eva
 Chrome + BugRadar", bench.json `browser.ua_style = browser`). **33 testable: 28 healthy, 5 degraded,
 0 down, 0 flaky.**
 
-**plum answered normally**, after HTTP 423 to `BugRadar/0.1` alone in benches 5 and 6: its block
+**shop192 answered normally**, after HTTP 423 to `BugRadar/0.1` alone in benches 5 and 6: its block
 was a filter on non-browser User-Agent names. Radar still identifies itself in every request.
 
 | Store | Result | Cause (proof) | Whose | v0.12 |
 |---|---|---|---|---|
-| supplysix PDP | FAIL | desktop shows no price | Store | — |
-| soulflower, foxtale health | FAIL | soft 404 | Store | — |
-| plumgoodness PDP | FAIL "no product name" | catalog copy page "currently unavailable" (as bench 4). v0.9's hidden-product rule only ran when the page had NO cart/add form and NO Product ld+json; the trace shows Radar's own check returned true (other products' form and/or ld+json present) while no form held THIS product's variant. The v0.9 mock had neither, so it passed | **Radar** (rule gap) | hidden-product rule runs whenever no buy control holds one of THIS product's variant ids (`OWN_HOLDER_JS`: name=id inputs/selects, data-variant-id); still needs the product name absent from the page. Mock `unavailable_product` now carries ld+json + another product's drawer form; v0.11 fails it with the bench message |
+| shop084 PDP | FAIL | desktop shows no price | Store | — |
+| shop083, shop116 health | FAIL | soft 404 | Store | — |
+| shop040 PDP | FAIL "no product name" | catalog copy page "currently unavailable" (as bench 4). v0.9's hidden-product rule only ran when the page had NO cart/add form and NO Product ld+json; the trace shows Radar's own check returned true (other products' form and/or ld+json present) while no form held THIS product's variant. The v0.9 mock had neither, so it passed | **Radar** (rule gap) | hidden-product rule runs whenever no buy control holds one of THIS product's variant ids (`OWN_HOLDER_JS`: name=id inputs/selects, data-variant-id); still needs the product name absent from the page. Mock `unavailable_product` now carries ld+json + another product's drawer form; v0.11 fails it with the bench message |
 | thehouseofrare search | FAIL "0 of 16 mention 'rare'" | Radar searched **'rare', the brand**: brand words came from the domain label as one token (`thehouseofrare`) and from the title only before " - " (brand is after it). Screenshot: search works (Gift Cards, trainers for "RARE") | **Radar** (test word) | brand words = domain label + its compound parts, EVERY title segment, and Shopify `vendor` names (new `Product.vendor`). Unit test: v0.11 picks 'rare', v0.12 picks 'kore' |
 
-**Radar false failures in bench 7: 2** (one exposed only because plum became testable). The R1 exit
+**Radar false failures in bench 7: 2** (one exposed only because shop192 became testable). The R1 exit
 rule (met on bench 6) needs one more clean bench on v0.12.
 
 Lesson for diagnosis: Playwright snapshots hold no `<script>` elements, so a DOM replay cannot show
-JSON-LD; bench 4's plum replay concluded "no product data" from that blind spot. Trust the recorded
+JSON-LD; bench 4's shop192 replay concluded "no product data" from that blind spot. Trust the recorded
 results of Radar's own calls for data questions (`tools/trace_replay.py` docstring).
 
 ## 4m. Eighth bench (36 stores, 6 Oct 14:48 IST, v0.12): Radar's own network dropped; 2 Radar rules fixed (v0.13)
@@ -464,29 +464,29 @@ Nothing in bench 8 says anything about v0.12 or the stores. Two Radar rules were
 
 Proof on the v0.12 copy before the fix: the net-drop scenario (store answers the journey, then goes silent, probe dead) gave **DOWN with 10 confirmed failures**; mock `robots_500` gave **healthy, 10 tests run**. Both pass the new rules in v0.13. New tests: 6 end-to-end (Radar offline mid-run → NO_NETWORK; store dies while Radar online → still DOWN; dead homepage offline vs online; robots 500 → BLOCKED; robots 404 → healthy; bench offline → no store started) and 4 unit tests (robots unreachable, probe rules, env setting).
 
-Checked against earlier benches: no real store in benches 6–7 had an unfetchable robots.txt (plum's was 423 = 4xx = allow, then its homepage 423 = BLOCKED as before), so rule 2 changes no earlier result.
+Checked against earlier benches: no real store in benches 6–7 had an unfetchable robots.txt (shop192's was 423 = 4xx = allow, then its homepage 423 = BLOCKED as before), so rule 2 changes no earlier result.
 
 ## 4n. Ninth bench (36 stores, 6 Oct 15:31 IST, v0.13): 2 Radar issues, fixed in v0.14
 
-Totals: 29 healthy / 4 degraded / 0 down / 1 blocked (vaaree, robots.txt) / 2 unsupported (snitch, thewholetruthfoods: not Shopify). 0 no_network rows. v0.12 fixes held: plumgoodness product PASS (hidden-product rule), thehouseofrare search PASS (brand words).
+Totals: 29 healthy / 4 degraded / 0 down / 1 blocked (shop125, robots.txt) / 2 unsupported (shop123, shop148: not Shopify). 0 no_network rows. v0.12 fixes held: shop040 product PASS (hidden-product rule), thehouseofrare search PASS (brand words).
 
 | Store | Result | Root cause (proven) | Owner | v0.14 |
 |---|---|---|---|---|
-| plumgoodness.com | search FAIL ('mystery', then 'plums') | Words came from 'Mystery Merch' (promo item; the store's search app showed 12 other products) and 'Set of 5 Plums' ('plums' = brand 'Plum' + s, matched all 246 products by brand; 0 of 24 shown mention 'plums'). sitemap.json + recorded results + LLM triage (radar problem) | Radar (test words) | brand words match plurals/stems; promo/bundle words (mystery, merch, bundle, sampler, trial, surprise, offer, hamper, limited, ...) never used; up to **3** words, the search fails only if all 3 find nothing relevant |
-| soulflower.in | journey FLAKY (click_into_product) | 'Powered by YourLio AI' promo popup ('NEW LAUNCH: BOMB SIZE ROSEMARY HAIR SPRAY', × + 'TRY IT NOW') rendered inside **#chat-widget's open shadow root**, full-page overlay. Failure screenshot shows it; trace replay of the failing call: v0.13 popup finder → nothing, v0.14 → popup + 'close' | Radar (popup finder) | popup finder searches every open shadow root too; closes by the ×, never the promo button (vetoes unchanged) |
-| supplysix.com | product FAIL | ₹199 trial page: price only in hidden mobile sticky bar | Store | — |
-| soulflower.in, foxtale.in | health FAIL | soft 404 (made-up URL → 200 home) | Store (SEO note) | — |
+| shop040.example | search FAIL ('mystery', then 'plums') | Words came from 'Mystery Merch' (promo item; the store's search app showed 12 other products) and 'Set of 5 Plums' ('plums' = brand 'Shop192' + s, matched all 246 products by brand; 0 of 24 shown mention 'plums'). sitemap.json + recorded results + LLM triage (radar problem) | Radar (test words) | brand words match plurals/stems; promo/bundle words (mystery, merch, bundle, sampler, trial, surprise, offer, hamper, limited, ...) never used; up to **3** words, the search fails only if all 3 find nothing relevant |
+| shop083.example | journey FLAKY (click_into_product) | 'Powered by YourLio AI' promo popup ('NEW LAUNCH: BOMB SIZE ROSEMARY HAIR SPRAY', × + 'TRY IT NOW') rendered inside **#chat-widget's open shadow root**, full-page overlay. Failure screenshot shows it; trace replay of the failing call: v0.13 popup finder → nothing, v0.14 → popup + 'close' | Radar (popup finder) | popup finder searches every open shadow root too; closes by the ×, never the promo button (vetoes unchanged) |
+| shop084.example | product FAIL | ₹199 trial page: price only in hidden mobile sticky bar | Store | — |
+| shop083.example, shop116.example | health FAIL | soft 404 (made-up URL → 200 home) | Store (SEO note) | — |
 
-Proof on v0.13 before the fix: mock `shadow_popup` → journey confirmed_fail ("3 links: 3 covered by div"); the two new search-term unit tests fail. v0.14: all pass. Note: whether plum's search should find 'Mystery Merch' is not judged (stores often keep promo items out of search on purpose).
+Proof on v0.13 before the fix: mock `shadow_popup` → journey confirmed_fail ("3 links: 3 covered by div"); the two new search-term unit tests fail. v0.14: all pass. Note: whether shop192's search should find 'Mystery Merch' is not judged (stores often keep promo items out of search on purpose).
 
 ## 4o. Tenth bench (36 stores, 6 Oct 16:45 IST, v0.14): 0 Radar false failures; 1 flaky = a real store finding
 
-Totals: 29 healthy / 4 degraded / 0 down / 1 blocked / 2 unsupported / 0 no_network. v0.14 fixes held: plumgoodness search PASS, soulflower journey PASS (no flaky).
+Totals: 29 healthy / 4 degraded / 0 down / 1 blocked / 2 unsupported / 0 no_network. v0.14 fixes held: shop040 search PASS, shop083 journey PASS (no flaky).
 
 | Store | Result | Root cause (proven) | Owner | v0.15 |
 |---|---|---|---|---|
-| thefunclab.com | journey FLAKY (attempt 1 failed, 2 passed) | Attempt 1: the collection link Radar picked sits in the auto-rotating hero banner; the click timed out twice (soft step), so Radar went home → product card. The card it clicked is in the homepage 'Shop Our Products' slider: its **product IMAGE link does nothing when clicked**. Trace: link picked, hit-test true at (1073,425), two `mouse.click`s 10 s apart, no navigation. **Live in Anmol's Chrome (6 Oct): 2 of 2 image clicks stayed on `/`; the page's own script calls preventDefault on mousedown, mouseup and click (trusted events, so a shopper's click dies too); the product NAME link opened the product.** Attempt 2's collection link worked, so it went via the collection grid and passed | **Store** (dead image link), Radar turned it into a flaky journey | When a product link does nothing twice, Radar clicks that product's other link in the same card (a shopper clicks the name). Opens → journey goes on; a WARNING step `every_product_link_opens_the_product` names the dead link. Nothing opens → the step fails as before |
-| supplysix / soulflower / foxtale | FAIL | trial-page desktop price / soft 404 / soft 404 | Store | — |
+| shop068.example | journey FLAKY (attempt 1 failed, 2 passed) | Attempt 1: the collection link Radar picked sits in the auto-rotating hero banner; the click timed out twice (soft step), so Radar went home → product card. The card it clicked is in the homepage 'Shop Our Products' slider: its **product IMAGE link does nothing when clicked**. Trace: link picked, hit-test true at (1073,425), two `mouse.click`s 10 s apart, no navigation. **Live in Anmol's Chrome (6 Oct): 2 of 2 image clicks stayed on `/`; the page's own script calls preventDefault on mousedown, mouseup and click (trusted events, so a shopper's click dies too); the product NAME link opened the product.** Attempt 2's collection link worked, so it went via the collection grid and passed | **Store** (dead image link), Radar turned it into a flaky journey | When a product link does nothing twice, Radar clicks that product's other link in the same card (a shopper clicks the name). Opens → journey goes on; a WARNING step `every_product_link_opens_the_product` names the dead link. Nothing opens → the step fails as before |
+| shop084 / shop083 / shop116 | FAIL | trial-page desktop price / soft 404 / soft 404 | Store | — |
 
 Proof: new mock `dead_image_link` (image link cancels mousedown/click, name link works). v0.14: journey confirmed_fail "expected /products/ceramic-vase, got /collections/home-decor" (both attempts). v0.15: PASS first attempt + the warning.
 
@@ -494,17 +494,17 @@ Known, not changed: links inside an auto-rotating hero banner time out (Playwrig
 
 ## 4p. Eleventh bench (36 stores, 7 Oct 08:32 IST, v0.15) and the anti-loop rules
 
-Totals: 27 healthy / 4 degraded / 0 down / 3 blocked (vaaree robots, soulflower + bummer robots no answer) / 2 unsupported. thefunclab: healthy (v0.15 held).
+Totals: 27 healthy / 4 degraded / 0 down / 3 blocked (shop125 robots, shop083 + shop129 robots no answer) / 2 unsupported. shop068: healthy (v0.15 held).
 
 | Store | Result | Root cause (proven) | Owner | v0.16 |
 |---|---|---|---|---|
-| palmonas.com | journey FLAKY | `/products/x.js` answered a non-JSON body once ("Expecting value: line 1 column 1") | Transient, Radar should absorb | **Pattern, 2 stores:** store data requests retried (0, 1 s, 3 s) on no answer, 5xx/429 or non-JSON; a real 4xx is final |
-| wellbeingnutrition.com | journey FLAKY | same request timed out once (`connect ETIMEDOUT 64:ff9b::…`, the Mac's NAT64/IPv6 path) | Transient | same |
-| soulflower.in, bummer.in | BLOCKED (robots_unreachable) | robots.txt no answer on two quick tries; both answered on every earlier bench | Transient (likely the Mac's network) | **Pattern, 2 stores:** robots.txt 3 tries (10/15/20 s timeouts, 2 s and 5 s apart) before RFC 9309 "do not crawl" |
-| foxtale.in | product FAIL | 'Brightening Under Eye Cream' is published in the catalog (products.json, published 24 Sep) but its page sends shoppers to the homepage. **Verified live in Anmol's Chrome 7 Oct.** No spare product left, so the last candidate failed hard (the v0.9 design) | **Store** (catalog) | none; the message ("URL is a product page") and the LLM triage ('radar problem') are wrong in wording only: goes to the report-wording step |
-| supplysix, foxtale 404 | FAIL | as before | Store | — |
+| shop095.example | journey FLAKY | `/products/x.js` answered a non-JSON body once ("Expecting value: line 1 column 1") | Transient, Radar should absorb | **Pattern, 2 stores:** store data requests retried (0, 1 s, 3 s) on no answer, 5xx/429 or non-JSON; a real 4xx is final |
+| shop002.example | journey FLAKY | same request timed out once (`connect ETIMEDOUT 64:ff9b::…`, the Mac's NAT64/IPv6 path) | Transient | same |
+| shop083.example, shop129.example | BLOCKED (robots_unreachable) | robots.txt no answer on two quick tries; both answered on every earlier bench | Transient (likely the Mac's network) | **Pattern, 2 stores:** robots.txt 3 tries (10/15/20 s timeouts, 2 s and 5 s apart) before RFC 9309 "do not crawl" |
+| shop116.example | product FAIL | 'Brightening Under Eye Cream' is published in the catalog (products.json, published 24 Sep) but its page sends shoppers to the homepage. **Verified live in Anmol's Chrome 7 Oct.** No spare product left, so the last candidate failed hard (the v0.9 design) | **Store** (catalog) | none; the message ("URL is a product page") and the LLM triage ('radar problem') are wrong in wording only: goes to the report-wording step |
+| shop084, shop116 404 | FAIL | as before | Store | — |
 
-Proof: mocks `flaky_data` and `robots_500_twice`. v0.15: journey FLAKY with the palmonas error / store BLOCKED "tried twice". v0.16: healthy, every case first attempt.
+Proof: mocks `flaky_data` and `robots_500_twice`. v0.15: journey FLAKY with the shop095 error / store BLOCKED "tried twice". v0.16: healthy, every case first attempt.
 
 **Anti-loop rules (Anmol, 7 Oct: "no loop like sync8"):** (1) the 36-store bench is a regression set, not a tuning set; (2) fix only patterns seen on 2+ stores, one-offs become documented limits; (3) R1 closes Friday 9 Oct with its limits written down; (4) the real robustness numbers are first-run false failures on 30 never-seen stores (`stores/new30.txt`, run once, no fixes in between) and the catch rate on a seeded-bug store (target ≤ 1/30 and ≥ 80%).
 
@@ -512,19 +512,19 @@ Proof: mocks `flaky_data` and `robots_500_twice`. v0.15: journey FLAKY with the 
 
 | Outcome | Stores | Count |
 |---|---|---|
-| Healthy, judged right | pilgrim, juicychemistry, themancompany, mokobara, bluetokai, sleepyowl, slurrpfarm, yogabars, urbanmonkey, sugar, dermaco, aqualogica, beardo, opensecret, gonoise, xyxx, freecultr, powerlook, neemans, chumbak | 20 |
-| Real store finding (verified live) | libas.in: sold-out sarees published with **0 images** (Shopify data images = 0, JSON-LD image = [], no og:image) | 1 |
-| **Radar false failure** | nicobar.com, true-elements.com | **2** |
-| Not covered (not a Shopify theme store) | kapiva, plixlife (custom Next.js, GoKwik "non-shopify" script), buywow, nathabit, damensch | 5 |
-| Correctly not tested | mivi (robots.txt blocks), boultaudio.com (redirects to goboult.co.in: wrong URL in our list) | 2 |
+| Healthy, judged right | pilgrim, shop155, shop156, shop157, shop158, shop159, shop160, shop161, shop162, sugar, shop163, shop164, shop165, shop166, shop167, shop168, shop169, shop170, shop171, shop172 | 20 |
+| Real store finding (verified live) | shop138.example: sold-out sarees published with **0 images** (Shopify data images = 0, JSON-LD image = [], no og:image) | 1 |
+| **Radar false failure** | shop107.example, shop034.example | **2** |
+| Not covered (not a Shopify theme store) | shop173, shop174 (custom Next.js, GoKwik "non-shopify" script), shop175, shop176, shop177 | 5 |
+| Correctly not tested | shop178 (robots.txt blocks), shop061.example (redirects to shop076.example: wrong URL in our list) | 2 |
 
 **Score: 2 false-failure stores / 30 (target ≤ 1/30): missed.** Accuracy on stores Radar could test: 21/23 = 91%. Coverage: 23/30 stores testable (77%); 5 stores are outside Shopify-theme scope.
 
 Root cause (one pattern, 2 stores), verified live in Anmol's Chrome:
 | Store | What a shopper sees | What Radar did (v0.16) |
 |---|---|---|
-| nicobar.com | "ADD TO BAG" = `<div class="pdp-addtobag-btn" data-product-handle="saanjh-shawl-chartreuse">`, no `/cart/add` form; 10 "Add to Bag" `<button class="_gai-atc-btn">` for OTHER products in recommendation cards | "no add-to-cart form for this product; no other buy control found" on all 3 products. Mock proof: v0.16's healer even clicked a recommended product's button and added the WRONG product |
-| true-elements.com | the form's own "Add to cart" is hidden on desktop; "ADD TO CART" appears in a sticky bar after scrolling | "could not find 'add_to_cart'" on all 3 products |
+| shop107.example | "ADD TO BAG" = `<div class="pdp-addtobag-btn" data-product-handle="silk-shawl-chartreuse">`, no `/cart/add` form; 10 "Add to Bag" `<button class="_gai-atc-btn">` for OTHER products in recommendation cards | "no add-to-cart form for this product; no other buy control found" on all 3 products. Mock proof: v0.16's healer even clicked a recommended product's button and added the WRONG product |
+| shop034.example | the form's own "Add to cart" is hidden on desktop; "ADD TO CART" appears in a sticky bar after scrolling | "could not find 'add_to_cart'" on all 3 products |
 
 v0.17: (1) no visible buy button → scroll like a shopper (up to 4 × 60% of the screen) and look again (sticky bars); (2) only when the page has NO Shopify form/input for this product: take the page's own "Add to bag/cart / Buy now" control when an attribute on it or its parents names THIS product (handle / product id / variant id), or it sits with the product title and no link to another product is closer; other products' cards, header, nav, footer, drawers excluded. The cart check still proves what was added. Mocks `sticky_buy_only`, `div_buy_control`; the renamed-button mock (lone button with `data-vid`) is now found by rule (2) instead of heuristic healing (test updated; healing is still proven by the obscure-button/LLM tests).
 
@@ -536,11 +536,11 @@ every check. From v0.18 so does Radar, with nothing to switch on.
 | Where | What changed |
 |---|---|
 | `python3 -m radar scan <url>` | `--device both` is the default: desktop first, then mobile (Pixel 7: 412 px, touch, mobile User-Agent that still ends in BugRadar). `--device desktop` or `mobile` for one. One report per device. |
-| `python3 -m radar bench <list>` | Each store runs on both devices (one worker, one after the other, so a store is never hit by two browsers at once). `--device` as above. ONE row per store: `verdict` and `suites` = worst of the devices, `devices` = each device's verdict / report / timings, every failure carries its `device`, `device_only` = test cases that fail (confirmed) on one device only (the supplysix kind). Bench page shows Desktop and Mobile columns and desktop+mobile marks per suite. |
+| `python3 -m radar bench <list>` | Each store runs on both devices (one worker, one after the other, so a store is never hit by two browsers at once). `--device` as above. ONE row per store: `verdict` and `suites` = worst of the devices, `devices` = each device's verdict / report / timings, every failure carries its `device`, `device_only` = test cases that fail (confirmed) on one device only (the shop084 kind). Bench page shows Desktop and Mobile columns and desktop+mobile marks per suite. |
 | `scan_devices()` (runner/executor.py) | **Mobile is not asked when desktop could not test the store** (blocked, robots, refused, unreachable, offline, not Shopify): same answer, and a store that refused Radar is not asked again. A failing desktop (`down`) does not stop mobile. |
 | Incidents | Signature gets `|mobile` for mobile (desktop keeps the old key, so open incidents carry over). A run resolves only incidents of ITS device: a passing mobile run never closes a desktop incident, and the other way round. Reports show a Device column. |
 | Remembered selectors (locator cache) | Kept per device (`site@mobile`): a desktop-only control cached for mobile would fail, be dropped, re-found and overwrite the other device's entry on every run. |
-| Mock `price_desktop_hidden` | The theme now shows the sticky price bar on phone-sized screens, so the supplysix pattern is: **desktop FAIL, mobile PASS** (test `test_price_shown_only_on_phones_fails_on_desktop_and_passes_on_mobile`). |
+| Mock `price_desktop_hidden` | The theme now shows the sticky price bar on phone-sized screens, so the shop084 pattern is: **desktop FAIL, mobile PASS** (test `test_price_shown_only_on_phones_fails_on_desktop_and_passes_on_mobile`). |
 
 **Evidence captured per attempt (report, "Page timing & console" panel; `run.json` fields `console`, `failed_requests`, `loads`; run summary `perf`):**
 | Evidence | How | Rules |
@@ -571,23 +571,23 @@ Bench `20261008T183333Z`: 33 tested, 26 healthy / 7 degraded / 0 down. Root caus
 
 | Store | Cause (proven) | Owner | v0.19 |
 |---|---|---|---|
-| suta.in (mobile), soulflower.in (mobile, 7 Oct) | popup finder picked a CLOSED side drawer (wishlist / cart, slid off-screen, `aria-modal`) as the popup; its close click timed out; the same candidate was retried every round; the real promo popup over the grid stayed open | Radar (2 stores) | only layers in the viewport AND on top (`elementFromPoint` at 7 points, through shadow roots) are popups; `[inert]` skipped; a popup still open after its close attempt is marked `data-radar-tried` and skipped. Mock `drawer_decoy_popup` (fails on v0.18, passes desktop + mobile) |
-| foxtale.in (both devices, 3 runs) | **Not the fallback.** The fallback product's page (no cart form, headless) pre-selects the 200g size; Radar took the first size (75g, ₹349) because it opens product links with its OWN `?variant=<first available>` and the page ignores it. 9 Oct handoff said "first product's price": wrong, corrected from the trace | Radar | variant order: cart-form id → option the page marks as chosen (checked radio, aria-checked/pressed/selected, active/selected class; must match ALL option values; price shown breaks ties; only an unambiguous match) → `?variant=` → first available. Mock `preselected_variant` |
-| wellbeingnutrition.com | JSON-LD `offers.price` null, visible price right | Store (SEO) | structured-data problems are a warning (SEO note) on the product test, never a failure. llm-check case `wellbeing_jsonld_price_null` (22 cases) |
-| soulflower, foxtale, palmonas | soft 404 | Store (SEO) | health suite severity `seo`: shown in reports, ignored by the run verdict, no incident (so never an alert), no LLM triage |
-| supplysix (desktop), plumgoodness | price only in a hidden sticky bar / hidden catalog product | Store | — |
+| shop145.example (mobile), shop083.example (mobile, 7 Oct) | popup finder picked a CLOSED side drawer (wishlist / cart, slid off-screen, `aria-modal`) as the popup; its close click timed out; the same candidate was retried every round; the real promo popup over the grid stayed open | Radar (2 stores) | only layers in the viewport AND on top (`elementFromPoint` at 7 points, through shadow roots) are popups; `[inert]` skipped; a popup still open after its close attempt is marked `data-radar-tried` and skipped. Mock `drawer_decoy_popup` (fails on v0.18, passes desktop + mobile) |
+| shop116.example (both devices, 3 runs) | **Not the fallback.** The fallback product's page (no cart form, headless) pre-selects the 200g size; Radar took the first size (75g, ₹349) because it opens product links with its OWN `?variant=<first available>` and the page ignores it. 9 Oct handoff said "first product's price": wrong, corrected from the trace | Radar | variant order: cart-form id → option the page marks as chosen (checked radio, aria-checked/pressed/selected, active/selected class; must match ALL option values; price shown breaks ties; only an unambiguous match) → `?variant=` → first available. Mock `preselected_variant` |
+| shop002.example | JSON-LD `offers.price` null, visible price right | Store (SEO) | structured-data problems are a warning (SEO note) on the product test, never a failure. llm-check case `shop002_jsonld_price_null` (22 cases) |
+| shop083, shop116, shop095 | soft 404 | Store (SEO) | health suite severity `seo`: shown in reports, ignored by the run verdict, no incident (so never an alert), no LLM triage |
+| shop084 (desktop), shop040 | price only in a hidden sticky bar / hidden catalog product | Store | — |
 
 **Own server, first runs (9 Oct, Contabo Mumbai, runner `radar-vmi3647713`):** `demo3 --quick` = all 3 stores DOWN, every failure `HTTP 429` on `/products/<h>.js`; with `--workers 1` the first store passed and the next two hit 429 again, so Shopify gives this datacenter IP a smaller cumulative request budget than the Mac or GitHub's rotating IPs. v0.19: (1) 429 waits 1, 3, 8, 20 s (or Retry-After, max 30 s); still 429 = `RateLimited` → test BLOCKED with the reason, never a store failure, no incident, run never "down"; a page load answering 429 waits 8 s and retries once; (2) `/products/<h>.js` answers cached per process for 2 min (checks asked the same product 3-4 times per page). `/cart.js` never cached. Mocks `rate_limited` (v0.18: DOWN; v0.19: BLOCKED) and `rate_limited_once`.
 
-**Cloud cycle 1 (9 Oct 11:30 IST, GitHub machines, 6 in parallel, `bench stores/bench.txt --quick`, v0.19, 20 min):** 69 store runs: 55 healthy / 7 degraded / 3 down / 2 unsupported / 1 blocked / 1 unreachable. suta, soulflower mobile, wellbeingnutrition and the soft-404 stores verified fixed. New Radar issues, fixed in v0.19 (each with a mock that fails on the previous code):
+**Cloud cycle 1 (9 Oct 11:30 IST, GitHub machines, 6 in parallel, `bench stores/bench.txt --quick`, v0.19, 20 min):** 69 store runs: 55 healthy / 7 degraded / 3 down / 2 unsupported / 1 blocked / 1 unreachable. shop194, shop083 mobile, shop002 and the soft-404 stores verified fixed. New Radar issues, fixed in v0.19 (each with a mock that fails on the previous code):
 
 | Issue | Stores | Fix | Mock |
 |---|---|---|---|
 | Shopify answered 503 'Something went wrong' for ~2 min (06:02-06:04 UTC) on 3 demo stores from 3 machines; retries seconds apart confirmed it (2 down, 1 unreachable, 2 flaky) | colorblock, spotlight, taste | 5xx homepage waited out (20 s, 60 s); a test whose try saw a 5xx store page (main frame, also via clicks) is re-checked after 20 s / 60 s; a pass after that = pass with a note, not flaky. A store still failing after that is confirmed as before | `server_blip`, guard `products_down` |
-| A layer over the product image intercepted the click; the click helper raised before the "other link" fallback ran | bummer (desktop, 3/3) | an intercepted click counts as "did nothing": click again, then the product's other link; the first error is kept if nothing works | `slider_over_image` |
-| Popup whose only close control is a bare "×" in a div (no button): not seen as a popup at all | soulflower desktop (new 'It's Our Birthday' popup) | unnamed full-screen layers qualify with a bare ×; that × is clicked; Escape when a big fixed layer still covers every card | `div_x_popup` |
+| A layer over the product image intercepted the click; the click helper raised before the "other link" fallback ran | shop129 (desktop, 3/3) | an intercepted click counts as "did nothing": click again, then the product's other link; the first error is kept if nothing works | `slider_over_image` |
+| Popup whose only close control is a bare "×" in a div (no button): not seen as a popup at all | shop083 desktop (new 'It's Our Birthday' popup) | unnamed full-screen layers qualify with a bare ×; that × is clicked; Escape when a big fixed layer still covers every card | `div_x_popup` |
 
-Store findings (Radar right): foxtale and plumgoodness list catalog products whose pages are hidden (all 3 sampled candidates on foxtale).
+Store findings (Radar right): shop116 and shop040 list catalog products whose pages are hidden (all 3 sampled candidates on shop116).
 
 **Decision (9 Oct, Anmol's TO-DO):** SEO findings never make a store degraded or down and never alert. `broken_price` mock now passes with an SEO warning (was a confirmed failure).
 
@@ -624,13 +624,13 @@ form text' open item. A crawler blocked from Oracle Cloud in the same way was un
 
 | Issue (new30b held-out) | Stores | Owner | Status |
 |---|---|---|---|
-| Collection cards invisible until the first scroll ('151 not visible') | reequil, wearcomet | Radar | **fixed + verified** (reequil healthy desktop + mobile). `_pick()` scroll pass now measures the document's real height; mock `scroll_reveal` is a long page like a real collection (fails without the scroll pass) |
-| Price rounded to whole rupees | thelabellife, salty | Radar | **verified** (thelabellife healthy both devices, salty desktop healthy) |
-| Search read at 0.8 s while a search app still renders | bonkerscorner, baccabucci, bellavita | Radar | waits for the app (link set stable 1.5 s after 4-6 s, max 10 s; early exit on a match). Mocks `search_app`, `search_app_popular`. **Not enough on the real stores**: see next row |
-| Theme scripts never run: `html.no-js`, no `window.Shopify`, price block + gallery empty, search app silent; console 'header.js / app.js / side-cart.js preloaded but not used' | baccabucci, bellavita (+ bonkerscorner search) | Radar environment, cause open | proven from run.json: the scripts are HELD. v0.19 now moves the mouse + wheels once when a page shows held scripts (`Session.first_touch`, mock `delayed_scripts` fails before, passes desktop + mobile). Re-run 2: **still held** on the real stores, so the hold is not interaction-based. Leading hypothesis: a 'speed' script that holds the theme for bots / Lighthouse (UA or `navigator.platform == "Linux x86_64"`: GitHub machines are Linux). The failure text now quotes any page script mentioning platform / lighthouse / bot, to decide next cycle. Not a store bug |
-| Location gate 'Welcome to Comet, confirm shipping location: UNITED STATES'; product pages 'Page not found' | wearcomet | **location (US runner)** | not fixed in code |
-| 'build your box' collection: bundle-app tiles without /products/ links, 0 products counted | consciouschemist | Radar, one store | documented limit (fix only if seen on a 2nd store) |
-| Mobile collection: 48 cards 'covered by main.main-content' | salty (mobile, 2 runs) | Radar?, one store | watch |
+| Collection cards invisible until the first scroll ('151 not visible') | shop108, shop085 | Radar | **fixed + verified** (shop108 healthy desktop + mobile). `_pick()` scroll pass now measures the document's real height; mock `scroll_reveal` is a long page like a real collection (fails without the scroll pass) |
+| Price rounded to whole rupees | shop043, shop193 | Radar | **verified** (shop043 healthy both devices, shop193 desktop healthy) |
+| Search read at 0.8 s while a search app still renders | shop025, shop059, shop007 | Radar | waits for the app (link set stable 1.5 s after 4-6 s, max 10 s; early exit on a match). Mocks `search_app`, `search_app_popular`. **Not enough on the real stores**: see next row |
+| Theme scripts never run: `html.no-js`, no `window.Shopify`, price block + gallery empty, search app silent; console 'header.js / app.js / side-cart.js preloaded but not used' | shop059, shop007 (+ shop025 search) | Radar environment, cause open | proven from run.json: the scripts are HELD. v0.19 now moves the mouse + wheels once when a page shows held scripts (`Session.first_touch`, mock `delayed_scripts` fails before, passes desktop + mobile). Re-run 2: **still held** on the real stores, so the hold is not interaction-based. Leading hypothesis: a 'speed' script that holds the theme for bots / Lighthouse (UA or `navigator.platform == "Linux x86_64"`: GitHub machines are Linux). The failure text now quotes any page script mentioning platform / lighthouse / bot, to decide next cycle. Not a store bug |
+| Location gate 'Welcome to Comet, confirm shipping location: UNITED STATES'; product pages 'Page not found' | shop085 | **location (US runner)** | not fixed in code |
+| 'build your box' collection: bundle-app tiles without /products/ links, 0 products counted | shop008 | Radar, one store | documented limit (fix only if seen on a 2nd store) |
+| Mobile collection: 48 cards 'covered by main.main-content' | shop193 (mobile, 2 runs) | Radar?, one store | watch |
 
 Infra: shard 1 of run 37927492715 lost its results (cloud-results push: LATEST rebase conflict while 6 machines pushed). The
 workflow now resolves LATEST conflicts with this shard's line (`-X theirs`, then `rebase --continue`).
@@ -640,9 +640,9 @@ GitHub machine-minutes this cycle: about 40 (re-run 1) + 30 (re-run 2).
 
 Re-run 37950556202 (`stores/retest_new30b_2.txt`, both devices) quoted the page script that holds the theme, on all
 three stores:
-- bonkerscorner.com: `// 2. Detect Google PageSpeed / Lighthouse testing bot (Linux x86_64 ...`
-- bellavitaorganic.com: same snippet (html.no-js, price only in `div.no-js-hidden`)
-- baccabucci.com: minified `e.platform.indexOf("x86_64")`
+- shop025.example: `// 2. Detect Google PageSpeed / Lighthouse testing bot (Linux x86_64 ...`
+- shop007.example: same snippet (html.no-js, price only in `div.no-js-hidden`)
+- shop059.example: minified `e.platform.indexOf("x86_64")`
 
 So these stores serve a stripped page (theme JS never runs: no price, no gallery, no search results) to ANY browser
 whose `navigator.platform` is 'Linux x86_64', to look fast on PageSpeed. GitHub's machines are Linux, and Playwright's
@@ -658,14 +658,14 @@ emulates nothing. Mock `pagespeed_gate` (theme held when platform is 'Linux x86_
 (desktop price hidden, quoted snippet) and passes desktop + mobile on the new; unit test
 `test_emulated_platform_matches_the_user_agent_sent`.
 
-Verified on the real stores (run 37954995865, both devices): **baccabucci healthy, bellavitaorganic healthy**,
-bonkerscorner mobile healthy (search fixed; '404 page redirects to /' is a store finding). Pages now load the full
+Verified on the real stores (run 37954995865, both devices): **shop059 healthy, shop007 healthy**,
+shop025 mobile healthy (search fixed; '404 page redirects to /' is a store finding). Pages now load the full
 theme, so measured load times rose from ~1 s (stripped page) to 6-9 s: that is what shoppers get.
 
-Second fix, same cycle: with the theme running, bonkerscorner desktop showed the **GoKwik KwikPass login popup**: a
+Second fix, same cycle: with the theme running, shop025 desktop showed the **GoKwik KwikPass login popup**: a
 full-screen iframe from another origin (`div#d2c-pass > iframe#iframe-kp`, src pdp.gokwik.co/kwikpass), no
-popup-like name, its × inside the frame: 'could not click: <iframe id="iframe-kp" ...>'. Seen before on boldcare.in
-(7 + 9 Oct) and consciouschemist.com (9 Oct): 3 stores. `overlays.IFRAME_POPUPS_JS` now also treats a fixed iframe
+popup-like name, its × inside the frame: 'could not click: <iframe id="iframe-kp" ...>'. Seen before on shop100.example
+(7 + 9 Oct) and shop008.example (9 Oct): 3 stores. `overlays.IFRAME_POPUPS_JS` now also treats a fixed iframe
 that covers half the screen and is on top at its centre as a popup (and reads the iframe's src: kwikpass / gokwik),
 then clicks the close control inside the frame (Escape as fallback); never 'Join' / log in. Mock `kwikpass_popup`
 (cross-origin frame on 'localhost') fails on the old code ('4 covered by iframe.iframe-kp') and passes on the new.
@@ -675,39 +675,39 @@ a VISIBLE close / dismiss / '×' control, else an icon-only (svg / img) control 
 never join / log in / subscribe / OTP. The mock now has a hidden '.close' first and an icon-only close (fails on
 round-1 code, passes on round 2).
 
-One-offs left as documented limits: bellavita second search word 'magicpin' (a partner-offer product; only tried
-because the first word failed under the held theme), consciouschemist 'build your box' bundle-app collection.
+One-offs left as documented limits: shop007 second search word 'magicpin' (a partner-offer product; only tried
+because the first word failed under the held theme), shop008 'build your box' bundle-app collection.
 
 **Loop cycle 3 (10 Oct 00:00–01:15 IST, no code change).** Full 36 regression (run 37973724156, after cycle 2's
-platform + KwikPass changes): 62 healthy / 4 degraded / 0 down / 2 unsupported (snitch, thewholetruthfoods) /
-1 blocked (vaaree robots.txt). The 4 degraded = foxtale + plumgoodness both devices = the known store catalog
-finding (all 3 sampled catalog products hidden: foxtale 'Page Not Found, redirecting to homepage' screenshot,
-plum 'The product is currently unavailable'). **0 Radar false failures.** boldcare (KwikPass) healthy both devices.
+platform + KwikPass changes): 62 healthy / 4 degraded / 0 down / 2 unsupported (shop123, shop148) /
+1 blocked (shop125 robots.txt). The 4 degraded = shop116 + shop040 both devices = the known store catalog
+finding (all 3 sampled catalog products hidden: shop116 'Page Not Found, redirecting to homepage' screenshot,
+shop192 'The product is currently unavailable'). **0 Radar false failures.** shop100 (KwikPass) healthy both devices.
 Web Bot Auth check: 401 (registration pending).
 
 **Held-out set #3 `stores/new30c.txt`, run ONCE (run 37976141781, v0.19 as of cycle 2).** WebFetch needs a human
-approval in unattended runs, so the list was not pre-checked; Radar's own discovery decided: ustraa.com not Shopify,
-bareanatomy.com now redirects to innovist.com (list error, not scored) → 28 scored stores.
-Right: 17 healthy both devices + 3 honest blocks (berrylush password, nestasia bot challenge, tagzfoods HTTP 423).
-Unverified: chemistatplay + neemli 'robots.txt no answer x3' (Radar obeyed RFC 9309; 2 stores = check next whether
+approval in unattended runs, so the list was not pre-checked; Radar's own discovery decided: shop124.example not Shopify,
+shop046.example now redirects to shop093.example (list error, not scored) → 28 scored stores.
+Right: 17 healthy both devices + 3 honest blocks (shop179 password, shop180 bot challenge, shop181 HTTP 423).
+Unverified: shop026 + shop133 'robots.txt no answer x3' (Radar obeyed RFC 9309; 2 stores = check next whether
 our robots fetch is refused by the store's CDN). **Radar false failures: 6/28 stores** (new30b: 12/30):
 
 | Store | Device | What Radar said | Evidence | Next |
 |---|---|---|---|---|
-| ptron | both | search 'sonor': 0 results | title "Search: 517 results found", results area blank (screenshot) | search-app pattern (2 stores) |
-| kushals | mobile | search: 0 of 1 result mentions zircon / antique / trendy | title "1000 results found", results area blank | same pattern |
-| fablestreet | both | /collections/all: empty <title> | page is the store's 404 'checkout our best sellers' (store turned off /collections/all) | Radar should use a real collection when /collections/all is a 404 (one store: watch) |
-| tigc | desktop | clicked card stayed on /collections/premium-jackets-for-men | card with image carousel arrows | one-off, watch |
-| naaginsauce | mobile | no clickable product card ('18 covered by img.loadify_img') | screenshot fully white (lazy-load app overlay) | one-off, watch |
-| littleboxindia | mobile | buy button disabled | sticky 'ADD TO CART' visible; size not chosen | one-off, watch |
+| shop196 | both | search 'sonor': 0 results | title "Search: 517 results found", results area blank (screenshot) | search-app pattern (2 stores) |
+| shop105 | mobile | search: 0 of 1 result mentions zircon / antique / trendy | title "1000 results found", results area blank | same pattern |
+| shop049 | both | /collections/all: empty <title> | page is the store's 404 'checkout our best sellers' (store turned off /collections/all) | Radar should use a real collection when /collections/all is a 404 (one store: watch) |
+| shop-shop146 | desktop | clicked card stayed on /collections/premium-jackets-for-men | card with image carousel arrows | one-off, watch |
+| shop182 | mobile | no clickable product card ('18 covered by img.loadify_img') | screenshot fully white (lazy-load app overlay) | one-off, watch |
+| shop018 | mobile | buy button disabled | sticky 'ADD TO CART' visible; size not chosen | one-off, watch |
 
-Watch: fireboltt 'every sampled product is sold out' on both devices (possible location (US runner)).
+Watch: shop183 'every sampled product is sold out' on both devices (possible location (US runner)).
 
 ## 4w. Loop cycle 4 (10 Oct 2026, 00:47 IST, automated): search apps that never render; robots.txt evidence
 
-**Problem (new30c held-out run 37976141781, 2 stores):** ptron.in (both devices) and kushals.com (mobile): the search
+**Problem (new30c held-out run 37976141781, 2 stores):** shop141.example (both devices) and shop105.example (mobile): the search
 page title carried Shopify's own count ('Search: 513 results found for "sonor"', '1000 results found for "zircon"'),
-but the search app that owns the results area left it empty (ptron: grey block; kushals: white page, 1 stray link)
+but the search app that owns the results area left it empty (shop196: grey block; shop105: white page, 1 stray link)
 after the 10 s search-app wait. Radar said "0 results" / "0 of 1 mention the term": a false failure, since the
 store's search works.
 
@@ -717,24 +717,24 @@ area is (nearly) empty while Shopify's title count says more (`_title_count`), R
 search (`/search/suggest.json`, fetched from the page, the store's own endpoint). If it finds products with the word,
 the search step passes with that evidence and a separate **warning** `search_app_rendered` says "search app did not
 render results for '<word>' in Radar's browser … Shopify's own search finds N". Unrelated results with no such count
-stay a search miss (mock `search_misses`, foxtale 'purify'). Mocks: `search_app_scroll` (results on first scroll) and
+stay a search miss (mock `search_misses`, shop116 'purify'). Mocks: `search_app_scroll` (results on first scroll) and
 `search_app_never` (never renders; suggest.json finds the word): both fail on the old code, pass on the new; unit test
 `test_title_count_reads_shopifys_search_count`. Full e2e 83/83 green.
 
-**Verified (run 37981589190):** kushals.com healthy desktop + mobile (mobile = the warning, Shopify finds 10 for
-'zircon'); ptron.in desktop healthy (warning: 0 shown, Shopify finds 6 for 'sonor'). ptron mobile still degraded by a
+**Verified (run 37981589190):** shop105.example healthy desktop + mobile (mobile = the warning, Shopify finds 10 for
+'zircon'); shop141.example desktop healthy (warning: 0 shown, Shopify finds 6 for 'sonor'). shop196 mobile still degraded by a
 DIFFERENT step: 'product name shown: none', while the screenshot shows the name under the gallery (the new30c desktop
 run needed LLM help for the same name). One store → watch (suspect: Radar's 'another product's card' rule on a box of
 sibling-colour product links). Web Bot Auth check: 401.
 
-**robots.txt 'no answer' (chemistatplay.com, neemli.in):** Radar now records the network error. Both were
+**robots.txt 'no answer' (shop026.example, shop133.example):** Radar now records the network error. Both were
 `getaddrinfo ENOTFOUND`: the domains do not exist (list errors in new30c, written without a web pre-check). Radar's
 note now says "the store's domain does not resolve (DNS: no such host): check the address" instead of "temporary
 server problem". new30c is scored on 26 stores: **first-run score 6/26 Radar false-failure stores**.
 
 ## 4x. Loop cycle 6 (10 Oct 2026, 03:46 IST, automated): delivery-pincode gate on the buy button
 
-**Problem (new30d held-out run 37988362552, bombaysweetshop.com, both devices):** the right variant WAS selected
+**Problem (new30d held-out run 37988362552, shop011.example, both devices):** the right variant WAS selected
 (form id = expected id), but the store's own buy button stays disabled and reads 'PLEASE ENTER YOUR PINCODE TO CHECK
 AVAILABILITY', with an 'ENTER YOUR PINCODE' box + CHECK button below it. `_ensure_variant` failed 'variant selected
 like a shopper: expected X, got X' (the disabled button was hidden in the condition, not in the message).
@@ -748,8 +748,8 @@ add-to-cart). A disabled button with no gate still fails, now saying "but the bu
 Indian food / perishables / furniture stores. Mock `pincode_gate`: fails on the old code ('expected 201 (Small), got
 201'), passes on the new. Full e2e 84/84 green, unit 82/82.
 
-**Verified (run 38000157483):** bombaysweetshop.com healthy desktop + mobile, the pincode warning on the product test.
-littleboxindia.com mobile (new30c) re-run: still 'buy button enabled: false' while the variant step read the form as
+**Verified (run 38000157483):** shop011.example healthy desktop + mobile, the pincode warning on the product test.
+shop018.example mobile (new30c) re-run: still 'buy button enabled: false' while the variant step read the form as
 enabled and the screenshot shows an enabled sticky ADD TO CART: Radar's `MAIN_BUY_JS` picks a different (disabled)
 button than `FORM_STATE_JS`. One store, 2 runs → watch; next step if it reappears: name the chosen button in the
 failure. Web Bot Auth check: 401.
@@ -757,87 +757,87 @@ failure. Web Bot Auth check: 401.
 ## 4y. Loop cycle 7 (10 Oct 2026, 04:47 IST, automated): held-out set #5 (new30e); empty <title>; buy-button evidence
 
 **new30e held-out (run 38004196155, run ONCE, no fixes in between):** 30 never-seen stores (fashion 10, beauty 7,
-electronics 4, food 3, home 2, baby/health 2, jewellery 2). Not scored: 6 not Shopify (almo, beatxp, gritzo,
-kamaayurveda, masonchocolates, technosport), robots.txt Disallow-all (breakbounce), domain does not resolve (skinq.in;
-wishcare.co EAI_AGAIN), robots.txt timed out 3× (zaveripearls, wingslifestyle), isharya.com redirects to isharya.co.
-**18 scored: 3 Radar false-failure stores** (hairoriginals empty title, crossbeats mobile buy disabled, beyondsnack no
-price), 2 store findings (mydesignation + bblunt mobile: a missing page answers 200 / redirects; bblunt mobile is sent
-to store.bblunt.com), 1 flaky (freedomtree desktop journey cart, passed on retry), 12 fully right.
+electronics 4, food 3, home 2, baby/health 2, jewellery 2). Not scored: 6 not Shopify (shop184, shop185, shop186,
+shop187, shop188, shop189), robots.txt Disallow-all (shop190), domain does not resolve (shop142.example;
+shop113.example EAI_AGAIN), robots.txt timed out 3× (shop191, shop192), shop103.example redirects to shop118.example.
+**18 scored: 3 Radar false-failure stores** (shop027 empty title, shop062 mobile buy disabled, shop060 no
+price), 2 store findings (shop193 + shop114 mobile: a missing page answers 200 / redirects; shop114 mobile is sent
+to store.shop114.example), 1 flaky (shop194 desktop journey cart, passed on retry), 12 fully right.
 
-**Empty `<title>` (`_load`, radar/checks/library.py):** hairoriginals.com rendered every page in full on both devices
-(screenshots) but `document.title` was empty, so every load step failed and the store was 'down'; fablestreet.com
+**Empty `<title>` (`_load`, radar/checks/library.py):** shop027.example rendered every page in full on both devices
+(screenshots) but `document.title` was empty, so every load step failed and the store was 'down'; shop049.example
 (new30c) failed the same check on a 404 page. A shopper never sees the tab title. Now Radar waits up to 2 s for a
 script-set title, and an empty title on a page that visibly rendered (≥ 40 chars or an image) is a passed load with
 the note "only an SEO finding"; the SEO test `health.meta.*` step `title` still WARNS ("missing"). A blank page with
 an empty title still fails. Mock `empty_doc_title`: fails on the old code (every case 'page <title> … (empty)'),
 passes on the new. Touches every page load → full 36 regression due next cycle.
 
-**Buy button disabled = diagnosable (`MAIN_BUY_JS`, `_expect_buy_enabled`):** littleboxindia.com mobile (new30c, cycle
-6) and now crossbeats.com mobile (new30e: variant ready, price shown, 'buy button enabled: false') fail while the
+**Buy button disabled = diagnosable (`MAIN_BUY_JS`, `_expect_buy_enabled`):** shop018.example mobile (new30c, cycle
+6) and now shop062.example mobile (new30e: variant ready, price shown, 'buy button enabled: false') fail while the
 screen shows a buyable product. Behaviour unchanged; the failure now names the button Radar read (tag, name, class,
 text, form) and any OTHER enabled buy button for the same product. Mock `disabled_dup_button` (disabled visible form
 button + enabled sticky `form=` button) fails on the old code ('got false'), passes on the new. Next: re-run both
 stores, then fix from the evidence (2 stores = fixable pattern).
 
-**Re-run 38007000986 (new code):** hairoriginals.com: the title fix works (all pages load); what remains is 'price not
+**Re-run 38007000986 (new code):** shop027.example: the title fix works (all pages load); what remains is 'price not
 on page' + no clickable card, with the header showing "United States | USD $" → **location (US runner)**, not Radar.
-crossbeats.com mobile: Radar read a disabled `<button class="cf-checkout">ADD TO CART` inside the main product form
+shop062.example mobile: Radar read a disabled `<button class="cf-checkout">ADD TO CART` inside the main product form
 while another buy button for the same product IS enabled → next fix: among this product's own buy buttons prefer an
-enabled add-to-cart one (not 'buy it now'). littleboxindia.com mobile: `MAIN_BUY_JS` finds nothing on mobile and the
+enabled add-to-cart one (not 'buy it now'). shop018.example mobile: `MAIN_BUY_JS` finds nothing on mobile and the
 healer's button is disabled (a different path) → needs the healer to report what it found.
 
-**beyondsnack.in (watch, 1 store):** product pages show no price and no cart, only "Shop Now On:" (marketplace
+**shop060.example (watch, 1 store):** product pages show no price and no cart, only "Shop Now On:" (marketplace
 links): a catalog-only storefront, or prices hidden for US visitors. Radar says 'price not on page' (down). If a
 second catalog-only store appears: detect "no price + no cart + no buy control" → 'no online checkout' note, not down.
 
 ## 4z. Loop cycle 8 (10 Oct 2026, 05:46 IST, automated): a disabled buy button while an enabled one exists
 
-**Pattern on 2 stores** (crossbeats.com mobile, new30e; littleboxindia.com mobile, new30c/d/e): the screen shows a
-buyable product with an enabled ADD TO CART (sticky bar on littlebox, screenshot), but the button Radar read was
+**Pattern on 2 stores** (shop062.example mobile, new30e; shop018.example mobile, new30c/d/e): the screen shows a
+buyable product with an enabled ADD TO CART (sticky bar on shop018, screenshot), but the button Radar read was
 disabled → 'buy button enabled: false' → product + cart + journey failed. A shopper simply uses the enabled button.
 
-- **`MAIN_BUY_JS` (form path, crossbeats):** when the first pick among this product's own buy buttons is disabled and
+- **`MAIN_BUY_JS` (form path, shop062):** when the first pick among this product's own buy buttons is disabled and
   another one for the same product is enabled with add/cart/bag wording (never 'buy it now': that goes to checkout),
   Radar clicks the enabled one; the step detail says "skipped disabled <tag> '<text>'". Mock `disabled_dup_button`
   (cycle 7's evidence mock) now must PASS: fails on the old code ('got False … ARE enabled'), passes on the new.
-- **`ENABLED_ADD_JS` (healer path, littlebox):** when the healer's control is disabled, Radar looks for a visible,
+- **`ENABLED_ADD_JS` (healer path, shop018):** when the healer's control is disabled, Radar looks for a visible,
   enabled button reading exactly 'add to cart/bag/basket', not in header/nav/footer/cart drawer, not on another
   product's card, preferring a fixed/sticky bar. Disabled healer pick + nothing enabled = the same failure as before,
-  now naming the healer's selector. Mock `healer_disabled_sticky`: fails on the old code with littlebox's exact
+  now naming the healer's selector. Mock `healer_disabled_sticky`: fails on the old code with shop018's exact
   message ('got False (button found by the healer)'), passes on the new.
 - Safety: the cart check after the click is unchanged, so a wrong button still fails on what /cart.js received.
 
-**Re-run 38009721448 (round 1):** littleboxindia.com ✔ healthy on both devices (enabled sticky ADD TO CART used).
-crossbeats.com desktop ✔; mobile still 'buy button enabled: false': the enabled button's name was clipped off the end
+**Re-run 38009721448 (round 1):** shop018.example ✔ healthy on both devices (enabled sticky ADD TO CART used).
+shop062.example desktop ✔; mobile still 'buy button enabled: false': the enabled button's name was clipped off the end
 of the 160-char evidence, and its text is not add-to-cart wording (so round 1 did not take it).
 **Round 2:** (a) the evidence now lists the ENABLED buttons first and shortens the form id; (b) `MAIN_BUY_JS` ranks
 'buy it now' / checkout wording after add-to-cart wording, so Radar can never click a checkout button that happens to
 come first in the product form. Mocks `disabled_buy_now_only` (only 'Buy it now' enabled → fails, names it first)
 and `buy_now_first` (enabled 'Buy it now' before 'Add to cart' → clicks add to cart, passes); both fail on the old
-code. If crossbeats' enabled button turns out to be 'buy it now' only, the failure is right (no enabled add to cart
+code. If shop062' enabled button turns out to be 'buy it now' only, the failure is right (no enabled add to cart
 on mobile) and gets proven from the screenshot, not fixed.
 
-**Re-run 38012050352 (round 2), crossbeats.com:** desktop ✔ healthy. Mobile: the only enabled control for the
+**Re-run 38012050352 (round 2), shop062.example:** desktop ✔ healthy. Mobile: the only enabled control for the
 product is `button.cf-checkout` "BUY NOW · Extra ₹100 Off on Prepaid Order"; the visible ADD TO CART is disabled.
 Radar correctly does not click 'buy now' (checkout). The screenshot does not show the button row, so whether the
 store disables ADD TO CART on mobile on purpose is not proven → **documented limit after 2 fix rounds** (1 store):
 'mobile: add to cart disabled, only buy now enabled'. Reopen only if a second store shows it.
 
 **new30f held-out (run 38012566834, run ONCE, no fixes in between), PARTIAL: 25 of 30 stores reported** (shard 1
-with doodlage, fashor, jusamazin, letsbeco, mylittlemoppet still running after 45 min; the next cycle adds it).
-Not scored (8): baggit, dailyobjects not Shopify; yoho.store parked (GoDaddy for sale); beybee robots.txt timeout;
-habbit + bombayshirtcompany: TLS connection dropped before the handshake on robots.txt (network-level block of the
-US runner, 2 stores: not fixable without evasion); miraggio robots.txt self-signed certificate; thebakersdozen bot
-challenge. **17 scored so far: 2 Radar false-failure stores** — rawpressery (journey read variant ₹112 'Pack of 1'
-while the page had 'Pack of 6' ₹672 selected and out of stock → price 'not on page'); koskii mobile 'not Shopify'
-(robots.txt 4xx on mobile) while desktop was healthy. Location (US runner, USD prices or price hidden): aachho,
-kisah, nappadori. Store finding: myborosil mobile missing page → / (200). Fully right: godesi, gullylabs,
-hammeronline, ikkivi, jokerandwitch, justherbs, powergummies, thewhitewillow, tistabene, tjori, zariin.
+with shop150, shop115, shop151, shop152, shop149 still running after 45 min; the next cycle adds it).
+Not scored (8): shop195, shop196 not Shopify; shop126.example parked (GoDaddy for sale); shop197 robots.txt timeout;
+shop198 + shop199: TLS connection dropped before the handshake on robots.txt (network-level block of the
+US runner, 2 stores: not fixable without evasion); shop153 robots.txt self-signed certificate; shop200 bot
+challenge. **17 scored so far: 2 Radar false-failure stores** — shop154 (journey read variant ₹112 'Pack of 1'
+while the page had 'Pack of 6' ₹672 selected and out of stock → price 'not on page'); shop120 mobile 'not Shopify'
+(robots.txt 4xx on mobile) while desktop was healthy. Location (US runner, USD prices or price hidden): shop201,
+shop202, shop203. Store finding: shop204 mobile missing page → / (200). Fully right: shop205, shop206,
+shop207, shop208, shop209, shop210, shop211, shop212, shop213, shop214, shop215.
 
 ## 4z1. Loop cycle 9 (10 Oct 2026, 07:47 IST, automated): a frozen page held a whole shard for hours
 
-**What happened:** shard 1 of the new30f held-out run (38012566834: doodlage, fashor, jusamazin, letsbeco,
-mylittlemoppet) was still running after 60+ min, while the other 5 shards finished in ~11 min each. Nothing per store
+**What happened:** shard 1 of the new30f held-out run (38012566834: shop150, shop115, shop151, shop152,
+shop149) was still running after 60+ min, while the other 5 shards finished in ~11 min each. Nothing per store
 stopped Radar: the bench waited on each store's process for ever, so one store that never finished (a) held its 4
 neighbours' rows (bench.json is written at the end) until the 150-min step limit, and (b) blocked every later cloud
 run (the workflow's concurrency group queues them). Which store it was is known only after that shard's partial
@@ -864,15 +864,15 @@ closes the page) is only worth it if the stopped-store evidence shows Radar, not
 ## 4z2. Loop cycle 11 (10 Oct 2026, 09:46 IST, automated): product links opening a new tab; one-marker 'not Shopify'
 
 **new30f final score** (run 38012566834, shard 1 published after its step limit): 21 scored → **4/21 Radar
-false-failure stores**: rawpressery (variant read), koskii (mobile 'not Shopify'), fashor (product click did nothing),
-doodlage (froze the shard; on the re-run 38023578047 it finished in 205 s and shows USD prices = location (US
-runner)). mylittlemoppet = not Shopify (left out). The freeze did not repeat, so its cause stays unknown (the cycle-9
+false-failure stores**: shop154 (variant read), shop120 (mobile 'not Shopify'), shop115 (product click did nothing),
+shop150 (froze the shard; on the re-run 38023578047 it finished in 205 s and shows USD prices = location (US
+runner)). shop149 = not Shopify (left out). The freeze did not repeat, so its cause stays unknown (the cycle-9
 bench time limit now bounds it). Full 36 regression #3 (38018580250, after the bench time limit): 61 healthy /
-5 degraded (foxtale + plum store findings, palmonas mobile journey flaky but passed on retry) / **0 Radar false
+5 degraded (shop116 + shop192 store findings, shop095 mobile journey flaky but passed on retry) / **0 Radar false
 failures**, no store stopped.
 
-**Pattern 1 (2 stores: fashor.com new30f, tigc.in new30c): the product click left the collection page unchanged** on
-all 3 attempts (fashor on both devices), the 'click again' and 'other link' fallbacks included. Radar only watched its
+**Pattern 1 (2 stores: shop115.example new30f, shop146.example new30c): the product click left the collection page unchanged** on
+all 3 attempts (shop115 on both devices), the 'click again' and 'other link' fallbacks included. Radar only watched its
 own tab. A link with `target=_blank` (or a card script calling `window.open`) opens the product in a NEW tab: for a
 shopper that click worked. **Mock `new_tab_cards`** (every product link on home/collections gets target=_blank): the
 old code failed with exactly the stores' message ('opened the product that was clicked: expected
@@ -883,13 +883,13 @@ followed it there'. The post-click wait stops as soon as a tab opens. A tab to a
 cause is unproven for the two stores until the re-run: if they still fail, it is not a new tab and the next round
 needs the link's own evidence.
 
-**Pattern 2 (koskii.com: new30f mobile and the re-run's desktop said 'not Shopify', new30f desktop was a healthy
+**Pattern 2 (shop120.example: new30f mobile and the re-run's desktop said 'not Shopify', new30f desktop was a healthy
 Shopify store): one marker.** That homepage load had only `cdn.shopify.com` (2 markers needed) and robots.txt
 answered 4xx. **Mock `stripped_first_home`** (first homepage load keeps only a cdn.shopify.com preconnect): old code =
 unsupported; new = healthy. **Fix (`discover.py`):** with 1 marker on an open 2xx homepage Radar waits 3 s and loads
 the homepage once more; if that load is Shopify it goes on (note 'homepage showed only one Shopify marker … loaded it
 again'). The 'not Shopify' note now carries the evidence (title, HTML size, markers found), so it is visible whether
-other 'not Shopify' stores (thewholetruthfoods, snitch, mylittlemoppet) are the same case.
+other 'not Shopify' stores (shop148, shop123, shop149) are the same case.
 
 ## 4zc. Journeys 28–30 (chat session, 11 Oct 2026, 00:00 IST): footer info pages, account page, layout
 
@@ -906,7 +906,7 @@ open; no per-store config) and never add a hard failure Radar is not sure of.
 **robots.txt (unchanged rule):** pages the store's robots.txt disallows are never opened: discovery lists them in
 the run notes ('footer info page(s) not opened, the store's robots.txt disallows them …', 'account page … not opened:
 robots.txt disallows it') and no case is generated for them, so a store is never marked blocked or failing for it. In the
-first 36-store run only 4 stores disallowed /account and 1 (supplysix) /policies/; the mock store disallows both, to
+first 36-store run only 4 stores disallowed /account and 1 (shop084) /policies/; the mock store disallows both, to
 prove the skip.
 
 **Shopify-hosted customer accounts** (link to `shopify.com/<id>/account` or `account.<domain>`): not opened, noted.
@@ -920,22 +920,22 @@ Radar false failures from `info.*` and no layout warning that the screenshot doe
 ### 4zc-2. Journeys 26, 27, 14, 17 and the first real-store run of 28–30 (chat session, 11 Oct 2026, 00:15–00:45 IST)
 
 **Real-store run of 28–30** (full 36, both devices, run 38077075618, cloud-runs b599eb7): 60 healthy / 6 degraded / 2
-unsupported / 1 blocked. Five degraded rows are the known store findings (foxtale, plum). **One new Radar false failure:
-giva.co, both devices**: its footer links 'Annual Return FY 2024-25' (`/cdn/shop/t/234/assets/annual-return-fy-2024-25.pdf`,
+unsupported / 1 blocked. Five degraded rows are the known store findings (shop116, shop192). **One new Radar false failure:
+shop143.example, both devices**: its footer links 'Annual Return FY 2024-25' (`/cdn/shop/t/234/assets/annual-return-fy-2024-25.pdf`,
 the company's MGT-7 filing); `info_pages()` read it as the returns page and opening it started a download. Fixed:
 files (`/cdn/`, `/files/`, any `.ext`) and company filings (annual / investor / CSR / MGT-7 / financial) are never info
 pages; the mock footer now carries that PDF first (old code FAILS the healthy footer test). Elsewhere on the 36:
 info.policy_pages passed on 25 stores × 2 devices (1–5 pages each: /pages/* and, where robots.txt allows it, /policies/*);
-account pages opened on 8 stores (peepbeauty → Shopify's /authentication/… login, giva, …), robots.txt kept /account
-closed on dotandkey, mcaffeine, palmonas mobile, wellbeingnutrition; beminimalist hands sign-in to shopify.com (noted).
-Other changes from the evidence: policy text is read again for ~4 s and counted on the body when `<main>` is thin (giva's
+account pages opened on 8 stores (shop079 → Shopify's /authentication/… login, shop195, …), robots.txt kept /account
+closed on shop074, shop078, shop095 mobile, shop002; shop047 hands sign-in to shopify.com (noted).
+Other changes from the evidence: policy text is read again for ~4 s and counted on the body when `<main>` is thin (shop195's
 policy pages showed 0 chars: blank between header and footer in the screenshot, kept as a warning); footer links are
-read again after a scroll when none were found (mcaffeine, suta, 9 theme demos had none: demos have no policy links);
-sign-in handed to another site / a blank page = not judged (moxiebeauty → about:blank); sideways play ≤ 10 px is noise
-(boat-lifestyle and palmonas phones: 5 px), fixed layers (closed drawers) are never named as the cause; a popup Radar could
-not close (suta: gls-overlay-popup, 100%) is reported apart, not as a covering bar. Real layout findings kept as
-warnings: moxiebeauty desktop PDP scrolls sideways 707 px (before/after slider), peepbeauty desktop collection 275 px,
-soulflower desktop PDP 51 px (tab buttons), boat-lifestyle phone PDP 12 px.
+read again after a scroll when none were found (shop078, shop194, 9 theme demos had none: demos have no policy links);
+sign-in handed to another site / a blank page = not judged (shop063 → about:blank); sideways play ≤ 10 px is noise
+(shop017 and shop095 phones: 5 px), fixed layers (closed drawers) are never named as the cause; a popup Radar could
+not close (shop194: gls-overlay-popup, 100%) is reported apart, not as a covering bar. Real layout findings kept as
+warnings: shop063 desktop PDP scrolls sideways 707 px (before/after slider), shop079 desktop collection 275 px,
+shop083 desktop PDP 51 px (tab buttons), shop017 phone PDP 12 px.
 
 | Journey | What Radar does | Pass / fail / warn | Mocks |
 |---|---|---|---|
@@ -970,17 +970,17 @@ requested (unit + e2e tests).
 `/checkout`): `healthy` passes every step; `cart_qty_broken` (+ does nothing), `cart_remove_broken` (remove reloads
 without removing), `checkout_broken` (HTTP 500) each WARN with strict=false and FAIL with strict=true at that step.
 
-**giva.co 'Annual Return' PDF** (run 38077075618): fixed by the chat session in parallel (4zc-2); this cycle's mock
+**shop143.example 'Annual Return' PDF** (run 38077075618): fixed by the chat session in parallel (4zc-2); this cycle's mock
 `annual_return_pdf` + test stay as a second proof.
 
 **new30g never-seen (run 38078363377, run once, code with journeys 28–30):** 19 scored (4 not Shopify; 6 blocked = dead
-domains / DNS / wrong certificate / robots.txt Disallow (soulfull); kalkifashion parked). **2/19 Radar false-failure
-stores:** antesports (catalog-only: 'Buy on Amazon / Flipkart', no price, no cart: same pattern as beyondsnack, now 2
-stores → fix next), fixderma mobile (no buy control found for one product; desktop healthy). tilfi = location (US
-runner shows $497.04; Radar did not label it location: to check). nourishyou mobile: missing page → /collections/all
+domains / DNS / wrong certificate / robots.txt Disallow (shop216); shop217 parked). **2/19 Radar false-failure
+stores:** shop057 (catalog-only: 'Buy on Amazon / Flipkart', no price, no cart: same pattern as shop060, now 2
+stores → fix next), shop218 mobile (no buy control found for one product; desktop healthy). shop199 = location (US
+runner shows $497.04; Radar did not label it location: to check). shop219 mobile: missing page → /collections/all
 (store finding).
 
-**T1 fix, marketplace-only catalog stores (2 stores: antesports.com new30g, beyondsnack.in new30e):** the product page
+**T1 fix, marketplace-only catalog stores (2 stores: shop057.example new30g, shop060.example new30e):** the product page
 shows no price and no buy button, only 'Buy on Amazon / Flipkart' (Myntra, Nykaa, Ajio, Blinkit, Zepto, … outside
 header/footer). Until now: DOWN 'selected variant price shown: not on page'. Now, only when the price is NOT on the page
 and the page has no buy control of its own, the product test, the journey and add-to-cart are BLOCKED with the reason
@@ -992,15 +992,15 @@ not change cart.js: limit for now); the checkout page opened on all 24 (status, 
 summary was read before it rendered, and no remove control was found on any theme (Dawn puts the variant id on the
 quantity box itself, so the 'line' stopped at `<quantity-input>`; the remove link is its sibling). Round 1: the line is
 the box's highest ancestor holding only that box and no cart-level control; the checkout summary is polled up to 15 s;
-the mock now carries both traits (old code fails on `healthy`). beyondsnack 'Diwali Box' shows only a 'Shop Now On:'
+the mock now carries both traits (old code fails on `healthy`). shop060 'Diwali Box' shows only a 'Shop Now On:'
 heading (no links): also catalog-only now.
 
 **Round 1 result (run 38086965951, same 12 demos × 2):** remove 24/24 ✔ (journey 20 done), cart line 24/24, quantity +
 22/24 (Studio theme: + does not change cart.js within 8 s: limit, warning). Checkout page opens on 24/24 (HTTP, lands on
 /checkouts/, form fields shown) but the product name is still not read from the order summary in 15 s on any theme:
 round 2 (last) next cycle = save the checkout page's screenshot + HTML as evidence and read the summary where it really
-is; until then that one assertion stays a warning. antesports + beyondsnack = BLOCKED 'sells only on marketplaces'
-(both devices; beyondsnack 'Diwali Box' via 'Shop Now On:').
+is; until then that one assertion stays a warning. shop057 + shop060 = BLOCKED 'sells only on marketplaces'
+(both devices; shop060 'Diwali Box' via 'Shop Now On:').
 
 Also: the bench table and both HTML reports list the `info` suite (journeys 28–30): their suite lists stopped at
 `health`, so the report never showed it.
@@ -1018,25 +1018,25 @@ judged; a button that shows nothing = **warning** (the journey's critical click-
 can be reached). Mocks `hamburger_menu`, `hamburger_broken` (phones only).
 
 **Round 2 from run 38080268940** (the 36 with journeys 27/26/14/17: 0 Radar false failures; warnings read one by one):
-the search box opener got a wider net (7 of 22 real stores' boxes stayed closed: antinorm, cava, dotandkey, mcaffeine,
-plum, soulflower, supplysix; the main search then opened /search by URL and search-as-you-type was 'not judged'): any
+the search box opener got a wider net (7 of 22 real stores' boxes stayed closed: shop099, cava, shop074, shop078,
+shop192, shop083, shop084; the main search then opened /search by URL and search-as-you-type was 'not judged'): any
 visible control near the top whose label / title / class / id / data attributes / link / svg icon says 'search', with a
 wait for drawers; mock `search_icon_only`. Journey 26 is judged only when ≥ 8 and ≥ 25% of the in-stock products are
-missing from page 1 (peepbeauty, supplysix: 6–8, themes and Shopify Markets on US machines hide some) and follows
-infinite scroll a screen at a time (giva: 226 in stock past page 1; the jump to the bottom found none). Kept as real
-warnings: 'no results' message missing while 8–24 products are listed for a nonsense word (bummer, cava, plum,
-soulflower, supplysix), LCP > 4 s from the US runner (cava, mcaffeine, plum 9.6 s), CLS 0.34–0.6 on mcaffeine
+missing from page 1 (shop079, shop084: 6–8, themes and Shopify Markets on US machines hide some) and follows
+infinite scroll a screen at a time (shop195: 226 in stock past page 1; the jump to the bottom found none). Kept as real
+warnings: 'no results' message missing while 8–24 products are listed for a nonsense word (shop129, cava, shop192,
+shop083, shop084), LCP > 4 s from the US runner (cava, shop078, shop192 9.6 s), CLS 0.34–0.6 on shop078
 collections, uncaught JS errors on 18 stores (mostly third-party: gtag, clarity, snaptr, jdgm).
 
 **Real-store proof of journeys 15, 16, 31** (full 36, both devices, run 38086122556, cloud-runs 19aa66a, on top of loop
-cycle 25's journeys 19–21): 59 healthy / 7 degraded = foxtale + plum (store findings) and **2 Radar issues, fixed and
-re-run** (run 38090661291, 5 stores × 2 devices: beminimalist ✔ both, thehouseofrare ✔ both, giva ✔ both):
-beminimalist.co's footer 'Email' link is Cloudflare's `/cdn-cgi/l/email-protection` (now never opened; mock footer
+cycle 25's journeys 19–21): 59 healthy / 7 degraded = shop116 + shop192 (store findings) and **2 Radar issues, fixed and
+re-run** (run 38090661291, 5 stores × 2 devices: shop047 ✔ both, thehouseofrare ✔ both, shop195 ✔ both):
+shop047.example's footer 'Email' link is Cloudflare's `/cdn-cgi/l/email-protection` (now never opened; mock footer
 carries one); thehouseofrare.com phone showed 0 cards on the first page once (grid rendered late): `catalog.more` waits
 6 s with a scroll nudge and leaves the listing to the collection test, which itself now waits up to 6 s for a grid a
 script renders after load (mock `late_cards`). Journey 16 opened the menu or found it shown on every phone run (16
-stores); journey 15 passed on 28 store runs; journey 31 found no store at the extreme. **Store finding:** beyondsnack.in's
-homepage banner links `/https://www.beyondsnack.in/collections/kerala-banana-chips-with-coconut-oil` (a theme-settings
+stores); journey 15 passed on 28 store runs; journey 31 found no store at the extreme. **Store finding:** shop060.example's
+homepage banner links `/https://www.shop060.example/collections/kerala-banana-chips-with-coconut-oil` (a theme-settings
 typo, 404 for shoppers); Radar now names such links 'malformed link' with an info step explaining it (mock
 `broken_section_link`).
 
@@ -1047,9 +1047,9 @@ lead to any site, reported 'blocked: robots.txt could not be fetched … usually
 RFC 9309 'blocked', bench-8 test), another site's certificate (altnames), self-signed or expired certificate. Then
 discovery stops with access **unreachable** and the note '<host>: <reason>. Nothing was tested; check the store's
 address'. Timeouts, 5xx and TLS resets stay 'robots_unreachable' (may be temporary or the US runner). Re-run
-38093858946: bombae, pahadilocal (→ 127.0.0.1), brewhouse, agaro (another site's certificate), skinq (no such host),
-wishcare (DNS failed), miraggio (self-signed) → all 7 **unreachable** with their reason. Loop cycle 26's full 36
-(cadf39f, journeys 15/16/31 included): 61 healthy / 5 degraded = foxtale + plum store findings + palmonas phone flaky
+38093858946: shop128, shop052 (→ 127.0.0.1), shop089, shop220 (another site's certificate), shop142 (no such host),
+shop113 (DNS failed), shop153 (self-signed) → all 7 **unreachable** with their reason. Loop cycle 26's full 36
+(cadf39f, journeys 15/16/31 included): 61 healthy / 5 degraded = shop116 + shop192 store findings + shop095 phone flaky
 (products.js empty body 4×, known) → 0 Radar false failures.
 
 **Gaps vs Revenue Shield still open** (rows added to the status doc): 'Buy it now' flow opening the checkout (not
@@ -1076,41 +1076,41 @@ JSON `<script>` in the body before the order summary and Radar read `body.textCo
 reads text nodes only (script/style/template skipped, 200 000 chars). Mock `checkout_big_script` fails on the old code.
 
 **new30h (run 38117718084, 12 machines, run once):** 30 never-seen stores → 20 scored (4 not Shopify, 5 unreachable:
-2 dead DNS, 1 wrong certificate, 2 redirect to another site; tribeamrapali bot challenge). Location (US runner): 3
-(theindianethnicco $62.91, saltattire $24.23, kidbea products hidden from the US market). Store finding: maspar footer
-'Printed Bed Sheets' → /collections/printed 404 (both devices). Radar false failures: **2/17** (soultree image, veirdo
+2 dead DNS, 1 wrong certificate, 2 redirect to another site; shop221 bot challenge). Location (US runner): 3
+(shop005 $62.91, shop065 $24.23, shop119 products hidden from the US market). Store finding: shop121 footer
+'Printed Bed Sheets' → /collections/printed 404 (both devices). Radar false failures: **2/17** (shop110 image, shop137
 grid). Fixed in this batch (each with a mock that fails on the old code):
 - **Location instead of DOWN** (`OtherMarket`): when the catalog ₹ price is not on the page and
   `Shopify.currency.rate` ≠ 1 (Shopify Markets converted the prices for this visitor), the case is BLOCKED
-  'location (US runner) … converted to USD (market US, rate …)'. 3 stores (theindianethnicco, saltattire, tilfi).
+  'location (US runner) … converted to USD (market US, rate …)'. 3 stores (shop005, shop065, shop199).
   Mock `other_market`.
-- **Main product image** (soultree.in, image plainly on screen): waits up to ~5 s for lazy galleries, reads open shadow
+- **Main product image** (shop110.example, image plainly on screen): waits up to ~5 s for lazy galleries, reads open shadow
   roots and large CSS background images that loaded, and on failure names the 3 largest images it saw (size, position,
   naturalWidth, file). Mock `lazy_gallery`.
-- **Grid rendered on scroll** (veirdo.in: '144 items', 0 product links): `_reveal_product_grid` scrolls a screen at a
+- **Grid rendered on scroll** (shop137.example: '144 items', 0 product links): `_reveal_product_grid` scrolls a screen at a
   time until product links show, in the collection test and the journey (collection + product click). Mock
   `grid_on_scroll`.
-- kidbea.com (catalog products 404 + 'no products in this collection' while products.json lists them, market US/INR):
+- shop119.example (catalog products 404 + 'no products in this collection' while products.json lists them, market US/INR):
   documented as location for now; if it repeats on another store, label 'products not published to this market'.
 
 **Real-store result (run 38123470941: full 36 + 6 new30h re-tests, 12 machines, ~20 min):**
-- 36 regression: 1 Radar false failure: beminimalist.co phone, journey 'product name shown: none' on 'B12 + Repair
+- 36 regression: 1 Radar false failure: shop047.example phone, journey 'product name shown: none' on 'B12 + Repair
   Complex 5.5% Face Moisturizer' (desktop fine; PDP name logic untouched by this batch; its LLM re-check then crashed
-  on a name instead of an index = guarded now). Store findings as before (foxtale, plum, palmonas / soulflower 404).
-  vaaree.com BLOCKED 'robots.txt disallows the whole site for Radar' also in the chat session's run 38119198301 (not
+  on a name instead of an index = guarded now). Store findings as before (shop116, shop192, shop095 / shop083 404).
+  shop125.example BLOCKED 'robots.txt disallows the whole site for Radar' also in the chat session's run 38119198301 (not
   this batch): check its robots.txt next cycle.
 - Journey 21: checkout summary now read: cart.edit_and_checkout 22/24 pass (studio quantity = known limit) → done.
-- Journey 22: 43 pass, 3 info, 8 warn (antinorm, supplysix, veirdo: the page kept the old variant after the click;
-  taste demo new price not shown; kidbea location) → round 2.
+- Journey 22: 43 pass, 3 info, 8 warn (shop099, shop084, shop137: the page kept the old variant after the click;
+  taste demo new price not shown; shop119 location) → round 2.
 - Journey 23: 24/24 warn 'cart line shows no price' on all 12 theme demos (mock passes) → evidence added to the
   message (line area tag/class/text), round 2 next run.
 - Journey 24: only 2 sold-out products in the stores' data, both info (not judged) → needs more evidence.
-- Journey 25: 65 info (no filter UI / sort not allowed), 2 blocked by robots.txt (soulflower product_type filter),
-  5 warn (maspar 0 products with the filter; antinorm + beminimalist 1 listed product not 'available' in products.json).
-- new30h fixes: soultree.in healthy both devices (lazy image fix verified). veirdo.in still 0 cards (scrolling did
-  not reveal the grid: round 2 needs the DOM). theindianethnicco + saltattire still 'not on page': their pages do not
+- Journey 25: 65 info (no filter UI / sort not allowed), 2 blocked by robots.txt (shop083 product_type filter),
+  5 warn (shop121 0 products with the filter; shop099 + shop047 1 listed product not 'available' in products.json).
+- new30h fixes: shop110.example healthy both devices (lazy image fix verified). shop137.example still 0 cards (scrolling did
+  not reveal the grid: round 2 needs the DOM). shop005 + shop065 still 'not on page': their pages do not
   expose a converted Shopify.currency, so round 2 also reads foreign prices on the page itself (mock
-  `other_market_norate`). kidbea + maspar unchanged (location / store finding).
+  `other_market_norate`). shop119 + shop121 unchanged (location / store finding).
 
 **Cloud runs on 12 machines** (was 6): each store is still visited by one machine (same per-store volume), the run takes
 about half the time; result pushes retry 16 times.
@@ -1131,7 +1131,7 @@ Checks never hard-code selectors. They ask for an **intent** (`add_to_cart`, `ch
 Every rung picks the first VISIBLE match that is not excluded (never blindly `.first`). For
 `add_to_cart`, a button in a quick-add / card / carousel / upsell / recommendation block is excluded
 at every rung **only if it belongs to another product's card**: the nearest product links around it
-point to a different product (v0.8; class names alone wrongly excluded soulflower.in's main button). `find()` can be scoped to a root (an open cart drawer).
+point to a different product (v0.8; class names alone wrongly excluded shop083.example's main button). `find()` can be scoped to a root (an open cart drawer).
 
 A rung 3 or 4 success is cached, logged in `healing_events`, and shown in the report with the
 new selector and the reason. Healed selectors prefer stable forms (id, `name`, `data-testid`,
@@ -1187,7 +1187,7 @@ positive evidence before blaming the store, with ordered rules.
 | Model | Score | Held-out | Wrong store blames | Cost of 15 calls | ≈ per call |
 |---|---|---|---|---|---|
 | gpt-4o-mini, v0.7 prompt | 7/12 | n/a | 5 | $0.0012 | $0.0001 |
-| gpt-4o-mini, v0.7.1 facts + rules | 14/15 | 3/3 | 1 (Plum freebie; now also skipped at discovery) | $0.0019 | $0.00013 |
+| gpt-4o-mini, v0.7.1 facts + rules | 14/15 | 3/3 | 1 (Shop192 freebie; now also skipped at discovery) | $0.0019 | $0.00013 |
 | **gpt-5-mini, v0.7.1** | **15/15** | 3/3 | 0 | $0.0054 | $0.00036 |
 
 Decision: default = gpt-5-mini (≈ Rs 20/month more at 50 stores for zero wrong store blames). 15 cases
@@ -1203,7 +1203,7 @@ USD in every run summary. An LLM error never crashes a run.
 
 ## 7. Storage: how xyz.in and abc.com are kept apart
 
-- **site_id** = host, lowercased, `www.` removed (`www.Vaaree.com` → `vaaree.com`). Subdomains are separate sites.
+- **site_id** = host, lowercased, `www.` removed (`www.Shop125.example` → `shop125.example`). Subdomains are separate sites.
 - **One database** `data/radar.db`. Every table carries `site_id`:
   `sites, runs, case_results, incidents, locator_cache, healing_events`.
   Same schema moves to Supabase Postgres with row-level security on `site_id`.
@@ -1244,13 +1244,13 @@ USD in every run summary. An LLM error never crashes a run.
 | Area | Status (5 Oct) |
 |---|---|
 | Whole pipeline on a Shopify-like store | **Proven** in real Chromium against the mock store (30 modes) |
-| Real Shopify stores | **Bench 7 (v0.11, 33 testable): 28 healthy, 5 degraded, 0 down, 0 flaky.** 3 failures are real store findings; 2 were Radar's (plum rule gap, brand word searched), fixed in v0.12 (4l). Bench 6 (v0.10) had 0 Radar false failures. **v0.12 not yet benched.** |
+| Real Shopify stores | **Bench 7 (v0.11, 33 testable): 28 healthy, 5 degraded, 0 down, 0 flaky.** 3 failures are real store findings; 2 were Radar's (shop192 rule gap, brand word searched), fixed in v0.12 (4l). Bench 6 (v0.10) had 0 Radar false failures. **v0.12 not yet benched.** |
 | Bench-2 bugs reproduced | **Proven**: v0.6 code fails the new mock modes with the same messages as on the real stores; v0.7 passes |
-| Add-to-cart identity (product opened = product added) | **Proven** on mock (`wrong_variant`) and on moxiebeauty.in (correct product, free gift warned) |
+| Add-to-cart identity (product opened = product added) | **Proven** on mock (`wrong_variant`) and on shop063.example (correct product, free gift warned) |
 | Heuristic healing | **Proven** (renamed "Add to Bag" button healed to a stable selector, reused from cache) |
 | LLM healing, triage, assisted re-check | **Proven with a fake LLM** end to end (triage → re-check → pass, real problem → no re-check, overlay veto). **Real OpenAI triage proven on 15 known cases**: gpt-5-mini 15/15, gpt-4o-mini 14/15 (5 Oct). Not yet seen on a real failing store run |
 | Confirmed failure, flaky, down, incident dedupe | **Proven** (broken price, broken cart modes) |
-| Blocked / unsupported / unreachable verdicts | **Proven** on mock and on real stores (vaaree robots-blocked, thewholetruthfoods not Shopify, rarerabbit.in off-site) |
+| Blocked / unsupported / unreachable verdicts | **Proven** on mock and on real stores (shop125 robots-blocked, shop148 not Shopify, rarerabbit.in off-site) |
 | Mobile device emulation | Code path exists (`--device mobile` / `both`), **not covered by e2e tests and not benched** |
 | Screenshots | **Every journey step** (strip in the report) + full PNG and trace on failure |
 | Tests | **97 pass: 57 unit + 40 end-to-end** (`python3 -m pytest -q`, ~16 min; 5 Oct, cloud sandbox) |
@@ -1350,7 +1350,7 @@ pass/fail. An LLM-written assertion never reaches a store's report until code ha
 ### 12b. Learning loop (knowledge, not retraining)
 | Store | Holds | Effect |
 |---|---|---|
-| Per-store memory | page map, working locators, quirks (e.g. supplysix trial page price mobile-only) | second run faster and exact; known quirks not re-alerted |
+| Per-store memory | page map, working locators, quirks (e.g. shop084 trial page price mobile-only) | second run faster and exact; known quirks not re-alerted |
 | Cross-store patterns | locator/feature patterns seen on 3+ stores (theme, checkout app, app widgets) | promoted to code hints after a test + mock; new stores start smart |
 | Labelled cases | every triaged failure + Anmol's verdict (right/wrong) | grows `llm-check` from 21 to hundreds; any model/prompt switch is measured first |
 | Fine-tuning | only with 1,000+ labelled cases | optional, not v1 |
@@ -1373,183 +1373,183 @@ Each new check template gets a mock mode that fails on the old code, as for ever
 
 ## Change log
 
-- **v0.20 19 Oct 04:30 UTC (weekly loop):** axorhelmets.com (Contabo probe) was not judged: a full-page region gateway
+- **v0.20 19 Oct 04:30 UTC (weekly loop):** shop045.example (Contabo probe) was not judged: a full-page region gateway
   'INDIA VISIT NOW | EUROPE VISIT NOW' with no close control covered every card. The choice whose own panel names the
   country the store serves (Shopify.country) and stays on this host is clicked; other regions never. Mock region_gateway.
-- **v0.20 18 Oct 19:30 UTC:** Contabo probe (10 never-seen stores, Mumbai runner): nbdpowerlifting.com's custom product
+- **v0.20 18 Oct 19:30 UTC:** Contabo probe (10 never-seen stores, Mumbai runner): shop014.example's custom product
   pages (no cart form) show the name reworded ('STRENGTH / Back Print Acid Wash Hoodie'); the hidden-product test wanted
   the exact name and failed 3 products per device. Every word of the name on the page, in any order, now counts as the
   name shown. Mock mode reworded_name.
 - **v0.20 18 Oct 04:30 IST:** (1) radar-tests runs 39054711928 (d3fd056) and 39067649593 (dfb8b86) were FAILURES whose
   'verdict' job still said success; both were deployed believing them green. Since then the WHOLE run's conclusion is
   read, never the verdict job alone. Causes fixed in 5126323: '\b' in a non-raw Python string became a backspace (COD
-  order-form test), and the pincode retry now waits for a NEW answer. (2) cartwala (3rd re-test): its personaliser's
+  order-form test), and the pincode retry now waits for a NEW answer. (2) shop101 (3rd re-test): its personaliser's
   file input sits in a modal that opens from its own button, nothing visible above it: with the buy button disabled, any
   file input outside header/footer and review widgets means 'waits for the shopper's photo' (mock needs_photo_upload).
-- **v0.20 18 Oct 03:00 IST (re-test 39069374541: cmartian, dhaagaweaves, saralhome, kanchisilver, atovio confirmed):**
-  cartwala still DEGRADED; the new evidence showed 'input:file hidden' deep inside the personaliser's hidden panel: a
+- **v0.20 18 Oct 03:00 IST (re-test 39069374541: shop091, shop048, shop082, shop039, shop127 confirmed):**
+  shop101 still DEGRADED; the new evidence showed 'input:file hidden' deep inside the personaliser's hidden panel: a
   file input counts when a box up to 6 levels above it is on screen (mock needs_photo_upload updated).
-- **v0.20 18 Oct 02:20 IST (re-test 39064184208 of new31a-e fixes: 6 of 10 confirmed):** (1) dhaagaweaves / cmartian
+- **v0.20 18 Oct 02:20 IST (re-test 39064184208 of new31a-e fixes: 6 of 10 confirmed):** (1) shop048 / shop091
   still 'inside quick-add (div.product-grid-container / ul.grid)': the GRID's container carries a quick-add class. A
   quick-add container holding more than 2 products' links is the grid, not a quick-add box (mock grid_quick_add_class).
-  (2) saralhome freebie: 'Additional Information' counted as an 'add' control: buy-like words are whole words now
-  (mock hidden_buttons_product + accordion). (3) cartwala: the disabled-buy failure now lists the page's fields and
+  (2) shop082 freebie: 'Additional Information' counted as an 'add' control: buy-like words are whole words now
+  (mock hidden_buttons_product + accordion). (3) shop101: the disabled-buy failure now lists the page's fields and
   app frames (evidence for the photo-upload app).
-- **v0.20 18 Oct 02:00 IST (new31f run 39064100372: 50/56 healthy):** (1) kanchisilver.com both devices DOWN: Shopify
+- **v0.20 18 Oct 02:00 IST (new31f run 39064100372: 50/56 healthy):** (1) shop039.example both devices DOWN: Shopify
   holds tax-exclusive prices, the page shows them plus GST ('Rs. 32,960 INR' for ₹32,000 = +3%): a price equal to the
-  catalog price plus an Indian GST rate (3/5/12/18/28 %) = WARNING (mock gst_price, unit test). (2) atovio.in: a
+  catalog price plus an Indian GST rate (3/5/12/18/28 %) = WARNING (mock gst_price, unit test). (2) shop127.example: a
   'Coming Soon' product with no price and 'Notify me' = 'not tested: not on sale yet' (mock coming_soon_product).
-- **v0.20 18 Oct 01:00 IST (new31e run 39060018670: 48/56 healthy):** sahnibakery.com: 'Quick Shop' buttons carry
+- **v0.20 18 Oct 01:00 IST (new31e run 39060018670: 48/56 healthy):** shop053.example: 'Quick Shop' buttons carry
   href='javascript void(0)' (no colon) = '/javascript%20void(0)': a script control, not a page to open (unit test).
-- **v0.20 18 Oct 01:00 IST (new31d run 39058549062: 43/53 healthy):** cartwala.in both devices DEGRADED: personalised
+- **v0.20 18 Oct 01:00 IST (new31d run 39058549062: 43/53 healthy):** shop101.example both devices DEGRADED: personalised
   mouse pads whose 'Add to cart' waits for the shopper's photo (a file input under a styled label): an empty photo upload
   on the page with the buy button disabled = 'not tested' (mock needs_photo_upload).
-- **v0.20 18 Oct 00:30 IST (new31c run 39056290453: 49/54 healthy):** (1) zarfstudios.com phone DOWN 3×: the product's
+- **v0.20 18 Oct 00:30 IST (new31c run 39056290453: 49/54 healthy):** (1) shop054.example phone DOWN 3×: the product's
   name sits in a desktop-only heading, phones see a tagline; price, picture and data right. Name in the page but hidden
   on this screen size = WARNING; a name nowhere in the page still fails and goes to triage (mock name_hidden_on_phone).
-  (2) saralhome.com: 'FREE TABLE MAT', a freebie whose cart form keeps its buttons, all hidden, with no other buy
+  (2) shop082.example: 'FREE TABLE MAT', a freebie whose cart form keeps its buttons, all hidden, with no other buy
   control = 'not tested: offers no way to buy it' (mock hidden_buttons_product).
-- **v0.20 18 Oct 00:00 IST (new31b run 39053973214: 45/55 healthy):** (1) dhaagaweaves.in both devices (+ cmartian.com
+- **v0.20 18 Oct 00:00 IST (new31b run 39053973214: 45/55 healthy):** (1) shop048.example both devices (+ shop091.example
   new31a): '44 links: 44 inside cart drawer / quick-add': the theme names its settings on <body> ('quick-add-enabled
   cart-drawer-active'). Drawer / quick-add container selectors never match <html>/<body> now (mock body_drawer_class).
-  (2) zenvistapackagings.in: the hero slideshow's dots are links ('Slide 1, current' -> /Hero-slideshow): carousel
+  (2) shop006.example: the hero slideshow's dots are links ('Slide 1, current' -> /Hero-slideshow): carousel
   controls are not pages to open (unit test).
-- **v0.20 17 Oct 23:40 IST (new31a run 39052745795: 43/53 healthy):** (1) saumyasstores.com: price shown, cart buttons
+- **v0.20 17 Oct 23:40 IST (new31a run 39052745795: 43/53 healthy):** (1) shop032.example: price shown, cart buttons
   hidden, the only buy control 'View On Amazon' → 'not tested' (sold on marketplaces) instead of not judged (mock
-  marketplace_hidden_cart). (2) aesthesy.com desktop DOWN: a custom-art builder page (upload, disabled 'Continue to
+  marketplace_hidden_cart). (2) shop086.example desktop DOWN: a custom-art builder page (upload, disabled 'Continue to
   Customize', no price) → 'not tested' (mock customiser_product). (3) Evidence: which drawer / quick-add container a
-  refused card sits in (cmartian.com: 36 cards 'inside cart drawer / quick-add').
-- **v0.20 17 Oct 23:10 IST:** thinkitchen.in (new30z6, both devices NOT JUDGED): a full-screen WhatsApp sign-up popup
+  refused card sits in (shop091.example: 36 cards 'inside cart drawer / quick-add').
+- **v0.20 17 Oct 23:10 IST:** shop069.example (new30z6, both devices NOT JUDGED): a full-screen WhatsApp sign-up popup
   whose only close is a wordless icon in the dialog's top-right corner ('no stay/close control in [div | SUBMIT |
   Powered by zoko.io]'). A small wordless tappable element within 60 px of a top corner of the dialog box closes the
   layer; SUBMIT is never pressed (mock icon_x_popup).
-- **v0.20 17 Oct 06:45 IST (new30z5 run 38986412618: 49/56 healthy):** (1) giffywalls.in: a mural's 'Add to cart' waits
+- **v0.20 17 Oct 06:45 IST (new30z5 run 38986412618: 49/56 healthy):** (1) shop075.example: a mural's 'Add to cart' waits
   for the wall width / height the shopper types: empty visible fields of the product's form with the button disabled =
-  'not tested', fields named (mock needs_dimensions). (2) popees.com phone: the sticky bar's add-to-cart is an icon with
+  'not tested', fields named (mock needs_dimensions). (2) shop122.example phone: the sticky bar's add-to-cart is an icon with
   no words: an icon-only button in a fixed bar whose class names add-to-cart counts (mock disabled_form_icon_bar).
-  nisargorganicfarm.com nav flaky once (open).
-- **v0.20 17 Oct 06:10 IST (new30z4 run 38983526214: 48/58 healthy):** (1) prashantpublications.com: Marathi titles
+  shop004.example nav flaky once (open).
+- **v0.20 17 Oct 06:10 IST (new30z4 run 38983526214: 48/58 healthy):** (1) shop001.example: Marathi titles
   were 'not shown': name matching kept only a-z0-9; it now keeps any script's letters (mock devanagari_title).
-  (2) paramountchess.com: a cookie holding an emoji broke every product-data request ('Invalid character in header
-  content [cookie]'); the data is then asked from inside the page (mock emoji_cookie). (3) happyaza.com phone: a card
-  opened another product (fixed by the z3 change). Open: varrocaftermarket phone not judged (cards inside a drawer /
-  quick-add); lavanyathelabel phone 'ADD TO CART' stays disabled after the size (maybe real).
-- **v0.20 17 Oct 05:40 IST (new30z3 run 38980915441: 44/55 healthy):** bytheleaf.in phone (flaky) and faritha.com phone
+  (2) shop019.example: a cookie holding an emoji broke every product-data request ('Invalid character in header
+  content [cookie]'); the data is then asked from inside the page (mock emoji_cookie). (3) shop092.example phone: a card
+  opened another product (fixed by the z3 change). Open: shop190 phone not judged (cards inside a drawer /
+  quick-add); shop222 phone 'ADD TO CART' stays disabled after the size (maybe real).
+- **v0.20 17 Oct 05:40 IST (new30z3 run 38980915441: 44/55 healthy):** shop090.example phone (flaky) and shop102.example phone
   (new30x, 4 runs DOWN): tapping a card's name opened ANOTHER product. A shopper goes back and taps the product by its
   other link; if that opens it, the journey goes on and the miswired link is a store WARNING (mock title_opens_neighbour).
-  kulina.in desktop flaky: a late popup iframe intercepted the first tap (open).
-- **v0.20 17 Oct 05:00 IST (new30z2 run 38974875193: 38/50 healthy):** (1) daantwale.com: a homepage banner links
+  shop132.example desktop flaky: a late popup iframe intercepted the first tap (open).
+- **v0.20 17 Oct 05:00 IST (new30z2 run 38974875193: 38/50 healthy):** (1) shop073.example: a homepage banner links
   /discount/WOWDEAL; Shopify applies the code and sends the shopper home, not a deleted page (mock discount_link).
-  (2) orbiz.in: a build-your-crew product whose only button 'Pick 6 buddies' stays disabled until six picks: a disabled
+  (2) shop140.example: a build-your-crew product whose only button 'Pick 6 buddies' stays disabled until six picks: a disabled
   buy button whose words ask for picks = 'not tested' (mock bundle_builder).
-- **v0.20 17 Oct 04:30 IST (new30z1 run 38974724813, 34 min: 42/55 healthy):** (1) adachikan.com phone: the form's
+- **v0.20 17 Oct 04:30 IST (new30z1 run 38974724813, 34 min: 42/55 healthy):** (1) shop070.example phone: the form's
   'BUY IT NOW' was disabled; the enabled 'ADD TO CART' bar shows only after scrolling: the enabled-add-to-cart search
-  scrolls like a shopper (mock disabled_form_bar_on_scroll). (2) hunnit.com desktop: cards in a marquee that never
+  scrolls like a shopper (mock disabled_form_bar_on_scroll). (2) shop117.example desktop: cards in a marquee that never
   stops; Playwright's click waited for a still card and timed out 3×: Radar taps the card where its hit-test finds it
-  right now (mock marquee_cards). (3) cforcover.com stopped after 25 min (open).
-- **v0.20 16 Oct 18:35 IST (new30y run 38899856830, 25 min: 44/55 healthy):** nakshatrakids.com (both devices) and
-  tribalornaments.com DOWN 'price not on page' while the screenshot shows '$46.45 USD' under the name: a currency-converter
+  right now (mock marquee_cards). (3) shop072.example stopped after 25 min (open).
+- **v0.20 16 Oct 18:35 IST (new30y run 38899856830, 25 min: 44/55 healthy):** shop030.example (both devices) and
+  shop015.example DOWN 'price not on page' while the screenshot shows '$46.45 USD' under the name: a currency-converter
   app (Shopify currency INR, rate 1) draws the converted price where the page's text does not carry it, with a 'USD'
   switcher on screen. A foreign currency code shown on screen (a switcher) = 'location (US runner)' (mock
   other_market_switcher).
-- **v0.20 16 Oct 17:45 IST (new30x run 38891734931, 26 min: 40/54 healthy):** (1) khushbujewellers.com DOWN on both
+- **v0.20 16 Oct 17:45 IST (new30x run 38891734931, 26 min: 40/54 healthy):** (1) shop009.example DOWN on both
   devices: the US runner was sent to /en-us/products/<same handle> ('hidden from shoppers' warning) and saw '$24.00'
   ABOVE the product name while an 'INR' note elsewhere broke 'no ₹ anywhere': the same product under a market path is
   the product page, and a foreign price in the 120 characters before the name = 'location (US runner)' (mocks
-  market_redirect_all, other_market_price_above). (2) myop.in desktop DOWN: a personalised perfume hides its price and
+  market_redirect_all, other_market_price_above). (2) shop144.example desktop DOWN: a personalised perfume hides its price and
   keeps 'Add to cart' disabled until a choice: a disabled buy button is no buy button, so no price + disabled button =
-  'not tested' (mock price_after_choice). (3) amchongtea.com phone NOT JUDGED: the homepage's only visible collection
+  'not tested' (mock price_after_choice). (3) shop056.example phone NOT JUDGED: the homepage's only visible collection
   link ('Explore Now') did nothing when tapped; the dead link is set aside and the ☰ menu tried (mock dead_tile_menu).
-  (4) Evidence only: the first covered card's box / hit / scroll (hathimasala.com phone) and the tap point when a card
-  opens another product (faritha.com phone). (5) radar-tests: the redrawing pincode widget could drop the typed text
+  (4) Evidence only: the first covered card's box / hit / scroll (shop050.example phone) and the tap point when a card
+  opens another product (shop102.example phone). (5) radar-tests: the redrawing pincode widget could drop the typed text
   between typing and pressing; re-typed and pressed once more.
-- **v0.20 16 Oct 13:20 IST (new30w run 38865228472, 25 min: 44/53 healthy):** ayamveda.com DOWN on both devices: the
-  page shows '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298 (nubronicforte does the same). `per_unit_price` accepts
+- **v0.20 16 Oct 13:20 IST (new30w run 38865228472, 25 min: 44/53 healthy):** shop088.example DOWN on both devices: the
+  page shows '₹1,649 / Bottle' for the 2-bottle variant at ₹3,298 (shop031 does the same). `per_unit_price` accepts
   a page price × k = the variant price when the page says '/ bottle' (pack, unit, piece…) and names k of them (mock
-  `per_unit_price`, unit test). Rest of new30w: real dead sale links (aarahboutique, thayyilsports).
-- **v0.20 16 Oct 13:10 IST:** (1) hathimasala.com lost as 'error: database is locked': parallel scans switching a fresh
-  radar.db to WAL at once; Storage retries the first-time setup (unit test). (2) kalamkitaab.com + lucentpublication.com
+  `per_unit_price`, unit test). Rest of new30w: real dead sale links (shop186, shop173).
+- **v0.20 16 Oct 13:10 IST:** (1) shop050.example lost as 'error: database is locked': parallel scans switching a fresh
+  radar.db to WAL at once; Storage retries the first-time setup (unit test). (2) shop051.example + shop003.example
   book pages NOT JUDGED 'no image ≥150px' while the product data lists no image: now a WARNING with that evidence
   (mock `no_product_images`).
-- **v0.20 16 Oct 12:45 IST (new30v run 38861147423, 41 min incl. one stuck store):** costosoitaliano.com NOT JUDGED (its
+- **v0.20 16 Oct 12:45 IST (new30v run 38861147423, 41 min incl. one stuck store):** shop012.example NOT JUDGED (its
   buy control is '<span class="custom-add-to-cart-btn">Add to Cart</span>', hidden empty form): ENABLED_ADD_JS also takes
   span/div/a buttons whose class names a button or the cart, and the page's ONLY enabled exact 'Add to cart' is used
-  before giving up (mock `span_add_to_cart`). arabianaroma.in failed 3 products ('buy button still disabled') while an
+  before giving up (mock `span_add_to_cart`). shop044.example failed 3 products ('buy button still disabled') while an
   enabled 'Add to cart' was on the page: the form's disabled button gives way to it (mock `disabled_form_enabled_bar`).
-- **v0.20 16 Oct (Anmol's screenshot of nubronicforte):** the main product has a working 'ADD TO CART(19% OFF)'; Radar had
+- **v0.20 16 Oct (Anmol's screenshot of shop031):** the main product has a working 'ADD TO CART(19% OFF)'; Radar had
   picked the 'Performance Kit', a gift the store auto-adds ('Complimentary Performance Kit', 'Free Gift Auto Added'),
   whose page has a hidden, empty cart form and no buy control. Such a page = not tested with the reason, never not-judged
   (mock `gift_only_product`).
-- **v0.20 16 Oct 00:05 IST (evidence re-test 38783xxx):** shopkara.store has no cart button at all: its only buy control
+- **v0.20 16 Oct 00:05 IST (evidence re-test 38783xxx):** shop066.example has no cart button at all: its only buy control
   is an order-form app's 'Order Now - Cash on Delivery' popup. A product sold only through such a form = BLOCKED 'not
-  tested' with the reason (Radar never fills forms), not 'not judged' (mock `cod_form_only`). nubronicforte.com still
+  tested' with the reason (Radar never fills forms), not 'not judged' (mock `cod_form_only`). shop031.example still
   shows no buy-like control on its page (evidence kept; queue).
-- **v0.20 15 Oct 22:55 IST (re-test 38774216198: krkjewels healthy):** the buy-button evidence showed the cause on
-  shopkara.store + nubronicforte.com: the product's own cart form is hidden and holds no button, while an app's element is
+- **v0.20 15 Oct 22:55 IST (re-test 38774216198: shop077 healthy):** the buy-button evidence showed the cause on
+  shop066.example + shop031.example: the product's own cart form is hidden and holds no button, while an app's element is
   the real buy control. A hidden, buttonless form no longer blocks the page's-own-control rule (mock
-  `hidden_form_app_button`). izicart also sells 'N Year Accidental Protection' add-ons: skipped like warranties.
-- **v0.20 15 Oct 22:10 IST (new30u run 38766823085, 18 min):** izicart.com 'degraded' on both devices: Radar tested
+  `hidden_form_app_button`). shop104 also sells 'N Year Accidental Protection' add-ons: skipped like warranties.
+- **v0.20 15 Oct 22:10 IST (new30u run 38766823085, 18 min):** shop104.example 'degraded' on both devices: Radar tested
   '1 Year Extended Warranty for …' add-on products (pages show the drone, not the warranty). NOT_FOR_TESTS skips
-  extended-warranty / warranty-plan add-ons like package protection (unit test). Real findings: silawat search HTTP 422
-  (the same theme bug as pehnavri), cartcount /pages/contact 404, joyeekolkata / arganframes / thelostproject dead links.
-- **v0.20 15 Oct 21:50 IST (new30t run 38764016282, 19 min):** krkjewels.com 'degraded' on both devices: the header's
+  extended-warranty / warranty-plan add-ons like package protection (unit test). Real findings: shop223 search HTTP 422
+  (the same theme bug as shop224), shop149 /pages/contact 404, shop155 / shop147 / shop189 dead links.
+- **v0.20 15 Oct 21:50 IST (new30t run 38764016282, 19 min):** shop077.example 'degraded' on both devices: the header's
   Login is Shopify's new customer accounts link '/customer_authentication/redirect' (404 to a robot). NAV_JS skips
   customer_authentication / login / logout links like /account (mock `customer_auth_link`). Evidence: the 'form for this
-  product but no buy button' not-judged now lists what the form holds (shopkara, nubronicforte: 2 stores, cause unknown).
+  product but no buy button' not-judged now lists what the form holds (shop066, shop031: 2 stores, cause unknown).
 - **v0.20 15 Oct 20:30 IST (Anmol's decisions):** (1) finish line = rolling target (≤ 1 false per 30 over the last 90
   never-seen stores, met 15 Oct): the loop goes to weekly monitor mode. (2) A product page that shows no price near the
-  product's name and has no buy button of its own = BLOCKED 'not tested' (enquiry-only; somuchliving, tastycrafts), never
+  product's name and has no buy button of its own = BLOCKED 'not tested' (enquiry-only; shop041, shop067), never
   DOWN (mock `hidden_price`). (3) A page price that is the price minus a store-wide percentage the page names ('extra 5%
-  off on prepaid orders', rasayanam.in) = WARNING (`store_wide_discount`, mock `prepaid_price`, unit test).
-- **v0.20 loop 15 Oct 19:15 IST (new30r run 38741032636, 20 min):** sntvl.com variant_ready failed on 3 products, both
+  off on prepaid orders', shop096.example) = WARNING (`store_wide_discount`, mock `prepaid_price`, unit test).
+- **v0.20 loop 15 Oct 19:15 IST (new30r run 38741032636, 20 min):** shop134.example variant_ready failed on 3 products, both
   devices: colour tapped, but sizes are plain <button>s in a box whose class names neither 'variant' nor 'option', and no
   size is chosen on load. CHOOSE_JS now also takes a visible button whose own text is the value beside sibling buttons
-  of the same kind (outside header / nav / footer / cart drawer); mock `plain_size_buttons`. Open: mungu.in product
-  click stays on the collection (3 tries, no evidence of why); weaveanddesign cards not judged.
-- **v0.20 loop 15 Oct 13:45 IST (new30p run 38700347159, 20 min):** 3 stores (countryflora, kotart, swornyfashion)
+  of the same kind (outside header / nav / footer / cart drawer); mock `plain_size_buttons`. Open: shop139.example product
+  click stays on the collection (3 tries, no evidence of why); shop225 cards not judged.
+- **v0.20 loop 15 Oct 13:45 IST (new30p run 38700347159, 20 min):** 3 stores (shop037, shop131, shop033)
   'degraded' because the header's wishlist link answers HTTP 404 while a wishlist app draws the page into the 404
   template. Such app pages (`APP_PAGE_ON_404`: wishlist / favourites / compare) are noted, not counted as broken nav
-  links (mock `wishlist_404`). Open: shopkara.store desktop NOT JUDGED on the buy button (3 products, form found).
-- **v0.20 loop 14 Oct 23:55 IST (new30n):** 'Price on Request' / 'Enquire' pages (houseofquadri, artoftimeindia) and
-  'no longer accepting online orders' (banjarakasuti) with no buy button = BLOCKED 'not tested' (MARKETPLACE_JS 'ask',
+  links (mock `wishlist_404`). Open: shop066.example desktop NOT JUDGED on the buy button (3 products, form found).
+- **v0.20 loop 14 Oct 23:55 IST (new30n):** 'Price on Request' / 'Enquire' pages (shop029, shop016) and
+  'no longer accepting online orders' (shop023) with no buy button = BLOCKED 'not tested' (MARKETPLACE_JS 'ask',
   mock price_on_request), never DOWN. Mock href_space: an e2e journey test for the trailing-space href fix below.
-- **v0.20 loop 14 Oct 22:40 IST (new30n run 38597947475, 30 verified domains):** 2 Radar bugs. amayrajewellery.com DOWN on
+- **v0.20 loop 14 Oct 22:40 IST (new30n run 38597947475, 30 verified domains):** 2 Radar bugs. shop010.example DOWN on
   both devices: Shopify Markets sent the US runner to /en-us/, where the page shows that market's price while Radar read
   the default market's .js. Product data (`_product_js`, candidates, sold-out check) is now asked under the page's market
-  path (`_market_prefix`; mock `market_path`, +20% there). thechumbakwala.com desktop: a card href with a trailing space
-  (`_handle` strips it). Seen, not fixed yet: 'Price on Request' pages (artoftimeindia ₹0 product, houseofquadri), phone
-  tap landing on a card's wishlist icon (thechumbakwala), overlays div.mida-blocker (stagsallowed), no form (ramveda zeus-1).
+  path (`_market_prefix`; mock `market_path`, +20% there). shop020.example desktop: a card href with a trailing space
+  (`_handle` strips it). Seen, not fixed yet: 'Price on Request' pages (shop016 ₹0 product, shop029), phone
+  tap landing on a card's wishlist icon (shop020), overlays div.mida-blocker (shop245), no form (shop226 zeus-1).
 - **v0.20 loop 14 Oct 20:30 IST (new30m run 38581354119):** list quality was poor (14 wrong/parked domains, 5 robots.txt
   blocks, 4 not Shopify: Radar reported each correctly); 7 testable. saturn.health NOT JUDGED on 'Free Returns + Package
   Protection', a checkout add-on sold as a product: NOT_FOR_TESTS now skips package / shipping / order protection and
-  insurance products. rasayanam.in shows prices 5% below Shopify's (its 'extra 5% off prepaid'): left as a store finding.
-- **v0.20 loop 14 Oct 20:55 IST (full 36 run 38577733496: 64 healthy, 0 false, 0 not-judged, 0 flaky):** beminimalist.co
+  insurance products. shop096.example shows prices 5% below Shopify's (its 'extra 5% off prepaid'): left as a store finding.
+- **v0.20 loop 14 Oct 20:55 IST (full 36 run 38577733496: 64 healthy, 0 false, 0 not-judged, 0 flaky):** shop047.example
   journey passed only via the LLM re-check (both devices, 2 runs): its <h1> shared a box with big 'CHOOSE VARIANTS' cards
   linking to sibling products, so TITLE_JS took it for another product's card. The page's own h1 never is (mock
   `sibling_variant_links`).
-- **v0.20 loop 14 Oct 19:25 IST (re-test run 38565109460: giva + soulflower healthy both devices):** foxtale.in catalog
+- **v0.20 loop 14 Oct 19:25 IST (re-test run 38565109460: shop195 + shop083 healthy both devices):** shop116.example catalog
   product 'flaky' twice: its page renders, then the app sends the shopper to / a moment later. `_load_product` gives the
   page 2.5 s to settle; leaving the product page = the same hidden-catalog-product warning (mock `late_redirect_product`).
-- **v0.20 loop 14 Oct 18:10 IST (full 36 run 38558763569: 0 false failures, 1 not-judged):** giva.co desktop
+- **v0.20 loop 14 Oct 18:10 IST (full 36 run 38558763569: 0 false failures, 1 not-judged):** shop143.example desktop
   /collections/all-1 NOT JUDGED again (50 of 50 names shown, no product link read on a cold load). Radar now taps a listed
   name like a shopper: a product page opening = PASS; nothing opening = NOT JUDGED with what was tapped (`_tap_listed_name`;
   mocks `grid_without_links` → pass, `grid_names_dead` → not judged).
-- **v0.20 loop 14 Oct 14:30 IST (palmonas re-test run 38534330264):** the real cause: product pages on the headless
-  subdomain shop.palmonas.com answer HTML for /products/<h>.js; palmonas.com answers the data. `_product_data_candidates`
+- **v0.20 loop 14 Oct 14:30 IST (shop095 re-test run 38534330264):** the real cause: product pages on the headless
+  subdomain shop.shop095.example answer HTML for /products/<h>.js; shop095.example answers the data. `_product_data_candidates`
   asks the store's own domain (same site only) before the handle the page names. Session carries `store_url`. Unit test.
-- **v0.20 loop 14 Oct 13:30 IST (full 36 run 38486141466):** palmonas.com journey failed its first try(s) on both devices:
+- **v0.20 loop 14 Oct 13:30 IST (full 36 run 38486141466):** shop095.example journey failed its first try(s) on both devices:
   the headless storefront's product URL (/products/8904097333505, a SKU) is not the Shopify handle and its .js answers the
   HTML page. `_product_js` now falls back to the handle the page names (canonical / og:url / ld+json url); mock
-  `headless_alias`. palmonas footer shipping/contact → '/': footer links read from the desktop DOM, 3 tries, kept as a store finding.
-- **v0.20 lean loop 14 Oct 03:20 IST (run 38461923525 re-test):** vedix.com now healthy (both devices). teatrunk.in still
+  `headless_alias`. shop095 footer shipping/contact → '/': footer links read from the desktop DOM, 3 tries, kept as a store finding.
+- **v0.20 lean loop 14 Oct 03:20 IST (run 38461923525 re-test):** shop136.example now healthy (both devices). shop112.example still
   NOT JUDGED: 'no stay/close control in [International]', its 'Stay Here' is not a <button>. `COVER_CLOSE_JS` also takes a
   tappable non-button (cursor pointer, own text a stay control) or <input type=button>; mock `country_modal_div_stay`.
-- **v0.20 lean loop 14 Oct 01:15 IST (run 38437504227 re-test):** vedix.com still NOT JUDGED after the 'Stay on' rule: a
+- **v0.20 lean loop 14 Oct 01:15 IST (run 38437504227 re-test):** shop136.example still NOT JUDGED after the 'Stay on' rule: a
   popup's closed country list (hidden '#' links) made the layer count as page content (> 12 links). Both close rules now
   count only visible links that go somewhere; when the covering layer stays, the step records why (layer, controls seen)
   as evidence. Mock `country_modal_stay_on` gained a 40-country hidden list.
 - **v0.20 lean loop 13 Oct 22:13 IST:** a country / location popup is answered with its own 'Stay on <brand> <country> Site'
-  control (vedix.com new30l: 'Shop on US Site | Stay on Vedix IN Site', unlabelled icon ×; was NOT JUDGED). Both close
+  control (shop136.example new30l: 'Shop on US Site | Stay on Shop198 IN Site', unlabelled icon ×; was NOT JUDGED). Both close
   rules (`COVER_CLOSE_JS`, overlays) accept 'stay on …'; 'go to / switch / take me / shop on' controls are never clicked
   (mock `country_modal_stay_on`).
 - 13 Oct 2026 18:00 IST, dashboard uploader: a failed check carries the page it stopped on (`page_url`: a page named by the
@@ -1565,34 +1565,34 @@ Each new check template gets a mock mode that fails on the old code, as for ever
   day is the India day (`BUGRADAR_TZ`), not the UTC day; an LLM triage label of `radar_problem` / `unsure` is said in plain
   words after the reason; `PDP` reads `Product page`; every run carries one `site.reachable` line, so a store that cannot be
   opened, blocks Radar or is not Shopify still reaches the dashboard (it was dropped) and closes its problem when it is back.
-  After the first sample run (bombaytrooper: 3 pictures on computers, none on phones): checks without step photos only have the
+  After the first sample run (shop024: 3 pictures on computers, none on phones): checks without step photos only have the
   full-page PNG, so it now goes up as a JPEG 900 px wide (Pillow; 2-4x smaller on real pages); store names drop `www.`.
-- **v0.20 13 Oct, new30l never-seen (run 38387384658, list #12, old rule):** 30 stores: 16 testable, 5 not Shopify, 3 unreachable, 6 blocked (robots / bot wall / data). Radar-caused: vedix.com DOWN (journey card pick: '49 links: 24 covered by div.flex, 17 not visible' = NOT JUDGED under the verdict rule, to be read from the first-refused evidence next); bombayshirts.com phone DOWN on HTTP 403 everywhere after discovery (desktop healthy): a refusal of Radar's browser mid-run (homepage 403 + at least half the failed checks 401/403/423/429) is now the run verdict 'blocked' with a note, never 'down' (`_refused_mid_run`, mock `refused_mid_run`). Store findings: bombayshirts / brownliving soft-404.
-- **v0.20 verdict-rule sanity on real stores (run 38403594396, 8 stores):** teatrunk.in desktop + subko.coffee phone = journey NOT JUDGED (store 'blocked', one attempt, screenshot kept, evidence line), no longer DOWN; valliyan, suta, bombaytrooper, both theme demos (cart flow) healthy. giva.co desktop was still 'degraded': two collections counted 0 product links on the first attempt while the failure screenshot shows a full grid of named, priced cards, and the rule's evidence ('the data lists 50, the page shows none') was Radar's own misreading. Second, independent signal added: the product names from the collection's products.json are looked for in the page's visible text (`_titles_on_page`); names on the page = NOT JUDGED ('shows N of M products by name but no product link Radar recognises'), no names and no links while the data lists products = a failure with the data as evidence (mocks `grid_without_links`, `grid_empty_data_full`).
+- **v0.20 13 Oct, new30l never-seen (run 38387384658, list #12, old rule):** 30 stores: 16 testable, 5 not Shopify, 3 unreachable, 6 blocked (robots / bot wall / data). Radar-caused: shop136.example DOWN (journey card pick: '49 links: 24 covered by div.flex, 17 not visible' = NOT JUDGED under the verdict rule, to be read from the first-refused evidence next); shop036.example phone DOWN on HTTP 403 everywhere after discovery (desktop healthy): a refusal of Radar's browser mid-run (homepage 403 + at least half the failed checks 401/403/423/429) is now the run verdict 'blocked' with a note, never 'down' (`_refused_mid_run`, mock `refused_mid_run`). Store findings: shop036 / shop178 soft-404.
+- **v0.20 verdict-rule sanity on real stores (run 38403594396, 8 stores):** shop112.example desktop + shop147.example phone = journey NOT JUDGED (store 'blocked', one attempt, screenshot kept, evidence line), no longer DOWN; shop098, shop194, shop024, both theme demos (cart flow) healthy. shop143.example desktop was still 'degraded': two collections counted 0 product links on the first attempt while the failure screenshot shows a full grid of named, priced cards, and the rule's evidence ('the data lists 50, the page shows none') was Radar's own misreading. Second, independent signal added: the product names from the collection's products.json are looked for in the page's visible text (`_titles_on_page`); names on the page = NOT JUDGED ('shows N of M products by name but no product link Radar recognises'), no names and no links while the data lists products = a failure with the data as evidence (mocks `grid_without_links`, `grid_empty_data_full`).
 - **v0.20 verdict rule (13 Oct, Anmol: 'change it'): a store is failed only on positive evidence of breakage.** Evidence = an HTTP error, a 'page not found' page, the store's own data saying one thing while the page shows another (products.json lists products, the page shows none; .js says in stock, the button is disabled), a control that is there but broken (a large image that failed to load). 'Radar could not find it' is NOT JUDGED: a new `NotJudged` exception, step status `skip` with 'not judged: <what was looked for, what the page had>', case verdict `blocked` after ONE attempt (no retries, no triage), the attempt keeps its screenshot; a critical not-judged case makes the store 'blocked' (could not check), never 'down'. Converted: the journey's product card pick (with the first-refused evidence), 'products listed' when the collection data cannot be read (data that lists products stays a failure), the main product image when none is found (a failed load stays a failure; `MAIN_IMAGE_JS.broken`), the add-to-cart control, the cart line / remove control / checkout button in the cart flow. The model's overlay pick (`_llm_close_overlay`) is now the last rung inside the first attempt instead of the post-triage re-check. Mocks `veiled_cards`, `pdp_no_image`, `pdp_broken_image`; three old tests updated to the rule (obscure button, no buy form, LLM overlay). Trade-off accepted: some real breakage reads 'could not check' and is reviewed with the next never-seen list.
-- **v0.19 13 Oct 15:25 IST, full 36 verification (run 38379683273, Anmol: 'verify once more'):** 62 healthy; suta.in + valliyan-type cards fine; the paint-based card pick changed no other verdict. One new store 'degraded' for Radar reasons, giva.co, two causes, both fixed: (1) `health.meta.pdp` opened the first catalog product, whose page is gone (404), and hard-failed, while the product test had already warned and moved to the next product: the same store fact counted twice. The meta check now takes the same fallbacks (the product-page template is what it judges). (2) On the phone, giva's collection app drew its grid after Radar's 6 s wait on a cold visit: four collections counted 0, the retry passed (flaky). `_wait_for_products` waits up to 15 s while the page itself promises products (a '4,643 products' count in its text, or still loading), and the collection check re-counts after `_why_no_grid` reopened the page (the failure screenshot showed the cards). Mock `late_grid`. Store findings unchanged (foxtale / soulflower soft-404; plumgoodness 'Mystery Merch' 404; giva's catalog lists a product whose page is gone = product test warning). stores/new30l.txt written (never-seen list #12).
-- **v0.19 13 Oct 13:00 IST, stretched links:** the new first-refused evidence named valliyan.com's card link on the first run (38361019922): `a.increase-target{inline,op 1,visible,0x0} > span.visually-hidden` = an EMPTY inline link whose `::before` is position:absolute over the card (the 'stretched link' pattern). A link whose own box is ≤ 2 px and that has an absolute ::before/::after (> 2 px) placed in a positioned ancestor takes that pseudo-element's box for counting, scroll, pick and click aim, and is visible where its card is (mock `stretched_link_cards`, fails on the old code with the cloud's exact evidence string). Ends 4 blind rounds on valliyan with one evidence round.
-- **v0.19 13 Oct 12:00 IST, robust card visibility (Anmol: 'make it robust'):** the card pick no longer trusts the link's own computed style. A link is visible when something INSIDE it paints: the link or a descendant with a box > 2 px, not visibility:hidden, whose opacity multiplied down from the link is > 0.05 (display:contents elements skipped: they paint nothing; a child may override the link's visibility; ancestors above the link still not judged, scroll-reveal sections fade in on scroll). Mock `hidden_link_shown_cards`. When no card qualifies, the failure now names the first refused link and 3 levels below it (`first refused: a.card{contents,op 0,visible,0x0} > div...`), so a misread theme is fixed from run.json, not guesses (valliyan.com took 3 blind rounds). suta.in re-test (run 38343481066): healthy both devices, 'free-fabric' skipped as a gift SKU (fix verified).
-- **v0.19 lean loop 13 Oct 08:15 IST (runs 38338038402 valliyan round 3, 38338066670 full 36):** a product the store labels a gift SKU (product type 'Freebies', or a WHOLE tag 'freebie' / 'free gift' / 'gwp'; never a substring like 'free-gift-eligible') is skipped like gift cards and samples: suta.in's one tested product was 'Free Fabric' (Rs 1,000, badge FREEBIES, no product image) -> degraded on both devices (mock `freebie_type`; Product.kind = type + tags). valliyan.com: round 3 still '15 links: 15 not visible' in the card pick although the collection now counts 15 products: documented LIMIT (needs a DOM snapshot of the link to go further; traces are only in Actions artifacts). Full 36 otherwise as on 12 Oct: foxtale / soulflower / palmonas phone soft-404 (store findings), plumgoodness 'Mystery Merch' (known).
-- **v0.19 lean loop 13 Oct 07:32 IST (run 38326679916 re-test):** nonasties.in healthy on both devices (off-site redirect fix verified). valliyan.com round 3: the empty-box fix made the collection count 15 products, but the journey's card pick still said '15 links: 15 not visible'; a `display:contents` link paints nothing itself (Chromium: its own opacity has no effect, a child may override its visibility), so it is visible when one of its children is (mock `contents_reveal_cards`, stuck scroll-reveal opacity:0 on the boxless link). Last round for valliyan: if the re-run still fails, it is a documented limit.
-- **v0.19 lean loop 13 Oct 05:06 IST (runs 38297409964 cycle-34 re-test, 38297412579 new30k never-seen):** any empty link or wrapper box (not only `display:contents`) takes its children's union, recursively: valliyan.com re-test still said '15 links: 15 not visible' under a visible grid (mock `zero_box_cards`: card wrapper of floats). A store link that redirects to ANOTHER site which never finishes loading = the store's link works, other site not judged (nonasties.in phone footer /map, /panjim -> Google Maps; mock `offsite_hang`). Re-test round 2 limits/findings: bombaytrooper.com = store finding (products.json lists sold-out products in stock, 3 of 3 candidates sold out on the page); teatrunk.in (country modal overlay + aria-hidden slider) and subko.coffee phone (no product link on the landing homepage) documented as limits. new30k: 0 Radar false failures on the 46 runs after this fix; store findings lapcare.com footer /pages/champgaming 404; coverage gap: brand moved domain (jimmyscocktails -> drinkjimmys, paperboatdrinks -> hectorbeverages) = unreachable, not tested.
-- **v0.19 loop cycle 34 (12 Oct), never-seen false failures (new30i + new30j, triaged from run.json + screenshots):** card links styled `display:contents` take their children's box for counting, scroll reveal, grid wait, card pick and click aim (valliyan.com, Baseline: '15 links: 15 not visible'; mock `contents_cards`). A collection with 0 products WARNS when products.json says it is empty or it is a landing page whose sub-collections list products, and the journey moves on to another collection (quboworld.com 'Smart Entrance'; `landing_collection`). Brand-landing hop opens the phone menu when no top-menu link is on screen (subko.coffee phone; `phone_brand_landing`). The layer actually covering the page is closed only with stay / close controls, never 'International', accept or subscribe (teatrunk.in country modal inside `<header>`; `country_modal`). Variant picker uses each control once and tries ' / ' parts ('pack of 2' with joined sizes: theformalclub.in; `pack_of_two`); no matching control = not judged. products.json in stock but `.js` + page sold out = info + next product, last candidate never skipped (bombaytrooper.com; `stale_catalog`). 'Page not blank' reads open shadow roots, embedded frames / canvas and the LCP area (arakucoffee.in app-proxy quiz /tools/…; `app_proxy_page`). A timed-out page is opened once more with 2× the wait: loads = 'slow page' warning (bluenectar.co.in desktop 9–33 s pages; `slow_page`). Blank non-Shopify page without robots.txt = unsupported, not 'error' (gozero.in; `blank_not_shopify`). Option pill under the picker's own transparent layer: Radar clicks the point like a shopper instead of warning 'could not be clicked'; a foreign cover is dismissed once, else named (dotandkey.com desktop, full 36 run 38280616606; `variant_pill_covered`). Store findings: insightcosmetics.in footer /collections/10-off 404; almostgods.com catalog products 404 (maybe US market only); hausandkinder.com mobile not-found → / 200. Limit: on-screen aria-hidden slider cells are still refused (teatrunk mobile homepage). Journey status from full 36 run 38280616606 (WBA 401): 0 Radar false failures; journey 18 drawer = page 20/20 pass; 23 price consistency 16 pass / 4 info; 25 filter warnings on antinorm + beminimalist are proven store findings (the store's 'In stock' filter lists a product whose own `.js` and page say sold out); 22 one false warning (dotandkey, fixed above). Every old-code run of the new mocks fails with the cloud message; 3 worktree agents + lead.
+- **v0.19 13 Oct 15:25 IST, full 36 verification (run 38379683273, Anmol: 'verify once more'):** 62 healthy; shop145.example + shop098-type cards fine; the paint-based card pick changed no other verdict. One new store 'degraded' for Radar reasons, shop143.example, two causes, both fixed: (1) `health.meta.pdp` opened the first catalog product, whose page is gone (404), and hard-failed, while the product test had already warned and moved to the next product: the same store fact counted twice. The meta check now takes the same fallbacks (the product-page template is what it judges). (2) On the phone, shop195's collection app drew its grid after Radar's 6 s wait on a cold visit: four collections counted 0, the retry passed (flaky). `_wait_for_products` waits up to 15 s while the page itself promises products (a '4,643 products' count in its text, or still loading), and the collection check re-counts after `_why_no_grid` reopened the page (the failure screenshot showed the cards). Mock `late_grid`. Store findings unchanged (shop116 / shop083 soft-404; shop040 'Mystery Merch' 404; shop195's catalog lists a product whose page is gone = product test warning). stores/new30l.txt written (never-seen list #12).
+- **v0.19 13 Oct 13:00 IST, stretched links:** the new first-refused evidence named shop098.example's card link on the first run (38361019922): `a.increase-target{inline,op 1,visible,0x0} > span.visually-hidden` = an EMPTY inline link whose `::before` is position:absolute over the card (the 'stretched link' pattern). A link whose own box is ≤ 2 px and that has an absolute ::before/::after (> 2 px) placed in a positioned ancestor takes that pseudo-element's box for counting, scroll, pick and click aim, and is visible where its card is (mock `stretched_link_cards`, fails on the old code with the cloud's exact evidence string). Ends 4 blind rounds on shop098 with one evidence round.
+- **v0.19 13 Oct 12:00 IST, robust card visibility (Anmol: 'make it robust'):** the card pick no longer trusts the link's own computed style. A link is visible when something INSIDE it paints: the link or a descendant with a box > 2 px, not visibility:hidden, whose opacity multiplied down from the link is > 0.05 (display:contents elements skipped: they paint nothing; a child may override the link's visibility; ancestors above the link still not judged, scroll-reveal sections fade in on scroll). Mock `hidden_link_shown_cards`. When no card qualifies, the failure now names the first refused link and 3 levels below it (`first refused: a.card{contents,op 0,visible,0x0} > div...`), so a misread theme is fixed from run.json, not guesses (shop098.example took 3 blind rounds). shop145.example re-test (run 38343481066): healthy both devices, 'free-fabric' skipped as a gift SKU (fix verified).
+- **v0.19 lean loop 13 Oct 08:15 IST (runs 38338038402 shop098 round 3, 38338066670 full 36):** a product the store labels a gift SKU (product type 'Freebies', or a WHOLE tag 'freebie' / 'free gift' / 'gwp'; never a substring like 'free-gift-eligible') is skipped like gift cards and samples: shop145.example's one tested product was 'Free Fabric' (Rs 1,000, badge FREEBIES, no product image) -> degraded on both devices (mock `freebie_type`; Product.kind = type + tags). shop098.example: round 3 still '15 links: 15 not visible' in the card pick although the collection now counts 15 products: documented LIMIT (needs a DOM snapshot of the link to go further; traces are only in Actions artifacts). Full 36 otherwise as on 12 Oct: shop116 / shop083 / shop095 phone soft-404 (store findings), shop040 'Mystery Merch' (known).
+- **v0.19 lean loop 13 Oct 07:32 IST (run 38326679916 re-test):** shop094.example healthy on both devices (off-site redirect fix verified). shop098.example round 3: the empty-box fix made the collection count 15 products, but the journey's card pick still said '15 links: 15 not visible'; a `display:contents` link paints nothing itself (Chromium: its own opacity has no effect, a child may override its visibility), so it is visible when one of its children is (mock `contents_reveal_cards`, stuck scroll-reveal opacity:0 on the boxless link). Last round for shop098: if the re-run still fails, it is a documented limit.
+- **v0.19 lean loop 13 Oct 05:06 IST (runs 38297409964 cycle-34 re-test, 38297412579 new30k never-seen):** any empty link or wrapper box (not only `display:contents`) takes its children's union, recursively: shop098.example re-test still said '15 links: 15 not visible' under a visible grid (mock `zero_box_cards`: card wrapper of floats). A store link that redirects to ANOTHER site which never finishes loading = the store's link works, other site not judged (shop094.example phone footer /map, /panjim -> Google Maps; mock `offsite_hang`). Re-test round 2 limits/findings: shop024.example = store finding (products.json lists sold-out products in stock, 3 of 3 candidates sold out on the page); shop112.example (country modal overlay + aria-hidden slider) and shop147.example phone (no product link on the landing homepage) documented as limits. new30k: 0 Radar false failures on the 46 runs after this fix; store findings shop106.example footer /pages/shop227 404; coverage gap: brand moved domain (shop228 -> shop229, shop230 -> shop231) = unreachable, not tested.
+- **v0.19 loop cycle 34 (12 Oct), never-seen false failures (new30i + new30j, triaged from run.json + screenshots):** card links styled `display:contents` take their children's box for counting, scroll reveal, grid wait, card pick and click aim (shop098.example, Baseline: '15 links: 15 not visible'; mock `contents_cards`). A collection with 0 products WARNS when products.json says it is empty or it is a landing page whose sub-collections list products, and the journey moves on to another collection (shop080.example 'Smart Entrance'; `landing_collection`). Brand-landing hop opens the phone menu when no top-menu link is on screen (shop147.example phone; `phone_brand_landing`). The layer actually covering the page is closed only with stay / close controls, never 'International', accept or subscribe (shop112.example country modal inside `<header>`; `country_modal`). Variant picker uses each control once and tries ' / ' parts ('pack of 2' with joined sizes: shop042.example; `pack_of_two`); no matching control = not judged. products.json in stock but `.js` + page sold out = info + next product, last candidate never skipped (shop024.example; `stale_catalog`). 'Page not blank' reads open shadow roots, embedded frames / canvas and the LCP area (shop058.example app-proxy quiz /tools/…; `app_proxy_page`). A timed-out page is opened once more with 2× the wait: loads = 'slow page' warning (shop035.example desktop 9–33 s pages; `slow_page`). Blank non-Shopify page without robots.txt = unsupported, not 'error' (shop130.example; `blank_not_shopify`). Option pill under the picker's own transparent layer: Radar clicks the point like a shopper instead of warning 'could not be clicked'; a foreign cover is dismissed once, else named (shop074.example desktop, full 36 run 38280616606; `variant_pill_covered`). Store findings: shop013.example footer /collections/10-off 404; shop055.example catalog products 404 (maybe US market only); shop028.example mobile not-found → / 200. Limit: on-screen aria-hidden slider cells are still refused (shop112 mobile homepage). Journey status from full 36 run 38280616606 (WBA 401): 0 Radar false failures; journey 18 drawer = page 20/20 pass; 23 price consistency 16 pass / 4 info; 25 filter warnings on shop099 + shop047 are proven store findings (the store's 'In stock' filter lists a product whose own `.js` and page say sold out); 22 one false warning (shop074, fixed above). Every old-code run of the new mocks fails with the cloud message; 3 worktree agents + lead.
 - **v0.19 loop cycle 34 (12 Oct, 22:20 IST → 13 Oct):** journey 33 built (`cart.buy_now`: the product page's enabled 'Buy it now' / 'Buy now' (Shopify's dynamic checkout button, waited for while its slot renders; wallet buttons never) is clicked once in Radar's own session and the checkout it opens (Shopify `/checkouts/…`, or an app's popup / iframe) must render and name the product; no buy-now = 'no buy-now button on this store' (info); cart flow only; warnings unless strict; the add-to-cart rule 'buy-now never clicked' is unchanged; mocks `buy_now_ok`, `buy_now_dead`, `buy_now_error`). Journey 35 inside journey 21's `checkout_opens`: when the cart page's scripts / iframes / HTML name a checkout app (`CHECKOUT_APP_HOSTS` in `discovery/detect.py`, the one host list: GoKwik, Shopflo, Shiprocket Fastrr, Razorpay Magic Checkout, Simpl, Zecpe), Radar clicks the store's checkout button, finds the popup / iframe / redirect, names the app and requires its first screen (phone-number / OTP screen or an order summary naming the product); blank, error-only or nothing-opened (with the app file's 404 as evidence) = warning; never types a number, never requests an OTP, never submits; no app on the page = `GET /checkout` as before (mocks `tp_checkout` GoKwik iframe, `tp_checkout_popup` Shopflo popup, `tp_checkout_blank`, `tp_checkout_script_404`). Old code: no buy-now case; both broken app checkouts passed silently.
-- **v0.19 loop cycle 29 (11 Oct, 18:00 IST):** journey 18 built (`cart.drawer_and_page`: drawer = cart page = `/cart.js` for product, quantity, subtotal; 'info: no drawer on this theme' passes; warnings unless strict; mocks `cart_drawer`, `cart_drawer_stale`, `cart_no_drawer`). Round 2 of journeys 22, 23, 25 from the 36-store evidence: variant switch never reads the `?variant=` Radar itself opened as 'kept the old variant' (antinorm, veirdo), waits for late price / re-rendered forms (taste demo), 'not judged' when the theme sets the id only on add to cart (supplysix?) (mocks `variant_no_url_push`, `variant_price_late`, `variant_form_late`, `variant_id_on_submit`); cart line price row = highest ancestor holding one quantity box (Dawn's hidden 'Decrease quantity for <title>' text cut the row to the box: 12/12 demos 'no price'), a struck regular price + lower sale price on the line = 'discounted in the cart' (craft FIRSTTIMER) (mock `cart_dawn_rows`); collection filter judged by the storefront (`/products/<h>.js` + page re-check before 'not available': antinorm, beminimalist; products counted from the page, the store's own facet count in the warning: maspar; known filter apps = 'not judged') (mocks `filter_stock_differs`, `filter_big_collection`, `filter_empty`, `filter_app`). Location round 3: a foreign price in the block right under the product name = location even when ₹ offers appear lower on the page (theindianethnicco '$62.91' + 'Flat ₹250 off'; mock `other_market_offer`). Limit documented: veirdo.in collection cards are on screen (screenshot: '₹649 … ADD TO CART') but expose no `/products/` link Radar can see after scrolling (2 rounds spent: scroll-reveal, evidence) → left as a limit. 3 subagents in worktrees + lead; unit 13x passed, full e2e run once.
+- **v0.19 loop cycle 29 (11 Oct, 18:00 IST):** journey 18 built (`cart.drawer_and_page`: drawer = cart page = `/cart.js` for product, quantity, subtotal; 'info: no drawer on this theme' passes; warnings unless strict; mocks `cart_drawer`, `cart_drawer_stale`, `cart_no_drawer`). Round 2 of journeys 22, 23, 25 from the 36-store evidence: variant switch never reads the `?variant=` Radar itself opened as 'kept the old variant' (shop099, shop137), waits for late price / re-rendered forms (taste demo), 'not judged' when the theme sets the id only on add to cart (shop084?) (mocks `variant_no_url_push`, `variant_price_late`, `variant_form_late`, `variant_id_on_submit`); cart line price row = highest ancestor holding one quantity box (Dawn's hidden 'Decrease quantity for <title>' text cut the row to the box: 12/12 demos 'no price'), a struck regular price + lower sale price on the line = 'discounted in the cart' (craft FIRSTTIMER) (mock `cart_dawn_rows`); collection filter judged by the storefront (`/products/<h>.js` + page re-check before 'not available': shop099, shop047; products counted from the page, the store's own facet count in the warning: shop121; known filter apps = 'not judged') (mocks `filter_stock_differs`, `filter_big_collection`, `filter_empty`, `filter_app`). Location round 3: a foreign price in the block right under the product name = location even when ₹ offers appear lower on the page (shop005 '$62.91' + 'Flat ₹250 off'; mock `other_market_offer`). Limit documented: shop137.example collection cards are on screen (screenshot: '₹649 … ADD TO CART') but expose no `/products/` link Radar can see after scrolling (2 rounds spent: scroll-reveal, evidence) → left as a limit. 3 subagents in worktrees + lead; unit 13x passed, full e2e run once.
 - **v0.19 (11 Oct, 12:00 IST): robots.txt strictly obeyed** (Shopify Web Bot Auth registration submitted by Anmol, 11:49 IST, promises it): the search box counts as shopper flow only on stores that authorised Radar (the cart-flow flag: Shopify theme demos + consenting stores); elsewhere a disallowed `/search` (typed or opened) and `/search/suggest.json` are not tested and the report says why (blocked, never a failure). Crawl-delay for Radar's token is read and slows page loads (capped at 60 s). Test `test_store_that_disallows_search_is_not_searched_unless_it_authorised_radar`, unit `test_crawl_delay_is_read_for_radars_token`.
 - **v0.19 chat session (11 Oct, 04:40 IST):** dead store addresses (DNS, name → 127.0.0.1, wrong / self-signed certificate) are 'unreachable' with the reason, not 'blocked … temporary' (re-run 38093858946: 7/7) (4zc-3).
-- **v0.19 chat session (11 Oct, 04:00 IST):** journeys 15/16/31 proven on the 36 (run 38086122556 + re-run 38090661291); Cloudflare email links skipped, late collection grids waited for (journey 4 too), malformed '/https://' links named (beyondsnack store finding) (4zc-3).
-- **v0.19 loop cycle 25 (11 Oct, 00:50 IST):** marketplace-only catalog stores BLOCKED with the reason, not DOWN (`marketplace_only`; antesports, beyondsnack); journeys 19–21 on the cart page (`cart.edit_and_checkout`: quantity +, checkout page renders, remove), warnings until benched; `/checkout` opened only inside the cart flow; new30g 2/19; reports list the `info` suite; mocks `cart_qty_broken`, `cart_remove_broken`, `checkout_broken` (4zd). Full 36 regression 38075087892 (before 28–30) = 62 healthy / 4 degraded (store findings) / 0 Radar false failures.
+- **v0.19 chat session (11 Oct, 04:00 IST):** journeys 15/16/31 proven on the 36 (run 38086122556 + re-run 38090661291); Cloudflare email links skipped, late collection grids waited for (journey 4 too), malformed '/https://' links named (shop060 store finding) (4zc-3).
+- **v0.19 loop cycle 25 (11 Oct, 00:50 IST):** marketplace-only catalog stores BLOCKED with the reason, not DOWN (`marketplace_only`; shop057, shop060); journeys 19–21 on the cart page (`cart.edit_and_checkout`: quantity +, checkout page renders, remove), warnings until benched; `/checkout` opened only inside the cart flow; new30g 2/19; reports list the `info` suite; mocks `cart_qty_broken`, `cart_remove_broken`, `checkout_broken` (4zd). Full 36 regression 38075087892 (before 28–30) = 62 healthy / 4 degraded (store findings) / 0 Radar false failures.
 - **v0.19 chat session (11 Oct, 01:45 IST):** journey 16 (phone menu opens, `smoke.mobile_menu`); search box opener widened (icon-only toggles; mock `search_icon_only`); journey 26 judged from ≥ 8 / 25% missing, stepwise infinite scroll (4zc-3).
 - **v0.19 chat session (11 Oct, 01:10 IST):** journey 15 (links beyond the menu: announcement bar, homepage sections, footer; `smoke.more_links`), journey 31 (scripts and third-party script hosts per key page, Revenue Shield's 'script size'); mocks `broken_section_link`, `script_heavy` (4zc-3).
-- **v0.19 chat session (11 Oct, 00:45 IST):** journeys 27 (search no-results page + search-as-you-type), 26 (products past the first page), 14 (JS errors on collection pages), 17 (Core Web Vitals warnings); first real-store run of 28–30: giva.co PDF footer link fixed (the only new Radar false failure), late policy text, sign-in hand-off, layout noise threshold, popups apart (4zc-2).
+- **v0.19 chat session (11 Oct, 00:45 IST):** journeys 27 (search no-results page + search-as-you-type), 26 (products past the first page), 14 (JS errors on collection pages), 17 (Core Web Vitals warnings); first real-store run of 28–30: shop143.example PDF footer link fixed (the only new Radar false failure), late policy text, sign-in hand-off, layout noise threshold, popups apart (4zc-2).
 - **v0.19 chat session (11 Oct, 00:00 IST):** journeys 28–30: footer policy + contact pages (`info.policy_pages`), account login page (`info.account_page`), layout warnings on home / collection / product pages (sideways scroll, fixed bars covering > 35%); robots.txt-disallowed `/policies/` and `/account` noted, never opened; mocks `broken_policies`, `account_open`, `account_broken`, `sideways_scroll`, `tall_sticky_bar` (4zc).
-- **v0.19 loop cycle 11 (10 Oct, 09:46 IST):** product link opening a new tab is followed (mock `new_tab_cards`; fashor, tigc); one Shopify marker → homepage loaded again before 'not Shopify', evidence in the note (mock `stripped_first_home`; koskii); new30f final 4/21 (4z2).
+- **v0.19 loop cycle 11 (10 Oct, 09:46 IST):** product link opening a new tab is followed (mock `new_tab_cards`; shop115, shop146); one Shopify marker → homepage loaded again before 'not Shopify', evidence in the note (mock `stripped_first_home`; shop120); new30f final 4/21 (4z2).
 - **v0.19 loop cycle 9 (10 Oct, 07:47 IST):** bench time limit per store and device (`device_budget_s`, 25 min): an over-time store's process group (browser included) is killed, row verdict `stopped`, other stores unaffected; mock `frozen_product_page` (4z1).
-- **v0.19 loop cycle 8 (10 Oct, 05:46 IST):** prefer an enabled add-to-cart over a disabled one for the same product (form path `MAIN_BUY_JS` and healer path `ENABLED_ADD_JS`); mocks `disabled_dup_button` (now passes), `healer_disabled_sticky`, `disabled_buy_now_only`, `buy_now_first` ('buy it now' ranked after add-to-cart, never clicked); full 36 regression 38008403059 = 0 Radar false failures; littleboxindia mobile verified (4z).
-- **v0.19 loop cycle 5 (10 Oct, 01:47 IST):** no code change. Full 36 regression after the cycle-4 search change (run 37985975688): 62 healthy / 4 degraded (foxtale + plum hidden catalog products = store finding) / 0 Radar false failures, no store's search turned into the new warning. Held-out `stores/new30d.txt` run once (37988362552): 22 stores scored, **3 Radar false-failure stores** (bombaysweetshop: variant was right, buy button disabled by a 'PLEASE ENTER YOUR PINCODE' gate, the error hid 'disabled'; happilo: search results rendered but `Locator.press` timed out; kirobeauty: no buy control on one product page, not proven a store bug). Location (US runner): houseofchikankari (USD prices + US import-duty popup), skinkraft ('Visiting from United States?' popup over cards), okhai (USD market, product → /). Store finding: thedecorkart mobile nav links `/collections/crystal-decorative-candle-standss` (typo, 404). Not scored: gynoveda, theloom, virgio not Shopify; rarerabbit → thehouseofrare.com, fastandup → in.fastandup.com (list errors); tribeconcepts connection closed; theayurvedaco robots.txt disallows; truke robots.txt timeout.
+- **v0.19 loop cycle 8 (10 Oct, 05:46 IST):** prefer an enabled add-to-cart over a disabled one for the same product (form path `MAIN_BUY_JS` and healer path `ENABLED_ADD_JS`); mocks `disabled_dup_button` (now passes), `healer_disabled_sticky`, `disabled_buy_now_only`, `buy_now_first` ('buy it now' ranked after add-to-cart, never clicked); full 36 regression 38008403059 = 0 Radar false failures; shop018 mobile verified (4z).
+- **v0.19 loop cycle 5 (10 Oct, 01:47 IST):** no code change. Full 36 regression after the cycle-4 search change (run 37985975688): 62 healthy / 4 degraded (shop116 + shop192 hidden catalog products = store finding) / 0 Radar false failures, no store's search turned into the new warning. Held-out `stores/new30d.txt` run once (37988362552): 22 stores scored, **3 Radar false-failure stores** (shop011: variant was right, buy button disabled by a 'PLEASE ENTER YOUR PINCODE' gate, the error hid 'disabled'; shop232: search results rendered but `Locator.press` timed out; shop233: no buy control on one product page, not proven a store bug). Location (US runner): shop234 (USD prices + US import-duty popup), shop235 ('Visiting from United States?' popup over cards), shop236 (USD market, product → /). Store finding: shop237 mobile nav links `/collections/crystal-decorative-candle-shop238` (typo, 404). Not scored: shop239, shop240, shop241 not Shopify; rarerabbit → thehouseofrare.com, fastandup → in.fastandup.com (list errors); shop242 connection closed; shop243 robots.txt disallows; shop244 robots.txt timeout.
 - **v0.19 loop cycle 3 (10 Oct, 00:00 IST):** no code change. Full 36 regression clean (0 Radar false failures); held-out `stores/new30c.txt` run once: 6/28 Radar false-failure stores (4v).
-- **v0.19 loop cycle 2 (9 Oct, 20:45 IST):** emulated devices report a matching `navigator.platform` (desktop = Windows Chrome, mobile = Pixel 7 Android) instead of the runner's 'Linux x86_64', which PageSpeed-bot snippets on bonkerscorner / bellavita / baccabucci treat as a bot; mock `pagespeed_gate`. GoKwik KwikPass login iframe closed inside the frame; mock `kwikpass_popup` (4v).
+- **v0.19 loop cycle 2 (9 Oct, 20:45 IST):** emulated devices report a matching `navigator.platform` (desktop = Windows Chrome, mobile = Pixel 7 Android) instead of the runner's 'Linux x86_64', which PageSpeed-bot snippets on shop025 / shop007 / shop059 treat as a bot; mock `pagespeed_gate`. GoKwik KwikPass login iframe closed inside the frame; mock `kwikpass_popup` (4v).
 - **v0.19 loop cycle 1 (9 Oct, 16:45 IST):** scroll-reveal pass fixed (real document height), search-app wait, first-interaction nudge for held theme scripts, hidden-price evidence (market, no-js, gating script), workflow LATEST-conflict fix; mocks `search_app`, `search_app_popular`, `delayed_scripts` (4u).
 
 - **v0.19 (9 Oct, later):** Web Bot Auth request signing (`RADAR_SIGNING_KEY`), rounded-price tolerance, 5xx/429 handling; mock `signed_only`.
@@ -1612,7 +1612,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
   other link in the card; journey goes on, dead link = store WARNING. New mock mode `dead_image_link`. 120 tests
   (66 unit, 54 end-to-end).
 - 6 Oct 2026, v0.14: bench 9 (4n). Search words: brand plurals/stems excluded, promo/bundle words never used, up to 3
-  words (fail only if all 3 miss). Popup finder looks inside open shadow roots (YourLio on soulflower). New mock mode
+  words (fail only if all 3 miss). Popup finder looks inside open shadow roots (YourLio on shop083). New mock mode
   `shadow_popup`. 119 tests (66 unit, 53 end-to-end).
 - 6 Oct 2026, v0.13: bench 8 (4m). Radar checks its own internet connection before blaming a store: NO_NETWORK verdict
   (run stops, no failure/incident/alert; bench skips stores while offline). robots.txt per RFC 9309 (5xx / no answer =
@@ -1620,7 +1620,7 @@ Each new check template gets a mock mode that fails on the old code, as for ever
   `robots_500`, `robots_404`; net-drop scenario via the progress hook. 116 tests (64 unit, 52 end-to-end).
 - 6 Oct 2026, docs only: section 12 store profile + learning loop decided (LLM proposes, code proves; replaces separate app-script fingerprinting step).
 - 6 Oct 2026, v0.12: bench 7 (4l). Hidden-product rule keyed on THIS product's variant id, not "any form or
-  ld+json" (plum). Brand words: domain label + compound parts, every homepage-title segment, Shopify vendor
+  ld+json" (shop192). Brand words: domain label + compound parts, every homepage-title segment, Shopify vendor
   names (new `Product.vendor`) (thehouseofrare searched 'rare'). trace_replay documents the no-script blind
   spot. 106 tests (60 unit, 46 end-to-end).
 - 6 Oct 2026, docs only: bench 6 on v0.10 (4k): 0 Radar false failures, 0 flaky. **R1 exit rule met.**
@@ -1630,14 +1630,14 @@ Each new check template gets a mock mode that fails on the old code, as for ever
   for a visible browser. bench.json records the browser settings. No stealth: webdriver flag untouched.
   105 tests (59 unit, 46 end-to-end).
 - 5 Oct 2026, v0.10: bench 5 (4j). Clicks wait for the picked card to stop moving and re-aim before
-  clicking (boat: page re-lays out after scrolling). Homepage 401/403/423/429 = BLOCKED with the reason,
-  other errors = UNREACHABLE, never "unsupported" (plum 423). Flaky bench rows show the failed attempt.
+  clicking (shop017: page re-lays out after scrolling). Homepage 401/403/423/429 = BLOCKED with the reason,
+  other errors = UNREACHABLE, never "unsupported" (shop192 423). Flaky bench rows show the failed attempt.
   2 new mock modes (`shift_after_scroll`, `store_refuses`), each failing on v0.9. 103 tests (58 unit, 45 end-to-end).
 - 5 Oct 2026, v0.9: bench 4 root causes (4i). Product form read by THIS product's variant id, never by
-  name (hidden drawer/upsell forms came first: boldcare, bummer). Catalog product whose page shows no
-  product (no buy form, no Product data, name not on the page: plum "currently unavailable", foxtale
+  name (hidden drawer/upsell forms came first: shop100, shop129). Catalog product whose page shows no
+  product (no buy form, no Product data, name not on the page: shop192 "currently unavailable", shop116
   headless homepage) = warning + next product. Price found only in a hidden element is reported as such
-  (supplysix desktop). Triage FACTs: hidden price; unrecognised action words next to the price. 21
+  (shop084 desktop). Triage FACTs: hidden price; unrecognised action words next to the price. 21
   llm-check cases. 5 new mock modes, each failing on v0.8 with the bench message. 101 tests (58 unit,
   43 end-to-end).
 - 5 Oct 2026, v0.8: bench 3 root causes (4h). Grid-stability wait + re-click; hover menus + landing hop;
@@ -1658,19 +1658,19 @@ Each new check template gets a mock mode that fails on the old code, as for ever
   screenshots sent, triage of confirmed failures, one LLM-assisted re-check (name, overlay) that
   must pass the same assertions, `radar llm-check` scoring, cost in the summary. Screenshot after
   every journey step (deduplicated). Fixed a lying label ("none available" shown on a passing
-  variant check) and added a guard test. Store list: supplysix.com, antinorm.co, peepbeauty.in,
-  snitch.com, thehouseofrare.com. 86 tests pass (55 unit, 31 end-to-end).
+  variant check) and added a guard test. Store list: shop084.example, shop099.example, shop079.example,
+  shop123.example, thehouseofrare.com. 86 tests pass (55 unit, 31 end-to-end).
 - 5 Oct 2026, docs only (no code change): added 4f (second bench: 33 stores, 21 healthy, 7 DOWN
   presumed Radar false failures, 2 of them caused by the v0.6 heading check). Corrected the test
   count: 70 = 49 unit + 21 end-to-end (the v0.6 line below said 53 unit; that was wrong). Updated
   folder map, verdicts, proven/not-proven, pain points and next layers to the 5 Oct state.
 - 4 Oct 2026, v0.6: bench RCA: all 10 DOWN verdicts were Radar bugs (table in 4e). New click engine (all candidates, centre + hit-test, skips disabled/covered/off-screen), journey without collection links, dropdown menus opened in turn, iframe popups, tolerant title check, gift-clone exclusion, no-response pages, brand-free search terms, search via the store's own box, robots-blocked/off-site/dead-URL verdicts, nav discovery visible-first without product links. 70 tests pass (49 unit, 21 end-to-end; first written as "53 unit", corrected 5 Oct).
 - 4 Oct 2026, v0.5: generalisation for all Shopify stores: popup handling (decline cookies, close newsletters, age gates blocked), variant selection, theme / checkout-app / password / bot-block detection, BLOCKED verdict, stores without a product form handled by cart diff, `radar bench` (parallel, one table) with a 36-store list. The tests first caught their own broken popup mock (it never rendered) and a no-product-form gap; both fixed. 64 tests pass (45 unit, 19 end-to-end incl. a 3-store parallel bench).
-- 4 Oct 2026, v0.4.1: first real run of v0.4 on moxiebeauty.in: correct product clicked and added (main form). Journey flagged a second item the page sent; trace showed it is Moxie's free Travel Pouch (Rs 0, gift with purchase, added in a separate request). Rule changed: our product must be sent and added; extra FREE items = warning, extra PAID items = failure. Added cart-total check and a `free_gift` mock mode. 53 tests pass.
-- 4 Oct 2026, v0.4: assertions rebuilt after the Moxie wrong-product bug: product identity from `/products/<handle>.js`, main-form buy button (quick-add cards excluded everywhere), request-body + `/cart.js` diff verification, cart drawer support, expected/actual tables in the report, mock store copies Moxie's layout, `wrong_variant` mode. 52 tests pass (41 unit, 11 end-to-end).
-- 3 Oct 2026, v0.3: after the first real Moxie Beauty runs: added the click-through shopper journey (one session), blank-page detection on every load, menu links opened in the real browser, JS-redirect handling, Rs 0 sample products excluded, hidden menu links discovered, collections ranked by menu + size. 45 tests pass.
+- 4 Oct 2026, v0.4.1: first real run of v0.4 on shop063.example: correct product clicked and added (main form). Journey flagged a second item the page sent; trace showed it is Shop063's free Travel Pouch (Rs 0, gift with purchase, added in a separate request). Rule changed: our product must be sent and added; extra FREE items = warning, extra PAID items = failure. Added cart-total check and a `free_gift` mock mode. 53 tests pass.
+- 4 Oct 2026, v0.4: assertions rebuilt after the Shop063 wrong-product bug: product identity from `/products/<handle>.js`, main-form buy button (quick-add cards excluded everywhere), request-body + `/cart.js` diff verification, cart drawer support, expected/actual tables in the report, mock store copies Shop063's layout, `wrong_variant` mode. 52 tests pass (41 unit, 11 end-to-end).
+- 3 Oct 2026, v0.3: after the first real Shop063 runs: added the click-through shopper journey (one session), blank-page detection on every load, menu links opened in the real browser, JS-redirect handling, Rs 0 sample products excluded, hidden menu links discovered, collections ranked by menu + size. 45 tests pass.
 - 3 Oct 2026, v0.2: full rebuild into a framework (discovery, generator, checks library,
   self-healing ladder with LLM rung, per-site storage, incidents, interactive reports, mock store,
   43 tests). Old single-journey code moved to `_legacy_v0/`.
-- 3 Oct 2026, v0.1 rev 3: platform detection + robots.txt after the real Vaaree run.
-- 3 Oct 2026, v0.1: first runner; real Vaaree run failed on a guessed price selector.
+- 3 Oct 2026, v0.1 rev 3: platform detection + robots.txt after the real Shop125 run.
+- 3 Oct 2026, v0.1: first runner; real Shop125 run failed on a guessed price selector.

@@ -1,4 +1,4 @@
-"""Radar runner: python runner.py sites/vaaree.yml [--device desktop|mobile] [--headed]
+"""Radar runner: python runner.py sites/shop125.yml [--device desktop|mobile] [--headed]
 
 One site, one journey run (with confirm-retry), evidence saved locally.
 """

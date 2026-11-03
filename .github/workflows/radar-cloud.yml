@@ -106,8 +106,9 @@ jobs:
           PYTHONUNBUFFERED: "1"
         run: |
           set -o pipefail
-          python3 -m radar.core.webbotauth check 2>&1 | tee bench.log || true
-          python3 -m radar ${{ steps.req.outputs.args }} 2>&1 | tee -a bench.log
+          # public repo: store names in this log become aliases (tools/redact_stream.py, radar/core/redact.py)
+          python3 -m radar.core.webbotauth check 2>&1 | python3 tools/redact_stream.py shard.txt | tee bench.log || true
+          python3 -m radar ${{ steps.req.outputs.args }} 2>&1 | python3 tools/redact_stream.py shard.txt | tee -a bench.log
 
       # 29 Oct 2026: no longer published to the public `cloud-results` branch (it named real stores and their
       # problems). Results go to the BugRadar dashboard (next step) and, on GitHub machines, to the 7-day artifact.
@@ -145,10 +146,14 @@ jobs:
           BUGRADAR_CI_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
           # the nightly files under '<store> (nightly bench)', never into a store a daily check watches (22 Oct)
           PROJECT_LABEL: ${{ github.event_name == 'schedule' && 'nightly bench' || '' }}
-        run: python3 tools/upload_dashboard.py "${{ steps.req.outputs.data || 'data' }}" --since "${{ steps.t0.outputs.since }}" --project-label "$PROJECT_LABEL"
+        run: |
+          set -o pipefail
+          python3 tools/upload_dashboard.py "${{ steps.req.outputs.data || 'data' }}" --since "${{ steps.t0.outputs.since }}" --project-label "$PROJECT_LABEL" 2>&1 | python3 tools/redact_stream.py shard.txt
 
-      - name: Keep the full data folder for 7 days (GitHub machines only)
-        if: always() && runner.environment == 'github-hosted' && steps.req.outputs.count != '0'
+      # Public repo: anyone signed in to GitHub can download artifacts, so only the nightly (Shopify's own demo
+      # stores) keeps its data folder. Requested benches of real stores: results are on the dashboard only.
+      - name: Keep the full data folder for 7 days (GitHub machines, nightly demo stores only)
+        if: always() && runner.environment == 'github-hosted' && steps.req.outputs.count != '0' && github.event_name == 'schedule'
         uses: actions/upload-artifact@v4
         with:
           name: radar-data-${{ github.run_id }}-s${{ matrix.shard }}

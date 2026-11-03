@@ -12,12 +12,12 @@ python -m pytest -q          # 15 tests should pass
 
 ## First run
 ```bash
-python runner.py sites/vaaree.yml --headed     # watch it
-python runner.py sites/vaaree.yml --device mobile
+python runner.py sites/shop125.yml --headed     # watch it
+python runner.py sites/shop125.yml --device mobile
 ```
-Evidence appears in `evidence/vaaree.com/<date>/<run_id>/`.
+Evidence appears in `evidence/shop125.example/<date>/<run_id>/`.
 Open a failure trace with: `playwright show-trace evidence/.../attempt1_trace.zip`
 
 ## Your first exercise
-Edit a selector in `sites/vaaree.yml` to something wrong on purpose, run again,
+Edit a selector in `sites/shop125.yml` to something wrong on purpose, run again,
 then open the trace and the failure screenshot. That is how every future failure will look.
