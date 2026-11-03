@@ -4,15 +4,23 @@ on:
     branches: [probe-contabo]
   workflow_dispatch: {}
 permissions:
-  contents: write
+  contents: read                   # 3 Nov: nothing is pushed any more
 jobs:
   monitors:
     runs-on: [self-hosted, radar]
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
-      - name: Restart on the new main (Shopify admin checks, 29 Oct)
+      - name: Restart on the new main (Claude AI with the shared spend limit, 3 Nov)
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
         run: |
+          # 3 Nov: daily checks on this box read their keys from ~/radar.env, not from GitHub. Add the Claude key there once
+          # if it is missing (never printed; the file stays readable by this user only).
+          if [ -n "$ANTHROPIC_API_KEY" ] && ! grep -q '^ANTHROPIC_API_KEY=.' "$HOME/radar.env"; then
+            sed -i '/^ANTHROPIC_API_KEY=/d' "$HOME/radar.env"; printf 'ANTHROPIC_API_KEY=%s\n' "$ANTHROPIC_API_KEY" >> "$HOME/radar.env"
+            chmod 600 "$HOME/radar.env"; echo "Claude key added to radar.env"
+          fi
           # 19 Oct: daily monitors by upload key (dashboard migration 14 + worker monitors-by-key). Free checks are always
           # claimed first by every slot; slot 1 never takes a monitor, so a visitor never waits behind a 10-minute run.
           cat > "$HOME/radar-worker.sh" <<'SH'
@@ -55,12 +63,13 @@ jobs:
             grep -c 'def public_url' "$HOME/radar-src/radar/core/netguard.py" | sed 's/^/  public addresses only (want 1): /';
             grep -c 'REGISTRY\["admin_match"\]' "$HOME/radar-src/radar/checks/library.py" | sed 's/^/  Shopify admin prices + stock check (want 1): /';
             grep -c 'smoke.shopify_menu' "$HOME/radar-src/radar/generate/builder.py" | sed 's/^/  Shopify menu links check (want 1): /';
+            grep -c 'llm_spend_by_key' "$HOME/radar-src/radar/healing/budget.py" | sed 's/^/  AI spend goes on the shared ledger (want 1): /';
+            grep -c '"anthropic": "claude-haiku-5-5"' "$HOME/radar-src/radar/healing/llm.py" | sed 's/^/  Claude Haiku 5.5 by default (want 1): /';
+            { grep -c '^ANTHROPIC_API_KEY=.' "$HOME/radar.env" || true; } | sed 's/^/  Claude key in radar.env (want 1): /';
+            { grep -c '^BUGRADAR_KEY=.' "$HOME/radar.env" || true; } | sed 's/^/  BugRadar key in radar.env (want 1): /';
             { grep -c RADAR_ALLOW_PRIVATE_HOSTS "$HOME/radar.env" || true; } | sed 's/^/  test switch NOT set on the worker (want 0): /';
             echo "--- workers:"; pgrep -af "radar worker" | sed 's/^/  /' || echo "  none";
-            echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 3 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } | tee probe.txt
-      - name: Publish
-        if: always()
-        run: |
-          git config user.name radar-probe && git config user.email probe@bugradar.in
-          git fetch origin probe-results && git checkout probe-results
-          cp probe.txt contabo-monitors-$(date -u +%Y%m%dT%H%M%SZ).txt && git add contabo-monitors-*.txt && git commit -qm "contabo monitors on slots 2-3" && git push -q origin probe-results
+            echo "--- slot logs (last lines):"; for s in 1 2 3; do echo " slot $s:"; tail -n 3 "$HOME/radar-worker-$s.log" 2>/dev/null | sed 's/^/   /'; done; } \
+            | GITHUB_ACTIONS=true python3 "$HOME/radar-src/tools/redact_stream.py"
+          # 3 Nov: the result stays in this run's log (store names masked). It no longer goes to the public probe-results
+          # branch, which named stores and has been deleted.
