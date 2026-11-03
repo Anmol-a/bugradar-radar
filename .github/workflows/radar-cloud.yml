@@ -6,8 +6,7 @@
 #                                           with cloud/setup-runner.sh; near India, no minute limits)
 #
 # How a run starts
-#   - push to branch `cloud-runs` that changes cloud/request.txt  -> runs that request (Claude starts runs this way:
-#     its GitHub connection allows git but not the Actions API)
+#   - (until 3 Nov 2026: a push to branch `cloud-runs`. The branch is gone: it was public and its history named stores.)
 #   - schedule (nightly)                                            -> runs cloud/nightly.txt. GitHub only runs
 #     schedules from the DEFAULT branch, so the nightly starts once this file is merged into `main`.
 #   - "Run workflow" button on github.com                           -> runs cloud/request.txt
@@ -22,9 +21,6 @@
 name: radar-cloud
 
 on:
-  push:
-    branches: [cloud-runs]
-    paths: ["cloud/request.txt"]
   schedule:
     - cron: "43 20 * * *"          # 02:13 IST every night
   workflow_dispatch: {}

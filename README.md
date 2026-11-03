@@ -13,7 +13,7 @@ playwright install chromium
 cp .env.example .env               # then paste your ANTHROPIC_API_KEY into .env (never into chat or git)
 python3 -m pytest -q                 # 372 tests (165 unit + 207 real-browser); locally ~1 h, on GitHub ~15 min
 python3 -m pytest -q -m "not e2e"    # 165 fast unit tests only
-# Every push to fix/v0.19, cloud-runs or main runs the whole suite on 9 GitHub machines (.github/workflows/radar-tests.yml):
+# Every push to main runs the whole suite on 9 GitHub machines (.github/workflows/radar-tests.yml):
 # the "verdict" job is green only when all 372 pass; its Summary tab lists every failing test id.
 
 # The LIVE runner (14 Oct): one always-on process on our own machine watches the dashboard's `monitors` table,
@@ -70,12 +70,11 @@ reported against them) and the bench prints a warning: run it again. Radar check
 
 ## Cloud runs (no Mac needed)
 GitHub Actions workflow `.github/workflows/radar-cloud.yml` (AI: repo secret `ANTHROPIC_API_KEY`, `OPENAI_API_KEY` as fallback; `BUGRADAR_KEY` puts its AI spend on the shared ledger).
-- **Start a run:** change the one line in `cloud/request.txt` (e.g. `bench stores/bench.txt --quick`) on branch
-  `cloud-runs` and push, or press "Run workflow" on GitHub. Only `bench <list> [flags]` is accepted.
+- **Start a run:** change the one line in `cloud/request.txt` (e.g. `bench stores/bench.txt --quick`) on `main`, then
+  press "Run workflow" on GitHub. Only `bench <list> [flags]` is accepted.
 - **Nightly:** `cloud/nightly.txt`, 02:13 IST, once the workflow is on `main`.
-- **Results:** branch `cloud-results`, folder `runs/<stamp>/` (bench.json, bench.html, log, each store's run.json and
-  failure screenshots); `LATEST` names the newest. Full reports, step screenshots and traces: the run's Actions
-  artifact (7 days).
+- **Results:** the run's Actions artifact `radar-data-<run id>` (7 days), and the BugRadar dashboard. (Until 29 Oct 2026
+  they went to branch `cloud-results`; stopped because this repo is public and they named stores.)
 - **Where:** GitHub's machines by default (US data centres: on 7 Oct this gave 2 location-looking false failures and
   ~3.5x slower page loads than Mumbai). **Own server near India (recommended):** run `cloud/setup-runner.sh` once on
   an Ubuntu 24.04 server, then set the repo variable `RADAR_RUNNER=radar`. Data then stays on the server in
