@@ -6,8 +6,7 @@
 #                                           with cloud/setup-runner.sh; near India, no minute limits)
 #
 # How a run starts
-#   - push to branch `cloud-runs` that changes cloud/request.txt  -> runs that request (Claude starts runs this way:
-#     its GitHub connection allows git but not the Actions API)
+#   - (until 3 Nov 2026: a push to branch `cloud-runs`. The branch is gone: it was public and its history named stores.)
 #   - schedule (nightly)                                            -> runs cloud/nightly.txt. GitHub only runs
 #     schedules from the DEFAULT branch, so the nightly starts once this file is merged into `main`.
 #   - "Run workflow" button on github.com                           -> runs cloud/request.txt
@@ -22,9 +21,6 @@
 name: radar-cloud
 
 on:
-  push:
-    branches: [cloud-runs]
-    paths: ["cloud/request.txt"]
   schedule:
     - cron: "43 20 * * *"          # 02:13 IST every night
   workflow_dispatch: {}
@@ -110,34 +106,8 @@ jobs:
           python3 -m radar.core.webbotauth check 2>&1 | python3 tools/redact_stream.py shard.txt | tee bench.log || true
           python3 -m radar ${{ steps.req.outputs.args }} 2>&1 | python3 tools/redact_stream.py shard.txt | tee -a bench.log
 
-      # 29 Oct 2026: no longer published to the public `cloud-results` branch (it named real stores and their
-      # problems). Results go to the BugRadar dashboard (next step) and, on GitHub machines, to the 7-day artifact.
-      - name: Publish results to the cloud-results branch
-        if: false
-        run: |
-          git config user.name "bugradar-cloud"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          OUT="$RUNNER_TEMP/results"
-          rm -rf "$OUT"; git worktree prune
-          if git fetch --depth=1 origin cloud-results 2>/dev/null; then
-            git worktree add -B cloud-results "$OUT" FETCH_HEAD
-          else
-            git worktree add --detach "$OUT"
-            git -C "$OUT" checkout --orphan cloud-results
-            git -C "$OUT" rm -rqf .
-          fi
-          python3 tools/publish_cloud_results.py "$OUT" --data "${{ steps.req.outputs.data || 'data' }}" --log bench.log \
-            --since "${{ steps.t0.outputs.since }}" --event "${{ github.event_name }}" --run-id "${{ github.run_id }}" \
-            --sha "${{ github.sha }}" --request "bench ${{ steps.req.outputs.list }} (shard ${{ matrix.shard }}/${{ env.SHARDS }})" \
-            --runner "${{ runner.name }}" --shard "${{ matrix.shard }}" --shards "${{ env.SHARDS }}"
-          cd "$OUT"
-          git add -A
-          git commit -qm "cloud ${{ github.event_name }}: $(cat LATEST) (run ${{ github.run_id }}, ${{ runner.name }})" || exit 0
-          # 12 machines push at about the same time: retry with a random pause; LATEST conflicts keep this shard's
-          # line (9 Oct: shard 1 of run 37927492715 lost its results on a LATEST conflict)
-          for i in $(seq 1 16); do git push -q origin cloud-results && break; sleep $((RANDOM % 10 + 2)); git pull -q --rebase -X theirs origin cloud-results || { git checkout --theirs LATEST 2>/dev/null; git add -A; GIT_EDITOR=true git rebase --continue || git rebase --abort; }; done
-          cd - >/dev/null; git worktree remove --force "$OUT" || true
-
+      # 29 Oct 2026: results no longer go to the public `cloud-results` branch (it named real stores; deleted 3 Nov 2026).
+      # They go to the BugRadar dashboard (next step) and, on GitHub machines, to the 7-day artifact.
       - name: Send results to the BugRadar dashboard
         if: always() && steps.req.outputs.count != '0'
         continue-on-error: true    # the dashboard must never break a Radar run; no key set = nothing sent

@@ -4,7 +4,7 @@
 #   1. GitHub -> repo Settings -> Actions -> Runners -> "New self-hosted runner" -> Linux (x64 or ARM64):
 #      copy ONLY the token shown after "--token" (valid ~1 hour).
 #   2. On the server, as root (the repo is private, so copy the file by hand):
-#        nano setup-runner.sh      <- paste this whole file (GitHub: cloud/setup-runner.sh on branch cloud-runs, "Raw"),
+#        nano setup-runner.sh      <- paste this whole file (GitHub: cloud/setup-runner.sh on branch main, "Raw"),
 #                                     save with Ctrl+O, Enter, Ctrl+X
 #        bash setup-runner.sh <TOKEN>
 #   3. GitHub -> repo Settings -> Secrets and variables -> Actions -> Variables -> New variable:

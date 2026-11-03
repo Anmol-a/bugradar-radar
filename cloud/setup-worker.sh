@@ -3,7 +3,7 @@
 # run as root. Replaces GitHub Actions for client stores (14 Oct 2026); GitHub keeps running the test suite.
 #
 #   1. On the machine, as root:
-#        curl -fsSL https://raw.githubusercontent.com/Anmol-a/bugradar-radar/cloud-runs/cloud/setup-worker.sh -o setup-worker.sh
+#        curl -fsSL https://raw.githubusercontent.com/Anmol-a/bugradar-radar/main/cloud/setup-worker.sh -o setup-worker.sh
 #        bash setup-worker.sh
 #      (the repo is public today; once private, copy the file by hand and clone with a deploy key)
 #   2. Put the three secrets in /home/radar/radar.env (the script creates it with placeholders; nano it):
@@ -15,13 +15,13 @@
 #   3. systemctl restart radar-worker && journalctl -u radar-worker -f
 #
 # What it does: a non-root user `radar`; Python + Chromium with its system libraries; the repo in /home/radar/radar
-# (branch cloud-runs); a venv; /home/radar/radar-data that KEEPS every run (incident history -> pinning works);
+# (branch main); a venv; /home/radar/radar-data that KEEPS every run (incident history -> pinning works);
 # a systemd service that restarts on crash and on reboot; a firewall that only allows SSH in; automatic security
 # updates. Nothing listens on the internet. Re-running it is safe (pulls the latest code, keeps the env file).
 set -euo pipefail
 [ "$(id -u)" = 0 ] || { echo "run as root"; exit 1; }
 REPO_URL="https://github.com/Anmol-a/bugradar-radar"
-BRANCH="${RADAR_BRANCH:-cloud-runs}"
+BRANCH="${RADAR_BRANCH:-main}"     # 3 Nov: was cloud-runs (deleted)
 HOME_DIR=/home/radar
 
 echo "== packages"
