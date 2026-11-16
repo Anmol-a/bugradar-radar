@@ -338,6 +338,7 @@ def _load(ctx: Ctx, url: str) -> str:
         ctx.expect("HTTP status", "< 400", "no network response (cache or service worker); content checked below", True)
     else:
         if status == 429:                     # wait once (Shopify's limit resets in seconds), then give up as BLOCKED
+            Session.note_limited()
             ctx.sess.page.wait_for_timeout(int(8000 * ctx.sess.backoff_scale))
             resp, secs = ctx.sess.goto(url)
             status = resp.status if resp else 200

@@ -19,7 +19,7 @@ from dataclasses import dataclass
 from datetime import datetime, timezone
 from urllib.parse import urljoin, urlparse
 
-from radar.core.browser import Session, RobotsBlocked
+from radar.core.browser import Session, RobotsBlocked, RateLimited
 from radar.core.config import Settings, site_id_from_url
 from radar.core.models import SiteMap, Product, Collection
 from radar.core.network import NO_NETWORK_NOTE, online, reset_cache
@@ -597,7 +597,8 @@ def homepage(sess: Session, base_url: str, s: Settings, sm: SiteMap):
     return out
 
 
-def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = ()) -> SiteMap:
+def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = (),
+             catalog: SiteMap | None = None) -> SiteMap:
     """pins: case ids with an OPEN incident (product.pdp.<slug> / catalog.collection.<slug>). Their product or collection
     is tested again in this run whatever the sample picks; one that has left the catalog goes to sm.pins_gone (14 Oct)."""
     sm = SiteMap(site_id=site_id_from_url(base_url), base_url=base_url,
@@ -766,7 +767,18 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
         sm.notes.append("no header/nav links found")
     _discover_info_pages(sess, sm, base_url)
 
+    # 16 Nov: the mobile run reuses the desktop run's catalog (same store, minutes apart) instead of asking Shopify's
+    # data endpoints (/collections.json, /products.json, /products/<h>.js) a second time from the same address. Those
+    # endpoints are what Shopify throttles first: in the week to 16 Nov every blocked mobile run (theme-dawn-demo 23 of 50,
+    # the App Review store 16 of 35) died right here, seconds after the desktop run, on a 429 to the first of them.
+    if catalog is not None and catalog.platform == "shopify" and catalog.products:
+        _reuse_catalog(sm, catalog, base_url)
+        _pin(sess, sm, base_url, pins)
+        _discover_search(sess, sm, base_url)
+        return sm
+
     # 4. collections
+    throttled: list[str] = []      # data endpoints Shopify throttled: Radar reads the pages instead, never gives up here
     try:
         data = sess.get_json(f"{base_url}/collections.json?limit=50")
         for c in data.get("collections", []):
@@ -774,6 +786,9 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
                 sm.collections.append(Collection(c["handle"], c.get("title", c["handle"]),
                                                  f"{base_url}/collections/{c['handle']}",
                                                  c.get("products_count")))
+    except RateLimited:
+        throttled.append("/collections.json")
+        sm.notes.append("/collections.json rate-limited (HTTP 429); using nav links")
     except (RobotsBlocked, AssertionError, ValueError) as e:
         sm.notes.append(f"/collections.json unavailable ({str(e)[:80]}); using nav links")
     if not sm.collections:
@@ -791,8 +806,13 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
 
     # 5. products
     try:
+        if throttled:
+            raise RateLimited("/collections.json was throttled seconds ago")   # don't poke the same limit again
         prods = products_from_json(sess.get_json(f"{base_url}/products.json?limit=50"), base_url, limit=20)
         sm.products = [Product(**p) for p in prods]
+    except RateLimited:
+        throttled.append("/products.json")
+        sm.notes.append("/products.json rate-limited (HTTP 429); reading product pages instead")
     except (RobotsBlocked, AssertionError, ValueError) as e:
         sm.notes.append(f"/products.json unavailable ({str(e)[:80]}); scraping product links")
     if not sm.products:
@@ -810,13 +830,29 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
             if len(handles) >= 8:
                 break
         for h in handles[:8]:
+            if not throttled:
+                try:
+                    p = product_from_js(sess.get_json(f"{base_url}/products/{h}.js"), base_url)
+                    if p:
+                        sm.products.append(Product(**p))
+                    continue
+                except RateLimited:
+                    throttled.append("/products/<handle>.js")
+                    sm.notes.append("/products/<handle>.js rate-limited (HTTP 429); reading product pages instead")
+                except (RobotsBlocked, AssertionError, ValueError):
+                    continue
+            # throttled: the product page itself (a page load, what a shopper does) carries the same facts
             try:
-                p = product_from_js(sess.get_json(f"{base_url}/products/{h}.js"), base_url)
+                p = product_from_page(sess, f"{base_url}/products/{h}", base_url)
                 if p:
                     sm.products.append(Product(**p))
-            except (RobotsBlocked, AssertionError, ValueError):
+            except (RobotsBlocked, RateLimited):
+                break
+            except Exception:  # noqa: BLE001
                 continue
         sm.products.sort(key=lambda p: not p.available)
+    if throttled:
+        sm.data_throttled = True
     _pin(sess, sm, base_url, pins)
     special = [p for p in sm.products if price_ok(p.price) and (NOT_FOR_TESTS.search(f"{p.handle} {p.title}")
                                                                 or GIFT_KIND.search(p.kind))]
@@ -851,6 +887,11 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
     elif not any(p.available for p in sm.products):
         sm.notes.append("every sampled product is sold out; cart suite will be skipped")
 
+    _discover_search(sess, sm, base_url)
+    return sm
+
+
+def _discover_search(sess: Session, sm: SiteMap, base_url: str) -> None:
     # 6. search
     try:
         if sess.page.url.rstrip("/") != base_url:
@@ -862,7 +903,77 @@ def discover(sess: Session, base_url: str, s: Settings, pins: tuple[str, ...] = 
             sm.notes.append("no search form found on homepage; assuming Shopify default /search")
     except Exception:  # noqa: BLE001
         sm.search_path = "/search"
-    return sm
+
+
+def _reuse_catalog(sm: SiteMap, catalog: SiteMap, base_url: str) -> None:
+    """Collections, products and the search path of an earlier run on the same store (the desktop run, minutes ago):
+    the mobile run's own homepage, platform, access and navigation were just read fresh; only the catalog is copied."""
+    sm.collections = [Collection(**c.__dict__) for c in catalog.collections]
+    sm.products = [Product(**p.__dict__) for p in catalog.products]
+    sm.pinned_products = list(catalog.pinned_products)
+    sm.pinned_collections = list(catalog.pinned_collections)
+    sm.search_path = catalog.search_path
+    sm.notes.append(f"catalog reused from the earlier run on this store ({len(sm.collections)} collections, "
+                    f"{len(sm.products)} products): Shopify's data endpoints were not asked again")
+    for n in catalog.notes:
+        if ("product(s)" in n or "collections discovered" in n or "products discovered" in n) and n not in sm.notes:
+            sm.notes.append(n)
+
+
+PRODUCT_PAGE_JS = """() => {
+  const out = {ld: null, meta: null, h1: (document.querySelector('h1') || {}).innerText || document.title, sold_out: false};
+  for (const sc of document.querySelectorAll('script[type="application/ld+json"]')) {
+    try {
+      let j = JSON.parse(sc.textContent);
+      const list = Array.isArray(j) ? j : (j['@graph'] || [j]);
+      for (const x of list) { if (x && String(x['@type']).toLowerCase() === 'product') { out.ld = x; break; } }
+    } catch (e) {}
+    if (out.ld) break;
+  }
+  try { const m = window.ShopifyAnalytics && window.ShopifyAnalytics.meta; if (m && m.product) out.meta = m.product; } catch (e) {}
+  const btn = document.querySelector('form[action*="/cart/add"] [type=submit], form[action*="/cart/add"] button[name=add]');
+  if (btn) out.sold_out = !!btn.disabled || /sold\\s*out|unavailable/i.test(btn.innerText || '');
+  return out;
+}"""
+
+
+def product_from_page(sess: Session, url: str, base_url: str) -> dict | None:
+    """The same facts as /products/<handle>.js, read from the product PAGE (16 Nov): the page's ld+json Product
+    (title, offers with price and availability) and the theme's ShopifyAnalytics.meta.product (variant ids, prices in
+    paise, type). Used only when Shopify throttles the data endpoint; a page load is what a shopper does and is not
+    throttled the same way. None when the page carries neither."""
+    handle = _handle(url, "products")
+    if not handle:
+        return None
+    sess.goto(url)
+    got = sess.evaluate(PRODUCT_PAGE_JS) or {}
+    ld, meta = got.get("ld") or {}, got.get("meta") or {}
+    variants = meta.get("variants") or []
+    offers = ld.get("offers") or []
+    if isinstance(offers, dict):
+        offers = [offers]
+    in_stock = [o for o in offers if "instock" in str(o.get("availability", "")).lower().replace(" ", "")]
+    available = bool(in_stock) if offers else not got.get("sold_out")
+    price = None
+    vid = None
+    if variants:
+        pick = variants[0]
+        if in_stock and in_stock[0].get("price") is not None:
+            want = str(in_stock[0]["price"])
+            pick = next((v for v in variants if str((v.get("price") or 0) / 100) == want
+                         or f"{(v.get('price') or 0) / 100:.2f}" == f"{float(want):.2f}"), variants[0])
+        vid = pick.get("id")
+        if isinstance(pick.get("price"), (int, float)):
+            price = f"{pick['price'] / 100:.2f}"
+    if price is None and offers and offers[0].get("price") is not None:
+        price = str(offers[0]["price"])
+    if price is None and not variants:
+        return None
+    title = (ld.get("name") or got.get("h1") or handle).strip()
+    from radar.discovery.shopify_data import _kind
+    return {"handle": handle, "title": title, "url": f"{base_url}/products/{handle}", "variant_id": vid,
+            "price": price, "available": available, "variants": len(variants) or len(offers) or 1,
+            "kind": _kind(meta.get("type"), [])}
 
 
 def _pin(sess: Session, sm: SiteMap, base_url: str, pins: tuple[str, ...]) -> None:
