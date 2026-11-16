@@ -153,14 +153,25 @@ def _one(args) -> dict:
                 "radar_suspect": 0, "notes": [NO_NETWORK_NOTE.format(where=" when this store's turn came")],
                 "report": None, "secs": 0, "cart": cart, "input": url, "devices": {}, "suites_by_device": {},
                 "device_only": {}}
+    from radar.core.browser import Session
+    from radar.runner.executor import DEVICE_PAUSE, DEVICE_PAUSE_AFTER_429
     per_device: dict[str, dict] = {}
+    catalog = cookies = None
+    Session.limited_hits = 0
     for dev in devices:
-        if per_device and next(iter(per_device.values()))["verdict"] not in TESTED:
-            break                           # desktop could not test this store: not asked again on mobile
+        if per_device and next(iter(per_device.values()))["verdict"] not in TESTED and not (
+                next(iter(per_device.values()))["verdict"] == "blocked" and next(iter(per_device.values())).get("suites")):
+            break                           # desktop could not test this store at all: not asked again on mobile
         if workdir:
             (workdir / "now.json").write_text(json.dumps({"device": dev, "since": time.time()}))
+        if per_device:
+            # 16 Nov, same as executor.scan_devices: the next device reuses the catalog + password cookies and waits
+            # (longer after a throttled run) instead of starting at once and hitting the same limit
+            time.sleep((DEVICE_PAUSE_AFTER_429 if Session.limited_hits else DEVICE_PAUSE) * Session.backoff_scale)
+            Session.limited_hits = 0
         try:
-            run, run_dir = scan(url, s, dev)
+            run, run_dir = scan(url, s, dev, catalog=catalog, store_cookies=cookies)
+            catalog, cookies = getattr(run, "sitemap", None), getattr(run, "store_cookies", None)
             d = json.loads((run_dir / "run.json").read_text())
             per_device[dev] = summarise(d, str(run_dir / "report.html"))
         except Exception as e:  # noqa: BLE001  one store must never stop the bench
