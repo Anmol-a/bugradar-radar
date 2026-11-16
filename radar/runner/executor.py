@@ -28,7 +28,7 @@ from datetime import datetime, timezone
 from typing import Callable
 
 from radar.checks.library import REGISTRY, Ctx, Steps, StepFailed
-from radar.core.browser import Browser, DEFAULT_DEVICES, RateLimited, Session
+from radar.core.browser import Browser, DEFAULT_DEVICES, RateLimited, RobotsBlocked, Session
 from radar.core.config import Settings, normalize_url, site_id_from_url
 from radar.core.models import AttemptResult, CaseResult, RunResult, SiteMap, StepResult, TestCase
 from radar.core.network import NO_NETWORK_NOTE, online
@@ -65,6 +65,11 @@ def _attempt(browser: Browser, case: TestCase, run_dir, robots, healer: Healer, 
         except StepFailed as f:
             failed, blocked = f, f.blocked
             sess.failed = (not f.blocked) or f.not_judged      # a not-judged step keeps its screenshot as evidence
+        except (RateLimited, RobotsBlocked) as e:
+            # raised outside a named step (a data read between steps): the platform refused Radar, so this check is
+            # BLOCKED, never a failure (16 Nov: 'Add to cart' on the test store was confirmed FAILED on a 429 this way)
+            failed, blocked = StepFailed("blocked", str(e)[:400], blocked=True), True
+            steps.items.append(StepResult("blocked", "skip", None, str(e)[:400]))
         except Exception as e:  # noqa: BLE001  a bug in Radar itself must not kill the run
             failed = StepFailed("radar_internal", f"{type(e).__name__}: {str(e)[:200]}")
             steps.items.append(StepResult("radar_internal", "fail", None, failed.args[0]))
@@ -210,8 +215,11 @@ def run_verdict(cases: list[CaseResult]) -> str:
 
 def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage | None = None,
          llm: LLMClient | None = None, progress: Progress | None = None,
-         only_suites: list[str] | None = None, profile: str | None = None) -> tuple[RunResult, "Path"]:
-    """profile: None / 'full' = every built case; 'basic' = the free first check (radar/runner/profiles.py)."""
+         only_suites: list[str] | None = None, profile: str | None = None,
+         catalog: SiteMap | None = None, store_cookies: list | None = None) -> tuple[RunResult, "Path"]:
+    """profile: None / 'full' = every built case; 'basic' = the free first check (radar/runner/profiles.py).
+    catalog / store_cookies (16 Nov): the earlier device's catalog and store-password cookies, so the second device
+    neither asks Shopify's data endpoints again nor posts the store password again (both were being throttled)."""
     from radar.runner.profiles import filter_suites, settings_for_profile
     progress = progress or (lambda *_: None)
     base = normalize_url(url)
@@ -225,11 +233,13 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
     progress("start", {"site_id": site_id, "run_id": run_id, "llm": llm.usage(), "device": device})
 
     with Browser(s, device, base) as browser:
+        if store_cookies:
+            browser.store_cookies = list(store_cookies)
         # ---- discovery
         with browser.attempt(run_dir, "discovery") as sess:
             pins = tuple(storage.open_incident_cases(site_id, device))     # products / collections with an open incident
             try:
-                sm = discover(sess, base, s, pins)
+                sm = discover(sess, base, s, pins, catalog=catalog)
             except RateLimited as e:          # the platform throttled Radar before anything was tested (9 Oct)
                 sm = SiteMap(site_id=site_id, base_url=base, notes=[f"rate-limited: {e}"[:300]])
                 sm.access = "rate_limited"
@@ -242,6 +252,8 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
                 browser.store_cookies = sess.password_cookies
         run.platform = sm.platform
         run.notes = list(sm.notes)
+        run.sitemap = sm                                   # not serialised (dataclass field=False): for the next device
+        run.store_cookies = list(browser.store_cookies)
         run.sitemap_summary = {
             "platform": sm.platform, "evidence": sm.platform_evidence, "home_title": sm.home_title,
             "theme": sm.theme, "checkout_app": sm.checkout_app, "access": sm.access,
@@ -320,6 +332,10 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
     return run, run_dir
 
 
+DEVICE_PAUSE = 20                 # seconds between the desktop and the mobile run of one store (16 Nov)
+DEVICE_PAUSE_AFTER_429 = 90       # when the run before it was throttled by the platform (Shopify's edge says Retry-After 60)
+
+
 def scan_devices(url: str, settings: Settings, devices: tuple[str, ...] = DEFAULT_DEVICES,
                  progress: Progress | None = None, only_suites: list[str] | None = None,
                  profile: str | None = None) -> list[tuple[RunResult, "Path"]]:
@@ -330,10 +346,25 @@ def scan_devices(url: str, settings: Settings, devices: tuple[str, ...] = DEFAUL
     from radar.runner.profiles import devices_for_profile
     progress = progress or (lambda *_: None)
     out: list[tuple[RunResult, "Path"]] = []
+    Session.limited_hits = 0
     for dev in devices_for_profile(profile, devices):
-        if out and out[0][0].verdict not in TESTED:
+        if out and out[0][0].verdict not in TESTED and not (out[0][0].verdict == "blocked" and out[0][0].cases):
+            # 16 Nov: a 'blocked' run that still ran checks (the platform throttled some data reads) is a tested store;
+            # only a run that could test nothing (password, bot wall, robots, not Shopify, offline) skips the next device
             progress("device_skipped", {"device": dev, "why": f"not tested on {devices[0]} ({out[0][0].verdict}), "
                                                                 "so not asked again"})
             continue
-        out.append(scan(url, settings, dev, progress=progress, only_suites=only_suites, profile=profile))
+        catalog = cookies = None
+        if out:
+            prev = out[-1][0]
+            catalog, cookies = getattr(prev, "sitemap", None), getattr(prev, "store_cookies", None)
+            # 16 Nov: the second device used to start the very second the first finished, from the same address, and
+            # Shopify throttled it at once (every blocked mobile run of the week to 16 Nov). After a throttled run the
+            # next device waits for the limit to clear; after a clean run a short breath is enough.
+            pause = DEVICE_PAUSE_AFTER_429 if Session.limited_hits else DEVICE_PAUSE
+            progress("device_pause", {"device": dev, "seconds": pause, "throttled": Session.limited_hits})
+            time.sleep(pause * Session.backoff_scale)
+            Session.limited_hits = 0
+        out.append(scan(url, settings, dev, progress=progress, only_suites=only_suites, profile=profile,
+                        catalog=catalog, store_cookies=cookies))
     return out

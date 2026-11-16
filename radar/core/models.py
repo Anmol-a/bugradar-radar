@@ -58,6 +58,7 @@ class SiteMap:
     home_slow: bool = False           # the homepage needed more than home_timeout_ms (21 Oct; the worker re-checks such a run)
     store_up_robots_down: int | None = None   # daily check: robots.txt silent but the store answered with this HTTP status
                                       # (22 Oct; the dashboard shows a warning, not 'not tested')
+    data_throttled: bool = False      # Shopify answered 429 to a data endpoint during discovery; pages were read instead (16 Nov)
 
     def to_dict(self) -> dict:
         return asdict(self)
@@ -147,6 +148,9 @@ class RunResult:
     llm_usage: dict = field(default_factory=dict)
     sitemap_summary: dict = field(default_factory=dict)
     notes: list[str] = field(default_factory=list)
+    # 16 Nov: handed from one device's scan to the next on the same store; never written to run.json
+    sitemap: "SiteMap | None" = field(default=None, repr=False, compare=False)
+    store_cookies: list = field(default_factory=list, repr=False, compare=False)
     perf: dict = field(default_factory=dict)       # page-load + console summary of the run (executor.perf_summary)
 
     def counts(self) -> dict:
@@ -157,5 +161,7 @@ class RunResult:
 
     def to_dict(self) -> dict:
         d = asdict(self)
+        d.pop("sitemap", None)
+        d.pop("store_cookies", None)
         d["counts"] = self.counts()
         return d

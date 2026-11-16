@@ -2526,6 +2526,12 @@ async function addToCart(id){ const r = await fetch('/cart/add.js',{method:'POST
             body += ('<div class="sticky-bar" style="position:fixed;left:0;right:0;bottom:0;background:#fff;padding:8px;z-index:20">'
                      '<button type="button" class="sticky-atc" onclick="document.getElementById(\'product-form-template__main\')'
                      '.requestSubmit()">ADD TO CART</button></div>')
+        # what every real Shopify product page carries (content_for_header): the theme's analytics meta with the
+        # product's variants and prices in paise. Discovery reads it when the data endpoints are throttled (16 Nov).
+        meta = {"id": p["id"], "vendor": p.get("vendor", "Mock"), "type": p.get("product_type", ""),
+                "variants": [{"id": v["id"], "price": int(float(v["price"]) * 100), "name": f"{p['title']} - {v.get('title', '')}",
+                              "public_title": v.get("title", ""), "sku": v.get("sku", "")} for v in self._variants(p)]}
+        script += f"<script>window.ShopifyAnalytics = window.ShopifyAnalytics || {{}}; window.ShopifyAnalytics.meta = {json.dumps({'product': meta})};</script>"
         if self.mode == "free_gift":
             script += "<script>window.GIFT_MODE = true;</script>"
         if self.mode in ("cart_drawer", "cart_drawer_stale"):         # journey 18

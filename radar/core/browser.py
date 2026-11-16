@@ -442,6 +442,12 @@ class Session:
 
     backoff_scale = 1.0          # tests shrink the waits; real runs use the full ones
     _DATA_CACHE: dict = {}       # /products/<h>.js answers, per process (= per store in a bench), 2 min
+    limited_hits = 0             # HTTP 429s seen by this process since the last reset (16 Nov: the device scan that follows
+                                 # waits longer before starting when the one before it was throttled)
+
+    @classmethod
+    def note_limited(cls) -> None:
+        cls.limited_hits += 1
 
     def get_json(self, url: str):
         """Product data (/products/<h>.js) is asked 3-4 times per page by different checks; one answer is reused
@@ -486,7 +492,8 @@ class Session:
             if i >= 3 and not limited:
                 break                       # the 2 extra, longer waits are only for HTTP 429 (rate limit)
             if wait:
-                self.page.wait_for_timeout(int(min(30000, max(wait, after * 1000)) * self.backoff_scale))
+                # a 429's Retry-After is honoured up to 60 s (Shopify's edge says 60 when it means it; 16 Nov)
+                self.page.wait_for_timeout(int(min(60000 if limited else 30000, max(wait, after * 1000)) * self.backoff_scale))
             # Ask from INSIDE the page whenever it is on the store (18 Oct, Contabo vmi3647713): Cloudflare answers 429
             # to Playwright's own HTTP client (context.request, a Node client with a non-browser network fingerprint)
             # from datacenter addresses, every time, signed or not, while the very same URL fetched by the page the way
@@ -496,6 +503,7 @@ class Session:
                 st = got.get("status", 0)
                 if st == 429:
                     limited += 1
+                    Session.note_limited()
                     try:
                         after = float(got.get("retry_after") or 0)
                     except ValueError:
@@ -530,6 +538,7 @@ class Session:
                 continue
             if r.status == 429:
                 limited += 1
+                Session.note_limited()
                 try:
                     after = float((r.headers or {}).get("retry-after") or 0)
                 except ValueError:

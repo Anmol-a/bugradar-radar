@@ -1384,13 +1384,91 @@ def test_short_rate_limit_is_waited_out(tmp_path, monkeypatch):
         [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
 
 
-def test_rate_limited_discovery_is_blocked_not_error(tmp_path, monkeypatch):
+def test_rate_limited_discovery_reads_the_pages_and_still_tests(tmp_path, monkeypatch):
+    """16 Nov: in the week before, EVERY blocked mobile run (theme-dawn-demo 23 of 50, the App Review store 16 of 35) died
+    in discovery on a 429 to /collections.json, seconds after the desktop run, with 'nothing could be tested'. A throttled
+    data endpoint is not a reason to test nothing: the catalog is read from the pages (nav links, the product page's
+    ld+json / ShopifyAnalytics.meta), the run goes on, and only the checks that need the data endpoint are blocked."""
     from radar.core.browser import Session
     monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
     results = _both("rate_limited_all", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
     first = results[0][0]
-    assert first.verdict == "blocked" and any("rate-limit" in n for n in first.notes), (first.verdict, first.notes)
-    assert len(results) == 1 or results[1][0].verdict in ("blocked", "skipped"), [r.verdict for r, _ in results]
+    assert first.verdict != "unsupported" and first.verdict != "error", (first.verdict, first.notes)
+    assert first.sitemap_summary["products"] >= 1 and first.sitemap_summary["collections"] >= 1, first.sitemap_summary
+    assert any("rate-limited" in n and "pages" in n for n in first.notes), first.notes
+    assert len(first.cases) > 3, [c.case_id for c in first.cases]                 # not "1 check not run"
+    assert any(c.verdict == "pass" for c in first.cases), [(c.case_id, c.verdict) for c in first.cases]
+    assert not any(c.verdict == "confirmed_fail" for c in first.cases), [(c.case_id, c.verdict, c.attempts[-1].error) for c in first.cases]
+    assert not any(c.incident_signature for c in first.cases)
+    # the mobile run reused the desktop catalog: it never asked the data endpoints at all
+    assert len(results) == 2, [r.verdict for r, _ in results]
+    second = results[1][0]
+    assert any("catalog reused" in n for n in second.notes), second.notes
+    assert second.sitemap_summary["products"] == first.sitemap_summary["products"]
+
+
+def test_mobile_run_reuses_the_desktop_catalog_and_pauses(tmp_path, monkeypatch):
+    """A healthy store: the mobile run copies the desktop run's collections / products / search path and waits a moment
+    before starting (16 Nov), and its own homepage, nav and access are still read fresh."""
+    from radar.core.browser import Session
+    from radar.runner import executor
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    seen = []
+    srv, url = serve("healthy")
+    try:
+        results = executor.scan_devices(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=2),
+                                        progress=lambda e, d: seen.append((e, d)))
+    finally:
+        srv.shutdown()
+    assert [r.device for r, _ in results] == ["desktop", "mobile"]
+    assert all(r.verdict == "healthy" for r, _ in results), [(r.device, r.verdict) for r, _ in results]
+    d, m = results[0][0], results[1][0]
+    assert any("catalog reused" in n for n in m.notes) and not any("catalog reused" in n for n in d.notes), (d.notes, m.notes)
+    assert m.sitemap_summary["products"] == d.sitemap_summary["products"] and m.sitemap_summary["nav"] >= 1
+    pauses = [x for e, x in seen if e == "device_pause"]
+    assert len(pauses) == 1 and pauses[0]["device"] == "mobile" and pauses[0]["seconds"] == executor.DEVICE_PAUSE
+    assert "sitemap" not in json.loads((results[1][1] / "run.json").read_text())
+
+
+def test_pause_is_longer_after_a_throttled_device_run(tmp_path, monkeypatch):
+    from radar.core.browser import Session
+    from radar.runner import executor
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    seen = []
+    srv, url = serve("rate_limited")
+    try:
+        executor.scan_devices(url, _settings(tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2),
+                              progress=lambda e, d: seen.append((e, d)))
+    finally:
+        srv.shutdown()
+    pauses = [x for e, x in seen if e == "device_pause"]
+    assert pauses and pauses[0]["throttled"] > 0 and pauses[0]["seconds"] == executor.DEVICE_PAUSE_AFTER_429, pauses
+
+
+def test_a_throttle_between_steps_blocks_the_check_never_fails_it(tmp_path, monkeypatch):
+    """bugradar-shopper-test desktop, 15-16 Nov: 'Add to cart' was FAILED ('One thing is broken') on a RateLimited raised
+    between named steps, which the executor filed as radar_internal. A 429 anywhere in a check = BLOCKED."""
+    from radar.core.browser import RateLimited
+    from radar.runner.executor import _run_case
+    from radar.checks import library
+    from radar.core.models import TestCase
+    srv, url = serve("healthy")
+    try:
+        from radar.core.browser import Browser
+        from radar.healing.locator import Healer
+        from radar.core.storage import Storage
+        from radar.healing.llm import make_client
+        s = _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=2).for_site("x")
+        library.REGISTRY["_throttled_outside_a_step"] = lambda ctx: (_ for _ in ()).throw(RateLimited("x.myshopify.com kept answering HTTP 429 to Radar's data request"))
+        case = TestCase(id="t.throttle", suite="product", title="t", check="_throttled_outside_a_step", params={}, severity="critical")
+        with Browser(s, "desktop", url) as b:
+            cr = _run_case(b, case, tmp_path, None, Healer("x", "r", Storage(s.data_dir), make_client(s), s.selectors, "desktop"),
+                           s.retries, lambda *_: None)
+    finally:
+        library.REGISTRY.pop("_throttled_outside_a_step", None)
+        srv.shutdown()
+    assert cr.verdict == "blocked" and "429" in (cr.attempts[-1].error or ""), (cr.verdict, cr.attempts[-1].error)
+    assert len(cr.attempts) == 1 and not cr.incident_signature
 
 
 def test_image_link_under_a_slider_layer_falls_back_to_the_product_name(tmp_path):
