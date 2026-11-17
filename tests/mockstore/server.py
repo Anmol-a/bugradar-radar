@@ -168,6 +168,10 @@ Modes (to prove Radar catches and heals what it should):
                    answers 429, while the same URL fetched by the page answers 200 -> the whole run PASSES (Radar asks
                    from inside the page); a Radar that asked with the Node client would be BLOCKED
   rate_limited_once  each /products/<h>.js answers 429 (Retry-After: 1) twice, then normally -> Radar backs off, PASSES
+  cart_burst_429   the first 5 /cart.js requests answer 429, then normally (Contabo, 17 Nov: bugradar-shopper-test's
+                   Add to cart / Buy it now / cart drawer 'could not check' on a 429 burst every run) -> the first check
+                   that reads the cart is BLOCKED on its first go, then run again after the pause and PASSES; the run
+                   is healthy and carries the 'Shopify slowed Radar down' note
   noisy_console    every page logs a console error + warning and fires a request nobody answers (third-party widget)
                    -> everything PASSES; the noise only shows up as report evidence (v0.18)
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (shop083.example / shop129.example,
@@ -1912,6 +1916,11 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                             "<p>The product is currently unavailable, please get back later.</p>"), set_cart=new)
             return self._send(200, self._pdp(p), set_cart=new)
         if path == "/cart.js":
+            if self.mode == "cart_burst_429":
+                k = type(self)
+                k.CART_429 = getattr(k, "CART_429", 0) + 1
+                if k.CART_429 <= 5:
+                    return self._send(429, "Too Many Requests", "text/plain")
             items = CARTS[cid]
             return self._json({"items": items, "item_count": sum(i["quantity"] for i in items),
                                "total_price": sum(i.get("price", 0) * i["quantity"] for i in items)}, set_cart=new)

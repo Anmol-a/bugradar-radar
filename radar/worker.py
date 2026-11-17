@@ -464,6 +464,70 @@ def run_scan(req: dict, base: Settings, upload: bool = True, log=print, progress
     return out
 
 
+# ---- one store at a time per machine (17 Nov) ------------------------------------------------------------------------
+# Contabo runs 3 worker processes (slots) from ONE address. Slots 2 and 3 used to test two stores at once (23:18-23:50
+# UTC 16 Nov: App Review store and shopper-test overlapping), doubling what Shopify saw from that address, and its
+# limit is per address. Daily checks now take turns: a slot that finds another slot testing a store serves free scans
+# only until it is done, and a store starts STORE_GAP seconds after the last one finished. Free scans never wait
+# (someone is watching the loading page) and are small (desktop, basic profile).
+STORE_GAP = 90
+LOCK_PATH = "/tmp/radar-one-store.lock"     # RADAR_STORE_LOCK overrides; "off" = no turn-taking (tests, one-slot boxes)
+
+
+class OneStore:
+    """A machine-wide turn for daily checks: an flock on a small file holding when the last check finished. The OS
+    drops the lock if the process dies (crash, the nightly restart), so a slot can never hold it for ever."""
+
+    def __init__(self, path: str | None = None, gap: float = STORE_GAP):
+        p = path if path is not None else (os.environ.get("RADAR_STORE_LOCK") or LOCK_PATH)
+        self.path = None if p.strip().lower() == "off" else p
+        self.gap, self._f = gap, None
+
+    def acquire(self) -> bool:
+        if self.path is None:
+            return True
+        import fcntl
+        f = open(self.path, "a+")
+        try:
+            fcntl.flock(f, fcntl.LOCK_EX | fcntl.LOCK_NB)
+        except OSError:
+            f.close()
+            return False
+        self._f = f
+        return True
+
+    def wait_gap(self, log=print) -> float:
+        """Sleep until STORE_GAP seconds after the last daily check on this machine ended. Returns the seconds slept."""
+        if self._f is None:
+            return 0.0
+        try:
+            self._f.seek(0)
+            last = float((self._f.read() or "0").strip() or 0)
+        except ValueError:
+            last = 0.0
+        wait = last + self.gap - time.time()
+        if 0 < wait <= self.gap:
+            log(f"  waiting {int(wait)} s after the last store before the next (one store at a time per address)")
+            time.sleep(wait)
+            return wait
+        return 0.0
+
+    def release(self, ran: bool) -> None:
+        if self._f is None:
+            return
+        import fcntl
+        try:
+            if ran:
+                self._f.seek(0)
+                self._f.truncate()
+                self._f.write(f"{time.time():.0f}")
+                self._f.flush()
+        finally:
+            fcntl.flock(self._f, fcntl.LOCK_UN)
+            self._f.close()
+            self._f = None
+
+
 def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log=print, scans_only: bool = False) -> dict | None:
     """Claim one due job and run it: a free scan request first (a visitor is waiting), else one due monitor.
     Returns the row that ran, or None when nothing was due. scans_only: never a monitor (the GitHub free-scan worker)."""
@@ -479,9 +543,21 @@ def run_once(queue: Queue, base: Settings, worker: str, upload: bool = True, log
         return req
     if scans_only:
         return None
-    m = queue.claim(worker)
-    if not m:
-        return None
+    turn = OneStore()
+    if not turn.acquire():
+        return None                     # another slot on this machine is testing a store: free scans only, for now
+    m = None
+    try:
+        turn.wait_gap(log)
+        m = queue.claim(worker)
+        if not m:
+            return None
+        return _run_claimed(queue, m, base, worker, upload, log)
+    finally:
+        turn.release(ran=m is not None)
+
+
+def _run_claimed(queue: Queue, m: dict, base: Settings, worker: str, upload: bool, log) -> dict:
     remember(m.get("url") or "")
     log(f"[{_now()}] {worker}: {m['url']} on {','.join(m.get('devices') or ['desktop', 'mobile'])}")
     if hasattr(queue, "store_password") and m.get("id"):

@@ -337,6 +337,7 @@ class Session:
         wait = delay - (time.time() - self._last_nav)
         if wait > 0:
             time.sleep(wait)
+        Session.wait_turn()                      # 17 Nov: slower across checks while the platform is pushing back
         self._last_nav = time.time()
 
     def request_get(self, url: str, **kw):
@@ -368,6 +369,8 @@ class Session:
         self._polite()
         t0 = time.time()
         resp = self.page.goto(url, wait_until="domcontentloaded", timeout=timeout_ms or self.s.nav_timeout_ms)
+        if resp is not None and resp.status < 400:
+            Session.note_ok()
         self.last_load_secs = round(time.time() - t0, 2)
         self.settle()
         self.record_load()
@@ -445,9 +448,54 @@ class Session:
     limited_hits = 0             # HTTP 429s seen by this process since the last reset (16 Nov: the device scan that follows
                                  # waits longer before starting when the one before it was throttled)
 
+    # The throttle governor (17 Nov). Each check runs in a fresh browser context, so the per-page politeness delay
+    # never spaced checks apart: after Shopify answered 429, the next check fired at once and was throttled too (on
+    # Contabo after #29, bugradar-shopper-test still had 8-12 of 28 checks 'could not check' per run, while GitHub's
+    # machines running the same code saw 0-2). Every 429 now doubles a pause between ALL of Radar's requests to the
+    # store (pages and data reads, across checks) and holds the next request for a short cool-down; calm answers
+    # halve it again. Process-wide on purpose: one worker process tests one store at a time, from one address.
+    PACE_MIN, PACE_MAX = 2.0, 8.0    # seconds between requests once throttled (doubling from 2, capped at 8)
+    COOL = 12.0                      # seconds the next request waits after a 429 (or Retry-After, when longer, to 60)
+    CALM_TO_EASE = 12                # answers without a 429 before the pause is halved
+    pace = 0.0
+    cool_until = 0.0
+    _gov_last = 0.0
+    _calm = 0
+
     @classmethod
-    def note_limited(cls) -> None:
+    def note_limited(cls, retry_after: float = 0) -> None:
         cls.limited_hits += 1
+        cls.pace = min(cls.PACE_MAX, max(cls.PACE_MIN, cls.pace * 2))
+        cool = min(60.0, max(cls.COOL, float(retry_after or 0)))
+        cls.cool_until = max(cls.cool_until, time.time() + cool * cls.backoff_scale)
+        cls._calm = 0
+
+    @classmethod
+    def note_ok(cls) -> None:
+        if cls.pace <= 0:
+            return
+        cls._calm += 1
+        if cls._calm >= cls.CALM_TO_EASE:
+            cls.pace = cls.pace / 2 if cls.pace / 2 >= cls.PACE_MIN / 2 else 0.0
+            cls._calm = 0
+
+    @classmethod
+    def wait_turn(cls) -> float:
+        """Hold Radar's next request to the store until the cool-down is over and `pace` seconds have passed since the
+        last one. No-op (0 s) on a store that never answered 429. Returns the seconds waited."""
+        now = time.time()
+        until = max(cls.cool_until, cls._gov_last + cls.pace * cls.backoff_scale) if cls.pace else cls.cool_until
+        waited = 0.0
+        if until > now:
+            waited = until - now
+            time.sleep(waited)
+        cls._gov_last = time.time()
+        return waited
+
+    @classmethod
+    def reset_governor(cls) -> None:
+        """A new store: its own limit, so no inherited pause (the next DEVICE of the same store keeps it)."""
+        cls.pace, cls.cool_until, cls._gov_last, cls._calm = 0.0, 0.0, 0.0, 0
 
     def get_json(self, url: str):
         """Product data (/products/<h>.js) is asked 3-4 times per page by different checks; one answer is reused
@@ -488,12 +536,14 @@ class Session:
         # that is not JSON (bench 11: shop095.example returned an empty body once, shop002.example timed out
         # once; both passed on the next attempt). A real 4xx is final.
         last, limited, after = None, 0, 0
+        t_start = time.time()
         for i, wait in enumerate((0, 1000, 3000, 8000, 20000)):
             if i >= 3 and not limited:
                 break                       # the 2 extra, longer waits are only for HTTP 429 (rate limit)
             if wait:
                 # a 429's Retry-After is honoured up to 60 s (Shopify's edge says 60 when it means it; 16 Nov)
                 self.page.wait_for_timeout(int(min(60000 if limited else 30000, max(wait, after * 1000)) * self.backoff_scale))
+            Session.wait_turn()             # 17 Nov: the throttle governor (cool-down + pace across checks)
             # Ask from INSIDE the page whenever it is on the store (18 Oct, Contabo vmi3647713): Cloudflare answers 429
             # to Playwright's own HTTP client (context.request, a Node client with a non-browser network fingerprint)
             # from datacenter addresses, every time, signed or not, while the very same URL fetched by the page the way
@@ -503,11 +553,11 @@ class Session:
                 st = got.get("status", 0)
                 if st == 429:
                     limited += 1
-                    Session.note_limited()
                     try:
                         after = float(got.get("retry_after") or 0)
                     except ValueError:
                         after = 0
+                    Session.note_limited(after)
                     last = "HTTP 429"
                     continue
                 if st >= 500 or st == 0:
@@ -516,10 +566,12 @@ class Session:
                 if st >= 400:
                     raise AssertionError(f"{url} returned HTTP {st}")
                 try:
-                    return json.loads(got.get("text") or "")
+                    out = json.loads(got.get("text") or "")
                 except ValueError:
                     last = f"HTTP {st} but the body is not JSON ({(got.get('text') or '')[:60]!r})"
                     continue
+                Session.note_ok()
+                return out
             try:
                 r = self.request_get(url, timeout=20000, headers=self.sign(url) or None)
             except Exception as e:  # noqa: BLE001  timeout, reset, DNS
@@ -538,11 +590,11 @@ class Session:
                 continue
             if r.status == 429:
                 limited += 1
-                Session.note_limited()
                 try:
                     after = float((r.headers or {}).get("retry-after") or 0)
                 except ValueError:
                     after = 0
+                Session.note_limited(after)
                 last = "HTTP 429"
                 continue
             if r.status >= 500:
@@ -551,10 +603,14 @@ class Session:
             if r.status >= 400:
                 raise AssertionError(f"{url} returned HTTP {r.status}")
             try:
-                return r.json()
+                out = r.json()
             except ValueError:
                 last = f"HTTP {r.status} but the body is not JSON ({(r.text() or '')[:60]!r})"
+                continue
+            Session.note_ok()
+            return out
         if last == "HTTP 429":
+            waited = max(1, round((time.time() - t_start) / max(self.backoff_scale, 1e-9)))
             raise RateLimited(f"{_host(url)} kept answering HTTP 429 (Too Many Requests) to Radar's data request "
-                              f"after waiting ~32 s: the platform is rate-limiting Radar, this is not a store failure")
+                              f"after waiting ~{waited} s: the platform is rate-limiting Radar, this is not a store failure")
         raise AssertionError(f"{url}: no valid data after {i + 1} tries (last: {last})")

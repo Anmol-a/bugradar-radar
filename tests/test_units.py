@@ -1453,3 +1453,53 @@ def test_triage_fact_broken_links_are_the_store_not_the_robot():
     assert any("real_store_problem" in x for x in facts(other, None, ""))
     assert not any("failed to open" in x for x in facts([{**menu[0], "ok": True}], None, ""))           # passed: no fact
     assert not any("failed to open" in x for x in facts([{**menu[0], "actual": "0"}], None, ""))       # zero broken: no fact
+
+
+# ---- the throttle governor (17 Nov) -----------------------------------------------------------------------------------
+def test_throttle_governor_slows_down_on_429_and_eases_off_when_calm(monkeypatch):
+    """After #29, Contabo still had 8-12 of 28 checks 'could not check' per run on bugradar-shopper-test: each check runs in
+    a fresh browser context, so nothing spaced checks apart once Shopify started answering 429."""
+    import time as _t
+    from radar.core.browser import Session
+    monkeypatch.setattr(Session, "backoff_scale", 0.01, raising=False)
+    Session.reset_governor()
+    assert Session.wait_turn() == 0.0                       # never throttled: no wait at all
+    Session.note_limited()
+    assert Session.pace == Session.PACE_MIN and Session.cool_until > _t.time()
+    Session.note_limited(retry_after=30)
+    assert Session.pace == 2 * Session.PACE_MIN
+    assert Session.cool_until - _t.time() > 0.25            # Retry-After 30 s (scaled 0.01) is honoured over the 12 s
+    for _ in range(5):
+        Session.note_limited()
+    assert Session.pace == Session.PACE_MAX                 # capped
+    waited = Session.wait_turn()
+    assert waited > 0                                       # held for the cool-down
+    t0 = _t.time()
+    Session.wait_turn()
+    assert _t.time() - t0 >= Session.PACE_MAX * 0.01 * 0.9  # then paced
+    for _ in range(Session.CALM_TO_EASE):
+        Session.note_ok()
+    assert Session.pace == Session.PACE_MAX / 2             # calm answers halve the pace
+    while Session.pace:
+        for _ in range(Session.CALM_TO_EASE):
+            Session.note_ok()
+    assert Session.pace == 0.0
+    Session.note_limited()
+    Session.reset_governor()
+    assert (Session.pace, Session.cool_until) == (0.0, 0.0)
+
+
+def test_only_a_429_counts_as_throttled_for_the_second_go():
+    from radar.core.models import AttemptResult, StepResult
+    from radar.runner.executor import throttled
+    def cr(verdict, error, step_err=None):
+        c = CaseResult("cart.add", "journey", "Add to cart", "add_to_cart", "critical", verdict=verdict)
+        c.attempts.append(AttemptResult(1, False, [StepResult("blocked", "skip", None, step_err)], "blocked", error))
+        return c
+    assert throttled(cr("blocked", "x.myshopify.com kept answering HTTP 429 (Too Many Requests) to Radar's data request"))
+    assert throttled(cr("blocked", "/pages/contact answered HTTP 429 (Too Many Requests): the platform is rate-limiting Radar"))
+    assert throttled(cr("blocked", None, "/ answered HTTP 429 (Too Many Requests)"))
+    assert not throttled(cr("blocked", "age gate: the store asks the shopper's age before showing products"))
+    assert not throttled(cr("blocked", "cart not tested: the buy button stays disabled until the shopper checks a pincode"))
+    assert not throttled(cr("confirmed_fail", "HTTP 429 shown to shoppers"))       # only a 'could not check'
+    assert not throttled(CaseResult("x", "s", "t", "c", "major", verdict="blocked"))

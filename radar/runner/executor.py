@@ -227,6 +227,8 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
     s = settings_for_profile(profile, settings).for_site(site_id)
     storage = storage or Storage(s.data_dir)
     llm = llm or make_client(s)
+    if catalog is None:
+        Session.reset_governor()        # a new store (the next device of the same store keeps the governor's pace)
     run_id = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ") + f"-{device[0]}-" + uuid.uuid4().hex[:4]
     run_dir = storage.run_dir(site_id, run_id)
     run = RunResult(run_id, site_id, base, device, _now())
@@ -299,6 +301,10 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
                         break
                 if lost:
                     break
+            if not lost:
+                _second_go(browser, {c.id: c for x in suites for c in x.cases}, run, run_dir, robots, healer,
+                           s.retries, progress, s.net_probe_urls, device)
+                lost = next((c for c in run.cases if c.verdict == "no_network"), None)
             run.healing_events = healer.events
             if lost:
                 run.verdict = "no_network"
@@ -334,6 +340,62 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
 
 DEVICE_PAUSE = 20                 # seconds between the desktop and the mobile run of one store (16 Nov)
 DEVICE_PAUSE_AFTER_429 = 90       # when the run before it was throttled by the platform (Shopify's edge says Retry-After 60)
+# 17 Nov: checks the platform throttled ('could not check' on an HTTP 429) get ONE more go at the end of the run, after
+# a pause and at a slower pace, so a store's key checks are not lost to a burst. Capped so a heavily throttled store
+# cannot double the run's time.
+THROTTLE_RETRY_PAUSE = 60         # seconds before the second go
+THROTTLE_RETRY_PACE = 4.0         # seconds between Radar's requests during the second go
+THROTTLE_RETRY_MAX = 14           # checks
+THROTTLE_RETRY_BUDGET = 480       # seconds of second-go time per device run
+THROTTLE_RX = re.compile(r"HTTP 429|Too Many Requests|rate-limiting Radar", re.I)
+
+
+def throttled(cr: CaseResult) -> bool:
+    """A check that could not be done only because the platform answered HTTP 429 (never an age gate, robots.txt,
+    a password page or a pincode gate: those stay 'could not check' for their own reason)."""
+    if cr.verdict != "blocked" or not cr.attempts:
+        return False
+    a = cr.attempts[-1]
+    return bool(THROTTLE_RX.search(a.error or "") or any(THROTTLE_RX.search(st.error or "") for st in a.steps
+                                                          if st.status in ("skip", "fail")))
+
+
+def _second_go(browser, cases_by_id: dict, run: "RunResult", run_dir, robots, healer, retries: int, progress: Progress,
+               probes: tuple, device: str) -> None:
+    """Run the throttled checks again after a pause, slower. A check that now passes or truly fails replaces the
+    throttled result; one throttled again stays 'could not check'. Adds one plain note to the run."""
+    idx = [i for i, c in enumerate(run.cases) if throttled(c)]
+    if not idx:
+        return
+    # the shopper's path and cart first: they decide whether the store reads 'blocked'
+    idx.sort(key=lambda i: (run.cases[i].severity != "critical", i))
+    todo = idx[:THROTTLE_RETRY_MAX]
+    progress("throttle_pause", {"seconds": THROTTLE_RETRY_PAUSE, "checks": len(todo)})
+    time.sleep(THROTTLE_RETRY_PAUSE * Session.backoff_scale)
+    Session.pace = max(Session.pace, THROTTLE_RETRY_PACE)
+    Session._calm = 0
+    t0, done, through = time.time(), 0, 0
+    for i in todo:
+        if time.time() - t0 > THROTTLE_RETRY_BUDGET * Session.backoff_scale:
+            break
+        case = cases_by_id.get(run.cases[i].case_id)
+        if case is None:
+            continue
+        cr = _run_case(browser, case, run_dir, robots, healer, retries, progress, probes, device)
+        done += 1
+        if cr.verdict == "no_network":
+            break                               # Radar's own connection dropped: keep the first result
+        if cr.verdict != "blocked":
+            through += 1
+            cr.attempts[0].note = ((cr.attempts[0].note + "; ") if cr.attempts[0].note else "") + \
+                "second go: the first try could not check this because the platform answered HTTP 429 (Shopify " \
+                "slowing Radar down), so it was run again after a pause"
+            run.cases[i] = cr
+    left = len(idx) - through
+    run.notes.append(
+        f"Shopify slowed Radar down during {len(idx)} check(s); {done} were run again after a "
+        f"{THROTTLE_RETRY_PAUSE} s pause, more slowly: {through} got through"
+        + (f", {left} still could not be checked (not a store problem)" if left else ""))
 
 
 def scan_devices(url: str, settings: Settings, devices: tuple[str, ...] = DEFAULT_DEVICES,
