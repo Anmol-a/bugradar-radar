@@ -505,8 +505,8 @@ class OneStore:
             last = float((self._f.read() or "0").strip() or 0)
         except ValueError:
             last = 0.0
-        wait = last + self.gap - time.time()
-        if 0 < wait <= self.gap:
+        wait = min(self.gap, last + self.gap - time.time())   # never more than the gap (a clock step, a bad file)
+        if wait > 0:
             log(f"  waiting {int(wait)} s after the last store before the next (one store at a time per address)")
             time.sleep(wait)
             return wait
@@ -520,7 +520,7 @@ class OneStore:
             if ran:
                 self._f.seek(0)
                 self._f.truncate()
-                self._f.write(f"{time.time():.0f}")
+                self._f.write(f"{time.time():.3f}")
                 self._f.flush()
         finally:
             fcntl.flock(self._f, fcntl.LOCK_UN)
