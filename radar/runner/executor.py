@@ -285,6 +285,11 @@ def scan(url: str, settings: Settings, device: str = "desktop", storage: Storage
             if only_suites:
                 suites = [x for x in suites if x.id in only_suites]
             suites = filter_suites(suites, profile)
+            # 17 Nov: the cart checks run LAST. Cart actions (adds, removals, cart reads) are what Shopify throttles
+            # hardest; run in the middle, they made the checks after them hit 429s on plain pages ('Search' and 'Info
+            # pages' could-not-check on '/' and '/pages/contact' in every GitHub bench run and on Contabo). The shopper
+            # journey (with its add to cart) stays first: it is the one check that must always run.
+            suites = [x for x in suites if x.id != "cart"] + [x for x in suites if x.id == "cart"]
             storage.save_json(site_id, "suites.json", [
                 {"id": x.id, "name": x.name, "description": x.description,
                  "cases": [c.__dict__ for c in x.cases]} for x in suites])
@@ -367,8 +372,8 @@ def _second_go(browser, cases_by_id: dict, run: "RunResult", run_dir, robots, he
     idx = [i for i, c in enumerate(run.cases) if throttled(c)]
     if not idx:
         return
-    # the shopper's path and cart first: they decide whether the store reads 'blocked'
-    idx.sort(key=lambda i: (run.cases[i].severity != "critical", i))
+    # page checks first, cart checks last (cart actions are what re-trigger Shopify's limit); critical first within each
+    idx.sort(key=lambda i: (run.cases[i].suite == "cart", run.cases[i].severity != "critical", i))
     todo = idx[:THROTTLE_RETRY_MAX]
     progress("throttle_pause", {"seconds": THROTTLE_RETRY_PAUSE, "checks": len(todo)})
     time.sleep(THROTTLE_RETRY_PAUSE * Session.backoff_scale)
