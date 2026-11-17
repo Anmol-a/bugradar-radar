@@ -1370,9 +1370,12 @@ def test_rate_limited_store_is_blocked_never_down(tmp_path, monkeypatch):
     assert run.verdict != "down", run.verdict
     # every case that needs the store's product data is blocked; product.pincode reads the page only (14 Oct) and
     # just reports "no checker" on this store
+    # 17 Nov: a check whose product page vouches for the facts reads them there (radar.checks.library
+    # product_from_this_page); every other one is BLOCKED with the 429 reason. None is ever a failure.
     hit = [c for c in run.cases if c.suite in ("product", "journey") and c.case_id != "product.pincode"]
-    assert hit and all(c.verdict == "blocked" for c in hit), [(c.case_id, c.verdict) for c in hit]
-    assert all("429" in (c.attempts[-1].error or "") and "rate-limiting" in c.attempts[-1].error for c in hit)
+    assert hit and all(c.verdict in ("blocked", "pass") for c in hit), [(c.case_id, c.verdict) for c in hit]
+    blocked = [c for c in hit if c.verdict == "blocked"]
+    assert blocked and all("429" in (c.attempts[-1].error or "") and "rate-limiting" in c.attempts[-1].error for c in blocked)
     assert not any(c.incident_signature for c in run.cases)
 
 
@@ -3377,3 +3380,24 @@ def test_a_store_throttled_on_the_second_go_too_stays_could_not_check(tmp_path, 
     assert stuck and not any(c.verdict == "confirmed_fail" for c in run.cases)
     assert any("still could not be checked (not a store problem)" in n for n in run.notes), run.notes
     assert not any(c.incident_signature for c in run.cases)
+
+
+def test_throttled_product_data_is_read_from_the_page_and_the_checks_run(tmp_path, monkeypatch):
+    """17 Nov, GitHub bench of the 3 demo stores: Buy it now / Discount box 'could not check' on 4 of 6 runs because
+    /products/<h>.js answered 429, even on a second go. The product page the check had open carries the same facts
+    (Dawn's ld+json: one offer per variant, with its ?variant= link and stock; ShopifyAnalytics: ids and prices)."""
+    from radar.core.browser import Session
+    from radar.runner import executor
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    run, _ = _scan("rate_limited_dawn_ld", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    # the sold-out check stays 'could not check' on purpose: a page never vouches for 'sold out' in Shopify's place
+    data = [c for c in run.cases if c.suite in ("product", "journey", "cart") and c.case_id != "product.sold_out"]
+    assert len(data) >= 4 and not [c for c in data if executor.throttled(c)], \
+        [(c.case_id, c.verdict, (c.attempts[-1].error or "")[:80]) for c in data if c.verdict != "pass"]
+    assert not any(c.verdict == "confirmed_fail" for c in run.cases), \
+        [(c.case_id, c.attempts[-1].error) for c in run.cases if c.verdict == "confirmed_fail"]
+    from_page = [c for c in data for st in c.attempts[-1].steps for x in st.checks
+                 if "read from the product page" in str(x.get("actual"))]
+    assert from_page, "no check read the product from the page"
+    assert run.verdict == "healthy", run.verdict
+    assert [c.verdict for c in run.cases if c.case_id == "product.sold_out"] in ([], ["blocked"], ["pass"])

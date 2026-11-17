@@ -1503,3 +1503,48 @@ def test_only_a_429_counts_as_throttled_for_the_second_go():
     assert not throttled(cr("blocked", "cart not tested: the buy button stays disabled until the shopper checks a pincode"))
     assert not throttled(cr("confirmed_fail", "HTTP 429 shown to shoppers"))       # only a 'could not check'
     assert not throttled(CaseResult("x", "s", "t", "c", "major", verdict="blocked"))
+
+
+def test_product_data_is_read_from_the_page_when_shopify_throttles_it():
+    """17 Nov: Buy it now / Discount box 'could not check' on 4 of 6 GitHub bench runs: /products/<h>.js answered 429 while
+    the product page the check had open carried the same facts. A variant the page doesn't vouch for is never in stock."""
+    from radar.checks.library import product_from_this_page
+    meta = {"id": 7, "type": "Shirt", "vendor": "X", "variants": [
+        {"id": 11, "price": 129900, "public_title": "S / Blue", "sku": "S-B", "name": "Tee - S / Blue"},
+        {"id": 12, "price": 129900, "public_title": "M / Blue", "sku": "M-B", "name": "Tee - M / Blue"},
+        {"id": 13, "price": 139900, "public_title": "L / Blue", "sku": "L-B", "name": "Tee - L / Blue"}]}
+    ld = {"name": "Tee", "offers": [
+        {"url": "https://s.in/products/tee?variant=11", "availability": "https://schema.org/InStock", "price": "1299.00"},
+        {"sku": "M-B", "availability": "https://schema.org/OutOfStock", "price": "1299.00"}]}
+    got = {"meta": meta, "ld": ld, "h1": "Tee", "btn": {"id": "13", "off": False}, "handle": "tee"}
+    p = product_from_this_page(got, "tee")
+    st = {v["id"]: v["available"] for v in p["variants"]}
+    assert st == {11: True, 12: False, 13: True}, st          # by ?variant=, by sku, by the buy button's own variant
+    v11 = next(v for v in p["variants"] if v["id"] == 11)
+    assert (v11["price"], v11["option1"], v11["option2"], p["title"]) == (129900, "S", "Blue", "Tee")
+    # nothing says variant 13 is in stock any more (the button is set to another variant): not available
+    got2 = dict(got, btn={"id": "11", "off": False})
+    assert {v["id"]: v["available"] for v in product_from_this_page(got2, "tee")["variants"]}[13] is False
+    # the theme's own product JSON wins (same shape as /products/<h>.js)
+    full = {"handle": "tee", "title": "Tee", "variants": [{"id": 11, "price": 129900, "available": True}]}
+    assert product_from_this_page(dict(got, full=full), "tee")["variants"] == full["variants"]
+    # another product's JSON or another product's page never stands in
+    assert product_from_this_page(dict(got, handle="mug"), "tee") is None
+    assert product_from_this_page({"h1": "Tee", "handle": "tee"}, "tee") is None
+    # a single variant with one in-stock offer and no form
+    one = {"meta": {"variants": [{"id": 5, "price": 50000}]}, "ld": {"offers": {"availability": "InStock"}}, "handle": "a"}
+    assert product_from_this_page(one, "a")["variants"][0]["available"] is True
+
+
+def test_a_page_that_vouches_for_no_stock_is_never_judged_from_the_page():
+    """Mock rate_limited, 17 Nov first try: 3 variants, one offer without a variant link, no submit button the reader
+    knew: every variant came out 'not available' and the product check FAILED 'no in-stock variant'. Never again."""
+    from radar.checks.library import product_from_this_page
+    meta = {"variants": [{"id": 1, "price": 100}, {"id": 2, "price": 100}]}
+    unknown = {"meta": meta, "ld": {"offers": [{"price": "1.00"}, {"price": "1.00"}]}, "handle": "v"}
+    assert product_from_this_page(unknown, "v") is None
+    # one InStock offer for the product speaks for the variant the form is set to
+    one = {"meta": meta, "ld": {"offers": {"availability": "https://schema.org/InStock"}}, "btn": {"id": "2", "off": None},
+           "handle": "v"}
+    assert {v["id"]: v["available"] for v in product_from_this_page(one, "v")["variants"]} == {1: False, 2: True}
+    assert product_from_this_page({"full": {"variants": [{"id": 1, "price": 1, "available": False}]}, "handle": "v"}, "v") is None
