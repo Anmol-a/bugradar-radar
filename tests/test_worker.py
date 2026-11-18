@@ -527,3 +527,61 @@ def test_a_free_plan_store_runs_the_core_checks_and_pro_runs_everything(monkeypa
         row = {"id": "m", "url": "https://p.in", "devices": ["desktop"], **({"plan": plan} if plan else {})}
         w.run_monitor(row, Settings(), log=lambda *_: None)
     assert asked == ["core", None, None]
+
+
+# ---- one store at a time per machine (17 Nov) -------------------------------------------------------------------------
+def test_one_store_at_a_time_a_second_slot_waits_its_turn(tmp_path):
+    """Contabo slots 2 and 3 tested two stores at once from one address (16 Nov 23:18-23:50 UTC); Shopify's limit is per
+    address. Only one slot holds the turn; the lock is dropped the moment the holder lets go."""
+    lock = str(tmp_path / "one.lock")
+    a, b = w.OneStore(lock), w.OneStore(lock)
+    assert a.acquire()
+    assert not b.acquire()                    # held by another slot (another process gets the same answer from flock)
+    a.release(ran=True)
+    assert b.acquire()
+    b.release(ran=False)
+    assert w.OneStore("off").acquire() and w.OneStore("off").wait_gap() == 0.0
+
+
+def test_the_next_store_starts_a_gap_after_the_last_one(tmp_path, monkeypatch):
+    lock = str(tmp_path / "one.lock")
+    slept = []
+    monkeypatch.setattr(w.time, "sleep", lambda s: slept.append(s))
+    t = w.OneStore(lock, gap=90)
+    assert t.acquire() and t.wait_gap(log=lambda *_: None) == 0.0      # first store on the machine: no wait
+    t.release(ran=True)
+    t2 = w.OneStore(lock, gap=90)
+    assert t2.acquire()
+    waited = t2.wait_gap(log=lambda *_: None)
+    assert 80 < waited <= 90 and slept and 80 < slept[-1] <= 90, (waited, slept)
+    t2.release(ran=False)                     # nothing was due: the last finish time is kept
+    t3 = w.OneStore(lock, gap=90)
+    assert t3.acquire() and t3.wait_gap(log=lambda *_: None) > 0
+    t3.release(ran=False)
+
+
+def test_a_slot_without_the_turn_claims_no_monitor_but_still_serves_free_scans(tmp_path, monkeypatch):
+    lock = str(tmp_path / "one.lock")
+    monkeypatch.setenv("RADAR_STORE_LOCK", lock)
+    holder = w.OneStore(lock)
+    assert holder.acquire()
+    class Q(FakeQueue):
+        scans, done_scans = [{"id": "s1", "url": "https://free.in", "host": "free.in"}], []
+
+        def claim_scan(self, worker):
+            return self.scans.pop(0) if self.scans else None
+
+        def finish_scan(self, *a):
+            self.done_scans.append(a[0])
+    monkeypatch.setattr(w, "run_scan", lambda req, base, upload=True, log=print, progress=None: {
+        "verdict": "healthy", "score": 90, "summary": {}, "run_id": None, "project_id": None, "note": "", "failed": []})
+    q = Q([{"id": "m1", "url": "https://x.in", "devices": ["desktop"]}])
+    try:
+        assert w.run_once(q, Settings(), "box-2", upload=False, log=lambda *_: None)["id"] == "s1"   # a visitor's free scan
+        assert w.run_once(q, Settings(), "box-2", upload=False, log=lambda *_: None) is None
+        assert q.finished == [] and len(q.rows) == 1, "the monitor must stay unclaimed while another slot has the turn"
+        assert q.done_scans == ["s1"]
+    finally:
+        holder.release(ran=False)
+    monkeypatch.setattr("radar.runner.executor.scan_devices", lambda url, settings, devices: [])
+    assert w.run_once(q, Settings(), "box-2", upload=False, log=lambda *_: None)["id"] == "m1"

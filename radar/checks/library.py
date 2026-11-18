@@ -338,7 +338,11 @@ def _load(ctx: Ctx, url: str) -> str:
         ctx.expect("HTTP status", "< 400", "no network response (cache or service worker); content checked below", True)
     else:
         if status == 429:                     # wait once (Shopify's limit resets in seconds), then give up as BLOCKED
-            Session.note_limited()
+            try:
+                after = float((resp.headers or {}).get("retry-after") or 0) if resp else 0
+            except (ValueError, TypeError, AttributeError):
+                after = 0
+            Session.note_limited(after)       # the governor holds the retry (goto -> wait_turn) for the cool-down
             ctx.sess.page.wait_for_timeout(int(8000 * ctx.sess.backoff_scale))
             resp, secs = ctx.sess.goto(url)
             status = resp.status if resp else 200
@@ -443,13 +447,122 @@ def title_match(catalog: str, heading: str, page_text: str) -> tuple[bool, str]:
     return ratio >= 0.6, f"{len(have)}/{len(words)} catalog words shown"
 
 
+PRODUCT_IN_PAGE_JS = r"""(h) => {
+  // 17 Nov: the product's data as the page itself carries it, read when Shopify throttles /products/<h>.js. No request.
+  const out = {full: null, variants: null, ld: null, meta: null, h1: (document.querySelector('h1') || {}).innerText || '',
+               selected: null, btn: null, handle: null};
+  const isVariant = v => v && typeof v === 'object' && v.id != null && 'price' in v && 'available' in v;
+  for (const sc of document.querySelectorAll('script[type="application/json"], script[data-product-json], script[id^="ProductJson"]')) {
+    let j; try { j = JSON.parse(sc.textContent); } catch (e) { continue; }
+    const cand = j && !Array.isArray(j) && j.product && Array.isArray(j.product.variants) ? j.product : j;
+    if (cand && !Array.isArray(cand) && Array.isArray(cand.variants) && cand.variants.length && isVariant(cand.variants[0])
+        && (!cand.handle || cand.handle === h) && !out.full) out.full = cand;
+    else if (Array.isArray(j) && j.length && isVariant(j[0]) && !out.variants) out.variants = j;
+  }
+  for (const sc of document.querySelectorAll('script[type="application/ld+json"]')) {
+    try {
+      const j = JSON.parse(sc.textContent), list = Array.isArray(j) ? j : (j['@graph'] || [j]);
+      for (const x of list) if (x && String(x['@type']).toLowerCase() === 'product') { out.ld = x; break; }
+    } catch (e) {}
+    if (out.ld) break;
+  }
+  try { const m = window.ShopifyAnalytics && window.ShopifyAnalytics.meta; if (m && m.product) out.meta = m.product; } catch (e) {}
+  try { out.selected = new URL(location.href).searchParams.get('variant'); } catch (e) {}
+  const f = document.querySelector('form[action*="/cart/add"]');
+  if (f) {
+    const id = f.querySelector('[name="id"]'), b = f.querySelector('[type=submit], button[name=add]');
+    out.btn = {id: id ? String(id.value || '') : null,
+               off: b ? (!!b.disabled || /sold\s*out|unavailable/i.test(b.innerText || '')) : null};
+  }
+  const m = location.pathname.match(/\/products\/([^/?#]+)/); out.handle = m ? decodeURIComponent(m[1]) : null;
+  return out;
+}"""
+
+
+def product_from_this_page(got: dict, h: str) -> dict | None:
+    """Shopify's product JSON rebuilt from what the product page carries (pure; `got` = PRODUCT_IN_PAGE_JS's answer).
+    Best: the theme's own copy of the product JSON (same shape as /products/<h>.js). Else ShopifyAnalytics.meta.product
+    (variant ids, prices in paise) with stock from the theme's variant list, the ld+json offers (?variant=<id>, sku) or,
+    for the variant the buy button is set to, the button itself. A variant whose stock the page doesn't say is marked
+    NOT available, so no check ever adds a variant that may be sold out. None when the page carries too little."""
+    if not got or (got.get("handle") and h and got["handle"] != h):
+        return None
+    full = got.get("full")
+    if full:
+        out = dict(full)
+        out.setdefault("handle", h)
+        out["_from_page"] = "the product data the page carries"
+        # a page that vouches for no variant in stock is not judged from the page (a sold-out verdict needs Shopify's
+        # own answer): None keeps the check 'could not check', never a false 'no in-stock variant'
+        return out if any(v.get("available") for v in out.get("variants") or []) else None
+    meta = got.get("meta") or {}
+    mv = [v for v in (meta.get("variants") or []) if v.get("id") is not None]
+    ld = got.get("ld") or {}
+    title = str(ld.get("name") or got.get("h1") or h or "").strip()
+    theme = got.get("variants") or []
+    ids = {int(v["id"]) for v in mv}
+    if theme and (not ids or {int(v["id"]) for v in theme} <= ids):
+        variants = [dict(v) for v in theme]
+    elif mv:
+        offers = ld.get("offers") or []
+        offers = [offers] if isinstance(offers, dict) else offers
+        by_id, by_sku = {}, {}
+        for o in offers:
+            stock = "instock" in str(o.get("availability", "")).lower().replace(" ", "")
+            m = re.search(r"[?&]variant=(\d+)", str(o.get("url") or ""))
+            if m:
+                by_id[int(m.group(1))] = stock
+            if o.get("sku"):
+                by_sku[str(o["sku"])] = stock
+        btn = got.get("btn") or {}
+        variants = []
+        for v in mv:
+            vid = int(v["id"])
+            av = by_id.get(vid)
+            if av is None and v.get("sku"):
+                av = by_sku.get(str(v["sku"]))
+            if av is None and btn.get("off") is not None and (
+                    str(vid) == str(btn.get("id") or "") or (len(mv) == 1 and not btn.get("id"))):
+                av = not btn["off"]
+            if av is None and len(offers) == 1 and not by_id and not by_sku and (
+                    len(mv) == 1 or str(vid) == str(btn.get("id") or "")):
+                # one offer for the whole product: it speaks for the variant the page's own form is set to
+                av = "instock" in str(offers[0].get("availability", "")).lower().replace(" ", "")
+            pt = str(v.get("public_title") or "").strip()
+            opts = [x.strip() for x in pt.split(" / ")] if pt else []
+            variants.append({"id": vid, "price": int(v.get("price") or 0), "available": bool(av),
+                             "title": pt or "Default Title", "public_title": pt or None, "name": v.get("name"),
+                             "sku": v.get("sku"), **{f"option{i + 1}": o for i, o in enumerate(opts[:3])}})
+    else:
+        return None
+    if not any(v.get("available") for v in variants):
+        return None                 # the page vouches for no variant in stock: not judged from the page (see above)
+    return {"id": meta.get("id"), "title": title, "handle": h, "type": meta.get("type"), "vendor": meta.get("vendor"),
+            "variants": variants, "available": any(v.get("available") for v in variants),
+            "_from_page": "the product page (variant ids and prices from the theme's analytics data)"}
+
+
 def _product_js(ctx: Ctx, url: str) -> dict:
     """The product's own data from Shopify: id, title, variants with ids and prices (paise)."""
     h = _handle(url)
     ctx.expect("URL is a product page", "/products/<handle>", _path(url), bool(h))
     try:
         p = ctx.sess.get_json(f"{_base(url)}{_market_prefix(url)}/products/{h}.js")
-    except (RobotsBlocked, RateLimited):
+    except RateLimited:
+        # 17 Nov: Shopify throttles its data addresses first (Buy it now / Discount box 'could not check' on 4 of 6 runs of
+        # a GitHub bench, every Contabo run). The page the check already has open carries the same facts: read them
+        # there, no request at all. Only when the page is this product and says enough; otherwise still 'could not check'.
+        here = _handle(ctx.sess.page.url or "")
+        got = ctx.sess.evaluate(PRODUCT_IN_PAGE_JS, h) if here == h else None
+        p = product_from_this_page(got or {}, h) if got else None
+        if not p:
+            raise
+        ctx.expect("product data from Shopify", f"/products/{h}.js with variants",
+                   f"/products/{h}.js answered HTTP 429 (Shopify slowing Radar down); read from {p['_from_page']}: "
+                   f"{p.get('title')!r}, {len(p['variants'])} variant(s), "
+                   f"{sum(bool(v.get('available')) for v in p['variants'])} in stock", bool(p["variants"]))
+        return p
+    except RobotsBlocked:
         raise
     except Exception as first:  # noqa: BLE001
         # headless storefronts: shop095.example (full 36 + re-test, 14 Oct) sends product pages to shop.shop095.example,

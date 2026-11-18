@@ -168,6 +168,13 @@ Modes (to prove Radar catches and heals what it should):
                    answers 429, while the same URL fetched by the page answers 200 -> the whole run PASSES (Radar asks
                    from inside the page); a Radar that asked with the Node client would be BLOCKED
   rate_limited_once  each /products/<h>.js answers 429 (Retry-After: 1) twice, then normally -> Radar backs off, PASSES
+  rate_limited_dawn_ld  like rate_limited (every /products/<h>.js answers 429, always), but the product page's ld+json
+                   lists one offer per variant with its ?variant= link and stock, as Dawn does (17 Nov) -> the product
+                   checks read the variants from the page and PASS; nothing is blocked for want of product data
+  cart_burst_429   the first 5 /cart.js requests answer 429, then normally (Contabo, 17 Nov: bugradar-shopper-test's
+                   Add to cart / Buy it now / cart drawer 'could not check' on a 429 burst every run) -> the first check
+                   that reads the cart is BLOCKED on its first go, then run again after the pause and PASSES; the run
+                   is healthy and carries the 'Shopify slowed Radar down' note
   noisy_console    every page logs a console error + warning and fires a request nobody answers (third-party widget)
                    -> everything PASSES; the noise only shows up as report evidence (v0.18)
   robots_500_twice /robots.txt answers HTTP 500 to the first two requests, then normally (shop083.example / shop129.example,
@@ -1857,7 +1864,7 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                 p = next((x for x in PRODUCTS + ([FREEBIE] if self.mode == "freebie_type" else []) if x["handle"] == h[:-3]), None)
                 if not p:
                     return self._json({"error": "not found"}, 404)
-                if self.mode == "rate_limited":
+                if self.mode in ("rate_limited", "rate_limited_dawn_ld"):
                     return self._send(429, "Too Many Requests", "text/plain")
                 if self.mode == "rate_limited_once":
                     seen = type(self).__dict__.get("RL_SEEN") or {}
@@ -1912,6 +1919,11 @@ document.querySelector('.join').onclick = () => parent.postMessage('kp-joined', 
                                             "<p>The product is currently unavailable, please get back later.</p>"), set_cart=new)
             return self._send(200, self._pdp(p), set_cart=new)
         if path == "/cart.js":
+            if self.mode == "cart_burst_429":
+                k = type(self)
+                k.CART_429 = getattr(k, "CART_429", 0) + 1
+                if k.CART_429 <= 5:
+                    return self._send(429, "Too Many Requests", "text/plain")
             items = CARTS[cid]
             return self._json({"items": items, "item_count": sum(i["quantity"] for i in items),
                                "total_price": sum(i.get("price", 0) * i["quantity"] for i in items)}, set_cart=new)
@@ -2193,10 +2205,15 @@ document.querySelectorAll('quantity-input').forEach(q => { const inp = q.querySe
                         f'<h1>{p["title"]}</h1><img src="/cdn/shop/files/{p["handle"]}.svg" width="400" height="400" alt="">'
                         '<h2>Shop Now On:</h2><p>A festive assortment, made to share.</p>')
         price = "0" if (self.mode == "broken_price" and p["handle"] == "ceramic-vase") else p["price"]
+        offers = {"@type": "Offer", "price": price, "priceCurrency": "INR", "availability": "https://schema.org/InStock"}
+        if self.mode == "rate_limited_dawn_ld":
+            # Dawn's structured data: one offer per variant, each with its ?variant= link and its own stock (17 Nov)
+            offers = [{"@type": "Offer", "price": f"{v['price'] / 100:.2f}" if isinstance(v.get("price"), int) else str(v.get("price", price)),
+                       "priceCurrency": "INR", "url": f"/products/{p['handle']}?variant={v['id']}",
+                       "availability": "https://schema.org/" + ("InStock" if v["available"] else "OutOfStock")}
+                      for v in self._variants(p)]
         ld = json.dumps({"@context": "https://schema.org", "@type": "Product", "name": p["title"],
-                         "image": [f"/cdn/shop/files/{p['handle']}.svg"],
-                         "offers": {"@type": "Offer", "price": price, "priceCurrency": "INR",
-                                    "availability": "https://schema.org/InStock"}})
+                         "image": [f"/cdn/shop/files/{p['handle']}.svg"], "offers": offers})
         available = any(v["available"] for v in self._variants(p))
         vid = next((v["id"] for v in self._variants(p) if v["available"]), p["variants"][0]["id"])
         if not available and self.mode == "soldout_buyable":

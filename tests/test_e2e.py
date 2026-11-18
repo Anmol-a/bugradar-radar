@@ -1370,9 +1370,12 @@ def test_rate_limited_store_is_blocked_never_down(tmp_path, monkeypatch):
     assert run.verdict != "down", run.verdict
     # every case that needs the store's product data is blocked; product.pincode reads the page only (14 Oct) and
     # just reports "no checker" on this store
+    # 17 Nov: a check whose product page vouches for the facts reads them there (radar.checks.library
+    # product_from_this_page); every other one is BLOCKED with the 429 reason. None is ever a failure.
     hit = [c for c in run.cases if c.suite in ("product", "journey") and c.case_id != "product.pincode"]
-    assert hit and all(c.verdict == "blocked" for c in hit), [(c.case_id, c.verdict) for c in hit]
-    assert all("429" in (c.attempts[-1].error or "") and "rate-limiting" in c.attempts[-1].error for c in hit)
+    assert hit and all(c.verdict in ("blocked", "pass") for c in hit), [(c.case_id, c.verdict) for c in hit]
+    blocked = [c for c in hit if c.verdict == "blocked"]
+    assert blocked and all("429" in (c.attempts[-1].error or "") and "rate-limiting" in c.attempts[-1].error for c in blocked)
     assert not any(c.incident_signature for c in run.cases)
 
 
@@ -3339,3 +3342,62 @@ def test_a_whatsapp_group_invite_is_named_not_judged(tmp_path, wa_guard):
     c, st = _wa("wa_group_only", tmp_path)
     assert c.verdict == "pass" and "whatsapp_number" not in st and "group invite" in st["whatsapp_note"].detail, \
         [(s.name, s.status, s.detail) for s in c.attempts[-1].steps]
+
+
+def test_throttled_checks_get_a_second_go_after_a_pause(tmp_path, monkeypatch):
+    """Contabo, 17 Nov (after #29): Add to cart, Buy it now and the cart drawer on bugradar-shopper-test said 'could not
+    check' on a burst of 429s to /cart.js every run, so the store read 'blocked'. A check the platform throttled is run
+    again at the end of the run, after a pause and more slowly; when it gets through, its real result counts."""
+    from radar.core.browser import Session
+    from radar.runner import executor
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    seen = []
+    srv, url = serve("cart_burst_429")
+    try:
+        run, _ = scan(url, _settings(tmp_path, max_products=1, max_collections=1, max_nav_links=2),
+                      progress=lambda e, d: seen.append((e, d)))
+    finally:
+        srv.shutdown()
+    again = [c for c in run.cases if any("second go" in (a.note or "") for a in c.attempts)]
+    assert again, [(c.case_id, c.verdict, c.attempts[-1].error) for c in run.cases]
+    assert all(c.verdict == "pass" for c in again), [(c.case_id, c.verdict, c.attempts[-1].error) for c in again]
+    assert not [c for c in run.cases if executor.throttled(c)], [(c.case_id, c.attempts[-1].error) for c in run.cases]
+    assert run.verdict == "healthy", (run.verdict, [(c.case_id, c.verdict) for c in run.cases if c.verdict != "pass"])
+    assert any("Shopify slowed Radar down during" in n and "got through" in n for n in run.notes), run.notes
+    pauses = [d for e, d in seen if e == "throttle_pause"]
+    assert len(pauses) == 1 and pauses[0]["seconds"] == executor.THROTTLE_RETRY_PAUSE
+    assert not any(c.incident_signature for c in run.cases)
+
+
+def test_a_store_throttled_on_the_second_go_too_stays_could_not_check(tmp_path, monkeypatch):
+    """rate_limited answers 429 to every product-data read, always: the second go is throttled too, the checks stay
+    'could not check' (never failed, never an incident) and the note says they were tried again."""
+    from radar.core.browser import Session
+    from radar.runner import executor
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    run, _ = _scan("rate_limited", tmp_path, allow_cart_flow=False, max_products=1, max_collections=1, max_nav_links=2)
+    stuck = [c for c in run.cases if executor.throttled(c)]
+    assert stuck and not any(c.verdict == "confirmed_fail" for c in run.cases)
+    assert any("still could not be checked (not a store problem)" in n for n in run.notes), run.notes
+    assert not any(c.incident_signature for c in run.cases)
+
+
+def test_throttled_product_data_is_read_from_the_page_and_the_checks_run(tmp_path, monkeypatch):
+    """17 Nov, GitHub bench of the 3 demo stores: Buy it now / Discount box 'could not check' on 4 of 6 runs because
+    /products/<h>.js answered 429, even on a second go. The product page the check had open carries the same facts
+    (Dawn's ld+json: one offer per variant, with its ?variant= link and stock; ShopifyAnalytics: ids and prices)."""
+    from radar.core.browser import Session
+    from radar.runner import executor
+    monkeypatch.setattr(Session, "backoff_scale", 0.02, raising=False)
+    run, _ = _scan("rate_limited_dawn_ld", tmp_path, max_products=1, max_collections=1, max_nav_links=2)
+    # the sold-out check stays 'could not check' on purpose: a page never vouches for 'sold out' in Shopify's place
+    data = [c for c in run.cases if c.suite in ("product", "journey", "cart") and c.case_id != "product.sold_out"]
+    assert len(data) >= 4 and not [c for c in data if executor.throttled(c)], \
+        [(c.case_id, c.verdict, (c.attempts[-1].error or "")[:80]) for c in data if c.verdict != "pass"]
+    assert not any(c.verdict == "confirmed_fail" for c in run.cases), \
+        [(c.case_id, c.attempts[-1].error) for c in run.cases if c.verdict == "confirmed_fail"]
+    from_page = [c for c in data for st in c.attempts[-1].steps for x in st.checks
+                 if "read from the product page" in str(x.get("actual"))]
+    assert from_page, "no check read the product from the page"
+    assert run.verdict == "healthy", run.verdict
+    assert [c.verdict for c in run.cases if c.case_id == "product.sold_out"] in ([], ["blocked"], ["pass"])
