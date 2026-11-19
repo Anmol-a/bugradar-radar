@@ -16,6 +16,14 @@ Modes (to prove Radar catches and heals what it should):
   newsletter_popup a full-screen "10% off, subscribe" popup appears ~0.4s after every page load
                    until closed -> Radar closes it (never subscribes) and PASSES
   cookie_banner    a cookie banner with Accept all / Decline -> Radar must click Decline, PASS
+  consentx_shadow  ConsentX-style banner (App Review Test Store, 18 Nov): an empty host div whose OPEN SHADOW ROOT holds
+                   a full-screen dimmed backdrop and a bottom panel (only its text paragraph has "cookie" in its class,
+                   so the matched piece must be lifted to the panel) with "Allow All" / "Accept only necessary" /
+                   "Adjust Preferences", plus a small floating "Cookie preferences" button -> Radar clicks "Accept only
+                   necessary" (never Allow All), the backdrop goes, the cart checks PASS (was: 'buy button could not
+                   be clicked: <div id="consentx-cookie-consent"> intercepts pointer events')
+  cookie_accept_only  a cookie wall that offers only "Accept" (backdrop + panel) -> Radar sets it aside without
+                   accepting, the checks PASS, and the consent cookie is never set
   variant_required the vase has no size selected and its buy button is disabled until a size is
                    picked -> Radar picks the first in-stock size like a shopper and PASSES
   password         storefront password page -> verdict BLOCKED, nothing tested
@@ -821,6 +829,32 @@ if (!document.cookie.includes('consent=')) document.addEventListener('DOMContent
   d.querySelector('.acc').onclick = () => { document.cookie = 'consent=accepted;path=/'; d.remove(); };
   d.querySelector('.dec').onclick = () => { document.cookie = 'consent=declined;path=/'; d.remove(); };
   document.body.appendChild(d);
+});
+</script>""",
+        "consentx_shadow": """<div class="cx-cookie-root" id="consentx-cookie-consent"></div><script>
+(() => { if (document.cookie.includes('cx=')) return;
+  const host = document.getElementById('consentx-cookie-consent'), sr = host.attachShadow({mode: 'open'});
+  sr.innerHTML = `<style>.bcc-btn{padding:8px 18px;margin:4px;font-size:14px}</style>
+    <div class="bcc-cookie-modal-overlay bcc-fixed" style="position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:99998"></div>
+    <div class="bcc-fixed bcc-bottom-0 bcc-p-4" style="position:fixed;left:0;right:0;bottom:0;padding:16px;background:#fff;z-index:99999">
+      <h3>We value your privacy</h3><p class="bcc-text-sm bcc-cookie-banner-description" style="min-height:110px">We use cookies to enhance your browsing experience. By clicking "Accept All", you consent to our use of cookies.</p>
+      <button class="bcc-btn all">Allow All</button><button class="bcc-btn nec">Accept only necessary</button><button class="bcc-btn adj">Adjust Preferences</button>
+    </div>
+    <button aria-label="Cookie preferences" style="position:fixed;bottom:16px;left:16px;width:52px;height:52px;z-index:99990;border-radius:50%"></button>`;
+  const done = v => { document.cookie = 'cx=' + v + ';path=/'; sr.querySelectorAll('.bcc-fixed').forEach(x => x.remove()); };
+  sr.querySelector('.all').onclick = () => done('all');
+  sr.querySelector('.nec').onclick = () => done('necessary');
+})();
+</script>""",
+        "cookie_accept_only": """<script>
+if (!document.cookie.includes('wall=')) document.addEventListener('DOMContentLoaded', () => {
+  const b = document.createElement('div');
+  b.className = 'cookie-wall-backdrop'; b.style.cssText = 'position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:9998';
+  const d = document.createElement('div');
+  d.className = 'cookie-wall'; d.style.cssText = 'position:fixed;left:0;right:0;bottom:0;height:28vh;background:#fff;z-index:9999;padding:20px';
+  d.innerHTML = 'This site uses cookies. By continuing you agree to our cookie policy. <button type="button" class="ok">Accept</button>';
+  d.querySelector('.ok').onclick = () => { document.cookie = 'wall=accepted;path=/'; d.remove(); b.remove(); };
+  document.body.append(b, d);
 });
 </script>""",
         "age_gate": """<div class="age-gate" role="dialog" aria-modal="true" style="position:fixed;inset:0;background:rgba(0,0,0,.9);color:#fff;z-index:99;padding:20vh 20px">

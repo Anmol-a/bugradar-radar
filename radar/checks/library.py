@@ -275,7 +275,8 @@ def _dismiss(ctx: Ctx) -> None:
     check so the report shows exactly what Radar closed. Raises AgeGate (-> blocked)."""
     for d in dismiss_overlays(ctx.sess.page):
         ctx.expect(f"{d['kind']} popup closed", "closed without accepting or subscribing",
-                   f"clicked {d['button']!r} on: {d['text']!r}", True)
+                   (f"{d['button']} ({d['text']!r})" if d.get("aside") else f"clicked {d['button']!r} on: {d['text']!r}"),
+                   True)
 
 
 # What a shopper sees on the page: text and decoded images, also inside open shadow roots, plus what the browser itself

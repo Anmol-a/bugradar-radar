@@ -3401,3 +3401,34 @@ def test_throttled_product_data_is_read_from_the_page_and_the_checks_run(tmp_pat
     assert from_page, "no check read the product from the page"
     assert run.verdict == "healthy", run.verdict
     assert [c.verdict for c in run.cases if c.case_id == "product.sold_out"] in ([], ["blocked"], ["pass"])
+
+
+def test_consentx_shadow_banner_gets_only_necessary_never_allow_all(tmp_path):
+    """App Review Test Store, 18-19 Nov: a ConsentX banner (all of it inside an empty host div's open shadow root, with a
+    full-screen backdrop) offered 'Allow All' / 'Accept only necessary' / 'Adjust Preferences'. Radar refused 'Accept
+    only necessary' (it says accept), the backdrop stayed, and Add to cart was emailed to the store owner as broken
+    ('<div id="consentx-cookie-consent"> intercepts pointer events') six times in two days."""
+    for device in ("desktop", "mobile"):
+        srv, url = serve("consentx_shadow")
+        try:
+            run, _ = scan(url, _settings(tmp_path / device), device=device)
+        finally:
+            srv.shutdown()
+        bad = [(c.case_id, c.verdict, (c.attempts[-1].error or "")[:100]) for c in run.cases
+               if c.suite in ("journey", "cart") and c.verdict != "pass"]
+        assert not bad, (device, bad)
+        closed = [k for c in run.cases for k in _checks(c) if k["what"] == "cookie popup closed"]
+        assert closed and all("'Accept only necessary'" in k["actual"] for k in closed), (device, closed[:3])
+        assert not any("Allow All" in k["actual"] or "Adjust" in k["actual"] for k in closed)
+        assert not any("intercepts pointer events" in (c.attempts[-1].error or "") for c in run.cases)
+
+
+def test_a_cookie_wall_with_only_accept_is_set_aside_never_accepted(tmp_path):
+    run, _ = _scan("cookie_accept_only", tmp_path)
+    j = _case(run, "journey.")
+    assert j.verdict == "pass", j.attempts[-1].error
+    closed = [k for c in run.cases for k in _checks(c) if k["what"] == "cookie popup closed"]
+    assert closed and all("set aside" in k["actual"] and "never accepts" in k["actual"] for k in closed), closed[:3]
+    assert not any("clicked 'Accept'" in k["actual"] for k in closed)
+    assert not [c for c in run.cases if c.verdict == "confirmed_fail"], \
+        [(c.case_id, c.attempts[-1].error) for c in run.cases if c.verdict == "confirmed_fail"]
