@@ -2,7 +2,9 @@
 
 Real stores show these on a first visit, often after a few seconds, and they block clicks.
 Rules (privacy-preserving, honest):
-  cookie banner  -> click Decline / Reject / Only necessary; if none, Close. NEVER Accept.
+  cookie banner  -> click Decline / Reject / Only necessary ("Accept only necessary" counts: it refuses everything
+                    optional); if none, Close; if it offers only Accept, set it aside (hidden, nothing chosen).
+                    NEVER Accept.
   newsletter etc -> click Close / No thanks / ×. Never fills or submits the form.
   location popup -> close it (stay on the store as reached).
   age gate       -> NOT confirmed on the shopper's behalf: the test is reported as blocked.
@@ -17,7 +19,15 @@ FIND_JS = r"""() => {
   const hosts = []; const findHosts = r => r.querySelectorAll('*').forEach(e => { if (e.shadowRoot) { hosts.push(e.shadowRoot); findHosts(e.shadowRoot); } });
   findHosts(document);
   const all = sel => { const out = [...document.querySelectorAll(sel)]; hosts.forEach(h => out.push(...h.querySelectorAll(sel))); return out; };
-  const within = (root, sel) => { const out = [...root.querySelectorAll(sel)]; root.querySelectorAll('*').forEach(e => { if (e.shadowRoot) out.push(...e.shadowRoot.querySelectorAll(sel)); }); return out; };
+  // the root's OWN shadow root too (19 Nov: a banner whose host element holds everything in its shadow root)
+  const within = (root, sel) => { const out = [...root.querySelectorAll(sel)]; if (root.shadowRoot) out.push(...root.shadowRoot.querySelectorAll(sel));
+    root.querySelectorAll('*').forEach(e => { if (e.shadowRoot) out.push(...e.shadowRoot.querySelectorAll(sel)); }); return out; };
+  // "Accept only necessary" / "Allow essential cookies" / "Necessary only": refuses every optional cookie, so it is a
+  // decline although it says accept (App Review Test Store, ConsentX banner, 18 Nov: Radar refused to click it, the
+  // banner's full-screen backdrop stayed, and Add to cart 'could not be clicked' was emailed as broken)
+  // what a consent notice says (a product called "Cookie jar" in a sticky buy column is not one)
+  const CONSENT = /\b(?:we|this (?:site|website|store|shop)) (?:use|uses) cookies|cookie (?:policy|settings|preferences|notice)|consent to (?:our|the) use|accept (?:all )?cookies|use of cookies|gdpr/i;
+  const NECESSARY = /^(?:(?:accept|allow|use|continue with|save)\s+)?(?:only\s+)?(?:strictly\s+)?(?:necessary|essential|required)(?:\s+cookies)?(?:\s+only)?$/i;
   all('[data-radar-target="dismiss"]').forEach(e => e.removeAttribute('data-radar-target'));
   const vw = innerWidth, vh = innerHeight;
   const shown = e => { const r = e.getBoundingClientRect(); const s = getComputedStyle(e);
@@ -64,7 +74,26 @@ FIND_JS = r"""() => {
     // a control to close it: a real button, or a bare "×" drawn by a div/span (shop083.example birthday popup, 9 Oct)
     return !!e.querySelector('button, [role="button"]') || bareX(e);
   }).slice(0, 4);
-  const roots = [...new Set([...named, ...generic])];
+  // A matched piece of a banner (its text paragraph, class "bcc-cookie-text…") stands for the banner: lift it to its
+  // fixed / sticky container when the piece itself holds no control (App Review Test Store, ConsentX, 19 Nov: the
+  // paragraph matched [class*="cookie"], the panel with the buttons did not)
+  const controls = r => within(r, 'button, a, [role="button"]').filter(shown);
+  const lift = e => { if (controls(e).length) return e;
+    for (let p = e.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement) {
+      const pos = getComputedStyle(p).position;
+      if (pos === 'fixed' || pos === 'sticky') return controls(p).length ? p : e; }
+    return e; };
+  // A cookie banner by what it SAYS, whatever its classes: a fixed / sticky layer that talks about cookies or consent
+  // and holds a control (on a 980 px-wide phone layout the ConsentX panel matched no selector and its paragraph was
+  // under the size floor). The site header / nav and cart drawers never count.
+  const cookieish = [...document.querySelectorAll('body *'), ...hosts.flatMap(h => [...h.querySelectorAll('*')])].filter(e => {
+    const s = getComputedStyle(e); if (s.position !== 'fixed' && s.position !== 'sticky') return false;
+    if (!shown(e) || isCart(e) || e.closest('header, nav, [id*="header" i]') || tried(e)) return false;
+    const r = e.getBoundingClientRect(); if (r.width * r.height < 0.03 * vw * vh) return false;
+    if (e.querySelector('main, form[action*="/cart/add"], [role="navigation"]')) return false;
+    return CONSENT.test((e.innerText || '').slice(0, 800)) && controls(e).length > 0 && onScreen(e);
+  }).slice(0, 3);
+  const roots = [...new Set([...named.map(lift), ...cookieish, ...generic])];
   const text = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').trim().replace(/\s+/g, ' ');
   for (const root of roots) {
     const t = text(root).slice(0, 600).toLowerCase();
@@ -75,7 +104,7 @@ FIND_JS = r"""() => {
     const clickables = within(root, 'button, a, [role="button"], [aria-label], .close, [class*="close" i]').filter(shown);
     const pick = (re, attr) => clickables.find(c => re.test(attr ? ((c.getAttribute('aria-label') || '') + ' ' + (c.className || '')) : text(c)));
     let btn = null;
-    if (kind === 'cookie') btn = pick(/^(decline|reject|deny|reject all|decline all|only necessary|necessary only|use necessary cookies only)$/i);
+    if (kind === 'cookie') btn = pick(/^(decline|reject|deny|reject all|decline all)$/i) || pick(NECESSARY);
     btn = btn || pick(/close|dismiss/i, true) || pick(/^(×|✕|✖|x|close|no thanks|no,? thanks|not now|maybe later|skip|continue browsing|stay here|stay on [\w .'&-]{1,40}|dismiss)$/i);
     // icon-only close: a text-less button whose icon is an X (svg class x/close/cross, or the usual X path),
     // or a small text-less button in the top-right corner of the popup box
@@ -90,7 +119,15 @@ FIND_JS = r"""() => {
       if (!/^(×|✕|✖|x)$/i.test(text(c)) || c.children.length > 1) return false;
       const b = c.getBoundingClientRect(); return b.width <= 48 && b.height <= 48 &&
         (getComputedStyle(c).cursor === 'pointer' || /close|dismiss|cross/i.test(String(c.className || ''))); });
-    if (!btn || /accept|agree|allow all|subscribe|sign ?up|submit|yes/i.test(text(btn))) continue;   // never consent, never sign up
+    const necessary = kind === 'cookie' && btn && NECESSARY.test(text(btn));
+    if (!btn || (/accept|agree|allow all|subscribe|sign ?up|submit|yes/i.test(text(btn)) && !necessary)) {   // never consent, never sign up
+      // a cookie banner that offers nothing but Accept: set it aside (hidden), choosing nothing, so the store can still
+      // be tested; the report says so
+      if (kind === 'cookie' && CONSENT.test(t) && !root.querySelector('main, form[action*="/cart/add"]') &&
+          clickables.some(c => /accept|agree|allow|^ok$|got it|i understand|continue/i.test(text(c)))) {
+        root.setAttribute('data-radar-popup', '1'); return {kind, text: t.slice(0, 60), button: '', aside: true}; }
+      continue;
+    }
     btn.setAttribute('data-radar-target', 'dismiss'); root.setAttribute('data-radar-popup', '1');
     return {kind, text: t.slice(0, 60), button: text(btn).slice(0, 30) || (btn.getAttribute('aria-label') || 'close')};
   }
@@ -106,6 +143,23 @@ STILL_OPEN_JS = r"""() => { const all = []; const walk = r => r.querySelectorAll
     && r.right > 0 && r.bottom > 0 && r.left < innerWidth && r.top < innerHeight;
   if (open) e.setAttribute('data-radar-tried', '1');
   return open; }"""
+
+
+# A cookie banner that offers only Accept: hidden, with its own backdrop, without choosing anything (19 Nov). The
+# banner element, every fixed ancestor of it covering half the screen, and every fixed full-screen layer in the same
+# document or shadow root that holds no control of its own (a dimmed backdrop) are hidden.
+ASIDE_JS = r"""() => { let e = null; const walk = r => r.querySelectorAll('*').forEach(x => { if (!e && x.hasAttribute('data-radar-popup')) e = x;
+    if (x.shadowRoot) walk(x.shadowRoot); }); walk(document);
+  if (!e) return 0;
+  const vw = innerWidth, vh = innerHeight, big = x => { const r = x.getBoundingClientRect(); return r.width * r.height >= 0.5 * vw * vh; };
+  const hide = x => { x.style.setProperty('display', 'none', 'important'); x.setAttribute('data-radar-aside', '1'); n++; };
+  let n = 0; hide(e);
+  for (let p = e.parentElement; p && p !== document.body && p !== document.documentElement; p = p.parentElement)
+    if (getComputedStyle(p).position === 'fixed' && big(p)) hide(p);
+  const rn = e.getRootNode();
+  [...rn.querySelectorAll('*')].forEach(x => { const s = getComputedStyle(x);
+    if (s.position === 'fixed' && s.display !== 'none' && big(x) && !x.querySelector('button, a[href], input, select')) hide(x); });
+  return n; }"""
 
 
 class AgeGate(Exception):
@@ -150,6 +204,16 @@ def dismiss_overlays(page, rounds: int = 3) -> list[dict]:
         if found["kind"] == "age_gate":
             raise AgeGate(f"age verification gate shown ('{found['text']}'); Radar does not confirm age on "
                           "a shopper's behalf, so this test cannot continue")
+        if found.get("aside"):
+            try:
+                n = page.evaluate(ASIDE_JS)
+            except Exception:  # noqa: BLE001  page navigating
+                n = 0
+            done.append({**found, "button": "set aside: it offers only Accept, and Radar never accepts cookies for a "
+                                            "shopper" + ("" if n else " (could not hide it)")})
+            if not n:
+                break
+            continue
         try:
             page.locator('[data-radar-target="dismiss"]').first.click(timeout=3000)
         except Exception:  # noqa: BLE001  covered by another layer: try Escape once
